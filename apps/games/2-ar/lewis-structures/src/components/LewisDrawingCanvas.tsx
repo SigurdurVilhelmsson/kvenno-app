@@ -1,10 +1,12 @@
-import { useState, useMemo, useCallback, useRef, useSyncExternalStore } from 'react';
+import { useState, useMemo, useRef, useSyncExternalStore } from 'react';
 
 import { PinnedActions } from '@shared/components';
 import { useRevealAfterCommit } from '@shared/utils';
 
+import { AtomSymbol, BondLines, ElectronDot } from './LewisStructure';
 import { BOND_E, diagnoseDrawing, type BondType } from '../utils/lewisDiagnosis';
-import { centralLonePairAngles, pairCount } from '../utils/lonePairs';
+import { LEWIS_COLORS, lewisGeometry } from '../utils/lewisLayout';
+import { pairCount } from '../utils/lonePairs';
 
 interface CorrectAtom {
   symbol: string;
@@ -124,18 +126,27 @@ export function LewisDrawingCanvas({
     H = 280;
   const cx = W / 2,
     cy = H / 2;
-  const orbitR = n <= 2 ? 78 : n <= 4 ? 85 : 82;
-  const cR = 26,
-    sR = 22;
-  // Every atom and lone-pair dot lies within 118 units of the centre (outer
-  // atom at orbitR ≤ 85, its dots 30 further out), so the compact board crops
-  // to that square. Its bond hit strip is wider too, so a fingertip on a short
-  // bond lands on it: 36 units is about 42 px on a 360 px phone.
+  // The compact board crops to the most room this molecule's drawing can ever
+  // take — every outer atom with three pairs, the central atom with four — so
+  // nothing moves or clips as pairs are added, and a flat molecule such as
+  // H–O–H is not framed in a tall empty square. Its bond hit strip is wider
+  // too, so a fingertip on a short bond lands on it: 36 units is about 42 px on
+  // a 360 px phone.
   const compact = useSyncExternalStore(subscribeCompactBoard, isCompactBoard, () => false);
-  const cropR = 120;
-  const viewBox = compact
-    ? `${cx - cropR} ${cy - cropR} ${cropR * 2} ${cropR * 2}`
-    : `0 0 ${W} ${H}`;
+  const viewBox = useMemo(() => {
+    if (!compact) return `0 0 ${W} ${H}`;
+    const { box } = lewisGeometry(
+      {
+        central: { symbol: centralAtom, lonePairs: 4 },
+        outer: surroundingAtoms.map((a) => ({ symbol: a.symbol, lonePairs: 3, bond: 'single' })),
+      },
+      { x: cx, y: cy }
+    );
+    const pad = 10;
+    const h = Math.max(box.maxY - box.minY + pad * 2, 110);
+    const midY = (box.minY + box.maxY) / 2;
+    return `${box.minX - pad} ${midY - h / 2} ${box.maxX - box.minX + pad * 2} ${h}`;
+  }, [compact, centralAtom, surroundingAtoms, cx, cy]);
   const hitWidth = compact ? 36 : 24;
   // The invisible strip a tap or click lands on. A filled polygon rather than a
   // thick transparent stroke, so the bond's box is as big as what it catches: a
@@ -160,31 +171,23 @@ export function LewisDrawingCanvas({
       .join(' ');
   };
 
-  const positions = useMemo(
+  // The board draws with the same geometry and pen as every other Lewis
+  // structure in the game (utils/lewisLayout.ts), from the student's drawing.
+  const showUnpaired = !!correctStructure.centralUnpairedElectron && remaining === 1;
+  const geometry = useMemo(
     () =>
-      surroundingAtoms.map((_, i) => {
-        const a = (i / n) * Math.PI * 2 - Math.PI / 2;
-        return { x: cx + Math.cos(a) * orbitR, y: cy + Math.sin(a) * orbitR, a };
-      }),
-    [n, cx, cy, orbitR, surroundingAtoms]
-  );
-
-  // --- Lone pair position helpers ---
-  const getSurroundingLPAngles = (bondAngle: number, count: number): number[] => {
-    if (count === 0) return [];
-    const opp = bondAngle + Math.PI;
-    if (count === 1) return [opp];
-    const spread = Math.min(Math.PI * 0.7, count * 0.3);
-    return Array.from({ length: count }, (_, i) => opp + spread * (i / (count - 1) - 0.5) * 2);
-  };
-
-  const getCentralLPAngles = useCallback(
-    (count: number): number[] =>
-      centralLonePairAngles(
-        positions.map((p) => Math.atan2(p.y - cy, p.x - cx)),
-        count
+      lewisGeometry(
+        {
+          central: { symbol: centralAtom, lonePairs: centralLP, unpaired: showUnpaired },
+          outer: surroundingAtoms.map((a, i) => ({
+            symbol: a.symbol,
+            lonePairs: surroundingLP[i],
+            bond: bonds[i],
+          })),
+        },
+        { x: cx, y: cy }
       ),
-    [positions, cy, cx]
+    [centralAtom, centralLP, showUnpaired, surroundingAtoms, surroundingLP, bonds, cx, cy]
   );
 
   // --- Atom label for controls ---
@@ -316,18 +319,14 @@ export function LewisDrawingCanvas({
 
   // --- SVG render helpers ---
   const renderBond = (i: number) => {
-    const p = positions[i];
-    const angle = Math.atan2(p.y - cy, p.x - cx);
-    const x1 = cx + Math.cos(angle) * cR;
-    const y1 = cy + Math.sin(angle) * cR;
-    const x2 = p.x - Math.cos(angle) * sR;
-    const y2 = p.y - Math.sin(angle) * sR;
+    const { from, to, angle } = geometry.bonds[i];
+    const { x: x1, y: y1 } = from;
+    const { x: x2, y: y2 } = to;
     const perpX = -Math.sin(angle);
     const perpY = Math.cos(angle);
-    const off = 4;
     const bt = bonds[i];
     const hasErr = solution?.bondErrors.some((e) => e.index === i);
-    const color = hasErr ? '#ef4444' : '#374151';
+    const color = hasErr ? LEWIS_COLORS.error : LEWIS_COLORS.bond;
 
     const isFocused = focusedBondIdx === i;
     const bondAriaLabel = `Tengi ${i + 1} af ${n}: ${centralAtom}–${atomLabel(i)}, núna ${BOND_LABEL[bt]}. Ýttu á Enter eða bil til að skipta.`;
@@ -360,105 +359,9 @@ export function LewisDrawingCanvas({
           />
         )}
         <polygon points={hitStrip(x1, y1, x2, y2, perpX, perpY)} fill="transparent" />
-        {bt === 'none' && (
-          <line
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke="#d1d5db"
-            strokeWidth={2}
-            strokeDasharray="6,4"
-          />
-        )}
-        {bt === 'single' && (
-          <line
-            x1={x1}
-            y1={y1}
-            x2={x2}
-            y2={y2}
-            stroke={color}
-            strokeWidth={3}
-            strokeLinecap="round"
-          />
-        )}
-        {bt === 'double' && (
-          <>
-            <line
-              x1={x1 + perpX * off}
-              y1={y1 + perpY * off}
-              x2={x2 + perpX * off}
-              y2={y2 + perpY * off}
-              stroke={color}
-              strokeWidth={2.5}
-              strokeLinecap="round"
-            />
-            <line
-              x1={x1 - perpX * off}
-              y1={y1 - perpY * off}
-              x2={x2 - perpX * off}
-              y2={y2 - perpY * off}
-              stroke={color}
-              strokeWidth={2.5}
-              strokeLinecap="round"
-            />
-          </>
-        )}
-        {bt === 'triple' && (
-          <>
-            <line
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={color}
-              strokeWidth={2}
-              strokeLinecap="round"
-            />
-            <line
-              x1={x1 + perpX * off * 1.3}
-              y1={y1 + perpY * off * 1.3}
-              x2={x2 + perpX * off * 1.3}
-              y2={y2 + perpY * off * 1.3}
-              stroke={color}
-              strokeWidth={2}
-              strokeLinecap="round"
-            />
-            <line
-              x1={x1 - perpX * off * 1.3}
-              y1={y1 - perpY * off * 1.3}
-              x2={x2 - perpX * off * 1.3}
-              y2={y2 - perpY * off * 1.3}
-              stroke={color}
-              strokeWidth={2}
-              strokeLinecap="round"
-            />
-          </>
-        )}
+        <BondLines from={from} to={to} type={bt} color={color} />
       </g>
     );
-  };
-
-  const renderLPDots = (
-    atomX: number,
-    atomY: number,
-    angles: number[],
-    hasError: boolean,
-    dist: number
-  ) => {
-    const dotColor = hasError ? '#ef4444' : '#6366f1';
-    return angles.map((angle, i) => {
-      const px = atomX + Math.cos(angle) * dist;
-      const py = atomY + Math.sin(angle) * dist;
-      const gapX = -Math.sin(angle) * 4;
-      const gapY = Math.cos(angle) * 4;
-      return (
-        <g key={`lp-${i}`} className="pointer-events-none">
-          <circle cx={px + gapX} cy={py + gapY} r={2.5} fill={dotColor} />
-          <circle cx={px - gapX} cy={py - gapY} r={2.5} fill={dotColor} />
-        </g>
-      );
-    });
   };
 
   const remainingColor =
@@ -485,8 +388,6 @@ export function LewisDrawingCanvas({
   );
 
   const hasNonH = surroundingAtoms.some((a) => a.symbol !== 'H');
-  const showUnpaired = !!correctStructure.centralUnpairedElectron && remaining === 1;
-  const centralSlots = getCentralLPAngles(centralLP + (showUnpaired ? 1 : 0));
 
   return (
     // A phone on its side: the board | the counter, the lone pairs, the feedback and the
@@ -507,66 +408,34 @@ export function LewisDrawingCanvas({
           aria-label={`Teikniborð fyrir Lewis-formúlu ${molecule}`}
         >
           {/* Bonds */}
-          {positions.map((_, i) => renderBond(i))}
+          {geometry.bonds.map((_, i) => renderBond(i))}
 
-          {/* Central lone pair dots, plus the odd electron of a radical such as NO:
-              once the count leaves exactly that one electron, it is drawn on the
-              central atom beside the pairs rather than left out of the picture. */}
-          {renderLPDots(cx, cy, centralSlots.slice(0, centralLP), !!solution?.centralLPError, 36)}
-          {showUnpaired && (
-            <circle
-              data-unpaired-electron=""
-              cx={cx + Math.cos(centralSlots[centralLP]) * 36}
-              cy={cy + Math.sin(centralSlots[centralLP]) * 36}
-              r={2.5}
-              fill="#6366f1"
-              className="pointer-events-none"
-            />
-          )}
-
-          {/* Surrounding lone pair dots */}
-          {positions.map((p, i) => {
-            const bondAngle = Math.atan2(cy - p.y, cx - p.x);
-            const hasErr = solution?.surroundingLPErrors.some((e) => e.index === i) ?? false;
-            return renderLPDots(
-              p.x,
-              p.y,
-              getSurroundingLPAngles(bondAngle, surroundingLP[i]),
-              hasErr,
-              30
+          {/* Lone pairs, plus the odd electron of a radical such as NO: once the
+              count leaves exactly that one electron, it is drawn on the central
+              atom beside the pairs rather than left out of the picture. Once the
+              solution is open, an atom whose pairs differ from it is drawn red. */}
+          {geometry.dots.map((d, i) => {
+            const hasErr =
+              d.atom === -1
+                ? !!solution?.centralLPError
+                : !!solution?.surroundingLPErrors.some((e) => e.index === d.atom);
+            return d.odd ? (
+              <g key={`dot-${i}`} data-unpaired-electron="">
+                <ElectronDot at={d} />
+              </g>
+            ) : (
+              <ElectronDot
+                key={`dot-${i}`}
+                at={d}
+                color={hasErr ? LEWIS_COLORS.error : undefined}
+              />
             );
           })}
 
-          {/* Central atom */}
-          <circle cx={cx} cy={cy} r={cR} fill="#3b82f6" stroke="#2563eb" strokeWidth={2} />
-          <text
-            x={cx}
-            y={cy + 6}
-            textAnchor="middle"
-            fill="white"
-            fontSize={16}
-            fontWeight="bold"
-            className="pointer-events-none select-none"
-          >
-            {centralAtom}
-          </text>
-
-          {/* Surrounding atoms */}
-          {positions.map((p, i) => (
-            <g key={`atom-${i}`}>
-              <circle cx={p.x} cy={p.y} r={sR} fill="#10b981" stroke="#059669" strokeWidth={2} />
-              <text
-                x={p.x}
-                y={p.y + 5}
-                textAnchor="middle"
-                fill="white"
-                fontSize={14}
-                fontWeight="bold"
-                className="pointer-events-none select-none"
-              >
-                {surroundingAtoms[i].symbol}
-              </text>
-            </g>
+          {/* Atoms, as the book writes them: the element symbol and nothing round it */}
+          <AtomSymbol at={geometry.central} symbol={centralAtom} />
+          {geometry.outer.map((p, i) => (
+            <AtomSymbol key={`atom-${i}`} at={p} symbol={surroundingAtoms[i].symbol} />
           ))}
 
           {/* Instruction (drawn as HTML below the compact board, where 11 units would be too small to read) */}

@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 
-import { AnimatedMolecule, PhoneDisclosure } from '@shared/components';
+import { PhoneDisclosure } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import {
   focusTarget,
@@ -14,7 +14,9 @@ import {
 
 import { LewisDrawingCanvas } from './LewisDrawingCanvas';
 import { LewisGuidedMode } from './LewisGuidedMode';
+import { LewisStructure } from './LewisStructure';
 import { lewisToMolecule } from '../utils/lewisConverter';
+import type { LewisDrawing } from '../utils/lewisLayout';
 
 interface Level2Props {
   /** How many of the molecules were drawn right without opening the solution. */
@@ -303,6 +305,25 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const armed = useArmedAfter(400, `${currentChallenge}:${drawingCorrect}`);
   const phone = useIsPhone();
 
+  // The structure the student just drew, in the same hand as the board they drew it on.
+  const drawing = useMemo((): LewisDrawing => {
+    const c = challenge.correctStructure;
+    return {
+      central: {
+        symbol: c.centralAtom,
+        lonePairs: c.centralLonePairs,
+        unpaired: c.centralUnpairedElectron,
+        formalCharge: c.centralFormalCharge,
+      },
+      outer: c.surroundingAtoms.map((a) => ({
+        symbol: a.symbol,
+        bond: a.bondType,
+        lonePairs: a.lonePairs,
+        formalCharge: a.formalCharge,
+      })),
+    };
+  }, [challenge]);
+
   const molecule = useMemo(() => {
     return lewisToMolecule(challenge.correctStructure, challenge.molecule, challenge.title);
   }, [challenge]);
@@ -366,7 +387,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
           }`}
         >
-          2D Lewis
+          Lewis-formúla
         </button>
         <button
           onClick={() => setViewMode('3d')}
@@ -382,16 +403,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
       <div className="flex justify-center py-4 phone:py-1">
         {viewMode === '2d' ? (
-          <AnimatedMolecule
-            molecule={molecule}
-            mode="lewis"
-            size="lg"
-            fit
-            animation="fade-in"
-            showLonePairs={true}
-            showFormalCharges={true}
-            ariaLabel={`Lewis-formúla fyrir ${challenge.molecule}`}
-          />
+          <LewisStructure drawing={drawing} label={`Lewis-formúla fyrir ${challenge.molecule}`} />
         ) : (
           <div className="w-full">
             <MoleculeViewer3DLazy
@@ -423,19 +435,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="text-xs text-warm-500 mb-2 font-medium phone:mb-0">Skýringar:</div>
         <div className="flex flex-wrap gap-4 text-xs phone:gap-x-3 phone:gap-y-1">
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-full border-2 border-blue-500 bg-blue-100" />
-            <span>Miðatóm</span>
+            <svg width="20" height="8" viewBox="0 0 20 8" aria-hidden="true">
+              <line x1="1" y1="4" x2="19" y2="4" stroke="#374151" strokeWidth="2.5" />
+            </svg>
+            <span>Tengi (rafeindapar sem atómin deila)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-4 rounded-full border-2 border-green-500 bg-green-100" />
-            <span>Ytri atóm</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="flex gap-0.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-              <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-            </div>
-            <span>Stakt par</span>
+            <svg width="14" height="8" viewBox="0 0 14 8" aria-hidden="true">
+              <circle cx="4" cy="4" r="2.5" fill="#0f766e" />
+              <circle cx="10" cy="4" r="2.5" fill="#0f766e" />
+            </svg>
+            <span>Stakt rafeindapar</span>
           </div>
         </div>
 

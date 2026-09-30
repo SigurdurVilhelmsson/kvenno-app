@@ -2,6 +2,8 @@ import { useState, useEffect, useId, useLayoutEffect, useRef } from 'react';
 
 import { focusTarget, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
+import { LewisStructure } from './LewisStructure';
+import type { LewisDrawing } from '../utils/lewisLayout';
 import { pairCount } from '../utils/lonePairs';
 
 interface Atom {
@@ -254,6 +256,41 @@ export function LewisGuidedMode({
     getAtomLonePairs(symbol) /
     Math.max(1, surroundingAtoms.filter((a) => a.symbol === symbol).length);
 
+  // The molecule as it stands, drawn as every structure in the game is. The
+  // walkthrough used to draw balls and bonds and never a single lone pair, so
+  // the step about placing pairs had nothing on screen to place them on.
+  // Atoms sharing a symbol share a counter; its pairs are dealt out in turn.
+  const drawing = (): LewisDrawing => {
+    const dealt = new Map<string, number>();
+    return {
+      central: {
+        symbol: centralAtom?.symbol ?? '',
+        lonePairs: getAtomLonePairs(centralAtom?.symbol ?? ''),
+      },
+      outer: surroundingAtoms.map((a, idx) => {
+        const same = surroundingAtoms.filter((x) => x.symbol === a.symbol).length;
+        const nth = dealt.get(a.symbol) ?? 0;
+        dealt.set(a.symbol, nth + 1);
+        const total = getAtomLonePairs(a.symbol);
+        const share = Math.floor(total / same) + (nth < total % same ? 1 : 0);
+        return {
+          symbol: a.symbol,
+          bond: idx < bondsDrawn.length ? 'single' : 'none',
+          lonePairs: share,
+        } as const;
+      }),
+    };
+  };
+  const structure = (
+    <div className="flex justify-center py-2">
+      <LewisStructure
+        drawing={drawing()}
+        label={`Lewis-formúla ${molecule} eins og hún stendur`}
+        maxWidth={220}
+      />
+    </div>
+  );
+
   // The total alone was no check at all — the button only enables once every
   // electron is placed, which fixes the total — so two pairs on H passed.
   const checkDistribution = () => {
@@ -386,9 +423,14 @@ export function LewisGuidedMode({
             {/* Visual of central atom */}
             <div className="flex justify-center py-6 phone:py-4">
               <div className={`relative ${animating ? 'animate-bounce' : ''}`}>
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
-                  <span className="text-2xl font-bold text-white">{centralAtom?.symbol}</span>
-                </div>
+                <LewisStructure
+                  drawing={{
+                    central: { symbol: centralAtom?.symbol ?? '', lonePairs: 0 },
+                    outer: [],
+                  }}
+                  label={`Miðatómið ${centralAtom?.symbol ?? ''}`}
+                  maxWidth={64}
+                />
                 <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-warm-500">
                   Miðatóm
                 </div>
@@ -409,62 +451,8 @@ export function LewisGuidedMode({
 
         {step.action === 'draw-bonds' && !showFeedback && (
           <div className="space-y-4">
-            {/* Visual of bonds being drawn */}
-            <div className="flex justify-center py-4">
-              <svg viewBox="0 0 250 180" className="w-full max-w-[250px] h-auto">
-                {/* Central atom */}
-                <circle cx="125" cy="90" r="25" fill="#3b82f6" />
-                <text
-                  x="125"
-                  y="95"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="18"
-                  fontWeight="bold"
-                >
-                  {centralAtom?.symbol}
-                </text>
-
-                {/* Surrounding atoms with bond lines */}
-                {surroundingAtoms.map((atom, idx) => {
-                  const angle = (idx / surroundingAtoms.length) * 2 * Math.PI - Math.PI / 2;
-                  const x = 125 + Math.cos(angle) * 80;
-                  const y = 90 + Math.sin(angle) * 60;
-                  const lineX1 = 125 + Math.cos(angle) * 25;
-                  const lineY1 = 90 + Math.sin(angle) * 25;
-                  const lineX2 = x - Math.cos(angle) * 18;
-                  const lineY2 = y - Math.sin(angle) * 18;
-
-                  return (
-                    <g key={idx}>
-                      {/* Bond line */}
-                      <line
-                        x1={lineX1}
-                        y1={lineY1}
-                        x2={lineX2}
-                        y2={lineY2}
-                        stroke="#374151"
-                        strokeWidth="3"
-                        strokeDasharray={bondsDrawn.length > idx ? '0' : '5,5'}
-                        className={bondsDrawn.length > idx ? '' : 'animate-pulse'}
-                      />
-                      {/* Surrounding atom */}
-                      <circle cx={x} cy={y} r="18" fill="#10b981" />
-                      <text
-                        x={x}
-                        y={y + 5}
-                        textAnchor="middle"
-                        fill="white"
-                        fontSize="14"
-                        fontWeight="bold"
-                      >
-                        {atom.symbol}
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
+            {/* The skeleton: dashed where a bond is still to be drawn */}
+            {structure}
 
             <div className="text-center text-sm text-warm-600 mb-4">
               Hvert einfalt tengi notar 2 rafeindir (ein frá hvoru atómi)
@@ -500,6 +488,7 @@ export function LewisGuidedMode({
 
         {step.action === 'distribute' && !showFeedback && (
           <div className="space-y-4">
+            {structure}
             <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 mb-4">
               Rafeindir eftir: <strong>{electronsRemaining}</strong> ={' '}
               {electronsRemaining === 2 ? '1 stakt par' : `${electronsRemaining / 2} stök pör`}
@@ -581,6 +570,7 @@ export function LewisGuidedMode({
 
         {step.action === 'check-octet' && !showFeedback && (
           <div className="space-y-4">
+            {structure}
             <div className="bg-white p-3 sm:p-4 rounded-lg border">
               <div className="text-sm font-medium text-warm-600 mb-3">Athugun á áttureglunni:</div>
 
@@ -648,6 +638,7 @@ export function LewisGuidedMode({
             <p className="text-green-700 font-medium mb-4">
               Þú hefur lokið við Lewis-formúlu fyrir {molecule}!
             </p>
+            {structure}
             {/* Reached by "Næsta skref": the same guard, so a double tap on it
                 cannot close the walkthrough unread. */}
             <button

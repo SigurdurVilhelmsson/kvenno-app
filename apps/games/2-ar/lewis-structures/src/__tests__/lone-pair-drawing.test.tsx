@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { LewisDrawingCanvas } from '../components/LewisDrawingCanvas';
+import { outerAngles } from '../utils/lewisLayout';
 
 /**
  * What Level 2's drawing board draws, as opposed to what it grades.
@@ -116,9 +117,10 @@ describe('central lone pairs are all drawn', () => {
         angleOf({ x: (dots[i].x + dots[i + 1].x) / 2, y: (dots[i].y + dots[i + 1].y) / 2 })
       );
     }
-    // H is drawn straight up from Cl (−90°); no pair may sit on that bond,
-    // and no two pairs on each other.
-    for (const a of pairAngles) expect(angularGap(a, -90)).toBeGreaterThanOrEqual(45);
+    // H is drawn straight across from Cl (0°), as every structure in the game
+    // draws it; no pair may sit on that bond, and no two pairs on each other.
+    const bond = (outerAngles(1)[0] * 180) / Math.PI;
+    for (const a of pairAngles) expect(angularGap(a, bond)).toBeGreaterThanOrEqual(45);
     for (let i = 0; i < pairAngles.length; i++) {
       for (let j = i + 1; j < pairAngles.length; j++) {
         expect(angularGap(pairAngles[i], pairAngles[j])).toBeGreaterThanOrEqual(45);
