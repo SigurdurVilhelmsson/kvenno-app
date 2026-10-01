@@ -199,7 +199,7 @@ export function MoleculeBuilder({
                           <button
                             onClick={() => toggleBranch(carbonPosition)}
                             className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white text-[10px] flex items-center justify-center leading-none transition-colors pointer-coarse:-top-2 pointer-coarse:-right-2 pointer-coarse:size-6 pointer-coarse:text-sm pointer-coarse:after:absolute pointer-coarse:after:-inset-2.5 pointer-coarse:after:content-['']"
-                            aria-label="Fjarlægja grein"
+                            aria-label="Fjarlægja metýlhóp"
                           >
                             ×
                           </button>
@@ -221,8 +221,8 @@ export function MoleculeBuilder({
                         onClick={() => toggleBranch(carbonPosition)}
                         className="group/branch flex items-center justify-center rounded-full mb-1 pointer-coarse:size-11 pointer-coarse:-mx-2 pointer-coarse:-mb-1.5"
                         style={{ marginTop: 'auto' }}
-                        aria-label={`Bæta við grein á C${carbonPosition}`}
-                        title="Grein"
+                        aria-label={`Bæta við metýlhópi á C${carbonPosition}`}
+                        title="Metýlhópur"
                       >
                         <span className="w-6 h-6 rounded-full bg-teal-600/40 group-hover/branch:bg-teal-500/60 text-teal-300 text-sm font-bold flex items-center justify-center transition-colors">
                           +
@@ -351,7 +351,7 @@ export function MoleculeBuilder({
           </span>
           <span className="flex items-center gap-1">
             <span className="w-3 h-3 rounded-full bg-teal-700 border border-teal-400" />
-            grein
+            metýlhópur
           </span>
         </div>
       </div>
@@ -430,7 +430,7 @@ export function MoleculeBuilder({
         <div className="mt-2 text-center text-xs text-warm-500">
           {branches.length > 0 && (
             <span>
-              {branches.length} {branches.length === 1 ? 'metýlgrein' : 'metýlgreinar'}
+              {branches.length} {branches.length === 1 ? 'metýlhópur' : 'metýlhópar'}
               {' • '}
             </span>
           )}
@@ -446,7 +446,7 @@ export function MoleculeBuilder({
       <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
           <strong>+/-</strong> bætir við/fjarlægir kolefni • <strong>Smelltu á tengingu</strong> til
-          að breyta • <strong className="text-teal-700">+</strong> bætir við metýlgrein
+          að breyta • <strong className="text-teal-700">+</strong> bætir við metýlhópi
         </p>
         <p role="status" className={oneMultipleNote ? 'mt-1 text-amber-700' : undefined}>
           {oneMultipleNote &&

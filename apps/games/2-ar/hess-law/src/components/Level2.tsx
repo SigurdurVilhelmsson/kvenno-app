@@ -402,7 +402,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="mb-6 phone:mb-3">
                   <EnergyPathwayDiagram
                     steps={energySteps}
-                    targetDeltaH={puzzle.targetDeltaH}
+                    targetDeltaH={showResult ? puzzle.targetDeltaH : null}
                     isCorrect={isCorrect && showResult}
                   />
                 </div>

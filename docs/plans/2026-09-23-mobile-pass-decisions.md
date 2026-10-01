@@ -580,6 +580,10 @@ wrong, and so is a correct answer with commas or carets, and the hint stays sile
 electron counts match. Options: (a) keep filling order as the only form, but say why (`Réttar
 rafeindir, en skrifaðu í Aufbau-röð`), and accept `,` `;` `^` as separators; (b) accept any order.
 **Recommendation:** (a); it matches the book.
+**Applied 2026-10-01, (a):** commas, semicolons and a caret before an exponent are accepted
+(`1s^2, 2s^2, 2p^2`), and an answer with the right subshells in the wrong order says which comes
+first: `Réttar rafeindir, en skrifaðu í Aufbau-röð: 4s fyllist á undan 3d.` Guarded by
+`level2-feedback.test.tsx` and `electrons.test.ts`.
 
 Also here: `yfirskrift` (item 13), `Nitur` (item 15) and the running
 score (item 1).
@@ -611,6 +615,11 @@ The key is 2, so a student who counts CO₂'s four bonding pairs is wrong (`Leve
 `molecules[3]`; the only multiple-bond molecule). Options: (a) relabel both inputs as domains,
 which needs a term (the book says `svæði rafeindaþéttleika`); (b) also accept 4; (c) swap CO₂ out.
 **Recommendation:** (a), your wording.
+**Applied 2026-10-01, (a):** both count fields are labelled, `Tengisvæði` and `Stök pör`, the
+book's `tengisvæði` (ch07: `tvö stök rafeindapör og fjögur tengisvæði`). The feedback reads
+`2 tengisvæði og 2 stök pör`, and the hint says a single, double or triple bond is one domain.
+Guarded by `level2-feedback.test.tsx`. Stig 1 and the angle tool still say `Bindandi pör` for
+the AXₙEₘ shapes, where every domain is a single bond.
 
 **68. SF₆'s distractor `d²sp³` is graded wrong while its explanation calls it the
 same as `sp³d²`.**
@@ -645,6 +654,9 @@ shape asked about.**
 step; `Level1.tsx` Q1, Q6 and Q7 draw the shape in question. Options: keep as scaffolds, or tier
 the hint and hide the picture on identify questions until answered. **Recommendation:** tier the
 hint.
+**Applied 2026-10-01, as recommended:** the first press names the electron geometry and asks
+what its angles are and how lone pairs change them, with no number; `Sýna nánari vísbendingu`
+then gives the angle. The `Lögunartafla` reference stays. Guarded by `level2-feedback.test.tsx`.
 
 Also here: d-orbitals (item 7), vocabulary (item 20), glosses and
 `lp`/`bp` (item 6), and the dead `is` block (item 4).
@@ -673,6 +685,10 @@ is true per molecule, false per volume. **Recommendation:** retitle 6 `Ediksýra
 About 15 sites; the corpus writes `London-kraftar` (8) or `dreifikraftar` (45), and `ordabok.md`
 is silent. **Recommendation:** `London-kraftar`, platform-wide; `e2e/mobile-game-screens.ts:2839`
 clicks the unhyphenated name and changes with it.
+**Applied 2026-10-01, as recommended:** `London-kraftar` and `London-dreifikraftar` at every site
+in `intermolecular-forces`, the e2e paths with them. `ordabok.md` now carries
+`London force;London-kraftur` and `London dispersion force;London-dreifikraftur`, and a
+`governed-terms` row bans the open form. The bare chip label `London` stays.
 
 Also here: `Saltsýra`/`Flússýra` (item 14), `Gufuþrýstingur` (item 18),
 the 3D hint (item 8) and the running score (item 1).
@@ -694,6 +710,9 @@ challenge; the n × ΔH°f terms stay. Guarded by `level3-display.test.tsx`.
 wrong combination no longer scores. Options: (a) keep; (b) draw it after `Athuga lausn`; (c) put it
 behind a hint. **Recommendation:** (a), or (b) if the level should test reasoning over guided
 search.
+**Applied 2026-10-01, (b):** the line, its legend key and its place on the scale appear only
+once `Athuga lausn` is pressed, and go again when the cards change. Guarded by
+`level2-target-line.test.tsx`.
 
 **77. The state-path panel under every Level 1 challenge shows c5's answer.**
 `StatePathComparison compact` labels C + ½O₂ → CO as −111, the value c5 asks for
@@ -712,6 +731,8 @@ is about path-independence, which `ordabok.md` calls `ástandsfall`. **Recommend
 **79. Stig 2's card promises `Útskýrðu rökstuðning.`, and the level has no such step.**
 `App.tsx` and `i18n.ts` `levels.level2.details`. Options: (a) delete the sentence; (b) add a short
 "which species cancel?" step. **Recommendation:** (a) now.
+**Applied 2026-10-01, (a):** deleted in all three languages. Guarded by the game's
+`icelandic-text.test.ts`.
 
 Also here: the formation-enthalpy table (item 9), the contact process (item
 17), CO (item 16) and the en/pl decimals (item 4).
@@ -776,11 +797,16 @@ change too.
 `Level1.tsx:356`: three of ten items are not molecules. Options: (a) `í þessu efnasambandi?` /
 `í þessari jón?` per item; (b) one neutral `í þessari formúlu?`. **Recommendation:** (a); the data
 already marks the ion.
+**Applied 2026-10-01, (a):** `í þessu efnasambandi?`, and `í þessari jón?` for Cr₂O₇²⁻, read
+off the charge suffix in its id. Guarded by `level1-question-noun.test.tsx`.
 
 **86. Least common multiple: `LCM(3,2)=6` and `Minnsta samþakning`.**
 English in `data/half-reactions.ts:125`, a non-word in the Stig 3 intro, Skref 3. Neither source
 has a term. **Recommendation:** `minnsta sameiginlega margfeldi` in the intro, where it is taught;
 avoid the term in the hint (`3 × 2 = 6 rafeindir, svo 2×Al og 3×(2H⁺)`).
+**Applied 2026-10-01, as recommended:** the intro reads `Minnsta sameiginlega margfeldi talnanna
+3 og 2 er 6.` and the hint `3 × 2 = 6 rafeindir, svo 2×Al og 3×(2H⁺)`. Guarded by the game's
+`icelandic-text.test.ts`.
 
 **87. The chip `Rafeindasameignir` is not a word.**
 `Level1.tsx:18` here and `lewis-structures` `Level1.tsx:24`; 0 corpus hits, and it is unclear
@@ -797,6 +823,8 @@ Now `Zn–Cu galvaníhlað (Daniell)` (`ElectrochemicalCell.tsx:38`), an interim
 The book says `Daniell-kerið`, but the platform ruled the galvanic genus `-hlað` and reserved
 `-ker` for `rafker`/`hálfker`. Options: (a) `Daniell-hlað (Zn–Cu)`; (b) `Daniell-ker (Zn–Cu)`;
 (c) keep. **Recommendation:** (a), matching `galvaníhlað` on the same card.
+**Applied 2026-10-01, (a):** `Daniell-hlað (Zn–Cu)`. Guarded by the game's
+`icelandic-text.test.ts`.
 
 Also here: the running score and Stig 1's lower pay for retries (item 1).
 
@@ -815,6 +843,8 @@ changes quiz answers, chips, cards and hints, not the engine.
 viðskeyti as bond type (`-an/-en/-ýn`) and never mentions stofn; the book's model differs again.
 Options: (a) make the card match the game and drop `Stofn`; (b) move the game to the book's model.
 **Recommendation:** (a) now; weigh (b) with item 89.
+**Applied 2026-10-01, (a):** two cards, `Forskeyti` (fjöldi kolefna) and `Viðskeyti` (tegund
+tengja). Guarded by `menu-explainer.test.tsx`.
 
 **91. The molecule builder allows a second multiple bond and names only one.**
 CH₂=CH–CH=CH₂ shows as `1-búten` (`utils/naming.ts` `nameChain`, `MoleculeBuilder.tsx`
@@ -829,6 +859,14 @@ nothing. Guarded by `molecule-builder-naming.test.tsx`.
 `Level2.tsx` `Útskýring` (~:811) builds from carbon count and bond type, so 2-metýlprópan reads
 `prop (3 kolefni) + an`. **Recommendation:** add `+ metýlgrein á kolefni {n}` and the longest-chain
 sentence already in each molecule's hint.
+**Applied 2026-10-01:** `+ metýlhópur á kolefni {n}` per branch, and `Forskeytið telur kolefnin
+í lengstu keðjunni, 3, ekki öll 4 kolefnin í sameindinni.` Guarded by
+`branched-explanation.test.tsx`. **`metýlhópur`, the book's word, is Siggi's ruling the same
+day** (corpus 12 `metýlhóp-`, 29 `hliðarhóp-`; now `methyl group;metýlhópur` in `ordabok.md`).
+The game had called the branch a `grein`, so its builder and the three branched hints were
+swept too (`Bæta við metýlhópi á C2`, `1 metýlhópur`, `Metýlhópurinn er á miðkolefninu`), and
+the game's `icelandic-text.test.tsx` bans the noun. `greinótt` (branched) is the book's word as
+well and stays.
 
 ---
 

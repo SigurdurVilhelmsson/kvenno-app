@@ -183,7 +183,7 @@ export const molecules: Molecule[] = [
     formula: 'C₄H₁₀',
     correctName: '2-metýlprópan',
     branches: [{ atPosition: 2, length: 1 }],
-    hint: 'Lengsta kolefniskeðjan er 3 (própan). Metýl-grein á kolefni 2. Sama summuformúla og bútan!',
+    hint: 'Lengsta kolefniskeðjan er 3 (própan). Metýlhópur á kolefni 2. Sama summuformúla og bútan!',
   },
   {
     id: 14,
@@ -193,7 +193,7 @@ export const molecules: Molecule[] = [
     formula: 'C₅H₁₂',
     correctName: '2-metýlbútan',
     branches: [{ atPosition: 2, length: 1 }],
-    hint: 'Finndu lengstu keðju (4 kolefni = bútan) og númeraðu svo lágt númer fáist fyrir greinina.',
+    hint: 'Finndu lengstu keðju (4 kolefni = bútan) og númeraðu svo lágt númer fáist fyrir metýlhópinn.',
   },
   {
     id: 15,
@@ -203,9 +203,22 @@ export const molecules: Molecule[] = [
     formula: 'C₆H₁₄',
     correctName: '3-metýlpentan',
     branches: [{ atPosition: 3, length: 1 }],
-    hint: 'Lengsta keðjan er 5 kolefni (pentan). Greinin er á miðkolefninu — númer 3 burtséð frá báðum endum.',
+    hint: 'Lengsta keðjan er 5 kolefni (pentan). Metýlhópurinn er á miðkolefninu — númer 3 burtséð frá báðum endum.',
   },
 ];
+
+/** The prefix of an alkyl group of this many carbons, as the names in this pool write it. */
+function branchName(length: number): string {
+  const names: Record<number, string> = { 1: 'metýl', 2: 'etýl' };
+  const name = names[length];
+  if (!name) throw new Error(`No branch name for a ${length}-carbon branch`);
+  return name;
+}
+
+/** Every carbon in the molecule: the longest chain and its branches. */
+function totalCarbons(molecule: Molecule): number {
+  return molecule.carbons + (molecule.branches ?? []).reduce((sum, b) => sum + b.length, 0);
+}
 
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [mode, setMode] = useState<'select' | 'name' | 'build'>('select');
@@ -993,7 +1006,22 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           </span>
                         </span>
                       )}
+                    {/* A branched molecule's explanation used to stop at the chain and the
+                        bond, so 2-metýlprópan read as plain própan (decisions item 92). */}
+                    {molecule.branches?.map((branch, i) => (
+                      <span key={i} className="text-warm-500">
+                        {' '}
+                        + <span className="font-bold">{branchName(branch.length)}hópur</span> á
+                        kolefni <span className="text-red-600 font-bold">{branch.atPosition}</span>
+                      </span>
+                    ))}
                   </div>
+                  {molecule.branches && molecule.branches.length > 0 && (
+                    <p className="text-sm text-warm-600 mt-2 phone:mt-1">
+                      Forskeytið telur kolefnin í lengstu keðjunni, {molecule.carbons}, ekki öll{' '}
+                      {totalCarbons(molecule)} kolefnin í sameindinni.
+                    </p>
+                  )}
                 </div>
 
                 {/* Separate elements from Athuga, and each ignores a press within

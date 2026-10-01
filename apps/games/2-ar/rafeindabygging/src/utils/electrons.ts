@@ -26,6 +26,22 @@ const SUPERSCRIPT_DIGITS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
  * next shell's n) and after a one-digit exponent it must be a letter.
  */
 export function countElectrons(input: string): number | null {
+  const subshells = readSubshells(input);
+  return subshells === null ? null : subshells.reduce((sum, s) => sum + s.electrons, 0);
+}
+
+/** One subshell as a student wrote it: `3d⁶` is `{ subshell: '3d', electrons: 6 }`. */
+export interface WrittenSubshell {
+  subshell: string;
+  electrons: number;
+}
+
+/**
+ * The subshells a student typed, in the order typed, or `null` when the text is
+ * not a sequence of subshells. Spaces, commas, semicolons and a caret before the
+ * exponent (`1s^2`) all separate; the reading rules are `countElectrons`'s.
+ */
+export function readSubshells(input: string): WrittenSubshell[] | null {
   const text = input
     // A run of superscripts is unambiguous; end it with a space so its ASCII
     // copy cannot run into the next subshell's n.
@@ -33,26 +49,46 @@ export function countElectrons(input: string): number | null {
       /[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,
       (run) => Array.from(run, (c) => SUPERSCRIPT_DIGITS.indexOf(c)).join('') + ' '
     )
+    .replace(/\^/g, '')
     .toLowerCase()
     .trim();
   if (!text) return null;
-  return countFrom(text, 0);
+  return readFrom(text, 0);
 }
 
-function countFrom(text: string, start: number): number | null {
+function readFrom(text: string, start: number): WrittenSubshell[] | null {
   let i = start;
   while (i < text.length && /[\s,;]/.test(text[i])) i++;
-  if (i === text.length) return 0;
+  if (i === text.length) return [];
 
-  const match = /^[1-7][spdf](\d{1,2})/.exec(text.slice(i));
+  const match = /^([1-7][spdf])(\d{1,2})/.exec(text.slice(i));
   if (!match) return null;
-  const digits = match[1];
+  const digits = match[2];
   for (const length of [2, 1]) {
     if (digits.length < length) continue;
-    const rest = countFrom(text, i + 2 + length);
-    if (rest !== null) return parseInt(digits.slice(0, length), 10) + rest;
+    const rest = readFrom(text, i + 2 + length);
+    if (rest !== null)
+      return [{ subshell: match[1], electrons: parseInt(digits.slice(0, length), 10) }, ...rest];
   }
   return null;
+}
+
+/**
+ * When a wrong answer holds exactly the right subshells with the right electrons
+ * and only their order differs, the first pair out of order: `['4s', '3d']` for
+ * iron written `… 3d⁶ 4s²`. `null` otherwise. Stig 2 grades the order the book
+ * writes, the Aufbau order, and this lets it say so rather than only "Rangt",
+ * since the electron counts it checks first all agree (decisions item 64).
+ */
+export function firstOutOfOrder(typed: string, correct: string): [string, string] | null {
+  const mine = readSubshells(typed);
+  const right = readSubshells(correct);
+  if (!mine || !right || mine.length !== right.length) return null;
+  const key = (s: WrittenSubshell) => `${s.subshell}${s.electrons}`;
+  const sorted = (list: WrittenSubshell[]) => list.map(key).sort().join(' ');
+  if (sorted(mine) !== sorted(right)) return null;
+  const i = mine.findIndex((s, k) => s.subshell !== right[k].subshell);
+  return i === -1 ? null : [right[i].subshell, mine[i].subshell];
 }
 
 /**

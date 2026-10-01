@@ -63,7 +63,7 @@ describe('the count step', () => {
     const { ui, container } = start();
     answerCount(ui, container, 2, 1); // H₂O has 2 lone pairs
     expect(ui.getByText(/Rangt/)).toBeTruthy();
-    expect(ui.getByText(/Rétt svar: 2 bindandi pör og 2 stök pör/)).toBeTruthy();
+    expect(ui.getByText(/Rétt svar: 2 tengisvæði og 2 stök pör/)).toBeTruthy();
     expect(container.textContent).toContain('Samtals svæði rafeindaþéttleika: 4');
   });
 
@@ -71,7 +71,21 @@ describe('the count step', () => {
     const { ui, container } = start();
     advanceTo(ui, container, at('NH₃'));
     answerCount(ui, container, 3, 0);
-    expect(ui.getByText(/Rétt svar: 3 bindandi pör og 1 stakt par/)).toBeTruthy();
+    expect(ui.getByText(/Rétt svar: 3 tengisvæði og 1 stakt par/)).toBeTruthy();
+  });
+
+  it('asks for bonding domains, which CO₂ has two of, not bonding pairs (decisions item 67)', () => {
+    // A double bond is one domain and two pairs, so the key of 2 for CO₂ was
+    // wrong for a student who counted the four bonding pairs the field asked for.
+    const { ui, container } = start();
+    advanceTo(ui, container, at('CO₂'));
+    expect(ui.getByLabelText('Tengisvæði')).toBeTruthy();
+    expect(ui.getByLabelText('Stök pör')).toBeTruthy();
+    expect(container.textContent).not.toMatch(/Bindandi pör/i);
+    fireEvent.click(ui.getByRole('button', { name: hintButton }));
+    expect(container.textContent).toContain('eintengi, tvítengi eða þrítengi');
+    answerCount(ui, container, 2, 0);
+    expect(ui.queryByText(/Rangt/)).toBeNull();
   });
 
   it("gives carbon's real valence electron count for CO₂", () => {
@@ -111,7 +125,7 @@ describe('the geometry step', () => {
     advanceTo(ui, container, at('NH₃'));
     answerCount(ui, container, 3, 1);
     next(ui);
-    expect(container.textContent).toContain('3 bindandi + 1 stakt par');
+    expect(container.textContent).toContain('3 tengisvæði + 1 stakt par');
     expect(container.textContent).toContain('Með 1 stöku pari, hvaða');
     fireEvent.click(ui.getByRole('button', { name: hintButton }));
     expect(container.textContent).toContain('Hversu mikil áhrif hefur 1 stakt par?');
@@ -138,6 +152,37 @@ describe('the angle and explanation steps', () => {
     next(ui);
     return { ...level, m };
   }
+
+  /** The hint panel's own text; the Lögunartafla reference below it lists every angle. */
+  function hintText(container: HTMLElement): string {
+    const label = [...container.querySelectorAll('span')].find(
+      (el) => el.textContent === 'Vísbending: '
+    );
+    return label?.parentElement?.textContent ?? '';
+  }
+
+  it('tiers the angle hint: the angle itself only on a second press (decisions item 71)', () => {
+    const { ui, container, m } = toAngleStep('NH₃');
+    fireEvent.click(ui.getByRole('button', { name: hintButton }));
+    // The first tier points at the reasoning and prints no angle at all.
+    expect(hintText(container)).toContain('Rafeindalögunin er ferflötungur.');
+    expect(hintText(container)).toContain('Hvernig breyta stöku pörin þeim?');
+    expect(hintText(container)).not.toMatch(/\d/);
+
+    fireEvent.click(ui.getByRole('button', { name: 'Sýna nánari vísbendingu' }));
+    expect(hintText(container)).toContain('horn nálægt 107°');
+    expect(ui.queryByRole('button', { name: 'Sýna nánari vísbendingu' })).toBeNull();
+
+    answerAngle(ui, container, m.angle);
+    expect(ui.getByText(/Rétt! Tengihornið er/)).toBeTruthy();
+  });
+
+  it('says there are no lone pairs in the first tier where there are none', () => {
+    const { ui, container } = toAngleStep('CH₄');
+    fireEvent.click(ui.getByRole('button', { name: hintButton }));
+    expect(hintText(container)).toContain('Hér eru engin stök pör til að breyta þeim.');
+    expect(hintText(container)).not.toMatch(/\d/);
+  });
 
   it('asks for the explanation in a sentence that agrees', () => {
     const { ui, container, m } = toAngleStep('CH₄');

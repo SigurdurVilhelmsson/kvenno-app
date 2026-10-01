@@ -56,6 +56,13 @@ const FORBIDDEN: { wrong: RegExp; right: string }[] = [
   // redox. Decision 87, 2026-10-01: Lewis took `Samgild tengi`, where it meant covalent bonding.
   { wrong: /Rafeindasameign/i, right: 'Rafeindaflutningur' },
   { wrong: /\(Electron Transfer\)|\b(Daniell|Mg-Cu|Fe-Cu|Zn-Ag) Cell\b/, right: 'Icelandic' },
+  // Decision 86: English `LCM` in a hint and `samþakning`, which is not a word, in the Stig 3
+  // intro. The intro teaches the term; the hint does the arithmetic without it.
+  // Upper-case only: `lcm` is the name of the balancing helper in `utils/redox-balancing.ts`.
+  { wrong: /\bLCM\b|samþakn/, right: 'minnsta sameiginlega margfeldi' },
+  // Decision 88: the galvanic genus is `-hlað`, so the Daniell cell is `Daniell-hlað`, not
+  // `Daniell-ker` (the book's form) and not a bare `(Daniell)` tag on a generic name.
+  { wrong: /Daniell-?ker|\(Daniell\)/i, right: 'Daniell-hlað (Zn–Cu)' },
   // An Icelandic compound is not written open; the game's own form is `redox-hvörf`.
   { wrong: /\bredox (hv|jöfn|efnafr)/i, right: 'redox-hvörf / redox-jöfnur (hyphenated)' },
   // `jafnvægi` is equilibrium; balancing an equation is `stilla` (CLAUDE.md).

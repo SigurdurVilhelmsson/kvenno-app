@@ -276,8 +276,14 @@ const VALENCE_ELECTRONS: Record<string, number> = {
 };
 
 // The noun and its adjective agree with the count: 1 takes the singular.
-function bondingPairsPhrase(n: number): string {
-  return n === 1 ? '1 bindandi par' : `${n} bindandi pör`;
+/**
+ * The count step grades domains, not pairs: a double bond is one domain and two pairs, so
+ * CO₂ is 2. Its label used to ask for bonding pairs, which made a student who counted
+ * CO₂'s four of them wrong (decisions item 67). The book's word is `tengisvæði`.
+ * Neuter, the same form in the singular and plural.
+ */
+function bondingDomainsPhrase(n: number): string {
+  return `${n} tengisvæði`;
 }
 function lonePairsPhrase(n: number): string {
   return n === 1 ? '1 stakt par' : `${n} stök pör`;
@@ -318,6 +324,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentStep, setCurrentStep] = useState(0);
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
+  // The angle hint comes in two tiers: a nudge toward the electron geometry first, and the
+  // angle itself only if asked for again. One tier used to print the answer (decisions item 71).
+  const [angleHintTier, setAngleHintTier] = useState<1 | 2>(1);
   const [, setTotalHintsUsed] = useState(0);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
@@ -376,6 +385,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const hintRef = useRef<HTMLDivElement>(null);
   const checkRef = useRef<HTMLButtonElement>(null);
   useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+  // The second tier replaces its own button, so focus moves to the hint rather than to <body>.
+  useRevealAfterCommit(showHint && angleHintTier === 2, () => ({
     bottom: checkRef.current,
     tops: [hintRef.current],
     focus: hintRef.current,
@@ -468,10 +483,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const getHint = () => {
     if (step.id === 'count') {
-      return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hversu margar fara í tengi?`;
+      return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hvert tengi við ytra atóm er eitt tengisvæði, hvort sem það er eintengi, tvítengi eða þrítengi. Hve mörg tengisvæði eru, og hve mörg stök pör eru eftir?`;
     } else if (step.id === 'geometry') {
       return `Stök pör taka meira pláss en bindandi pör og hrinda þeim saman. ${molecule.lonePairs === 0 ? 'Engin stök pör — rafeindalögun = sameindarlögun.' : `Hversu mikil áhrif ${molecule.lonePairs === 1 ? 'hefur' : 'hafa'} ${lonePairsPhrase(molecule.lonePairs)}?`}`;
     } else if (step.id === 'angle') {
+      if (angleHintTier === 1) {
+        return `Rafeindalögunin er ${ELECTRON_GEOMETRY_NAME[molecule.electronDomains].toLowerCase()}. Hvaða horn eru milli svæða rafeindaþéttleika í henni? ${molecule.lonePairs === 0 ? 'Hér eru engin stök pör til að breyta þeim.' : 'Hvernig breyta stöku pörin þeim?'}`;
+      }
       return `Þessi lögun hefur venjulega horn nálægt ${molecule.bondAngle}.`;
     }
     return 'Útskýrðu af hverju þessi lögun myndast út frá fjölda svæða rafeindaþéttleika.';
@@ -675,10 +693,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </p>
                   <div className="grid grid-cols-2 gap-4 phone:gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-warm-600 mb-1">
-                        Bindandi pör
+                      <label
+                        htmlFor="count-bonding"
+                        className="block text-sm font-medium text-warm-600 mb-1"
+                      >
+                        Tengisvæði
                       </label>
                       <input
+                        id="count-bonding"
                         type="number"
                         value={bondingPairsAnswer}
                         onChange={(e) => setBondingPairsAnswer(e.target.value)}
@@ -691,10 +713,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-warm-600 mb-1">
+                      <label
+                        htmlFor="count-lone"
+                        className="block text-sm font-medium text-warm-600 mb-1"
+                      >
                         Stök pör
                       </label>
                       <input
+                        id="count-lone"
                         type="number"
                         value={lonePairsAnswer}
                         onChange={(e) => setLonePairsAnswer(e.target.value)}
@@ -709,7 +735,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                   {stepResult === 'incorrect' && (
                     <div className="bg-red-50 p-3 rounded-lg text-red-700">
-                      Rétt svar: {bondingPairsPhrase(molecule.bondingPairs)} og{' '}
+                      Rétt svar: {bondingDomainsPhrase(molecule.bondingPairs)} og{' '}
                       {lonePairsPhrase(molecule.lonePairs)}
                     </div>
                   )}
@@ -733,7 +759,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       <strong>{ELECTRON_GEOMETRY_NAME[molecule.electronDomains]}</strong>
                     </div>
                     <div className="text-sm text-teal-700 mt-1">
-                      {molecule.bondingPairs} bindandi + {lonePairsPhrase(molecule.lonePairs)}
+                      {bondingDomainsPhrase(molecule.bondingPairs)} +{' '}
+                      {lonePairsPhrase(molecule.lonePairs)}
                     </div>
                   </div>
                   <p ref={promptRef} data-item-start className="text-warm-600">
@@ -1243,6 +1270,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           {!stepResult && !showHint && (
             <button
               onClick={() => {
+                setAngleHintTier(1);
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
@@ -1259,6 +1287,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             >
               <span className="font-bold text-yellow-800">Vísbending: </span>
               <span className="text-yellow-900">{getHint()}</span>
+              {step.id === 'angle' && angleHintTier === 1 && (
+                <button
+                  onClick={() => {
+                    setAngleHintTier(2);
+                    setTotalHintsUsed((prev) => prev + 1);
+                  }}
+                  className="block mt-2 text-teal-600 hover:text-teal-800 text-sm underline pointer-coarse:min-h-11"
+                >
+                  Sýna nánari vísbendingu
+                </button>
+              )}
             </div>
           )}
 

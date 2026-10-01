@@ -13,7 +13,7 @@ import {
 
 import { configPuzzles, normalizeConfig } from '../data/electron-configs';
 import { gameTranslations } from '../i18n';
-import { countElectrons, hundFilling, rafeindir } from '../utils/electrons';
+import { countElectrons, firstOutOfOrder, hundFilling, rafeindir } from '../utils/electrons';
 import { ITEM_START } from '../utils/itemStart';
 
 interface Level2Props {
@@ -100,7 +100,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           );
         }
       } else {
-        setDiagnostic(null);
+        const order = firstOutOfOrder(userInput, puzzle.correctConfig);
+        setDiagnostic(
+          order
+            ? `Réttar rafeindir, en skrifaðu í Aufbau-röð: ${order[0]} fyllist á undan ${order[1]}.`
+            : null
+        );
       }
     }
   };

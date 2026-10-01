@@ -180,18 +180,16 @@ function App() {
               reglur til að nefna sameindir á samræmdan hátt. Nafn lífræns efnis segir okkur um
               byggingu þess.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+            {/* The two parts Stig 1 teaches. A third card used to call the bond type the
+                stem and the suffix a functional group, against Stig 1 (decisions item 90). */}
+            <div data-name-parts className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div className="bg-white p-3 rounded-lg text-center">
                 <div className="font-bold text-blue-600">Forskeyti</div>
                 <div className="text-warm-600">Fjöldi kolefna</div>
               </div>
               <div className="bg-white p-3 rounded-lg text-center">
-                <div className="font-bold text-warm-800">Stofn</div>
-                <div className="text-warm-600">Tegund tengja</div>
-              </div>
-              <div className="bg-white p-3 rounded-lg text-center">
                 <div className="font-bold text-green-600">Viðskeyti</div>
-                <div className="text-warm-600">Virknihópur</div>
+                <div className="text-warm-600">Tegund tengja</div>
               </div>
             </div>
           </div>

@@ -23,6 +23,7 @@ import { Level3 } from '../components/Level3';
  *   where `eiga` takes an accusative. `Heildarstig` is one word, as the completion screen writes
  *   it. A named prefix takes the article, `forskeytið 'meth-'`, as the quiz's own
  *   `viðskeytið '-an'` does two questions later.
+ * - **A branch is a `metýlhópur`**, the book's word; the game called it a `grein`.
  * - **No subscript minus** (`C₋₄H₁₀`) and **no English**: Stig 3's learn cards carried
  *   `(Functional Groups)` and `(Alcohol)`/`(Aldehyde)`/`(Ketone)`/`(Carboxylic Acid)`.
  *
@@ -55,6 +56,12 @@ const BANNED: { wrong: RegExp; right: string }[] = [
   { wrong: /Heildar stig/, right: 'Heildarstig' },
   { wrong: /₋/, right: 'a plain subscript count' },
   { wrong: /Functional Groups|\b(Alcohol|Aldehyde|Ketone|Carboxylic Acid)\b/, right: 'Icelandic' },
+  {
+    // The branch is a group, as the book names it (12 metýlhóp-, 29 hliðarhóp-); Siggi,
+    // 2026-10-01. `greinótt` (branched) is the book's too and is not matched.
+    wrong: /metýl-?grein|(^|[^a-záéíóúýþæö])[Gg]rein(in|ina|inni|ar|ir|um)?(?![a-záéíóúýþæö])/,
+    right: 'metýlhópur',
+  },
 ];
 
 describe('organic-nomenclature: Icelandic text', () => {

@@ -4421,7 +4421,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Hefja æfingar'],
         },
         {
-          clickRole: ['button', 'London dreifikraftar'],
+          clickRole: ['button', 'London-dreifikraftar'],
         },
         {
           clickRole: ['button', 'Athuga svar'],
@@ -4443,7 +4443,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         action: { role: 'button', name: 'Athuga svar' },
         // H₂O comes first, and London alone is wrong for it: the longest feedback, with
         // the misconception note.
-        answer: [{ clickRole: ['button', 'London dreifikraftar'] }],
+        answer: [{ clickRole: ['button', 'London-dreifikraftar'] }],
         verdict: { css: '.feedback-panel p' },
         next: { role: 'button', name: 'Næsta sameind' },
         // In landscape the feedback is taller than the screen, so Næsta is one scroll

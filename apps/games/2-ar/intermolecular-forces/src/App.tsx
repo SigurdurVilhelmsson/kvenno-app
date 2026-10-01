@@ -132,7 +132,7 @@ function App() {
             <h2 className="font-bold text-indigo-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-indigo-900 text-sm">
               <li>
-                ✓ <strong>London kraftar:</strong> Til staðar í öllum sameindum, eykst með stærð
+                ✓ <strong>London-kraftar:</strong> Til staðar í öllum sameindum, eykst með stærð
               </li>
               <li>
                 ✓ <strong>Tvískauts-tvískauts:</strong> Milli skautaðra sameinda

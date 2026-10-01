@@ -37,7 +37,7 @@ const solvents: Solvent[] = [
     name: 'Hexan',
     formula: 'C₆H₁₄',
     polarity: 'nonpolar',
-    description: 'Óskautaður leysir með London kraftum',
+    description: 'Óskautaður leysir með London-kraftum',
     color: '#f59e0b',
   },
 ];
@@ -68,7 +68,7 @@ const solutes: Solute[] = [
     polarity: 'nonpolar',
     dissolves: { water: false, hexane: true },
     explanation:
-      'Olía er óskautuð og hefur aðeins London krafta. Leysist í hexani en ekki í vatni — þess vegna blandast olía og vatn ekki.',
+      'Olía er óskautuð og hefur aðeins London-krafta. Leysist í hexani en ekki í vatni — þess vegna blandast olía og vatn ekki.',
   },
   {
     id: 'sugar',
@@ -86,7 +86,7 @@ const solutes: Solute[] = [
     polarity: 'nonpolar',
     dissolves: { water: false, hexane: true },
     explanation:
-      'I₂ er óskautað og hefur aðeins sterka London krafta. Leysist vel í hexani og gefur fjólubláan lit.',
+      'I₂ er óskautað og hefur aðeins sterka London-krafta. Leysist vel í hexani og gefur fjólubláan lit.',
   },
   {
     id: 'ammonia',

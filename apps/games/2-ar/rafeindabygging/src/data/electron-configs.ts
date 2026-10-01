@@ -138,10 +138,15 @@ const SUPERSCRIPT_MAP: Record<string, string> = {
   '⁹': '9',
 };
 
-/** Normalize config string for comparison: strip spaces, convert superscripts to digits. */
+/**
+ * Normalize config string for comparison: strip the separators a student may type between
+ * subshells (spaces, commas, semicolons) and a caret before an exponent, and convert
+ * superscripts to digits. `1s2, 2s2`, `1s^2 2s^2` and `1s² 2s²` are one answer
+ * (decisions item 64).
+ */
 export function normalizeConfig(input: string): string {
   return input
-    .replace(/\s+/g, '')
+    .replace(/[\s,;^]+/g, '')
     .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => SUPERSCRIPT_MAP[c] ?? c)
     .toLowerCase();
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   countElectrons,
+  firstOutOfOrder,
   formatQuantum,
   hundFilling,
   rafeindir,
@@ -28,6 +29,22 @@ describe('countElectrons', () => {
     expect(countElectrons('1s2 2s2 2p4...')).toBeNull();
     expect(countElectrons('vetni')).toBeNull();
     expect(countElectrons('   ')).toBeNull();
+  });
+});
+
+describe('firstOutOfOrder', () => {
+  it('names the first subshell written ahead of its Aufbau place', () => {
+    expect(firstOutOfOrder('1s2 2s2 2p6 3s2 3p6 3d6 4s2', '1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶')).toEqual([
+      '4s',
+      '3d',
+    ]);
+  });
+
+  it('is null for the right order, a different set, or text it cannot read', () => {
+    const key = '1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶';
+    expect(firstOutOfOrder('1s2,2s2,2p6,3s2,3p6,4s2,3d6', key)).toBeNull();
+    expect(firstOutOfOrder('1s2 2s2 2p6 3s2 3p6 3d7 4s1', key)).toBeNull();
+    expect(firstOutOfOrder('[Ar] 3d6 4s2', key)).toBeNull();
   });
 });
 

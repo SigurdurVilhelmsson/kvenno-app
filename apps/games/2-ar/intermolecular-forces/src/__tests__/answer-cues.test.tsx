@@ -38,7 +38,7 @@ describe('Stig 1 shows nothing that decides the answer before it is checked', ()
       fireEvent.click(view.getByRole('button', { name: 'Sýna vísbendingu' }));
       hints.add(view.getByText('Vísbending:').parentElement!.textContent!);
 
-      fireEvent.click(view.getByRole('button', { name: /London dreifikraftar/ }));
+      fireEvent.click(view.getByRole('button', { name: /London-dreifikraftar/ }));
       fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
       // After the check the badges come back, so the corrected answer still says why.
       const shown = BADGES.filter((badge) => view.queryByText(badge));

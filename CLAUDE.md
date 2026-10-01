@@ -1387,7 +1387,8 @@ platform-wide, because `tengsl` also means a relationship.
 `aðalskammtatala` and `aukaskammtatala` (not the glossary's old `höfuðskammtatala` and
 `hliðarskammtatala`), `hraðalögmál` (not `hraðajafna`; neuter, so `í hraðalögmálinu`) and
 `hraðatakmarkandi` (not `hraðaákvarðandi`). `redox-hvarf` is ruled acceptable beside
-`oxunar-afoxunarhvarf`, always hyphenated. Reaction order stays `röð hvörfunar` in `kinetics`
+`oxunar-afoxunarhvarf`, always hyphenated. `London-kraftar` and `London-dreifikraftar` are hyphenated, as the
+book always writes them (decision 74); the open form is a platform row. Reaction order stays `röð hvörfunar` in `kinetics`
 until its running score goes (decision 1), since `stig efnahvarfs` would put three meanings of
 `stig` on one screen.
 
