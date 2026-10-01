@@ -381,7 +381,7 @@ export function LewisDrawingCanvas({
       )}
       {remaining < 0 && (
         <div className="text-xs text-red-700 bg-red-50 rounded px-2 py-1 mt-2 phone:mt-1 text-center">
-          Of margar rafeindir notaðar! Fjarlægðu tengsl eða stök pör.
+          Of margar rafeindir notaðar! Fjarlægðu tengi eða stök pör.
         </div>
       )}
     </>

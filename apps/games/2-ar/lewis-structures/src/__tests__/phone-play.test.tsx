@@ -368,7 +368,7 @@ describe('opening a level and coming back', () => {
     expect(scrollTo).not.toHaveBeenCalled();
     fireEvent.click(within(container).getByRole('button', { name: /Stig 3/ }));
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
-    expect(focused()?.textContent).toBe('Formhleðsla - Formúlan');
+    expect(focused()?.textContent).toBe('Formleg hleðsla — formúlan');
   });
 
   it('back on the menu, focuses the first level not yet done', () => {

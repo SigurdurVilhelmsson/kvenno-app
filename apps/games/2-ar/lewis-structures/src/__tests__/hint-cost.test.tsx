@@ -52,11 +52,11 @@ const LEVEL3 = [
   'FC = Gildisraf. - (óbundnar + ½ bundnar)',
   '0',
   '+1',
-  ':C≡O: með þreföldum tengslum',
+  ':C≡O: með þrítengi',
   '2 formúlur',
   '3 formúlur',
   'Sameindin er vokblendingur allra formúlanna',
-  'Lágmarka formhleðslur (helst 0)',
+  'Lágmarka formlegar hleðslur (helst 0)',
 ];
 
 function playLevel3(openHint: boolean) {

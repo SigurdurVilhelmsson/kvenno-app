@@ -761,13 +761,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <div className="text-warm-400 phone:inline">{selectedGeometry.exampleName}</div>
               {viewMode === '3d' && (
                 <div className="text-xs text-warm-500 mt-2">
-                  {/* A wheel does not exist on a phone: zoom there is a pinch. */}
-                  <span className="pointer-coarse:hidden">
-                    Dragðu til að snúa, skrollaðu til að stækka
-                  </span>
-                  <span className="hidden pointer-coarse:inline">
-                    Dragðu til að snúa, notaðu tvo fingur til að stækka
-                  </span>
+                  Dragðu til að snúa; klíptu eða skrunaðu til að stækka
                 </div>
               )}
             </div>

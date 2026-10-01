@@ -95,14 +95,14 @@ export function LewisGuidedMode({
     {
       id: 2,
       title: 'Velja miðatóm',
-      instruction: `Miðatómið er ${centralAtom?.symbol}. Það hefur ${centralAtom?.valenceElectrons} gildisrafeindir og getur myndað flest tengsl.`,
+      instruction: `Miðatómið er ${centralAtom?.symbol}. Það hefur ${centralAtom?.valenceElectrons} gildisrafeindir og getur myndað flest tengi.`,
       action: 'place-central',
       completed: false,
     },
     {
       id: 3,
-      title: 'Teikna einföld tengsl',
-      instruction: `Teiknaðu ${expectedBonds} einföld tengsl frá ${centralAtom?.symbol} til ytri atómanna. Hvert tengi notar 2 rafeindir.`,
+      title: 'Teikna eintengi',
+      instruction: `Teiknaðu ${expectedBonds} eintengi frá ${centralAtom?.symbol} til ytri atómanna. Hvert tengi notar 2 rafeindir.`,
       action: 'draw-bonds',
       targetValue: expectedBonds,
       completed: false,
@@ -579,7 +579,7 @@ export function LewisGuidedMode({
                 <div className="flex justify-between items-center gap-3">
                   <span className="font-bold text-blue-800">{centralAtom?.symbol}</span>
                   <span className="text-sm text-right">
-                    {bondsDrawn.length * 2} (tengsl) +{' '}
+                    {bondsDrawn.length * 2} (tengi) +{' '}
                     {getAtomLonePairs(centralAtom?.symbol || '') * 2} (pör) ={' '}
                     <span
                       className={`font-bold ${
@@ -709,9 +709,9 @@ export function LewisGuidedMode({
           {step.action === 'count' &&
             'Leggðu saman gildisrafeindir allra atóma. Hópnúmer segir fjölda gildisrafeinda.'}
           {step.action === 'place-central' &&
-            'Miðatómið er venjulega það sem getur myndað flest tengsl (ekki H).'}
+            'Miðatómið er venjulega það sem getur myndað flest tengi (ekki H).'}
           {step.action === 'draw-bonds' &&
-            'Byrjaðu alltaf með einföld tengsl. Tvöföld/þreföld koma seinna ef þarf.'}
+            'Byrjaðu alltaf á eintengjum. Tví- og þrítengi koma seinna ef þarf.'}
           {step.action === 'distribute' && 'Settu stök pör á ytri atóm fyrst, síðan miðatómið.'}
           {step.action === 'check-octet' && 'H vill 2 rafeindir, flest önnur vilja 8 rafeindir.'}
           {step.action === 'complete' && 'Til hamingju! Reyndu næstu sameind.'}

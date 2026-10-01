@@ -65,8 +65,8 @@ const challenges: Challenge[] = [
     },
     hints: [
       'H getur aðeins myndað 1 tengi, þannig að O verður að vera miðatómið.',
-      'Súrefni myndar 2 einföld tengsl við vetni.',
-      'O hefur 2 stök rafeindapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
+      'Súrefni myndar 2 eintengi við vetni.',
+      'O hefur 2 stök rafeindapör (8 - 4 í tengjum = 4 óbundnar = 2 pör).',
     ],
     finalExplanation:
       'H₂O: O í miðju með 2 H tengd og 2 stök rafeindapör. Þetta gefur 4 rafeindapör í kringum O.',
@@ -86,8 +86,8 @@ const challenges: Challenge[] = [
       centralLonePairs: 1,
     },
     hints: [
-      'N hefur 5 gildisrafeindir og getur myndað 3 tengsl.',
-      'Þrjú einföld N-H tengsl nota 6 rafeindir.',
+      'N hefur 5 gildisrafeindir og getur myndað 3 tengi.',
+      'Þrjú N-H eintengi nota 6 rafeindir.',
       'N hefur 1 stakt par (8 - 6 = 2 óbundnar = 1 par).',
     ],
     finalExplanation:
@@ -107,12 +107,12 @@ const challenges: Challenge[] = [
       centralLonePairs: 0,
     },
     hints: [
-      'C þarf 4 tengsl og hvert O þarf 2 tengsl (fyrir áttu).',
-      'Prófaðu tvöföld tengsl milli C og beggja O.',
+      'C þarf 4 tengi og hvert O þarf 2 tengi til að fá áttund.',
+      'Prófaðu tvítengi milli C og hvors O.',
       'Hvert O hefur 2 stök rafeindapör. C hefur engin.',
     ],
     finalExplanation:
-      'CO₂: O=C=O með tvöföldum tengslum. Hvert O hefur 2 stök pör. Þetta er línuleg sameind.',
+      'CO₂: O=C=O með tveimur tvítengjum. Hvert O hefur 2 stök pör. Þetta er línuleg sameind.',
   },
   {
     id: 4,
@@ -130,8 +130,8 @@ const challenges: Challenge[] = [
       centralLonePairs: 0,
     },
     hints: [
-      'C myndar 4 tengsl og H myndar 1.',
-      '4 einföld C-H tengsl nota allar 8 rafeindirnar.',
+      'C myndar 4 tengi og H myndar 1.',
+      'Fjögur C-H eintengi nota allar 8 rafeindirnar.',
       'Engin stök pör á neinu atómi.',
     ],
     finalExplanation:
@@ -150,11 +150,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'Sameindir með oddatölu rafeinda eru stakeindir.',
-      'N=O tvöfalt tengi. O hefur 2 stök pör.',
+      'N=O tvítengi. O hefur 2 stök pör.',
       'N hefur 1 stakt par + 1 óparaða rafeind (alls 11 rafeindir).',
     ],
     finalExplanation:
-      'NO: Tvöföld tengsl N=O með óparaðri rafeind á N. Þetta er stakeind og hún er mjög hvarfgjörn.',
+      'NO: Tvítengi N=O með óparaðri rafeind á N. Þetta er stakeind og hún er mjög hvarfgjörn.',
   },
   {
     id: 6,
@@ -168,11 +168,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'Cl þarf aðeins 1 rafeind til að ná áttureglunni.',
-      'Eitt einfalt H-Cl tengi.',
+      'Eitt H-Cl eintengi.',
       'Cl hefur 3 stök pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
     ],
     finalExplanation:
-      'HCl: Einfalt H-Cl tengi. Cl hefur 3 stök rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
+      'HCl: Eintengi milli H og Cl. Cl hefur 3 stök rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
   },
   // === OCTET RULE EXCEPTIONS ===
   {
@@ -192,12 +192,12 @@ const challenges: Challenge[] = [
       centralElectrons: 6,
     },
     hints: [
-      'B er í hópi 13 og myndar venjulega 3 tengsl.',
-      '3 einföld B-F tengsl. Hvert F hefur 3 stök pör.',
+      'B er í hópi 13 og myndar venjulega 3 tengi.',
+      'Þrjú B-F eintengi. Hvert F hefur 3 stök pör.',
       'B hefur aðeins 6 rafeindir — undantekning frá áttureglunni!',
     ],
     finalExplanation:
-      'BF₃ er dæmi um rafeindaskort: Bór hefur aðeins 6 rafeindir í kringum sig, ekki 8. Þetta er stöðugt vegna þess að bór er lítið atóm.',
+      'BF₃ er dæmi um rafeindaskort: bór hefur aðeins 6 rafeindir í kringum sig, ekki 8. Þess vegna er BF₃ mjög hvarfgjarnt og tekur auðveldlega við stöku rafeindapari, til dæmis frá NH₃.',
   },
   {
     id: 8,
@@ -219,11 +219,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'P er á 3. lotu og getur haft fleiri en 8 rafeindir.',
-      '5 einföld P-Cl tengsl. Hvert Cl hefur 3 stök pör.',
-      'P hefur 10 rafeindir — stækkuð átta.',
+      'Fimm P-Cl eintengi. Hvert Cl hefur 3 stök pör.',
+      'P hefur 10 rafeindir — fleiri en átta.',
     ],
     finalExplanation:
-      'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. P er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
+      'PCl₅ er ofgild sameind: fosfór hefur 10 rafeindir í kringum sig. P er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
   },
   {
     id: 9,
@@ -246,11 +246,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'S er á 3. lotu og getur haft meira en 8 rafeindir.',
-      '6 einföld S-F tengsl. Hvert F hefur 3 stök pör.',
-      'S hefur 12 rafeindir — tvöfalt meira en áttureglan!',
+      'Sex S-F eintengi. Hvert F hefur 3 stök pör.',
+      'S hefur 12 rafeindir, fjórum fleiri en áttureglan segir til um.',
     ],
     finalExplanation:
-      'SF₆ er dæmi um stækkaða áttu: S hefur 12 rafeindir í kringum sig (6 tengsl). S er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
+      'SF₆ er ofgild sameind: S hefur 12 rafeindir í kringum sig (6 tengi). S er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
   },
 ];
 
@@ -417,13 +417,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               backgroundColor="#f9fafb"
             />
             <div className="text-xs text-warm-500 text-center mt-2">
-              {/* A wheel does not exist on a phone: zoom there is a pinch. */}
-              <span className="pointer-coarse:hidden">
-                Dragðu til að snúa, skrollaðu til að stækka
-              </span>
-              <span className="hidden pointer-coarse:inline">
-                Dragðu til að snúa, notaðu tvo fingur til að stækka
-              </span>
+              Dragðu til að snúa; klíptu eða skrunaðu til að stækka
             </div>
           </div>
         )}
@@ -469,7 +463,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 )}
                 {challenge.correctStructure.octetException === 'expanded-octet' && (
                   <span>
-                    Stækkuð átta: {challenge.correctStructure.centralAtom} hefur{' '}
+                    Ofgild sameind: {challenge.correctStructure.centralAtom} hefur{' '}
                     {challenge.correctStructure.centralElectrons} rafeindir
                   </span>
                 )}
@@ -678,10 +672,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3">
           <h3 className="font-bold text-warm-700 mb-2">Skref til að teikna Lewis-formúlu:</h3>
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
-            <li>Finndu miðatóm (oftast það sem hefur flest tengsl, aldrei H)</li>
-            <li>Teiknaðu tengsl til allra ytri atóma (smelltu á strikin)</li>
+            <li>Finndu miðatóm (oftast það sem myndar flest tengi, aldrei H)</li>
+            <li>Teiknaðu tengi til allra ytri atóma (smelltu á strikin)</li>
             <li>Dreifðu eftirstandandi rafeindum sem stök pör</li>
-            <li>Breyttu í tvöföld/þreföld tengsl ef þarf til að uppfylla átturegluna</li>
+            <li>Breyttu í tví- eða þrítengi ef þarf til að uppfylla átturegluna</li>
           </ol>
         </div>
 
@@ -706,7 +700,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="text-xs text-warm-500 mt-1">Dæmi: BCl₃, AlCl₃</div>
             </div>
             <div className="p-3 rounded-lg bg-warm-50">
-              <div className="font-bold text-warm-800">Stækkuð átta</div>
+              <div className="font-bold text-warm-800">Ofgildar sameindir</div>
               <div className="text-warm-600">
                 Atóm á 3. lotu og neðar eru nógu stór til að rúma fleiri en fjögur rafeindapör
               </div>

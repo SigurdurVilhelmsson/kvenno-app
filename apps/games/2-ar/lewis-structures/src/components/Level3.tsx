@@ -59,18 +59,18 @@ interface Challenge {
 const challenges: Challenge[] = [
   {
     id: 1,
-    title: 'Formhleðsla - Formúlan',
+    title: 'Formleg hleðsla — formúlan',
     type: 'calculate_fc',
-    molecule: 'Formhleðsla',
-    description: 'Formhleðsla segir til um hvernig rafeindum er dreift á atóm í Lewis-formúlu.',
-    question: 'Hvaða formúla er notuð til að reikna formhleðslu?',
+    molecule: 'Formleg hleðsla',
+    description: 'Formleg hleðsla segir til um hvernig rafeindum er dreift á atóm í Lewis-formúlu.',
+    question: 'Hvaða formúla er notuð til að reikna formlega hleðslu?',
     correctAnswer: 'fc_formula',
     options: [
       {
         id: 'fc_formula',
         text: 'FC = Gildisraf. - (óbundnar + ½ bundnar)',
         correct: true,
-        explanation: 'Rétt! Þetta er formúlan fyrir formhleðslu.',
+        explanation: 'Rétt! Þetta er formúlan fyrir formlega hleðslu.',
       },
       {
         id: 'wrong1',
@@ -91,11 +91,11 @@ const challenges: Challenge[] = [
   },
   {
     id: 2,
-    title: 'Reikna formhleðslu: Súrefni í vatni',
+    title: 'Reikna formlega hleðslu: Súrefni í vatni',
     type: 'calculate_fc',
     molecule: 'H₂O',
     description:
-      'Í vatni hefur súrefni 2 stök pör (4 óbundnar rafeindir) og 2 tengsl (4 bundnar rafeindir).',
+      'Í vatni hefur súrefni 2 stök pör (4 óbundnar rafeindir) og 2 tengi (4 bundnar rafeindir).',
     drawing: {
       central: { symbol: 'O', lonePairs: 2, formalCharge: 0 },
       outer: [
@@ -112,7 +112,7 @@ const challenges: Challenge[] = [
         formalCharge: 0,
       },
     ],
-    question: 'Hver er formhleðsla súrefnisins í H₂O?',
+    question: 'Hver er formleg hleðsla súrefnisins í H₂O?',
     correctAnswer: 0,
     options: [
       {
@@ -125,25 +125,26 @@ const challenges: Challenge[] = [
         id: '0',
         text: '0',
         correct: true,
-        explanation: 'Rétt! FC = 6 - (4 + 2) = 0. Súrefnið hefur enga formhleðslu.',
+        explanation: 'Rétt! FC = 6 - (4 + 2) = 0. Súrefnið hefur enga formlega hleðslu.',
       },
       {
         id: '+1',
         text: '+1',
         correct: false,
-        explanation: 'Jákvæð formhleðsla myndi þýða of fáar rafeindir.',
+        explanation: 'Jákvæð formleg hleðsla myndi þýða of fáar rafeindir.',
       },
     ],
     hint: 'FC = 6 - (4 óbundnar + ½ × 4 bundnar)',
-    explanation: 'O í H₂O: FC = 6 - (4 + 2) = 0. Súrefnið hefur enga formhleðslu, sem er æskilegt.',
+    explanation:
+      'O í H₂O: FC = 6 - (4 + 2) = 0. Súrefnið hefur enga formlega hleðslu, sem er æskilegt.',
   },
   {
     id: 3,
-    title: 'Reikna formhleðslu: Nitur í ammóníum',
+    title: 'Reikna formlega hleðslu: Nitur í ammóníum',
     type: 'calculate_fc',
     molecule: 'NH₄⁺',
     description:
-      'Í ammóníumjóninni er nitur tengt við 4 vetni með einföldum tengslum og engin stök pör.',
+      'Í ammóníumjóninni er nitur tengt 4 vetnisatómum með eintengjum og hefur engin stök pör.',
     drawing: {
       central: { symbol: 'N', lonePairs: 0, formalCharge: 1 },
       outer: [
@@ -163,7 +164,7 @@ const challenges: Challenge[] = [
         formalCharge: 1,
       },
     ],
-    question: 'Hver er formhleðsla nitursins í NH₄⁺?',
+    question: 'Hver er formleg hleðsla nitursins í NH₄⁺?',
     correctAnswer: 1,
     options: [
       {
@@ -182,10 +183,10 @@ const challenges: Challenge[] = [
         id: '-1',
         text: '-1',
         correct: false,
-        explanation: 'Neikvæð formhleðsla myndi þýða fleiri rafeindir en gildisrafeindir.',
+        explanation: 'Neikvæð formleg hleðsla myndi þýða fleiri rafeindir en gildisrafeindir.',
       },
     ],
-    hint: 'Nitur hefur 5 gildisrafeindir en deilir 8 í tengslum',
+    hint: 'Nitur hefur 5 gildisrafeindir en deilir 8 í tengjum',
     explanation: 'N í NH₄⁺: FC = 5 - (0 + 4) = +1. Þetta samræmist við +1 hleðslu jónarinnar.',
   },
   {
@@ -194,11 +195,11 @@ const challenges: Challenge[] = [
     type: 'best_structure',
     molecule: 'CO',
     description:
-      'Kolsýringur getur teiknast á mismunandi vegu. Formhleðsla hjálpar okkur að velja bestu formúluna.',
+      'Kolsýringur getur teiknast á mismunandi vegu. Formleg hleðsla hjálpar okkur að velja bestu formúluna.',
     structures: [
       {
         id: 'triple',
-        description: 'C≡O (þreföld tengsl)',
+        description: 'C≡O (þrítengi)',
         drawing: {
           central: { symbol: 'C', lonePairs: 1, formalCharge: -1 },
           outer: [{ symbol: 'O', bond: 'triple', lonePairs: 1, formalCharge: 1 }],
@@ -209,11 +210,11 @@ const challenges: Challenge[] = [
         ],
         isPreferred: true,
         explanation:
-          'Þreföld tengsl uppfylla áttu fyrir bæði atóm, þó formhleðslur (C⁻ og O⁺) séu ekki núll — áttureglan vegur þyngra.',
+          'Með þrítengi fá bæði atómin áttund, þó formlegu hleðslurnar (C⁻ og O⁺) séu ekki núll — áttureglan vegur þyngra.',
       },
       {
         id: 'double',
-        description: 'C=O (tvöföld tengsl)',
+        description: 'C=O (tvítengi)',
         drawing: {
           central: { symbol: 'C', lonePairs: 1 },
           outer: [{ symbol: 'O', bond: 'double', lonePairs: 2 }],
@@ -223,7 +224,7 @@ const challenges: Challenge[] = [
           { atom: 'O', charge: 0 },
         ],
         isPreferred: false,
-        explanation: 'Kolefni hefur aðeins 6 rafeindir - uppfyllir ekki áttu.',
+        explanation: 'Kolefni hefur aðeins 6 rafeindir og nær ekki áttund.',
       },
     ],
     question: 'Hver er æskilegasta formúlan fyrir CO?',
@@ -231,24 +232,24 @@ const challenges: Challenge[] = [
     options: [
       {
         id: 'triple',
-        text: ':C≡O: með þreföldum tengslum',
+        text: ':C≡O: með þrítengi',
         correct: true,
-        explanation: 'Rétt! Bæði atóm hafa 8 rafeindir, þó formhleðslur séu ekki núll.',
+        explanation: 'Rétt! Bæði atóm hafa 8 rafeindir, þó formlegar hleðslur séu ekki núll.',
       },
       {
         id: 'double',
-        text: 'C=O með tvöföldum tengslum',
+        text: 'C=O með tvítengi',
         correct: false,
-        explanation: 'Kolefni fengi aðeins 6 rafeindir - uppfyllir ekki áttu.',
+        explanation: 'Kolefni fengi aðeins 6 rafeindir og næði ekki áttund.',
       },
     ],
-    hint: 'Áttureglan er mikilvægari en lágmarks formhleðsla',
+    hint: 'Áttureglan vegur þyngra en að hafa formlegar hleðslur sem lægstar',
     explanation:
-      'Í CO eru þreföld tengsl æskilegust þó þau gefi formhleðslur C⁻ og O⁺, vegna þess að þá uppfylla bæði atóm átturegluna.',
+      'Í CO er þrítengi æskilegast þó það gefi formlegu hleðslurnar C⁻ og O⁺, vegna þess að þá fá bæði atómin áttund.',
   },
   {
     id: 5,
-    title: 'Samsvörunarformúlur I',
+    title: 'Vokmyndir I',
     type: 'resonance',
     molecule: 'NO₂⁻',
     description: 'Í nítrítjóninni er N miðatóm, tengt tveimur O-atómum.',
@@ -280,20 +281,20 @@ const challenges: Challenge[] = [
         isValid: true,
       },
     ],
-    question: 'Hversu margar samsvörunarformúlur hefur NO₂⁻?',
+    question: 'Hversu margar vokmyndir hefur NO₂⁻?',
     correctAnswer: '2',
     options: [
       {
         id: '1',
         text: '1 formúla',
         correct: false,
-        explanation: 'Tvöfalda tengslin geta verið á sitt hvoru O-inu.',
+        explanation: 'Tvítengið getur verið við hvort O-atómið sem er.',
       },
       {
         id: '2',
         text: '2 formúlur',
         correct: true,
-        explanation: 'Rétt! O=N-O⁻ og ⁻O-N=O eru jafngildar samsvörunarformúlur.',
+        explanation: 'Rétt! O=N-O⁻ og ⁻O-N=O eru jafngildar vokmyndir.',
       },
       {
         id: '3',
@@ -302,16 +303,16 @@ const challenges: Challenge[] = [
         explanation: 'Aðeins tvær eru mögulegar með þessari rafeindasamsetningu.',
       },
     ],
-    hint: 'Tvöfalda tengslin geta verið á sitt hvoru O-inu',
+    hint: 'Tvítengið getur verið við hvort O-atómið sem er',
     explanation:
-      'NO₂⁻ hefur tvær samsvörunarformúlur þar sem tvöfalda tengslin "hoppa" á milli súrefnisatómanna. Raunverulega sameindin er meðaltal beggja.',
+      'NO₂⁻ hefur tvær vokmyndir, með tvítengið við sitt hvort súrefnisatómið. Raunverulega jónin er vokblendingur beggja.',
   },
   {
     id: 6,
-    title: 'Samsvörunarformúlur II',
+    title: 'Vokmyndir II',
     type: 'resonance',
     molecule: 'CO₃²⁻',
-    description: 'Karbónatjónin er klassískt dæmi um samsvörun.',
+    description: 'Karbónatjónin er klassískt dæmi um vok.',
     resonanceForms: [
       {
         id: 'a',
@@ -356,7 +357,7 @@ const challenges: Challenge[] = [
         isValid: true,
       },
     ],
-    question: 'Hversu margar samsvörunarformúlur hefur CO₃²⁻?',
+    question: 'Hversu margar vokmyndir hefur CO₃²⁻?',
     correctAnswer: '3',
     options: [
       {
@@ -380,20 +381,20 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hvert súrefni getur haft tvöfalda tengið',
     explanation:
-      'CO₃²⁻ hefur þrjár samsvörunarformúlur. Raunveruleg tengilengd er eins fyrir öll þrjú C-O tengslin (á milli einfalds og tvöfalds).',
+      'CO₃²⁻ hefur þrjár vokmyndir. Öll þrjú C-O tengin eru jafnlöng, á milli lengdar eintengis og tvítengis.',
   },
   {
     id: 7,
     title: 'Raunverulega sameindin',
     type: 'resonance',
     molecule: 'O₃',
-    description: 'Ósón hefur tvær samsvörunarformúlur.',
+    description: 'Ósón hefur tvær vokmyndir.',
     question: 'Hvaða fullyrðing er rétt um ósón (O₃)?',
     correctAnswer: 'hybrid',
     options: [
       {
         id: 'flips',
-        text: 'Sameindin "flippar" milli formúla',
+        text: 'Sameindin skiptir sífellt á milli formúlanna',
         correct: false,
         explanation: 'Nei, sameindin er alltaf vokblendingur - hún breytist ekki.',
       },
@@ -401,7 +402,7 @@ const challenges: Challenge[] = [
         id: 'hybrid',
         text: 'Sameindin er vokblendingur allra formúlanna',
         correct: true,
-        explanation: 'Rétt! Raunverulega sameindin er stöðugt meðaltal allra samsvörunarformúla.',
+        explanation: 'Rétt! Raunverulega sameindin er alltaf meðaltal allra vokmyndanna.',
       },
       {
         id: 'one',
@@ -410,13 +411,13 @@ const challenges: Challenge[] = [
         explanation: 'Báðar formúlur eru jafngildar og sameindin er vokblendingur þeirra.',
       },
     ],
-    hint: 'Samsvörunarformúlur sýna takmarkanir Lewis-formúla',
+    hint: 'Vokmyndir sýna takmarkanir Lewis-formúla',
     explanation:
-      'Samsvörunarformúlur eru ekki mismunandi form sameindarinnar. Raunverulega sameindin er einn vokblendingur sem er meðaltal allra samsvörunarformúla.',
+      'Vokmyndir eru ekki mismunandi form sameindarinnar. Raunverulega sameindin er einn vokblendingur, meðaltal allra vokmyndanna.',
   },
   {
     id: 8,
-    title: 'Formhleðsla og stöðugleiki',
+    title: 'Formleg hleðsla og stöðugleiki',
     type: 'best_structure',
     molecule: 'SCN⁻',
     description: 'Þíósýanatjónin getur teiknast á nokkra vegu.',
@@ -425,15 +426,15 @@ const challenges: Challenge[] = [
     options: [
       {
         id: 'maximize',
-        text: 'Hámarka formhleðslur',
+        text: 'Hámarka formlegar hleðslur',
         correct: false,
-        explanation: 'Háar formhleðslur gera sameindir óstöðugri.',
+        explanation: 'Háar formlegar hleðslur gera sameindir óstöðugri.',
       },
       {
         id: 'minimize',
-        text: 'Lágmarka formhleðslur (helst 0)',
+        text: 'Lágmarka formlegar hleðslur (helst 0)',
         correct: true,
-        explanation: 'Rétt! Lægri formhleðslur = stöðugri sameind.',
+        explanation: 'Rétt! Lægri formlegar hleðslur = stöðugri sameind.',
       },
       {
         id: 'negative',
@@ -442,9 +443,9 @@ const challenges: Challenge[] = [
         explanation: 'Neikvæð hleðsla ætti að vera á rafneikvæðasta atóminu.',
       },
     ],
-    hint: 'Stöðugri formúlur hafa lægri formhleðslur',
+    hint: 'Stöðugri formúlur hafa lægri formlegar hleðslur',
     explanation:
-      'Bestu Lewis-formúlur hafa: (1) Lágmarks formhleðslur, (2) Neikvæð hleðsla á rafneikvæðasta atómi, (3) Uppfyllt átta.',
+      'Besta Lewis-formúlan hefur: (1) áttund á hverju atómi þar sem það er hægt, (2) sem lægstar formlegar hleðslur, (3) neikvæða hleðslu á rafneikvæðasta atóminu.',
   },
 ];
 
@@ -609,7 +610,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="w-52 phone:w-56">
               <LewisStructure
                 drawing={form.drawing}
-                label={`Samsvörunarformúla ${idx + 1} af ${forms.length} fyrir ${challenge.molecule}`}
+                label={`Vokmynd ${idx + 1} af ${forms.length} fyrir ${challenge.molecule}`}
                 maxWidth={208}
               />
             </div>
@@ -729,7 +730,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 and drawing them all above it answered it. */}
             {showResult && challenge.resonanceForms && (
               <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
-                <h3 className="font-bold text-warm-700 mb-3 phone:mb-1">Samsvörunarformúlur:</h3>
+                <h3 className="font-bold text-warm-700 mb-3 phone:mb-1">Vokmyndir:</h3>
                 {renderResonanceStructures(challenge.resonanceForms)}
               </div>
             )}
@@ -860,11 +861,13 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             back while question 1 is open, since question 1 asks for this formula. */}
         {!(asksForFormula && !showResult) && (
           <PhoneDisclosure
-            summary="Formhleðsluformúlan"
+            summary="Formúla formlegrar hleðslu"
             className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
             buttonClassName="text-warm-700 border-transparent"
           >
-            <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">Formhleðsluformúlan</h3>
+            <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">
+              Formúla formlegrar hleðslu
+            </h3>
             <div className="bg-purple-50 p-3 rounded-lg text-center font-mono mb-3">
               <strong>FC = V - (L + ½B)</strong>
             </div>
@@ -876,7 +879,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <strong>L</strong> = Óbundnar rafeindir (í stökum pörum)
               </li>
               <li>
-                <strong>B</strong> = Bundnar rafeindir (í tengslum)
+                <strong>B</strong> = Bundnar rafeindir (í tengjum)
               </li>
             </ul>
           </PhoneDisclosure>

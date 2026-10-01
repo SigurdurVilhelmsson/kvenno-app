@@ -139,7 +139,7 @@ export function diagnoseDrawing(
   // question, which Stig 3 teaches; here it is named, not solved.
   if (!isCorrect && messages.length === 0) {
     messages.push(
-      `Allar rafeindirnar eru notaðar og hvert atóm hefur rétta tölu í kringum sig — en ${molecule} á sér betri formúlu. Prófaðu að dreifa tengjunum öðruvísi: best er þegar formhleðsla hvers atóms er sem næst núlli.`
+      `Allar rafeindirnar eru notaðar og hvert atóm hefur rétta tölu í kringum sig — en ${molecule} á sér betri formúlu. Prófaðu að dreifa tengjunum öðruvísi: best er þegar formleg hleðsla hvers atóms er sem næst núlli.`
     );
   }
 

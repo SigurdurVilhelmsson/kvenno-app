@@ -88,7 +88,7 @@ const CORRECT = [
   'FC = Gildisraf. - (óbundnar + ½ bundnar)',
   '0',
   '+1',
-  ':C≡O: með þreföldum tengslum',
+  ':C≡O: með þrítengi',
   '2 formúlur',
   '3 formúlur',
 ];

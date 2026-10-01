@@ -28,7 +28,7 @@ const RELATED_CONCEPTS: Record<string, string[]> = {
   count_valence: ['Lotukerfið', 'Hópar', 'Rafeindahvolf'],
   total_electrons: ['Sameindaformúlur', 'Atómafjöldi', 'Summa rafeinda'],
   octet_rule: ['Áttureglan', 'Stöðugleiki', 'Eðalgösin'],
-  electron_need: ['Efnatengi', 'Rafeindasameignir', 'Jónatengi'],
+  electron_need: ['Efnatengi', 'Samgild tengi', 'Jónatengi'],
 };
 
 interface Level1Props {

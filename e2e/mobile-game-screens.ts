@@ -3854,7 +3854,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — spurning, vísbending og rangt svar',
       steps: [
         {
-          click: 'Stig 3: Formhleðsla',
+          click: 'Stig 3: Formleg hleðsla',
         },
         {
           click: 'Sýna vísbendingu',
@@ -3868,10 +3868,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 3 — formhleðsla atóms, niðurstaða',
+      name: 'Stig 3 — formleg hleðsla atóms, niðurstaða',
       steps: [
         {
-          click: 'Stig 3: Formhleðsla',
+          click: 'Stig 3: Formleg hleðsla',
         },
         {
           click: 'FC = Gildisraf. - (óbundnar + ½ bundnar)',
@@ -3899,7 +3899,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — samanburður Lewis-formúla (CO)',
       steps: [
         {
-          click: 'Stig 3: Formhleðsla',
+          click: 'Stig 3: Formleg hleðsla',
         },
         {
           click: 'FC = Gildisraf. - (óbundnar + ½ bundnar)',
@@ -4027,7 +4027,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — leikur',
       steps: [
         {
-          click: 'Stig 3: Formhleðsla',
+          click: 'Stig 3: Formleg hleðsla',
         },
       ],
       loop: {

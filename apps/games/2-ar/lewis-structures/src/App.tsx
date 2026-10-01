@@ -137,8 +137,8 @@ function App() {
 
             <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
-                <div className="font-bold text-purple-800">Stig 3: Formhleðsla</div>
-                <div className="text-sm text-purple-600">Samsvörunarformúlur</div>
+                <div className="font-bold text-purple-800">Stig 3: Formleg hleðsla</div>
+                <div className="text-sm text-purple-600">Vokmyndir</div>
               </div>
               <div className="font-bold text-purple-700 whitespace-nowrap">{resultLabel(3)}</div>
             </div>
@@ -148,7 +148,7 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
-                ✓ <strong>Gildisrafeindir:</strong> Rafeindir í ysta hvolfi ákvarða efnatengsl
+                ✓ <strong>Gildisrafeindir:</strong> Rafeindir í ysta hvolfi mynda efnatengi
               </li>
               <li>
                 ✓ <strong>Áttureglan:</strong> Atóm vilja hafa 8 rafeindir (H vill 2)
@@ -157,10 +157,11 @@ function App() {
                 ✓ <strong>Lewis-formúlur:</strong> Sýna hvernig rafeindir dreifast í sameindum
               </li>
               <li>
-                ✓ <strong>Formhleðsla:</strong> FC = Gildisraf. - (óbundnar + ½ bundnar)
+                ✓ <strong>Formleg hleðsla:</strong> FC = Gildisraf. - (óbundnar + ½ bundnar)
               </li>
               <li>
-                ✓ <strong>Samsvörun:</strong> Margar jafngildar formúlur fyrir sömu sameind
+                ✓ <strong>Vokmyndir:</strong> Margar jafngildar formúlur fyrir sömu sameind, sem er
+                vokblendingur þeirra
               </li>
             </ul>
           </div>
@@ -199,8 +200,8 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað eru Lewis-formúlur?</h2>
             <p className="text-teal-900 text-sm mb-4">
               <strong>Lewis-formúlur</strong> (eða rafeindapunktaformúlur) sýna hvernig
-              gildisrafeindir dreifast á milli atóma í sameind. Þær hjálpa okkur að skilja
-              efnatengsl og lögun sameinda.
+              gildisrafeindir dreifast á milli atóma í sameind. Þær hjálpa okkur að skilja efnatengi
+              og lögun sameinda.
             </p>
             <div className="bg-white p-3 phone:p-2 rounded-lg border border-teal-200">
               <p className="text-sm text-teal-800 font-mono text-center">
@@ -234,7 +235,7 @@ function App() {
                     Telja gildisrafeindir og skilja átturegluna
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                    Hvaða rafeindir taka þátt í efnatengslum? Lærðu að telja þær.
+                    Hvaða rafeindir taka þátt í efnatengjum? Lærðu að telja þær.
                   </div>
                 </div>
               </div>
@@ -263,7 +264,7 @@ function App() {
                     Byggja Lewis-formúlur skref fyrir skref
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                    Settu miðatóm, teiknaðu tengsl og stök rafeindapör.
+                    Settu miðatóm, teiknaðu tengi og stök rafeindapör.
                   </div>
                 </div>
               </div>
@@ -280,7 +281,7 @@ function App() {
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-lg min-[360px]:text-xl font-bold text-purple-800">
-                      Stig 3: Formhleðsla og samsvörun
+                      Stig 3: Formleg hleðsla og vokmyndir
                     </span>
                     {progress.level3Completed && (
                       <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
@@ -289,7 +290,7 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-purple-600 mt-1">
-                    Reikna formhleðslu og finna samsvörunarformúlur
+                    Reikna formlega hleðslu og finna vokmyndir
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                     Hvernig finnur þú bestu Lewis-formúluna?

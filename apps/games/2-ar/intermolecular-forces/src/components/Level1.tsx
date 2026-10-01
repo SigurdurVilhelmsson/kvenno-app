@@ -816,7 +816,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   )}
                   {viewMode === '3d' && (
                     <div className="text-xs text-warm-400 text-center mt-2 phone:mt-1">
-                      Dragðu til að snúa, skrollaðu til að stækka
+                      Dragðu til að snúa; klíptu eða skrunaðu til að stækka
                     </div>
                   )}
                 </div>
