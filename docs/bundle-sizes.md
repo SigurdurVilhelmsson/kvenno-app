@@ -84,7 +84,7 @@ these are the three games whose "initial" is a sum over three files rather than 
 | takmarkandi              | 1-ar | 300 KB  | —        |
 | jafnvaegisfasti          | 3-ar | 297 KB  | —        |
 | einingakedjan            | 1-ar | 293 KB  | —        |
-| stilla-efnajofnur             | 1-ar | 292 KB  | —        |
+| stilla-efnajofnur        | 1-ar | 292 KB  | —        |
 | syrufastinn              | 3-ar | 289 KB  | —        |
 | leysnijafnvaegi          | 3-ar | 286 KB  | —        |
 | utfellingarhvorf         | 1-ar | 284 KB  | —        |
@@ -100,6 +100,11 @@ Every game now opens in 273–401 KB. Three changes got here:
 - **The drei-probe fix** then halved the deferred payload again, 2600 KB → 1004 KB, by dropping an
   `await import('@react-three/drei')` that pulled the entire barrel (incl. `hls.js` and
   `@mediapipe/tasks-vision`) just to test that it resolved.
+- **The Oct 2026 label font** adds 21 KB to the deferred payload of each 3D game: a Roboto Bold
+  woff, emitted as `assets/{game}/roboto-latin-700-normal-[hash].woff` and fetched only when a 3D
+  view opens. It replaces a runtime fetch from `cdn.jsdelivr.net` that the CSP in
+  `server/nginx-site.conf` refuses, so wherever that config is live the 3D view never finished
+  loading. Nothing is added up front.
 - **The Sep 2026 i18n strip** took 9,5–11,7 KB off each of eight games, 85,5 KB in total. Small next to the two above, and
   listed because it is the whole of what a dead translation table costs: three languages of UI
   strings that no game rendered, inlined into every single-file build.

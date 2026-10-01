@@ -1,3 +1,8 @@
+// The declaration has to travel with this file: the three games type-check only
+// their own src/, so an ambient file elsewhere in shared would not reach them,
+// and an untyped module cannot be declared from an importable one.
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="./troika-three-text.d.ts" />
 /**
  * MoleculeViewer3D - Three.js based 3D molecule visualization
  *
@@ -5,11 +10,20 @@
  * with Three.js. Supports ball-and-stick and space-fill rendering styles.
  */
 
-import { Suspense, useMemo, useCallback, useRef, useEffect, type ComponentRef } from 'react';
+import {
+  Suspense,
+  useMemo,
+  useCallback,
+  useRef,
+  useEffect,
+  useState,
+  type ComponentRef,
+} from 'react';
 
 import { OrbitControls, Text, Html } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
+import { configureTextBuilder } from 'troika-three-text';
 
 /**
  * Keyboard-accessible handle on the underlying three-stdlib OrbitControls exposed by drei.
@@ -21,6 +35,28 @@ type OrbitControlsHandle = ComponentRef<typeof OrbitControls>;
 import type { MoleculeViewer3DProps, Atom3DProps, Bond3DProps } from './types';
 import type { MoleculeAtom, MoleculeBond } from '../../types/molecule.types';
 import { ELEMENT_VISUALS, DEFAULT_ELEMENT_VISUAL } from '../AnimatedMolecule/molecule.constants';
+import labelFontUrl from './fonts/roboto-latin-700-normal.woff?url';
+
+/**
+ * The atom labels are drei `<Text>`, which is troika-three-text, and troika
+ * left to itself breaks the whole 3D view in two ways (docs/REVIEW-QUEUE.md C5):
+ *
+ * - With no `font`, it looks up a font for every character by fetching
+ *   unicode-font-resolver data from cdn.jsdelivr.net. `<Text>` suspends until
+ *   that answers, so where the CDN is blocked the view sits on "Sæki
+ *   þrívíddarsýn…" forever — and the games' own CSP (`connect-src 'self'` in
+ *   server/nginx-site.conf) blocks it everywhere. A bundled font that covers
+ *   every character drawn means it never looks anything up.
+ * - It parses fonts in a Web Worker that loads its code with
+ *   `importScripts(blob:…)`, which the same CSP's `script-src` refuses. The
+ *   worker never starts and the labels never build. A few one-letter labels
+ *   cost nothing to build on the main thread, so the worker is switched off
+ *   rather than the CSP widened.
+ *
+ * Roboto Bold, Latin subset (Icelandic letters included), from
+ * @fontsource/roboto 5.3.0 — SIL Open Font License, `fonts/OFL.txt`.
+ */
+configureTextBuilder({ useWorker: false });
 
 /**
  * Get element visual properties with fallback
@@ -266,6 +302,7 @@ function Atom3D({
       </mesh>
       {showLabel && (
         <Text
+          font={labelFontUrl}
           position={[0, radius + 0.2, 0]}
           fontSize={0.3}
           color="#ffffff"
@@ -396,6 +433,16 @@ export function LoadingFallback({ text = 'Sæki þrívíddarsýn…' }: { text?:
 }
 
 /**
+ * Mounts only once everything above it in the same Suspense boundary has
+ * stopped suspending — the labels' font included — so its effect marks the
+ * scene as drawn.
+ */
+function SceneReady({ onReady }: { onReady: () => void }) {
+  useEffect(onReady, [onReady]);
+  return null;
+}
+
+/**
  * MoleculeViewer3D Component
  *
  * A 3D molecule visualization component using Three.js.
@@ -445,6 +492,8 @@ export function MoleculeViewer3D({
   // rotateLeft/rotateUp/dollyIn/dollyOut/reset. Arrow keys rotate; +/- zoom; R resets.
   const controlsRef = useRef<OrbitControlsHandle | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [sceneReady, setSceneReady] = useState(false);
+  const markSceneReady = useCallback(() => setSceneReady(true), []);
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -513,6 +562,9 @@ export function MoleculeViewer3D({
       ref={wrapperRef}
       tabIndex={0}
       role="application"
+      // Busy until the scene has drawn. The canvas itself appears at once and the
+      // loading text inside it a moment later, so neither says the view is ready.
+      aria-busy={!sceneReady}
       aria-label="Þrívíð sameindasýn — nota örvatakka til að snúa, + / − til að súma, R til að núllstilla"
       className={`molecule-viewer-3d focus-visible:outline-3 focus-visible:outline focus-visible:outline-blue-500 focus-visible:outline-offset-2 ${className}`}
       style={{
@@ -538,6 +590,7 @@ export function MoleculeViewer3D({
             showLabels={showLabels}
             onAtomClick={onAtomClick}
           />
+          <SceneReady onReady={markSceneReady} />
         </Suspense>
         <OrbitControls
           ref={controlsRef}

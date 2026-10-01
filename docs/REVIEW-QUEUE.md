@@ -153,8 +153,11 @@ jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms
       item 19.
 - [ ] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
       Icelandic book's complex-ion constants (`m68869`), which is a new source.
-- [ ] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
-      view never finishes loading. Fixing it means bundling a font.
+- [x] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
+      view never finishes loading. Fixing it means bundling a font. — 2026-10-01, PR #71. Worse than
+      recorded: the CSP in `server/nginx-site.conf` refuses both that fetch and troika's worker, so
+      wherever that config is live the view never loaded at all. Fixed with a bundled font and troika's worker off; see
+      `CLAUDE.md` "3D labels fixed".
 
 ### C6. Lewis-formúlur design review (2026-09-30)
 
