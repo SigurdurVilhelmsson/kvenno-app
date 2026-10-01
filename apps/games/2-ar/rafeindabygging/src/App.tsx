@@ -347,8 +347,8 @@ function App() {
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
-            <strong>Námsleiðin:</strong> <u>Rafeindabygging</u> → Lewis → VSEPR → IMF → Hess →
-            Kinetics → Redox → Organic
+            <strong>Námsleiðin:</strong> <u>Rafeindabygging</u> → Lewis-formúlur → VSEPR →
+            Millisameindakraftar → Lögmál Hess → Hvarfhraði → Oxun og afoxun → Lífræn nafnagift
           </div>
           <div className="mt-2 text-center text-xs text-warm-400">
             Kafli 6 — Chemistry: The Central Science (Brown et al.)

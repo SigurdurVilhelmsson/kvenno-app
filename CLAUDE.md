@@ -358,7 +358,7 @@ Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 
 ```
 Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → Lausnir → Einingakeðjan
-Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
+Y2: Rafeindabygging → Lewis-formúlur → VSEPR → Millisameindakraftar → Lögmál Hess → Hvarfhraði → Oxun og afoxun → Lífræn nafnagift
 Y3: Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
 ```
 
@@ -682,7 +682,9 @@ Beita) on the `1-ar/einingakedjan` model, 76 tests. Read
 - **`chain-string.test.ts` now enforces the `Námsleiðin` chain across all six Y3 games**, and that
   every game `build-games.mjs` emits has an entry. Step 4 of "Adding a new game" was written down
   and never checked. **The Y1 equivalent now exists too** —
-  `1-ar/einingakedjan/src/__tests__/chain-string.test.ts`, added 2026-09-19; this line said it did
+  `1-ar/einingakedjan/src/__tests__/chain-string.test.ts`, added 2026-09-19, and the Y2 one is
+  `2-ar/rafeindabygging/src/__tests__/chain-string.test.ts`, added 2026-10-01 when the Y2 chain
+  moved from English labels to the hub-card names; this line said it did
   not for the rest of that day, which is how a tenth game nearly shipped with a duplicate of it.
   Its whitespace handling models how JSX renders the markup rather than merely collapsing it, and
   that is load-bearing: a rewrap can delete a space the chain needs.
