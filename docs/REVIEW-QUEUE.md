@@ -165,30 +165,49 @@ A design review of `2-ar/lewis-structures` found nine problems. Five were fixed 
 PR #70, whose description lists them. These four need a ruling, since each
 changes how the game teaches or looks rather than correcting a defect.
 
-- [ ] **Teach before test.** All three levels open on a question.
+- [x] **Teach before test.** All three levels open on a question.
   - The only worked example, Leiðsögn, is opt-in and offered only on molecule 1.
   - Leiðsögn uses H₂O, the same molecule the student then draws.
   - Proposal: open Stig 2 and Stig 3 with a short worked step on a molecule outside the set, with
     Leiðsögn becoming that step.
+  - **Done 2026-10-01 (the proposal), PR #72.** Stig 2 opens on Leiðsögn for PCl₃, with a button
+    to skip it. Stig 3 opens on a worked example: the book's own CO₂ comparison for formal charge
+    (O=C=O against O≡C–O), then SO₂ for vok. None of the three molecules is asked about in its
+    level. Stig 1 still opens on a question; it teaches the counting rule beside it.
+    Guarded by `teach-before-test.test.tsx`.
 - [x] **One way to draw a Lewis structure.** Ruled 2026-09-30 (the proposal), done the same day.
       Every screen — the Stig 2 board, the structure shown after it, the walkthrough and Stig 3's
       formal-charge, CO and resonance questions — now draws from `utils/lewisLayout.ts` with
       `components/LewisStructure.tsx`: element symbols, bond lines, dot pairs and circled formal
       charges, in the book's flat layout. The 3D view stays, as the VSEPR shape. Guarded by
       `lewis-layout.test.ts` and `one-renderer.test.tsx`.
-- [ ] **Chrome.**
+- [x] **Chrome.**
   - The shared Header appears only on the menu; each level builds its own "← Til baka".
   - There are three level accents plus an indigo Næsta, and kvenno-orange appears nowhere.
   - Emoji stand in for icons.
   - Proposal: one accent for actions, and the shared Header on every screen with the level in
     `gameTitle`.
-- [ ] **Terms and content.**
+  - **Done 2026-10-01, PR #72, with one change.** The shared Header is on every screen and goes
+    back to the menu through its new `onBack`. The level is named on the page, not in `gameTitle`:
+    `game-titles-agree.test.ts` holds every `gameTitle` to the hub card's name. Every action is
+    kvenno-orange; green and red now mean only right and wrong. The emoji are lucide icons, and
+    the two celebration ones (🏆, 🎉) are gone.
+- [x] **Terms and content.**
   - The bond names, resonance (`samsvörun` against the book's `vok-`) and `formhleðsla` are C3
     item 20. The English Y2 chain is C3 item 3.
   - Not covered anywhere yet: the `2D Lewis` toggle label, `flippar` in Stig 3 question 7, and
     the legend's bare `Stakt par`.
   - BF₃'s explanation says it is stable "vegna þess að bór er lítið atóm". BF₃ is a reactive Lewis
     acid, so that oversimplifies.
+  - **Done 2026-10-01 in Lewis, PR #72.** Item 20's Lewis part, from the glossary and the book's
+    ch. 7: `eintengi`/`tvítengi`/`þrítengi`, `formleg hleðsla`, `vokmynd`/`vok`, `áttund`, and
+    `ofgild sameind` for an expanded octet. Item 87 for Lewis: `Samgild tengi`. Item 8 in all three
+    3D games. `flippar` is gone; `2D Lewis` and `Stakt par` went with PR #71. BF₃ now says it is very
+    reactive and takes a lone pair readily, as the book does. Two more were found: SF₆'s hint
+    called 12 electrons "tvöfalt meira" than 8, and Stig 3's closing rules put formal charge
+    ahead of the octet. `icelandic-text.test.ts` now fails on the old forms.
+  - **Still open:** item 20 in `vsepr-geometry` and `intermolecular-forces`, item 87 in
+    `redox-reactions`, and the English Y2 chain (item 3), which spans all eight Y2 games.
 
 ## D. Work that needs no ruling
 
@@ -212,7 +231,12 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 - [ ] **hess-law Stig 2 `EquationBlock`:** a `role="button"` card containing its own buttons.
 - [ ] **vsepr `BondAngleMeasurement.tsx`:** tick labels show the half-angle.
 - [x] **lewis Stig 3:** a formal charge of 0 prints as `+0`. Fixed 2026-09-30 (PR #70).
-- [ ] **Lewis +1 formal-charge badge** is red on a red O atom, so it is hard to see.
+- [x] **Lewis +1 formal-charge badge** is red on a red O atom, so it is hard to see. Lewis no
+      longer draws with `AnimatedMolecule` (PR #71); the shared badge now has a white ring as
+      well, 2026-10-01, PR #72.
+- [ ] **`bg-kvenno-orange-dark` and `hover:bg-kvenno-orange-dark` do nothing.** No such colour
+      token exists (the theme has `kvenno-orange-600`), so 77 hover states across the games never
+      change colour. Found 2026-10-01; Lewis uses `kvenno-orange-600`.
 - [ ] **`gradeScientific`:**
   - it diagnoses a 10× slip as wrong digits;
   - its `ogilt` prompt could say what went wrong;

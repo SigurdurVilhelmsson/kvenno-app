@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { clockPastNextGuard } from './next-guard-clock';
+import { pastExample } from './past-example';
 import { Level3 } from '../components/Level3';
 
 /**
@@ -25,16 +26,17 @@ const CORRECT = [
   'FC = Gildisraf. - (óbundnar + ½ bundnar)',
   '0',
   '+1',
-  ':C≡O: með þreföldum tengslum',
+  ':C≡O: með þrítengi',
   '2 formúlur',
   '3 formúlur',
   'Sameindin er vokblendingur allra formúlanna',
-  'Lágmarka formhleðslur (helst 0)',
+  'Lágmarka formlegar hleðslur (helst 0)',
 ];
 
 function renderLevel() {
   const onComplete = vi.fn();
   const rendered = render(<Level3 onComplete={onComplete} onBack={vi.fn()} />);
+  pastExample(rendered.container);
   const ui = within(rendered.container);
   /** The option buttons, in the order shown — the only left-aligned buttons. */
   const options = () =>

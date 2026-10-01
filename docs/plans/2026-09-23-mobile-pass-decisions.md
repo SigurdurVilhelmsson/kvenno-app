@@ -111,6 +111,8 @@ en fjögur rafeindapör`; (c) drop the why. **Recommendation:** (b), your wordin
 `lewis-structures` and `vsepr-geometry`. On a phone zoom is a pinch, and `skrolla` is slang.
 Options: (a) leave; (b) one wording for both devices, e.g. `Dragðu til að snúa; klíptu eða skrunaðu
 til að stækka`; (c) switch the text on pointer type. **Recommendation:** (b), in all three at once.
+**Applied 2026-10-01 (b), in all three** (PR #72), with the example wording. Lewis and VSEPR had
+moved to (c) in the meantime; both are back to the one wording.
 
 **9. Which book's formation enthalpies do the Hess and thermodynamics games use?**
 Both games store their own ΔH°f values. `packages/shared/data/thermo.ts` transcribes the Icelandic
@@ -223,6 +225,10 @@ to the glossary forms, one change across `lewis-structures`, `vsepr-geometry` an
 `intermolecular-forces`; (b) rule the game words acceptable and add them to `ordabok.md`.
 **Recommendation:** (a), starting with Lewis Level 3, where the book's section title settles both
 terms.
+**Applied 2026-10-01 to `lewis-structures` only** (PR #72): `eintengi`/`tvítengi`/`þrítengi`,
+`formleg hleðsla`, `vokmynd`/`vok`/`vokblendingur`, `áttund`, and `ofgild sameind` for an expanded
+octet, which is the book's word (ch. 7) where the game said `stækkuð átta`. Guarded in that game by
+`icelandic-text.test.ts`. Still open for `vsepr-geometry` and `intermolecular-forces`.
 
 **21. Post-transition metals: `P-málmar`, and `Lantaníð`/`Aktíníð`.**
 Periodic-table legends in `lotukerfid` (`PeriodicTable.tsx:306`, `data/elements.ts:66`) and
@@ -729,6 +735,8 @@ avoid the term in the hint (`3 × 2 = 6 rafeindir, svo 2×Al og 3×(2H⁺)`).
 whether it means shared electrons or transfer. Options: (a) `Rafeindaflutningur`; (b) `Samgild
 tengi`; (c) drop it. **Recommendation:** (a) in redox. In Lewis it sits between `Efnatengi` and
 `Jónatengi`, where it plainly means covalent bonding, so (b) there.
+**Applied 2026-10-01 in Lewis, (b)** (PR #72), `Samgild tengi`, which is the glossary's
+`covalent bond;samgilt tengi`. Still open in redox.
 
 **88. The Daniell cell's name.**
 Now `Zn–Cu galvaníhlað (Daniell)` (`ElectrochemicalCell.tsx:38`), an interim form without English.
@@ -1017,7 +1025,8 @@ Found on the way, no ruling needed, not done in this pass.
 - `2-ar/lewis-structures` `Level3.tsx`: a formal charge of 0 prints as `+0`.
 - `packages/shared/components/AnimatedMolecule` (Lewis mode): a +1 formal-charge badge is drawn in
   the `formalChargePositive` red on a red O atom (CO's O), so its edge barely shows. The `+1` text
-  stays readable; the badge needs an outline or a contrasting fill.
+  stays readable; the badge needs an outline or a contrasting fill. **Fixed 2026-10-01 (PR #72):**
+  a white ring. Lewis itself stopped using this renderer in PR #71.
 - `packages/shared/utils/scientific.ts` `gradeScientific` compares the typed mantissa as written,
   not normalised: `13,4` with `-5` against 1,34 × 10⁻⁵ (right digits, 10× too big) grades
   `tolustafir`, not `veldisvisir`, and a slip across the mantissa-10 boundary does too. Comparing

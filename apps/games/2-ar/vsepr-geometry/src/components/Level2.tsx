@@ -621,13 +621,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       </div>
                       {viewMode === '3d' && (
                         <div className="text-xs text-warm-500 mt-2">
-                          {/* A wheel does not exist on a phone: zoom there is a pinch. */}
-                          <span className="pointer-coarse:hidden">
-                            Dragðu til að snúa, skrollaðu til að stækka
-                          </span>
-                          <span className="hidden pointer-coarse:inline">
-                            Dragðu til að snúa, notaðu tvo fingur til að stækka
-                          </span>
+                          Dragðu til að snúa; klíptu eða skrunaðu til að stækka
                         </div>
                       )}
                     </div>

@@ -136,7 +136,7 @@ describe('diagnoseDrawing', () => {
       surroundingLP: [1, 3],
     });
     expect(messages).toHaveLength(1);
-    expect(messages[0]).toMatch(/formhleðsla hvers atóms er sem næst núlli/);
+    expect(messages[0]).toMatch(/formleg hleðsla hvers atóms er sem næst núlli/);
   });
 
   it('never prints the answer key', () => {

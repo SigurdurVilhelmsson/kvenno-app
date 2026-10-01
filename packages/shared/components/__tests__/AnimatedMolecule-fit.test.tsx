@@ -202,3 +202,13 @@ describe('AnimatedMolecule fit', () => {
     expect(svg.getAttribute('height')).toBe('240');
   });
 });
+
+describe('the formal-charge badge', () => {
+  it('is ringed in white, so a red +1 badge stays visible on a red O', () => {
+    const svg = draw({ molecule: H3O, mode: 'lewis', showFormalCharges: true });
+    const badge = svg.querySelector('[data-formal-charge-badge="1"] circle');
+    expect(badge).not.toBeNull();
+    expect(badge!.getAttribute('stroke')).toBe('white');
+    expect(Number(badge!.getAttribute('stroke-width'))).toBeGreaterThanOrEqual(2);
+  });
+});

@@ -36,6 +36,12 @@ interface HeaderProps {
   backHref?: string;
   /** Back link label (used in game variant) */
   backLabel?: string;
+  /**
+   * Game variant: go back inside the game rather than leave it. When given, the
+   * back control is a button that calls this, and `backHref` is ignored — so a
+   * level screen can carry the same header as the menu and return to it.
+   */
+  onBack?: () => void;
   /** Game title (shown in center for game variant) */
   gameTitle?: string;
 }
@@ -54,6 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeTrack,
   backHref,
   backLabel = 'Til baka',
+  onBack,
   gameTitle,
 }) => {
   if (variant === 'game') {
@@ -64,18 +71,23 @@ export const Header: React.FC<HeaderProps> = ({
     // already spaces the title from the arrow, so the title's own is 4 px.
     // The title drops to 16 px. Together these keep every title that fitted
     // at 320 px beside the three 44 px flags fitting, e.g. Mólhugtakið.
+    const backClass =
+      'flex items-center justify-center gap-2 text-sm font-medium text-warm-600 hover:text-kvenno-orange transition-colors min-h-[44px] min-w-[44px] -ml-[13px] sm:ml-0';
     return (
       <header className="sticky top-0 z-50 bg-surface-raised shadow-sm [@media(max-height:500px)]:static">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
-            <a
-              href={backHref ?? '/'}
-              className="flex items-center justify-center gap-2 text-sm font-medium text-warm-600 hover:text-kvenno-orange transition-colors min-h-[44px] min-w-[44px] -ml-[13px] sm:ml-0"
-              aria-label={backLabel}
-            >
-              <ArrowLeft size={18} />
-              <span className="hidden sm:inline">{backLabel}</span>
-            </a>
+            {onBack ? (
+              <button type="button" onClick={onBack} className={backClass} aria-label={backLabel}>
+                <ArrowLeft size={18} />
+                <span className="hidden sm:inline">{backLabel}</span>
+              </button>
+            ) : (
+              <a href={backHref ?? '/'} className={backClass} aria-label={backLabel}>
+                <ArrowLeft size={18} />
+                <span className="hidden sm:inline">{backLabel}</span>
+              </a>
+            )}
             {gameTitle && (
               <h1 className="font-heading text-base sm:text-lg font-semibold text-warm-800 truncate px-1 sm:px-4">
                 {gameTitle}

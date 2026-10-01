@@ -381,7 +381,7 @@ export function LewisDrawingCanvas({
       )}
       {remaining < 0 && (
         <div className="text-xs text-red-700 bg-red-50 rounded px-2 py-1 mt-2 phone:mt-1 text-center">
-          Of margar rafeindir notaðar! Fjarlægðu tengsl eða stök pör.
+          Of margar rafeindir notaðar! Fjarlægðu tengi eða stök pör.
         </div>
       )}
     </>
@@ -471,12 +471,12 @@ export function LewisDrawingCanvas({
         <div className="bg-white rounded-lg p-3 shadow-xs">
           <div className="flex justify-between items-center text-center">
             <div>
-              <div className="text-xl font-bold text-blue-600">{totalElectrons}</div>
+              <div className="text-xl font-bold text-warm-800">{totalElectrons}</div>
               <div className="text-xs text-warm-500">Alls</div>
             </div>
             <div className="text-warm-400 text-lg">−</div>
             <div>
-              <div className="text-xl font-bold text-green-600">{electronsUsed}</div>
+              <div className="text-xl font-bold text-warm-800">{electronsUsed}</div>
               <div className="text-xs text-warm-500">Notaðar</div>
             </div>
             <div className="text-warm-400 text-lg">=</div>
@@ -497,10 +497,10 @@ export function LewisDrawingCanvas({
               <div className="text-sm font-semibold text-warm-700">Stök rafeindapör:</div>
               <div className="flex items-baseline gap-1 text-xs text-warm-500 tabular-nums">
                 <span>Alls</span>
-                <span className="text-base font-bold text-blue-600">{totalElectrons}</span>
+                <span className="text-base font-bold text-warm-800">{totalElectrons}</span>
                 <span aria-hidden="true">−</span>
                 <span>Notaðar</span>
-                <span className="text-base font-bold text-green-600">{electronsUsed}</span>
+                <span className="text-base font-bold text-warm-800">{electronsUsed}</span>
                 <span aria-hidden="true">=</span>
                 <span>Eftir</span>
                 <span className={`text-base font-bold ${remainingColor}`}>{remaining}</span>
@@ -512,17 +512,14 @@ export function LewisDrawingCanvas({
           <div className="text-sm font-semibold text-warm-700">Stök rafeindapör:</div>
         )}
 
-        {/* Central atom. Below 360 px the round symbol badge is dropped to leave the
-            label room beside 44 px steppers; the label names the atom anyway. */}
+        {/* Central atom. The label names it; the round coloured badge beside it was the
+            old board's ball, and the board now draws symbols. */}
         <div
           className={`flex items-center justify-between gap-2 p-2 phone:py-0.5 rounded-lg ${
-            solution?.centralLPError ? 'bg-red-50 border border-red-200' : 'bg-blue-50'
+            solution?.centralLPError ? 'bg-red-50 border border-red-200' : 'bg-warm-50'
           }`}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center shrink-0 max-[360px]:hidden">
-              <span className="text-white text-xs font-bold">{centralAtom}</span>
-            </div>
             <span className="text-sm font-medium text-warm-700">{centralAtom} (miðatóm)</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -539,7 +536,7 @@ export function LewisDrawingCanvas({
               onClick={() => adjustLP(-1, 1)}
               disabled={remaining < 2 || !canInteract}
               aria-label={`Bæta stöku pari við ${centralAtom} (miðatóm)`}
-              className={`${STEP_BTN} bg-blue-200 hover:bg-blue-300 text-blue-700`}
+              className={`${STEP_BTN} bg-kvenno-orange-100 hover:bg-kvenno-orange-200 text-kvenno-orange-800`}
             >
               +
             </button>
@@ -554,13 +551,10 @@ export function LewisDrawingCanvas({
             <div
               key={i}
               className={`flex items-center justify-between gap-2 p-2 phone:py-0.5 rounded-lg ${
-                hasErr ? 'bg-red-50 border border-red-200' : 'bg-green-50'
+                hasErr ? 'bg-red-50 border border-red-200' : 'bg-warm-50'
               }`}
             >
               <div className="flex items-center gap-2 min-w-0">
-                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center shrink-0 max-[360px]:hidden">
-                  <span className="text-white text-xs font-bold">{atom.symbol}</span>
-                </div>
                 <span className="text-sm font-medium text-warm-700">{atomLabel(i)} (ytri)</span>
               </div>
               <div className="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -577,7 +571,7 @@ export function LewisDrawingCanvas({
                   onClick={() => adjustLP(i, 1)}
                   disabled={remaining < 2 || !canInteract}
                   aria-label={`Bæta stöku pari við ${atomLabel(i)} (ytri)`}
-                  className={`${STEP_BTN} bg-green-200 hover:bg-green-300 text-green-700`}
+                  className={`${STEP_BTN} bg-kvenno-orange-100 hover:bg-kvenno-orange-200 text-kvenno-orange-800`}
                 >
                   +
                 </button>
@@ -681,7 +675,7 @@ export function LewisDrawingCanvas({
             <button
               onClick={handleSubmit}
               disabled={bonds.every((b) => b === 'none')}
-              className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white font-bold py-3 phone:py-2 pointer-coarse:min-h-11 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:bg-warm-300 text-white font-bold py-3 phone:py-2 pointer-coarse:min-h-11 rounded-xl transition-colors"
             >
               Athuga
             </button>

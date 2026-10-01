@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { clockPastNextGuard } from './next-guard-clock';
+import { pastExample } from './past-example';
 import { Level2 } from '../components/Level2';
 import { LewisDrawingCanvas } from '../components/LewisDrawingCanvas';
 
@@ -95,6 +96,7 @@ describe('Stig 2 counts molecules, not points', () => {
   const play = (openSolutionOnFirst: boolean) => {
     const onComplete = vi.fn();
     const { container } = render(<Level2 onComplete={onComplete} onBack={vi.fn()} />);
+    pastExample(container);
     const ui = within(container);
     // No running score anywhere on the level.
     expect(container.textContent).not.toMatch(/\d+ stig\b/);

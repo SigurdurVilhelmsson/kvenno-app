@@ -51,6 +51,27 @@ const WRONG: [RegExp, string][] = [
   [/} pör\b/, 'pairCount(), which says "1 par"'],
   [/>Heildar</, 'Alls — heildar- is a prefix, not a word on its own'],
   [/óparuð/, 'ópöruð — the feminine of óparaður, as the textbook writes it'],
+  [/Rafeindasameign/, 'Samgild tengi — ordabok: covalent bond;samgilt tengi'],
+  [/flipp/, 'skiptir á milli — not an Icelandic word'],
+  [/skroll/i, 'skrunaðu, with klíptu for a phone'],
+];
+
+/**
+ * The game's own words where the glossary or the book has another (decision 20,
+ * Lewis part, 2026-10-01). Each is settled by `ordabok.md` or by the textbook's
+ * ch. 7, whose section m68740 is titled "Formlegar hleðslur og vokmyndir":
+ * eintengi/tvítengi/þrítengi 473/252/73 against 0 for the `tengsl` phrasing,
+ * formleg hleðsla 67 to 0, vokmynd and vokblendingur 41 against 3, áttund 42.
+ * An expanded octet is an `ofgild sameind` with "fleiri en átta rafeindir".
+ * Scoped to this game: vsepr-geometry and intermolecular-forces still use some
+ * of these words and are open under the same decision.
+ */
+const GAME_WORDS: [RegExp, string][] = [
+  [/tengsl/i, 'tengi: eintengi, tvítengi, þrítengi, efnatengi'],
+  [/formhleðsl/i, 'formleg hleðsla'],
+  [/samsvörun/i, 'vok, vokmynd, vokblendingur'],
+  [/stækk\w* átt/i, 'ofgild sameind, fleiri en átta rafeindir'],
+  [/\báttu\b/, 'áttund'],
 ];
 
 /** English that stood inside Icelandic sentences. */
@@ -69,6 +90,17 @@ describe('lewis-structures source', () => {
     const hits = files.flatMap(({ name, lines }) =>
       lines.flatMap((line, i) =>
         WRONG.filter(([pattern]) => pattern.test(line)).map(
+          ([pattern, fix]) => `${name}:${i + 1} matches ${pattern} — use ${fix}`
+        )
+      )
+    );
+    expect(hits).toEqual([]);
+  });
+
+  it("uses the glossary's and the book's terms, not the game's old ones", () => {
+    const hits = files.flatMap(({ name, lines }) =>
+      lines.flatMap((line, i) =>
+        GAME_WORDS.filter(([pattern]) => pattern.test(line)).map(
           ([pattern, fix]) => `${name}:${i + 1} matches ${pattern} — use ${fix}`
         )
       )

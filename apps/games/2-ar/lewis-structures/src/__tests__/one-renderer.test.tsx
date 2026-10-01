@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { clockPastNextGuard } from './next-guard-clock';
+import { pastExample } from './past-example';
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
 import { LEWIS_SIZES } from '../utils/lewisLayout';
@@ -45,6 +46,7 @@ const symbolsOf = (svg: Element) => [...svg.querySelectorAll('text')].map((t) =>
 describe('Stig 2: the board and the structure shown after it agree', () => {
   it('draws H₂O the same way before and after Athuga', () => {
     const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    pastExample(container);
     const ui = within(container);
     for (const name of [/^Tengi 1 af 2/, /^Tengi 2 af 2/]) {
       fireEvent.click(ui.getByRole('button', { name }));
@@ -88,13 +90,14 @@ const CORRECT = [
   'FC = Gildisraf. - (óbundnar + ½ bundnar)',
   '0',
   '+1',
-  ':C≡O: með þreföldum tengslum',
+  ':C≡O: með þrítengi',
   '2 formúlur',
   '3 formúlur',
 ];
 
 function renderLevel3() {
   const { container } = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
+  pastExample(container);
   const ui = within(container);
   const answer = (text: string) => {
     const option = [...container.querySelectorAll('button')].find(

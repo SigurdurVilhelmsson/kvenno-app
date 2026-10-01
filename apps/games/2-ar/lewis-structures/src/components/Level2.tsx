@@ -1,6 +1,8 @@
 import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 
-import { PhoneDisclosure } from '@shared/components';
+import { TriangleAlert } from 'lucide-react';
+
+import { Header, PhoneDisclosure } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import {
   focusTarget,
@@ -65,8 +67,8 @@ const challenges: Challenge[] = [
     },
     hints: [
       'H getur aðeins myndað 1 tengi, þannig að O verður að vera miðatómið.',
-      'Súrefni myndar 2 einföld tengsl við vetni.',
-      'O hefur 2 stök rafeindapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
+      'Súrefni myndar 2 eintengi við vetni.',
+      'O hefur 2 stök rafeindapör (8 - 4 í tengjum = 4 óbundnar = 2 pör).',
     ],
     finalExplanation:
       'H₂O: O í miðju með 2 H tengd og 2 stök rafeindapör. Þetta gefur 4 rafeindapör í kringum O.',
@@ -86,8 +88,8 @@ const challenges: Challenge[] = [
       centralLonePairs: 1,
     },
     hints: [
-      'N hefur 5 gildisrafeindir og getur myndað 3 tengsl.',
-      'Þrjú einföld N-H tengsl nota 6 rafeindir.',
+      'N hefur 5 gildisrafeindir og getur myndað 3 tengi.',
+      'Þrjú N-H eintengi nota 6 rafeindir.',
       'N hefur 1 stakt par (8 - 6 = 2 óbundnar = 1 par).',
     ],
     finalExplanation:
@@ -107,12 +109,12 @@ const challenges: Challenge[] = [
       centralLonePairs: 0,
     },
     hints: [
-      'C þarf 4 tengsl og hvert O þarf 2 tengsl (fyrir áttu).',
-      'Prófaðu tvöföld tengsl milli C og beggja O.',
+      'C þarf 4 tengi og hvert O þarf 2 tengi til að fá áttund.',
+      'Prófaðu tvítengi milli C og hvors O.',
       'Hvert O hefur 2 stök rafeindapör. C hefur engin.',
     ],
     finalExplanation:
-      'CO₂: O=C=O með tvöföldum tengslum. Hvert O hefur 2 stök pör. Þetta er línuleg sameind.',
+      'CO₂: O=C=O með tveimur tvítengjum. Hvert O hefur 2 stök pör. Þetta er línuleg sameind.',
   },
   {
     id: 4,
@@ -130,8 +132,8 @@ const challenges: Challenge[] = [
       centralLonePairs: 0,
     },
     hints: [
-      'C myndar 4 tengsl og H myndar 1.',
-      '4 einföld C-H tengsl nota allar 8 rafeindirnar.',
+      'C myndar 4 tengi og H myndar 1.',
+      'Fjögur C-H eintengi nota allar 8 rafeindirnar.',
       'Engin stök pör á neinu atómi.',
     ],
     finalExplanation:
@@ -150,11 +152,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'Sameindir með oddatölu rafeinda eru stakeindir.',
-      'N=O tvöfalt tengi. O hefur 2 stök pör.',
+      'N=O tvítengi. O hefur 2 stök pör.',
       'N hefur 1 stakt par + 1 óparaða rafeind (alls 11 rafeindir).',
     ],
     finalExplanation:
-      'NO: Tvöföld tengsl N=O með óparaðri rafeind á N. Þetta er stakeind og hún er mjög hvarfgjörn.',
+      'NO: Tvítengi N=O með óparaðri rafeind á N. Þetta er stakeind og hún er mjög hvarfgjörn.',
   },
   {
     id: 6,
@@ -168,11 +170,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'Cl þarf aðeins 1 rafeind til að ná áttureglunni.',
-      'Eitt einfalt H-Cl tengi.',
+      'Eitt H-Cl eintengi.',
       'Cl hefur 3 stök pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
     ],
     finalExplanation:
-      'HCl: Einfalt H-Cl tengi. Cl hefur 3 stök rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
+      'HCl: Eintengi milli H og Cl. Cl hefur 3 stök rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
   },
   // === OCTET RULE EXCEPTIONS ===
   {
@@ -192,12 +194,12 @@ const challenges: Challenge[] = [
       centralElectrons: 6,
     },
     hints: [
-      'B er í hópi 13 og myndar venjulega 3 tengsl.',
-      '3 einföld B-F tengsl. Hvert F hefur 3 stök pör.',
+      'B er í hópi 13 og myndar venjulega 3 tengi.',
+      'Þrjú B-F eintengi. Hvert F hefur 3 stök pör.',
       'B hefur aðeins 6 rafeindir — undantekning frá áttureglunni!',
     ],
     finalExplanation:
-      'BF₃ er dæmi um rafeindaskort: Bór hefur aðeins 6 rafeindir í kringum sig, ekki 8. Þetta er stöðugt vegna þess að bór er lítið atóm.',
+      'BF₃ er dæmi um rafeindaskort: bór hefur aðeins 6 rafeindir í kringum sig, ekki 8. Þess vegna er BF₃ mjög hvarfgjarnt og tekur auðveldlega við stöku rafeindapari, til dæmis frá NH₃.',
   },
   {
     id: 8,
@@ -219,11 +221,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'P er á 3. lotu og getur haft fleiri en 8 rafeindir.',
-      '5 einföld P-Cl tengsl. Hvert Cl hefur 3 stök pör.',
-      'P hefur 10 rafeindir — stækkuð átta.',
+      'Fimm P-Cl eintengi. Hvert Cl hefur 3 stök pör.',
+      'P hefur 10 rafeindir — fleiri en átta.',
     ],
     finalExplanation:
-      'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. P er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
+      'PCl₅ er ofgild sameind: fosfór hefur 10 rafeindir í kringum sig. P er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
   },
   {
     id: 9,
@@ -246,11 +248,11 @@ const challenges: Challenge[] = [
     },
     hints: [
       'S er á 3. lotu og getur haft meira en 8 rafeindir.',
-      '6 einföld S-F tengsl. Hvert F hefur 3 stök pör.',
-      'S hefur 12 rafeindir — tvöfalt meira en áttureglan!',
+      'Sex S-F eintengi. Hvert F hefur 3 stök pör.',
+      'S hefur 12 rafeindir, fjórum fleiri en áttureglan segir til um.',
     ],
     finalExplanation:
-      'SF₆ er dæmi um stækkaða áttu: S hefur 12 rafeindir í kringum sig (6 tengsl). S er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
+      'SF₆ er ofgild sameind: S hefur 12 rafeindir í kringum sig (6 tengi). S er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
   },
 ];
 
@@ -262,7 +264,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [solutionShown, setSolutionShown] = useState(false);
   const [drawingCorrect, setDrawingCorrect] = useState(false);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
-  const [showTutorial, setShowTutorial] = useState(false);
+  // Teach before test (docs/REVIEW-QUEUE.md C6): the level opens on a worked
+  // walkthrough of a molecule it never asks for, PCl₃, and the student's own
+  // drawing starts after it. It used to be opt-in, offered on molecule 1 only,
+  // and walked through H₂O — the very molecule the student then drew.
+  const [showTutorial, setShowTutorial] = useState(true);
   const [hintsRevealed, setHintsRevealed] = useState(0);
   // Force remount of canvas when challenge changes
   const [canvasKey, setCanvasKey] = useState(0);
@@ -383,7 +389,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           onClick={() => setViewMode('2d')}
           className={`px-4 py-1.5 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-colors ${
             viewMode === '2d'
-              ? 'bg-green-600 text-white'
+              ? 'bg-kvenno-orange text-white'
               : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
           }`}
         >
@@ -393,7 +399,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           onClick={() => setViewMode('3d')}
           className={`px-4 py-1.5 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-colors ${
             viewMode === '3d'
-              ? 'bg-green-600 text-white'
+              ? 'bg-kvenno-orange text-white'
               : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
           }`}
         >
@@ -417,13 +423,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               backgroundColor="#f9fafb"
             />
             <div className="text-xs text-warm-500 text-center mt-2">
-              {/* A wheel does not exist on a phone: zoom there is a pinch. */}
-              <span className="pointer-coarse:hidden">
-                Dragðu til að snúa, skrollaðu til að stækka
-              </span>
-              <span className="hidden pointer-coarse:inline">
-                Dragðu til að snúa, notaðu tvo fingur til að stækka
-              </span>
+              Dragðu til að snúa; klíptu eða skrunaðu til að stækka
             </div>
           </div>
         )}
@@ -454,13 +454,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           challenge.correctStructure.octetException !== 'none' && (
             <div className="mt-3 pt-3 border-t border-orange-200 phone:mt-1 phone:pt-2 phone:basis-full">
               <div
-                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium ${
-                  challenge.correctStructure.octetException === 'electron-deficient'
-                    ? 'bg-orange-100 text-orange-800 border border-orange-300'
-                    : 'bg-purple-100 text-purple-800 border border-purple-300'
-                }`}
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium ${'bg-warm-100 text-warm-800 border border-warm-300'}`}
               >
-                <span className="text-lg">⚠️</span>
+                <TriangleAlert size={16} className="shrink-0" aria-hidden="true" />
                 {challenge.correctStructure.octetException === 'electron-deficient' && (
                   <span>
                     Rafeindaskortur: {challenge.correctStructure.centralAtom} hefur{' '}
@@ -469,7 +465,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 )}
                 {challenge.correctStructure.octetException === 'expanded-octet' && (
                   <span>
-                    Stækkuð átta: {challenge.correctStructure.centralAtom} hefur{' '}
+                    Ofgild sameind: {challenge.correctStructure.centralAtom} hefur{' '}
                     {challenge.correctStructure.centralElectrons} rafeindir
                   </span>
                 )}
@@ -495,91 +491,79 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     </div>
   );
   const completionExplanation = (
-    <div className="bg-indigo-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
-      <div className="font-bold text-indigo-800 mb-2 phone:mb-1">Lewis-formúla:</div>
-      <p className="text-indigo-900 text-sm">{challenge.finalExplanation}</p>
+    <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+      <div className="font-bold text-warm-800 mb-2 phone:mb-1">Lewis-formúla:</div>
+      <p className="text-warm-800 text-sm">{challenge.finalExplanation}</p>
     </div>
   );
   const completionNext = (
     <button
       ref={nextRef}
       onClick={armed(nextChallenge)}
-      className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
+      className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
     >
       {isLastChallenge ? 'Ljúka stigi 2' : 'Næsta sameind →'}
     </button>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
-        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
-          <button
-            onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
-          >
-            <span>&larr;</span> Til baka
-          </button>
-          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
-            <div className="text-sm text-warm-600">
-              Stig 2 / Sameind {currentChallenge + 1} af {challenges.length}
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
+      {/* The shared header on every screen, as on the menu; its back control returns to the
+          menu. The level is named on the page, since the title test holds gameTitle to the
+          hub card's name. */}
+      <Header
+        variant="game"
+        gameTitle="Lewis-formúlur"
+        backLabel="Til baka í valmynd"
+        onBack={onBack}
+      />
+      <div className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
+        {/* Over the worked example a phone leaves this row to screen readers: the example's
+            own heading says where the student is, and every line here pushes its first
+            Athuga further below the fold. */}
+        <div
+          className={`flex items-baseline justify-between gap-3 mb-6 phone:mb-2 ${showTutorial ? 'phone:sr-only' : ''}`}
+        >
+          <div className="font-semibold text-warm-800 min-w-0">Stig 2: Teikna Lewis-formúlur</div>
+          <div className="text-sm text-warm-600 whitespace-nowrap">
+            Sameind {currentChallenge + 1} af {challenges.length}
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
+        {/* Progress bar: through the molecules, so not shown over the worked example. */}
+        <div
+          className={`w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3 ${showTutorial ? 'hidden' : ''}`}
+        >
           <div
-            className="bg-green-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
+            className="bg-kvenno-orange h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{
               width: `${((currentChallenge + (drawingCorrect ? 1 : 0)) / challenges.length) * 100}%`,
             }}
           />
         </div>
 
-        {/* Tutorial toggle. On a phone it is one row: the question beside its
-            button, the longer line kept for screen readers. */}
-        {!showTutorial && currentChallenge === 0 && !drawingCorrect && (
-          <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 mb-6 border border-blue-200 phone:px-3 phone:py-2 phone:mb-3">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0 phone:flex-row phone:items-center phone:justify-between phone:gap-2">
-              <div className="flex items-center gap-3 phone:min-w-0">
-                <span className="text-2xl phone:hidden">📝</span>
-                <div className="phone:min-w-0">
-                  <div className="font-bold text-warm-800 phone:text-sm">Nýr í Lewis-formúlum?</div>
-                  <div className="text-sm text-warm-600 phone:sr-only">
-                    Byrjaðu með leiðsögnina til að læra skref fyrir skref
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowTutorial(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11 phone:shrink-0 phone:px-3 phone:text-sm"
-              >
-                Opna leiðsögn
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Tutorial */}
+        {/* The worked walkthrough the level opens on. */}
         {showTutorial && (
           <div ref={tutorialRef} className="mb-6 phone:mb-3">
             <LewisGuidedMode
-              molecule="H₂O"
+              heading="Dæmi á undan: PCl₃"
+              intro="Fyrst er farið skref fyrir skref í gegnum fosfórtríklóríð, PCl₃. Sú sameind er ekki meðal þeirra sem þú teiknar á eftir, en skrefin eru þau sömu."
+              molecule="PCl₃"
               atoms={[
-                { symbol: 'O', valenceElectrons: 6, position: 'central' },
-                { symbol: 'H', valenceElectrons: 1, position: 'surrounding' },
-                { symbol: 'H', valenceElectrons: 1, position: 'surrounding' },
+                { symbol: 'P', valenceElectrons: 5, position: 'central' },
+                { symbol: 'Cl', valenceElectrons: 7, position: 'surrounding' },
+                { symbol: 'Cl', valenceElectrons: 7, position: 'surrounding' },
+                { symbol: 'Cl', valenceElectrons: 7, position: 'surrounding' },
               ]}
-              totalElectrons={8}
+              totalElectrons={26}
+              completeLabel="Byrja að teikna"
               onComplete={() => setShowTutorial(false)}
             />
             <button
               onClick={() => setShowTutorial(false)}
               className="mt-4 phone:mt-3 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
             >
-              Sleppa leiðsögn
+              Sleppa dæminu og byrja að teikna
             </button>
           </div>
         )}
@@ -598,12 +582,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             >
               <h2
                 data-item-start
-                className="text-lg min-[360px]:text-xl sm:text-2xl font-bold text-green-800 mb-2 phone:mb-0"
+                className="text-lg min-[360px]:text-xl sm:text-2xl font-bold text-warm-800 mb-2 phone:mb-0"
               >
                 {challenge.title}
               </h2>
               <div className="flex flex-wrap items-center gap-x-4 mb-6 phone:mb-0 phone:gap-x-2 phone:items-baseline">
-                <span className="font-mono text-3xl font-bold text-indigo-600 phone:text-xl">
+                <span className="font-mono text-3xl font-bold text-warm-800 phone:text-xl">
                   {challenge.molecule}
                 </span>
                 <span className="text-sm text-warm-600">
@@ -663,7 +647,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   {hintsRevealed < challenge.hints.length && (
                     <button
                       onClick={revealHint}
-                      className="text-green-600 hover:text-green-800 text-sm underline pointer-coarse:min-h-11"
+                      className="text-kvenno-orange-700 hover:text-kvenno-orange-800 text-sm underline pointer-coarse:min-h-11"
                     >
                       {hintsRevealed === 0 ? 'Sýna vísbendingu' : 'Sýna fleiri vísbendingar'}
                     </button>
@@ -678,10 +662,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3">
           <h3 className="font-bold text-warm-700 mb-2">Skref til að teikna Lewis-formúlu:</h3>
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
-            <li>Finndu miðatóm (oftast það sem hefur flest tengsl, aldrei H)</li>
-            <li>Teiknaðu tengsl til allra ytri atóma (smelltu á strikin)</li>
+            <li>Finndu miðatóm (oftast það sem myndar flest tengi, aldrei H)</li>
+            <li>Teiknaðu tengi til allra ytri atóma (smelltu á strikin)</li>
             <li>Dreifðu eftirstandandi rafeindum sem stök pör</li>
-            <li>Breyttu í tvöföld/þreföld tengsl ef þarf til að uppfylla átturegluna</li>
+            <li>Breyttu í tví- eða þrítengi ef þarf til að uppfylla átturegluna</li>
           </ol>
         </div>
 
@@ -706,7 +690,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="text-xs text-warm-500 mt-1">Dæmi: BCl₃, AlCl₃</div>
             </div>
             <div className="p-3 rounded-lg bg-warm-50">
-              <div className="font-bold text-warm-800">Stækkuð átta</div>
+              <div className="font-bold text-warm-800">Ofgildar sameindir</div>
               <div className="text-warm-600">
                 Atóm á 3. lotu og neðar eru nógu stór til að rúma fleiri en fjögur rafeindapör
               </div>

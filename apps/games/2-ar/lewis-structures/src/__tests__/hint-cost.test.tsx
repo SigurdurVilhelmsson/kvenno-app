@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { clockPastNextGuard } from './next-guard-clock';
+import { pastExample } from './past-example';
 import { Level1 } from '../components/Level1';
 import { Level3 } from '../components/Level3';
 
@@ -52,16 +53,17 @@ const LEVEL3 = [
   'FC = Gildisraf. - (óbundnar + ½ bundnar)',
   '0',
   '+1',
-  ':C≡O: með þreföldum tengslum',
+  ':C≡O: með þrítengi',
   '2 formúlur',
   '3 formúlur',
   'Sameindin er vokblendingur allra formúlanna',
-  'Lágmarka formhleðslur (helst 0)',
+  'Lágmarka formlegar hleðslur (helst 0)',
 ];
 
 function playLevel3(openHint: boolean) {
   const onComplete = vi.fn();
   const { container } = render(<Level3 onComplete={onComplete} onBack={vi.fn()} />);
+  pastExample(container);
   const ui = within(container);
   for (const text of LEVEL3) {
     if (openHint) fireEvent.click(ui.getByRole('button', { name: 'Sýna vísbendingu' }));
