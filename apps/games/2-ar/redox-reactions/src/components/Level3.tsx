@@ -538,7 +538,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <p className="text-warm-700 text-sm leading-relaxed">
               Rafeindir <strong>hverfa ekki</strong> í efnahvörfum. Fjöldi rafeinda sem ein tegund
               tapar verður að vera <em>jafn</em> fjölda sem önnur öðlast. Með því að aðskilja
-              redoxhvarf í tvö hálfhvörf getum við stillt rafeindafjölda beint.
+              redox-hvarf í tvö hálfhvörf getum við stillt rafeindafjölda beint.
             </p>
           </div>
 

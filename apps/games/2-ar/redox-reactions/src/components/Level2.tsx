@@ -315,9 +315,10 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
           <div className="bg-teal-50 border-l-4 border-teal-500 rounded-lg p-4">
             <h2 className="font-bold text-teal-900 mb-2">Hvað eru hálfhvörf?</h2>
             <p className="text-warm-700 text-sm leading-relaxed">
-              <strong>Redoxhvarf er alltaf tvö hálfhvörf.</strong> Ein tegund <strong>tapar</strong>{' '}
-              rafeindum (oxast), önnur <strong>öðlast</strong> rafeindir (afoxast). Þetta gerist
-              alltaf samtímis — rafeindir hverfa ekki, þær færast milli tegunda.
+              <strong>Redox-hvarf er alltaf tvö hálfhvörf.</strong> Ein tegund{' '}
+              <strong>tapar</strong> rafeindum (oxast), önnur <strong>öðlast</strong> rafeindir
+              (afoxast). Þetta gerist alltaf samtímis — rafeindir hverfa ekki, þær færast milli
+              tegunda.
             </p>
           </div>
 

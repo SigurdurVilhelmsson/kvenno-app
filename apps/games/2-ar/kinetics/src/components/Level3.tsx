@@ -163,7 +163,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               ← Til baka
             </button>
             <h1 className="text-lg font-bold text-warm-800 order-last w-full sm:order-none sm:w-auto">
-              Hvarfgangar og hraðaákvarðandi skref — Kennsla
+              Hvarfgangar og hraðatakmarkandi skref — Kennsla
             </h1>
             <span className="text-sm text-warm-500 whitespace-nowrap">Stig 3</span>
           </div>
@@ -193,19 +193,19 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </div>
 
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm">
-              <p className="font-bold text-red-800 mb-1">Hraðaákvarðandi skref</p>
+              <p className="font-bold text-red-800 mb-1">Hraðatakmarkandi skref</p>
               <p className="text-warm-700">
                 <strong>Hægasta skrefið</strong> ákvarðar hraða alls hvarfsins — eins og hægasti
                 hlaupari stýrir hraða boðhlaupsteyma. Hraðalögmálið kemur beint úr hvarfefnum
-                hraðaákvarðandi skrefsins.
+                hraðatakmarkandi skrefsins.
               </p>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
               <p className="font-bold text-blue-800 mb-1">Hratt jafnvægi (fast equilibrium)</p>
               <p className="text-warm-700">
-                Ef hraðaákvarðandi skrefið inniheldur milliefni, notum við jafnvægisfastann úr hröðu
-                skrefinu á undan til að losna við milliefnið í lokajöfnunni.
+                Ef hraðatakmarkandi skrefið inniheldur milliefni, notum við jafnvægisfastann úr
+                hröðu skrefinu á undan til að losna við milliefnið í lokajöfnunni.
               </p>
               <p className="font-mono text-xs text-warm-800 mt-1">
                 <span className="whitespace-nowrap">NO + Br₂ ⇌ NOBr₂ (hratt)</span> &nbsp;&nbsp;{' '}
@@ -455,7 +455,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded bg-red-400"></span>
-              <span>Hægt skref (hraðaákvarðandi)</span>
+              <span>Hægt skref (hraðatakmarkandi)</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded bg-green-400"></span>

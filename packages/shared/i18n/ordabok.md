@@ -29,7 +29,7 @@ alloy;melmi
 amorphous solid;myndlaust fastefni
 amplitude;útslag
 analytical chemistry;efnagreining
-angular moment quantum number;hliðarskammtatala
+angular momentum quantum number;aukaskammtatala
 anion;anjón
 anode;anóða
 antibonding;andbindandi
@@ -467,7 +467,7 @@ precipitate;botnfall
 precipitation;útfelling
 precipitation reaction;útfellingarhvarf
 pressure;þrýstingur
-principal quantum number;höfuðskammtatala
+principal quantum number;aðalskammtatala
 product;myndefni
 proton;róteind
 qualitative;þáttbundinn
@@ -485,7 +485,7 @@ radical;stakeind
 radio wave;útvarpsbylgja
 radioactivity;geislavirkni
 rate constant;hraðafasti
-rate law;hraðajafna
+rate law;hraðalögmál
 rate-determining step;hraðatakmarkandi skref
 ray;geisli
 reactant;hvarfefni
@@ -498,6 +498,7 @@ real solution;raunlausn
 rearrangement;umröðun
 reciprocal;umhverfa
 redox;oxunar-afoxunarhvarf
+redox reaction;redox-hvarf
 reduction;afoxun
 reduction potential;afoxunarspenna
 reflux;sísuða

@@ -52,7 +52,7 @@ const RULES: { name: string; pattern: RegExp }[] = [
   { name: 'millistig (ordabok: milliefni)', pattern: /millistig/i },
   { name: 'frumskref (ordabok: grunnskref)', pattern: /frumskref/i },
   { name: 'árekstrar-kenning (ordabok: árekstrakenning)', pattern: /árekstrarkenn/i },
-  { name: 'hraðaákveðandi beside hraðaákvarðandi', pattern: /hraðaákveð/i },
+  { name: 'hraðaákveðandi (the step is hraðatakmarkandi)', pattern: /hraðaákveð/i },
   { name: 'jafnvægisstuðull (ordabok: jafnvægisfasti)', pattern: /jafnvægisstuð/i },
   { name: 'hvarfgangur as the energy-diagram axis', pattern: /^Hvarfgangur$/m },
 ];

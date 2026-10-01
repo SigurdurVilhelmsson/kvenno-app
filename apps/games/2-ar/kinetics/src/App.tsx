@@ -114,7 +114,7 @@ function App() {
             <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div className="min-w-0">
                 <div className="font-bold text-green-800">Stig 2: Hraðalögmál</div>
-                <div className="text-sm text-green-600">Byggja hraðajöfnur</div>
+                <div className="text-sm text-green-600">Byggja hraðalögmál</div>
               </div>
               <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
             </div>
@@ -150,7 +150,7 @@ function App() {
                 ✓ <strong>Hvarfgangur:</strong> Röð grunnskrefa sem mynda heildarhvarfið
               </li>
               <li>
-                ✓ <strong>Hraðaákvarðandi skref:</strong> Hægasta skrefið ræður heildarhraða
+                ✓ <strong>Hraðatakmarkandi skref:</strong> Hægasta skrefið ræður heildarhraða
               </li>
             </ul>
           </div>
@@ -280,7 +280,7 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-purple-600 mt-1">
-                    Grunnskref og hraðaákvarðandi skref
+                    Grunnskref og hraðatakmarkandi skref
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
                     Greindu hvarfganga og finndu milliefni.

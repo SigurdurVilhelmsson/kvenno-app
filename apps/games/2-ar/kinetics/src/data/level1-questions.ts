@@ -92,7 +92,7 @@ export const challenges: KineticsChallenge[] = [
     ],
     hints: {
       topic: 'Þetta snýst um hvörfunarröð (reaction order)',
-      strategy: 'Hugsaðu um sambandið milli styrks og hraða í hvarfhraðajöfnu',
+      strategy: 'Hugsaðu um sambandið milli styrks og hraða í hraðalögmálinu',
       method: 'Í 1. stigs hvarfi er veldisvísir = 1, þ.e. hraði = k[A]^1',
       solution:
         'hraði = k[A]. Ef [A] tvöfaldast: nýr hraði = k(2[A]) = 2k[A] = 2 × upphaflegur hraði',

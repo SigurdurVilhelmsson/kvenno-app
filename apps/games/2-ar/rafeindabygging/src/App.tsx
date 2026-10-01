@@ -327,7 +327,7 @@ function App() {
                 <strong>n</strong> (aðalskammtatala): 1, 2, 3, ... — ákvarðar hvolf/orkustig
               </p>
               <p>
-                <strong>l</strong> (hliðarskammtatala): 0 til n-1 — s(0), p(1), d(2), f(3)
+                <strong>l</strong> (aukaskammtatala): 0 til n-1 — s(0), p(1), d(2), f(3)
               </p>
               <p>
                 <strong>mₗ</strong> (segulskammtatala): -l til +l — stefna svigrúmsins

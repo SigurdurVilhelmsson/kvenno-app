@@ -157,7 +157,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 </div>
                 <div className="bg-green-50 p-3 rounded-lg">
                   <strong className="text-green-800">l</strong>{' '}
-                  <span className="text-green-600">(hliðarskammtatala)</span>
+                  <span className="text-green-600">(aukaskammtatala)</span>
                   <p className="text-sm text-green-700 mt-1">
                     Ákvarðar lögun svigrúmsins. l = 0 til n−1
                   </p>

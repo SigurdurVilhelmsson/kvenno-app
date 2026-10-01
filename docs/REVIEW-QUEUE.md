@@ -111,13 +111,14 @@ leave".
 - [ ] 54–57 takmarkandi
 - [ ] 58–60 lausnir
 - [ ] 61–62 einingakedjan
-- [ ] 63–64 rafeindabygging
+- [ ] 63–64 rafeindabygging. Item 63 done 2026-10-01.
 - [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
 - [ ] 67–71 vsepr-geometry. Items 68, 69 and 70 applied 2026-10-01; confirm 70's angle sets.
 - [ ] 72–74 intermolecular-forces. Item 72 done 2026-10-01.
 - [ ] 75–79 hess-law. Items 75 and 77 done 2026-10-01.
-- [ ] 80–82 kinetics. Item 82 done 2026-10-01.
-- [ ] 83–88 redox-reactions. Item 87 done 2026-10-01 (PR #74).
+- [ ] 80–82 kinetics. Item 82 done 2026-10-01; item 81 done except `stig efnahvarfs`, which
+      waits for item 1.
+- [ ] 83–88 redox-reactions. Items 83 and 87 done 2026-10-01.
 - [ ] 89–92 organic-nomenclature. Item 91 done 2026-10-01.
 - [ ] 93–94 gas-law-challenge
 - [ ] 95–100 jafnvaegisfasti

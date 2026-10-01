@@ -448,6 +448,43 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       '2026-10-01: ordabok.md gives resonance;vok, and the book builds on it — vokmynd and vokblendingur 41 times against 3. 2-ar/lewis-structures said samsvörunarformúlur. Feminine: vokmynd / vokmynd / vokmynd / vokmyndar, plural vokmyndir. The real structure they average to is the vokblendingur (masculine).',
   },
+  // Decisions 63, 81 and 83 (docs/plans/2026-09-23-mobile-pass-decisions.md), 2026-10-01.
+  // Each corrected ordabok.md to the textbook's word, so these are rule 2 over rule 1.
+  {
+    english: 'principal quantum number',
+    correct: 'aðalskammtatala',
+    banned: [/höfuðskammtatal/i],
+    guidance:
+      'Decision 63, 2026-10-01: the book says aðalskammtatala 17 times and höfuðskammtatala never, so ordabok.md was corrected from höfuðskammtatala. Nothing on the platform shipped the old glossary word; the row keeps it from arriving. Feminine weak, like tala: aðalskammtatala / -tölu / -tölu / -tölu, def. aðalskammtatalan.',
+  },
+  {
+    english: 'angular momentum quantum number',
+    correct: 'aukaskammtatala',
+    banned: [/hliðarskammtatal/i],
+    guidance:
+      "Decision 63, 2026-10-01, ruled with aðalskammtatala as a pair. The book's defining sentence (ch06/m68733) is 'Aukaskammtatalan (hverfiþungaskammtatalan), l'; its counts are thin either way — aukaskammtatala 3, hverfiþungaskammtatala 4, hliðarskammtatala 1, the last only in a list of alternative names. ordabok.md said hliðarskammtatala, under the misspelt headword 'angular moment', and both are corrected. 2-ar/rafeindabygging said it at two sites. Declines like aðalskammtatala.",
+  },
+  {
+    english: 'rate law',
+    correct: 'hraðalögmál',
+    banned: [/hraðajöfn/i, /hraðajafn/i],
+    guidance:
+      "Decision 81, 2026-10-01: the book says hraðalögmál 164 times against 9 for hraðajafna, and ordabok.md's own differential and integrated rate laws were already diffrað and heildað hraðalögmál. ordabok.md's rate law;hraðajafna is corrected. 2-ar/kinetics said both: a Stig 1 chip Hraðajafna and Byggja hraðajöfnur on the menu, beside hraðalögmál everywhere else. NOT a string swap: jafna is feminine and lögmál NEUTER — nom/acc hraðalögmál, dat hraðalögmáli, def. dat hraðalögmálinu, plural the same as the singular in nom/acc.",
+  },
+  {
+    english: 'rate-determining step',
+    correct: 'hraðatakmarkandi',
+    banned: [/hraðaákvarð/i],
+    guidance:
+      "Decision 81, 2026-10-01: ordabok.md gives rate-determining step;hraðatakmarkandi skref, and the book's defining sentence uses hraðatakmarkandi þrep, though its prose leans 12 to 4 the other way — the glossary and the definition settle it, as with prósentuheimtur. 2-ar/kinetics said hraðaákvarðandi at 17 sites. A present participle, indeclinable, so this one is a pure string swap.",
+  },
+  {
+    english: 'redox reaction',
+    correct: 'redox-hvarf',
+    banned: [/redox ?hv/i],
+    guidance:
+      "Decision 83, 2026-10-01: redox-hvarf is ruled acceptable beside ordabok.md's oxunar-afoxunarhvarf (69 corpus hits against 13 for redox-hv), and added to the glossary as redox reaction;redox-hvarf. Written with a hyphen: the book also has the solid redoxhvarf 9 times, and 2-ar/redox-reactions wrote it solid in its Stig 2 and Stig 3 intros beside redox-hvörf everywhere else. Neuter, like efnahvarf: redox-hvarf / -hvarf / -hvarfi / -hvarfs, plural redox-hvörf.",
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */
