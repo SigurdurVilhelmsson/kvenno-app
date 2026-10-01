@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { CheckCircle2, Hash, PencilLine, Scale } from 'lucide-react';
+
 import { Header, ErrorBoundary } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
@@ -105,42 +107,42 @@ function App() {
   // Complete screen
   if (activeLevel === 'complete') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 phone:mb-3 text-teal-600">
-            Til hamingju!
-          </h1>
-
-          <div className="text-center mb-8 phone:mb-4">
-            <div className="text-6xl mb-4 phone:text-4xl phone:mb-2">🏆</div>
-            <div className="text-2xl font-bold text-warm-800 mb-2">
-              Þú hefur lokið öllum stigum!
-            </div>
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
+        <Header
+          variant="game"
+          gameTitle="Lewis-formúlur"
+          backLabel="Til baka í valmynd"
+          onBack={() => setActiveLevel('menu')}
+        />
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 m-4 md:my-8 md:mx-auto">
+          <div className="flex items-center justify-center gap-3 mb-6 phone:mb-3">
+            <CheckCircle2 className="text-kvenno-orange shrink-0" size={32} aria-hidden="true" />
+            <h2 className="text-2xl md:text-3xl font-bold text-warm-800">Öllum stigum lokið</h2>
           </div>
 
           <div className="space-y-4 mb-8 phone:space-y-2 phone:mb-4">
-            <div className="bg-blue-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
+            <div className="bg-warm-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
-                <div className="font-bold text-blue-800">Stig 1: Gildisrafeindir</div>
-                <div className="text-sm text-blue-600">Telja og skilja</div>
+                <div className="font-bold text-warm-800">Stig 1: Gildisrafeindir</div>
+                <div className="text-sm text-warm-600">Telja og skilja</div>
               </div>
-              <div className="font-bold text-blue-700 whitespace-nowrap">{resultLabel(1)}</div>
+              <div className="font-bold text-warm-800 whitespace-nowrap">{resultLabel(1)}</div>
             </div>
 
-            <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
+            <div className="bg-warm-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
-                <div className="font-bold text-green-800">Stig 2: Teikna Lewis</div>
-                <div className="text-sm text-green-600">Byggja formúlur</div>
+                <div className="font-bold text-warm-800">Stig 2: Teikna Lewis</div>
+                <div className="text-sm text-warm-600">Byggja formúlur</div>
               </div>
-              <div className="font-bold text-green-700 whitespace-nowrap">{resultLabel(2)}</div>
+              <div className="font-bold text-warm-800 whitespace-nowrap">{resultLabel(2)}</div>
             </div>
 
-            <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
+            <div className="bg-warm-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
-                <div className="font-bold text-purple-800">Stig 3: Formleg hleðsla</div>
-                <div className="text-sm text-purple-600">Vokmyndir</div>
+                <div className="font-bold text-warm-800">Stig 3: Formleg hleðsla</div>
+                <div className="text-sm text-warm-600">Vokmyndir</div>
               </div>
-              <div className="font-bold text-purple-700 whitespace-nowrap">{resultLabel(3)}</div>
+              <div className="font-bold text-warm-800 whitespace-nowrap">{resultLabel(3)}</div>
             </div>
           </div>
 
@@ -168,7 +170,7 @@ function App() {
 
           <button
             onClick={() => setActiveLevel('menu')}
-            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
+            className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
           >
             Til baka í valmynd
           </button>
@@ -216,13 +218,15 @@ function App() {
             <button
               data-level-card="1"
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-2 border-warm-200 bg-white hover:border-kvenno-orange transition-all text-left"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-3xl sm:text-4xl phone:text-2xl">🔢</div>
+                <div className="flex items-center justify-center w-12 h-12 phone:w-9 phone:h-9 rounded-xl bg-kvenno-orange-50 text-kvenno-orange-700 shrink-0">
+                  <Hash size={24} aria-hidden="true" />
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="text-lg min-[360px]:text-xl font-bold text-blue-800">
+                    <span className="text-lg min-[360px]:text-xl font-bold text-warm-800">
                       Stig 1: Gildisrafeindir
                     </span>
                     {progress.level1Completed && (
@@ -231,7 +235,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-blue-600 mt-1">
+                  <div className="text-sm text-warm-600 mt-1">
                     Telja gildisrafeindir og skilja átturegluna
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
@@ -245,13 +249,15 @@ function App() {
             <button
               data-level-card="2"
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-2 border-warm-200 bg-white hover:border-kvenno-orange transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-3xl sm:text-4xl phone:text-2xl">✏️</div>
+                <div className="flex items-center justify-center w-12 h-12 phone:w-9 phone:h-9 rounded-xl bg-kvenno-orange-50 text-kvenno-orange-700 shrink-0">
+                  <PencilLine size={24} aria-hidden="true" />
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="text-lg min-[360px]:text-xl font-bold text-green-800">
+                    <span className="text-lg min-[360px]:text-xl font-bold text-warm-800">
                       Stig 2: Teikna Lewis-formúlur
                     </span>
                     {progress.level2Completed && (
@@ -260,7 +266,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-green-600 mt-1">
+                  <div className="text-sm text-warm-600 mt-1">
                     Byggja Lewis-formúlur skref fyrir skref
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
@@ -274,13 +280,15 @@ function App() {
             <button
               data-level-card="3"
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-2 border-warm-200 bg-white hover:border-kvenno-orange transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-3xl sm:text-4xl phone:text-2xl">⚖️</div>
+                <div className="flex items-center justify-center w-12 h-12 phone:w-9 phone:h-9 rounded-xl bg-kvenno-orange-50 text-kvenno-orange-700 shrink-0">
+                  <Scale size={24} aria-hidden="true" />
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="text-lg min-[360px]:text-xl font-bold text-purple-800">
+                    <span className="text-lg min-[360px]:text-xl font-bold text-warm-800">
                       Stig 3: Formleg hleðsla og vokmyndir
                     </span>
                     {progress.level3Completed && (
@@ -289,7 +297,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-purple-600 mt-1">
+                  <div className="text-sm text-warm-600 mt-1">
                     Reikna formlega hleðslu og finna vokmyndir
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
@@ -318,38 +326,38 @@ function App() {
 
           {/* Valence electron reference */}
           <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-warm-700 mb-2">🔢 Fjöldi gildisrafeinda</h3>
+            <h3 className="font-semibold text-warm-700 mb-2">Fjöldi gildisrafeinda</h3>
             <div className="grid grid-cols-4 md:grid-cols-8 gap-2 text-sm">
-              <div className="bg-red-50 p-2 rounded text-center">
-                <div className="font-bold text-red-700">1</div>
-                <div className="text-xs text-red-600">H, Li, Na</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">1</div>
+                <div className="text-xs text-warm-600">H, Li, Na</div>
               </div>
-              <div className="bg-orange-50 p-2 rounded text-center">
-                <div className="font-bold text-orange-700">2</div>
-                <div className="text-xs text-orange-600">Be, Mg</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">2</div>
+                <div className="text-xs text-warm-600">Be, Mg</div>
               </div>
-              <div className="bg-yellow-50 p-2 rounded text-center">
-                <div className="font-bold text-yellow-700">3</div>
-                <div className="text-xs text-yellow-600">B, Al</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">3</div>
+                <div className="text-xs text-warm-600">B, Al</div>
               </div>
-              <div className="bg-green-50 p-2 rounded text-center">
-                <div className="font-bold text-green-700">4</div>
-                <div className="text-xs text-green-600">C, Si</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">4</div>
+                <div className="text-xs text-warm-600">C, Si</div>
               </div>
-              <div className="bg-teal-50 p-2 rounded text-center">
-                <div className="font-bold text-teal-700">5</div>
-                <div className="text-xs text-teal-600">N, P</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">5</div>
+                <div className="text-xs text-warm-600">N, P</div>
               </div>
-              <div className="bg-blue-50 p-2 rounded text-center">
-                <div className="font-bold text-blue-700">6</div>
-                <div className="text-xs text-blue-600">O, S</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">6</div>
+                <div className="text-xs text-warm-600">O, S</div>
               </div>
-              <div className="bg-purple-50 p-2 rounded text-center">
-                <div className="font-bold text-purple-700">7</div>
-                <div className="text-xs text-purple-600">F, Cl, Br</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">7</div>
+                <div className="text-xs text-warm-600">F, Cl, Br</div>
               </div>
-              <div className="bg-warm-100 p-2 rounded text-center">
-                <div className="font-bold text-warm-700">8</div>
+              <div className="bg-white p-2 rounded text-center border border-warm-200">
+                <div className="font-bold text-warm-800">8</div>
                 <div className="text-xs text-warm-600">Ne, Ar</div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 
-import { FeedbackPanel, HintSystem, PhoneDisclosure } from '@shared/components';
+import { FeedbackPanel, Header, HintSystem, PhoneDisclosure } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import {
   focusTarget,
@@ -323,27 +323,28 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
-        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
-          <button
-            onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
-          >
-            <span>&larr;</span> Til baka
-          </button>
-          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
-            <div className="text-sm text-warm-600">
-              Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
+      {/* The shared header on every screen, as on the menu; its back control returns to the
+          menu. The level is named on the page, since the title test holds gameTitle to the
+          hub card's name. */}
+      <Header
+        variant="game"
+        gameTitle="Lewis-formúlur"
+        backLabel="Til baka í valmynd"
+        onBack={onBack}
+      />
+      <div className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
+        <div className="flex items-baseline justify-between gap-3 mb-6 phone:mb-2">
+          <div className="font-semibold text-warm-800 min-w-0">Stig 1: Gildisrafeindir</div>
+          <div className="text-sm text-warm-600 whitespace-nowrap">
+            Þraut {currentChallenge + 1} af {challenges.length}
           </div>
         </div>
 
         {/* Progress bar */}
         <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-blue-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
+            className="bg-kvenno-orange h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
@@ -359,7 +360,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="contents phone-land:block">
             <h2
               data-item-start
-              className="text-2xl font-bold text-blue-800 mb-4 phone:text-xl phone:mb-2"
+              className="text-2xl font-bold text-warm-800 mb-4 phone:text-xl phone:mb-2"
             >
               {challenge.title}
             </h2>
@@ -367,9 +368,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div ref={questionRef}>
               {/* Molecule display if applicable */}
               {challenge.molecule && (
-                <div className="bg-indigo-50 p-4 rounded-xl mb-4 phone:p-2 phone:mb-3">
+                <div className="bg-warm-50 p-4 rounded-xl mb-4 phone:p-2 phone:mb-3">
                   <div
-                    className="text-center font-mono text-3xl font-bold text-indigo-800 phone:text-2xl"
+                    className="text-center font-mono text-3xl font-bold text-warm-800 phone:text-2xl"
                     role="img"
                     aria-label={`Sameind: ${challenge.molecule}`}
                   >
@@ -382,7 +383,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     <div className="flex justify-center gap-4 mt-3 phone:mt-1">
                       {challenge.elements.map((el, idx) => (
                         <div key={idx} className="text-center">
-                          <div className="font-bold text-indigo-600">{el.symbol}</div>
+                          <div className="font-bold text-warm-800">{el.symbol}</div>
                           <div className="text-sm text-warm-600">
                             {el.count} × {el.valence} = {el.count * el.valence}
                           </div>
@@ -429,8 +430,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                             ? 'border-red-500 bg-red-50'
                             : 'border-warm-200 bg-warm-50 opacity-50'
                         : selectedOption === option.id
-                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                          : 'border-warm-300 hover:border-blue-400 hover:bg-blue-50'
+                          ? 'border-kvenno-orange bg-kvenno-orange-50 ring-2 ring-kvenno-orange-200'
+                          : 'border-warm-300 hover:border-kvenno-orange-300 hover:bg-kvenno-orange-50'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -464,7 +465,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     enterKeyHint="done"
                     disabled={showResult}
                     aria-label="Fjöldi rafeinda"
-                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-blue-500 focus:outline-none text-2xl font-mono text-center phone:p-2 phone:min-w-0"
+                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-2xl font-mono text-center phone:p-2 phone:min-w-0"
                     placeholder="?"
                   />
                   <span className="text-warm-600 font-medium">rafeindir</span>
@@ -490,7 +491,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 ref={checkRef}
                 onClick={checkAnswer}
                 disabled={shuffledOptions.length > 0 ? !selectedOption : !userAnswer}
-                className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
               >
                 Athuga svar
               </button>
@@ -535,7 +536,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               key="next"
               ref={nextRef}
               onClick={armed(nextChallenge)}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors phone-land:col-span-2"
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors phone-land:col-span-2"
             >
               {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 1'}
             </button>

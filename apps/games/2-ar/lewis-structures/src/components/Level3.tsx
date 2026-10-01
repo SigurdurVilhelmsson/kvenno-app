@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 
-import { PhoneDisclosure } from '@shared/components';
+import { Header, PhoneDisclosure } from '@shared/components';
 import {
   shuffleArray,
   useArmedAfter,
@@ -9,6 +9,7 @@ import {
   useRevealAfterCommit,
 } from '@shared/utils';
 
+import { FormalChargeExample } from './FormalChargeExample';
 import { LewisStructure } from './LewisStructure';
 import type { LewisDrawing } from '../utils/lewisLayout';
 
@@ -457,12 +458,18 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   // Right answers, counted flat (mobile-pass decisions 1 (b) and 2 (b)). Opening
   // the hint used to cut a right answer from 15 points to 8, silently.
   const [correctCount, setCorrectCount] = useState(0);
+  // Teach before test (docs/REVIEW-QUEUE.md C6): the level opens on a worked
+  // example, and the first question follows it.
+  const [showExample, setShowExample] = useState(true);
 
   const challenge = challenges[currentChallenge];
   // "Næsta þraut" swaps the question in place, so the page kept its offset.
   // Each new question brings the card's top back when it has scrolled off — at
   // any width, as the game's own helper did — and focus moves to its title.
-  const cardRef = useItemTop<HTMLDivElement>(currentChallenge, { anyWidth: true, gap: 0 });
+  const cardRef = useItemTop<HTMLDivElement>(`${currentChallenge}-${showExample}`, {
+    anyWidth: true,
+    gap: 0,
+  });
 
   // The data holds the correct option second on 6 of the 8 challenges and first
   // on the other two, so "the middle one" beat reading the question. Shuffled
@@ -627,239 +634,247 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
-        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
-          <button
-            onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
-          >
-            <span>&larr;</span> Til baka
-          </button>
-          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
-            <div className="text-sm text-warm-600">
-              Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
+      {/* The shared header on every screen, as on the menu; its back control returns to the
+          menu. The level is named on the page, since the title test holds gameTitle to the
+          hub card's name. */}
+      <Header
+        variant="game"
+        gameTitle="Lewis-formúlur"
+        backLabel="Til baka í valmynd"
+        onBack={onBack}
+      />
+      <div className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
+        <div className="flex items-baseline justify-between gap-3 mb-6 phone:mb-2">
+          <div className="font-semibold text-warm-800 min-w-0">
+            Stig 3: Formleg hleðsla og vokmyndir
+          </div>
+          <div className="text-sm text-warm-600 whitespace-nowrap">
+            Þraut {currentChallenge + 1} af {challenges.length}
           </div>
         </div>
 
         {/* Progress bar */}
         <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-purple-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
+            className="bg-kvenno-orange h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
+
+        {showExample && <FormalChargeExample onDone={() => setShowExample(false)} />}
 
         {/* Main content */}
         {/* A phone on its side: the molecule and its picture | the question, the options and
             Athuga, and after a check the verdict across both columns below them. The wrappers
             are display: contents everywhere else, so nothing else moves. */}
-        <div
-          ref={cardRef}
-          className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3 phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-4 phone-land:items-start"
-        >
-          <div className="contents phone-land:block">
-            {/* On a phone the molecule chip sits beside the title where both fit. */}
-            <div className="phone:flex phone:flex-wrap phone:items-center phone:gap-x-3 phone:gap-y-1 phone:mb-2">
-              <h2
-                data-item-start
-                className="text-xl sm:text-2xl font-bold text-purple-800 mb-2 phone:mb-0 phone:min-w-0"
-              >
-                {challenge.title}
-              </h2>
+        {!showExample && (
+          <div
+            ref={cardRef}
+            className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3 phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-4 phone-land:items-start"
+          >
+            <div className="contents phone-land:block">
+              {/* On a phone the molecule chip sits beside the title where both fit. */}
+              <div className="phone:flex phone:flex-wrap phone:items-center phone:gap-x-3 phone:gap-y-1 phone:mb-2">
+                <h2
+                  data-item-start
+                  className="text-xl sm:text-2xl font-bold text-warm-800 mb-2 phone:mb-0 phone:min-w-0"
+                >
+                  {challenge.title}
+                </h2>
 
-              {challenge.molecule && (
-                <div className="inline-block bg-purple-50 px-4 py-2 rounded-lg mb-4 phone:mb-0 phone:px-3 phone:py-1">
-                  <span
-                    className="font-mono text-2xl font-bold text-purple-700 phone:text-xl"
-                    role="img"
-                    aria-label={`Sameind: ${challenge.molecule}`}
-                  >
-                    {challenge.molecule}
-                  </span>
+                {challenge.molecule && (
+                  <div className="inline-block bg-warm-50 px-4 py-2 rounded-lg mb-4 phone:mb-0 phone:px-3 phone:py-1">
+                    <span
+                      className="font-mono text-2xl font-bold text-warm-800 phone:text-xl"
+                      role="img"
+                      aria-label={`Sameind: ${challenge.molecule}`}
+                    >
+                      {challenge.molecule}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-warm-600 mb-6 phone:mb-3">{challenge.description}</p>
+
+              {/* Atom info for FC calculations - with visual diagram */}
+              {challenge.atoms && (
+                <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+                  <h3 className="font-bold text-warm-700 mb-3 phone:mb-0">Rafeindasamsetning:</h3>
+                  {challenge.drawing &&
+                    renderFormalChargeProblem(challenge.drawing, challenge.atoms[0])}
+                  {/* FC calculation shown after answer */}
+                  {showResult &&
+                    challenge.atoms.map((atom, idx) => (
+                      <div
+                        key={`calc-${idx}`}
+                        className="mt-4 p-3 phone:mt-2 phone:p-2 bg-white rounded-lg border border-warm-200"
+                      >
+                        <div className="text-sm font-mono text-center">
+                          <span className="text-warm-600">FC = </span>
+                          <span className="text-warm-800">{atom.valenceElectrons}</span>
+                          <span className="text-warm-600"> - (</span>
+                          <span className="text-warm-800">{atom.lonePairElectrons}</span>
+                          <span className="text-warm-600"> + ½×</span>
+                          <span className="text-warm-800">{atom.bondingElectrons}</span>
+                          <span className="text-warm-600">) = </span>
+                          <span
+                            className={`font-bold ${atom.formalCharge === 0 ? 'text-green-600' : atom.formalCharge > 0 ? 'text-red-600' : 'text-blue-600'}`}
+                          >
+                            {atom.formalCharge > 0 ? '+' : ''}
+                            {atom.formalCharge}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+
+              {/* Structure options for best structure challenges - with visual diagram */}
+              {challenge.structures && (
+                <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+                  <h3 className="font-bold text-warm-700 mb-3 phone:mb-2">Möguleg form:</h3>
+                  {renderStructureComparison(challenge.structures)}
+                </div>
+              )}
+
+              {/* Resonance structures, after the answer: the question asks how many there are,
+                and drawing them all above it answered it. */}
+              {showResult && challenge.resonanceForms && (
+                <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+                  <h3 className="font-bold text-warm-700 mb-3 phone:mb-1">Vokmyndir:</h3>
+                  {renderResonanceStructures(challenge.resonanceForms)}
                 </div>
               )}
             </div>
 
-            <p className="text-warm-600 mb-6 phone:mb-3">{challenge.description}</p>
+            <div className="contents phone-land:block">
+              {/* Question */}
+              <p
+                ref={questionRef}
+                className="text-lg font-medium text-warm-800 mb-4 phone:text-base phone:mb-2"
+              >
+                {challenge.question}
+              </p>
 
-            {/* Atom info for FC calculations - with visual diagram */}
-            {challenge.atoms && (
-              <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
-                <h3 className="font-bold text-warm-700 mb-3 phone:mb-0">Rafeindasamsetning:</h3>
-                {challenge.drawing &&
-                  renderFormalChargeProblem(challenge.drawing, challenge.atoms[0])}
-                {/* FC calculation shown after answer */}
-                {showResult &&
-                  challenge.atoms.map((atom, idx) => (
-                    <div
-                      key={`calc-${idx}`}
-                      className="mt-4 p-3 phone:mt-2 phone:p-2 bg-white rounded-lg border border-purple-200"
-                    >
-                      <div className="text-sm font-mono text-center">
-                        <span className="text-warm-600">FC = </span>
-                        <span className="text-purple-600">{atom.valenceElectrons}</span>
-                        <span className="text-warm-600"> - (</span>
-                        <span className="text-blue-600">{atom.lonePairElectrons}</span>
-                        <span className="text-warm-600"> + ½×</span>
-                        <span className="text-green-600">{atom.bondingElectrons}</span>
-                        <span className="text-warm-600">) = </span>
-                        <span
-                          className={`font-bold ${atom.formalCharge === 0 ? 'text-green-600' : atom.formalCharge > 0 ? 'text-red-600' : 'text-blue-600'}`}
-                        >
-                          {atom.formalCharge > 0 ? '+' : ''}
-                          {atom.formalCharge}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-
-            {/* Structure options for best structure challenges - with visual diagram */}
-            {challenge.structures && (
-              <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
-                <h3 className="font-bold text-warm-700 mb-3 phone:mb-2">Möguleg form:</h3>
-                {renderStructureComparison(challenge.structures)}
-              </div>
-            )}
-
-            {/* Resonance structures, after the answer: the question asks how many there are,
-                and drawing them all above it answered it. */}
-            {showResult && challenge.resonanceForms && (
-              <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
-                <h3 className="font-bold text-warm-700 mb-3 phone:mb-1">Vokmyndir:</h3>
-                {renderResonanceStructures(challenge.resonanceForms)}
-              </div>
-            )}
-          </div>
-
-          <div className="contents phone-land:block">
-            {/* Question */}
-            <p
-              ref={questionRef}
-              className="text-lg font-medium text-warm-800 mb-4 phone:text-base phone:mb-2"
-            >
-              {challenge.question}
-            </p>
-
-            {/* Options */}
-            <div
-              ref={optionsRef}
-              className={
-                optionRow
-                  ? 'grid grid-cols-3 gap-2 mb-3'
-                  : 'space-y-3 mb-6 phone:space-y-2 phone:mb-3'
-              }
-            >
-              {shuffledOptions.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => !showResult && setSelectedAnswer(option.id)}
-                  disabled={showResult}
-                  className={`w-full p-4 phone:p-3 rounded-xl border-2 transition-all ${
-                    optionRow ? 'text-center font-mono text-lg' : 'text-left'
-                  } ${
-                    showResult
-                      ? option.correct
-                        ? 'border-green-500 bg-green-50'
+              {/* Options */}
+              <div
+                ref={optionsRef}
+                className={
+                  optionRow
+                    ? 'grid grid-cols-3 gap-2 mb-3'
+                    : 'space-y-3 mb-6 phone:space-y-2 phone:mb-3'
+                }
+              >
+                {shuffledOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => !showResult && setSelectedAnswer(option.id)}
+                    disabled={showResult}
+                    className={`w-full p-4 phone:p-3 rounded-xl border-2 transition-all ${
+                      optionRow ? 'text-center font-mono text-lg' : 'text-left'
+                    } ${
+                      showResult
+                        ? option.correct
+                          ? 'border-green-500 bg-green-50'
+                          : selectedAnswer === option.id
+                            ? 'border-red-500 bg-red-50'
+                            : 'border-warm-200 bg-warm-50 opacity-50'
                         : selectedAnswer === option.id
-                          ? 'border-red-500 bg-red-50'
-                          : 'border-warm-200 bg-warm-50 opacity-50'
-                      : selectedAnswer === option.id
-                        ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
-                        : 'border-warm-300 hover:border-purple-400 hover:bg-purple-50'
-                  }`}
-                >
-                  <span>{option.text}</span>
-                  {showResult && selectedAnswer === option.id && (
-                    <div
-                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
-                    >
-                      {option.explanation}
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
+                          ? 'border-kvenno-orange bg-kvenno-orange-50 ring-2 ring-kvenno-orange-200'
+                          : 'border-warm-300 hover:border-kvenno-orange-300 hover:bg-kvenno-orange-50'
+                    }`}
+                  >
+                    <span>{option.text}</span>
+                    {showResult && selectedAnswer === option.id && (
+                      <div
+                        className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                      >
+                        {option.explanation}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
 
-            {/* On a phone "Sýna vísbendingu" and Athuga share a row; Athuga wraps
+              {/* On a phone "Sýna vísbendingu" and Athuga share a row; Athuga wraps
                 under the link where both do not fit, and the opened hint takes a
                 row of its own above it. A plain block everywhere else. */}
-            <div className="phone:flex phone:flex-wrap phone:items-center phone:gap-x-3">
-              {/* Hint button */}
-              {!showResult && !showHint && (
-                <button
-                  onClick={() => setShowHint(true)}
-                  className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 phone:mb-2 phone:shrink-0 pointer-coarse:min-h-11"
-                >
-                  Sýna vísbendingu
-                </button>
-              )}
+              <div className="phone:flex phone:flex-wrap phone:items-center phone:gap-x-3">
+                {/* Hint button */}
+                {!showResult && !showHint && (
+                  <button
+                    onClick={() => setShowHint(true)}
+                    className="text-kvenno-orange-700 hover:text-kvenno-orange-800 text-sm underline mb-4 phone:mb-2 phone:shrink-0 pointer-coarse:min-h-11"
+                  >
+                    Sýna vísbendingu
+                  </button>
+                )}
 
-              {showHint && !showResult && (
-                <div
-                  ref={hintRef}
-                  className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 phone:basis-full"
-                >
-                  <span className="font-bold text-yellow-800">Vísbending: </span>
-                  <span className="text-yellow-900">{challenge.hint}</span>
-                </div>
-              )}
+                {showHint && !showResult && (
+                  <div
+                    ref={hintRef}
+                    className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 phone:basis-full"
+                  >
+                    <span className="font-bold text-yellow-800">Vísbending: </span>
+                    <span className="text-yellow-900">{challenge.hint}</span>
+                  </div>
+                )}
 
-              {/* Check answer button */}
-              {!showResult && (
-                <button
-                  key="check"
-                  ref={checkRef}
-                  onClick={checkAnswer}
-                  disabled={!selectedAnswer}
-                  className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 phone:mb-2 phone:w-auto phone:flex-1 phone:basis-40 rounded-xl transition-colors"
-                >
-                  Athuga svar
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Result feedback */}
-          {/* The group focused after the check (P3), named by its verdict. */}
-          {showResult && (
-            <div
-              ref={resultRef}
-              role="group"
-              tabIndex={-1}
-              aria-labelledby="lewis-l3-verdict"
-              className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 focus:outline-none phone-land:col-span-2 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
-            >
-              <div
-                id="lewis-l3-verdict"
-                className={`font-bold text-lg mb-2 phone:mb-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
-              >
-                {isCorrect ? 'Rétt!' : 'Rangt'}
+                {/* Check answer button */}
+                {!showResult && (
+                  <button
+                    key="check"
+                    ref={checkRef}
+                    onClick={checkAnswer}
+                    disabled={!selectedAnswer}
+                    className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 phone:mb-2 phone:w-auto phone:flex-1 phone:basis-40 rounded-xl transition-colors"
+                  >
+                    Athuga svar
+                  </button>
+                )}
               </div>
-              <div className="text-sm text-warm-700">{challenge.explanation}</div>
             </div>
-          )}
 
-          {/* Next button */}
-          {showResult && (
-            <button
-              key="next"
-              ref={nextRef}
-              onClick={armed(nextChallenge)}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors phone-land:col-span-2"
-            >
-              {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 3'}
-            </button>
-          )}
-        </div>
+            {/* Result feedback */}
+            {/* The group focused after the check (P3), named by its verdict. */}
+            {showResult && (
+              <div
+                ref={resultRef}
+                role="group"
+                tabIndex={-1}
+                aria-labelledby="lewis-l3-verdict"
+                className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 focus:outline-none phone-land:col-span-2 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+              >
+                <div
+                  id="lewis-l3-verdict"
+                  className={`font-bold text-lg mb-2 phone:mb-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                >
+                  {isCorrect ? 'Rétt!' : 'Rangt'}
+                </div>
+                <div className="text-sm text-warm-700">{challenge.explanation}</div>
+              </div>
+            )}
+
+            {/* Next button */}
+            {showResult && (
+              <button
+                key="next"
+                ref={nextRef}
+                onClick={armed(nextChallenge)}
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors phone-land:col-span-2"
+              >
+                {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 3'}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Reference card: closed on a phone until opened (P9), always open elsewhere. Held
-            back while question 1 is open, since question 1 asks for this formula. */}
-        {!(asksForFormula && !showResult) && (
+            back while question 1 is open, since question 1 asks for this formula, and while
+            the worked example, which states it, is on screen. */}
+        {!showExample && !(asksForFormula && !showResult) && (
           <PhoneDisclosure
             summary="Formúla formlegrar hleðslu"
             className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
@@ -868,7 +883,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">
               Formúla formlegrar hleðslu
             </h3>
-            <div className="bg-purple-50 p-3 rounded-lg text-center font-mono mb-3">
+            <div className="bg-warm-50 p-3 rounded-lg text-center font-mono mb-3">
               <strong>FC = V - (L + ½B)</strong>
             </div>
             <ul className="text-sm text-warm-600 space-y-1">

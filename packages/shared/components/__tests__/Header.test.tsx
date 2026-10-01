@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 
 import { Header } from '../Header';
 
@@ -97,5 +97,26 @@ describe('Header', () => {
     expect(cls).toMatch(/(^|\s)px-1(\s|$)/);
     expect(cls).toContain('sm:text-lg');
     expect(cls).toContain('sm:px-4');
+  });
+
+  it('goes back inside the game when given onBack, not to backHref', () => {
+    const onBack = vi.fn();
+    render(
+      <Header
+        variant="game"
+        backHref="/efnafraedi/2-ar/"
+        backLabel="Valmynd"
+        onBack={onBack}
+        gameTitle="Lewis-formúlur"
+      />
+    );
+
+    // A level screen returns to its game's menu, so it is a button, not a link
+    // out of the game; it keeps the link's 44 px target and its label.
+    expect(screen.queryByRole('link', { name: 'Valmynd' })).toBeNull();
+    const back = screen.getByRole('button', { name: 'Valmynd' });
+    expect(back.className).toContain('min-h-[44px]');
+    fireEvent.click(back);
+    expect(onBack).toHaveBeenCalledTimes(1);
   });
 });

@@ -3686,10 +3686,21 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 2 — dæmi á undan (PCl₃)',
+      steps: [
+        {
+          click: 'Stig 2: Teikna Lewis',
+        },
+      ],
+    },
+    {
       name: 'Stig 2 — teikniborð',
       steps: [
         {
           click: 'Stig 2: Teikna Lewis',
+        },
+        {
+          click: 'Sleppa dæminu og byrja að teikna',
         },
       ],
     },
@@ -3698,6 +3709,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           click: 'Stig 2: Teikna Lewis',
+        },
+        {
+          click: 'Sleppa dæminu og byrja að teikna',
         },
         {
           css: 'svg g[role=button]',
@@ -3712,6 +3726,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           click: 'Stig 2: Teikna Lewis',
+        },
+        {
+          click: 'Sleppa dæminu og byrja að teikna',
         },
         {
           css: 'svg g[role=button]:nth-of-type(1)',
@@ -3740,6 +3757,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Stig 2: Teikna Lewis',
         },
         {
+          click: 'Sleppa dæminu og byrja að teikna',
+        },
+        {
           click: 'Sýna vísbendingu',
         },
         {
@@ -3755,6 +3775,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           click: 'Stig 2: Teikna Lewis',
+        },
+        {
+          click: 'Sleppa dæminu og byrja að teikna',
         },
         {
           css: 'svg g[role=button]:nth-of-type(1)',
@@ -3778,6 +3801,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           click: 'Stig 2: Teikna Lewis',
+        },
+        {
+          click: 'Sleppa dæminu og byrja að teikna',
         },
         {
           css: 'svg g[role=button]:nth-of-type(1)',
@@ -3809,10 +3835,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Stig 2: Teikna Lewis',
         },
         {
-          click: 'Opna leiðsögn',
-        },
-        {
-          fill: ['input[type=number]', '8'],
+          fill: ['input[type=number]', '26'],
         },
         {
           click: 'Athuga',
@@ -3837,7 +3860,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Næsta skref',
         },
         {
-          fill: ['input[type=number]', '2'],
+          fill: ['input[type=number]', '3'],
         },
         {
           click: 'Athuga',
@@ -3851,10 +3874,21 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 3 — dæmi á undan (CO₂ og SO₂)',
+      steps: [
+        {
+          click: 'Stig 3: Formleg hleðsla',
+        },
+      ],
+    },
+    {
       name: 'Stig 3 — spurning, vísbending og rangt svar',
       steps: [
         {
           click: 'Stig 3: Formleg hleðsla',
+        },
+        {
+          click: 'Áfram í spurningarnar',
         },
         {
           click: 'Sýna vísbendingu',
@@ -3872,6 +3906,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           click: 'Stig 3: Formleg hleðsla',
+        },
+        {
+          click: 'Áfram í spurningarnar',
         },
         {
           click: 'FC = Gildisraf. - (óbundnar + ½ bundnar)',
@@ -3900,6 +3937,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           click: 'Stig 3: Formleg hleðsla',
+        },
+        {
+          click: 'Áfram í spurningarnar',
         },
         {
           click: 'FC = Gildisraf. - (óbundnar + ½ bundnar)',
@@ -3972,6 +4012,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Stig 2: Teikna Lewis',
         },
+        {
+          click: 'Sleppa dæminu og byrja að teikna',
+        },
       ],
       loop: {
         prompt: { css: '[data-item-start]' },
@@ -3999,9 +4042,6 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Stig 2: Teikna Lewis',
         },
-        {
-          click: 'Opna leiðsögn',
-        },
       ],
       loop: {
         prompt: { css: '[data-item-start]' },
@@ -4013,7 +4053,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           steps: [
             // Past the 400 ms guard on what `next` brought up.
             { wait: 450 },
-            { fill: ['input[type=number]', '8'] },
+            { fill: ['input[type=number]', '26'] },
             { clickRole: ['button', 'Athuga'] },
           ],
           next: { role: 'button', name: 'Næsta skref →' },
@@ -4028,6 +4068,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           click: 'Stig 3: Formleg hleðsla',
+        },
+        {
+          click: 'Áfram í spurningarnar',
         },
       ],
       loop: {

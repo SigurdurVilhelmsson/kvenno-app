@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PHONE_QUERY } from '@shared/utils';
 
 import App from '../App';
+import { pastExample } from './past-example';
 import { Level1 } from '../components/Level1';
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
@@ -241,6 +242,7 @@ describe('Stig 2: a right drawing, then the next molecule', () => {
   it('focuses the verdict, drops a Næsta press within 400 ms, then focuses the next title', () => {
     phone();
     const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    pastExample(container);
     const ui = within(container);
     drawWater(ui);
     expect(focused()?.getAttribute('role')).toBe('group');
@@ -264,6 +266,9 @@ describe('Stig 2: a right drawing, then the next molecule', () => {
   it('on desktop brings back only what opened above the window, as before', () => {
     top = -372;
     const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    pastExample(container);
+    // Closing the worked example brought the board's top back; this test is about Athuga.
+    scrollBy.mockClear();
     const ui = within(container);
     drawWater(ui);
     // the shorter result replaced the board, and its verdict opened above the window
@@ -274,6 +279,7 @@ describe('Stig 2: a right drawing, then the next molecule', () => {
 
   it('on desktop leaves the page alone when everything is on screen', () => {
     const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    pastExample(container);
     const ui = within(container);
     drawWater(ui);
     clock += 500;
@@ -327,6 +333,7 @@ describe('Stig 3', () => {
   /** Answer the first challenge and move on to the formal charge of O in H₂O. */
   function toChargeQuestion() {
     const { container } = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
+    pastExample(container);
     const ui = within(container);
     fireEvent.click(ui.getByRole('button', { name: 'FC = Gildisraf. - (óbundnar + ½ bundnar)' }));
     press(ui.getByRole('button', { name: 'Athuga svar' }));
@@ -356,6 +363,7 @@ describe('Stig 3', () => {
   it('opening the hint focuses the hint, not <body>', () => {
     phone();
     const { container } = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
+    pastExample(container);
     press(within(container).getByRole('button', { name: 'Sýna vísbendingu' }));
     expect(focused()).not.toBe(document.body);
     expect(focused()?.textContent?.startsWith('Vísbending:')).toBe(true);
@@ -368,7 +376,8 @@ describe('opening a level and coming back', () => {
     expect(scrollTo).not.toHaveBeenCalled();
     fireEvent.click(within(container).getByRole('button', { name: /Stig 3/ }));
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
-    expect(focused()?.textContent).toBe('Formleg hleðsla — formúlan');
+    // The level opens on its worked example (teach before test), so its heading.
+    expect(focused()?.textContent).toBe('Dæmi á undan: koldíoxíð');
   });
 
   it('back on the menu, focuses the first level not yet done', () => {

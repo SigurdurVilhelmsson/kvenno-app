@@ -88,7 +88,7 @@ All apps use the shared Tailwind preset from `packages/shared/styles/tailwind-pr
 
 `packages/shared/` provides site-wide components:
 
-- **Header** - Accepts `title` (default: "Námsvefur Kvennó"), `authSlot`, and `onInfoClick` (renders the "Upplýsingar" button only when provided). Also accepts `variant` (`'default' | 'game'`), `activeTrack`, `backHref`, `backLabel`, `gameTitle`. The default variant renders Efnafræði/Íslenskubraut track tabs (`Header.tsx:14-22`); there is **no** "Kennarar" button — it was removed, and `Header.test.tsx:32-36` asserts its absence.
+- **Header** - Accepts `title` (default: "Námsvefur Kvennó"), `authSlot`, and `onInfoClick` (renders the "Upplýsingar" button only when provided). Also accepts `variant` (`'default' | 'game'`), `activeTrack`, `backHref`, `backLabel`, `gameTitle`, and `onBack` — game variant only: the back control becomes a button that calls it instead of a link to `backHref`, so a level screen can carry the same header as its menu and return to it (`2-ar/lewis-structures` does, 2026-10-01). Name the level on the page, not in `gameTitle`, which `game-titles-agree.test.ts` holds to the hub card. The default variant renders Efnafræði/Íslenskubraut track tabs (`Header.tsx:14-22`); there is **no** "Kennarar" button — it was removed, and `Header.test.tsx:32-36` asserts its absence.
 - **Breadcrumbs** - "Heim > [Track] > [Section] > [Page]" navigation
 - **Footer** - Copyright notice. Accepts optional `department` prop (e.g., "Efnafræðideild") and an optional `subtitle` prop for a second line below the copyright.
 
@@ -144,6 +144,11 @@ read it before using any of these. Design: `docs/plans/2026-09-23-vertical-scrol
 - **`DragDropBuilder compact`** — denser items and zones on a phone; zone labels become sr-only.
   **`AnimatedMolecule fit`** — on a phone, crops the square to what is drawn and boosts label
   text. **`HintSystem startRevealed`** opens tiers on mount without firing callbacks.
+
+**`bg-kvenno-orange-dark` is not a colour.** The theme defines `kvenno-orange` and
+`kvenno-orange-50` … `-900`; there is no `-dark`, so the 77 `hover:bg-kvenno-orange-dark` in the
+games change nothing (`docs/REVIEW-QUEUE.md` D1). Use `hover:bg-kvenno-orange-600`, as the shared
+`Button` does.
 
 **Removed (Aug 2026):** `ParticleCelebration`/`useParticleCelebration`, `AnimatedBackground`, and
 `SoundToggle`/`useGameSounds` were deleted from `packages/shared/`. The April 2026 restructure

@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { pastExample } from './past-example';
 import { Level2 } from '../components/Level2';
 
 // Stig 2's hints open one at a time under the board. Opening the last one
@@ -13,6 +14,7 @@ afterEach(cleanup);
 describe('lewis-structures Stig 2 hint focus', () => {
   it('focuses each hint as it opens, and never <body>', () => {
     const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    pastExample(container);
     const ui = within(container);
     let opened = 0;
     for (;;) {

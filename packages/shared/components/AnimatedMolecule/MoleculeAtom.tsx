@@ -168,10 +168,13 @@ export function MoleculeAtom({
         </text>
       )}
 
-      {/* Formal charge badge (Lewis structures) */}
+      {/* Formal charge badge (Lewis structures). The white ring keeps it apart from an
+          atom of its own colour: a +1 badge is red, and so is O. */}
       {showFormalCharge && atom.formalCharge !== undefined && atom.formalCharge !== 0 && (
-        <g style={animationStyle}>
+        <g style={animationStyle} data-formal-charge-badge={atom.formalCharge}>
           <circle
+            stroke="white"
+            strokeWidth={2}
             cx={position.x + radius * 0.7}
             cy={position.y - radius * 0.7}
             r={Math.max(fontSize * 0.6, formalChargeSize * 0.8)}
