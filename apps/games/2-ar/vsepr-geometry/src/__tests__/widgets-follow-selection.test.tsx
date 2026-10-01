@@ -80,13 +80,13 @@ describe('the Stig 1 widgets follow the shape the student picks', () => {
   it('the shape-transition animation moves to the new domain count', () => {
     const { ui, container } = start();
     pick(ui, /Tetrahedral/);
-    expect(shapeTransition(container).textContent).toContain('4 svið');
+    expect(shapeTransition(container).textContent).toContain('4 svæði');
 
     pick(ui, /Octahedral/);
-    expect(shapeTransition(container).textContent).toContain('6 svið');
+    expect(shapeTransition(container).textContent).toContain('6 svæði');
 
     pick(ui, /Linear/);
-    expect(shapeTransition(container).textContent).toContain('2 svið');
+    expect(shapeTransition(container).textContent).toContain('2 svæði');
   });
 });
 

@@ -30,11 +30,11 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.5 },
       { x: 0.8, y: 0.5 },
     ],
-    description: '2 rafeindasvið hrinda hvort öðru 180° í sundur',
+    description: '2 svæði rafeindaþéttleika hrinda hvort öðru 180° í sundur',
   },
   {
     id: 'trigonal-planar',
-    name: 'Þríhyrnd slétt',
+    name: 'Þríhyrningslaga flatt',
     domains: 3,
     lonePairs: 0,
     positions: [
@@ -42,7 +42,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.75 },
       { x: 0.8, y: 0.75 },
     ],
-    description: '3 rafeindasvið raðast í 120° hornin',
+    description: '3 svæði rafeindaþéttleika raðast í 120° hornin',
   },
   {
     id: 'tetrahedral',
@@ -55,11 +55,11 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.8, y: 0.55 },
       { x: 0.5, y: 0.85 },
     ],
-    description: '4 rafeindasvið raðast í 109,5° hornin',
+    description: '4 svæði rafeindaþéttleika raðast í 109,5° hornin',
   },
   {
     id: 'trigonal-pyramidal',
-    name: 'Þríhyrnd pýramída',
+    name: 'Þríhyrningslaga pýramídi',
     domains: 4,
     lonePairs: 1,
     positions: [
@@ -96,7 +96,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.3, y: 0.3 },
       { x: 0.7, y: 0.7 },
     ],
-    description: '6 rafeindasvið raðast í 90° hornin',
+    description: '6 svæði rafeindaþéttleika raðast í 90° hornin',
   },
 ];
 
@@ -313,7 +313,7 @@ export function ElectronRepulsionAnimation({
                 : 'bg-white text-warm-700 hover:bg-purple-100 border border-warm-200'
             }`}
           >
-            {geo.domains} svið
+            {geo.domains} svæði
             {geo.lonePairs > 0 && ` (${geo.lonePairs} lp)`}
           </button>
         ))}

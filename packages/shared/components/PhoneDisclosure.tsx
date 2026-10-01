@@ -25,9 +25,9 @@ export interface PhoneDisclosureProps {
  * A reference block that starts closed on a phone and is always open everywhere else.
  *
  * **Only for true reference** — lookup tables and formula cards a student consults while
- * answering (design P9: Uppflettitöflur, Blendnitafla, Formhleðsluformúlan, …). Never for an
- * explore widget, which must not become one tap away, and never for a deliberate scaffold
- * the level is built around.
+ * answering (design P9: Uppflettitöflur, the svigrúmablöndun table, the formleg hleðsla
+ * formula, …). Never for an explore widget, which must not become one tap away, and never
+ * for a deliberate scaffold the level is built around.
  *
  * On a phone (`useIsPhone`, the same test as the `phone:` variant) it renders a 44 px
  * `<button aria-expanded aria-controls>` labelled with `summary`, and the content is hidden

@@ -116,7 +116,7 @@ function App() {
             <div className="bg-blue-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-blue-800">Stig 1: VSEPR Kenning</div>
-                <div className="text-sm text-blue-600">Lögun og rafeindasvið</div>
+                <div className="text-sm text-blue-600">Lögun og svæði rafeindaþéttleika</div>
               </div>
               <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
             </div>
@@ -131,7 +131,7 @@ function App() {
 
             <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
-                <div className="font-bold text-purple-800">Stig 3: Blendni og skautun</div>
+                <div className="font-bold text-purple-800">Stig 3: Svigrúmablöndun og skautun</div>
                 <div className="text-sm text-purple-600">Flóknar sameindir</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
@@ -147,16 +147,19 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
-                ✓ <strong>VSEPR:</strong> Rafeindasvið hrinda hvert öðru frá — ákvarðar lögun
+                ✓ <strong>VSEPR:</strong> Svæði rafeindaþéttleika hrinda hvert öðru frá — ákvarðar
+                lögun
               </li>
               <li>
-                ✓ <strong>Rafeindasvið:</strong> Bindandi pör + stök pör = rafeindasvið
+                ✓ <strong>Svæði rafeindaþéttleika:</strong> Bindandi pör + stök pör = svæði
+                rafeindaþéttleika
               </li>
               <li>
                 ✓ <strong>Sameindarlögun:</strong> Stök pör „fela sig" en hafa áhrif á horn
               </li>
               <li>
-                ✓ <strong>Blendni:</strong> sp (línuleg), sp² (þríhyrnd), sp³ (ferflötungur)...
+                ✓ <strong>Svigrúmablöndun:</strong> sp (línuleg), sp² (þríhyrningslaga flöt), sp³
+                (ferflötungur)...
               </li>
               <li>
                 ✓ <strong>Skautun:</strong> Ósamhverf lögun = sameind skautuð
@@ -202,13 +205,13 @@ function App() {
           <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8 phone:p-3 phone:mb-4">
             <h2 className="font-bold text-teal-800 mb-3">Hvað er VSEPR?</h2>
             <p className="text-teal-900 text-sm mb-4 phone:mb-3">
-              <strong>VSEPR</strong> (Valence Shell Electron Pair Repulsion) segir að rafeindasvið í
-              ysta hvolfi miðatóms <em>hrindi hvert öðru frá</em> og staðsetji sig eins langt í
-              sundur og hægt er. Þetta ákvarðar lögun sameindarinnar.
+              <strong>VSEPR</strong> (Valence Shell Electron Pair Repulsion) segir að svæði
+              rafeindaþéttleika í ysta hvolfi miðatóms <em>hrindi hvert öðru frá</em> og staðsetji
+              sig eins langt í sundur og hægt er. Þetta ákvarðar lögun sameindarinnar.
             </p>
             <div className="bg-white p-3 rounded-lg border border-teal-200">
               <p className="text-sm text-teal-800 font-mono text-center">
-                Rafeindasvið = Bindandi pör + Stök pör
+                Svæði rafeindaþéttleika = Bindandi pör + Stök pör
               </p>
             </div>
           </div>
@@ -238,7 +241,8 @@ function App() {
                     Kynntu þér mismunandi sameindarlögun
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                    Sjáðu hvernig rafeindasvið hrinda hvert öðru og mynda mismunandi rúmfræði.
+                    Sjáðu hvernig svæði rafeindaþéttleika hrinda hvert öðru og mynda mismunandi
+                    rúmfræði.
                   </div>
                 </div>
               </div>
@@ -267,7 +271,7 @@ function App() {
                     Ákvarðaðu lögun út frá Lewis-formúlu
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                    Teldu rafeindasvið og spáðu fyrir um sameindarlögun og tengihorn.
+                    Teldu svæði rafeindaþéttleika og spáðu fyrir um sameindarlögun og tengihorn.
                   </div>
                 </div>
               </div>
@@ -284,7 +288,7 @@ function App() {
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl phone:text-lg font-bold text-purple-800">
-                      Stig 3: Blendni og skautun
+                      Stig 3: Svigrúmablöndun og skautun
                     </span>
                     {progress.level3Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -293,7 +297,7 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-purple-600 mt-1">
-                    Ákvarðaðu blendni og hvort sameind sé skautuð
+                    Ákvarðaðu svigrúmablöndun og hvort sameind sé skautuð
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                     Flóknari sameindir með mörgum miðatómum og tvískautsvægi.

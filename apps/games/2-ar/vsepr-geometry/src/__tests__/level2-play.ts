@@ -25,20 +25,26 @@ export interface PoolEntry {
 /** The ten molecules, in the order the level serves them. */
 export const POOL: PoolEntry[] = [
   { formula: 'H₂O', bondingPairs: 2, lonePairs: 2, shape: 'Beygð', angle: '104,5' },
-  { formula: 'NH₃', bondingPairs: 3, lonePairs: 1, shape: 'Þríhyrnd pýramída', angle: '107' },
+  {
+    formula: 'NH₃',
+    bondingPairs: 3,
+    lonePairs: 1,
+    shape: 'Þríhyrningslaga pýramídi',
+    angle: '107',
+  },
   { formula: 'CH₄', bondingPairs: 4, lonePairs: 0, shape: 'Ferflötungur', angle: '109,5' },
   { formula: 'CO₂', bondingPairs: 2, lonePairs: 0, shape: 'Línuleg', angle: '180' },
-  { formula: 'BF₃', bondingPairs: 3, lonePairs: 0, shape: 'Þríhyrnd slétt', angle: '120' },
+  { formula: 'BF₃', bondingPairs: 3, lonePairs: 0, shape: 'Þríhyrningslaga flatt', angle: '120' },
   {
     formula: 'PCl₅',
     bondingPairs: 5,
     lonePairs: 0,
-    shape: 'Þríhyrnd tvípýramída',
+    shape: 'Þríhyrndur tvípýramídi',
     angle: '90 og 120',
   },
-  { formula: 'SF₄', bondingPairs: 4, lonePairs: 1, shape: 'Sjáldruslögun', angle: '90 og 120' },
+  { formula: 'SF₄', bondingPairs: 4, lonePairs: 1, shape: 'Vegasalt', angle: '90 og 120' },
   { formula: 'SF₆', bondingPairs: 6, lonePairs: 0, shape: 'Áttflötungur', angle: '90' },
-  { formula: 'XeF₄', bondingPairs: 4, lonePairs: 2, shape: 'Ferningsslétt', angle: '90' },
+  { formula: 'XeF₄', bondingPairs: 4, lonePairs: 2, shape: 'Ferningslaga flatt', angle: '90' },
   { formula: 'ClF₃', bondingPairs: 3, lonePairs: 2, shape: 'T-lögun', angle: '90' },
 ];
 
@@ -83,7 +89,7 @@ export function playMolecule(ui: Ui, container: HTMLElement, m: PoolEntry) {
   answerAngle(ui, container, m.angle);
   next(ui);
   fireEvent.change(container.querySelector('textarea') as HTMLElement, {
-    target: { value: 'Rafeindasviðin hrinda hvert öðru eins langt frá og hægt er.' },
+    target: { value: 'Svæði rafeindaþéttleika hrinda hvert öðru eins langt frá og hægt er.' },
   });
   check(ui);
   next(ui);

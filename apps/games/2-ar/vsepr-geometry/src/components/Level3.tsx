@@ -35,93 +35,124 @@ const challenges: Challenge[] = [
     type: 'hybridization',
     formula: 'CH₄',
     name: 'Metan',
-    question: 'Hvaða blendni (hybridization) hefur kolefnið í CH₄?',
+    question: 'Hvaða svigrúmablöndun (hybridization) hefur kolefnið í CH₄?',
     options: [
       {
         id: 'a',
         text: 'sp',
         correct: false,
-        explanation: 'sp blendni gefur línulega lögun (2 svið).',
+        explanation: 'sp-svigrúmablöndun gefur línulega lögun (2 svæði).',
       },
       {
         id: 'b',
         text: 'sp²',
         correct: false,
-        explanation: 'sp² blendni gefur þríhyrnda sléttu (3 svið).',
+        explanation: 'sp²-svigrúmablöndun gefur þríhyrningslaga flata lögun (3 svæði).',
       },
       {
         id: 'c',
         text: 'sp³',
         correct: true,
-        explanation: 'Rétt! 4 rafeindasvið = sp³ blendni = ferflötungur.',
+        explanation: 'Rétt! 4 svæði rafeindaþéttleika = sp³-svigrúmablöndun = ferflötungur.',
       },
-      { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeindasviða.' },
+      {
+        id: 'd',
+        text: 'sp³d',
+        correct: false,
+        explanation: 'sp³d krefst 5 svæða rafeindaþéttleika.',
+      },
     ],
-    hint: 'Fjöldi rafeindasviða ákvarðar blendnina: 2=sp, 3=sp², 4=sp³...',
+    hint: 'Fjöldi svæða rafeindaþéttleika ákvarðar svigrúmablöndunina: 2=sp, 3=sp², 4=sp³...',
     conceptExplanation:
-      'Blendni lýsir hvernig svigrúm atómsins blandast saman. Fjöldi blandaðra svigrúma = fjöldi rafeindasviða.',
+      'Svigrúmablöndun lýsir hvernig svigrúm atómsins blandast saman. Fjöldi blandaðra svigrúma = fjöldi svæða rafeindaþéttleika.',
   },
   {
     id: 2,
     type: 'hybridization',
     formula: 'CO₂',
     name: 'Koldíoxíð',
-    question: 'Hvaða blendni hefur kolefnið í CO₂?',
+    question: 'Hvaða svigrúmablöndun hefur kolefnið í CO₂?',
     options: [
       {
         id: 'a',
         text: 'sp',
         correct: true,
-        explanation: 'Rétt! 2 rafeindasvið (2 tvöfaldar tengingar) = sp blendni = línuleg.',
+        explanation: 'Rétt! 2 svæði rafeindaþéttleika (2 tvítengi) = sp-svigrúmablöndun = línuleg.',
       },
-      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² gefur þríhyrnda slétta lögun.' },
+      {
+        id: 'b',
+        text: 'sp²',
+        correct: false,
+        explanation: 'sp² gefur þríhyrningslaga flata lögun.',
+      },
       { id: 'c', text: 'sp³', correct: false, explanation: 'sp³ gefur ferflötung.' },
       {
         id: 'd',
-        text: 'Engin blendni',
+        text: 'Engin svigrúmablöndun',
         correct: false,
-        explanation: 'Kolefni notar alltaf blendni í efnatengsli.',
+        explanation: 'Kolefni notar alltaf svigrúmablöndun í efnatengjum.',
       },
     ],
-    hint: 'Tvöföld tenging telst sem EITT rafeindasvið.',
+    hint: 'Tvítengi telst sem EITT svæði rafeindaþéttleika.',
     conceptExplanation:
-      'Í CO₂ hefur kolefni 2 tvöfaldar tengingar við súrefni. Hver tvöföld tenging telur sem eitt rafeindasvið, svo C hefur 2 rafeindasvið og sp blendni.',
+      'Í CO₂ hefur kolefni 2 tvítengi við súrefni. Hvert tvítengi telur sem eitt svæði rafeindaþéttleika, svo C hefur 2 svæði og sp-svigrúmablöndun.',
   },
   {
     id: 3,
     type: 'hybridization',
     formula: 'NH₃',
     name: 'Ammóníak',
-    question: 'Hvaða blendni hefur nitrið í NH₃?',
+    question: 'Hvaða svigrúmablöndun hefur nitrið í NH₃?',
     options: [
-      { id: 'a', text: 'sp', correct: false, explanation: 'sp hefur aðeins 2 rafeindasvið.' },
-      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² hefur 3 rafeindasvið.' },
+      {
+        id: 'a',
+        text: 'sp',
+        correct: false,
+        explanation: 'sp hefur aðeins 2 svæði rafeindaþéttleika.',
+      },
+      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² hefur 3 svæði rafeindaþéttleika.' },
       {
         id: 'c',
         text: 'sp³',
         correct: true,
-        explanation: 'Rétt! 3 tengsl + 1 stakt par = 4 rafeindasvið = sp³.',
+        explanation: 'Rétt! 3 tengi + 1 stakt par = 4 svæði rafeindaþéttleika = sp³.',
       },
-      { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeindasviða.' },
+      {
+        id: 'd',
+        text: 'sp³d',
+        correct: false,
+        explanation: 'sp³d krefst 5 svæða rafeindaþéttleika.',
+      },
     ],
-    hint: 'Mundu að telja STÖK PÖR sem rafeindasvið líka!',
+    hint: 'Mundu að telja STÖK PÖR sem svæði rafeindaþéttleika líka!',
     conceptExplanation:
-      'NH₃ hefur 3 N-H tengsl og 1 stakt par á nitri = 4 rafeindasvið = sp³ blendni. Þó sameindarlögunin sé þríhyrnd pýramída er blendnin enn sp³.',
+      'NH₃ hefur 3 N-H tengi og 1 stakt par á nitri = 4 svæði rafeindaþéttleika = sp³-svigrúmablöndun. Þó sameindin sé þríhyrningslaga pýramídi er svigrúmablöndunin enn sp³.',
   },
   {
     id: 4,
     type: 'hybridization',
     formula: 'SF₆',
     name: 'Brennisteinshexaflúoríð',
-    question: 'Hvaða blendni hefur brennisteinninn í SF₆?',
+    question: 'Hvaða svigrúmablöndun hefur brennisteinninn í SF₆?',
     options: [
-      { id: 'a', text: 'sp³', correct: false, explanation: 'sp³ hefur aðeins 4 rafeindasvið.' },
-      { id: 'b', text: 'sp³d', correct: false, explanation: 'sp³d hefur 5 rafeindasvið.' },
+      {
+        id: 'a',
+        text: 'sp³',
+        correct: false,
+        explanation: 'sp³ hefur aðeins 4 svæði rafeindaþéttleika.',
+      },
+      {
+        id: 'b',
+        text: 'sp³d',
+        correct: false,
+        explanation: 'sp³d hefur 5 svæði rafeindaþéttleika.',
+      },
       {
         id: 'c',
         text: 'sp³d²',
         correct: true,
-        explanation: 'Rétt! 6 tengsl = 6 rafeindasvið = sp³d² blendni = áttflötungur.',
+        explanation:
+          'Rétt! 6 tengi = 6 svæði rafeindaþéttleika = sp³d²-svigrúmablöndun = áttflötungur.',
       },
       {
         id: 'd',
@@ -130,9 +161,9 @@ const challenges: Challenge[] = [
         explanation: 'Þetta er sama og sp³d², en sp³d² er algengari ritháttur.',
       },
     ],
-    hint: 'S hefur 6 F tengingar = 6 rafeindasvið. Þetta krefst d-svigrúma.',
+    hint: 'S hefur 6 S-F tengi = 6 svæði rafeindaþéttleika. Þetta krefst d-svigrúma.',
     conceptExplanation:
-      'Fyrir 5+ rafeindasvið þarf að nota d-svigrúm. 5 svið = sp³d, 6 svið = sp³d². Þetta er mögulegt fyrir frumefni í 3. röð og neðar.',
+      'Fyrir 5+ svæði rafeindaþéttleika þarf að nota d-svigrúm. 5 svæði = sp³d, 6 svæði = sp³d². Þetta er mögulegt fyrir frumefni í 3. röð og neðar.',
   },
   // Polarity questions
   {
@@ -169,7 +200,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hugsaðu um lögunina — ef O-H tvískautsvægin benda í mismunandi áttir, hvað gerist?',
     conceptExplanation:
-      'Í H₂O eru tvö skautuð O-H tengisl sem benda í mismunandi áttir (104,5° horn). Tvískautsvægin jafnast ekki út → skautuð sameind.',
+      'Í H₂O eru tvö skautuð O-H tengi sem benda í mismunandi áttir (104,5° horn). Tvískautsvægin jafnast ekki út → skautuð sameind.',
   },
   {
     id: 6,
@@ -182,7 +213,7 @@ const challenges: Challenge[] = [
         id: 'a',
         text: 'Skautuð',
         correct: false,
-        explanation: 'Þó C=O tengslin séu skautuð, þá er sameindin ekki skautuð.',
+        explanation: 'Þó C=O tengin séu skautuð, þá er sameindin ekki skautuð.',
       },
       {
         id: 'b',
@@ -218,13 +249,13 @@ const challenges: Challenge[] = [
         id: 'a',
         text: 'Skautuð vegna F atóma',
         correct: false,
-        explanation: 'Þó B-F tengslin séu skautuð, er sameindin samhverf.',
+        explanation: 'Þó B-F tengin séu skautuð, er sameindin samhverf.',
       },
       {
         id: 'b',
         text: 'Óskautuð vegna samhverfu',
         correct: true,
-        explanation: 'Rétt! Þríhyrnd slétt lögun er samhverf — tvískautsvægin jafnast út.',
+        explanation: 'Rétt! Þríhyrningslaga flatt lögun er samhverf — tvískautsvægin jafnast út.',
       },
       {
         id: 'c',
@@ -239,9 +270,9 @@ const challenges: Challenge[] = [
         explanation: 'Sameind er annaðhvort skautuð eða ekki.',
       },
     ],
-    hint: 'Þríhyrnd slétt lögun (120°) — þrjú eins tengisl.',
+    hint: 'Þríhyrningslaga flöt lögun (120°): þrjú eins tengi.',
     conceptExplanation:
-      'BF₃ er þríhyrnd slétt (120° milli allra tengja). Þrjú jafn skautuð B-F tengisl draga í þrjár jafnar áttir → kraftarnir jafnast út → óskautuð sameind.',
+      'BF₃ er þríhyrningslaga flatt (120° milli allra tengja). Þrjú jafn skautuð B-F tengi draga í þrjár jafnar áttir → kraftarnir jafnast út → óskautuð sameind.',
   },
   {
     id: 8,
@@ -266,7 +297,7 @@ const challenges: Challenge[] = [
         id: 'c',
         text: 'Aðeins H er skautað',
         correct: false,
-        explanation: 'Bæði C-H og C-Cl tengisl eru skautuð.',
+        explanation: 'Bæði C-H og C-Cl tengi eru skautuð.',
       },
       {
         id: 'd',
@@ -277,7 +308,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Berðu saman CH₄ (óskautuð) við CHCl₃ — hvað er breytt?',
     conceptExplanation:
-      'Í CH₄ eru öll 4 tengslin eins → samhverf → óskautuð. Í CHCl₃ eru 1 H og 3 Cl — ósamhverf → skautuð. C-Cl tengsl draga miklu meira en C-H.',
+      'Í CH₄ eru öll 4 tengin eins → samhverf → óskautuð. Í CHCl₃ eru 1 H og 3 Cl — ósamhverf → skautuð. C-Cl tengi draga miklu meira en C-H.',
   },
   // Multi-center molecules
   {
@@ -286,7 +317,7 @@ const challenges: Challenge[] = [
     formula: 'C₂H₄',
     name: 'Eten (etýlen)',
     lewisStructure: 'H₂C = CH₂',
-    question: 'Hvaða blendni hafa BÆÐI kolefnin í C₂H₄ (eten)?',
+    question: 'Hvaða svigrúmablöndun hafa BÆÐI kolefnin í C₂H₄ (eten)?',
     options: [
       {
         id: 'a',
@@ -298,24 +329,25 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'sp²',
         correct: true,
-        explanation: 'Rétt! Hvert C hefur 3 rafeindasvið (2 C-H + 1 C=C) = sp² blendni.',
+        explanation:
+          'Rétt! Hvert C hefur 3 svæði rafeindaþéttleika (2 C-H + 1 C=C) = sp²-svigrúmablöndun.',
       },
       {
         id: 'c',
         text: 'sp³',
         correct: false,
-        explanation: 'sp³ krefst 4 rafeindasviða, en hvert C hefur aðeins 3.',
+        explanation: 'sp³ krefst 4 svæða rafeindaþéttleika, en hvert C hefur aðeins 3.',
       },
       {
         id: 'd',
-        text: 'Mismunandi blendni',
+        text: 'Mismunandi svigrúmablöndun',
         correct: false,
         explanation: 'Bæði kolefnin eru í nákvæmlega sömu stöðu.',
       },
     ],
-    hint: 'Tvöföld C=C tenging telur sem EITT rafeindasvið. Teldu svið í kringum hvort C.',
+    hint: 'Tvítengið C=C telur sem EITT svæði rafeindaþéttleika. Teldu svæðin í kringum hvort C.',
     conceptExplanation:
-      'Í C₂H₄ hefur hvert C: 2 tengsl við H + 1 tengsl við hitt C (tvöfalt tengi). = 3 rafeindasvið = sp² blendni. Öll atóm liggja í einni sléttu.',
+      'Í C₂H₄ hefur hvert C: 2 tengi við H + 1 tvítengi við hitt C = 3 svæði rafeindaþéttleika = sp²-svigrúmablöndun. Öll atóm liggja í einni sléttu.',
   },
   {
     id: 10,
@@ -323,26 +355,37 @@ const challenges: Challenge[] = [
     formula: 'C₂H₂',
     name: 'Etín (asetýlen)',
     lewisStructure: 'H-C≡C-H',
-    question: 'Hvaða blendni hafa kolefnin í C₂H₂ (etín)?',
+    question: 'Hvaða svigrúmablöndun hafa kolefnin í C₂H₂ (etín)?',
     options: [
       {
         id: 'a',
         text: 'sp',
         correct: true,
-        explanation: 'Rétt! Hvert C hefur 2 rafeindasvið (1 C-H + 1 C≡C) = sp blendni = línuleg.',
+        explanation:
+          'Rétt! Hvert C hefur 2 svæði rafeindaþéttleika (1 C-H + 1 C≡C) = sp-svigrúmablöndun = línuleg.',
       },
-      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² krefst 3 rafeindasviða.' },
-      { id: 'c', text: 'sp³', correct: false, explanation: 'sp³ krefst 4 rafeindasviða.' },
+      {
+        id: 'b',
+        text: 'sp²',
+        correct: false,
+        explanation: 'sp² krefst 3 svæða rafeindaþéttleika.',
+      },
+      {
+        id: 'c',
+        text: 'sp³',
+        correct: false,
+        explanation: 'sp³ krefst 4 svæða rafeindaþéttleika.',
+      },
       {
         id: 'd',
-        text: 'Engin blendni',
+        text: 'Engin svigrúmablöndun',
         correct: false,
-        explanation: 'Kolefni notar alltaf blendni í sameindum.',
+        explanation: 'Kolefni notar alltaf svigrúmablöndun í sameindum.',
       },
     ],
-    hint: 'Þreföld tenging telur einnig sem EITT rafeindasvið.',
+    hint: 'Þrítengi telur einnig sem EITT svæði rafeindaþéttleika.',
     conceptExplanation:
-      'Í C₂H₂ er þreföld tenging milli kolefnanna. Hvert C hefur aðeins 2 rafeindasvið (C-H + C≡C) = sp blendni. Sameindin er línuleg (180°).',
+      'Í C₂H₂ er þrítengi milli kolefnanna. Hvert C hefur aðeins 2 svæði rafeindaþéttleika (C-H + C≡C) = sp-svigrúmablöndun. Sameindin er línuleg (180°).',
   },
   // Dipole moment questions
   {
@@ -351,20 +394,20 @@ const challenges: Challenge[] = [
     formula: 'CCl₄',
     name: 'Kolefnistetraklóríð',
     question:
-      'CCl₄ hefur fjögur C-Cl tengisl sem eru öll skautuð. Af hverju er CCl₄ þá ÓSKAUTUÐ sameind?',
+      'CCl₄ hefur fjögur C-Cl tengi sem eru öll skautuð. Af hverju er CCl₄ þá ÓSKAUTUÐ sameind?',
     options: [
       {
         id: 'a',
-        text: 'C-Cl tengisl eru í raun óskautuð',
+        text: 'C-Cl tengi eru í raun óskautuð',
         correct: false,
-        explanation: 'C-Cl tengisl ERU skautuð (Cl er rafneikvæðara).',
+        explanation: 'C-Cl tengi ERU skautuð (Cl er rafneikvæðara).',
       },
       {
         id: 'b',
         text: 'Ferflötungslögun er samhverf — tvískautsvægi jafnast út',
         correct: true,
         explanation:
-          'Rétt! Fjögur jafn skautuð tengisl í ferflötungi draga í jafnar áttir → nettó tvískautsvægi = 0.',
+          'Rétt! Fjögur jafn skautuð tengi í ferflötungi draga í jafnar áttir → nettó tvískautsvægi = 0.',
       },
       {
         id: 'c',
@@ -388,7 +431,7 @@ const challenges: Challenge[] = [
     type: 'dipole',
     formula: 'NF₃ vs. NH₃',
     name: 'Samanburður',
-    question: 'Bæði NF₃ og NH₃ hafa þríhyrnda pýramídalögun. Hvor er MEIRA skautuð?',
+    question: 'Bæði NF₃ og NH₃ eru þríhyrningslaga pýramídar. Hvor er MEIRA skautuð?',
     options: [
       {
         id: 'a',
@@ -416,9 +459,9 @@ const challenges: Challenge[] = [
         explanation: 'Báðar eru skautaðar, en misjafnlega.',
       },
     ],
-    hint: 'Hugsaðu um staka parið á N — hvert bendir það? Og hvert benda tengslin?',
+    hint: 'Hugsaðu um staka parið á N — hvert bendir það? Og hvert benda tengin?',
     conceptExplanation:
-      'Í NH₃: N-H tengisl benda FRÁ N (H er δ+) og staka parið bendir einnig upp → allir kraftar benda í SÖMU ÁTTINA → stórt tvískautsvægi. Í NF₃: N-F tengisl benda MÓTI N (F er δ-) en staka parið bendir í GAGNSTÆÐA ÁTT → kraftar hætta við → minna tvískautsvægi.',
+      'Í NH₃: N-H tengi benda FRÁ N (H er δ+) og staka parið bendir einnig upp → allir kraftar benda í SÖMU ÁTTINA → stórt tvískautsvægi. Í NF₃: N-F tengi benda MÓTI N (F er δ-) en staka parið bendir í GAGNSTÆÐA ÁTT → kraftar hætta við → minna tvískautsvægi.',
   },
 ];
 
@@ -439,7 +482,12 @@ const HYBRIDIZATION_CONFIGS: Record<
   2: { label: 'sp', orbitals: '1s + 1p', angle: '180°', shape: 'Línuleg' },
   3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrnd' },
   4: { label: 'sp³', orbitals: '1s + 3p', angle: '109,5°', shape: 'Ferflötungur' },
-  5: { label: 'sp³d', orbitals: '1s + 3p + 1d', angle: '90°/120°', shape: 'Tvípýramída' },
+  5: {
+    label: 'sp³d',
+    orbitals: '1s + 3p + 1d',
+    angle: '90°/120°',
+    shape: 'Þríhyrndur tvípýramídi',
+  },
   6: { label: 'sp³d²', orbitals: '1s + 3p + 2d', angle: '90°', shape: 'Áttflötungur' },
 };
 
@@ -553,7 +601,7 @@ function HybridizationDiagram({ domains }: { domains: number }) {
 
   return (
     <div className="bg-purple-50 rounded-xl p-3 sm:p-4 border border-purple-200">
-      <div className="text-sm font-bold text-purple-800 mb-3">Blendni: {c.label}</div>
+      <div className="text-sm font-bold text-purple-800 mb-3">Svigrúmablöndun: {c.label}</div>
       <HybridizationDiagramStacked domains={domains} />
       {/* The wide layout, from sm up. Its right-hand shape label is wider than
           the viewBox for the longer names, so it is allowed to spill into the
@@ -772,7 +820,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'hybridization':
-        return 'Blendni';
+        return 'Svigrúmablöndun';
       case 'polarity':
         return 'Skautun';
       case 'multi_center':
@@ -1022,16 +1070,18 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         {/* Reference tables: on a phone each starts closed behind its own heading (design P9). */}
         <div className="mt-6 grid md:grid-cols-2 gap-4 phone:mt-3 phone:gap-3">
           <PhoneDisclosure
-            summary="🧬 Blendnitafla"
+            summary="🧬 Tafla um svigrúmablöndun"
             className="bg-white rounded-xl p-4 shadow-sm phone:p-3"
             buttonClassName="text-warm-700"
           >
-            <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">🧬 Blendnitafla</h3>
+            <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">
+              🧬 Tafla um svigrúmablöndun
+            </h3>
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-warm-50">
                   <th className="p-2 text-left">Svið</th>
-                  <th className="p-2 text-left">Blendni</th>
+                  <th className="p-2 text-left">Svigrúmablöndun</th>
                   <th className="p-2 text-left">Lögun</th>
                 </tr>
               </thead>
@@ -1054,7 +1104,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <tr className="border-t">
                   <td className="p-2">5</td>
                   <td className="hybridization-sp3d">sp³d</td>
-                  <td>Tvípýramída</td>
+                  <td>Þríhyrndur tvípýramídi</td>
                 </tr>
                 <tr className="border-t">
                   <td className="p-2">6</td>

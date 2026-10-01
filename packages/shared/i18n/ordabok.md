@@ -188,6 +188,7 @@ electron;rafeind
 electron affinity;rafsækni
 electron configuration;rafeindaskipan
 electron density;rafeindaþéttleiki
+electron domain;svæði rafeindaþéttleika
 electron donating group;rafeindaveitandi hópur
 electron microscope;rafeindasmásjá
 electron pair;rafeindapar
@@ -236,6 +237,7 @@ first order reaction;fyrsta stigs efnahvarf
 fission;kjarnaklofnun
 flame test;logapróf
 fluorescence;flúrljómun
+formal charge;formleg hleðsla
 formation constant;myndunarfasti
 forward reaction;framhvarf
 fractional crystallization;hlutkristöllun
@@ -285,6 +287,7 @@ hydrolysis;vatnsrof
 hydrophilic;vatnssækinn
 hydrophobic;vatnsfælinn
 hypertonic;yfirþrýstinn
+hypervalent molecule;ofgild sameind
 hypotonic;undirþrýstinn
 ICE table;ICE-tafla
 ideal gas;kjörgas
@@ -405,6 +408,7 @@ nucleophile;kjarnsækir
 nucleus;kjarni
 octahedral;áttflötungur
 octahedral;áttflötungslaga
+octet;áttund
 orbital;svigrúm
 orbital hybridization;svigrúmablöndun
 order of reaction;stig efnahvarfs
@@ -503,6 +507,8 @@ relative atomic mass;meðalatómmassi
 resolution;upplausn
 resonance;vok
 resonance;samhrif
+resonance hybrid;vokblendingur
+resonance structure;vokmynd
 reverse reaction;bakhvarf
 reversible;afturkræfur
 rotary evaporator;hverfisvali
@@ -597,6 +603,7 @@ transition metal;hliðarmálmur
 transition state;virkniástand
 transmittans;hleypni
 tridentate;þrítenntur
+trigonal bipyramidal;þríhyrndur tvípýramídi
 trigonal planar;þríhyrningslaga flatt
 trigonal pyramidal;þríhyrningslaga pýramídi
 triple bond;þrítengi

@@ -108,8 +108,8 @@ describe('the menu', () => {
     expect(focused()?.hasAttribute('data-item-start')).toBe(true);
 
     fireEvent.click(view.getByRole('button', { name: /Til baka/ }));
-    fireEvent.click(view.getByRole('button', { name: /Stig 3: Blendni og skautun/ }));
-    expect(focused()?.textContent).toMatch(/^Hvaða blendni/);
+    fireEvent.click(view.getByRole('button', { name: /Stig 3: Svigrúmablöndun og skautun/ }));
+    expect(focused()?.textContent).toMatch(/^Hvaða svigrúmablöndun/);
   });
 
   it('on return, focuses the first level not yet done', () => {
@@ -127,7 +127,7 @@ describe('the menu', () => {
     );
     const { container } = render(<App />);
     const view = within(container);
-    fireEvent.click(view.getByRole('button', { name: /Stig 3: Blendni og skautun/ }));
+    fireEvent.click(view.getByRole('button', { name: /Stig 3: Svigrúmablöndun og skautun/ }));
     fireEvent.click(view.getByRole('button', { name: /Til baka/ }));
     expect(focused()?.getAttribute('data-level-card')).toBe('2');
   });
@@ -135,7 +135,7 @@ describe('the menu', () => {
   it('between a phone and md, jumps to the top as the old helper did', () => {
     width = 'tablet';
     const { container } = render(<App />);
-    fireEvent.click(within(container).getByRole('button', { name: /Stig 3: Blendni/ }));
+    fireEvent.click(within(container).getByRole('button', { name: /Stig 3: Svigrúmablöndun/ }));
     // No site header on a level screen: the page's top goes to 0, in one jump.
     expect(scrollBy).toHaveBeenCalledWith({ top: -308, behavior: 'auto' });
     expect(scrollTo).not.toHaveBeenCalled();
@@ -144,10 +144,10 @@ describe('the menu', () => {
   it('from md up moves focus, never the page', () => {
     width = 'desktop';
     const { container } = render(<App />);
-    fireEvent.click(within(container).getByRole('button', { name: /Stig 3: Blendni/ }));
+    fireEvent.click(within(container).getByRole('button', { name: /Stig 3: Svigrúmablöndun/ }));
     expect(scrollBy).not.toHaveBeenCalled();
     expect(scrollTo).not.toHaveBeenCalled();
-    expect(focused()?.textContent).toMatch(/^Hvaða blendni/);
+    expect(focused()?.textContent).toMatch(/^Hvaða svigrúmablöndun/);
   });
 });
 
@@ -185,7 +185,7 @@ describe('Stig 1, explore', () => {
     expect(view.getByRole('radio', { name: /Áttflötungur/ }).getAttribute('aria-checked')).toBe(
       'true'
     );
-    expect(view.getByRole('tabpanel').textContent).toContain('Sex rafeindasvið');
+    expect(view.getByRole('tabpanel').textContent).toContain('Sex svæði rafeindaþéttleika');
     expect(scrollBy).toHaveBeenCalledWith({ top: -308, behavior: 'smooth' });
 
     // Arrow keys move the pick along the shapes, and focus with it.
@@ -248,7 +248,7 @@ describe('Stig 1, questions', () => {
     expect(view.getByText('Spurning 2 af 8')).toBeTruthy();
     // The card's top was above the screen: it comes back, and the question is focused.
     expect(scrollBy).toHaveBeenCalledWith({ top: -308, behavior: 'smooth' });
-    expect(focused()?.textContent).toMatch(/^Hversu mörg rafeindasvið/);
+    expect(focused()?.textContent).toMatch(/^Hversu mörg svæði rafeindaþéttleika/);
   });
 
   it('opening the hint moves focus to it', () => {
@@ -278,7 +278,7 @@ describe('Stig 1, questions', () => {
     expect(focused()?.getAttribute('role')).toBe('group');
     clock += 500;
     fireEvent.click(view.getByRole('button', { name: 'Næsta spurning' }));
-    expect(focused()?.textContent).toMatch(/^Hversu mörg rafeindasvið/);
+    expect(focused()?.textContent).toMatch(/^Hversu mörg svæði rafeindaþéttleika/);
     expect(scrollBy).not.toHaveBeenCalled();
     expect(scrollTo).not.toHaveBeenCalled();
   });
@@ -410,7 +410,7 @@ describe('Stig 3', () => {
   it('on a phone the reference tables start closed behind their headings', () => {
     const { container } = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
     const view = within(container);
-    for (const name of [/Blendnitafla/, /Skautun/]) {
+    for (const name of [/Tafla um svigrúmablöndun/, /Skautun/]) {
       expect(view.getByRole('button', { name }).getAttribute('aria-expanded')).toBe('false');
     }
   });

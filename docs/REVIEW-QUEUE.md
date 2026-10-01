@@ -206,8 +206,17 @@ changes how the game teaches or looks rather than correcting a defect.
     reactive and takes a lone pair readily, as the book does. Two more were found: SF₆'s hint
     called 12 electrons "tvöfalt meira" than 8, and Stig 3's closing rules put formal charge
     ahead of the octet. `icelandic-text.test.ts` now fails on the old forms.
-  - **Still open:** item 20 in `vsepr-geometry` and `intermolecular-forces`, item 87 in
-    `redox-reactions`, and the English Y2 chain (item 3), which spans all eight Y2 games.
+  - **Done 2026-10-01 in VSEPR.** Item 20's VSEPR part: `svigrúmablöndun` (ordabok, 151 to 0
+    against `blendni`), `svæði rafeindaþéttleika` (the book, 29 to 2 against `rafeindasvið`), the
+    glossary's shape names (`vegasalt`, `ferningslaga flatt`, `þríhyrningslaga flatt`,
+    `þríhyrningslaga pýramídi`) and the book's `þríhyrndur tvípýramídi`, and `tengi` for a bond.
+    Item 7 (b) applied to its PCl₅ and SF₆ explanations. `intermolecular-forces` needed no change:
+    it already said `vetnistengi` and `tengi`, and its own test bans the old forms. Eight of the
+    terms are now `governed-terms.test.ts` rows, so they hold platform-wide, and `ordabok.md`
+    gained seven entries taken from the book (`electron domain`, `formal charge`, `octet`,
+    `resonance structure`, `resonance hybrid`, `trigonal bipyramidal`, `hypervalent molecule`).
+  - **Still open:** item 87 in `redox-reactions`, and the English Y2 chain (item 3), which spans
+    all eight Y2 games.
 
 ## D. Work that needs no ruling
 
