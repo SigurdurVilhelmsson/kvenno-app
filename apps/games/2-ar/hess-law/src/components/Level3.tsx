@@ -232,8 +232,12 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   // to print it outright — challenge 4's table read SO₂(g) −296,8 under "find ΔH°f(SO₂)".
   const isHidden = (formula: string) =>
     isCorrect === null && challenge.type === 'reverse' && formula === challenge.unknownCompound;
-  const productsHidden = challenge.products.some((p) => isHidden(p.formula));
-  const reactantsHidden = challenge.reactants.some((r) => isHidden(r.formula));
+  // Both totals wait for the answer too, on every challenge (decisions item 75). With them on
+  // screen ΔH°rxn was one subtraction away; the terms stay, so the student still does the
+  // adding up that the level is named for.
+  const productsHidden = isCorrect === null || challenge.products.some((p) => isHidden(p.formula));
+  const reactantsHidden =
+    isCorrect === null || challenge.reactants.some((r) => isHidden(r.formula));
 
   if (showIntro) {
     return (

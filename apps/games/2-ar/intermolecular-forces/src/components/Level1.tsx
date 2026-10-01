@@ -784,8 +784,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         size="md"
                         fit
                         animation="fade-in"
-                        showPartialCharges={molecule.isPolar}
-                        showDipoleMoment={molecule.isPolar}
+                        // δ labels and the dipole arrow appear only on polar molecules, so
+                        // before the check they would answer the question (decisions item 72).
+                        showPartialCharges={molecule.isPolar && showResult}
+                        showDipoleMoment={molecule.isPolar && showResult}
                         ariaLabel={`${molecule.name} sameindaformúla`}
                       />
                     ) : (
@@ -808,7 +810,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     )}
                   </div>
                   {/* Legend for partial charges */}
-                  {molecule.isPolar && viewMode === '2d' && (
+                  {molecule.isPolar && showResult && viewMode === '2d' && (
                     <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-xs phone:gap-x-3 phone:mt-1">
                       <span className="text-red-400">δ+ = Jákvætt skautað</span>
                       <span className="text-blue-400">δ− = Neikvætt skautað</span>
@@ -822,19 +824,22 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 </div>
               )}
 
-              {/* Molecule properties badges */}
+              {/* Molecule properties badges. Polarity and the H–F/O/N bond together decide the
+                  answer, so those two wait for the check; the molar mass does not. */}
               <div className="flex justify-center gap-3 flex-wrap phone:gap-1.5">
-                <span
-                  className={`px-3 py-1.5 phone:px-2 phone:py-1 rounded-full text-xs font-medium ${
-                    molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-warm-600 text-warm-300'
-                  }`}
-                >
-                  {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
-                </span>
+                {showResult && (
+                  <span
+                    className={`px-3 py-1.5 phone:px-2 phone:py-1 rounded-full text-xs font-medium ${
+                      molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-warm-600 text-warm-300'
+                    }`}
+                  >
+                    {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
+                  </span>
+                )}
                 <span className="px-3 py-1.5 phone:px-2 phone:py-1 rounded-full text-xs font-medium bg-purple-500 text-white">
                   M = {formatDecimal(molecule.molarMass)} g/mól
                 </span>
-                {molecule.hasHBond && (
+                {molecule.hasHBond && showResult && (
                   <span className="px-3 py-1.5 phone:px-2 phone:py-1 rounded-full text-xs font-medium bg-red-500 text-white">
                     🔗 H-F/O/N tengi
                   </span>
@@ -926,12 +931,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3"
                 >
                   <span className="font-bold text-yellow-800">Vísbending: </span>
+                  {/* The same for every molecule: a hint that named the polarity, or mentioned
+                      H–F/O/N only when there was one, gave the answer away. */}
                   <span className="text-yellow-900">
-                    {molecule.isPolar
-                      ? 'Þessi sameind er skautuð — hvaða IMF eru til staðar í skautuðum sameindum?'
-                      : 'Þessi sameind er óskautuð — hvaða IMF er alltaf til staðar?'}
-                    {molecule.hasHBond &&
-                      ' Athugaðu einnig hvort H-F, H-O, eða H-N séu til staðar.'}
+                    Farðu í gegnum kraftana einn í einu. London kraftar eru alltaf til staðar.
+                    Tvískauts-tvískauts kraftar krefjast skautaðrar sameindar: skautuð tengi gera
+                    sameindina skautaða nema lögun hennar jafni þau út. Vetnistengi krefjast H sem
+                    er tengt beint við F, O eða N.
                   </span>
                 </div>
               )}

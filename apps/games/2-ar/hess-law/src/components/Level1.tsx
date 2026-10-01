@@ -334,6 +334,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const showEquationControls = challenge.id >= 2 && challenge.id <= 4;
   // Where the question asks for the drawn equation's ΔH, it stays "?" until answered.
   const hideDeltaH = !!challenge.asksForShownDeltaH && !showResult;
+  const withheldExample = showResult ? undefined : challenge.answeredByPathExample;
 
   // --- Teaching intro ---
   if (showIntro) {
@@ -620,7 +621,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* State Path Comparison - Educational visualization */}
         <div className="mt-6">
-          <StatePathComparison compact={true} />
+          <StatePathComparison
+            // Remounted when the withheld example changes, so it cannot stay selected.
+            key={withheldExample ?? 'all'}
+            compact={true}
+            withheldExampleIds={withheldExample ? [withheldExample] : []}
+          />
         </div>
 
         {/* Challenge navigation */}
