@@ -13,18 +13,18 @@ export const gameTranslations = createGameTranslations({
     intro: {
       title: 'Hvað er VSEPR?',
       description:
-        'VSEPR (Valence Shell Electron Pair Repulsion) útskýrir hvernig rafeindasvæði í kringum miðatóm fælast frá hvor öðru og mynda mismunandi lögun sameinda.',
+        'VSEPR (Valence Shell Electron Pair Repulsion) útskýrir hvernig svæði rafeindaþéttleika í kringum miðatóm fælast frá hvor öðru og mynda mismunandi lögun sameinda.',
     },
     levels: {
       level1: {
         name: 'Stig 1: Grunnlögun',
         description: 'Lærðu undirstöðulögunina',
-        details: 'Kynntu þér línulega, hornrétta, þríhliða og fjórhliða lögun.',
+        details: 'Kynntu þér línulega, beygða, þríhyrningslaga og ferflötungslaga lögun.',
       },
       level2: {
-        name: 'Stig 2: Stakeindir',
-        description: 'Stakeindir breyta lögun',
-        details: 'Sjáðu hvernig stakeindarapör hafa áhrif á sameindalögun.',
+        name: 'Stig 2: Stök rafeindapör',
+        description: 'Stök rafeindapör breyta lögun',
+        details: 'Sjáðu hvernig stök rafeindapör hafa áhrif á lögun sameinda.',
       },
       level3: {
         name: 'Stig 3: Bindishorn',
@@ -34,16 +34,16 @@ export const gameTranslations = createGameTranslations({
     },
     geometry: {
       linear: 'Línuleg',
-      bentShape: 'Hornrétt',
-      trigonalPlanar: 'Þríhliða slétt',
-      trigonalPyramidal: 'Þríhliða pýramída',
+      bentShape: 'Beygð',
+      trigonalPlanar: 'Þríhyrningslaga flatt',
+      trigonalPyramidal: 'Þríhyrningslaga pýramídi',
       tetrahedral: 'Fjórhliða',
-      trigonalBipyramidal: 'Þríhliða tvípýramída',
+      trigonalBipyramidal: 'Þríhyrndur tvípýramídi',
       octahedral: 'Áttflötungur',
-      seesawShape: 'Sjáldruslögun',
+      seesawShape: 'Vegasalt',
       tShape: 'T-lögun',
-      squarePlanar: 'Ferningur slétt',
-      squarePyramidal: 'Fernings pýramída',
+      squarePlanar: 'Ferningslaga flatt',
+      squarePyramidal: 'Ferningspýramídi',
     },
     bondAngles: {
       title: 'Bindishorn',

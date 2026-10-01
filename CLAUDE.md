@@ -1372,6 +1372,15 @@ of them, `hvarfgangur` and `rafeindaskipan`, survived only on the games-hub card
 per-game pass owned; `hub-card-wording.test.ts` now also holds the grammar there that no glossary
 row can express.
 
+**Year-2 bonding and geometry vocabulary got platform rows on 2026-10-01** (decision 20, swept in
+`lewis-structures` and `vsepr-geometry`): `svigrúmablöndun` (not `blendni`), `svæði
+rafeindaþéttleika` (not `rafeindasvið`; shortened to `svæði`, never `svið`), `vegasalt` (not
+`Sjáldruslögun`), `ferningslaga flatt`, `þríhyrningslaga flatt`, `þríhyrningslaga pýramídi`,
+`formleg hleðsla` (not `formhleðsla`) and `vokmynd` (not `samsvörunarformúla`). The bipyramid is the
+book's `þríhyrndur tvípýramídi`. **`svæði rafeindaþéttleika` declines only in `svæði`** — `með
+fjórum svæðum rafeindaþéttleika`. Bond-sense `tengsl` → `tengi` is banned per game, not
+platform-wide, because `tengsl` also means a relationship.
+
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept the game (6 files), the `Námsleiðin` chain string in every

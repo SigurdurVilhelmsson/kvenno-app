@@ -34,7 +34,7 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
     example: 'CO₂',
   },
   3: {
-    name: 'Þríhyrnd slétt',
+    name: 'Þríhyrningslaga flatt',
     nameEn: 'Trigonal Planar',
     bondAngle: '120°',
     positions: [
@@ -57,7 +57,7 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
     example: 'CH₄',
   },
   5: {
-    name: 'Þríhyrnd tvípýramída',
+    name: 'Þríhyrndur tvípýramídi',
     nameEn: 'Trigonal Bipyramidal',
     bondAngle: '90°/120°',
     // Two axial domains, and the equatorial three as a triangle seen at a
@@ -442,7 +442,7 @@ export function ShapeTransitionAnimation({
 
           {/* Domain count label */}
           <text x={size - 12} y={20} textAnchor="end" fill="#94a3b8" fontSize="12">
-            {domainCount} svið
+            {domainCount} svæði
           </text>
         </svg>
       </div>
@@ -476,14 +476,14 @@ export function ShapeTransitionAnimation({
                 ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl'
                 : 'bg-warm-200 text-warm-400 cursor-not-allowed'
             }`}
-            aria-label="Fjarlægja rafeindasvið"
+            aria-label="Fjarlægja svæði rafeindaþéttleika"
           >
             -
           </button>
 
           <div className="text-center px-4">
             <div className="text-2xl font-bold text-indigo-700">{domainCount}</div>
-            <div className="text-xs text-warm-500">rafeindasvið</div>
+            <div className="text-xs text-warm-500">svæði rafeindaþéttleika</div>
           </div>
 
           <button
@@ -494,7 +494,7 @@ export function ShapeTransitionAnimation({
                 ? 'bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl'
                 : 'bg-warm-200 text-warm-400 cursor-not-allowed'
             }`}
-            aria-label="Bæta við rafeindasviði"
+            aria-label="Bæta við svæði rafeindaþéttleika"
           >
             +
           </button>
@@ -522,7 +522,8 @@ export function ShapeTransitionAnimation({
       {/* Educational note */}
       <div className={`mt-4 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
-          <strong>VSEPR:</strong> Rafeindasvið hrinda hvort öðru frá og finna jafnvægisstöðu.
+          <strong>VSEPR:</strong> Svæði rafeindaþéttleika hrinda hvort öðru frá og finna
+          jafnvægisstöðu.
         </p>
         <p className="text-xs text-warm-500 mt-1">
           Smelltu á + eða - til að sjá hvernig lögunin breytist.

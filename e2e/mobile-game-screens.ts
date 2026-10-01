@@ -4180,7 +4180,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       },
     },
     {
-      name: 'Stig 2 — telja rafeindasvið',
+      name: 'Stig 2 — telja svæði rafeindaþéttleika',
       steps: [
         {
           clickRole: ['button', 'Stig 2: Spá fyrir um lögun'],
@@ -4318,7 +4318,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — spurning',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Blendni og skautun'],
+          clickRole: ['button', 'Stig 3: Svigrúmablöndun og skautun'],
         },
         {
           wait: 300,
@@ -4338,10 +4338,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       },
     },
     {
-      name: 'Stig 3 — endurgjöf og blendnirit',
+      name: 'Stig 3 — endurgjöf og svigrúmablöndunarrit',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Blendni og skautun'],
+          clickRole: ['button', 'Stig 3: Svigrúmablöndun og skautun'],
         },
         {
           css: 'button:has(span.uppercase)',

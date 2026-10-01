@@ -389,6 +389,65 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       "2026-09-23, rule 1: ordabok.md gives noble gas;eðalgas, and the book's own glossary headword for group 18 is eðalgas too (ch02/m68695). The book disagrees with itself — its running paragraphs say eðallofttegund 38 times to 19 and the same module's inline [[term:]] marker is eðallofttegundir — and the glossary settling that is the prósentuheimtur precedent. Siggi's to confirm, not blocking. docs/FEBRUARY-DECISIONS-RECOVERED.md already listed eðallofttegundir as a place the platform had diverged from the glossary. It was live in two games and split one of them: 1-ar/lotukerfid said Eðalgös in Stig 1 and eðallofttegundir in Stig 2, and 1-ar/molmassi's legend said Eðallofttegundir, while rafeindabygging, lewis-structures and nafnakerfid said eðalgas. NOT a string swap: lofttegund is feminine and gas is NEUTER, so the plural is eðalgös (def. eðalgösin), dat. eðalgösum, and the agreement moves — eðalgösin eru óvirk, not óvirkar. Compounds take eðalgas-, as 2-ar/rafeindabygging already writes them: eðalgasstytting, eðalgasgrunnur.",
   },
+  // Year-2 bonding and geometry vocabulary (decision 20, docs/REVIEW-QUEUE.md
+  // C6, 2026-10-01). Each was fixed inside 2-ar/lewis-structures or
+  // 2-ar/vsepr-geometry and is held platform-wide here.
+  {
+    english: 'orbital hybridization',
+    correct: 'svigrúmablöndun',
+    banned: [/blendni/i],
+    guidance:
+      '2026-10-01, rule 1: ordabok.md gives orbital hybridization;svigrúmablöndun, and the book agrees 151 to 0 — it never writes blendni. 2-ar/vsepr-geometry said blendni throughout Stig 3, in its hybridization table and in every sp/sp²/sp³ answer. Feminine: svigrúmablöndun / svigrúmablöndun / svigrúmablöndun / svigrúmablöndunar, def. svigrúmablöndunin, acc. def. svigrúmablöndunina. A named type is sp³-svigrúmablöndun, hyphenated. The hybridized orbitals themselves are blönduð svigrúm, as the book writes them. The ban cannot touch vokblendingur, which has no -ni.',
+  },
+  {
+    english: 'electron domain',
+    correct: 'svæði rafeindaþéttleika',
+    banned: [/rafeindasvi[ðd]/i],
+    guidance:
+      "2026-10-01, from the textbook: ordabok.md is silent, and the book's VSEPR module (ch07/m68742) writes svæði rafeindaþéttleika 29 times to 2 for rafeindasvið. 2-ar/vsepr-geometry said rafeindasvið and rafeindasvæði interchangeably. Neuter, and only svæði declines — rafeindaþéttleika is a fixed genitive: svæði / svæði / svæði / svæðis, plural svæði / svæði / svæðum / svæða. So með takes the dative plural: með fjórum svæðum rafeindaþéttleika. Where the context is already clear the book shortens it to svæði, never to svið.",
+  },
+  {
+    english: 'see-saw',
+    correct: 'vegasalt',
+    banned: [/sjáldrus/i],
+    guidance:
+      "2026-10-01, rule 1: ordabok.md gives see-saw;vegasalt. The book's running prose says róla or rólulaga instead, and the glossary settling that is the prósentuheimtur precedent. 2-ar/vsepr-geometry said Sjáldruslögun, which is neither. Neuter: vegasalt / vegasalt / vegasalti / vegasalts, so a molecule verður að vegasalti.",
+  },
+  {
+    english: 'square planar',
+    correct: 'ferningslaga flatt',
+    banned: [/ferningsslétt/i],
+    guidance:
+      '2026-10-01, rule 1: ordabok.md gives square planar;ferningslaga flatt. 2-ar/vsepr-geometry said Ferningsslétt. ferningslaga does not decline; flatt agrees with the noun it describes (flöt lögun, flatt form).',
+  },
+  {
+    english: 'trigonal planar',
+    correct: 'þríhyrningslaga flatt',
+    banned: [/þríhyrnd[a-záðéíóúýþæö]* slétt/i],
+    guidance:
+      '2026-10-01, rule 1: ordabok.md gives trigonal planar;þríhyrningslaga flatt. 2-ar/vsepr-geometry said Þríhyrnd slétt. þríhyrningslaga does not decline; the adjective after it agrees: þríhyrningslaga flöt lögun. Note the bipyramid keeps þríhyrndur — see the trigonal pyramidal row.',
+  },
+  {
+    english: 'trigonal pyramidal',
+    correct: 'þríhyrningslaga pýramídi',
+    banned: [/þríhyrnd[a-záðéíóúýþæö]* pýramíd/i],
+    guidance:
+      '2026-10-01, rule 1: ordabok.md gives trigonal pyramidal;þríhyrningslaga pýramídi. 2-ar/vsepr-geometry said Þríhyrnd pýramída. Masculine weak: pýramídi / pýramída / pýramída / pýramída, so NH₃ verður að þríhyrningslaga pýramída. NOT the same word as trigonal bipyramidal, which ordabok.md does not carry and the book writes þríhyrndur tvípýramídi — the ban needs a space straight before pýramíd, so tvípýramídi passes.',
+  },
+  {
+    english: 'formal charge',
+    correct: 'formleg hleðsla',
+    banned: [/formhleðsl/i],
+    guidance:
+      '2026-10-01, from the textbook, whose ch07/m68740 is titled Formlegar hleðslur og vokmyndir: formleg hleðsla 67 to 0. 2-ar/lewis-structures said formhleðsla throughout Stig 3. An adjective plus a noun, both feminine: formleg hleðsla / formlega hleðslu / formlegri hleðslu / formlegrar hleðslu, plural formlegar hleðslur.',
+  },
+  {
+    english: 'resonance structure',
+    correct: 'vokmynd',
+    banned: [/samsvörunarformúl/i],
+    guidance:
+      '2026-10-01: ordabok.md gives resonance;vok, and the book builds on it — vokmynd and vokblendingur 41 times against 3. 2-ar/lewis-structures said samsvörunarformúlur. Feminine: vokmynd / vokmynd / vokmynd / vokmyndar, plural vokmyndir. The real structure they average to is the vokblendingur (masculine).',
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

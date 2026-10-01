@@ -66,8 +66,8 @@ still render it. Three translate only the title and description (`rafeindabyggin
 `vsepr-geometry`, `takmarkandi`); the rest mix `t()` with hardcoded Icelandic (`lausnir`'s Stig 0,
 `takmarkandi`'s Stig 3, and others; `docs/i18n-coverage.md` has the counts). Found inside the
 blocks: `lotukerfid`'s and `lausnir`'s Polish is ASCII-flattened (`Uklad okresowy`, `stezenie`);
-`vsepr-geometry`'s unread `is` block holds wrong chemistry (`Hornrétt` for bent, `Stakeindir` for
-lone pairs); `hess-law`'s en/pl explanations still print decimal points, and its Polish block still
+`vsepr-geometry`'s unread `is` block held wrong chemistry (`Hornrétt` for bent, `Stakeindir` for
+lone pairs — corrected 2026-10-01 with item 20, though still unread); `hess-law`'s en/pl explanations still print decimal points, and its Polish block still
 wants your sign-off. Options: (a) strip everywhere; (b) finish wiring; (c) keep. **Recommendation:**
 extend the September rule to the three title-only games now. If Polish stays anywhere, restore its
 diacritics in one pass with a flattened-Polish guard.
@@ -104,7 +104,8 @@ Brown treats the d-orbital account as unsupported and puts it down to the centra
 Options: (a) keep; (b) reword to size, e.g. `P og S eru á 3. lotu og nógu stór til að rúma fleiri
 en fjögur rafeindapör`; (c) drop the why. **Recommendation:** (b), your wording, in both games.
 **Ruled 2026-09-30 for `lewis-structures`: (b), applied** in the PCl₅ and SF₆ explanations and the
-`Stækkuð átta` card. Still open for `vsepr-geometry`.
+`Stækkuð átta` card. **Applied to `vsepr-geometry` 2026-10-01** in its PCl₅ and SF₆
+explanations, with the same opening sentence, replacing `d-hvolfa`.
 
 **8. The 3D viewer tells phone users to scroll-wheel.**
 `Dragðu til að snúa, skrollaðu til að stækka` in `intermolecular-forces` (`Level1.tsx:778`),
@@ -228,7 +229,15 @@ terms.
 **Applied 2026-10-01 to `lewis-structures` only** (PR #72): `eintengi`/`tvítengi`/`þrítengi`,
 `formleg hleðsla`, `vokmynd`/`vok`/`vokblendingur`, `áttund`, and `ofgild sameind` for an expanded
 octet, which is the book's word (ch. 7) where the game said `stækkuð átta`. Guarded in that game by
-`icelandic-text.test.ts`. Still open for `vsepr-geometry` and `intermolecular-forces`.
+`icelandic-text.test.ts`. **Applied to `vsepr-geometry` 2026-10-01:** `svigrúmablöndun`,
+`svæði rafeindaþéttleika` (shortened to `svæði`, as the book does, never `svið`), `vegasalt`,
+`ferningslaga flatt`, `þríhyrningslaga flatt`, `þríhyrningslaga pýramídi`, `þríhyrndur
+tvípýramídi` (the book's; the glossary has no entry), and `tengi` for a bond. `intermolecular-forces`
+was already clean. The eight replaced forms that had no other sense are now platform-wide
+`governed-terms.test.ts` rows; bond-sense `tengsl` stays a per-game ban, since `tengsl` also means
+a relationship. New `ordabok.md` entries, all from the book: `electron domain`, `formal charge`,
+`octet`, `resonance structure`, `resonance hybrid`, `trigonal bipyramidal`, `hypervalent
+molecule`. **Item 20 is done.**
 
 **21. Post-transition metals: `P-málmar`, and `Lantaníð`/`Aktíníð`.**
 Periodic-table legends in `lotukerfid` (`PeriodicTable.tsx:306`, `data/elements.ts:66`) and

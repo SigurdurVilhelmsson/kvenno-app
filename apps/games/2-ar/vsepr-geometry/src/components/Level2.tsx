@@ -29,13 +29,13 @@ interface GeometryOption {
 const GEOMETRY_OPTIONS: GeometryOption[] = [
   { id: 'linear', name: 'Línuleg', bondAngle: '180°' },
   { id: 'bent', name: 'Beygð', bondAngle: '<120° eða <109,5°' },
-  { id: 'trigonal-planar', name: 'Þríhyrnd slétt', bondAngle: '120°' },
-  { id: 'trigonal-pyramidal', name: 'Þríhyrnd pýramída', bondAngle: '107°' },
+  { id: 'trigonal-planar', name: 'Þríhyrningslaga flatt', bondAngle: '120°' },
+  { id: 'trigonal-pyramidal', name: 'Þríhyrningslaga pýramídi', bondAngle: '107°' },
   { id: 'tetrahedral', name: 'Ferflötungur', bondAngle: '109,5°' },
-  { id: 'seesaw', name: 'Sjáldruslögun', bondAngle: '90° og 120°' },
+  { id: 'seesaw', name: 'Vegasalt', bondAngle: '90° og 120°' },
   { id: 't-shaped', name: 'T-lögun', bondAngle: '90°' },
-  { id: 'trigonal-bipyramidal', name: 'Þríhyrnd tvípýramída', bondAngle: '90° og 120°' },
-  { id: 'square-planar', name: 'Ferningsslétt', bondAngle: '90°' },
+  { id: 'trigonal-bipyramidal', name: 'Þríhyrndur tvípýramídi', bondAngle: '90° og 120°' },
+  { id: 'square-planar', name: 'Ferningslaga flatt', bondAngle: '90°' },
   { id: 'octahedral', name: 'Áttflötungur', bondAngle: '90°' },
 ];
 
@@ -72,7 +72,7 @@ const molecules: Molecule[] = [
     bondAngle: '104,5°',
     isPolar: true,
     explanation:
-      'Súrefni hefur 6 gildisrafeindir. 2 fara í tengsl við H, 4 mynda 2 stök pör. 4 rafeindasvið = ferflötungs rafeindalögun, en 2 stök pör gera sameindarlögunina beygða.',
+      'Súrefni hefur 6 gildisrafeindir. 2 fara í tengi við H, 4 mynda 2 stök pör. 4 svæði rafeindaþéttleika = ferflötungs rafeindalögun, en 2 stök pör gera sameindarlögunina beygða.',
   },
   {
     id: 2,
@@ -84,12 +84,12 @@ const molecules: Molecule[] = [
     lonePairs: 1,
     electronDomains: 4,
     electronGeometry: 'Ferflötungur',
-    molecularGeometry: 'Þríhyrnd pýramída',
+    molecularGeometry: 'Þríhyrningslaga pýramídi',
     correctGeometryId: 'trigonal-pyramidal',
     bondAngle: '107°',
     isPolar: true,
     explanation:
-      'Nitur hefur 5 gildisrafeindir. 3 fara í tengsl við H, 2 mynda stakt par. 4 rafeindasvið gefa ferflötungs rafeindalögun, en 1 stakt par gerir sameindarlögunina þríhyrnda pýramídu.',
+      'Nitur hefur 5 gildisrafeindir. 3 fara í tengi við H, 2 mynda stakt par. 4 svæði rafeindaþéttleika gefa ferflötungs rafeindalögun, en 1 stakt par gerir sameindina að þríhyrningslaga pýramída.',
   },
   {
     id: 3,
@@ -106,7 +106,7 @@ const molecules: Molecule[] = [
     bondAngle: '109,5°',
     isPolar: false,
     explanation:
-      'Kolefni hefur 4 gildisrafeindir sem allar fara í tengsl við H. 4 rafeindasvið, engin stök pör — fullkomin ferflötungs lögun.',
+      'Kolefni hefur 4 gildisrafeindir sem allar fara í tengi við H. 4 svæði rafeindaþéttleika, engin stök pör — fullkomin ferflötungs lögun.',
   },
   {
     id: 4,
@@ -123,7 +123,7 @@ const molecules: Molecule[] = [
     bondAngle: '180°',
     isPolar: false,
     explanation:
-      'Tvöfaldar tengingar telja sem eitt rafeindasvið hvor. 2 rafeindasvið = línuleg lögun með 180° horn.',
+      'Hvert tvítengi telur sem eitt svæði rafeindaþéttleika. 2 svæði = línuleg lögun með 180° horn.',
   },
   {
     id: 5,
@@ -134,13 +134,13 @@ const molecules: Molecule[] = [
     bondingPairs: 3,
     lonePairs: 0,
     electronDomains: 3,
-    electronGeometry: 'Þríhyrnd slétt',
-    molecularGeometry: 'Þríhyrnd slétt',
+    electronGeometry: 'Þríhyrningslaga flatt',
+    molecularGeometry: 'Þríhyrningslaga flatt',
     correctGeometryId: 'trigonal-planar',
     bondAngle: '120°',
     isPolar: false,
     explanation:
-      'Bór hefur aðeins 3 gildisrafeindir og myndar 3 tengsl án stakra para. 3 rafeindasvið = þríhyrnd slétt lögun.',
+      'Bór hefur aðeins 3 gildisrafeindir og myndar 3 tengi án stakra para. 3 svæði = þríhyrningslaga flöt lögun.',
   },
   {
     id: 6,
@@ -151,13 +151,13 @@ const molecules: Molecule[] = [
     bondingPairs: 5,
     lonePairs: 0,
     electronDomains: 5,
-    electronGeometry: 'Þríhyrnd tvípýramída',
-    molecularGeometry: 'Þríhyrnd tvípýramída',
+    electronGeometry: 'Þríhyrndur tvípýramídi',
+    molecularGeometry: 'Þríhyrndur tvípýramídi',
     correctGeometryId: 'trigonal-bipyramidal',
     bondAngle: '90° og 120°',
     isPolar: false,
     explanation:
-      'Fosfór getur rúmað 5 tengsl vegna d-hvolfa. 5 rafeindasvið = þríhyrnd tvípýramída með 3 á miðsléttunni (120°) og 2 á ásnum (90°).',
+      'P er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör. 5 svæði rafeindaþéttleika = þríhyrndur tvípýramídi með 3 á miðsléttunni (120°) og 2 á ásnum (90°).',
   },
   {
     id: 7,
@@ -168,13 +168,13 @@ const molecules: Molecule[] = [
     bondingPairs: 4,
     lonePairs: 1,
     electronDomains: 5,
-    electronGeometry: 'Þríhyrnd tvípýramída',
-    molecularGeometry: 'Sjáldruslögun',
+    electronGeometry: 'Þríhyrndur tvípýramídi',
+    molecularGeometry: 'Vegasalt',
     correctGeometryId: 'seesaw',
     bondAngle: '90° og 120°',
     isPolar: true,
     explanation:
-      'Brennisteinn hefur 6 gildisrafeindir. 4 í tengsl, 2 mynda stakt par. 5 rafeindasvið = þríhyrnd tvípýramída en staka parið veldur sjáldruslögun.',
+      'Brennisteinn hefur 6 gildisrafeindir. 4 í tengi, 2 mynda stakt par. 5 svæði rafeindaþéttleika = þríhyrndur tvípýramídi, en staka parið gerir sameindina að vegasalti.',
   },
   {
     id: 8,
@@ -191,7 +191,7 @@ const molecules: Molecule[] = [
     bondAngle: '90°',
     isPolar: false,
     explanation:
-      'Brennisteinn getur rúmað 6 tengsl vegna d-hvolfa. 6 rafeindasvið í samhverfri áttflötungsröðun með öll horn 90°.',
+      'S er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör. 6 svæði rafeindaþéttleika í samhverfri áttflötungsröðun með öll horn 90°.',
   },
   {
     id: 9,
@@ -203,12 +203,12 @@ const molecules: Molecule[] = [
     lonePairs: 2,
     electronDomains: 6,
     electronGeometry: 'Áttflötungur',
-    molecularGeometry: 'Ferningsslétt',
+    molecularGeometry: 'Ferningslaga flatt',
     correctGeometryId: 'square-planar',
     bondAngle: '90°',
     isPolar: false,
     explanation:
-      'Xenon hefur 8 gildisrafeindir. 4 í tengsl, 4 mynda 2 stök pör. 6 rafeindasvið = áttflötungs rafeindalögun, en 2 stök pör (í andstæðum stöðum) gefa ferningsslétta lögun.',
+      'Xenon hefur 8 gildisrafeindir. 4 í tengi, 4 mynda 2 stök pör. 6 svæði rafeindaþéttleika = áttflötungs rafeindalögun, en 2 stök pör (í andstæðum stöðum) gefa ferningslaga flata lögun.',
   },
   {
     id: 10,
@@ -219,13 +219,13 @@ const molecules: Molecule[] = [
     bondingPairs: 3,
     lonePairs: 2,
     electronDomains: 5,
-    electronGeometry: 'Þríhyrnd tvípýramída',
+    electronGeometry: 'Þríhyrndur tvípýramídi',
     molecularGeometry: 'T-lögun',
     correctGeometryId: 't-shaped',
     bondAngle: '90°',
     isPolar: true,
     explanation:
-      'Klór hefur 7 gildisrafeindir. 3 í tengsl, 4 mynda 2 stök pör. 5 rafeindasvið = þríhyrnd tvípýramída en 2 stök pör á miðsléttunni gefa T-lögun.',
+      'Klór hefur 7 gildisrafeindir. 3 í tengi, 4 mynda 2 stök pör. 5 svæði rafeindaþéttleika = þríhyrndur tvípýramídi, en 2 stök pör á miðsléttunni gefa T-lögun.',
   },
 ];
 
@@ -233,31 +233,31 @@ const molecules: Molecule[] = [
 const GEOMETRIES_BY_DOMAINS: Record<number, { id: string; name: string }[]> = {
   2: [{ id: 'linear', name: 'Línuleg' }],
   3: [
-    { id: 'trigonal-planar', name: 'Þríhyrnd slétt' },
+    { id: 'trigonal-planar', name: 'Þríhyrningslaga flatt' },
     { id: 'bent', name: 'Beygð' },
   ],
   4: [
     { id: 'tetrahedral', name: 'Ferflötungur' },
-    { id: 'trigonal-pyramidal', name: 'Þríhyrnd pýramída' },
+    { id: 'trigonal-pyramidal', name: 'Þríhyrningslaga pýramídi' },
     { id: 'bent', name: 'Beygð' },
   ],
   5: [
-    { id: 'trigonal-bipyramidal', name: 'Þríhyrnd tvípýramída' },
-    { id: 'seesaw', name: 'Sjáldruslögun' },
+    { id: 'trigonal-bipyramidal', name: 'Þríhyrndur tvípýramídi' },
+    { id: 'seesaw', name: 'Vegasalt' },
     { id: 't-shaped', name: 'T-lögun' },
     { id: 'linear', name: 'Línuleg' },
   ],
   6: [
     { id: 'octahedral', name: 'Áttflötungur' },
-    { id: 'square-planar', name: 'Ferningsslétt' },
+    { id: 'square-planar', name: 'Ferningslaga flatt' },
   ],
 };
 
 const ELECTRON_GEOMETRY_NAME: Record<number, string> = {
   2: 'Línuleg',
-  3: 'Þríhyrnd slétt',
+  3: 'Þríhyrningslaga flatt',
   4: 'Ferflötungur',
-  5: 'Þríhyrnd tvípýramída',
+  5: 'Þríhyrndur tvípýramídi',
   6: 'Áttflötungur',
 };
 
@@ -307,7 +307,7 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { id: 'count', label: 'Telja rafeindasvið' },
+  { id: 'count', label: 'Telja svæði rafeindaþéttleika' },
   { id: 'geometry', label: 'Velja lögun' },
   { id: 'angle', label: 'Tengihorn' },
   { id: 'explanation', label: 'Útskýra' },
@@ -468,13 +468,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const getHint = () => {
     if (step.id === 'count') {
-      return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hversu margar fara í tengsl?`;
+      return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hversu margar fara í tengi?`;
     } else if (step.id === 'geometry') {
       return `Stök pör taka meira pláss en bindandi pör og hrinda þeim saman. ${molecule.lonePairs === 0 ? 'Engin stök pör — rafeindalögun = sameindarlögun.' : `Hversu mikil áhrif ${molecule.lonePairs === 1 ? 'hefur' : 'hafa'} ${lonePairsPhrase(molecule.lonePairs)}?`}`;
     } else if (step.id === 'angle') {
       return `Þessi lögun hefur venjulega horn nálægt ${molecule.bondAngle}.`;
     }
-    return 'Útskýrðu af hverju þessi lögun myndast út frá fjölda rafeindasviða.';
+    return 'Útskýrðu af hverju þessi lögun myndast út frá fjölda svæða rafeindaþéttleika.';
   };
 
   return (
@@ -671,7 +671,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {step.id === 'count' && (
                 <div className="space-y-4 phone:space-y-0 phone:flex phone:flex-col phone:gap-3">
                   <p ref={promptRef} data-item-start className="text-warm-600">
-                    Teldu rafeindasvið í kringum miðatómið:
+                    Teldu svæði rafeindaþéttleika í kringum miðatómið:
                   </p>
                   <div className="grid grid-cols-2 gap-4 phone:gap-3">
                     <div>
@@ -715,7 +715,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   )}
                   {stepResult !== null && (
                     <div className="bg-teal-50 p-3 rounded-lg">
-                      <span className="font-bold text-teal-700">Samtals rafeindasvið: </span>
+                      <span className="font-bold text-teal-700">
+                        Samtals svæði rafeindaþéttleika:{' '}
+                      </span>
                       <span className="text-teal-600">{molecule.electronDomains}</span>
                     </div>
                   )}
@@ -726,7 +728,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="space-y-4 phone:space-y-0 phone:flex phone:flex-col phone:gap-2">
                   <div className="bg-teal-50 p-3 rounded-lg mb-2 phone:p-2 phone:mb-0">
                     <div className="text-sm text-teal-800">
-                      <strong>{molecule.electronDomains} rafeindasvið</strong> → rafeindalögun:{' '}
+                      <strong>{molecule.electronDomains} svæði rafeindaþéttleika</strong> →
+                      rafeindalögun:{' '}
                       <strong>{ELECTRON_GEOMETRY_NAME[molecule.electronDomains]}</strong>
                     </div>
                     <div className="text-sm text-teal-700 mt-1">
@@ -1340,7 +1343,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="bg-warm-50">
-                  <th className="p-1 sm:p-2 text-left">Rafeindasvið</th>
+                  <th className="p-1 sm:p-2 text-left">Svæði rafeindaþéttleika</th>
                   <th className="p-1 sm:p-2 text-left">BP</th>
                   <th className="p-1 sm:p-2 text-left">LP</th>
                   <th className="p-1 sm:p-2 text-left">Lögun</th>
@@ -1359,7 +1362,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <td className="p-1 sm:p-2">3</td>
                   <td>3</td>
                   <td>0</td>
-                  <td>Þríhyrnd slétt</td>
+                  <td>Þríhyrningslaga flatt</td>
                   <td>120°</td>
                 </tr>
                 <tr className="border-t">
@@ -1380,7 +1383,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <td className="p-1 sm:p-2">4</td>
                   <td>3</td>
                   <td>1</td>
-                  <td>Þríhyrnd pýramída</td>
+                  <td>Þríhyrningslaga pýramídi</td>
                   <td>107°</td>
                 </tr>
                 <tr className="border-t">
@@ -1394,14 +1397,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <td className="p-1 sm:p-2">5</td>
                   <td>5</td>
                   <td>0</td>
-                  <td>Þríhyrnd tvípýramída</td>
+                  <td>Þríhyrndur tvípýramídi</td>
                   <td>90°, 120°</td>
                 </tr>
                 <tr className="border-t bg-purple-50">
                   <td className="p-1 sm:p-2">5</td>
                   <td>4</td>
                   <td>1</td>
-                  <td>Sjáldruslögun</td>
+                  <td>Vegasalt</td>
                   <td>~90°, ~120°</td>
                 </tr>
                 <tr className="border-t bg-purple-50">
@@ -1422,7 +1425,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <td className="p-1 sm:p-2">6</td>
                   <td>4</td>
                   <td>2</td>
-                  <td>Ferningsslétt</td>
+                  <td>Ferningslaga flatt</td>
                   <td>90°</td>
                 </tr>
               </tbody>

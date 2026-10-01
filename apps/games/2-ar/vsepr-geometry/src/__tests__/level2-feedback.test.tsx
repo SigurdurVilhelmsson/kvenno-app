@@ -64,7 +64,7 @@ describe('the count step', () => {
     answerCount(ui, container, 2, 1); // H₂O has 2 lone pairs
     expect(ui.getByText(/Rangt/)).toBeTruthy();
     expect(ui.getByText(/Rétt svar: 2 bindandi pör og 2 stök pör/)).toBeTruthy();
-    expect(container.textContent).toContain('Samtals rafeindasvið: 4');
+    expect(container.textContent).toContain('Samtals svæði rafeindaþéttleika: 4');
   });
 
   it('names one lone pair in the singular', () => {

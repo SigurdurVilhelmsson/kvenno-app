@@ -32,17 +32,17 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 0,
     bondingPairs: 2,
     example: 'CO₂',
-    explanation: 'Tvö rafeindasvið staðsetjast beint á móti hvoru öðru.',
+    explanation: 'Tvö svæði rafeindaþéttleika staðsetjast beint á móti hvoru öðru.',
   },
   'trigonal-planar': {
     geometry: 'trigonal-planar',
-    geometryName: 'Þríhyrnd slétt',
+    geometryName: 'Þríhyrningslaga flatt',
     idealAngle: 120,
     actualAngle: 120,
     lonePairs: 0,
     bondingPairs: 3,
     example: 'BF₃',
-    explanation: 'Þrjú rafeindasvið dreifast jafnt í sléttu, 120° sundur.',
+    explanation: 'Þrjú svæði rafeindaþéttleika dreifast jafnt í sléttu, 120° sundur.',
   },
   'bent-2': {
     geometry: 'bent-2',
@@ -62,11 +62,11 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 0,
     bondingPairs: 4,
     example: 'CH₄',
-    explanation: 'Fjögur rafeindasvið í fullkominni þrívíðri röðun.',
+    explanation: 'Fjögur svæði rafeindaþéttleika í fullkominni þrívíðri röðun.',
   },
   'trigonal-pyramidal': {
     geometry: 'trigonal-pyramidal',
-    geometryName: 'Þríhyrnd pýramída',
+    geometryName: 'Þríhyrningslaga pýramídi',
     idealAngle: 109.5,
     actualAngle: 107,
     lonePairs: 1,
@@ -86,7 +86,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
   },
   'trigonal-bipyramidal': {
     geometry: 'trigonal-bipyramidal',
-    geometryName: 'Þríhyrnd tvípýramída',
+    geometryName: 'Þríhyrndur tvípýramídi',
     idealAngle: 90,
     actualAngle: 90,
     lonePairs: 0,
@@ -183,7 +183,7 @@ export function BondAngleMeasurement({
   const comparisonGroups = useMemo(() => {
     return {
       'Úr ferflötungi (109,5°)': ['tetrahedral', 'trigonal-pyramidal', 'bent-4'],
-      'Úr þríhyrndri sléttri (120°)': ['trigonal-planar', 'bent-2'],
+      'Úr þríhyrningslaga flatri lögun (120°)': ['trigonal-planar', 'bent-2'],
     };
   }, []);
 

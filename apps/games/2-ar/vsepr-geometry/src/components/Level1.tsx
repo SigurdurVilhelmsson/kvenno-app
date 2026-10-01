@@ -22,11 +22,12 @@ import { geometryToMolecule } from '../utils/vseprConverter';
 // Misconceptions for VSEPR geometry
 const VSEPR_MISCONCEPTIONS: Record<string, string> = {
   electron_domains:
-    'Rafeindasvið = bindandi pör + stök pör. Tvítengi og þrítengi telja sem EITT svið.',
+    'Svæði rafeindaþéttleika = bindandi pör + stök pör. Tvítengi og þrítengi telja hvort sem EITT svæði.',
   lone_pairs: 'Stök pör taka meira pláss en bindandi pör og ýta horninu niður.',
   geometry:
     'Rafeindaröðun (electron geometry) vs sameindaröðun (molecular geometry) - stök pör sjást ekki í sameindaröðun.',
-  bond_angle: 'Stök pör minnka hornið: ferflötungur (109,5°) → pýramída (107°) → beygð (104,5°).',
+  bond_angle:
+    'Stök pör minnka hornið: ferflötungur (109,5°) → þríhyrningslaga pýramídi (107°) → beygð (104,5°).',
 };
 
 // The misconception each kind of question tests. Every wrong answer used to
@@ -41,7 +42,12 @@ const MISCONCEPTION_FOR: Record<Challenge['type'], string> = {
 };
 
 // Related concepts for VSEPR
-const VSEPR_RELATED: string[] = ['VSEPR kenningin', 'Rafeindasvið', 'Sameindaröðun', 'Tengihorn'];
+const VSEPR_RELATED: string[] = [
+  'VSEPR kenningin',
+  'Svæði rafeindaþéttleika',
+  'Sameindaröðun',
+  'Tengihorn',
+];
 
 interface Level1Props {
   onComplete: (score: number) => void;
@@ -77,22 +83,22 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '180°',
     example: 'CO₂',
     exampleName: 'Koldíoxíð',
-    description: 'Tvö rafeindasvið staðsetjast á sitthvora hlið miðatómsins.',
+    description: 'Tvö svæði rafeindaþéttleika staðsetjast á sitthvora hlið miðatómsins.',
     visual: '○—●—○',
   },
   {
     id: 'trigonal-planar',
-    name: 'Þríhyrnd slétt',
+    name: 'Þríhyrningslaga flatt',
     nameEn: 'Trigonal Planar',
     electronDomains: 3,
     bondingPairs: 3,
     lonePairs: 0,
-    electronGeometry: 'Þríhyrnd slétt',
-    molecularGeometry: 'Þríhyrnd slétt',
+    electronGeometry: 'Þríhyrningslaga flatt',
+    molecularGeometry: 'Þríhyrningslaga flatt',
     bondAngle: '120°',
     example: 'BF₃',
     exampleName: 'Bórþríflúoríð',
-    description: 'Þrjú rafeindasvið dreifast jafnt í sléttu þríhyrningsformi.',
+    description: 'Þrjú svæði rafeindaþéttleika dreifast jafnt í flötum þríhyrningi.',
     visual: '○╲\n  ●\n○╱ ╲○',
   },
   {
@@ -102,7 +108,7 @@ const GEOMETRIES: Geometry[] = [
     electronDomains: 3,
     bondingPairs: 2,
     lonePairs: 1,
-    electronGeometry: 'Þríhyrnd slétt',
+    electronGeometry: 'Þríhyrningslaga flatt',
     molecularGeometry: 'Beygð',
     bondAngle: '<120°',
     example: 'SO₂',
@@ -122,22 +128,22 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '109,5°',
     example: 'CH₄',
     exampleName: 'Metan',
-    description: 'Fjögur rafeindasvið í þrívíðri ferflötungsröðun.',
+    description: 'Fjögur svæði rafeindaþéttleika í þrívíðri ferflötungsröðun.',
     visual: '    ○\n    |\n○—●—○\n    |\n    ○',
   },
   {
     id: 'trigonal-pyramidal',
-    name: 'Þríhyrnd pýramída',
+    name: 'Þríhyrningslaga pýramídi',
     nameEn: 'Trigonal Pyramidal',
     electronDomains: 4,
     bondingPairs: 3,
     lonePairs: 1,
     electronGeometry: 'Ferflötungur',
-    molecularGeometry: 'Þríhyrnd pýramída',
+    molecularGeometry: 'Þríhyrningslaga pýramídi',
     bondAngle: '107°',
     example: 'NH₃',
     exampleName: 'Ammóníak',
-    description: 'Stakt par ofan á þremur bindandi — pýramídalögun.',
+    description: 'Stakt par ofan á þremur bindandi pörum: þríhyrningslaga pýramídi.',
     visual: '    ::\n    |\n○—●—○\n    |\n    ○',
   },
   {
@@ -157,17 +163,17 @@ const GEOMETRIES: Geometry[] = [
   },
   {
     id: 'trigonal-bipyramidal',
-    name: 'Þríhyrnd tvípýramída',
+    name: 'Þríhyrndur tvípýramídi',
     nameEn: 'Trigonal Bipyramidal',
     electronDomains: 5,
     bondingPairs: 5,
     lonePairs: 0,
-    electronGeometry: 'Þríhyrnd tvípýramída',
-    molecularGeometry: 'Þríhyrnd tvípýramída',
+    electronGeometry: 'Þríhyrndur tvípýramídi',
+    molecularGeometry: 'Þríhyrndur tvípýramídi',
     bondAngle: '90° og 120°',
     example: 'PCl₅',
     exampleName: 'Fosfórpentaklóríð',
-    description: 'Fimm rafeindasvið — þrjú í miðsléttunni (120°), tvö lóðrétt (90°).',
+    description: 'Fimm svæði rafeindaþéttleika — þrjú í miðsléttunni (120°), tvö lóðrétt (90°).',
     visual: '    ○\n    |\n○-●-○\n   /|\\\n  ○ ○',
   },
   {
@@ -182,7 +188,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '90°',
     example: 'SF₆',
     exampleName: 'Brennisteinshexaflúoríð',
-    description: 'Sex rafeindasvið í samhverfri áttflötungsröðun.',
+    description: 'Sex svæði rafeindaþéttleika í samhverfri áttflötungsröðun.',
     visual: '    ○\n    |\n○-●-○\n   /|\n  ○ ○\n    |\n    ○',
   },
 ];
@@ -207,7 +213,7 @@ const challenges: Challenge[] = [
         id: 'a',
         text: 'Línuleg',
         correct: true,
-        explanation: 'CO₂ hefur 2 rafeindasvið sem staðsetjast 180° í sundur.',
+        explanation: 'CO₂ hefur 2 svæði rafeindaþéttleika sem staðsetjast 180° í sundur.',
       },
       {
         id: 'b',
@@ -217,60 +223,60 @@ const challenges: Challenge[] = [
       },
       {
         id: 'c',
-        text: 'Þríhyrnd slétt',
+        text: 'Þríhyrningslaga flatt',
         correct: false,
-        explanation: 'Þríhyrnd slétt hefur 3 rafeindasvið, ekki 2.',
+        explanation: 'Þríhyrningslaga flatt hefur 3 svæði rafeindaþéttleika, ekki 2.',
       },
       {
         id: 'd',
         text: 'Ferflötungur',
         correct: false,
-        explanation: 'Ferflötungur hefur 4 rafeindasvið.',
+        explanation: 'Ferflötungur hefur 4 svæði rafeindaþéttleika.',
       },
     ],
     hints: {
-      topic: 'Þetta snýst um VSEPR lögun miðað við fjölda rafeindasviða.',
-      strategy: 'Teldu rafeindasvið á miðatóminu (C). Tvöföldar tengingar telja sem eitt svið.',
-      method: 'CO₂ hefur tvöfalda tengingu við hvort súrefnisatóm = 2 rafeindasvið.',
-      solution: '2 rafeindasvið staðsetjast 180° í sundur = línuleg lögun.',
+      topic: 'Þetta snýst um VSEPR lögun miðað við fjölda svæða rafeindaþéttleika.',
+      strategy: 'Teldu svæði rafeindaþéttleika á miðatóminu (C). Tvítengi telur sem eitt svæði.',
+      method: 'CO₂ hefur tvítengi við hvort súrefnisatóm = 2 svæði rafeindaþéttleika.',
+      solution: '2 svæði rafeindaþéttleika staðsetjast 180° í sundur = línuleg lögun.',
     },
   },
   {
     id: 2,
     type: 'electron_domains',
-    question: 'Hversu mörg rafeindasvið (electron domains) hefur vatn (H₂O)?',
+    question: 'Hversu mörg svæði rafeindaþéttleika (electron domains) hefur vatn (H₂O)?',
     geometryId: 'bent-4',
     options: [
       {
         id: 'a',
-        text: '2 rafeindasvið',
+        text: '2 svæði rafeindaþéttleika',
         correct: false,
         explanation: 'Þú telur aðeins bindandi pörin.',
       },
       {
         id: 'b',
-        text: '3 rafeindasvið',
+        text: '3 svæði rafeindaþéttleika',
         correct: false,
         explanation: 'Þig vantar eitt stakt par.',
       },
       {
         id: 'c',
-        text: '4 rafeindasvið',
+        text: '4 svæði rafeindaþéttleika',
         correct: true,
-        explanation: 'Rétt! 2 bindandi pör + 2 stök pör = 4 rafeindasvið.',
+        explanation: 'Rétt! 2 bindandi pör + 2 stök pör = 4 svæði rafeindaþéttleika.',
       },
       {
         id: 'd',
-        text: '6 rafeindasvið',
+        text: '6 svæði rafeindaþéttleika',
         correct: false,
         explanation: 'Það eru aðeins 4 rafeindapör í ysta hvolfi súrefnis.',
       },
     ],
     hints: {
       topic: 'Mundu að telja bæði bindandi og stök pör.',
-      strategy: 'Rafeindasvið = bindandi pör + stök pör á miðatóminu.',
-      method: 'Súrefni hefur 6 gildisrafeindir. 2 fara í O-H tengingar, 4 mynda 2 stök pör.',
-      solution: '2 bindandi pör + 2 stök pör = 4 rafeindasvið.',
+      strategy: 'Svæði rafeindaþéttleika = bindandi pör + stök pör á miðatóminu.',
+      method: 'Súrefni hefur 6 gildisrafeindir. 2 fara í O-H tengi, 4 mynda 2 stök pör.',
+      solution: '2 bindandi pör + 2 stök pör = 4 svæði rafeindaþéttleika.',
     },
   },
   {
@@ -287,28 +293,30 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: 'Þríhyrnd pýramída',
+        text: 'Þríhyrningslaga pýramídi',
         correct: true,
         explanation: 'Rétt! Stakt par á toppnum er ekki sýnilegt í sameindarlögun.',
       },
       {
         id: 'c',
-        text: 'Þríhyrnd slétt',
+        text: 'Þríhyrningslaga flatt',
         correct: false,
-        explanation: 'Þríhyrnd slétt er 2D, NH₃ er 3D pýramída.',
+        explanation: 'Þríhyrningslaga flatt er 2D; NH₃ er þrívíður pýramídi.',
       },
       {
         id: 'd',
         text: 'Línuleg',
         correct: false,
-        explanation: 'Línuleg hefur aðeins 2 rafeindasvið.',
+        explanation: 'Línuleg hefur aðeins 2 svæði rafeindaþéttleika.',
       },
     ],
     hints: {
       topic: 'Munurinn á rafeindalögun og sameindarlögun.',
       strategy: 'Sameindarlögun lýsir aðeins stöðu atóma, ekki stakra para.',
-      method: 'NH₃: 4 rafeindasvið (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
-      solution: 'Þríhyrnd pýramída - 3 H atóm í botninum, N á toppnum, stakt par ósýnilegt.',
+      method:
+        'NH₃: 4 svæði rafeindaþéttleika (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
+      solution:
+        'Þríhyrningslaga pýramídi: 3 H-atóm í botninum, N á toppnum, staka parið ósýnilegt.',
     },
   },
   {
@@ -327,20 +335,20 @@ const challenges: Challenge[] = [
         id: 'b',
         text: '109,5°',
         correct: true,
-        explanation: 'Rétt! Þetta er hornið sem hámarkar fjarlægð milli 4 rafeindasviða.',
+        explanation: 'Rétt! Þetta er hornið sem hámarkar fjarlægð milli 4 svæða rafeindaþéttleika.',
       },
       {
         id: 'c',
         text: '120°',
         correct: false,
-        explanation: '120° er fyrir þríhyrnda slétta lögun.',
+        explanation: '120° er fyrir þríhyrningslaga flata lögun.',
       },
       { id: 'd', text: '180°', correct: false, explanation: '180° er fyrir línulega lögun.' },
     ],
     hints: {
-      topic: 'Tengihorn ákvarðast af fjölda rafeindasviða.',
-      strategy: 'Hornið hámarkar fjarlægð milli rafeindasviða í þrívíðri röðun.',
-      method: '4 rafeindasvið í þrívídd = ferflötungur. Hornið er milli 90° og 120°.',
+      topic: 'Tengihorn ákvarðast af fjölda svæða rafeindaþéttleika.',
+      strategy: 'Hornið hámarkar fjarlægð milli svæða rafeindaþéttleika í þrívíðri röðun.',
+      method: '4 svæði rafeindaþéttleika í þrívídd = ferflötungur. Hornið er milli 90° og 120°.',
       solution: '109,5° - þetta er nákvæmt ferflötungshorn.',
     },
   },
@@ -389,35 +397,35 @@ const challenges: Challenge[] = [
     options: [
       {
         id: 'a',
-        text: 'Þríhyrnd pýramída',
+        text: 'Þríhyrningslaga pýramídi',
         correct: false,
-        explanation: 'Pýramída hefur stakt par á miðatóminu.',
+        explanation: 'Pýramídinn hefur stakt par á miðatóminu.',
       },
       {
         id: 'b',
-        text: 'Þríhyrnd slétt',
+        text: 'Þríhyrningslaga flatt',
         correct: true,
-        explanation: 'Rétt! 3 bindandi pör, engin stök pör — slétt 120° lögun.',
+        explanation: 'Rétt! 3 bindandi pör, engin stök pör — þríhyrningslaga flöt lögun (120°).',
       },
       { id: 'c', text: 'Beygð', correct: false, explanation: 'Beygð lögun hefur stök pör.' },
       {
         id: 'd',
         text: 'Ferflötungur',
         correct: false,
-        explanation: 'Ferflötungur hefur 4 rafeindasvið, ekki 3.',
+        explanation: 'Ferflötungur hefur 4 svæði rafeindaþéttleika, ekki 3.',
       },
     ],
     hints: {
-      topic: 'VSEPR lögun með 3 rafeindasvið.',
+      topic: 'VSEPR lögun með 3 svæðum rafeindaþéttleika.',
       strategy: 'Athugaðu hvort miðatómið hefur stök pör.',
       method: 'Bór hefur aðeins 3 gildisrafeindir og myndar ekki stök pör.',
-      solution: '3 bindandi pör, 0 stök = þríhyrnd slétt lögun (120°).',
+      solution: '3 bindandi pör, 0 stök = þríhyrningslaga flöt lögun (120°).',
     },
   },
   {
     id: 7,
     type: 'molecular_vs_electron',
-    question: 'SF₆ hefur 6 rafeindasvið. Hvað heitir þessi lögun?',
+    question: 'SF₆ hefur 6 svæði rafeindaþéttleika. Hvað heitir þessi lögun?',
     geometryId: 'octahedral',
     options: [
       {
@@ -430,27 +438,27 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'Áttflötungur',
         correct: true,
-        explanation: 'Rétt! 6 rafeindasvið í 90° sundur — áttflötungur.',
+        explanation: 'Rétt! 6 svæði rafeindaþéttleika í 90° sundur — áttflötungur.',
       },
       {
         id: 'c',
-        text: 'Þríhyrnd tvípýramída',
+        text: 'Þríhyrndur tvípýramídi',
         correct: false,
-        explanation: 'Þríhyrnd tvípýramída hefur 5 rafeindasvið.',
+        explanation: 'Þríhyrndur tvípýramídi hefur 5 svæði rafeindaþéttleika.',
       },
       { id: 'd', text: 'Kúla', correct: false, explanation: 'Kúla er ekki VSEPR lögun.' },
     ],
     hints: {
-      topic: 'VSEPR lögun með 6 rafeindasvið.',
+      topic: 'VSEPR lögun með 6 svæðum rafeindaþéttleika.',
       strategy: 'Nafnið kemur frá fjölda flata á fasta efninu sem lýsir þessari röðun.',
-      method: '6 rafeindasvið í samhverfri röðun, öll 90° frá hvoru öðru.',
+      method: '6 svæði rafeindaþéttleika í samhverfri röðun, öll 90° frá hvoru öðru.',
       solution: 'Áttflötungur (octahedral) - fasta efnið hefur 8 fleti.',
     },
   },
   {
     id: 8,
     type: 'electron_domains',
-    question: 'PCl₅ hefur 5 rafeindasvið. Hvað heitir þessi rafeindalögun?',
+    question: 'PCl₅ hefur 5 svæði rafeindaþéttleika. Hvað heitir þessi rafeindalögun?',
     geometryId: 'trigonal-bipyramidal',
     options: [
       {
@@ -463,11 +471,11 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'Áttflötungur',
         correct: false,
-        explanation: 'Áttflötungur hefur 6 rafeindasvið.',
+        explanation: 'Áttflötungur hefur 6 svæði rafeindaþéttleika.',
       },
       {
         id: 'c',
-        text: 'Þríhyrnd tvípýramída',
+        text: 'Þríhyrndur tvípýramídi',
         correct: true,
         explanation: 'Rétt! 3 á miðsléttu (120°) + 2 lóðrétt (90°).',
       },
@@ -475,14 +483,14 @@ const challenges: Challenge[] = [
         id: 'd',
         text: 'Ferflötungur',
         correct: false,
-        explanation: 'Ferflötungur hefur 4 rafeindasvið.',
+        explanation: 'Ferflötungur hefur 4 svæði rafeindaþéttleika.',
       },
     ],
     hints: {
-      topic: 'VSEPR lögun með 5 rafeindasvið.',
+      topic: 'VSEPR lögun með 5 svæðum rafeindaþéttleika.',
       strategy: 'Hugsaðu um tvær mismunandi stöður - miðslétta og ás.',
       method: '3 stöður á miðsléttu (120°) + 2 stöður lóðrétt á ásnum (90°).',
-      solution: 'Þríhyrnd tvípýramída - trigonal bipyramidal.',
+      solution: 'Þríhyrndur tvípýramídi.',
     },
   },
 ];
@@ -780,7 +788,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
           <div className="grid grid-cols-2 gap-3 text-sm phone:gap-2">
             <div className="bg-white p-3 rounded-lg phone:p-2">
-              <div className="text-warm-500">Rafeindasvið</div>
+              <div className="text-warm-500">Svæði rafeindaþéttleika</div>
               <div className="font-bold text-warm-800">{selectedGeometry.electronDomains}</div>
             </div>
             <div className="bg-white p-3 rounded-lg phone:p-2">
@@ -1104,7 +1112,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         relatedConcepts: VSEPR_RELATED,
                         nextSteps: isCorrect
                           ? 'Frábært! Þú skilur VSEPR vel. Haltu áfram.'
-                          : 'Mundu: Teldu rafeindasvið fyrst, síðan athugaðu stök pör.',
+                          : 'Mundu: Teldu svæði rafeindaþéttleika fyrst, síðan athugaðu stök pör.',
                       }}
                       config={{
                         showExplanation: true,

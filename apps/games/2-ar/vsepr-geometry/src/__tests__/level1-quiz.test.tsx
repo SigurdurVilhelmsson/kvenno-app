@@ -24,12 +24,12 @@ import { Level1 } from '../components/Level1';
 
 const SHAPE_NAMES = [
   'Línuleg',
-  'Þríhyrnd',
+  'Þríhyrn',
   'Beygð',
   'Ferflötung',
-  'pýramída',
+  'pýramídi',
   'Áttflötung',
-  'tvípýramída',
+  'tvípýramídi',
 ];
 
 let unmount: (() => void) | null = null;
@@ -107,10 +107,12 @@ describe('the feedback panel', () => {
 
   it('does not say "Rétt!" after a wrong answer', () => {
     const { ui, container } = toWaterQuestion();
-    pickOption(container, /2 rafeind?asvið/);
+    pickOption(container, /2 svæði rafeindaþéttleika/);
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
     expect(container.textContent).toContain('Rangt');
-    expect(container.textContent).toMatch(/2 bindandi pör \+ 2 stök pör = 4 rafeind?asvið/);
+    expect(container.textContent).toMatch(
+      /2 bindandi pör \+ 2 stök pör = 4 svæði rafeindaþéttleika/
+    );
     expect(container.textContent).not.toContain('Rétt!');
   });
 
@@ -118,15 +120,15 @@ describe('the feedback panel', () => {
     // Every wrong answer got the electron-versus-molecular-geometry note. A
     // wrong domain count now gets the domain-count note written for it.
     const { ui, container } = toWaterQuestion();
-    pickOption(container, /6 rafeind?asvið/);
+    pickOption(container, /6 svæði rafeindaþéttleika/);
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
-    expect(container.textContent).toContain('Tvítengi og þrítengi telja sem EITT svið');
+    expect(container.textContent).toContain('Tvítengi og þrítengi telja hvort sem EITT svæði');
     expect(container.textContent).not.toContain('sameindaröðun (molecular geometry)');
   });
 
   it('says "Rétt!" once in the panel after a right answer', () => {
     const { ui, container } = toWaterQuestion();
-    pickOption(container, /4 rafeind?asvið/);
+    pickOption(container, /4 svæði rafeindaþéttleika/);
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
     // Once as the panel's heading, once in the chosen option's own note.
     expect(container.textContent!.match(/Rétt!/g)).toHaveLength(2);

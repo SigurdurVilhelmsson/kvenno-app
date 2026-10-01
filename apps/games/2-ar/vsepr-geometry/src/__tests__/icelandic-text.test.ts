@@ -42,7 +42,7 @@ describe('vsepr-geometry text', () => {
 
   it('spells rafeind- with its d', () => {
     // "Rafeinasvið", "rafeinalögun" and "rafeinapör" shipped at 60-odd sites,
-    // beside "rafeindasvið" in the same menu.
+    // beside the correctly spelled form in the same menu.
     expect(offences(/rafeina(?!d)/i)).toEqual([]);
   });
 
@@ -76,6 +76,22 @@ describe('vsepr-geometry text', () => {
     ['Algengar sameindarlögun', /Algengar sameindarlögun/],
     ['þríhyrnd slétta lögun (fyrir takes the accusative)', /þríhyrnd slétta/],
     ['vatn er … (og leysi) (a predicate takes the nominative)', /og leysi\)/],
+    // Decision 20, applied 2026-10-01. ordabok.md settles the hybridization and shape
+    // names; the textbook settles the rest (its ch. 7–8): svæði rafeindaþéttleika 29 to 2,
+    // svigrúmablöndun 151 to 0, þríhyrndur tvípýramídi, and tengi for a bond.
+    ['blendni (ordabok: orbital hybridization;svigrúmablöndun)', /blendni/i],
+    ['rafeindasvið (book: svæði rafeindaþéttleika)', /rafeindasvi[ðd]/i],
+    ['a bare svið for a domain (svæði, as the book shortens it)', /\d\s*svið\b|\} svið\b/],
+    ['Sjáldruslögun (ordabok: see-saw;vegasalt)', /sjáldrus/i],
+    ['Ferningsslétt (ordabok: square planar;ferningslaga flatt)', /ferningsslétt/i],
+    ['Þríhyrnd slétt (ordabok: trigonal planar;þríhyrningslaga flatt)', /þríhyrnd\w* slétt/i],
+    [
+      'Þríhyrnd pýramída (ordabok: trigonal pyramidal;þríhyrningslaga pýramídi)',
+      /þríhyrnd pýramíd/i,
+    ],
+    ['Þríhyrnd tvípýramída as a name (book: þríhyrndur tvípýramídi)', /Þríhyrnd tvípýramída/],
+    ['tengsl, tengisl or tenging for a bond (tengi)', /tengsl|tengisl|tenging/i],
+    ['d-hvolf (decision 7: the central atom is large enough, as in Lewis)', /d-hvolf/i],
   ])('does not ship %s', (_label, pattern) => {
     expect(offences(pattern)).toEqual([]);
   });
