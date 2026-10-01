@@ -16,7 +16,7 @@ const OXIDATION_MISCONCEPTIONS: Record<string, string> = {
 };
 
 // Related concepts for redox
-const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox-hvörf', 'Rafeindasameignir'];
+const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox-hvörf', 'Rafeindaflutningur'];
 
 interface Level1Props {
   t: (key: string, fallback?: string) => string;
