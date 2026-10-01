@@ -330,36 +330,41 @@ export function BondAngleMeasurement({
               strokeWidth="2"
             />
 
-            {/* Degree markings */}
-            {[0, 30, 60, 90, 120, 150, 180].map((deg) => {
-              const rad = ((deg - 90) * Math.PI) / 180;
-              const innerR = radius - 5;
-              const outerR = radius + 5;
-              return (
-                <g key={deg}>
-                  <line
-                    x1={centerX + innerR * Math.cos(rad)}
-                    y1={centerY + innerR * Math.sin(rad)}
-                    x2={centerX + outerR * Math.cos(rad)}
-                    y2={centerY + outerR * Math.sin(rad)}
-                    stroke="#4b5563"
-                    strokeWidth="1"
-                  />
-                  {deg % 60 === 0 && (
-                    <text
-                      x={centerX + (radius + 15) * Math.cos(rad)}
-                      y={centerY + (radius + 15) * Math.sin(rad) + 4}
-                      textAnchor="middle"
-                      fill="#6b7280"
-                      fontSize="10"
-                      className="max-sm:text-[12px] pointer-coarse:text-[12px]"
-                    >
-                      {deg}°
-                    </text>
-                  )}
-                </g>
-              );
-            })}
+            {/* Degree markings. The bonds are drawn at ±θ/2 either side of straight up, so a
+                tick for the angle a sits at ±a/2 and carries the label a: a bond then lies on
+                the label of the angle it makes. The ticks used to sit at a and be labelled a,
+                so a 120° bond pointed at "60°". */}
+            {[0, 30, 60, 90, 120, 150, 180].flatMap((deg) =>
+              (deg === 0 ? [1] : [-1, 1]).map((side) => {
+                const rad = ((side * deg) / 2 - 90) * (Math.PI / 180);
+                const innerR = radius - 5;
+                const outerR = radius + 5;
+                return (
+                  <g key={`${deg}${side}`} data-tick={side * deg}>
+                    <line
+                      x1={centerX + innerR * Math.cos(rad)}
+                      y1={centerY + innerR * Math.sin(rad)}
+                      x2={centerX + outerR * Math.cos(rad)}
+                      y2={centerY + outerR * Math.sin(rad)}
+                      stroke="#4b5563"
+                      strokeWidth="1"
+                    />
+                    {side === 1 && deg > 0 && deg % 60 === 0 && (
+                      <text
+                        x={centerX + (radius + 15) * Math.cos(rad)}
+                        y={centerY + (radius + 15) * Math.sin(rad) + 4}
+                        textAnchor="middle"
+                        fill="#6b7280"
+                        fontSize="10"
+                        className="max-sm:text-[12px] pointer-coarse:text-[12px]"
+                      >
+                        {deg}°
+                      </text>
+                    )}
+                  </g>
+                );
+              })
+            )}
 
             {/* Ideal bond lines (faded) */}
             {showComparison && angleData.idealAngle !== angleData.actualAngle && (

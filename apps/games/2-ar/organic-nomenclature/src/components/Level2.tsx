@@ -37,7 +37,7 @@ interface Level2Props {
   onBack: () => void;
 }
 
-interface Molecule {
+export interface Molecule {
   id: number;
   type: 'alkane' | 'alkene' | 'alkyne';
   carbons: number;
@@ -50,7 +50,7 @@ interface Molecule {
   hint: string;
 }
 
-const molecules: Molecule[] = [
+export const molecules: Molecule[] = [
   // Alkanes
   {
     id: 1,

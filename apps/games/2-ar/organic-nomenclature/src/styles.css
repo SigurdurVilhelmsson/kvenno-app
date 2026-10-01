@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@import "../../../../../packages/shared/styles/theme.css";
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
 @source "../../../../../packages/shared";
-@import "../../../../../packages/shared/styles/game-base.css";
+@import '../../../../../packages/shared/styles/game-base.css';
 
 /* Carbon chain visualization */
 .carbon-chain {
@@ -57,23 +57,48 @@
 }
 
 /* Functional group colors */
-.alkane { @apply bg-gray-200 text-gray-800; }
-.alkene { @apply bg-green-200 text-green-800; }
-.alkyne { @apply bg-purple-200 text-purple-800; }
-.alcohol { @apply bg-blue-200 text-blue-800; }
-.aldehyde { @apply bg-amber-200 text-amber-800; }
-.ketone { @apply bg-orange-200 text-orange-800; }
-.carboxylic { @apply bg-red-200 text-red-800; }
+.alkane {
+  @apply bg-gray-200 text-gray-800;
+}
+.alkene {
+  @apply bg-green-200 text-green-800;
+}
+.alkyne {
+  @apply bg-purple-200 text-purple-800;
+}
+.alcohol {
+  @apply bg-blue-200 text-blue-800;
+}
+.aldehyde {
+  @apply bg-amber-200 text-amber-800;
+}
+.ketone {
+  @apply bg-orange-200 text-orange-800;
+}
+.carboxylic {
+  @apply bg-red-200 text-red-800;
+}
 
 /* Animations */
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 .animate-slide-in {

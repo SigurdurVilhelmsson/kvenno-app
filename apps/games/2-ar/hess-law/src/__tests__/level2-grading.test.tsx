@@ -18,8 +18,10 @@ function openPuzzle5() {
   const view = render(<Level2 onComplete={() => {}} onBack={() => {}} />);
   const page = within(view.container);
   fireEvent.click(page.getByRole('button', { name: '5' }));
-  // The two equation cards are the role="button" divs; their controls are real buttons.
-  const [so2, so3] = Array.from(view.container.querySelectorAll<HTMLElement>('div[role="button"]'));
+  // The two equation cards; each holds a select button and its Snúa and ×n buttons.
+  const [so2, so3] = Array.from(
+    view.container.querySelectorAll<HTMLElement>('[data-equation-card]')
+  );
   return { page, so2, so3 };
 }
 
@@ -88,7 +90,7 @@ describe('hess-law level 2 grading', () => {
     // Puzzle 1 with only its first equation: plainly wrong, whatever the grader.
     const view = render(<Level2 onComplete={() => {}} onBack={() => {}} />);
     const page = within(view.container);
-    fireEvent.click(view.container.querySelector<HTMLElement>('div[role="button"]')!);
+    fireEvent.click(view.container.querySelector<HTMLElement>('button[data-equation-select]')!);
     fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
     const result = page.getByText(/Ekki rétt\./).textContent ?? '';
     // The line used to read "✗ Ekki rétt. Ekki rétt. Athugaðu …".
@@ -98,5 +100,22 @@ describe('hess-law level 2 grading', () => {
   it('labels each equation card with its ΔH in Icelandic notation', () => {
     const { so2 } = openPuzzle5();
     expect(so2.getAttribute('aria-label')).toMatch(/ΔH = -297,0 kJ$/);
+  });
+});
+
+/**
+ * Each equation card was a role="button" div holding its own Snúa and ×n buttons: a button
+ * a screen reader cannot present, since a button may not contain buttons (REVIEW-QUEUE D1).
+ * The card is now a group, and choosing it is a real toggle button.
+ */
+describe('hess-law level 2 equation cards', () => {
+  it('nest no button inside a button, and select through a real toggle', () => {
+    const { so2 } = openPuzzle5();
+    expect(document.querySelectorAll('[role="button"] button, button button')).toHaveLength(0);
+    const select = within(so2).getAllByRole('button')[0];
+    expect(select.getAttribute('aria-pressed')).toBe('false');
+    expect(select.getAttribute('aria-label')).toMatch(/→ .*, ΔH = /);
+    fireEvent.click(select);
+    expect(select.getAttribute('aria-pressed')).toBe('true');
   });
 });
