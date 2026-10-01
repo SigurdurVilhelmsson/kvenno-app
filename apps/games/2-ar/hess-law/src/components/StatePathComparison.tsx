@@ -117,11 +117,18 @@ const EXAMPLES: PathExample[] = [
 interface StatePathComparisonProps {
   exampleId?: string;
   compact?: boolean;
+  /** Examples left out of the panel, e.g. one whose steps print an open question's answer. */
+  withheldExampleIds?: string[];
 }
 
-export function StatePathComparison({ exampleId, compact = false }: StatePathComparisonProps) {
+export function StatePathComparison({
+  exampleId,
+  compact = false,
+  withheldExampleIds = [],
+}: StatePathComparisonProps) {
+  const examples = EXAMPLES.filter((e) => !withheldExampleIds.includes(e.id));
   const [selectedExample, setSelectedExample] = useState(
-    EXAMPLES.find((e) => e.id === exampleId) || EXAMPLES[0]
+    examples.find((e) => e.id === exampleId) || examples[0]
   );
   const [visiblePaths, setVisiblePaths] = useState<string[]>(
     selectedExample.paths.map((p) => p.id)
@@ -292,7 +299,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
       {/* Example selector */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {EXAMPLES.map((example) => (
+        {examples.map((example) => (
           <button
             key={example.id}
             onClick={() => handleExampleChange(example)}

@@ -18,37 +18,48 @@ export function parseAngles(text: string): number[] {
 }
 
 /**
+ * Every ideal bond angle a shape has, in degrees: the angles a student may write for it.
+ *
+ * The stored answer names the angles Stig 2 asks for; a shape can have more. A trigonal
+ * bipyramid also has 180° between its axial atoms, an octahedron and a square plane have 180°
+ * across the centre, and a T-shape and a see-saw keep the bipyramid's 180° axis. Writing one
+ * of those is not wrong. Writing an angle the shape does not have is (decisions item 70):
+ * `90 104,5 107 109,5 120 180` used to be marked right for every molecule, because the grader
+ * only asked whether the stored angles were somewhere in the answer.
+ *
+ * These are the ideal VSEPR angles, which is what the level teaches. Lone pairs squeeze the
+ * real ones (SF₄, ClF₃), and the stored answer for H₂O and NH₃ is already the measured angle.
+ */
+export const SHAPE_ANGLES: Record<string, readonly number[]> = {
+  linear: [180],
+  bent: [104.5],
+  'trigonal-planar': [120],
+  'trigonal-pyramidal': [107],
+  tetrahedral: [109.5],
+  'trigonal-bipyramidal': [90, 120, 180],
+  seesaw: [90, 120, 180],
+  't-shaped': [90, 180],
+  octahedral: [90, 180],
+  'square-planar': [90, 180],
+};
+
+/**
  * Grade a written bond angle against the stored one (`'109,5°'`, `'90° og 120°'`).
  *
- * The rule is unchanged from the level's own: a single stored angle is matched
- * by any written angle within ANGLE_TOLERANCE, several stored angles must each
- * be matched, and a bent molecule also accepts 103–106°. Only the reading of
- * the numbers is new.
+ * Every stored angle must be matched by a written one within ANGLE_TOLERANCE, and every
+ * written angle must be one the shape has (`SHAPE_ANGLES`), so a list of every common angle
+ * no longer passes. A bent molecule also accepts 103–106°.
  */
 export function gradeBondAngle(answer: string, correct: string, geometryId: string): boolean {
   const correctNums = parseAngles(correct);
   const answerNums = parseAngles(answer);
-  let isCorrect: boolean;
+  if (correctNums.length === 0 || answerNums.length === 0) return false;
 
-  if (correctNums.length === 1 && answerNums.length >= 1) {
-    isCorrect = answerNums.some((a) => Math.abs(a - correctNums[0]) <= ANGLE_TOLERANCE);
-  } else if (correctNums.length >= 2 && answerNums.length >= 2) {
-    isCorrect = correctNums.every((c) =>
-      answerNums.some((a) => Math.abs(a - c) <= ANGLE_TOLERANCE)
-    );
-  } else {
-    // Fallback to string matching
-    const normalizedAnswer = answer.replace(/\s/g, '').toLowerCase();
-    const normalizedCorrect = correct.replace(/\s/g, '').toLowerCase();
-    isCorrect =
-      normalizedAnswer === normalizedCorrect ||
-      normalizedAnswer.includes(normalizedCorrect.replace('°', ''));
-  }
+  const shapeAngles = SHAPE_ANGLES[geometryId] ?? correctNums;
+  const near = (a: number, target: number) => Math.abs(a - target) <= ANGLE_TOLERANCE;
+  const bentRange = (a: number) => geometryId === 'bent' && a >= 103 && a <= 106;
 
-  // Special case: bent geometry accepts ~104-105°
-  if (!isCorrect && geometryId === 'bent') {
-    isCorrect = answerNums.some((a) => a >= 103 && a <= 106);
-  }
-
-  return isCorrect;
+  const allWritten = answerNums.every((a) => bentRange(a) || shapeAngles.some((t) => near(a, t)));
+  const allStored = correctNums.every((c) => answerNums.some((a) => near(a, c) || bentRange(a)));
+  return allWritten && allStored;
 }

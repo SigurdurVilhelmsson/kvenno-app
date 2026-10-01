@@ -66,6 +66,13 @@ describe('the angle step reads what a student types', () => {
     expect(ui.getByText(/Rétt! Tengihornið er 90° og 120°/)).toBeTruthy();
   });
 
+  it('rejects a list of every common angle', () => {
+    // It contained 109,5, so the old grader marked it right (decisions item 70).
+    const { ui, container } = atAngleStep(CH4);
+    answerAngle(ui, container, '90 104,5 107 109,5 120 180');
+    expect(ui.getByText(/Rétt svar:/)).toBeTruthy();
+  });
+
   it('still rejects an angle outside the tolerance', () => {
     const { ui, container } = atAngleStep(CH4);
     answerAngle(ui, container, '104,5');

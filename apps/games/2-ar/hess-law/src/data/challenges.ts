@@ -25,6 +25,12 @@ export interface Challenge {
    * A → D?"). The others draw a given equation the student may reverse or scale.
    */
   asksForShownDeltaH?: boolean;
+  /**
+   * An example in the `StatePathComparison` panel below the card whose steps print this
+   * challenge's answer. The panel leaves it out until the challenge is answered
+   * (docs/plans/2026-09-23-mobile-pass-decisions.md, item 77).
+   */
+  answeredByPathExample?: string;
 }
 
 export const CHALLENGES: Challenge[] = [
@@ -207,6 +213,8 @@ export const CHALLENGES: Challenge[] = [
       multiplier: 1,
     },
     asksForShownDeltaH: true,
+    // The panel's CO₂ example labels its first step C + ½O₂ → CO with this ΔH.
+    answeredByPathExample: 'carbon-dioxide',
     question:
       'Gefið: (1) C + O₂ → CO₂, ΔH = -394 kJ og (2) CO + ½O₂ → CO₂, ΔH = -283 kJ. Hvað er ΔH fyrir C + ½O₂ → CO?',
     options: [

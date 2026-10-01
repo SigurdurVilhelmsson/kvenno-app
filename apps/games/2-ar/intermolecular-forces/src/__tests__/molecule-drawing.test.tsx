@@ -18,7 +18,11 @@ import { Level1 } from '../components/Level1';
  *   on top, where the arrow then pointed.
  *
  * This test reads the drawing the student sees, not the data, so it holds whichever of the
- * two a future change breaks. Queries are scoped to the rendered container because the repo
+ * two a future change breaks.
+ *
+ * The charges and the arrow appear only once the answer is checked (decisions item 72): drawn
+ * only on polar molecules, they answered the question beside it. So the layout is read before
+ * the check, with no δ and no arrow on any molecule, and the charges and arrow after it. Queries are scoped to the rendered container because the repo
  * runs vitest with `retry: 2` and no RTL auto-cleanup.
  */
 
@@ -81,10 +85,20 @@ describe('Stig 1 molecule drawings', () => {
     for (let i = 0; i < 10; i++) {
       const formula = container.querySelector('.text-4xl')!.textContent!;
       seen.push(formula);
-      const svg = container.querySelector('svg[role="img"]') as SVGSVGElement;
+      const drawing = () => container.querySelector('svg[role="img"]') as SVGSVGElement;
+      let svg = drawing();
       const [, , w, h] = svg.getAttribute('viewBox')!.split(' ').map(Number);
       const mid = { x: w / 2, y: h / 2 };
-      const atoms = drawnAtoms(svg);
+      let atoms = drawnAtoms(svg);
+
+      expect(
+        atoms.filter((a) => a.charge),
+        `${formula}: no δ before the check`
+      ).toEqual([]);
+      expect(
+        svg.querySelector('g.molecule-dipole'),
+        `${formula}: no arrow before the check`
+      ).toBeNull();
 
       if (CENTRAL[formula]) {
         const middle = atoms.filter((a) => a.x === mid.x && a.y === mid.y);
@@ -102,6 +116,11 @@ describe('Stig 1 molecule drawings', () => {
         expect(atoms[1].x, `${formula}: ${second} on the right`).toBeGreaterThan(mid.x);
         expect((atoms[0].x + atoms[1].x) / 2, `${formula}: centred`).toBeCloseTo(mid.x);
       }
+
+      fireEvent.click(view.getByRole('button', { name: /London dreifikraftar/ }));
+      fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
+      svg = drawing();
+      atoms = drawnAtoms(svg);
 
       const dipole = svg.querySelector('g.molecule-dipole');
       if (POLAR.has(formula)) {
@@ -131,8 +150,6 @@ describe('Stig 1 molecule drawings', () => {
         expect(dipole, `${formula}: no dipole on a nonpolar molecule`).toBeNull();
       }
 
-      fireEvent.click(view.getByRole('button', { name: /London dreifikraftar/ }));
-      fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
       if (i < 9) fireEvent.click(view.getByRole('button', { name: 'Næsta sameind' }));
     }
 

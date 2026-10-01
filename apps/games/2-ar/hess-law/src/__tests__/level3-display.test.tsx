@@ -127,3 +127,28 @@ describe('hess-law level 3 Næsta guard', () => {
     expect(page.queryByText(/Rétt svar:/)).toBeNull();
   });
 });
+
+/**
+ * Both totals sat on screen beside the answer field, so ΔH°rxn was one subtraction away
+ * (decisions item 75). They now read `?` until the answer is checked; the n × ΔH°f terms
+ * stay, so the student still does the adding up.
+ */
+describe('hess-law level 3 workspace totals', () => {
+  const totals = (page: ReturnType<typeof within>) =>
+    [/Samtals myndefni:/, /Samtals hvarfefni:/].map(
+      (label) => page.getByText(label).textContent ?? ''
+    );
+
+  it.each([0, 1, 2, 4, 5])(
+    'challenge %i hides both totals until checked, and keeps the terms',
+    (n) => {
+      const { page } = start();
+      advanceTo(page, n);
+      for (const total of totals(page)) expect(total).toMatch(/:\s*\? kJ$/);
+      expect(page.getAllByText(/× \(/).length).toBeGreaterThan(1);
+
+      answer(page, ANSWERS[n]);
+      for (const total of totals(page)) expect(total).toMatch(/:\s*-?\d[\d ]*(,\d)? kJ$/);
+    }
+  );
+});

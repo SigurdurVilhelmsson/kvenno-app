@@ -623,6 +623,11 @@ same as `sp³d²`.**
 `gradeBondAngle`). A strict grader needs every true angle per shape (TBP, octahedral, T-shaped and
 square planar also have 180°). **Recommendation:** store the angle sets and reject any number
 outside them, once you confirm the sets.
+**Applied 2026-10-01** with the ideal VSEPR sets in `SHAPE_ANGLES` (`utils/bondAngles.ts`):
+linear 180; bent 104,5; trigonal planar 120; trigonal pyramidal 107; tetrahedral 109,5; trigonal
+bipyramidal and see-saw 90, 120, 180; T-shape, octahedral and square planar 90, 180. Every
+written angle must be in the shape's set and every asked-for angle present. **Confirm the sets**
+— the see-saw and T-shape use the ideal bipyramid angles, not SF₄'s and ClF₃'s squeezed ones.
 
 **71. The angle hint and reference table give the answer; Stig 1 pictures show the
 shape asked about.**
@@ -642,6 +647,10 @@ hint that adds the H-bond reminder only when there is one (`Level1.tsx:786-801`,
 `:874-877`). Polarity plus the H-bond badge fully determines the answer. Options: (a) keep as
 scaffolding; (b) hide badges and δ labels until checked (the corrected drawing and the 3D view
 keep a route); (c) make the hint unconditional. **Recommendation:** (b) with (c).
+**Applied 2026-10-01, (b) with (c):** the `Skautuð`/`Óskautuð` and `H-F/O/N tengi` badges,
+the δ labels and the dipole arrow appear once the answer is checked; the molar mass badge and
+the shape, in 2D and 3D, stay. The hint is now the same for every molecule and walks the three
+forces in turn. Guarded by `answer-cues.test.tsx`.
 
 **73. Three Level 3 content statements.**
 `Level3.tsx`. Challenge 6 `Edik vs. edikaldehýð`: `edik` is vinegar, and `edikaldehýð` has 0 hits
@@ -666,6 +675,8 @@ subtraction away (`Level3.tsx`, `Útreikningur`). Options: (a) keep the fully wo
 (b) show the terms, hide both totals until checked; (c) hide the workspace behind a free
 `Sýna útreikning`. **Recommendation:** (b); the student still adds and subtracts, which is the
 skill the level is named for.
+**Applied 2026-10-01, (b):** both totals read `?` until the answer is checked, on every
+challenge; the n × ΔH°f terms stay. Guarded by `level3-display.test.tsx`.
 
 **76. Stig 2 draws the target ΔH line before checking.**
 `EnergyPathwayDiagram.tsx` draws `Markmið` as soon as one equation is chosen, while the card says
@@ -678,6 +689,10 @@ search.
 `StatePathComparison compact` labels C + ½O₂ → CO as −111, the value c5 asks for
 (`Level1.tsx`). Options: (a) `exampleId='water-formation'` on c5; (b) hide the step labels until
 answered; (c) keep as a worked example. **Recommendation:** (a), one prop.
+**Applied 2026-10-01**, a little wider than (a): the panel's picker would have let a student
+switch back to the CO₂ example, so challenge 5 declares `answeredByPathExample` and the panel
+leaves that example out, picker button included, until the answer is checked. Guarded by
+`level1-shown-deltah.test.tsx`.
 
 **78. Coined words in Level 1 chips: `Hverfanleiki` and `Ferlisstuðull`.**
 `Level1.tsx` `RELATED_CONCEPTS[2]`, `[5]`, `[6]`; 0 corpus hits, no glossary entry. Challenge 6
