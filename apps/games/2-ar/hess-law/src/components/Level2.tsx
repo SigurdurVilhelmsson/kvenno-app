@@ -26,24 +26,19 @@ function EquationBlock({
   const effectiveDeltaH = equation.deltaH * equation.multiplier * (equation.isReversed ? -1 : 1);
   const displayMultiplier = equation.multiplier !== 1 ? `${equation.multiplier} × ` : '';
 
+  const label = `${equation.isReversed ? equation.products : equation.reactants} → ${equation.isReversed ? equation.reactants : equation.products}, ΔH = ${formatDecimal(effectiveDeltaH, 1)} kJ`;
+
+  // The card is a plain group, and choosing it is a real button: the equation and its ΔH.
+  // It used to be a role="button" div holding its own Snúa and ×n buttons, which a screen
+  // reader cannot present — a button may not contain buttons (docs/REVIEW-QUEUE.md D1). A
+  // click anywhere on the card still selects it, as before.
   return (
     <div
-      role="button"
-      tabIndex={0}
-      aria-pressed={isSelected}
-      aria-label={`${equation.isReversed ? equation.products : equation.reactants} → ${equation.isReversed ? equation.reactants : equation.products}, ΔH = ${formatDecimal(effectiveDeltaH, 1)} kJ`}
+      data-equation-card
+      role="group"
+      aria-label={label}
       onClick={onSelect}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onSelect();
-        }
-        if (e.key === 'r' || e.key === 'R') {
-          e.preventDefault();
-          onReverse();
-        }
-      }}
-      className={`p-4 phone:p-3 rounded-xl border-3 cursor-pointer transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-400/50 ${
+      className={`p-4 phone:p-3 rounded-xl border-3 cursor-pointer transition-all ${
         isSelected ? 'ring-4 ring-orange-400/50' : ''
       } ${
         equation.isReversed
@@ -53,29 +48,47 @@ function EquationBlock({
             : 'bg-white border-warm-300 hover:border-orange-300'
       }`}
     >
-      {/* Equation display */}
-      <div className="text-center mb-3 phone:mb-1 font-mono">
-        {displayMultiplier && (
-          <span className="text-orange-600 font-bold">{displayMultiplier}</span>
-        )}
-        (
-        <span className="text-blue-700">
-          {equation.isReversed ? equation.products : equation.reactants}
+      <button
+        type="button"
+        data-equation-select
+        aria-pressed={isSelected}
+        aria-label={label}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelect();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'r' || e.key === 'R') {
+            e.preventDefault();
+            onReverse();
+          }
+        }}
+        className="block w-full rounded-lg focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-400/50"
+      >
+        {/* Equation display */}
+        <span className="block text-center mb-3 phone:mb-1 font-mono">
+          {displayMultiplier && (
+            <span className="text-orange-600 font-bold">{displayMultiplier}</span>
+          )}
+          (
+          <span className="text-blue-700">
+            {equation.isReversed ? equation.products : equation.reactants}
+          </span>
+          <span className="mx-2">→</span>
+          <span className="text-green-700">
+            {equation.isReversed ? equation.reactants : equation.products}
+          </span>
+          )
         </span>
-        <span className="mx-2">→</span>
-        <span className="text-green-700">
-          {equation.isReversed ? equation.reactants : equation.products}
-        </span>
-        )
-      </div>
 
-      {/* ΔH */}
-      <div className="text-center mb-3 phone:mb-2">
-        <span className={`font-bold ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
-          ΔH = {effectiveDeltaH > 0 ? '+' : ''}
-          {formatDecimal(effectiveDeltaH, 1)} kJ
+        {/* ΔH */}
+        <span className="block text-center mb-3 phone:mb-2">
+          <span className={`font-bold ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
+            ΔH = {effectiveDeltaH > 0 ? '+' : ''}
+            {formatDecimal(effectiveDeltaH, 1)} kJ
+          </span>
         </span>
-      </div>
+      </button>
 
       {/* Controls */}
       <div className="flex flex-wrap justify-center gap-3">

@@ -234,15 +234,19 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       overlaps C3 item 1.
 - [ ] **lausnir** Stig 1: 'Athuga lausn' gives no feedback outside the tolerance. This is C3 item
       60, listed here because it is a plain defect.
-- [ ] **organic-nomenclature `AnimatedMolecule`** overlapped atoms from 4 carbons up. Check whether
-      PR #65's branched-molecule fix covers it.
+- [x] **organic-nomenclature `AnimatedMolecule`** overlapped atoms from 4 carbons up. No longer
+      reproduces, checked 2026-10-01 (PR #79): every Stig 2 molecule, branched ones included, is
+      drawn with all atoms apart (tightest gap 12,8 units, hexane), and `molecule-drawing.test.tsx`
+      now holds it.
 - [ ] **syrufastinn, leysnijafnvaegi:** `Áfram í Skilja` / `Áfram í Æfa` return to the menu
       instead of the next phase.
 - [ ] **jafnvaegisfasti `AefaScreen.tsx`:** the KpTask `veldisvisir` message blames the wrong
       mistakes.
 - [ ] **lotukerfid `PeriodicTable.tsx`:** `role="grid"` with no rows or cells.
-- [ ] **hess-law Stig 2 `EquationBlock`:** a `role="button"` card containing its own buttons.
-- [ ] **vsepr `BondAngleMeasurement.tsx`:** tick labels show the half-angle.
+- [x] **hess-law Stig 2 `EquationBlock`:** a `role="button"` card containing its own buttons.
+      Fixed 2026-10-01 (PR #79): the card is a group, and selecting it is a real toggle button.
+- [x] **vsepr `BondAngleMeasurement.tsx`:** tick labels show the half-angle. Fixed 2026-10-01
+      (PR #79): the tick for an angle sits at half of it, so a bond lies on its own label.
 - [x] **lewis Stig 3:** a formal charge of 0 prints as `+0`. Fixed 2026-09-30 (PR #70).
 - [x] **Lewis +1 formal-charge badge** is red on a red O atom, so it is hard to see. Lewis no
       longer draws with `AnimatedMolecule` (PR #71); the shared badge now has a white ring as

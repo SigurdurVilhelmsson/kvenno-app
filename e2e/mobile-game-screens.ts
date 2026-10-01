@@ -3276,7 +3276,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 2: Þrautir'],
         },
         {
-          css: 'div[role=button] div.font-mono',
+          css: 'button[data-equation-select]',
         },
         {
           clickRole: ['button', 'Snúa við jöfnu'],
@@ -3293,7 +3293,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 2: Þrautir'],
         },
         {
-          css: 'div[role=button] div.font-mono',
+          css: 'button[data-equation-select]',
         },
         {
           clickRole: ['button', 'Athuga lausn'],
@@ -3369,7 +3369,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 2: Þrautir'],
         },
         {
-          css: 'div[role=button] div.font-mono',
+          css: 'button[data-equation-select]',
         },
       ],
       loop: {
