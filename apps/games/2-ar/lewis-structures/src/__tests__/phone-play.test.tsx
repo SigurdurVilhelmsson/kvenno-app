@@ -147,11 +147,25 @@ describe('drawing board on a phone', () => {
   it('crops to the molecule and widens the bond hit strip on phones', () => {
     matching = (q) => q === COMPACT_BOARD_QUERY;
     const { ui, svg, hitWidths } = renderBoard();
-    // every atom and lone pair lies within 120 units of the centre (175, 140)
-    expect(svg.getAttribute('viewBox')).toBe('55 20 240 240');
+    // Cropped to the room this molecule can take: every symbol inside it, and
+    // H–O–H, drawn across as the book draws it, framed wide rather than square.
+    const [x, y, w, h] = (svg.getAttribute('viewBox') ?? '').split(' ').map(Number);
+    for (const t of svg.querySelectorAll('text')) {
+      const tx = Number(t.getAttribute('x'));
+      const ty = Number(t.getAttribute('y'));
+      expect(tx).toBeGreaterThan(x);
+      expect(tx).toBeLessThan(x + w);
+      expect(ty).toBeGreaterThan(y);
+      expect(ty).toBeLessThan(y + h);
+    }
+    expect(w).toBeGreaterThan(h);
     expect(hitWidths).toEqual([36, 36]);
     // the instruction is HTML under the board, not 11-unit SVG text
-    expect(svg.querySelector('text:not([fill="white"])')).toBeNull();
+    expect(
+      within(svg as unknown as HTMLElement).queryByText(
+        'Smelltu eða notaðu Tab + Enter til að breyta tengjum'
+      )
+    ).toBeNull();
     expect(ui.getByText('Smelltu á strikin til að breyta tengjum')).toBeTruthy();
   });
 

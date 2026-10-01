@@ -193,3 +193,22 @@ describe('step 4 checks where the pairs went, not only how many', () => {
     expect(g.ui.getByText('✗ Ekki rétt')).toBeTruthy();
   });
 });
+
+describe('the walkthrough draws the molecule it talks about', () => {
+  it('shows each pair on the structure as it is placed', () => {
+    const g = renderGuide();
+    reachDistribution(g);
+    const structure = () => g.container.querySelector('svg[data-lewis-structure]')!;
+    const dots = () =>
+      [...structure().querySelectorAll('circle')].filter((c) => c.getAttribute('r') === '2.5');
+    // Before: step 4 drew nothing at all, and no step ever drew a lone pair.
+    expect(structure()).not.toBeNull();
+    expect(structure().querySelectorAll('line')).toHaveLength(2);
+    expect(structure().querySelector('line[stroke-dasharray]')).toBeNull();
+    expect(dots()).toHaveLength(0);
+    fireEvent.click(g.pairButtons('+')[0]);
+    expect(dots()).toHaveLength(2);
+    fireEvent.click(g.pairButtons('+')[0]);
+    expect(dots()).toHaveLength(4);
+  });
+});

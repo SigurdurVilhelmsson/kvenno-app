@@ -9,6 +9,9 @@ import {
   useRevealAfterCommit,
 } from '@shared/utils';
 
+import { LewisStructure } from './LewisStructure';
+import type { LewisDrawing } from '../utils/lewisLayout';
+
 interface Level3Props {
   /** How many of the questions were answered right. The hint never changes it. */
   onComplete: (correct: number, total: number) => void;
@@ -29,10 +32,13 @@ interface Challenge {
   type: 'calculate_fc' | 'best_structure' | 'resonance';
   molecule: string;
   description: string;
+  /** The whole molecule, drawn as every structure in the game is. */
+  drawing?: LewisDrawing;
   atoms?: AtomCharge[];
   structures?: {
     id: string;
     description: string;
+    drawing: LewisDrawing;
     formalCharges: { atom: string; charge: number }[];
     isPreferred: boolean;
     explanation: string;
@@ -40,6 +46,7 @@ interface Challenge {
   resonanceForms?: {
     id: string;
     structure: string;
+    drawing: LewisDrawing;
     isValid: boolean;
   }[];
   question: string;
@@ -89,6 +96,13 @@ const challenges: Challenge[] = [
     molecule: 'H₂O',
     description:
       'Í vatni hefur súrefni 2 stök pör (4 óbundnar rafeindir) og 2 tengsl (4 bundnar rafeindir).',
+    drawing: {
+      central: { symbol: 'O', lonePairs: 2, formalCharge: 0 },
+      outer: [
+        { symbol: 'H', bond: 'single', lonePairs: 0 },
+        { symbol: 'H', bond: 'single', lonePairs: 0 },
+      ],
+    },
     atoms: [
       {
         symbol: 'O',
@@ -130,6 +144,16 @@ const challenges: Challenge[] = [
     molecule: 'NH₄⁺',
     description:
       'Í ammóníumjóninni er nitur tengt við 4 vetni með einföldum tengslum og engin stök pör.',
+    drawing: {
+      central: { symbol: 'N', lonePairs: 0, formalCharge: 1 },
+      outer: [
+        { symbol: 'H', bond: 'single', lonePairs: 0 },
+        { symbol: 'H', bond: 'single', lonePairs: 0 },
+        { symbol: 'H', bond: 'single', lonePairs: 0 },
+        { symbol: 'H', bond: 'single', lonePairs: 0 },
+      ],
+      ionCharge: 1,
+    },
     atoms: [
       {
         symbol: 'N',
@@ -175,6 +199,10 @@ const challenges: Challenge[] = [
       {
         id: 'triple',
         description: 'C≡O (þreföld tengsl)',
+        drawing: {
+          central: { symbol: 'C', lonePairs: 1, formalCharge: -1 },
+          outer: [{ symbol: 'O', bond: 'triple', lonePairs: 1, formalCharge: 1 }],
+        },
         formalCharges: [
           { atom: 'C', charge: -1 },
           { atom: 'O', charge: +1 },
@@ -186,6 +214,10 @@ const challenges: Challenge[] = [
       {
         id: 'double',
         description: 'C=O (tvöföld tengsl)',
+        drawing: {
+          central: { symbol: 'C', lonePairs: 1 },
+          outer: [{ symbol: 'O', bond: 'double', lonePairs: 2 }],
+        },
         formalCharges: [
           { atom: 'C', charge: 0 },
           { atom: 'O', charge: 0 },
@@ -221,8 +253,32 @@ const challenges: Challenge[] = [
     molecule: 'NO₂⁻',
     description: 'Í nítrítjóninni er N miðatóm, tengt tveimur O-atómum.',
     resonanceForms: [
-      { id: 'a', structure: 'O=N-O⁻', isValid: true },
-      { id: 'b', structure: '⁻O-N=O', isValid: true },
+      {
+        id: 'a',
+        structure: 'O=N-O⁻',
+        drawing: {
+          central: { symbol: 'N', lonePairs: 1 },
+          outer: [
+            { symbol: 'O', bond: 'double', lonePairs: 2 },
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+          ],
+          ionCharge: -1,
+        },
+        isValid: true,
+      },
+      {
+        id: 'b',
+        structure: '⁻O-N=O',
+        drawing: {
+          central: { symbol: 'N', lonePairs: 1 },
+          outer: [
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+            { symbol: 'O', bond: 'double', lonePairs: 2 },
+          ],
+          ionCharge: -1,
+        },
+        isValid: true,
+      },
     ],
     question: 'Hversu margar samsvörunarformúlur hefur NO₂⁻?',
     correctAnswer: '2',
@@ -257,9 +313,48 @@ const challenges: Challenge[] = [
     molecule: 'CO₃²⁻',
     description: 'Karbónatjónin er klassískt dæmi um samsvörun.',
     resonanceForms: [
-      { id: 'a', structure: 'O=C(-O⁻)₂', isValid: true },
-      { id: 'b', structure: '⁻O-C(=O)-O⁻', isValid: true },
-      { id: 'c', structure: '(⁻O)₂-C=O', isValid: true },
+      {
+        id: 'a',
+        structure: 'O=C(-O⁻)₂',
+        drawing: {
+          central: { symbol: 'C', lonePairs: 0 },
+          outer: [
+            { symbol: 'O', bond: 'double', lonePairs: 2 },
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+          ],
+          ionCharge: -2,
+        },
+        isValid: true,
+      },
+      {
+        id: 'b',
+        structure: '⁻O-C(=O)-O⁻',
+        drawing: {
+          central: { symbol: 'C', lonePairs: 0 },
+          outer: [
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+            { symbol: 'O', bond: 'double', lonePairs: 2 },
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+          ],
+          ionCharge: -2,
+        },
+        isValid: true,
+      },
+      {
+        id: 'c',
+        structure: '(⁻O)₂-C=O',
+        drawing: {
+          central: { symbol: 'C', lonePairs: 0 },
+          outer: [
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+            { symbol: 'O', bond: 'single', lonePairs: 3, formalCharge: -1 },
+            { symbol: 'O', bond: 'double', lonePairs: 2 },
+          ],
+          ionCharge: -2,
+        },
+        isValid: true,
+      },
     ],
     question: 'Hversu margar samsvörunarformúlur hefur CO₃²⁻?',
     correctAnswer: '3',
@@ -435,98 +530,33 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const shortOptions = shuffledOptions.every((opt) => opt.text.length <= 3);
   const optionRow = phone && shortOptions && !showResult;
 
-  // Render formal charge badge
-  const renderFormalCharge = (charge: number) => {
-    if (charge === 0) return null;
+  // Every structure here is drawn as the rest of the game draws one
+  // (components/LewisStructure). This level used to draw a single atom with its
+  // bonds stacked on one side — water's O read as a double bond, NH₄⁺'s N as a
+  // quadruple one — CO's two forms with no lone pairs, and resonance forms as
+  // monospace text.
 
-    const chargeText = charge > 0 ? `+${charge}` : `${charge}`;
-    const bgColor = charge > 0 ? 'bg-red-500' : 'bg-blue-500';
-
-    return (
-      <div
-        className={`absolute -top-2 -right-2 ${bgColor} text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs`}
-      >
-        {chargeText}
+  // The molecule a formal-charge question is about, with the counts beside it.
+  // The atom's charge is drawn only once the answer is in, since it is the answer.
+  const renderFormalChargeProblem = (drawing: LewisDrawing, atom: AtomCharge) => (
+    <div className="flex items-center justify-center gap-4 py-2 phone:py-1">
+      <LewisStructure
+        drawing={drawing}
+        label={`Lewis-formúla ${challenge.molecule}`}
+        showFormalCharges={showResult}
+        maxWidth={220}
+      />
+      <div className="text-xs text-warm-600 text-left whitespace-nowrap shrink-0">
+        <div className="font-bold text-warm-700 mb-1">{atom.symbol}:</div>
+        <div>V = {atom.valenceElectrons}</div>
+        <div>L = {atom.lonePairElectrons}</div>
+        <div>B = {atom.bondingElectrons}</div>
       </div>
-    );
-  };
+    </div>
+  );
 
-  // Render lone pairs as dots
-  const renderLonePairs = (count: number, position: 'top' | 'bottom' | 'left' | 'right') => {
-    if (count === 0) return null;
-    const pairs = Math.floor(count / 2);
-    if (pairs === 0) return null;
-
-    const positionClasses: Record<string, string> = {
-      top: 'absolute -top-4 left-1/2 -translate-x-1/2',
-      bottom: 'absolute -bottom-4 left-1/2 -translate-x-1/2',
-      left: 'absolute top-1/2 -left-4 -translate-y-1/2',
-      right: 'absolute top-1/2 -right-4 -translate-y-1/2',
-    };
-
-    return (
-      <div className={`${positionClasses[position]} flex gap-0.5`}>
-        {Array(Math.min(pairs, 2))
-          .fill(0)
-          .map((_, i) => (
-            <div key={i} className="flex gap-0.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-purple-600" />
-              <div className="w-1.5 h-1.5 rounded-full bg-purple-600" />
-            </div>
-          ))}
-      </div>
-    );
-  };
-
-  // Render bonding electrons as lines
-  const renderBonds = (bondingElectrons: number) => {
-    const bondCount = bondingElectrons / 2;
-    return (
-      <div className="flex flex-col gap-0.5">
-        {Array(Math.min(bondCount, 4))
-          .fill(0)
-          .map((_, i) => (
-            <div key={i} className="w-6 h-0.5 bg-warm-600" />
-          ))}
-      </div>
-    );
-  };
-
-  // Render atom visualization for FC calculations
-  const renderAtomVisualization = (atom: AtomCharge, showCharge: boolean) => {
-    const lonePairs = atom.lonePairElectrons / 2;
-
-    return (
-      <div className="flex items-center justify-center gap-2 py-4 phone:py-3">
-        {/* Bonding electrons on left */}
-        <div className="flex items-center shrink-0">
-          <div className="text-xs text-warm-500 mr-2">tengsl</div>
-          {renderBonds(atom.bondingElectrons)}
-        </div>
-
-        {/* Atom with lone pairs */}
-        <div className="relative mx-2 sm:mx-4 shrink-0">
-          <div className="w-16 h-16 rounded-full border-4 border-purple-500 bg-purple-100 flex items-center justify-center font-bold text-xl text-purple-800">
-            {atom.symbol}
-          </div>
-          {/* Show formal charge when revealed */}
-          {showCharge && renderFormalCharge(atom.formalCharge)}
-          {/* Lone pairs */}
-          {lonePairs >= 1 && renderLonePairs(2, 'top')}
-          {lonePairs >= 2 && renderLonePairs(2, 'bottom')}
-        </div>
-
-        {/* Electron count summary */}
-        <div className="text-xs text-warm-600 ml-2 sm:ml-4 text-left whitespace-nowrap">
-          <div>V = {atom.valenceElectrons}</div>
-          <div>L = {atom.lonePairElectrons}</div>
-          <div>B = {atom.bondingElectrons}</div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render structure comparison for best_structure challenges
+  // Candidate structures for a best-structure question, charges drawn: they are
+  // the data the question asks the student to weigh.
   const renderStructureComparison = (structures: NonNullable<Challenge['structures']>) => {
     return (
       <div className="flex flex-wrap justify-center gap-6 py-4 phone:grid phone:grid-cols-2 phone:gap-2 phone:py-1">
@@ -539,45 +569,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 : 'border-warm-200 bg-white'
             }`}
           >
-            {/* Structure visualization */}
-            <div className="flex items-center justify-center gap-1 mb-3 phone:mb-1">
-              {struct.formalCharges.map((fc, idx) => (
-                <div key={idx} className="relative mx-1">
-                  <div
-                    className={`w-12 h-12 phone:w-10 phone:h-10 rounded-full border-3 flex items-center justify-center font-bold ${
-                      idx === 0
-                        ? 'border-blue-400 bg-blue-50 text-blue-700'
-                        : 'border-green-400 bg-green-50 text-green-700'
-                    }`}
-                  >
-                    {fc.atom}
-                  </div>
-                  {fc.charge !== 0 && (
-                    <div
-                      className={`absolute -top-1.5 -right-1.5 ${fc.charge > 0 ? 'bg-red-500' : 'bg-blue-500'} text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center`}
-                    >
-                      {fc.charge > 0 ? '+' : '−'}
-                    </div>
-                  )}
-                  {/* Bond between atoms */}
-                  {idx < struct.formalCharges.length - 1 && (
-                    <div className="absolute top-1/2 -right-3 transform -translate-y-1/2">
-                      {struct.id === 'triple' ? (
-                        <div className="flex flex-col gap-0.5">
-                          <div className="w-4 h-0.5 bg-warm-700" />
-                          <div className="w-4 h-0.5 bg-warm-700" />
-                          <div className="w-4 h-0.5 bg-warm-700" />
-                        </div>
-                      ) : (
-                        <div className="flex flex-col gap-0.5">
-                          <div className="w-4 h-0.5 bg-warm-700" />
-                          <div className="w-4 h-0.5 bg-warm-700" />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
+            <div className="flex justify-center mb-2 phone:mb-1">
+              <LewisStructure
+                drawing={struct.drawing}
+                label={`Lewis-formúla: ${struct.description}`}
+                maxWidth={170}
+              />
             </div>
             {/* Structure label */}
             <div className="text-center text-sm font-mono font-bold text-warm-700">
@@ -603,21 +600,25 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     );
   };
 
-  // Render resonance structures visualization
+  // Resonance forms, shown once the question is answered.
   const renderResonanceStructures = (forms: NonNullable<Challenge['resonanceForms']>) => {
     return (
-      <div className="flex flex-wrap justify-center items-center gap-4 py-4 phone:gap-2 phone:py-1">
+      <div className="flex flex-wrap justify-center items-center gap-3 py-2 phone:flex-col phone:gap-1 phone:py-1">
         {forms.map((form, idx) => (
-          <div key={form.id} className="flex items-center gap-2">
-            <div
-              className={`p-3 rounded-lg border-2 ${
-                form.isValid ? 'border-purple-300 bg-purple-50' : 'border-warm-200 bg-warm-50'
-              }`}
-            >
-              <div className="font-mono text-lg font-bold text-purple-800">{form.structure}</div>
+          <div key={form.id} className="flex items-center gap-2 phone:flex-col phone:gap-1">
+            <div className="w-52 phone:w-56">
+              <LewisStructure
+                drawing={form.drawing}
+                label={`Samsvörunarformúla ${idx + 1} af ${forms.length} fyrir ${challenge.molecule}`}
+                maxWidth={208}
+              />
             </div>
             {/* Double arrow between structures */}
-            {idx < forms.length - 1 && <div className="text-2xl text-purple-400 font-bold">⟷</div>}
+            {idx < forms.length - 1 && (
+              <div className="text-2xl text-warm-500 font-bold phone:rotate-90" aria-hidden="true">
+                ⟷
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -687,10 +688,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             {challenge.atoms && (
               <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
                 <h3 className="font-bold text-warm-700 mb-3 phone:mb-0">Rafeindasamsetning:</h3>
-                {/* Visual atom diagram */}
-                {challenge.atoms.map((atom, idx) => (
-                  <div key={idx}>{renderAtomVisualization(atom, showResult)}</div>
-                ))}
+                {challenge.drawing &&
+                  renderFormalChargeProblem(challenge.drawing, challenge.atoms[0])}
                 {/* FC calculation shown after answer */}
                 {showResult &&
                   challenge.atoms.map((atom, idx) => (

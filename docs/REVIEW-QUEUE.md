@@ -153,8 +153,11 @@ jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms
       item 19.
 - [ ] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
       Icelandic book's complex-ion constants (`m68869`), which is a new source.
-- [ ] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
-      view never finishes loading. Fixing it means bundling a font.
+- [x] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
+      view never finishes loading. Fixing it means bundling a font. — 2026-10-01, PR #71. Worse than
+      recorded: the CSP in `server/nginx-site.conf` refuses both that fetch and troika's worker, so
+      wherever that config is live the view never loaded at all. Fixed with a bundled font and troika's worker off; see
+      `CLAUDE.md` "3D labels fixed".
 
 ### C6. Lewis-formúlur design review (2026-09-30)
 
@@ -167,18 +170,12 @@ changes how the game teaches or looks rather than correcting a defect.
   - Leiðsögn uses H₂O, the same molecule the student then draws.
   - Proposal: open Stig 2 and Stig 3 with a short worked step on a molecule outside the set, with
     Leiðsögn becoming that step.
-- [ ] **One way to draw a Lewis structure.** The game draws molecules five ways, and none is the
-      book's.
-  - The canvas uses coloured balls, with H–O–H in a straight line.
-  - The view after a correct drawing (`AnimatedMolecule`) is bent and in CPK colours, and its
-    legend describes the canvas's blue and green atoms, not its own. The legend alone is a plain
-    defect and could be fixed first.
-  - The walkthrough draws no lone pairs.
-  - Stig 3 draws one atom with every bond on one side, so water's O reads as a double bond and
-    NH₄⁺'s N as a quadruple one.
-  - Stig 3 shows resonance forms as monospace text, and its CO forms have no lone pairs.
-  - Proposal: element symbols, bond lines, dot pairs and circled formal charges on every screen,
-    leaving geometry to VSEPR.
+- [x] **One way to draw a Lewis structure.** Ruled 2026-09-30 (the proposal), done the same day.
+      Every screen — the Stig 2 board, the structure shown after it, the walkthrough and Stig 3's
+      formal-charge, CO and resonance questions — now draws from `utils/lewisLayout.ts` with
+      `components/LewisStructure.tsx`: element symbols, bond lines, dot pairs and circled formal
+      charges, in the book's flat layout. The 3D view stays, as the VSEPR shape. Guarded by
+      `lewis-layout.test.ts` and `one-renderer.test.tsx`.
 - [ ] **Chrome.**
   - The shared Header appears only on the menu; each level builds its own "← Til baka".
   - There are three level accents plus an indigo Næsta, and kvenno-orange appears nowhere.

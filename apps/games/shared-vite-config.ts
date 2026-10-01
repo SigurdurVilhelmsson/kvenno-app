@@ -61,7 +61,14 @@ export function createGameViteConfig({
         },
         output: {
           entryFileNames: `${gameName}.js`,
-          assetFileNames: `${gameName}.[ext]`,
+          // The game's one stylesheet keeps its fixed name beside the HTML. Any other
+          // emitted asset (the 3D viewer's label font) goes under the per-game
+          // directory with a content hash, like the split chunks: nginx caches it for a
+          // year as immutable, and build-games.mjs clears that directory per build.
+          assetFileNames: (asset) =>
+            asset.names.some((n) => n.endsWith('.css'))
+              ? `${gameName}.[ext]`
+              : `assets/${gameName}/[name]-[hash][extname]`,
           // Namespace split chunks per game. The output directory is shared with
           // every other game in the year, so a flat `assets/` would mix them and
           // make stale-chunk cleanup impossible to scope.

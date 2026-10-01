@@ -304,6 +304,31 @@ spinning silently: `React.lazy` rejections don't reach Suspense, and the games' 
 wraps the whole `App`, so an uncaught throw blanks the entire game instead of one panel. Its
 messages are now Icelandic — note `Sæki`, not `Hleð`, since `hleðsla` means electric charge here.
 
+**3D labels fixed (Oct 2026) — the 3D view could not load under the CSP in `nginx-site.conf`.** The atom
+labels are drei `<Text>`, which is troika-three-text, and it failed twice over
+(`docs/REVIEW-QUEUE.md` C5):
+
+1. With no `font` it fetched per-character font data from `cdn.jsdelivr.net`, and `<Text>`
+   suspends until that answers. The game-HTML CSP in `server/nginx-site.conf` says
+   `connect-src 'self'`, so wherever that config is live it never answered for anyone — not only on
+   networks that block the CDN. (`deploy.sh` does not install that file, so whether production
+   serves it was not checked from here.)
+2. It built glyphs in a Web Worker that loads its code with `importScripts(blob:…)`, which the same
+   CSP's `script-src` refuses. A bundled font alone does not fix the view; this is the second half.
+
+The fix is in `MoleculeViewer3D.tsx`: a bundled Roboto Bold woff (Latin subset, OFL, 21 KB, beside
+the component in `fonts/`) passed as `font`, and `configureTextBuilder({ useWorker: false })`. No
+CSP change was needed. The font is emitted under `assets/{game}/` with a hash, referenced only from
+the deferred viewer chunk, so it costs nothing until a 3D view opens. Non-CSS assets go there
+because `createGameViteConfig`'s `assetFileNames` sends them there; only the stylesheet keeps the
+fixed `{game}.css`.
+
+**The other 3D tests could not see this**: they waited for a `<canvas>`, which appears at once, with
+the loading text drawn inside it for good. The viewer now sets `aria-busy` until its scene has
+mounted, and `e2e/threejs-labels.spec.ts` waits for that, serving the CSP lifted from
+`nginx-site.conf` and refusing every off-site request. It fails against no fix and against each
+half of the fix alone. **Wait on `aria-busy`, not on the canvas,** in any new 3D test.
+
 Remaining deferred (all need a decision, not code):
 
 - **`useGameI18n` `t()` — 7 of 20 games are switcher-only.** Those 20 all import the hook and render `LanguageSwitcher`; `1-ar/einingakedjan` (Aug 2026) is the one game that does neither, deliberately — it ships hardcoded Icelandic so it does not add a 21st case to this undecided question. The rest of this entry is unchanged and counts only the original 20: seven have zero `t()` calls of any form and serve hardcoded Icelandic — three Y3 (`gas-law-challenge`, `buffer-recipe-creator`, `thermodynamics-predictor`) and four Y2 (`kinetics`, `lewis-structures`, `organic-nomenclature`, `intermolecular-forces`). Two more are zero in all but name: `ph-titration` and `rafeindabygging` have exactly one call each (`ph-titration`'s is a template literal with a hardcoded Icelandic fallback, `src/components/Level3.tsx:104`, which a `t('` grep misses). `equilibrium-shifter` is partial at 7, so this is not "all of Y3". Per-game counts: `docs/i18n-coverage.md` — the authority; every old-repo game carries the same dead wiring. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is.
