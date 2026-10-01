@@ -568,6 +568,11 @@ The game says `aðalskammtatala` (`Level1.tsx:114`, `App.tsx` ~:340) with the gl
 `aðalskammtatala` 16 times) and `:32` `hliðarskammtatala` (0; the book says `aukaskammtatala`).
 **Recommendation:** the book's pair, `aðalskammtatala` and `aukaskammtatala`, ruled together, with
 `ordabok.md` corrected.
+**Applied 2026-10-01, as recommended:** `aðalskammtatala` and `aukaskammtatala`; `ordabok.md`
+corrected for both, and its misspelt headword `angular moment` with them. The recorded counts were
+slightly off: the book has `aukaskammtatala` 3, `hverfiþungaskammtatala` 4 and `hliðarskammtatala`
+1 (in a list of alternative names). Its defining sentence, `Aukaskammtatalan
+(hverfiþungaskammtatalan), l`, is what settles it. Both are `governed-terms` rows.
 
 **64. Stig 2 grades configurations by exact order and format.**
 `Level2.tsx` `handleSubmit`, `electron-configs.ts` `normalizeConfig`: Fe as `…3d⁶ 4s²` (n-order) is
@@ -728,6 +733,11 @@ things.
 `hraðatakmarkandi þrep`, its prose 12 to 4 the other way), and `röð hvörfunar` / `Heildarröð`.
 **Recommendation:** `hraðalögmál` (correct `ordabok.md`); `hraðatakmarkandi`; `stig efnahvarfs`,
 but only with item 1, so `stig` stops meaning level, points and order on one screen.
+**Applied 2026-10-01, two of the three:** `hraðalögmál` (`ordabok.md` corrected; `Hraðajafna`,
+`hraðajöfnur` and `hvarfhraðajöfnu` swept, with the gender change) and `hraðatakmarkandi` (17
+sites). Both are `governed-terms` rows. **`stig efnahvarfs` is not applied**, because the
+recommendation ties it to item 1: while the game still shows a running `Stig`, it would mean
+level, points and order on one screen. It waits for item 1 in `kinetics`.
 
 **82. Level 2 challenge 6 asks the student to compute k and has nowhere to enter it.**
 `data/level2-questions.ts` id 6 `Reikna k`; `Level2.tsx` grades only the two orders. Options:
@@ -750,6 +760,9 @@ The game writes `redox-hvörf` throughout (`i18n.ts`, `Level1.tsx:18`, `Level2.t
 this pass. Options: (a) sweep to `oxunar-afoxunarhvarf` platform-wide; (b) rule `redox-hvarf`
 acceptable and add it to `ordabok.md`; (c) leave. **Recommendation:** (b), and harmonise the two
 solid `Redoxhvarf` forms in the Stig 2 and 3 intros.
+**Applied 2026-10-01, (b):** `redox reaction;redox-hvarf` added to `ordabok.md` beside
+`redox;oxunar-afoxunarhvarf`, and the two solid `Redoxhvarf`/`redoxhvarf` in the Stig 2 and 3
+intros hyphenated. A `governed-terms` row bans the solid and the open forms platform-wide.
 
 **84. Stig 2 and Stig 3 carry different names on different screens.**
 Stig 3 is `Stilla hvörf` (menu, header), `Stilla efnajöfnur` (closing screen) and `Stilla

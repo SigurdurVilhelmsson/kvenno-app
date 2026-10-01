@@ -1383,6 +1383,14 @@ book's `þríhyrndur tvípýramídi`. **`svæði rafeindaþéttleika` declines o
 fjórum svæðum rafeindaþéttleika`. Bond-sense `tengsl` → `tengi` is banned per game, not
 platform-wide, because `tengsl` also means a relationship.
 
+**Three more on 2026-10-01, each correcting `ordabok.md` to the textbook** (decisions 63, 81, 83):
+`aðalskammtatala` and `aukaskammtatala` (not the glossary's old `höfuðskammtatala` and
+`hliðarskammtatala`), `hraðalögmál` (not `hraðajafna`; neuter, so `í hraðalögmálinu`) and
+`hraðatakmarkandi` (not `hraðaákvarðandi`). `redox-hvarf` is ruled acceptable beside
+`oxunar-afoxunarhvarf`, always hyphenated. Reaction order stays `röð hvörfunar` in `kinetics`
+until its running score goes (decision 1), since `stig efnahvarfs` would put three meanings of
+`stig` on one screen.
+
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept the game (6 files), the `Námsleiðin` chain string in every
