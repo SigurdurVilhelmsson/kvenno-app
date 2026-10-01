@@ -52,6 +52,9 @@ const FORBIDDEN: { wrong: RegExp; right: string }[] = [
   { wrong: /Permanganat jón/i, right: 'Permanganatjónin' },
   { wrong: /Heildar stig/i, right: 'Heildarstig' },
   { wrong: /Rafeindasamskipti/i, right: 'Rafeindaflutningur' },
+  // Not a word (0 corpus hits), and it read as electron sharing, which is the opposite of
+  // redox. Decision 87, 2026-10-01: Lewis took `Samgild tengi`, where it meant covalent bonding.
+  { wrong: /Rafeindasameign/i, right: 'Rafeindaflutningur' },
   { wrong: /\(Electron Transfer\)|\b(Daniell|Mg-Cu|Fe-Cu|Zn-Ag) Cell\b/, right: 'Icelandic' },
   // An Icelandic compound is not written open; the game's own form is `redox-hvörf`.
   { wrong: /\bredox (hv|jöfn|efnafr)/i, right: 'redox-hvörf / redox-jöfnur (hyphenated)' },

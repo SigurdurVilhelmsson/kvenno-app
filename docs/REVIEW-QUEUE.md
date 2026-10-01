@@ -215,8 +215,9 @@ changes how the game teaches or looks rather than correcting a defect.
     terms are now `governed-terms.test.ts` rows, so they hold platform-wide, and `ordabok.md`
     gained seven entries taken from the book (`electron domain`, `formal charge`, `octet`,
     `resonance structure`, `resonance hybrid`, `trigonal bipyramidal`, `hypervalent molecule`).
-  - **Still open:** item 87 in `redox-reactions`, and the English Y2 chain (item 3), which spans
-    all eight Y2 games.
+  - **Done 2026-10-01 in redox.** Item 87: Stig 1's related-concept chip `Rafeindasameignir`,
+    not a word, is now `Rafeindaflutningur`, the game's own word for electron transfer.
+  - **Still open:** the English Y2 chain (item 3), which spans all eight Y2 games.
 
 ## D. Work that needs no ruling
 

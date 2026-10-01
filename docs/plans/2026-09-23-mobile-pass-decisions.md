@@ -745,7 +745,9 @@ whether it means shared electrons or transfer. Options: (a) `Rafeindaflutningur`
 tengi`; (c) drop it. **Recommendation:** (a) in redox. In Lewis it sits between `Efnatengi` and
 `Jónatengi`, where it plainly means covalent bonding, so (b) there.
 **Applied 2026-10-01 in Lewis, (b)** (PR #72), `Samgild tengi`, which is the glossary's
-`covalent bond;samgilt tengi`. Still open in redox.
+`covalent bond;samgilt tengi`. **Applied 2026-10-01 in redox, (a):** `Rafeindaflutningur`,
+the form the game already uses on its `OxidationStateDisplay` card and in `i18n.ts`, and the
+book's (`ch17/m68825`). Guarded by the game's `icelandic-text.test.ts`. **Item 87 is done.**
 
 **88. The Daniell cell's name.**
 Now `Zn–Cu galvaníhlað (Daniell)` (`ElectrochemicalCell.tsx:38`), an interim form without English.
