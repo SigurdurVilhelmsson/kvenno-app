@@ -276,8 +276,14 @@ const VALENCE_ELECTRONS: Record<string, number> = {
 };
 
 // The noun and its adjective agree with the count: 1 takes the singular.
-function bondingPairsPhrase(n: number): string {
-  return n === 1 ? '1 bindandi par' : `${n} bindandi pör`;
+/**
+ * The count step grades domains, not pairs: a double bond is one domain and two pairs, so
+ * CO₂ is 2. Its label used to ask for bonding pairs, which made a student who counted
+ * CO₂'s four of them wrong (decisions item 67). The book's word is `tengisvæði`.
+ * Neuter, the same form in the singular and plural.
+ */
+function bondingDomainsPhrase(n: number): string {
+  return `${n} tengisvæði`;
 }
 function lonePairsPhrase(n: number): string {
   return n === 1 ? '1 stakt par' : `${n} stök pör`;
@@ -468,7 +474,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const getHint = () => {
     if (step.id === 'count') {
-      return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hversu margar fara í tengi?`;
+      return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hvert tengi við ytra atóm er eitt tengisvæði, hvort sem það er eintengi, tvítengi eða þrítengi. Hve mörg tengisvæði eru, og hve mörg stök pör eru eftir?`;
     } else if (step.id === 'geometry') {
       return `Stök pör taka meira pláss en bindandi pör og hrinda þeim saman. ${molecule.lonePairs === 0 ? 'Engin stök pör — rafeindalögun = sameindarlögun.' : `Hversu mikil áhrif ${molecule.lonePairs === 1 ? 'hefur' : 'hafa'} ${lonePairsPhrase(molecule.lonePairs)}?`}`;
     } else if (step.id === 'angle') {
@@ -675,10 +681,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </p>
                   <div className="grid grid-cols-2 gap-4 phone:gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-warm-600 mb-1">
-                        Bindandi pör
+                      <label
+                        htmlFor="count-bonding"
+                        className="block text-sm font-medium text-warm-600 mb-1"
+                      >
+                        Tengisvæði
                       </label>
                       <input
+                        id="count-bonding"
                         type="number"
                         value={bondingPairsAnswer}
                         onChange={(e) => setBondingPairsAnswer(e.target.value)}
@@ -691,10 +701,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-warm-600 mb-1">
+                      <label
+                        htmlFor="count-lone"
+                        className="block text-sm font-medium text-warm-600 mb-1"
+                      >
                         Stök pör
                       </label>
                       <input
+                        id="count-lone"
                         type="number"
                         value={lonePairsAnswer}
                         onChange={(e) => setLonePairsAnswer(e.target.value)}
@@ -709,7 +723,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                   {stepResult === 'incorrect' && (
                     <div className="bg-red-50 p-3 rounded-lg text-red-700">
-                      Rétt svar: {bondingPairsPhrase(molecule.bondingPairs)} og{' '}
+                      Rétt svar: {bondingDomainsPhrase(molecule.bondingPairs)} og{' '}
                       {lonePairsPhrase(molecule.lonePairs)}
                     </div>
                   )}
@@ -733,7 +747,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       <strong>{ELECTRON_GEOMETRY_NAME[molecule.electronDomains]}</strong>
                     </div>
                     <div className="text-sm text-teal-700 mt-1">
-                      {molecule.bondingPairs} bindandi + {lonePairsPhrase(molecule.lonePairs)}
+                      {bondingDomainsPhrase(molecule.bondingPairs)} +{' '}
+                      {lonePairsPhrase(molecule.lonePairs)}
                     </div>
                   </div>
                   <p ref={promptRef} data-item-start className="text-warm-600">

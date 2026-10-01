@@ -54,6 +54,10 @@ const BANNED: { pattern: RegExp; why: string }[] = [
   { pattern: /járnbrautatein/, why: 'járnbrautarteina, as the book and the c6 hint write it' },
   { pattern: /Kolmonoxíð|Brennisteinstrioxíð|Vetni klóríð/, why: 'compound names' },
   { pattern: /röð aðgerða|í réttri röð|Mundu röðina/, why: 'the order does not matter' },
+  {
+    pattern: /Útskýrðu rökstuðning/,
+    why: 'Stig 2 has no step that asks for reasoning (decisions item 79)',
+  },
 ];
 
 function sourceFiles(dir: string): string[] {

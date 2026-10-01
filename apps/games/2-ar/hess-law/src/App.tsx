@@ -267,7 +267,7 @@ function App() {
                     Sameina jöfnur til að ná markmiðsjöfnu
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Notaðu 2-3 jöfnur til að búa til nýja jöfnu. Útskýrðu rökstuðning.
+                    Notaðu 2-3 jöfnur til að búa til nýja jöfnu.
                   </div>
                 </div>
               </div>

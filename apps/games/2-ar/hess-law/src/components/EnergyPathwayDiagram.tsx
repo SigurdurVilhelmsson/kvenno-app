@@ -12,8 +12,13 @@ interface EnergyStep {
 interface EnergyPathwayDiagramProps {
   /** Selected equations with their current deltaH values */
   steps: { label: string; deltaH: number }[];
-  /** Target deltaH to reach */
-  targetDeltaH: number;
+  /**
+   * Target ΔH to reach, drawn as the `Markmið` line, or null to leave it out. Stig 2 passes
+   * null until the answer is checked: the card asks the student to find this value, and a
+   * line on the drawing turned that into steering the staircase onto it (decisions item 76).
+   * The scale leaves it out too, so the empty space on the drawing does not place it.
+   */
+  targetDeltaH: number | null;
   /** Whether the current sum matches the target */
   isCorrect: boolean;
   /** Height of the diagram in pixels */
@@ -58,7 +63,11 @@ export function EnergyPathwayDiagram({
   }, [steps]);
 
   // Find the range for scaling
-  const allValues = [0, targetDeltaH, ...energySteps.map((s) => s.cumulativeH)];
+  const allValues = [
+    0,
+    ...(targetDeltaH === null ? [] : [targetDeltaH]),
+    ...energySteps.map((s) => s.cumulativeH),
+  ];
   const minEnergy = Math.min(...allValues) - 50;
   const maxEnergy = Math.max(...allValues) + 50;
   const range = maxEnergy - minEnergy;
@@ -105,7 +114,7 @@ export function EnergyPathwayDiagram({
   }, [energySteps, stepWidth, height, startX]);
 
   // Target line position
-  const targetY = energyToY(targetDeltaH);
+  const targetY = targetDeltaH === null ? null : energyToY(targetDeltaH);
   const finalY =
     energySteps.length > 0
       ? energyToY(energySteps[energySteps.length - 1].cumulativeH)
@@ -162,25 +171,29 @@ export function EnergyPathwayDiagram({
           </text>
 
           {/* Target energy line */}
-          <line
-            x1="30"
-            y1={targetY}
-            x2={narrow ? width - 4 : width - 20}
-            y2={targetY}
-            stroke="#f59e0b"
-            strokeWidth="2"
-            strokeDasharray="6,4"
-          />
-          <text
-            x={narrow ? width - 4 : width - 18}
-            y={narrow ? targetY - 6 : targetY + 4}
-            fill="#f59e0b"
-            fontSize={narrow ? 12 : 10}
-            fontWeight="bold"
-            textAnchor={narrow ? 'end' : 'start'}
-          >
-            Markmið
-          </text>
+          {targetY !== null && (
+            <>
+              <line
+                x1="30"
+                y1={targetY}
+                x2={narrow ? width - 4 : width - 20}
+                y2={targetY}
+                stroke="#f59e0b"
+                strokeWidth="2"
+                strokeDasharray="6,4"
+              />
+              <text
+                x={narrow ? width - 4 : width - 18}
+                y={narrow ? targetY - 6 : targetY + 4}
+                fill="#f59e0b"
+                fontSize={narrow ? 12 : 10}
+                fontWeight="bold"
+                textAnchor={narrow ? 'end' : 'start'}
+              >
+                Markmið
+              </text>
+            </>
+          )}
 
           {/* Energy pathway (animated staircase) */}
           {steps.length > 0 && (
@@ -365,10 +378,12 @@ export function EnergyPathwayDiagram({
           <div className="w-3 h-3 rounded-full bg-blue-500" aria-hidden="true" />
           <span className="text-warm-400">▲ Innvermið (+ΔH)</span>
         </div>
-        <div className="flex items-center gap-1 whitespace-nowrap">
-          <div className="w-3 h-0.5 bg-yellow-500" style={{ width: '12px' }} />
-          <span className="text-warm-400">Markmið</span>
-        </div>
+        {targetY !== null && (
+          <div className="flex items-center gap-1 whitespace-nowrap">
+            <div className="w-3 h-0.5 bg-yellow-500" style={{ width: '12px' }} />
+            <span className="text-warm-400">Markmið</span>
+          </div>
+        )}
       </div>
 
       {/* Hess's Law reminder */}

@@ -162,6 +162,15 @@ const problems: OxidationProblem[] = [
   },
 ];
 
+/**
+ * Whether the problem's formula is an ion, which its id marks with a charge suffix
+ * (`Cr2O7_2-`). The question used to call every formula a molecule, NaCl and CuSO₄
+ * included, which are ionic compounds, and Cr₂O₇²⁻, which is an ion (decisions item 85).
+ */
+function isIon(problem: OxidationProblem): boolean {
+  return /_\d*[+-]$/.test(problem.compound);
+}
+
 export function Level1({ t, onComplete, onBack }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'practice'>('learn');
   const [currentRule, setCurrentRule] = useState(0);
@@ -402,7 +411,9 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
                   <span className="text-amber-800 font-bold text-xl">{problem.targetElement}</span>
                   <span className="text-amber-600">
                     {' '}
-                    {t('level1.inThisCompound', 'í þessari sameind?')}
+                    {isIon(problem)
+                      ? t('level1.inThisIon', 'í þessari jón?')
+                      : t('level1.inThisCompound', 'í þessu efnasambandi?')}
                   </span>
                 </div>
               </div>

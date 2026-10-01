@@ -611,6 +611,11 @@ The key is 2, so a student who counts CO₂'s four bonding pairs is wrong (`Leve
 `molecules[3]`; the only multiple-bond molecule). Options: (a) relabel both inputs as domains,
 which needs a term (the book says `svæði rafeindaþéttleika`); (b) also accept 4; (c) swap CO₂ out.
 **Recommendation:** (a), your wording.
+**Applied 2026-10-01, (a):** both count fields are labelled, `Tengisvæði` and `Stök pör`, the
+book's `tengisvæði` (ch07: `tvö stök rafeindapör og fjögur tengisvæði`). The feedback reads
+`2 tengisvæði og 2 stök pör`, and the hint says a single, double or triple bond is one domain.
+Guarded by `level2-feedback.test.tsx`. Stig 1 and the angle tool still say `Bindandi pör` for
+the AXₙEₘ shapes, where every domain is a single bond.
 
 **68. SF₆'s distractor `d²sp³` is graded wrong while its explanation calls it the
 same as `sp³d²`.**
@@ -694,6 +699,9 @@ challenge; the n × ΔH°f terms stay. Guarded by `level3-display.test.tsx`.
 wrong combination no longer scores. Options: (a) keep; (b) draw it after `Athuga lausn`; (c) put it
 behind a hint. **Recommendation:** (a), or (b) if the level should test reasoning over guided
 search.
+**Applied 2026-10-01, (b):** the line, its legend key and its place on the scale appear only
+once `Athuga lausn` is pressed, and go again when the cards change. Guarded by
+`level2-target-line.test.tsx`.
 
 **77. The state-path panel under every Level 1 challenge shows c5's answer.**
 `StatePathComparison compact` labels C + ½O₂ → CO as −111, the value c5 asks for
@@ -712,6 +720,8 @@ is about path-independence, which `ordabok.md` calls `ástandsfall`. **Recommend
 **79. Stig 2's card promises `Útskýrðu rökstuðning.`, and the level has no such step.**
 `App.tsx` and `i18n.ts` `levels.level2.details`. Options: (a) delete the sentence; (b) add a short
 "which species cancel?" step. **Recommendation:** (a) now.
+**Applied 2026-10-01, (a):** deleted in all three languages. Guarded by the game's
+`icelandic-text.test.ts`.
 
 Also here: the formation-enthalpy table (item 9), the contact process (item
 17), CO (item 16) and the en/pl decimals (item 4).
@@ -776,6 +786,8 @@ change too.
 `Level1.tsx:356`: three of ten items are not molecules. Options: (a) `í þessu efnasambandi?` /
 `í þessari jón?` per item; (b) one neutral `í þessari formúlu?`. **Recommendation:** (a); the data
 already marks the ion.
+**Applied 2026-10-01, (a):** `í þessu efnasambandi?`, and `í þessari jón?` for Cr₂O₇²⁻, read
+off the charge suffix in its id. Guarded by `level1-question-noun.test.tsx`.
 
 **86. Least common multiple: `LCM(3,2)=6` and `Minnsta samþakning`.**
 English in `data/half-reactions.ts:125`, a non-word in the Stig 3 intro, Skref 3. Neither source
@@ -815,6 +827,8 @@ changes quiz answers, chips, cards and hints, not the engine.
 viðskeyti as bond type (`-an/-en/-ýn`) and never mentions stofn; the book's model differs again.
 Options: (a) make the card match the game and drop `Stofn`; (b) move the game to the book's model.
 **Recommendation:** (a) now; weigh (b) with item 89.
+**Applied 2026-10-01, (a):** two cards, `Forskeyti` (fjöldi kolefna) and `Viðskeyti` (tegund
+tengja). Guarded by `menu-explainer.test.tsx`.
 
 **91. The molecule builder allows a second multiple bond and names only one.**
 CH₂=CH–CH=CH₂ shows as `1-búten` (`utils/naming.ts` `nameChain`, `MoleculeBuilder.tsx`
@@ -829,6 +843,11 @@ nothing. Guarded by `molecule-builder-naming.test.tsx`.
 `Level2.tsx` `Útskýring` (~:811) builds from carbon count and bond type, so 2-metýlprópan reads
 `prop (3 kolefni) + an`. **Recommendation:** add `+ metýlgrein á kolefni {n}` and the longest-chain
 sentence already in each molecule's hint.
+**Applied 2026-10-01:** `+ metýlgrein á kolefni {n}` per branch, and `Forskeytið telur kolefnin
+í lengstu keðjunni, 3, ekki öll 4 kolefnin í sameindinni.` Guarded by
+`branched-explanation.test.tsx`. **Your call:** `metýlgrein` is the game's word (its builder
+and hints use `grein`), while the book says `metýlhópur` (12) and `hliðarhópur` (29) and
+`ordabok.md` has neither.
 
 ---
 

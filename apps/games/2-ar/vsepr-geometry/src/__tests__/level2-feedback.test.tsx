@@ -63,7 +63,7 @@ describe('the count step', () => {
     const { ui, container } = start();
     answerCount(ui, container, 2, 1); // H₂O has 2 lone pairs
     expect(ui.getByText(/Rangt/)).toBeTruthy();
-    expect(ui.getByText(/Rétt svar: 2 bindandi pör og 2 stök pör/)).toBeTruthy();
+    expect(ui.getByText(/Rétt svar: 2 tengisvæði og 2 stök pör/)).toBeTruthy();
     expect(container.textContent).toContain('Samtals svæði rafeindaþéttleika: 4');
   });
 
@@ -71,7 +71,21 @@ describe('the count step', () => {
     const { ui, container } = start();
     advanceTo(ui, container, at('NH₃'));
     answerCount(ui, container, 3, 0);
-    expect(ui.getByText(/Rétt svar: 3 bindandi pör og 1 stakt par/)).toBeTruthy();
+    expect(ui.getByText(/Rétt svar: 3 tengisvæði og 1 stakt par/)).toBeTruthy();
+  });
+
+  it('asks for bonding domains, which CO₂ has two of, not bonding pairs (decisions item 67)', () => {
+    // A double bond is one domain and two pairs, so the key of 2 for CO₂ was
+    // wrong for a student who counted the four bonding pairs the field asked for.
+    const { ui, container } = start();
+    advanceTo(ui, container, at('CO₂'));
+    expect(ui.getByLabelText('Tengisvæði')).toBeTruthy();
+    expect(ui.getByLabelText('Stök pör')).toBeTruthy();
+    expect(container.textContent).not.toMatch(/Bindandi pör/i);
+    fireEvent.click(ui.getByRole('button', { name: hintButton }));
+    expect(container.textContent).toContain('eintengi, tvítengi eða þrítengi');
+    answerCount(ui, container, 2, 0);
+    expect(ui.queryByText(/Rangt/)).toBeNull();
   });
 
   it("gives carbon's real valence electron count for CO₂", () => {
@@ -111,7 +125,7 @@ describe('the geometry step', () => {
     advanceTo(ui, container, at('NH₃'));
     answerCount(ui, container, 3, 1);
     next(ui);
-    expect(container.textContent).toContain('3 bindandi + 1 stakt par');
+    expect(container.textContent).toContain('3 tengisvæði + 1 stakt par');
     expect(container.textContent).toContain('Með 1 stöku pari, hvaða');
     fireEvent.click(ui.getByRole('button', { name: hintButton }));
     expect(container.textContent).toContain('Hversu mikil áhrif hefur 1 stakt par?');

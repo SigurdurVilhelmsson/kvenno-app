@@ -26,7 +26,7 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Stig 2: Þrautir',
         description: 'Sameina jöfnur til að ná markmiðsjöfnu',
-        details: 'Notaðu 2-3 jöfnur til að búa til nýja jöfnu. Útskýrðu rökstuðning.',
+        details: 'Notaðu 2-3 jöfnur til að búa til nýja jöfnu.',
       },
       level3: {
         name: 'Stig 3: Útreikningar',
@@ -132,7 +132,7 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Level 2: Puzzles',
         description: 'Combine equations to reach target equation',
-        details: 'Use 2-3 equations to create a new equation. Explain your reasoning.',
+        details: 'Use 2-3 equations to create a new equation.',
       },
       level3: {
         name: 'Level 3: Calculations',
@@ -238,7 +238,7 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Poziom 2: Łamigłówki',
         description: 'Łącz równania aby osiągnąć równanie docelowe',
-        details: 'Użyj 2-3 równań aby stworzyć nowe równanie. Wyjaśnij swoje rozumowanie.',
+        details: 'Użyj 2-3 równań aby stworzyć nowe równanie.',
       },
       level3: {
         name: 'Poziom 3: Obliczenia',

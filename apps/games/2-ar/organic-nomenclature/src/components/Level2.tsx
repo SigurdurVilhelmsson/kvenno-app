@@ -207,6 +207,19 @@ export const molecules: Molecule[] = [
   },
 ];
 
+/** The prefix of an alkyl branch of this many carbons, as the names in this pool write it. */
+function branchName(length: number): string {
+  const names: Record<number, string> = { 1: 'metýl', 2: 'etýl' };
+  const name = names[length];
+  if (!name) throw new Error(`No branch name for a ${length}-carbon branch`);
+  return name;
+}
+
+/** Every carbon in the molecule: the longest chain and its branches. */
+function totalCarbons(molecule: Molecule): number {
+  return molecule.carbons + (molecule.branches ?? []).reduce((sum, b) => sum + b.length, 0);
+}
+
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [mode, setMode] = useState<'select' | 'name' | 'build'>('select');
   const [currentMolecule, setCurrentMolecule] = useState(0);
@@ -993,7 +1006,22 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           </span>
                         </span>
                       )}
+                    {/* A branched molecule's explanation used to stop at the chain and the
+                        bond, so 2-metýlprópan read as plain própan (decisions item 92). */}
+                    {molecule.branches?.map((branch, i) => (
+                      <span key={i} className="text-warm-500">
+                        {' '}
+                        + <span className="font-bold">{branchName(branch.length)}grein</span> á
+                        kolefni <span className="text-red-600 font-bold">{branch.atPosition}</span>
+                      </span>
+                    ))}
                   </div>
+                  {molecule.branches && molecule.branches.length > 0 && (
+                    <p className="text-sm text-warm-600 mt-2 phone:mt-1">
+                      Forskeytið telur kolefnin í lengstu keðjunni, {molecule.carbons}, ekki öll{' '}
+                      {totalCarbons(molecule)} kolefnin í sameindinni.
+                    </p>
+                  )}
                 </div>
 
                 {/* Separate elements from Athuga, and each ignores a press within
