@@ -14,6 +14,12 @@ export interface RateLawChallenge {
   correctOrderA: number;
   correctOrderB: number;
   rateConstantUnit: string;
+  /**
+   * The card asks for k as well as the orders, so the level gives a field for it and grades it
+   * against `rateConstantOf` (decisions item 82). "Reikna k" used to ask for k and grade only
+   * the two orders.
+   */
+  asksForRateConstant?: boolean;
   hint: string;
   explanation: string;
 }
@@ -34,6 +40,15 @@ export function rateConstantOf(challenge: RateLawChallenge): number {
     row.concentrationA ** challenge.correctOrderA *
     (hasB ? row.concentrationB ** challenge.correctOrderB : 1);
   return row.initialRate / denominator;
+}
+
+/** How far a student's k may sit from the true one, relative: 2 %, as Hess Stig 3 grades. */
+export const RATE_CONSTANT_TOLERANCE = 0.02;
+
+/** Whether a written k matches the challenge's, read with the decimal comma. */
+export function rateConstantMatches(challenge: RateLawChallenge, written: number): boolean {
+  const k = rateConstantOf(challenge);
+  return Number.isFinite(written) && Math.abs(written - k) <= RATE_CONSTANT_TOLERANCE * k;
 }
 
 export const challenges: RateLawChallenge[] = [
@@ -134,6 +149,7 @@ export const challenges: RateLawChallenge[] = [
     correctOrderA: 1,
     correctOrderB: 2,
     rateConstantUnit: 'M⁻²s⁻¹',
+    asksForRateConstant: true,
     hint: 'k = hraði / ([A]^m × [B]^n)',
     explanation:
       'hraði = k[A][B]². Notum tilraun 1: k = 0,250 / (0,50 × 0,50²) = 0,250 / 0,125 = 2,0 M⁻²s⁻¹.',

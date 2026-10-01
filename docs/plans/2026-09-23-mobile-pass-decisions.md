@@ -612,11 +612,16 @@ same as `sp³d²`.**
 `Level3.tsx` challenge 4, option d. Options: (a) a plainly wrong distractor (sp³d³, sp²);
 (b) rewrite the explanation (d²sp³ is complex-ion notation); (c) accept both.
 **Recommendation:** (a).
+**Applied 2026-10-01, (a):** option d is now `sp³d³`, "7 svæði rafeindaþéttleika". Guarded by
+the game's `icelandic-text.test.ts`.
 
 **69. The NF₃ against NH₃ explanation contradicts its own conclusion.**
 `Level3.tsx` challenge 12 `conceptExplanation`: `N-H tengisl benda FRÁ N` with the lone pair
 `bendir einnig upp` cannot both hold. Options: (a) rewrite in Brown's convention (arrow toward
 δ−); (b) cut to the correct sentence from option b. **Recommendation:** (a), your Icelandic.
+**Applied 2026-10-01, (a):** rewritten in Brown's convention — a bond dipole points to the δ−
+atom, so the N-H dipoles point to N, with the lone pair, and the N-F ones away from it, against
+it. Guarded by the game's `icelandic-text.test.ts`.
 
 **70. The angle grader accepts a list that contains the right angle.**
 `90 104,5 107 109,5 120 180` is right for every molecule (`utils/bondAngles.ts`
@@ -728,6 +733,10 @@ but only with item 1, so `stig` stops meaning level, points and order on one scr
 `data/level2-questions.ts` id 6 `Reikna k`; `Level2.tsx` grades only the two orders. Options:
 (a) a k field graded against `rateConstantOf()` with a relative tolerance (`type="text"`,
 `parseStudentNumber`); (b) reword the card. **Recommendation:** (a).
+**Applied 2026-10-01, (a):** a `k =` field with the unit beside it, on challenges marked
+`asksForRateConstant` (only `Reikna k`), graded at 2 % against `rateConstantOf()` with the decimal
+comma; Athuga waits for it, and the result line says `✗ (rétt: 2,0)` when only k is wrong.
+Guarded by `rate-constants.test.tsx`, which also rejects 0, double, half and NaN.
 
 Also here: the chain (item 3), glosses (item 6) and points (item
 1).
@@ -799,6 +808,9 @@ CH₂=CH–CH=CH₂ shows as `1-búten` (`utils/naming.ts` `nameChain`, `Molecul
 `cycleBond`). The book has `1,3-bútadíen` but no Icelandic for diynes or enynes. Options:
 (a) at most one multiple bond; (b) name dienes as the book does and rule the rest; (c) show `—`
 with a note. **Recommendation:** (a).
+**Applied 2026-10-01, (a):** `canSetBond` refuses a second multiple bond, and a refused click
+says so (`Hér má sameindin hafa eitt tvítengi eða eitt þrítengi, ekki fleiri.`) rather than doing
+nothing. Guarded by `molecule-builder-naming.test.tsx`.
 
 **92. The explanation for branched molecules ignores the branch.**
 `Level2.tsx` `Útskýring` (~:811) builds from carbon count and bond type, so 2-metýlprópan reads

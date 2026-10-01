@@ -5,7 +5,7 @@ import { Level1 } from '../components/Level1';
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
 import { challenges as level1Challenges } from '../data/level1-questions';
-import { challenges as level2Challenges } from '../data/level2-questions';
+import { challenges as level2Challenges, rateConstantOf } from '../data/level2-questions';
 import { challenges as level3Challenges } from '../data/level3-questions';
 
 /**
@@ -132,6 +132,12 @@ export function playLevel2(pick: Pick, onEachResult?: (index: number, c: HTMLEle
           pick === 'correct' ? challenge.correctOrderB : wrong(challenge.correctOrderB)
         )
       );
+    }
+    if (challenge.asksForRateConstant) {
+      const k = rateConstantOf(challenge);
+      fireEvent.change(ui.getByLabelText('k ='), {
+        target: { value: String(pick === 'correct' ? k : k * 2).replace('.', ',') },
+      });
     }
     seen.push(readable(container));
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));

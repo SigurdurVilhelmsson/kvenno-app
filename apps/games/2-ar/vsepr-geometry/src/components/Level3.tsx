@@ -156,9 +156,11 @@ const challenges: Challenge[] = [
       },
       {
         id: 'd',
-        text: 'd²sp³',
+        // Was sp³d² written in complex-ion notation, graded wrong while its own explanation
+        // called the two the same (decisions item 68). This one is plainly wrong.
+        text: 'sp³d³',
         correct: false,
-        explanation: 'Þetta er sama og sp³d², en sp³d² er algengari ritháttur.',
+        explanation: 'sp³d³ hefur 7 svæði rafeindaþéttleika.',
       },
     ],
     hint: 'S hefur 6 S-F tengi = 6 svæði rafeindaþéttleika. Þetta krefst d-svigrúma.',
@@ -461,7 +463,10 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hugsaðu um staka parið á N — hvert bendir það? Og hvert benda tengin?',
     conceptExplanation:
-      'Í NH₃: N-H tengi benda FRÁ N (H er δ+) og staka parið bendir einnig upp → allir kraftar benda í SÖMU ÁTTINA → stórt tvískautsvægi. Í NF₃: N-F tengi benda MÓTI N (F er δ-) en staka parið bendir í GAGNSTÆÐA ÁTT → kraftar hætta við → minna tvískautsvægi.',
+      // Brown's convention: a bond dipole points toward the δ− atom. The old text had the N-H
+      // dipoles pointing away from N and the lone pair "also up", which cannot both hold
+      // (decisions item 69).
+      'Tvískautsvægi tengis bendir að rafneikvæðara atóminu (δ−). Í NH₃ er N rafneikvæðara en H, svo N-H tvískautsvægin benda að N, í sömu átt og staka parið á N. Framlögin leggjast saman og sameindin er mjög skautuð. Í NF₃ er F rafneikvæðara en N, svo N-F tvískautsvægin benda frá N að F-atómunum, í gagnstæða átt við staka parið. Framlögin jafnast því að hluta út og NF₃ er aðeins lítillega skautuð.',
   },
 ];
 

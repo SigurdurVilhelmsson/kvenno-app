@@ -113,12 +113,12 @@ leave".
 - [ ] 61–62 einingakedjan
 - [ ] 63–64 rafeindabygging
 - [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
-- [ ] 67–71 vsepr-geometry. Item 70 applied 2026-10-01; confirm its angle sets.
+- [ ] 67–71 vsepr-geometry. Items 68, 69 and 70 applied 2026-10-01; confirm 70's angle sets.
 - [ ] 72–74 intermolecular-forces. Item 72 done 2026-10-01.
 - [ ] 75–79 hess-law. Items 75 and 77 done 2026-10-01.
-- [ ] 80–82 kinetics
+- [ ] 80–82 kinetics. Item 82 done 2026-10-01.
 - [ ] 83–88 redox-reactions. Item 87 done 2026-10-01 (PR #74).
-- [ ] 89–92 organic-nomenclature
+- [ ] 89–92 organic-nomenclature. Item 91 done 2026-10-01.
 - [ ] 93–94 gas-law-challenge
 - [ ] 95–100 jafnvaegisfasti
 - [ ] 101–104 equilibrium-shifter. 101 is the Keppnishamur unlock gate, which is live and needs a

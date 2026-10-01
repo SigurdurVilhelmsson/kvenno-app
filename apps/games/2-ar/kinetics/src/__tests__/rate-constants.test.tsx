@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest';
+import { fireEvent, render, within } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 
 import { clockPastNextGuard } from './next-guard-clock';
 import { playLevel2 } from './playthrough';
-import { challenges } from '../data/level2-questions';
+import { Level2 } from '../components/Level2';
+import { challenges, rateConstantMatches, rateConstantOf } from '../data/level2-questions';
 
 /**
  * Level 2 printed a stored `correctRateConstant` after every answer, and nothing held it to the
@@ -57,5 +59,83 @@ describe('the rate constant shown after each Level 2 challenge', () => {
         expect(Math.abs(k - ks[0]) / ks[0], challenge.title).toBeLessThan(1e-9);
       }
     }
+  });
+});
+
+/**
+ * "Reikna k" asked the student to compute k and gave nowhere to enter it: Level 2 graded only
+ * the two orders (decisions item 82). The challenges that ask for k now carry a field, graded
+ * against the k derived from the table, with the decimal comma.
+ */
+describe('the challenges that ask for k', () => {
+  const asking = challenges.filter((c) => c.asksForRateConstant);
+
+  it('are the ones whose card asks for it', () => {
+    expect(asking.map((c) => c.title)).toEqual(['Reikna k']);
+    for (const c of challenges) {
+      expect(/Reikna|hraðafastann k/.test(`${c.title} ${c.description}`), c.title).toBe(
+        !!c.asksForRateConstant
+      );
+    }
+  });
+
+  it.each(asking.map((c) => [c.title, c] as const))(
+    '%s: rejects 0, double, half and NaN, and accepts k within 2 %',
+    (_title, c) => {
+      const k = rateConstantOf(c);
+      for (const wrong of [0, k * 2, k / 2, NaN]) expect(rateConstantMatches(c, wrong)).toBe(false);
+      for (const right of [k, k * 1.019, k * 0.981])
+        expect(rateConstantMatches(c, right)).toBe(true);
+    }
+  );
+
+  function atRateConstantChallenge() {
+    const { container, unmount } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    const ui = within(container);
+    fireEvent.click(ui.getByRole('button', { name: /Byrja æfingar/ }));
+    const index = challenges.findIndex((c) => c.asksForRateConstant);
+    for (let i = 0; i < index; i++) {
+      const c = challenges[i];
+      const pick = (reactant: 'A' | 'B', order: number) =>
+        fireEvent.click(
+          within(ui.getByText(`Röð í [${reactant}]:`).parentElement!).getByRole('button', {
+            name: String(order),
+          })
+        );
+      pick('A', c.correctOrderA);
+      if (c.data.some((d) => d.concentrationB > 0)) pick('B', c.correctOrderB);
+      fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
+      fireEvent.click(ui.getByRole('button', { name: /Næsta/ }));
+    }
+    const c = challenges[index];
+    const pickOrder = (reactant: 'A' | 'B', order: number) =>
+      fireEvent.click(
+        within(ui.getByText(`Röð í [${reactant}]:`).parentElement!).getByRole('button', {
+          name: String(order),
+        })
+      );
+    pickOrder('A', c.correctOrderA);
+    pickOrder('B', c.correctOrderB);
+    return { ui, unmount };
+  }
+
+  it('waits for k before Athuga, and grades it with the decimal comma', () => {
+    const { ui, unmount } = atRateConstantChallenge();
+    const check = ui.getByRole('button', { name: 'Athuga svar' }) as HTMLButtonElement;
+    expect(check.disabled).toBe(true);
+    fireEvent.change(ui.getByLabelText('k ='), { target: { value: '2,0' } });
+    expect(check.disabled).toBe(false);
+    fireEvent.click(check);
+    expect(ui.getByText('Rétt!')).toBeTruthy();
+    unmount();
+  });
+
+  it('marks the challenge wrong when only k is wrong, and says what k is', () => {
+    const { ui, unmount } = atRateConstantChallenge();
+    fireEvent.change(ui.getByLabelText('k ='), { target: { value: '0,5' } });
+    fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
+    expect(ui.getByText('Rangt')).toBeTruthy();
+    expect(ui.getByText('✗ (rétt: 2,0)')).toBeTruthy();
+    unmount();
   });
 });

@@ -139,3 +139,36 @@ describe('Sameindasmiður: the carbon-count buttons say what they do', () => {
     expect(b.ui.getByRole('button', { name: 'Fjarlægja kolefni' })).toBeTruthy();
   });
 });
+
+/**
+ * A second multiple bond was allowed and only one was named: CH₂=CH–CH=CH₂ showed as
+ * `1-búten` (decisions item 91). The level teaches alkenes and alkynes, and the book has no
+ * Icelandic for diynes or enynes, so the builder now holds a molecule to one multiple bond and
+ * says why when a click is refused.
+ */
+describe('Sameindasmiður: one multiple bond', () => {
+  it('refuses a second double or triple bond, and says why', () => {
+    const b = renderBuilder();
+    fireEvent.click(b.bond(1));
+    expect(b.name()).toBe('1-búten');
+    expect(b.ui.getByRole('status').textContent).toBe('');
+
+    fireEvent.click(b.bond(3));
+    expect(b.bond(3).getAttribute('aria-label')).toMatch(/: einföld\./);
+    expect(b.name()).toBe('1-búten');
+    expect(b.ui.getByRole('status').textContent).toMatch(/eitt tvítengi eða eitt þrítengi/);
+  });
+
+  it('allows it again once the first is single, and clears the note', () => {
+    const b = renderBuilder();
+    fireEvent.click(b.bond(1));
+    fireEvent.click(b.bond(3));
+    // double → triple → single
+    fireEvent.click(b.bond(1));
+    fireEvent.click(b.bond(1));
+    fireEvent.click(b.bond(3));
+    expect(b.name()).toBe('1-búten');
+    expect(b.bond(3).getAttribute('aria-label')).toMatch(/: tvöföld\./);
+    expect(b.ui.getByRole('status').textContent).toBe('');
+  });
+});

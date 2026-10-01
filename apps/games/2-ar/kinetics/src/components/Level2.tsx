@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 
 import {
   formatDecimal,
+  parseStudentNumber,
   useArmedAfter,
   useItemTop,
   useRevealAfterCommit,
@@ -9,7 +10,7 @@ import {
 } from '@shared/utils';
 
 import { ConcentrationTimeGraph } from './ConcentrationTimeGraph';
-import { challenges, rateConstantOf } from '../data/level2-questions';
+import { challenges, rateConstantMatches, rateConstantOf } from '../data/level2-questions';
 import { formatSignificant } from '../utils/format';
 
 interface Level2Props {
@@ -22,6 +23,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [orderA, setOrderA] = useState<number | null>(null);
   const [orderB, setOrderB] = useState<number | null>(null);
+  const [kAnswer, setKAnswer] = useState('');
   const [showHint, setShowHint] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -35,7 +37,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     const correctB =
       orderB === challenge.correctOrderB || (challenge.correctOrderB === 0 && orderB === null);
 
-    const correct = correctA && correctB;
+    const correctK =
+      !challenge.asksForRateConstant || rateConstantMatches(challenge, parseStudentNumber(kAnswer));
+
+    const correct = correctA && correctB && correctK;
     setIsCorrect(correct);
 
     if (correct) {
@@ -49,6 +54,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setCurrentChallenge((prev) => prev + 1);
       setOrderA(null);
       setOrderB(null);
+      setKAnswer('');
       setShowHint(false);
       setShowResult(false);
       setIsCorrect(false);
@@ -58,6 +64,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   };
 
   const hasSecondReactant = challenge.data.some((d) => d.concentrationB > 0);
+  const answerComplete =
+    orderA !== null &&
+    (!hasSecondReactant || orderB !== null) &&
+    (!challenge.asksForRateConstant || kAnswer.trim() !== '');
+  const kCorrect = rateConstantMatches(challenge, parseStudentNumber(kAnswer));
 
   // Kennsla → æfingar starts the practice at its top on a phone, heading focused; each new
   // puzzle brings the card's top back and focuses its title.
@@ -323,6 +334,36 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                 </div>
               )}
+
+              {challenge.asksForRateConstant && (
+                <div className="mt-4 phone:mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <label htmlFor="kinetics-l2-k" className="font-mono font-bold whitespace-nowrap">
+                    k =
+                  </label>
+                  <input
+                    id="kinetics-l2-k"
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    value={kAnswer}
+                    disabled={showResult}
+                    onChange={(e) => setKAnswer(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && answerComplete && !showResult) {
+                        e.preventDefault();
+                        checkAnswer();
+                      }
+                    }}
+                    className="w-28 px-3 py-2 border-2 border-warm-300 rounded-lg font-mono focus:border-green-500 focus:outline-none"
+                  />
+                  <span className="font-mono text-sm">{challenge.rateConstantUnit}</span>
+                  {showResult && (
+                    <span className={`font-bold ${kCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                      {kCorrect ? '✓' : `✗ (rétt: ${formatSignificant(rateConstantOf(challenge))})`}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             {showHint && !showResult && (
@@ -356,7 +397,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   key="check"
                   ref={checkRef}
                   onClick={checkAnswer}
-                  disabled={orderA === null || (hasSecondReactant && orderB === null)}
+                  disabled={!answerComplete}
                   className="w-full phone:w-auto phone:flex-[1_1_9rem] bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 phone:px-3 rounded-xl transition-colors"
                 >
                   Athuga svar
