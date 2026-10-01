@@ -111,9 +111,9 @@ leave".
 - [ ] 54–57 takmarkandi
 - [ ] 58–60 lausnir
 - [ ] 61–62 einingakedjan
-- [ ] 63–64 rafeindabygging. Item 63 done 2026-10-01.
+- [ ] 63–64 rafeindabygging. Items 63 and 64 done 2026-10-01.
 - [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
-- [ ] 67–71 vsepr-geometry. Items 67, 68, 69 and 70 applied 2026-10-01; confirm 70's angle sets.
+- [ ] 67–71 vsepr-geometry. All five applied 2026-10-01; confirm 70's angle sets.
 - [ ] 72–74 intermolecular-forces. Items 72 and 74 done 2026-10-01; 73 left.
 - [ ] 75–79 hess-law. Items 75, 76, 77 and 79 done 2026-10-01; 78 left.
 - [ ] 80–82 kinetics. Item 82 done 2026-10-01; item 81 done except `stig efnahvarfs`, which

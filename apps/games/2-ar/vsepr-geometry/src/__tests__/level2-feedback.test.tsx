@@ -153,6 +153,37 @@ describe('the angle and explanation steps', () => {
     return { ...level, m };
   }
 
+  /** The hint panel's own text; the Lögunartafla reference below it lists every angle. */
+  function hintText(container: HTMLElement): string {
+    const label = [...container.querySelectorAll('span')].find(
+      (el) => el.textContent === 'Vísbending: '
+    );
+    return label?.parentElement?.textContent ?? '';
+  }
+
+  it('tiers the angle hint: the angle itself only on a second press (decisions item 71)', () => {
+    const { ui, container, m } = toAngleStep('NH₃');
+    fireEvent.click(ui.getByRole('button', { name: hintButton }));
+    // The first tier points at the reasoning and prints no angle at all.
+    expect(hintText(container)).toContain('Rafeindalögunin er ferflötungur.');
+    expect(hintText(container)).toContain('Hvernig breyta stöku pörin þeim?');
+    expect(hintText(container)).not.toMatch(/\d/);
+
+    fireEvent.click(ui.getByRole('button', { name: 'Sýna nánari vísbendingu' }));
+    expect(hintText(container)).toContain('horn nálægt 107°');
+    expect(ui.queryByRole('button', { name: 'Sýna nánari vísbendingu' })).toBeNull();
+
+    answerAngle(ui, container, m.angle);
+    expect(ui.getByText(/Rétt! Tengihornið er/)).toBeTruthy();
+  });
+
+  it('says there are no lone pairs in the first tier where there are none', () => {
+    const { ui, container } = toAngleStep('CH₄');
+    fireEvent.click(ui.getByRole('button', { name: hintButton }));
+    expect(hintText(container)).toContain('Hér eru engin stök pör til að breyta þeim.');
+    expect(hintText(container)).not.toMatch(/\d/);
+  });
+
   it('asks for the explanation in a sentence that agrees', () => {
     const { ui, container, m } = toAngleStep('CH₄');
     answerAngle(ui, container, m.angle);

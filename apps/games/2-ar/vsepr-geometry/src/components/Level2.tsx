@@ -324,6 +324,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentStep, setCurrentStep] = useState(0);
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
+  // The angle hint comes in two tiers: a nudge toward the electron geometry first, and the
+  // angle itself only if asked for again. One tier used to print the answer (decisions item 71).
+  const [angleHintTier, setAngleHintTier] = useState<1 | 2>(1);
   const [, setTotalHintsUsed] = useState(0);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
@@ -382,6 +385,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const hintRef = useRef<HTMLDivElement>(null);
   const checkRef = useRef<HTMLButtonElement>(null);
   useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+  // The second tier replaces its own button, so focus moves to the hint rather than to <body>.
+  useRevealAfterCommit(showHint && angleHintTier === 2, () => ({
     bottom: checkRef.current,
     tops: [hintRef.current],
     focus: hintRef.current,
@@ -478,6 +487,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     } else if (step.id === 'geometry') {
       return `Stök pör taka meira pláss en bindandi pör og hrinda þeim saman. ${molecule.lonePairs === 0 ? 'Engin stök pör — rafeindalögun = sameindarlögun.' : `Hversu mikil áhrif ${molecule.lonePairs === 1 ? 'hefur' : 'hafa'} ${lonePairsPhrase(molecule.lonePairs)}?`}`;
     } else if (step.id === 'angle') {
+      if (angleHintTier === 1) {
+        return `Rafeindalögunin er ${ELECTRON_GEOMETRY_NAME[molecule.electronDomains].toLowerCase()}. Hvaða horn eru milli svæða rafeindaþéttleika í henni? ${molecule.lonePairs === 0 ? 'Hér eru engin stök pör til að breyta þeim.' : 'Hvernig breyta stöku pörin þeim?'}`;
+      }
       return `Þessi lögun hefur venjulega horn nálægt ${molecule.bondAngle}.`;
     }
     return 'Útskýrðu af hverju þessi lögun myndast út frá fjölda svæða rafeindaþéttleika.';
@@ -1258,6 +1270,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           {!stepResult && !showHint && (
             <button
               onClick={() => {
+                setAngleHintTier(1);
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
@@ -1274,6 +1287,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             >
               <span className="font-bold text-yellow-800">Vísbending: </span>
               <span className="text-yellow-900">{getHint()}</span>
+              {step.id === 'angle' && angleHintTier === 1 && (
+                <button
+                  onClick={() => {
+                    setAngleHintTier(2);
+                    setTotalHintsUsed((prev) => prev + 1);
+                  }}
+                  className="block mt-2 text-teal-600 hover:text-teal-800 text-sm underline pointer-coarse:min-h-11"
+                >
+                  Sýna nánari vísbendingu
+                </button>
+              )}
             </div>
           )}
 

@@ -110,6 +110,42 @@ describe('the electron-count hint', () => {
   });
 });
 
+describe('the format and order of an answer (decisions item 64)', () => {
+  it('accepts commas, semicolons and carets as separators', () => {
+    for (const answer of [
+      '1s2, 2s2, 2p2',
+      '1s2; 2s2; 2p2',
+      '1s^2 2s^2 2p^2',
+      '1s^2,2s^2,2p^2',
+      '1s² 2s² 2p²',
+    ]) {
+      const { ui, container } = startLevel();
+      advanceTo(ui, container, 'C');
+      submit(ui, answer);
+      expect(container.textContent, answer).toMatch(/Rétt!/);
+      document.body.innerHTML = '';
+    }
+  });
+
+  it('says why iron written in shell order is wrong, rather than only Rangt', () => {
+    const { ui, container } = startLevel();
+    advanceTo(ui, container, 'Fe');
+    submit(ui, '1s2 2s2 2p6 3s2 3p6 3d6 4s2');
+    expect(container.textContent).not.toMatch(/Rétt!/);
+    expect(hint(container)).toBe(
+      'Réttar rafeindir, en skrifaðu í Aufbau-röð: 4s fyllist á undan 3d.'
+    );
+  });
+
+  it('does not blame the order when the electrons are wrong', () => {
+    const { ui, container } = startLevel();
+    advanceTo(ui, container, 'Fe');
+    // Right total, wrong distribution: 3d⁷ 4s¹ is not a reordering of the key.
+    submit(ui, '1s2 2s2 2p6 3s2 3p6 3d7 4s1');
+    expect(hint(container)).toBeNull();
+  });
+});
+
 describe('the element card', () => {
   it('says 1 rafeind for hydrogen, not 1 rafeindir', () => {
     const { container } = startLevel();

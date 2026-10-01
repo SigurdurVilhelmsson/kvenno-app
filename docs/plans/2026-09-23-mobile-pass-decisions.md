@@ -580,6 +580,10 @@ wrong, and so is a correct answer with commas or carets, and the hint stays sile
 electron counts match. Options: (a) keep filling order as the only form, but say why (`Réttar
 rafeindir, en skrifaðu í Aufbau-röð`), and accept `,` `;` `^` as separators; (b) accept any order.
 **Recommendation:** (a); it matches the book.
+**Applied 2026-10-01, (a):** commas, semicolons and a caret before an exponent are accepted
+(`1s^2, 2s^2, 2p^2`), and an answer with the right subshells in the wrong order says which comes
+first: `Réttar rafeindir, en skrifaðu í Aufbau-röð: 4s fyllist á undan 3d.` Guarded by
+`level2-feedback.test.tsx` and `electrons.test.ts`.
 
 Also here: `yfirskrift` (item 13), `Nitur` (item 15) and the running
 score (item 1).
@@ -650,6 +654,9 @@ shape asked about.**
 step; `Level1.tsx` Q1, Q6 and Q7 draw the shape in question. Options: keep as scaffolds, or tier
 the hint and hide the picture on identify questions until answered. **Recommendation:** tier the
 hint.
+**Applied 2026-10-01, as recommended:** the first press names the electron geometry and asks
+what its angles are and how lone pairs change them, with no number; `Sýna nánari vísbendingu`
+then gives the angle. The `Lögunartafla` reference stays. Guarded by `level2-feedback.test.tsx`.
 
 Also here: d-orbitals (item 7), vocabulary (item 20), glosses and
 `lp`/`bp` (item 6), and the dead `is` block (item 4).
