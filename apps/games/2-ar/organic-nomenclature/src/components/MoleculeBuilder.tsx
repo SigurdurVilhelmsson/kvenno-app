@@ -46,6 +46,9 @@ export function MoleculeBuilder({
   });
   const [branches, setBranches] = useState<number[]>([]);
   const [showFormula, setShowFormula] = useState(true);
+  // Shown when a click on a bond could not change it because another bond is already double
+  // or triple, so the click is not silently ignored.
+  const [oneMultipleNote, setOneMultipleNote] = useState(false);
 
   const chain = { carbons: carbonCount, bonds, branches };
 
@@ -91,6 +94,12 @@ export function MoleculeBuilder({
   // either carbon a fifth bond (the builder used to draw C≡C≡C and print a negative H count)
   const cycleBond = (position: number) => {
     const nextType = nextBondType(chain, position);
+    const current = bonds.find((b) => b.position === position)?.type ?? 'single';
+    setOneMultipleNote(
+      current === 'single' &&
+        nextType === 'single' &&
+        bonds.some((b) => b.position !== position && b.type !== 'single')
+    );
     setBonds((prev) =>
       prev.map((bond) => (bond.position === position ? { ...bond, type: nextType } : bond))
     );
@@ -438,6 +447,10 @@ export function MoleculeBuilder({
         <p>
           <strong>+/-</strong> bætir við/fjarlægir kolefni • <strong>Smelltu á tengingu</strong> til
           að breyta • <strong className="text-teal-700">+</strong> bætir við metýlgrein
+        </p>
+        <p role="status" className={oneMultipleNote ? 'mt-1 text-amber-700' : undefined}>
+          {oneMultipleNote &&
+            'Hér má sameindin hafa eitt tvítengi eða eitt þrítengi, ekki fleiri. Breyttu hinu fyrst í eintengi.'}
         </p>
       </div>
     </div>

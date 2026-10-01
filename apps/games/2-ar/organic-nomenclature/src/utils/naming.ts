@@ -82,6 +82,11 @@ export function bondsUsed(chain: Chain, k: number): number {
 
 /** A bond may take `type` only if neither carbon it joins would exceed four bonds. */
 export function canSetBond(chain: Chain, position: number, type: BondType): boolean {
+  // One multiple bond per molecule (decisions item 91). The level names alkenes and alkynes;
+  // with two, CH₂=CH–CH=CH₂ was named 1-búten, and the book gives no Icelandic for dienes
+  // beyond 1,3-bútadíen, nor any for diynes or enynes.
+  if (type !== 'single' && chain.bonds.some((b) => b.position !== position && b.type !== 'single'))
+    return false;
   const next: Chain = {
     ...chain,
     bonds: [...chain.bonds.filter((b) => b.position !== position), { position, type }],
@@ -91,7 +96,8 @@ export function canSetBond(chain: Chain, position: number, type: BondType): bool
 
 /**
  * The type a click on a bond moves it to: single → double → triple → single, skipping any
- * type that would give a carbon a fifth bond. A single bond is always possible.
+ * type that would give a carbon a fifth bond or the molecule a second multiple bond. A single
+ * bond is always possible.
  */
 export function nextBondType(chain: Chain, position: number): BondType {
   const cycle: BondType[] = ['single', 'double', 'triple'];

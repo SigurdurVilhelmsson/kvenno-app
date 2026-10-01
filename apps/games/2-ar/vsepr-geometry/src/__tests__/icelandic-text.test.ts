@@ -48,6 +48,10 @@ describe('vsepr-geometry text', () => {
 
   it.each([
     ['Syna visbendingu', /Syna visbendingu/],
+    // Decisions item 68: sp³d² in complex-ion notation, offered as a wrong option on SF₆.
+    ['d²sp³ as a distractor for sp³d²', /d²sp³/],
+    // Decisions item 69: N-H dipoles drawn away from N, against Brown's δ− convention.
+    ['bond dipoles pointing FRÁ the δ− atom', /FRÁ N \(H er δ\+\)/],
     ['skatuaðar', /skatua/],
     ['ritháttður', /ritháttð/],
     ['miðsléttuhhorn', /sléttuhh/],
