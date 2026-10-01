@@ -93,13 +93,14 @@ lives, the options and a recommendation. Reply by number, e.g. "4 (b), 17 as rec
 leave".
 
 - [ ] 1–11 Platform-wide. Items 1 and 2 were ruled (b) for `lewis-structures` alone on
-      2026-09-30, and item 7 applied there; each stays open for the other games it names. Examples:
+      2026-09-30, and item 7 applied there; each stays open for the other games it names. Item 3
+      (the Y2 chain) and item 7 in `vsepr-geometry` were applied 2026-10-01. Examples:
   - scores and streaks in practice;
   - the two games that still charge for hints;
   - the i18n question;
   - reading `1.300`;
   - which book's formation enthalpies to use.
-- [ ] 12–21 Terminology that spans games.
+- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73).
 - [ ] 22–34 dimensional-analysis
 - [ ] 35 lotukerfid
 - [ ] 36–41 nafnakerfid
@@ -116,7 +117,7 @@ leave".
 - [ ] 72–74 intermolecular-forces
 - [ ] 75–79 hess-law
 - [ ] 80–82 kinetics
-- [ ] 83–88 redox-reactions
+- [ ] 83–88 redox-reactions. Item 87 done 2026-10-01 (PR #74).
 - [ ] 89–92 organic-nomenclature
 - [ ] 93–94 gas-law-challenge
 - [ ] 95–100 jafnvaegisfasti
@@ -217,7 +218,8 @@ changes how the game teaches or looks rather than correcting a defect.
     `resonance structure`, `resonance hybrid`, `trigonal bipyramidal`, `hypervalent molecule`).
   - **Done 2026-10-01 in redox.** Item 87: Stig 1's related-concept chip `Rafeindasameignir`,
     not a word, is now `Rafeindaflutningur`, the game's own word for electron transfer.
-  - **Still open:** the English Y2 chain (item 3), which spans all eight Y2 games.
+  - **Done 2026-10-01, all eight Y2 games.** Item 3: the `Námsleiðin` chain uses the hub-card
+    names (`VSEPR` kept as the acronym), guarded by a Y2 `chain-string.test.ts` like Y1's and Y3's.
 
 ## D. Work that needs no ruling
 

@@ -332,8 +332,9 @@ function App() {
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
-            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics →{' '}
-            <u>Redox</u> → Organic
+            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis-formúlur → VSEPR →
+            Millisameindakraftar → Lögmál Hess → Hvarfhraði → <u>Oxun og afoxun</u> → Lífræn
+            nafnagift
           </div>
           <div className="mt-2 text-center text-xs text-warm-400">{t('menu.footer')}</div>
         </div>

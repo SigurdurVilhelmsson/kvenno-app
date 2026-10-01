@@ -330,8 +330,9 @@ function App() {
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
-            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics →
-            Redox → <u>Organic</u>
+            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis-formúlur → VSEPR →
+            Millisameindakraftar → Lögmál Hess → Hvarfhraði → Oxun og afoxun →{' '}
+            <u>Lífræn nafnagift</u>
           </div>
           <div className="mt-2 text-center text-xs text-warm-400">
             Sérsniðið námsefni — Lífræn efnafræði

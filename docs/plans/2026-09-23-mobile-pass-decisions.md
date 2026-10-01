@@ -59,6 +59,12 @@ by `lewis-structures/src/__tests__/hint-cost.test.tsx`. Still open for `buffer-r
 `Lífræn nafnagift`, …); (c) short node labels you choose, as Y3 got `Hliðrun jafnvægis`.
 **Recommendation:** (b) or (c), in one sweep with a Y2 `chain-string.test.ts`. The `Redox` node
 waits on item 83.
+**Applied 2026-10-01, (b):** `Rafeindabygging → Lewis-formúlur → VSEPR → Millisameindakraftar →
+Lögmál Hess → Hvarfhraði → Oxun og afoxun → Lífræn nafnagift`, the hub-card names, with `VSEPR`
+kept as the acronym (the card says `VSEPR Rúmfræði`), as Y3 keeps `pH Títrun`. The redox node is
+the hub card's `Oxun og afoxun`, so it no longer waits on item 83. Guarded by
+`2-ar/rafeindabygging/src/__tests__/chain-string.test.ts`, which also checks every 2-ar game the
+build emits has the chain. `CLAUDE.md`'s chain line follows.
 
 **4. The i18n question is still open in twelve games.**
 The 2026-09-19 ruling stripped the language switcher where nothing went through `t()`. Twelve games
