@@ -843,11 +843,14 @@ nothing. Guarded by `molecule-builder-naming.test.tsx`.
 `Level2.tsx` `Útskýring` (~:811) builds from carbon count and bond type, so 2-metýlprópan reads
 `prop (3 kolefni) + an`. **Recommendation:** add `+ metýlgrein á kolefni {n}` and the longest-chain
 sentence already in each molecule's hint.
-**Applied 2026-10-01:** `+ metýlgrein á kolefni {n}` per branch, and `Forskeytið telur kolefnin
+**Applied 2026-10-01:** `+ metýlhópur á kolefni {n}` per branch, and `Forskeytið telur kolefnin
 í lengstu keðjunni, 3, ekki öll 4 kolefnin í sameindinni.` Guarded by
-`branched-explanation.test.tsx`. **Your call:** `metýlgrein` is the game's word (its builder
-and hints use `grein`), while the book says `metýlhópur` (12) and `hliðarhópur` (29) and
-`ordabok.md` has neither.
+`branched-explanation.test.tsx`. **`metýlhópur`, the book's word, is Siggi's ruling the same
+day** (corpus 12 `metýlhóp-`, 29 `hliðarhóp-`; now `methyl group;metýlhópur` in `ordabok.md`).
+The game had called the branch a `grein`, so its builder and the three branched hints were
+swept too (`Bæta við metýlhópi á C2`, `1 metýlhópur`, `Metýlhópurinn er á miðkolefninu`), and
+the game's `icelandic-text.test.tsx` bans the noun. `greinótt` (branched) is the book's word as
+well and stays.
 
 ---
 

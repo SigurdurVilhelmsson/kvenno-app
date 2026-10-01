@@ -9,7 +9,8 @@ import { Level2, molecules } from '../components/Level2';
  * Stig 2's `Útskýring` built a name from the chain length and the bond type only, so for the
  * three branched molecules it explained a different, unbranched one: 2-metýlprópan read
  * `prop (3 kolefni) + an` (decisions item 92). It now adds each branch and its position, and
- * says the prefix counts the longest chain rather than every carbon. Queries are scoped to the
+ * says the prefix counts the longest chain rather than every carbon. The group is a
+ * `metýlhópur`, the book's word (Siggi, 2026-10-01). Queries are scoped to the
  * rendered container (vitest `retry: 2`, no RTL auto-cleanup).
  */
 
@@ -17,9 +18,9 @@ clockPastNextGuard();
 afterEach(cleanup);
 
 const BRANCHED: [name: string, branch: string, chain: number, total: number][] = [
-  ['2-metýlprópan', '+ metýlgrein á kolefni 2', 3, 4],
-  ['2-metýlbútan', '+ metýlgrein á kolefni 2', 4, 5],
-  ['3-metýlpentan', '+ metýlgrein á kolefni 3', 5, 6],
+  ['2-metýlprópan', '+ metýlhópur á kolefni 2', 3, 4],
+  ['2-metýlbútan', '+ metýlhópur á kolefni 2', 4, 5],
+  ['3-metýlpentan', '+ metýlhópur á kolefni 3', 5, 6],
 ];
 
 function explanation(container: HTMLElement): string {
@@ -64,7 +65,7 @@ describe('Stig 2 explains a branched name with its branch', () => {
         );
         seen.push(name);
       } else {
-        expect(text, molecule.correctName).not.toMatch(/grein|lengstu/);
+        expect(text, molecule.correctName).not.toMatch(/hópur|lengstu/);
       }
       const next = ui.queryByRole('button', { name: /Næsta sameind|Halda áfram|Ljúka stigi/ });
       if (next) fireEvent.click(next);

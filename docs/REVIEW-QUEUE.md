@@ -119,8 +119,7 @@ leave".
 - [ ] 80–82 kinetics. Item 82 done 2026-10-01; item 81 done except `stig efnahvarfs`, which
       waits for item 1.
 - [ ] 83–88 redox-reactions. Items 83, 85 and 87 done 2026-10-01.
-- [ ] 89–92 organic-nomenclature. Items 90, 91 and 92 done 2026-10-01; 89 left. 92 says
-      `metýlgrein`, the game's word, where the book says `metýlhópur`; that is your call.
+- [ ] 89–92 organic-nomenclature. Items 90, 91 and 92 done 2026-10-01; 89 left.
 - [ ] 93–94 gas-law-challenge
 - [ ] 95–100 jafnvaegisfasti
 - [ ] 101–104 equilibrium-shifter. 101 is the Keppnishamur unlock gate, which is live and needs a

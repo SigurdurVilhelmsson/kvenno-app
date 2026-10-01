@@ -183,7 +183,7 @@ export const molecules: Molecule[] = [
     formula: 'C₄H₁₀',
     correctName: '2-metýlprópan',
     branches: [{ atPosition: 2, length: 1 }],
-    hint: 'Lengsta kolefniskeðjan er 3 (própan). Metýl-grein á kolefni 2. Sama summuformúla og bútan!',
+    hint: 'Lengsta kolefniskeðjan er 3 (própan). Metýlhópur á kolefni 2. Sama summuformúla og bútan!',
   },
   {
     id: 14,
@@ -193,7 +193,7 @@ export const molecules: Molecule[] = [
     formula: 'C₅H₁₂',
     correctName: '2-metýlbútan',
     branches: [{ atPosition: 2, length: 1 }],
-    hint: 'Finndu lengstu keðju (4 kolefni = bútan) og númeraðu svo lágt númer fáist fyrir greinina.',
+    hint: 'Finndu lengstu keðju (4 kolefni = bútan) og númeraðu svo lágt númer fáist fyrir metýlhópinn.',
   },
   {
     id: 15,
@@ -203,11 +203,11 @@ export const molecules: Molecule[] = [
     formula: 'C₆H₁₄',
     correctName: '3-metýlpentan',
     branches: [{ atPosition: 3, length: 1 }],
-    hint: 'Lengsta keðjan er 5 kolefni (pentan). Greinin er á miðkolefninu — númer 3 burtséð frá báðum endum.',
+    hint: 'Lengsta keðjan er 5 kolefni (pentan). Metýlhópurinn er á miðkolefninu — númer 3 burtséð frá báðum endum.',
   },
 ];
 
-/** The prefix of an alkyl branch of this many carbons, as the names in this pool write it. */
+/** The prefix of an alkyl group of this many carbons, as the names in this pool write it. */
 function branchName(length: number): string {
   const names: Record<number, string> = { 1: 'metýl', 2: 'etýl' };
   const name = names[length];
@@ -1011,7 +1011,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     {molecule.branches?.map((branch, i) => (
                       <span key={i} className="text-warm-500">
                         {' '}
-                        + <span className="font-bold">{branchName(branch.length)}grein</span> á
+                        + <span className="font-bold">{branchName(branch.length)}hópur</span> á
                         kolefni <span className="text-red-600 font-bold">{branch.atPosition}</span>
                       </span>
                     ))}

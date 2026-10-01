@@ -37,7 +37,7 @@ function renderBuilder() {
       fireEvent.click(ui.getByRole('button', { name: /^(-|Fjarlægja kolefni)$/ })),
     bond: (from: number) => ui.getByRole('button', { name: new RegExp(`^Tenging ${from}–`) }),
     addBranch: (k: number) =>
-      fireEvent.click(ui.getByRole('button', { name: `Bæta við grein á C${k}` })),
+      fireEvent.click(ui.getByRole('button', { name: `Bæta við metýlhópi á C${k}` })),
   };
 }
 
@@ -117,7 +117,7 @@ describe('Sameindasmiður: no carbon gets a fifth bond', () => {
     fireEvent.click(b.bond(2));
     expect(b.bond(2).getAttribute('aria-label')).toMatch(/einföld/);
     expect(b.formula()).toBe('C₃H₄');
-    expect(b.ui.queryByRole('button', { name: 'Bæta við grein á C2' })).toBeNull();
+    expect(b.ui.queryByRole('button', { name: 'Bæta við metýlhópi á C2' })).toBeNull();
   });
 
   it('still lets a double bond sit beside a single one and a branch', () => {

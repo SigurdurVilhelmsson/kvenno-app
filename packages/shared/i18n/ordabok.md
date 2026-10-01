@@ -364,6 +364,7 @@ metal;málmur
 metallic bond;málmtengi
 metallic crystal;málmkristall
 metalloid;hálfmálmur
+methyl group;metýlhópur
 micropipette;míkrópípetta
 microwave;örbylgja
 microwave reactor;örbylgjuhvarfi
