@@ -36,7 +36,7 @@ interface CellPair {
 const CELL_PAIRS: CellPair[] = [
   {
     id: 'zn-cu',
-    name: 'Zn–Cu galvaníhlað (Daniell)',
+    name: 'Daniell-hlað (Zn–Cu)',
     anode: {
       metal: 'Sink',
       metalSymbol: 'Zn',

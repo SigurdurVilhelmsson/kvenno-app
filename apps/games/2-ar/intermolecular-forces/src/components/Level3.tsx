@@ -48,9 +48,9 @@ const challenges: Challenge[] = [
       },
       {
         id: 'd',
-        text: 'Etanól hefur stærri London krafta',
+        text: 'Etanól hefur stærri London-krafta',
         correct: false,
-        explanation: 'London kraftar eru svipaðir þar sem mólmassi er sá sami.',
+        explanation: 'London-kraftar eru svipaðir þar sem mólmassi er sá sami.',
       },
     ],
     hint: 'Hvaða sameind getur myndað vetnistengi SEM GJAFI? (gefur H)',
@@ -150,13 +150,13 @@ const challenges: Challenge[] = [
         text: 'n-Oktan (löng keðja) — meira yfirborðsflatarmál',
         correct: true,
         explanation:
-          'Rétt! Lengri keðjur hafa meira yfirborðsflatarmál → sterkari London kraftar → hærra suðumark.',
+          'Rétt! Lengri keðjur hafa meira yfirborðsflatarmál → sterkari London-kraftar → hærra suðumark.',
       },
       {
         id: 'b',
         text: '2,2,3,3-TMB (kúlulaga) — þéttari sameind',
         correct: false,
-        explanation: 'Þéttari lögun þýðir minna yfirborð → veikari London kraftar.',
+        explanation: 'Þéttari lögun þýðir minna yfirborð → veikari London-kraftar.',
       },
       {
         id: 'c',
@@ -173,7 +173,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hugsaðu um hversu mikið sameindin getur „snert" nágrannasameindir.',
     conceptNote:
-      'London kraftar aukast með yfirborðsflatarmáli sameindarinnar. Löng, sveigjanleg keðja hefur meira yfirborð en kompakt „kúla" með sama mólmassa.',
+      'London-kraftar aukast með yfirborðsflatarmáli sameindarinnar. Löng, sveigjanleg keðja hefur meira yfirborð en kompakt „kúla" með sama mólmassa.',
   },
   {
     id: 5,
@@ -190,10 +190,10 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: 'London dreifikraftar — milljónir smárra hára',
+        text: 'London-dreifikraftar — milljónir smárra hára',
         correct: true,
         explanation:
-          'Rétt! Fætur þeirra hafa milljónir smárra hára (setae) sem auka yfirborðsflatarmál. Samanlagðir London kraftar eru nógu sterkir.',
+          'Rétt! Fætur þeirra hafa milljónir smárra hára (setae) sem auka yfirborðsflatarmál. Samanlagðir London-kraftar eru nógu sterkir.',
       },
       {
         id: 'c',
@@ -210,7 +210,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Gekkófætur hafa milljónir smárra hára. Hvað gerist þegar yfirborðsflatarmál eykst?',
     conceptNote:
-      'Þetta er dæmigert um hvernig margir veikir kraftar geta orðið sterkir saman. Hver setae gefur smá London kraft, en milljónir þeirra gefa nægan kraft til að halda gekkóinum.',
+      'Þetta er dæmigert um hvernig margir veikir kraftar geta orðið sterkir saman. Hver setae gefur smá London-kraft, en milljónir þeirra gefa nægan kraft til að halda gekkóinum.',
   },
   {
     id: 6,
@@ -301,7 +301,7 @@ const challenges: Challenge[] = [
         text: 'Jurtaolía — mjög langar keðjur með miklu yfirborði',
         correct: true,
         explanation:
-          'Rétt! Jurtaolíur hafa risastórar sameindir (600-900 g/mól) með langar feitukeðjur → gríðarlega sterkir London kraftar.',
+          'Rétt! Jurtaolíur hafa risastórar sameindir (600-900 g/mól) með langar feitukeðjur → gríðarlega sterkir London-kraftar.',
       },
       {
         id: 'c',
@@ -318,7 +318,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hugsaðu um stærð sameindanna. Jurtaolíur hafa mólmassa 600-900 g/mól.',
     conceptNote:
-      'Þó vetnistengi séu sterk, geta risastórar sameindir með mikið yfirborð haft svo sterka London krafta að þeir vinna yfir H-tengi lítilla sameinda.',
+      'Þó vetnistengi séu sterk, geta risastórar sameindir með mikið yfirborð haft svo sterka London-krafta að þeir vinna yfir H-tengi lítilla sameinda.',
   },
   {
     id: 9,

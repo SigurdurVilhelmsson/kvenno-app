@@ -71,7 +71,7 @@ export const problems: RankingProblem[] = [
     correctOrder: ['A', 'C', 'B'],
     orderDirection: 'lowestFirst',
     explanation:
-      'CH₄ hefur aðeins veika London krafta. HCl hefur tvískauts-tvískauts krafta líka. H₂O hefur vetnistengi sem eru sterkust → hæsta suðumarkið.',
+      'CH₄ hefur aðeins veika London-krafta. HCl hefur tvískauts-tvískauts krafta líka. H₂O hefur vetnistengi sem eru sterkust → hæsta suðumarkið.',
     hint: 'Hugsaðu um tegundir IMF: London < Tvískauts-tvískauts < Vetnistengi',
   },
   {
@@ -169,8 +169,8 @@ export const problems: RankingProblem[] = [
     correctOrder: ['A', 'B', 'C', 'D'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Öll þessi efni hafa aðeins London krafta. Stærri atóm → meiri London kraftar → hærra suðumark. I₂ er stærst.',
-    hint: 'Öll eru óskautaðar tvíatóma sameindir — aðeins London kraftar. Hvað eykur London krafta?',
+      'Öll þessi efni hafa aðeins London-krafta. Stærri atóm → meiri London-kraftar → hærra suðumark. I₂ er stærst.',
+    hint: 'Öll eru óskautaðar tvíatóma sameindir — aðeins London-kraftar. Hvað eykur London-krafta?',
   },
   {
     id: 5,
@@ -235,8 +235,8 @@ export const problems: RankingProblem[] = [
     correctOrder: ['B', 'A'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Sami mólmassi! En n-bútan er lengri keðja → meira yfirborðsflatarmál → sterkari London kraftar. Ísóbútan er þéttara → minna yfirborð.',
-    hint: 'Sami mólmassi en mismunandi lögun. Hvað ákvarðar styrk London krafta fyrir utan mólmassa?',
+      'Sami mólmassi! En n-bútan er lengri keðja → meira yfirborðsflatarmál → sterkari London-kraftar. Ísóbútan er þéttara → minna yfirborð.',
+    hint: 'Sami mólmassi en mismunandi lögun. Hvað ákvarðar styrk London-krafta fyrir utan mólmassa?',
   },
   {
     id: 7,

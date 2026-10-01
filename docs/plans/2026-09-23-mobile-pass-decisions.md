@@ -678,6 +678,10 @@ is true per molecule, false per volume. **Recommendation:** retitle 6 `Ediksýra
 About 15 sites; the corpus writes `London-kraftar` (8) or `dreifikraftar` (45), and `ordabok.md`
 is silent. **Recommendation:** `London-kraftar`, platform-wide; `e2e/mobile-game-screens.ts:2839`
 clicks the unhyphenated name and changes with it.
+**Applied 2026-10-01, as recommended:** `London-kraftar` and `London-dreifikraftar` at every site
+in `intermolecular-forces`, the e2e paths with them. `ordabok.md` now carries
+`London force;London-kraftur` and `London dispersion force;London-dreifikraftur`, and a
+`governed-terms` row bans the open form. The bare chip label `London` stays.
 
 Also here: `Saltsýra`/`Flússýra` (item 14), `Gufuþrýstingur` (item 18),
 the 3D hint (item 8) and the running score (item 1).
@@ -793,6 +797,9 @@ off the charge suffix in its id. Guarded by `level1-question-noun.test.tsx`.
 English in `data/half-reactions.ts:125`, a non-word in the Stig 3 intro, Skref 3. Neither source
 has a term. **Recommendation:** `minnsta sameiginlega margfeldi` in the intro, where it is taught;
 avoid the term in the hint (`3 × 2 = 6 rafeindir, svo 2×Al og 3×(2H⁺)`).
+**Applied 2026-10-01, as recommended:** the intro reads `Minnsta sameiginlega margfeldi talnanna
+3 og 2 er 6.` and the hint `3 × 2 = 6 rafeindir, svo 2×Al og 3×(2H⁺)`. Guarded by the game's
+`icelandic-text.test.ts`.
 
 **87. The chip `Rafeindasameignir` is not a word.**
 `Level1.tsx:18` here and `lewis-structures` `Level1.tsx:24`; 0 corpus hits, and it is unclear
@@ -809,6 +816,8 @@ Now `Zn–Cu galvaníhlað (Daniell)` (`ElectrochemicalCell.tsx:38`), an interim
 The book says `Daniell-kerið`, but the platform ruled the galvanic genus `-hlað` and reserved
 `-ker` for `rafker`/`hálfker`. Options: (a) `Daniell-hlað (Zn–Cu)`; (b) `Daniell-ker (Zn–Cu)`;
 (c) keep. **Recommendation:** (a), matching `galvaníhlað` on the same card.
+**Applied 2026-10-01, (a):** `Daniell-hlað (Zn–Cu)`. Guarded by the game's
+`icelandic-text.test.ts`.
 
 Also here: the running score and Stig 1's lower pay for retries (item 1).
 

@@ -122,7 +122,7 @@ export const problems: RedoxProblem[] = [
     multiplierRed: 3,
     finalEquation: '2Al + 6H⁺ → 2Al³⁺ + 3H₂',
     finalDisplay: '2Al + 6H⁺ → 2Al³⁺ + 3H₂',
-    hint: 'Al gefur 3e⁻, 2H⁺ tekur 2e⁻. LCM(3,2)=6, svo 2×Al og 3×(2H⁺)',
+    hint: 'Al gefur 3e⁻, 2H⁺ tekur 2e⁻. 3 × 2 = 6 rafeindir, svo 2×Al og 3×(2H⁺)',
   },
   {
     id: 4,

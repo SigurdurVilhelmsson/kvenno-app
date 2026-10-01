@@ -117,7 +117,7 @@ describe('Stig 1 molecule drawings', () => {
         expect((atoms[0].x + atoms[1].x) / 2, `${formula}: centred`).toBeCloseTo(mid.x);
       }
 
-      fireEvent.click(view.getByRole('button', { name: /London dreifikraftar/ }));
+      fireEvent.click(view.getByRole('button', { name: /London-dreifikraftar/ }));
       fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
       svg = drawing();
       atoms = drawnAtoms(svg);

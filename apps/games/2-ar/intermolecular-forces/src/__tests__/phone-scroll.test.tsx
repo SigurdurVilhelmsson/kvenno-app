@@ -103,7 +103,7 @@ describe('Stig 1', () => {
 
   it('after Athuga focuses the feedback, and drops a Næsta press within 400 ms', () => {
     const view = toQuiz();
-    fireEvent.click(view.getByRole('button', { name: /London dreifikraftar/ }));
+    fireEvent.click(view.getByRole('button', { name: /London-dreifikraftar/ }));
     fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
 
     const feedback = focused();
@@ -128,7 +128,7 @@ describe('Stig 1', () => {
     phone = false;
     const view = toQuiz();
     expect(scrollTo).not.toHaveBeenCalled();
-    fireEvent.click(view.getByRole('button', { name: /London dreifikraftar/ }));
+    fireEvent.click(view.getByRole('button', { name: /London-dreifikraftar/ }));
     fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
     clock += 500;
     fireEvent.click(view.getByRole('button', { name: 'Næsta sameind' }));

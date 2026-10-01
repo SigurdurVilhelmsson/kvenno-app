@@ -17,6 +17,9 @@ interface ForceStrengthAnimationProps {
 interface ForceData {
   id: 'london' | 'dipole' | 'hydrogen';
   name: string;
+  /** The button and column label. It used to be the name's first word, which the hyphen in
+   *  `London-dreifikraftar` would have broken (decisions item 74). */
+  shortName: string;
   strength: number; // Relative strength 1-10
   energyRange: [number, number]; // kJ/mol, printed through formatDecimal
   color: string;
@@ -28,7 +31,8 @@ interface ForceData {
 const FORCES: ForceData[] = [
   {
     id: 'london',
-    name: 'London dreifikraftar',
+    name: 'London-dreifikraftar',
+    shortName: 'London',
     strength: 2,
     energyRange: [0.05, 40],
     color: '#a855f7', // purple
@@ -39,6 +43,7 @@ const FORCES: ForceData[] = [
   {
     id: 'dipole',
     name: 'Tvískauts-tvískauts',
+    shortName: 'Tvískauts-tvískauts',
     strength: 5,
     energyRange: [5, 25],
     color: '#3b82f6', // blue
@@ -49,6 +54,7 @@ const FORCES: ForceData[] = [
   {
     id: 'hydrogen',
     name: 'Vetnistengi',
+    shortName: 'Vetnistengi',
     strength: 8,
     energyRange: [10, 40],
     color: '#ef4444', // red
@@ -186,7 +192,7 @@ export function ForceStrengthAnimation({
               }}
             >
               <div className="text-lg mb-1">{force.icon}</div>
-              <div>{force.name.split(' ')[0]}</div>
+              <div>{force.shortName}</div>
             </button>
           ))}
         </div>
@@ -244,16 +250,16 @@ export function ForceStrengthAnimation({
                     textAnchor="middle"
                     className="fill-warm-400 text-[10px] pointer-coarse:text-xs"
                   >
-                    {narrow && force.name.split(' ')[0].includes('-') ? (
+                    {narrow && force.shortName.includes('-') ? (
                       // 'Tvískauts-tvískauts' is wider than a phone column: break it at the hyphen.
                       <>
-                        <tspan x={centerX}>{force.name.split(' ')[0].split('-')[0]}-</tspan>
+                        <tspan x={centerX}>{force.shortName.split('-')[0]}-</tspan>
                         <tspan x={centerX} dy="1.2em">
-                          {force.name.split(' ')[0].split('-')[1]}
+                          {force.shortName.split('-')[1]}
                         </tspan>
                       </>
                     ) : (
-                      force.name.split(' ')[0]
+                      force.shortName
                     )}
                   </text>
 

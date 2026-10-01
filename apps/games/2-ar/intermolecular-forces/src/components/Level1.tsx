@@ -16,9 +16,9 @@ import { imfToMolecule } from '../utils/imfConverter';
 // Misconceptions for IMF types
 const MISCONCEPTIONS = {
   polar:
-    'Skautaðar sameindir hafa bæði London krafta OG tvískauts-tvískauts krafta. Mundu: London er ALLTAF til staðar!',
+    'Skautaðar sameindir hafa bæði London-krafta OG tvískauts-tvískauts krafta. Mundu: London er ALLTAF til staðar!',
   nonpolar:
-    'Óskautaðar sameindir hafa AÐEINS London krafta. Samhverf sameind (eins og CO₂, CCl₄) getur haft skautuð tengi en samt verið óskautuð í heild.',
+    'Óskautaðar sameindir hafa AÐEINS London-krafta. Samhverf sameind (eins og CO₂, CCl₄) getur haft skautuð tengi en samt verið óskautuð í heild.',
   hbond:
     'Vetnistengi krefst þess að H sé bundið við F, O, eða N. Ef H er bundið við C eða Cl, þá eru engin vetnistengi.',
 };
@@ -46,7 +46,7 @@ interface IMFType {
 const IMF_TYPES: IMFType[] = [
   {
     id: 'london',
-    name: 'London dreifikraftar',
+    name: 'London-dreifikraftar',
     description:
       'Veikir, tímabundnir aðdráttarkraftar vegna tímabundinna tvískauta. Til staðar í ÖLLUM sameindum.',
     strength: 'Veikastur',
@@ -158,7 +158,7 @@ const molecules: Molecule[] = [
     hasHBond: false,
     molarMass: 16,
     correctIMFs: ['london'],
-    explanation: 'Metan er óskautuð sameind svo hún hefur aðeins London krafta.',
+    explanation: 'Metan er óskautuð sameind svo hún hefur aðeins London-krafta.',
     visualization: {
       atoms: [
         { symbol: 'C', partialCharge: 'none', position: 'center', size: 'medium', color: 'gray' },
@@ -259,7 +259,7 @@ const molecules: Molecule[] = [
     molarMass: 44,
     correctIMFs: ['london'],
     explanation:
-      'Þó C=O tengin séu skautuð, er sameindin línuleg og óskautuð — aðeins London kraftar.',
+      'Þó C=O tengin séu skautuð, er sameindin línuleg og óskautuð — aðeins London-kraftar.',
     visualization: {
       atoms: [
         { symbol: 'O', partialCharge: 'negative', position: 'left', size: 'medium', color: 'red' },
@@ -452,7 +452,7 @@ const molecules: Molecule[] = [
     molarMass: 254,
     correctIMFs: ['london'],
     explanation:
-      'I₂ er óskautuð tvíatóma sameind — aðeins London kraftar. En þeir eru sterkir vegna stórs mólmassa.',
+      'I₂ er óskautuð tvíatóma sameind — aðeins London-kraftar. En þeir eru sterkir vegna stórs mólmassa.',
     visualization: {
       atoms: [
         { symbol: 'I', partialCharge: 'none', position: 'left', size: 'large', color: 'purple' },
@@ -648,7 +648,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <h4 className="font-bold text-yellow-800 mb-2">🔑 Lykilatriði</h4>
               <ul className="space-y-1 text-yellow-900 text-sm">
                 <li>
-                  • <strong>Öll efni</strong> hafa London krafta — þeir eru alltaf til staðar
+                  • <strong>Öll efni</strong> hafa London-krafta — þeir eru alltaf til staðar
                 </li>
                 <li>
                   • <strong>Skautaðar sameindir</strong> hafa einnig tvískauts-tvískauts krafta
@@ -656,7 +656,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 <li>
                   • <strong>H-F, H-O, eða H-N</strong> tengi gefa vetnistengi
                 </li>
-                <li>• Stærra atóm / mólmassi = sterkari London kraftar</li>
+                <li>• Stærra atóm / mólmassi = sterkari London-kraftar</li>
               </ul>
             </div>
 
@@ -934,7 +934,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   {/* The same for every molecule: a hint that named the polarity, or mentioned
                       H–F/O/N only when there was one, gave the answer away. */}
                   <span className="text-yellow-900">
-                    Farðu í gegnum kraftana einn í einu. London kraftar eru alltaf til staðar.
+                    Farðu í gegnum kraftana einn í einu. London-kraftar eru alltaf til staðar.
                     Tvískauts-tvískauts kraftar krefjast skautaðrar sameindar: skautuð tengi gera
                     sameindina skautaða nema lögun hennar jafni þau út. Vetnistengi krefjast H sem
                     er tengt beint við F, O eða N.

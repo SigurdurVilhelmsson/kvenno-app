@@ -485,6 +485,13 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       "Decision 83, 2026-10-01: redox-hvarf is ruled acceptable beside ordabok.md's oxunar-afoxunarhvarf (69 corpus hits against 13 for redox-hv), and added to the glossary as redox reaction;redox-hvarf. Written with a hyphen: the book also has the solid redoxhvarf 9 times, and 2-ar/redox-reactions wrote it solid in its Stig 2 and Stig 3 intros beside redox-hvörf everywhere else. Neuter, like efnahvarf: redox-hvarf / -hvarf / -hvarfi / -hvarfs, plural redox-hvörf.",
   },
+  {
+    english: 'London force / London dispersion force',
+    correct: 'London-kraftur / London-dreifikraftur',
+    banned: [/London (dreifi)?kr[aö]ft/],
+    guidance:
+      'Decision 74, 2026-10-01. The book always hyphenates the eponym into the compound: London-kraftar 6, London-krafta 2, London-dreifikraftar 3, London-dreifikröftum 3, and never the open form. 2-ar/intermolecular-forces wrote it open at about 15 sites. Masculine, declining as kraftur: London-kraftur / -kraft / -krafti / -krafts, plural London-kraftar / -krafta / -kröftum / -krafta. The bare chip label London (for the force type, beside Tvískaut and H-tengi) is not matched.',
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

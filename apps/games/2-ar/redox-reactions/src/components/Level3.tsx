@@ -561,7 +561,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <p className="font-bold text-amber-800 mb-1">Skref 3 — Stilla rafeindir</p>
               <p className="text-warm-700">
                 Oxun gefur <strong>3 rafeindir</strong>, afoxun þarfnast <strong>2 rafeinda</strong>
-                . Minnsta samþakning er 6. Margföldum oxun með 2 og afoxun með 3.
+                . Minnsta sameiginlega margfeldi talnanna 3 og 2 er 6. Margföldum oxun með 2 og
+                afoxun með 3.
               </p>
               <p className="font-mono text-warm-800 mt-1">
                 2 × (Al → Al³⁺ + 3e⁻) = 2Al → 2Al³⁺ + 6e⁻

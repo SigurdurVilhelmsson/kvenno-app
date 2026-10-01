@@ -114,11 +114,11 @@ leave".
 - [ ] 63–64 rafeindabygging. Item 63 done 2026-10-01.
 - [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
 - [ ] 67–71 vsepr-geometry. Items 67, 68, 69 and 70 applied 2026-10-01; confirm 70's angle sets.
-- [ ] 72–74 intermolecular-forces. Item 72 done 2026-10-01.
+- [ ] 72–74 intermolecular-forces. Items 72 and 74 done 2026-10-01; 73 left.
 - [ ] 75–79 hess-law. Items 75, 76, 77 and 79 done 2026-10-01; 78 left.
 - [ ] 80–82 kinetics. Item 82 done 2026-10-01; item 81 done except `stig efnahvarfs`, which
       waits for item 1.
-- [ ] 83–88 redox-reactions. Items 83, 85 and 87 done 2026-10-01.
+- [ ] 83–88 redox-reactions. Items 83, 85, 86, 87 and 88 done 2026-10-01; 84 left.
 - [ ] 89–92 organic-nomenclature. Items 90, 91 and 92 done 2026-10-01; 89 left.
 - [ ] 93–94 gas-law-challenge
 - [ ] 95–100 jafnvaegisfasti

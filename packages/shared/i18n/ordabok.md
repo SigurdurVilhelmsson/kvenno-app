@@ -341,6 +341,8 @@ limiting reactant;takmarkandi hvarfefni
 linear;línulegur
 liquid;vökvi
 liquid crystal;fljótandi kristall
+London dispersion force;London-dreifikraftur
+London force;London-kraftur
 lone pair;rafeindapar
 luminous energy;ljósorka
 macromonomer;stóreinliða
