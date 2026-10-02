@@ -15,6 +15,25 @@ describe('parseStudentNumber', () => {
     expect(parseStudentNumber('18.02')).toBe(18.02);
   });
 
+  it("reads the book's unambiguous thousands forms, and keeps a lone d.ddd a decimal", () => {
+    // Decisions item 5 (b), 2026-10-02. Both of these used to read as their first group.
+    expect(parseStudentNumber('1.000.000')).toBe(1_000_000);
+    expect(parseStudentNumber('2.219,2')).toBe(2219.2);
+    expect(parseStudentNumber('12.345.678,9')).toBe(12_345_678.9);
+    expect(parseStudentNumber('-1.000,5')).toBe(-1000.5);
+    // A unit after it reads as it always has.
+    expect(parseStudentNumber('1.300,5 g')).toBe(1300.5);
+    // A lone group stays a decimal point: the book also writes 1,008.
+    expect(parseStudentNumber('1.300')).toBe(1.3);
+    expect(parseStudentNumber('1.008')).toBe(1.008);
+  });
+
+  it('refuses a mix of marks no reading makes safe', () => {
+    expect(parseStudentNumber('1.30,5')).toBeNaN();
+    expect(parseStudentNumber('1,300.5')).toBeNaN();
+    expect(parseStudentNumber('1.2.3')).toBeNaN();
+  });
+
   it('reads whole numbers and scientific notation', () => {
     expect(parseStudentNumber('12')).toBe(12);
     expect(parseStudentNumber('4.2e5')).toBe(420000);
