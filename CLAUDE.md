@@ -599,10 +599,10 @@ relationship beside mass↔mól and mól↔eindir.
   and the molar-volume question draws only gases. Without it the question would ask what volume a
   mole of table salt occupies — the same class of defect as `lausnir` asking a student to weigh out
   a gas. `state` describes the substance **as this game names it**, which is why `H₂O` is `vökvi`.
-- **Open, and Siggi's call:** `molmassi` names `HCl` **`Saltsýra`**, which is HCl(aq) — a solution,
-  with no molar volume — while quoting 36,46 g/mol, the molar mass of the compound. HCl is excluded
-  from molar-volume questions rather than renamed, because the compound is `vetnisklóríð` and that
-  is a naming ruling, not a molar-volume one. See `apps/games/1-ar/molmassi/HARVEST.md`.
+- **Ruled 2026-10-02 (decisions item 14):** `molmassi` named `HCl` `Saltsýra`, which is HCl(aq) —
+  a solution, with no molar volume — while quoting 36,46 g/mol, the compound's molar mass, so HCl
+  was kept out of molar-volume questions. It is now **`Vetnisklóríð`**, a gas at STP, and in the
+  molar-volume pool. `saltsýra` and `flússýra` stay wherever the solution is meant.
 
 **Phase 3 of the games roadmap landed 2026-08-27** — the harvest out of the frozen
 `namsbokasafn-leikir`. All four rows, each with a `HARVEST.md` beside the game it touched:
@@ -1175,10 +1175,10 @@ platform-wide:
   `P og V eru því andhverf` predicatively, with no noun to key a carve-out on, two lines below its
   own `í andhverfu hlutfalli`; normalising it keeps one carve-out instead of a growing exemption
   list.
-- **Open, and Siggi's:** the water-gas reaction is named two ways on the platform and **the corpus
-  cannot settle it** — both `vatnsgashvarf` and `vatnsgas hvarf` return zero hits. `equilibrium-shifter`
-  was harmonised to `jafnvaegisfasti`'s `Vatnsgashvarfið` because a genitive compound cannot be
-  split, but that is a spelling harmonisation and not a ruling. Also thin: `umhverfa` has exactly
+- **Ruled 2026-10-02 (decisions item 19):** the water-gas reaction is the compound
+  `vatnsgashvarf`, which `equilibrium-shifter` had been harmonised to from `jafnvaegisfasti` because
+  a genitive compound cannot be split; the corpus has neither form. A `governed-terms` row bans the
+  split. Also thin: `umhverfa` has exactly
   one corpus hit, in the sentence that matters and with no competitor, but one hit is one hit.
 
 **Prósentuheimtur landed 2026-09-22, in `1-ar/takmarkandi`** — Siggi's placement, and the book
@@ -1363,7 +1363,7 @@ that let this file's own Y3 chain line say `Púfferar` until September.
 | lone pair | `stakt rafeindapar`, `stök pör` | `einstætt par`, `einstæð pör` | **2026-09-23, from the textbook.** `ordabok.md` gives only the head noun (`lone pair;rafeindapar`); the book defines `[[term:stök rafeindapör]]`, its glossary headword is `stakt rafeindapar`, and before `(rafeinda)par` it writes `stak-` 109 times, `einmana` 23, `einstæð-` never. **The adjective moves every case:** `stakt par`, `stök pör`, `stöku pari`, `stökum pörum`, `stakra para`, `staka parið`. About 130 sites swept in Lewis, VSEPR and IMF, including four button `aria-label`s |
 | mole, as a unit | `mól` — `g/mól`, `kJ/mól`, `J/(mól·K)`, `mól/L` | `mol` in Icelandic text | **2026-09-23, from the textbook**, which never writes the symbol any other way: `kJ/mól` 127 to 0, `g/mól` 79 to 0, a number then `mól` 203 to 0 (count `*-segments.is.md` only — `ch05`'s `(b)`/`(c)`/`(d)` variant copies inflate these). `molmassi` and `equilibrium-shifter` had moved already; about 220 sites swept in the rest, including unit data a game prints (`einingakedjan`'s ratio cards, `gas-law-challenge`'s unit labels). **English and Polish text keep `mol`**, so the test row only reads lines carrying an Icelandic letter |
 | proton | `róteind` | `prótón`, `Fjölprótón-` | `ordabok.md` and the corpus, 241 to 1. Polyprotic acids are `fjölvirk` / `tvívirk` / `þrívirk sýra` (`polyprotic acid;fjölvirk sýra`). A protonated indicator has `tekið við róteind`; do not coin `róteindaform` |
-| noble gas | `eðalgas` | `eðallofttegund` | **2026-09-23, rule 1**: `ordabok.md` (`noble gas;eðalgas`) and the book's own glossary headword (`ch02/m68695`) agree; its paragraphs say `eðallofttegund` 38 to 19 and its inline term marker is `eðallofttegundir` — the book disagreeing with itself, settled as `prósentuheimtur` was. **Siggi's to confirm, not blocking.** `lotukerfid` said both (`Eðalgös` in Stig 1, `eðallofttegundir` in Stig 2) and `molmassi`'s legend the second. **Feminine to NEUTER:** plural `eðalgös`, def. `eðalgösin`, dat. `eðalgösum` — `eðalgösin eru óvirk`. `P-málmar` is untouched: `ordabok.md` has no entry for it |
+| noble gas | `eðalgas` | `eðallofttegund` | **2026-09-23, rule 1**: `ordabok.md` (`noble gas;eðalgas`) and the book's own glossary headword (`ch02/m68695`) agree; its paragraphs say `eðallofttegund` 38 to 19 and its inline term marker is `eðallofttegundir` — the book disagreeing with itself, settled as `prósentuheimtur` was. **Siggi's to confirm, not blocking.** `lotukerfid` said both (`Eðalgös` in Stig 1, `eðallofttegundir` in Stig 2) and `molmassi`'s legend the second. **Feminine to NEUTER:** plural `eðalgös`, def. `eðalgösin`, dat. `eðalgösum` — `eðalgösin eru óvirk`. `P-málmar` became `tregir málmar` on 2026-10-02 (decisions item 21) |
 
 **Also given platform rows on 2026-09-23, none a new ruling** — each was already in `ordabok.md` and
 had been fixed inside one game only: `rafeindapar` (the misspelling `rafeindarapar`), `samoka` (it
@@ -1399,6 +1399,16 @@ to neuter, so `með kolmónoxíði`, `brennsla kolmónoxíðs`); and `fjölatóm
 correcting `ordabok.md`'s `fjölfrumeinda`/`einfrumeinda` to the book. All three are platform rows.
 The progress caption is `Stigum lokið` (`lokið` governs the dative), held by
 `progress-caption.test.ts`.
+
+**Seven more the same day** (decisions 14, 17, 18, 19, 21, 33): `vetnisklóríð` and `vetnisflúoríð`
+where the pure compound is meant (`saltsýra`/`flússýra` stay for the solutions, so this is a
+per-game ban in `intermolecular-forces`, not a platform row); `snertiferlið` for the contact process;
+`gufunarþrýstingur` for vapour pressure, as `ordabok.md` already said and **against** the corpus
+(126 to 5) — Siggi's call; the compound `vatnsgashvarf`; `tregur málmur` / `tregir málmar` for a
+post-transition metal (both words decline); `lantaníð` / `lantaníðar` and `aktiníð` / `aktiníðar`,
+correcting the glossary's `lanþaníð`; and `staðalform` for scientific notation, which also means
+standard state in the book. All but the first are platform rows. **Þ does not case-fold in grep**:
+the vapour-pressure sweep missed an all-capitals `GUFUÞRÝSTINGI` that the JavaScript guard caught.
 
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 

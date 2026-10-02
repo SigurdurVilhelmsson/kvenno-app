@@ -187,6 +187,7 @@ boiling point, −85 °C (`Level1.tsx` molecules 3 and 9, `Level2.tsx` problem 1
 `CLAUDE.md`). `lausnir`, `ph-titration` and `syrufastinn` mean the solution and may be right.
 Corpus: `vetnisklóríð` 22, `vetnisflúoríð` 26. Options: (a) keep; (b) `vetnisklóríð` /
 `vetnisflúoríð` wherever the pure compound is meant. **Recommendation:** (b), one ruling for all.
+**Applied 2026-10-02, (b):** `intermolecular-forces` names HCl `Vetnisklóríð` (Stig 1 and Stig 2) and HF `Vetnisflúoríð`, held by its `icelandic-text.test.tsx`; `molmassi` names HCl `Vetnisklóríð`, and since the compound is a gas at STP it now joins the molar-volume questions (`gas-volume.test.ts`). `lausnir`, `ph-titration`, `syrufastinn` and `einingakedjan` mean the solution and keep `saltsýra`/`flússýra`. `ordabok.md` gains `hydrogen chloride`, `hydrogen fluoride` and `hydrochloric acid`.
 
 **15. `Köfnunarefni` or `Nitur` for N; and the name of N₂O₄.**
 `ordabok.md` is silent. The book uses both as the element name (105 to 63) and prefers the `nitur-`
@@ -214,16 +215,19 @@ Options: (a) `kolsýringur`; (b) `kolmónoxíð`, systematic as Nafnakerfið tea
 `data/problems.ts:160` (`Contact aðferðin`). No `ordabok.md` entry; 0 corpus hits for either
 Icelandic form. Options: (a) `snertiferlið`; (b) `Snertiaðferðin`; (c) keep an English gloss.
 **Recommendation:** (a), a one-line glossary entry, then one sweep with a governed-terms row.
+**Applied 2026-10-02, (a):** `Snertiferlið` in all three games, the English gloss dropped from `hess-law`. `contact process;snertiferlið` in `ordabok.md`, with a `governed-terms` row. `equilibrium-shifter`'s English `name` field stays English.
 
 **18. `gufuþrýstingur` or the glossary's `gufunarþrýstingur`.**
 `intermolecular-forces` Level 2 problem 3 and `jafnvaegisfasti` say `gufuþrýstingur`; `ordabok.md`
 says `gufunarþrýstingur`; the corpus is 126 to 5 the other way. Both masculine, so a pure swap.
 **Recommendation:** keep `gufuþrýstingur` and correct `ordabok.md`.
+**Applied 2026-10-02, against the recommendation:** you ruled `gufunarþrýstingur`, which `ordabok.md` already says. Swept at five sites: four in `intermolecular-forces` Level 2, one of them the all-capitals `GUFUÞRÝSTINGI` that a case-insensitive grep missed (grep does not fold Þ), and one in `jafnvaegisfasti`. A `governed-terms` row holds it.
 
 **19. `Vatnsgashvarfið` or `Vatnsgas hvarfið`.**
 Already open in `CLAUDE.md`: `jafnvaegisfasti` and `equilibrium-shifter` were harmonised to the
 compound, which is a spelling choice, not a ruling. The corpus has 0 hits for either.
 **Recommendation:** confirm the compound, since a genitive compound cannot be split.
+**Applied 2026-10-02, confirmed:** nothing shipped the split form, so no sweep. `water-gas shift reaction;vatnsgashvarf` in `ordabok.md`, and a `governed-terms` row bans the split.
 
 **20. Year-2 bonding and geometry vocabulary.**
 `lone pair` (now `stakt rafeindapar`) and `tetrahedral` (item 124) were swept in this
@@ -258,6 +262,7 @@ Periodic-table legends in `lotukerfid` (`PeriodicTable.tsx:306`, `data/elements.
 `eftirhliðarmálmar`. `lotukerfid`'s `Lantaníð`/`Aktíníð` labels are unused, and `ordabok.md` spells
 them `lanþaníð`/`aktiníð`. **Recommendation:** keep `P-málmar` until the glossary has an entry;
 fix the two unused labels to the glossary spelling when it does.
+**Applied 2026-10-02, your wording:** post-transition metals are `tregir málmar` (`Tregur málmur` singular; `lotukerfid`'s cell abbreviation `Pm` became `Tm`), lanthanides `lantaníðar` and actinides `aktiníðar`. Both legends changed (`lotukerfid`, `molmassi`); the unused labels read `Lantaníð` and `Aktiníð`. `ordabok.md` gains `post-transition metal;tregur málmur` and its `lanþaníð` is corrected to `lantaníð`. Two `governed-terms` rows, and legend tests in both games.
 
 ---
 
@@ -272,12 +277,14 @@ fallback). Prediction was disabled in `2ae30b3`. Options: (a) reword to what Sti
 `Þar byggir þú keðjur úr umbreytingarstuðlum.` / `Byggja umbreytingarkeðjur`; (b) delete the
 Stig 1 line; (c) bring prediction back. **Recommendation:** (a), your wording; the noun follows
 item 12.
+**Applied 2026-10-02, (a), with the example wording:** `Þar byggir þú keðjur úr umbreytingarstuðlum.` and `Byggja umbreytingarkeðjur` (English `Build conversion chains`, Polish `Buduj łańcuchy przeliczeń`). Both keep the game's `umbreyting-` noun, so they move with the item 12 sweep if you rule `umreikningsstuðull`.
 
 **23. Stig 1's score line can only read `6 af 6`.**
 No Stig 1 challenge can be answered wrong, so `Þú svaraðir {n} af 6 rétt` is always full marks
 and the retry branch is dead (`Level1Conceptual.tsx:181-198`, `:230-256`). Options: (a) reword as
 completion, e.g. `Þú kláraðir allar {n} áskoranirnar`, and delete the dead branch; (b) keep;
 (c) make Stig 1 answers fail-able. **Recommendation:** (a).
+**Applied 2026-10-02, (a):** `Þú kláraðir allar {n} áskoranirnar`, with the dead retry branch and the `📚`/`Vel gert!` variant removed. `level1-run.test.tsx` holds the line and the absent `Reyna aftur`.
 
 **24. Stig 1's automatic hint counts every click as an attempt.**
 `Level1Conceptual.tsx:115-122` opens the hint after the third `onAttempt()`, and every challenge
@@ -345,6 +352,7 @@ each; this pass made both strings term-free. `ordabok.md` has no entry. The book
 standard state in ch05 and ch16; `veldisvísanotkun` has 3. Listed as a teaching decision in
 `ORPHANED_GAMES_ASSESSMENT.md:352`. **Recommendation:** confirm `staðalform`, add
 `scientific notation;staðalform` to `ordabok.md`, then use it.
+**Applied 2026-10-02, as recommended:** in `ordabok.md`, and used where the game explains it: Level 3's hint (`Skrifaðu mjög stórar eða litlar tölur á staðalformi, …`) and Stig 0's rounding verdict (`Skýrast er að skrifa hana á staðalformi, …`). A `governed-terms` row bans the two coinages.
 
 **34. Two Level 3 items ask for more significant figures than their givens carry.**
 L3-12 (0,5 mol × 58,5 g/mol, declares 3) and L3-COOK-2 (4 oz × 28,35 g/oz, declares 4), in
@@ -362,6 +370,7 @@ Also here: the thousands dot (item 5, option (d)) and the conversion-factor term
 Stig 2 counts them as málmleysingjar.**
 `PeriodicTable.tsx` legend (~:300) against `Level2.tsx` `GROUP_QUESTIONS`. Options: (a) label the
 category `Aðrir málmleysingjar`; (b) keep. **Recommendation:** (a).
+**Applied 2026-10-02, (a):** in `lotukerfid`'s legend and in `molmassi`'s, which had the same split. `table-reading.test.tsx` checks it against `getClassification`.
 
 Also here: `P-málmar` and the unused `Lantaníð`/`Aktíníð` labels (item 21), the
 element name for N (item 15), and the flattened Polish block (item 4).

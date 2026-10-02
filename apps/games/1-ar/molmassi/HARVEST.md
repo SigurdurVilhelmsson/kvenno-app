@@ -74,6 +74,7 @@ Two of the twenty-nine needed a decision rather than a lookup:
   ruling of its own:** the compound HCl is `vetnisklóríð` and `saltsýra` is HCl(aq), and this game
   quotes 36,46 g/mol, which is the molar mass of the compound rather than of the solution. Not
   renamed here — that is a `nafnakerfid`-shaped decision, not a molar-volume one.
+  **Ruled 2026-10-02 (decisions item 14):** HCl is now `Vetnisklóríð`, a gas, and in the pool.
 
 Guarded by `src/__tests__/gas-volume.test.ts`, verified to fail when H₂O is marked a gas.
 

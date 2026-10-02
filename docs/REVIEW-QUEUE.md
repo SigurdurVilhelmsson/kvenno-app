@@ -102,10 +102,10 @@ leave".
   - the i18n question;
   - reading `1.300`;
   - which book's formation enthalpies to use.
-- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 15
-      and 16 done 2026-10-02.
-- [ ] 22–34 dimensional-analysis
-- [ ] 35 lotukerfid
+- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 14,
+      15, 16, 17, 18, 19 and 21 done 2026-10-02. Items 12 and 13 left.
+- [ ] 22–34 dimensional-analysis. Items 22, 23 and 33 done 2026-10-02.
+- [x] 35 lotukerfid — done 2026-10-02
 - [ ] 36–41 nafnakerfid. Item 39 done 2026-10-02.
 - [ ] 42–45 molmassi
 - [ ] 46–47 reynsluformulur. Item 46 done 2026-10-02.
@@ -148,14 +148,14 @@ Same document, items 123–126. Each is reversible.
 - [ ] **Íslenskubraut review workbook.** The reviewer-facing Icelandic in
       `scripts/islenskubraut/export-xlsx.mjs` is marked `PLACEHOLDER ICELANDIC`. Siggi must rewrite it
       before any export goes to a colleague.
-- [ ] **molmassi names HCl `Saltsýra`** (a solution) while quoting the compound's molar mass. See
-      also C3 item 14.
+- [x] **molmassi names HCl `Saltsýra`** (a solution) while quoting the compound's molar mass. See
+      also C3 item 14. — 2026-10-02: now `Vetnisklóríð`, a gas, and in the molar-volume pool.
 - [ ] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
 jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken.
 - [ ] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
       C4 items 123 and 124.
-- [ ] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
-      item 19.
+- [x] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
+      item 19. — 2026-10-02: the compound, confirmed; a `governed-terms` row bans the split.
 - [ ] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
       Icelandic book's complex-ion constants (`m68869`), which is a new source.
 - [x] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
@@ -255,7 +255,7 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       longer draws with `AnimatedMolecule` (PR #71); the shared badge now has a white ring as
       well, 2026-10-01, PR #72.
 - [ ] **vsepr Stig 1, the three-domain bent card** (`Level1.tsx`, `bent-2`) says `Stakt par ofan
-    á þremur bindandi pörum: þríhyrningslaga pýramídi`, which describes the trigonal pyramid.
+á þremur bindandi pörum: þríhyrningslaga pýramídi`, which describes the trigonal pyramid.
       Found 2026-10-02.
 - [ ] **`bg-kvenno-orange-dark` and `hover:bg-kvenno-orange-dark` do nothing.** No such colour
       token exists (the theme has `kvenno-orange-600`), so 77 hover states across the games never
