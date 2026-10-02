@@ -182,7 +182,7 @@ const warmupQuestions: WarmupQuestion[] = [
   { symbol: 'Fe', name: 'Járn', isMetal: true, hint: 'Hliðarmálmur - einn þekktur málmanna!' },
   { symbol: 'S', name: 'Brennisteinn', isMetal: false, hint: 'Í hópi 16 - málmleysingi!' },
   { symbol: 'Ca', name: 'Kalsíum', isMetal: true, hint: 'Í hópi 2 - jarðalkalímálmur!' },
-  { symbol: 'N', name: 'Köfnunarefni', isMetal: false, hint: 'Í hópi 15 - málmleysingi!' },
+  { symbol: 'N', name: 'Nitur', isMetal: false, hint: 'Í hópi 15 - málmleysingi!' },
 ];
 
 export const quizQuestions: QuizQuestion[] = [

@@ -2154,14 +2154,6 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Valmynd — enska',
-      steps: [
-        {
-          clickRole: ['button', 'English'],
-        },
-      ],
-    },
-    {
       name: 'Stig 1 — kynning',
       steps: [
         {
@@ -2801,7 +2793,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="atóm Mg jafngildir"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
         },
         {
           css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mól Mg jafngildir 2 mól MgO"]',
@@ -2989,7 +2981,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
         },
         {
           clickRole: ['button', 'Leysa'],
@@ -3024,7 +3016,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
         },
         {
           clickRole: ['button', 'Leysa'],
@@ -3156,7 +3148,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
             css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
           },
           {
-            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
           },
         ],
         verdict: { css: 'main ol' },
@@ -4112,7 +4104,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           // The shape picker is a radio group on a phone and a grid of buttons elsewhere
           // (desktop-compare replays this path at 1280 px), so the chip is found by its label.
-          css: 'button:has-text("Octahedral")',
+          css: 'button:has-text("Áttflötungur"):has-text("SF₆")',
         },
         {
           wait: 500,

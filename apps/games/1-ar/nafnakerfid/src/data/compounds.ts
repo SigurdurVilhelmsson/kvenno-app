@@ -265,7 +265,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'medium',
     elements: ['Na', 'C', 'O'],
-    info: 'Sameindajón: CO₃²⁻ (karbónat)',
+    info: 'Fjölatóma jón: CO₃²⁻ (karbónat)',
   },
   {
     formula: 'NH₄Cl',
@@ -301,7 +301,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'medium',
     elements: ['K', 'N', 'O'],
-    info: 'Sameindajón: NO₃⁻ (nítrat)',
+    info: 'Fjölatóma jón: NO₃⁻ (nítrat)',
   },
   {
     formula: 'N₂O₄',
@@ -310,7 +310,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'sameind',
     difficulty: 'medium',
     elements: ['N', 'O'],
-    info: 'Tvö köfnunarefni, fjögur súrefni',
+    info: 'Tvö nituratóm, fjögur súrefnisatóm',
   },
   {
     formula: 'SO₂',
@@ -492,7 +492,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'sameind',
     difficulty: 'hard',
     elements: ['N', 'O'],
-    info: 'Tvö köfnunarefni, fimm súrefni',
+    info: 'Tvö nituratóm, fimm súrefnisatóm',
   },
   {
     formula: 'SF₆',

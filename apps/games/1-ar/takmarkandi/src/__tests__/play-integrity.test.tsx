@@ -198,7 +198,7 @@ describe('Framvinda', () => {
       })
     );
     const { container } = render(<App />);
-    const counter = () => within(container).getByText('Stig lokið').previousElementSibling!;
+    const counter = () => within(container).getByText('Stigum lokið').previousElementSibling!;
     expect(counter().textContent).toBe('2/3');
 
     fireEvent.click(within(container).getByText('Meistarapróf'));

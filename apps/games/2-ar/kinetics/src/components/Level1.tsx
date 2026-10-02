@@ -16,7 +16,7 @@ const MISCONCEPTIONS: Record<number, string> = {
   3: 'Hitastig breytir EKKI virkjunarorku (Ea). Það eykur hlutfall sameinda sem hafa E ≥ Ea.',
   4: 'Hvatar lækka Ea með öðrum hvarfgangi - þeir hita EKKI hvörfin upp.',
   5: 'Yfirborð skiptir máli vegna fjölda árekstrarstaða, ekki efnaformúlu eða massa.',
-  6: 'Ekki nóg að árekstur hafi orku - stefna (orientation) skiptir líka máli!',
+  6: 'Ekki nóg að árekstur hafi orku - stefna skiptir líka máli!',
 };
 
 // Related concepts for each challenge

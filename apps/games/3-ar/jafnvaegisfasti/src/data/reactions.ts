@@ -33,7 +33,7 @@ export const REACTIONS: Reaction[] = [
   // ---------------------------------------------------------------- homogeneous, gas
   {
     id: 'no2-n2o4',
-    name: 'Köfnunarefnisdíoxíð og díniturtetroxíð',
+    name: 'Niturdíoxíð og díniturtetroxíð',
     reactants: [{ formula: 'NO₂', coefficient: 2, phase: 'g' }],
     products: [{ formula: 'N₂O₄', coefficient: 1, phase: 'g' }],
     constant: {
@@ -123,7 +123,7 @@ export const REACTIONS: Reaction[] = [
   {
     id: 'kobolt-koloxid',
     excludeFromKpExercise: true,
-    name: 'Afoxun kóbaltoxíðs með kolsýringi',
+    name: 'Afoxun kóbaltoxíðs með kolmónoxíði',
     reactants: [
       { formula: 'CoO', coefficient: 1, phase: 's' },
       { formula: 'CO', coefficient: 1, phase: 'g' },

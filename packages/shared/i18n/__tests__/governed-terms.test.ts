@@ -492,6 +492,27 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       'Decision 74, 2026-10-01. The book always hyphenates the eponym into the compound: London-kraftar 6, London-krafta 2, London-dreifikraftar 3, London-dreifikröftum 3, and never the open form. 2-ar/intermolecular-forces wrote it open at about 15 sites. Masculine, declining as kraftur: London-kraftur / -kraft / -krafti / -krafts, plural London-kraftar / -krafta / -kröftum / -krafta. The bare chip label London (for the force type, beside Tvískaut and H-tengi) is not matched.',
   },
+  {
+    english: 'nitrogen',
+    correct: 'nitur',
+    banned: [/köfnunarefn/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 15, option b). ordabok.md was silent and the platform shipped both: lotukerfid, molmassi and nafnakerfid said Köfnunarefni while lewis-structures, vsepr-geometry, hess-law and rafeindabygging said Nitur. The book uses both for the element and prefers the nitur- stem in compounds (nituratóm 80, nituroxíð 22, niturbinding 7, against no köfnunarefnisbinding). Neuter: nitur / nitur / nitri / niturs, definite nitrið. Compounds take the bare stem: nituratóm, nituroxíð, niturdíoxíð, niturbinding, nituráburður. N₂O₄ stays díniturtetroxíð, as Y1 teaches it.",
+  },
+  {
+    english: 'carbon monoxide',
+    correct: 'kolmónoxíð',
+    banned: [/kolsýring/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 16, option b): the systematic name, as Nafnakerfið teaches oxides, and the pair of koldíoxíð. The corpus is split 23 to 24 and ordabok.md was silent. hess-law said both words, Kolmónoxíð in a puzzle title and Kolsýringur in its formation-enthalpy table. Masculine to NEUTER, so the cases change: kolmónoxíð / kolmónoxíð / kolmónoxíði / kolmónoxíðs (með kolmónoxíði, brennsla kolmónoxíðs). Unrelated and not banned: kolsýra, carbonic acid.",
+  },
+  {
+    english: 'polyatomic ion / monoatomic ion',
+    correct: 'fjölatóma jón / einatóma jón',
+    banned: [/fjölfrumeinda/i, /einfrumeinda/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 39, option a), correcting ordabok.md to the book. The glossary said fjölfrumeinda jón and einfrumeinda jón; the book's running prose, including the naming module ch02/m68698, says fjölatóma jón (23 to 2) and einatóma jón (18 to 0), and the platform already said both. jón is feminine: fjölatóma jón, -jónina, -jóninni, -jónarinnar; plural fjölatóma jónir.",
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

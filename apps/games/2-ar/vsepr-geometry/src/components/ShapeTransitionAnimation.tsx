@@ -15,7 +15,6 @@ interface DomainPosition {
 
 interface GeometryConfig {
   name: string;
-  nameEn: string;
   bondAngle: string;
   positions: DomainPosition[];
   example?: string;
@@ -25,7 +24,6 @@ interface GeometryConfig {
 const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
   2: {
     name: 'Línuleg',
-    nameEn: 'Linear',
     bondAngle: '180°',
     positions: [
       { x: -80, y: 0, isLonePair: false },
@@ -35,7 +33,6 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
   },
   3: {
     name: 'Þríhyrningslaga flatt',
-    nameEn: 'Trigonal Planar',
     bondAngle: '120°',
     positions: [
       { x: 0, y: -70, isLonePair: false },
@@ -46,7 +43,6 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
   },
   4: {
     name: 'Ferflötungur',
-    nameEn: 'Tetrahedral',
     bondAngle: '109,5°',
     positions: [
       { x: 0, y: -70, isLonePair: false },
@@ -58,7 +54,6 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
   },
   5: {
     name: 'Þríhyrndur tvípýramídi',
-    nameEn: 'Trigonal Bipyramidal',
     bondAngle: '90°/120°',
     // Two axial domains, and the equatorial three as a triangle seen at a
     // slant. The third equatorial domain used to sit at (0, 0), drawn on top
@@ -74,7 +69,6 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
   },
   6: {
     name: 'Áttflötungur',
-    nameEn: 'Octahedral',
     bondAngle: '90°',
     positions: [
       { x: 0, y: -80, isLonePair: false },
@@ -450,7 +444,6 @@ export function ShapeTransitionAnimation({
       {/* Info panel */}
       <div className="bg-white rounded-lg p-3 mb-4 text-center">
         <div className="text-lg font-bold text-indigo-700">{config.name}</div>
-        <div className="text-sm text-warm-500">{config.nameEn}</div>
         <div className="flex justify-center gap-6 mt-2 text-sm">
           <div>
             <span className="text-warm-500">Horn:</span>{' '}

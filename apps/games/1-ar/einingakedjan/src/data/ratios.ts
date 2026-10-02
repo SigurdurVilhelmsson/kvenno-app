@@ -47,13 +47,13 @@ export const molarMassRatios: Equivalence[] = [
   },
   {
     id: 'mm-MgO',
-    left: { value: 40.3, unit: 'g', species: 'MgO' },
+    left: { value: 40.3, unit: 'g', species: 'MgO', label: '40,30' },
     right: { value: 1, unit: 'mól', species: 'MgO' },
     kind: 'molmassi',
   },
   {
     id: 'mm-O2',
-    left: { value: 32.0, unit: 'g', species: 'O₂' },
+    left: { value: 32.0, unit: 'g', species: 'O₂', label: '32,00' },
     right: { value: 1, unit: 'mól', species: 'O₂' },
     kind: 'molmassi',
   },
@@ -113,7 +113,7 @@ export const molarMassRatios: Equivalence[] = [
   },
   {
     id: 'mm-NaOH',
-    left: { value: 40.0, unit: 'g', species: 'NaOH' },
+    left: { value: 40.0, unit: 'g', species: 'NaOH', label: '40,00' },
     right: { value: 1, unit: 'mól', species: 'NaOH' },
     kind: 'molmassi',
   },
@@ -153,14 +153,14 @@ export const avogadroRatios: Equivalence[] = [
 export const molarityRatios: Equivalence[] = [
   {
     id: 'molstyrkur-NaOH-0100',
-    left: { value: 0.1, unit: 'mól', species: 'NaOH' },
+    left: { value: 0.1, unit: 'mól', species: 'NaOH', label: '0,100' },
     right: { value: 1, unit: 'L', species: 'NaOH(aq)' },
     kind: 'molstyrkur',
     source: '0,100 M NaOH',
   },
   {
     id: 'molstyrkur-HCl-0100',
-    left: { value: 0.1, unit: 'mól', species: 'HCl' },
+    left: { value: 0.1, unit: 'mól', species: 'HCl', label: '0,100' },
     right: { value: 1, unit: 'L', species: 'HCl(aq)' },
     kind: 'molstyrkur',
     source: '0,100 M HCl',
@@ -178,7 +178,7 @@ export const densityRatios: Equivalence[] = [
   },
   {
     id: 'edlismassi-vatn',
-    left: { value: 1.0, unit: 'g', species: 'H₂O' },
+    left: { value: 1.0, unit: 'g', species: 'H₂O', label: '1,00' },
     right: { value: 1, unit: 'mL', species: 'H₂O' },
     kind: 'edlismassi',
     source: 'Eðlismassi vatns',

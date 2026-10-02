@@ -70,3 +70,32 @@ export function applyFactorPath(startValue: number, path: string[]): number {
     return (value * numerator) / denominator;
   }, startValue);
 }
+
+/**
+ * Whether a typed full stop made the answer exactly a thousandth of the right one.
+ *
+ * The book writes thousands with a full stop (`1.300 g`), and `parseStudentNumber`
+ * keeps a lone `d.ddd` a decimal (decisions item 5): so a student who wrote 1300 the
+ * book's way typed 1,3. Where the answer passes 1000 that is worth saying, rather than
+ * grading it as a plain wrong number (item 5, option d). `close` is the comparison the
+ * caller grades with, so a tolerance carries over.
+ */
+export function dotReadAsDecimal(
+  typed: string,
+  typedValue: number,
+  answer: number,
+  close: (a: number, b: number) => boolean
+): boolean {
+  if (!typed.includes('.') || typed.includes(',')) return false;
+  if (Math.abs(answer) < 1000 || !Number.isFinite(typedValue)) return false;
+  return close(typedValue * 1000, answer);
+}
+
+/**
+ * What the feedback says when `dotReadAsDecimal` holds. DRAFT WORDING, written by
+ * Claude for the 2026-10-02 ruling, which asked for Siggi's wording here: replace it
+ * when he supplies his own.
+ */
+export function dotReadAsDecimalNote(typed: string): string {
+  return `Hér er punktur lesinn sem tugabrotskomma, svo ${typed.trim()} er þúsund sinnum minna en svarið. Ef þú meintir þúsundaskil, skrifaðu töluna án punkts, eða með bili: 1 300.`;
+}

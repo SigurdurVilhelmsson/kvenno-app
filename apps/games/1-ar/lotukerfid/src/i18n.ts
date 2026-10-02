@@ -111,22 +111,22 @@ export const gameTranslations = createGameTranslations({
   },
   pl: {
     game: {
-      title: 'Uklad okresowy',
-      subtitle: 'Poznaj uklad okresowy, pierwiastki i budowe atomu',
+      title: 'Układ okresowy',
+      subtitle: 'Poznaj układ okresowy, pierwiastki i budowę atomu',
     },
     menu: {
       level1: {
         title: 'Poziom 1: Rozpoznaj pierwiastki',
-        description: 'Znajdz pierwiastki w ukladzie okresowym i rozpoznaj ich symbole',
+        description: 'Znajdź pierwiastki w układzie okresowym i rozpoznaj ich symbole',
         tags: {
-          find: 'Znajdz w tabeli',
+          find: 'Znajdź w tabeli',
           symbols: 'Symbole',
           position: 'Pozycja',
         },
       },
       level2: {
         title: 'Poziom 2: Grupy i trendy',
-        description: 'Klasyfikuj pierwiastki i rozumiej wzorce ukladu okresowego',
+        description: 'Klasyfikuj pierwiastki i rozumiej wzorce układu okresowego',
         tags: {
           classify: 'Klasyfikuj',
           trends: 'Trendy',
@@ -135,7 +135,7 @@ export const gameTranslations = createGameTranslations({
       },
       level3: {
         title: 'Poziom 3: Budowa atomu',
-        description: 'Protony, neutrony i elektrony pierwiastkow',
+        description: 'Protony, neutrony i elektrony pierwiastków',
         tags: {
           protons: 'Protony',
           neutrons: 'Neutrony',
@@ -143,22 +143,22 @@ export const gameTranslations = createGameTranslations({
         },
       },
       learningPath: {
-        title: 'Sciezka nauki',
+        title: 'Ścieżka nauki',
         step1: {
           title: 'Rozpoznaj pierwiastki',
-          description: 'Znajdz pierwiastki w ukladzie okresowym i rozpoznaj ich symbole',
+          description: 'Znajdź pierwiastki w układzie okresowym i rozpoznaj ich symbole',
         },
         step2: {
           title: 'Grupy i trendy',
-          description: 'Zrozum organizacje i wzorce ukladu okresowego',
+          description: 'Zrozum organizację i wzorce układu okresowego',
         },
         step3: {
           title: 'Budowa atomu',
-          description: 'Oblicz liczbe protonow, neutronow i elektronow',
+          description: 'Oblicz liczbę protonów, neutronów i elektronów',
         },
       },
-      resetProgress: 'Resetuj postep',
-      resetConfirm: 'Czy na pewno chcesz zresetowac caly postep?',
+      resetProgress: 'Resetuj postęp',
+      resetConfirm: 'Czy na pewno chcesz zresetować cały postęp?',
     },
   },
 });

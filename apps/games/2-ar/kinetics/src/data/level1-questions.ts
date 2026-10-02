@@ -91,7 +91,7 @@ export const challenges: KineticsChallenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um hvörfunarröð (reaction order)',
+      topic: 'Þetta snýst um hvörfunarröð',
       strategy: 'Hugsaðu um sambandið milli styrks og hraða í hraðalögmálinu',
       method: 'Í 1. stigs hvarfi er veldisvísir = 1, þ.e. hraði = k[A]^1',
       solution:
@@ -172,7 +172,7 @@ export const challenges: KineticsChallenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um hvata (catalysts)',
+      topic: 'Þetta snýst um hvata',
       strategy: 'Hvatar taka þátt en myndast aftur í lok hvarfsins',
       method: 'Hvati lækkar virkjunarorku (Ea) með öðrum hvarfgangi',
       solution:
@@ -232,7 +232,7 @@ export const challenges: KineticsChallenge[] = [
         id: 'a',
         text: 'Árekstur með nógu mikilli orku OG réttri stefnu',
         correct: true,
-        explanation: 'Báðir þættir skipta máli: orka ≥ Ea og rétt stefna (orientation).',
+        explanation: 'Báðir þættir skipta máli: orka ≥ Ea og rétt stefna.',
       },
       {
         id: 'b',
@@ -254,9 +254,9 @@ export const challenges: KineticsChallenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um árekstrakenningu (collision theory)',
+      topic: 'Þetta snýst um árekstrakenningu',
       strategy: 'Hugsaðu um bílárekstur - stefna og hraði skipta báðir máli',
-      method: 'Tveir þættir: orka ≥ Ea OG rétt stefna (orientation)',
+      method: 'Tveir þættir: orka ≥ Ea OG rétt stefna',
       solution:
         'Árekstur verður að hafa nógu mikla orku til að rjúfa tengsl OG sameindir þurfa að snerta á réttum stað',
     },

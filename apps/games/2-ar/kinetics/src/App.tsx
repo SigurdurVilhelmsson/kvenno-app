@@ -189,9 +189,9 @@ function App() {
           <div className="bg-teal-50 p-6 rounded-xl mb-8 phone:p-4 phone:mb-4">
             <h2 className="font-bold text-teal-800 mb-3">Hvað er hvarfhraði?</h2>
             <p className="text-teal-900 text-sm mb-4">
-              <strong>Hvarfhraði (reaction rate)</strong> lýsir því hversu hratt hvarfefni breytast
-              í myndefni. Hraðinn ákvarðast af mörgum þáttum: styrk hvarfefna, hitastigi, hvata og
-              yfirborðsflatarmáli.
+              <strong>Hvarfhraði</strong> (e. <em>reaction rate</em>) lýsir því hversu hratt
+              hvarfefni breytast í myndefni. Hraðinn ákvarðast af mörgum þáttum: styrk hvarfefna,
+              hitastigi, hvata og yfirborðsflatarmáli.
             </p>
             <div className="bg-white p-3 rounded-lg border border-teal-200">
               <p className="text-sm text-teal-800 font-mono text-center">
@@ -308,7 +308,7 @@ function App() {
                   <div className="text-xl sm:text-2xl font-bold text-blue-600">
                     {levelsCompleted}/3
                   </div>
-                  <div className="text-xs text-warm-600">Stig lokið</div>
+                  <div className="text-xs text-warm-600">Stigum lokið</div>
                 </div>
                 <div className="bg-green-50 rounded-lg p-2 sm:p-3 phone:px-1">
                   <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>

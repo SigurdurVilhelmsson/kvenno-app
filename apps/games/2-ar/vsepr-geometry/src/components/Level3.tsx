@@ -35,7 +35,7 @@ const challenges: Challenge[] = [
     type: 'hybridization',
     formula: 'CH₄',
     name: 'Metan',
-    question: 'Hvaða svigrúmablöndun (hybridization) hefur kolefnið í CH₄?',
+    question: 'Hvaða svigrúmablöndun hefur kolefnið í CH₄?',
     options: [
       {
         id: 'a',

@@ -77,6 +77,7 @@ lone pairs — corrected 2026-10-01 with item 20, though still unread); `hess-la
 wants your sign-off. Options: (a) strip everywhere; (b) finish wiring; (c) keep. **Recommendation:**
 extend the September rule to the three title-only games now. If Polish stays anywhere, restore its
 diacritics in one pass with a flattened-Polish guard.
+**Applied 2026-10-02, as recommended:** the switcher and dead `i18n.ts` are gone from `takmarkandi`, `vsepr-geometry` and `rafeindabygging`, listed in `switcher-earns-its-place.test.ts`. Nine games keep Polish; the four flattened blocks (`dimensional-analysis`, `lausnir`, `lotukerfid`, `equilibrium-shifter`) have their diacritics back, held by `no-flattened-polish.test.ts`. Whether to finish wiring the nine stays open.
 
 **5. Which number is `1.300` when a student types it?**
 `parseStudentNumber` (`packages/shared/utils/numbers.ts:38-44`, used by about 20 games) reads the
@@ -92,6 +93,7 @@ Level 2 and Stig 0), say so in feedback when the typed value is exactly answer/1
 **Recommendation:** (b) plus (d), with Icelandic wording from you for (d), and settle strictness
 about trailing text in the same ruling. Only the docstring changed: it had claimed a thousands
 space is how Icelandic writes large numbers, and the book never does.
+**Applied 2026-10-02, (b) plus (d):** `parseStudentNumber` reads `1.000.000` and `2.219,2` as thousands, keeps a lone `d.ddd` a decimal, and returns `NaN` for any other mix of the two marks. Einingagreining's Level 2 and Stig 0 say when a typed full stop made the answer exactly a thousandth of the right one. **Still yours:** the wording of that note is a Claude draft (`dotReadAsDecimalNote` in `utils/grading.ts`), and strictness about trailing text was not ruled, so `4,64 g` still reads as 4,64.
 
 **6. English glosses and abbreviations inside Icelandic text.**
 `kinetics` glosses terms in parentheses (`Hvarfhraði (reaction rate)`, `stefna (orientation)` ×3,
@@ -101,6 +103,7 @@ and the question data. `vsepr-geometry` shows `nameEn` subtitles in the Stig 1 g
 Options: (a) strip them; (b) keep them, in the book's `(e. …)` form; (c) keep them only in
 definition boxes. **Recommendation:** (c), in `(e. …)` form, since students meet the English terms
 in Brown. Rule the pair abbreviations with item 20.
+**Applied 2026-10-02, (c):** `kinetics` keeps its two definition boxes with `(e. reaction rate)` and `(e. fast equilibrium)` and drops the bare glosses elsewhere; `vsepr-geometry` drops its English shape subtitles and glosses, and writes `lp`/`bp`/`LP`/`BP` out as `stakt par`, `stök pör` and `tengisvæði`. Guarded in each game's text test.
 
 **7. Expanded octets are explained by d-orbitals.**
 `lewis-structures` `Level2.tsx` (PCl₅ and SF₆ explanations, the `Stækkuð átta` card, ~:603) says
@@ -142,6 +145,7 @@ Options: (a) an optional display label on the data, with a test that label and v
 `Problem.startLabel` already does in `einingakedjan`; (b) leave. **Recommendation:** (a), low
 priority. Significant figures are not graded in either game, but both contradict what
 Einingagreining teaches.
+**Applied 2026-10-02, (a):** a ratio side in `einingakedjan` and a given in `gas-law-challenge` may carry the label it prints (`0,100`, `1,00`, `32,00`, `2,0`). `stated-values.test.tsx` holds every card to its engine value and source; `given-figures.test.ts` holds all 31 labelled givens to the question's own worked substitution.
 
 **11. The progress caption `Stig lokið`.**
 `lokið` governs the dative, so the sentence form is `Stigum lokið`; the corpus does not settle a
@@ -149,6 +153,7 @@ caption. About 15 sites in 14 games (`takmarkandi`, `lausnir`, `nafnakerfid`, `h
 `vsepr-geometry`, …). Options: (a) `Stigum lokið`; (b) keep as a label; (c) `Lokin stig`.
 **Recommendation:** (c), which reads naturally under a number and sidesteps the case, but it is a
 native-speaker call. Sweep all sites together once ruled.
+**Applied 2026-10-02, (a):** `Stigum lokið` in fourteen games, and the shared first badge `Fyrsta stigi lokið`. Guarded by `progress-caption.test.ts`.
 
 ### Terminology that spans games
 
@@ -194,12 +199,14 @@ the platform is split. N₂O₄: `nafnakerfid` and `jafnvaegisfasti` say `dínit
 `nitur-` compounds; (b) `nitur`; (c) both. **Recommendation:** (a), plus an `ordabok.md` entry.
 For N₂O₄, keep `díniturtetroxíð` (what Y1 teaches) and fix id 1 to it, unless you prefer the book's
 form platform-wide.
+**Applied 2026-10-02, (b):** `nitur` at 21 sites in eight games, compounds on the bare stem (`nituratóm`, `nituroxíð`, `niturbinding`); `equilibrium-shifter` id 1 is `Díniturtetroxíð`. `nitrogen;nitur` in `ordabok.md`, with a `governed-terms` row.
 
 **16. `kolsýringur` or `kolmónoxíð` for CO.**
 `hess-law` says both: `Kolmónoxíð` (Stig 2 puzzle 1 title, `data/puzzles.ts`) and `Kolsýringur`
 (the ΔH°f table). Three other games say `kolsýringur`. Corpus 23 to 24; `ordabok.md` is silent.
 Options: (a) `kolsýringur`; (b) `kolmónoxíð`, systematic as Nafnakerfið teaches oxides.
 **Recommendation:** (a), with an `ordabok.md` entry.
+**Applied 2026-10-02, (b):** `kolmónoxíð`, with the neuter cases (`með kolmónoxíði`, `brennsla kolmónoxíðs`). `carbon monoxide;kolmónoxíð` in `ordabok.md`, with a `governed-terms` row.
 
 **17. The contact process has four names in three games.**
 `equilibrium-shifter` `equilibria.ts:363` (`Contact Process` / `Snertiaðferð`), `hess-law`
@@ -391,6 +398,7 @@ has `fjölatóma jón` 23 (including the naming module ch02/m68698) to 2. Option
 `fjölatóma jón` and update `ordabok.md`; (b) sweep to the glossary form. **Recommendation:** (a),
 the running prose of the section that defines it, as with `hvarfstuðull`. The two `Sameindajón`
 lines follow either way.
+**Applied 2026-10-02, (a):** `ordabok.md` now says `fjölatóma jón` and `einatóma jón`, and the two `Sameindajón` lines read `Fjölatóma jón`. A `governed-terms` row bans the old glossary forms; `nafnakerfid`'s text test bans `Sameindajón`.
 
 **40. The warm-up card's metal/non-metal groups are wrong at the edges.**
 `Málmar: hópar 1, 2, 3-12` and `Málmleysingjar: hópar 15-18` (`Level1.tsx` ~:780): group 1 holds
@@ -439,6 +447,7 @@ Kalíumdíkrómat, whose ratio is 3,5, and compounds that need no multiplier get
 Options: (a) keep; (b) first wrong try shows which cells and that column's hint, second reveals
 `rétt: x`, as `HintSystem` tiers; (c) reveal, lock, and move on without it counting.
 **Recommendation:** (b), with the hint text in the same change.
+**Applied 2026-10-02, (b):** the first wrong try marks the wrong cells and gives the column's hint; a second shows `rétt: x`. The Vísitala hint is built from the compound (Kalíumdíkrómat's 3,5) and says something where no multiplier is needed. Guarded by `aefa-tiers.test.tsx`.
 
 **47. The menu's `Lykilskref` box uses `n` for two quantities.**
 `n = m / M` (moles), then two lines below `n = mólmassi / massi reynsluformúlu` (the multiplier,
@@ -456,6 +465,7 @@ Also here: `Vísitala` (item 13).
 Options: (a) swap so O is last, noting or reordering the Stig 1 worked example (H₂ + O₂ → H₂O);
 (b) change the hint; (c) teach the book's principle instead of a fixed order: elements in one
 substance per side first, O and H last. **Recommendation:** (a) or (c).
+**Applied 2026-10-02, (c):** Stig 1's method now teaches the book's principle: elements in one substance per side first, those in several (usually súrefni and vetni) last, a free element allra síðast. Guarded by `method-order.test.tsx`.
 
 **49. Stig 2 and 3 grade the lowest-whole-number rule without stating it.**
 Only `LEVEL1_CONFIG` has the banner; levels are not gated, so a student can start at Stig 2.

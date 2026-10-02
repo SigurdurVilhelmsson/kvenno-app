@@ -46,7 +46,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
   },
   'bent-2': {
     geometry: 'bent-2',
-    geometryName: 'Beygð (1 lp)',
+    geometryName: 'Beygð (1 stakt par)',
     idealAngle: 120,
     actualAngle: 117,
     lonePairs: 1,
@@ -76,7 +76,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
   },
   'bent-4': {
     geometry: 'bent-4',
-    geometryName: 'Beygð (2 lp)',
+    geometryName: 'Beygð (2 stök pör)',
     idealAngle: 109.5,
     actualAngle: 104.5,
     lonePairs: 2,
@@ -560,7 +560,9 @@ export function BondAngleMeasurement({
                         <span className="text-white font-medium">{data.example}</span>
                         <span className="text-teal-400">{formatDecimal(data.actualAngle)}°</span>
                         {diff > 0 && (
-                          <span className="text-yellow-400 text-xs">({data.lonePairs} lp)</span>
+                          <span className="text-yellow-400 text-xs">
+                            ({data.lonePairs} {data.lonePairs === 1 ? 'stakt par' : 'stök pör'})
+                          </span>
                         )}
                       </button>
                     );

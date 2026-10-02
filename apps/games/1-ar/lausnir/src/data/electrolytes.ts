@@ -251,8 +251,8 @@ export const SOLUTES: Solute[] = [
     name: 'Þvagefni',
     formula: 'CO(NH₂)₂',
     kind: 'sameindaefni',
-    observable: 'Algengasti köfnunarefnisáburður í heimi.',
-    why: 'Sameindaefni þrátt fyrir köfnunarefnið. Leysist auðveldlega og jónast ekki.',
+    observable: 'Algengasti nituráburður í heimi.',
+    why: 'Sameindaefni þrátt fyrir nitrið. Leysist auðveldlega og jónast ekki.',
   },
 ];
 

@@ -31,8 +31,14 @@ the page in Icelandic. Their dead `i18n.ts` files (1 661 lines across the eight)
 zero consumers. `packages/shared/i18n/__tests__/switcher-earns-its-place.test.ts` now enforces the
 rule as a property: **a game that renders `LanguageSwitcher` must have at least one `t()` call.**
 
-That leaves **12 games with i18n wiring and 10 without.** Of the ten, eight are the stripped ones;
+That left **12 games with i18n wiring and 10 without.** Of the ten, eight are the stripped ones;
 `1-ar/einingakedjan` (Aug 2026) and `3-ar/syrufastinn` (Sep 2026) never had any, deliberately.
+
+**Three more were stripped on 2026-10-02 — Siggi's ruling, decisions item 4:** `1-ar/takmarkandi`,
+`2-ar/vsepr-geometry` and `2-ar/rafeindabygging`, which translated only their title and description.
+**Nine games now keep the switcher**, and their Polish keeps its diacritics:
+`no-flattened-polish.test.ts` holds it, after four Polish blocks (`dimensional-analysis`, `lausnir`,
+`lotukerfid`, `equilibrium-shifter`) were restored the same day.
 
 Counting every `t()` call site per game, as measured before the strip:
 
@@ -44,12 +50,12 @@ Counting every `t()` call site per game, as measured before the strip:
 | hess-law                 | 2-ar | 32          | yes                     |
 | molmassi                 | 1-ar | 22          | yes                     |
 | lotukerfid               | 1-ar | 22          | yes                     |
-| stilla-efnajofnur             | 1-ar | 22          | yes                     |
+| stilla-efnajofnur        | 1-ar | 22          | yes                     |
 | dimensional-analysis     | 1-ar | 10          | partial                 |
 | equilibrium-shifter      | 3-ar | 7           | partial                 |
-| takmarkandi              | 1-ar | 2           | partial                 |
-| vsepr-geometry           | 2-ar | 2           | partial                 |
-| rafeindabygging          | 2-ar | 1           | partial                 |
+| takmarkandi              | 1-ar | 2           | **stripped 2026-10-02** |
+| vsepr-geometry           | 2-ar | 2           | **stripped 2026-10-02** |
+| rafeindabygging          | 2-ar | 1           | **stripped 2026-10-02** |
 | ph-titration             | 3-ar | 1           | **stripped 2026-09-19** |
 | kinetics                 | 2-ar | 0           | **stripped 2026-09-19** |
 | lewis-structures         | 2-ar | 0           | **stripped 2026-09-19** |

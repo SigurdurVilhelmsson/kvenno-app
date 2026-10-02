@@ -280,7 +280,7 @@ const TOTAL = 10;
 /**
  * Whether a question's options are short enough to sit two to a row on a phone
  * without a word breaking: the orderings (`N < S < Ge`), the three kinds of
- * element and the trend pairs (`Köfnunarefni (N)`), but not the group
+ * element and the trend pairs (`Brennisteinn (S)`), but not the group
  * sentences. Twelve letters is the longest word a half-width option holds at
  * 320 px.
  */

@@ -54,10 +54,18 @@ export function normaliseMinus(text: string): string | null {
  * `NaN` for anything unparseable, including an empty or whitespace-only string
  * — which `parseFloat` also does, but `Number('')` does not.
  *
- * A full stop is read as a decimal point, not as the thousands separator the
- * textbook writes (`1.300 grömm`), because a phone's decimal keypad set to an
- * English region offers only the full stop. Which reading `1.300` should get is
- * an open question for a ruling, not something this function settles.
+ * **A full stop is a thousands separator only where it cannot be a decimal
+ * point** — Siggi's ruling, 2026-10-02 (decisions item 5, option b). The
+ * textbook writes thousands with a full stop (`1.300 grömm`, 127 times) and
+ * never with a space, but it also writes 1083 decimals with exactly three
+ * places (`1,008`), and a phone's decimal keypad set to an English region
+ * offers only the full stop. So a lone `d.ddd` stays a decimal (`1.300` is
+ * 1,3), and only the book's unambiguous forms read as thousands: several
+ * groups (`1.000.000`) or groups before a decimal comma (`2.219,2`). Both used
+ * to be misread as their first group. A number mixing the two marks in any
+ * other way (`1.30,5`) is `NaN`, since no reading of it is safe; so are dots
+ * that are not groups of three (`1.2.3`). Games whose answers pass 1000 say so
+ * when a typed value is exactly a thousandth of the answer (item 5, option d).
  *
  * Deliberately not `Intl.NumberFormat`-based: the games also accept scientific
  * notation (`4.2e5`), which a locale parser rejects, and a student switching
@@ -70,8 +78,22 @@ export function parseStudentNumber(input: string): number {
   if (withoutSpaces === '') return Number.NaN;
   const signed = normaliseMinus(withoutSpaces);
   if (signed === null) return Number.NaN;
+  const thousands = THOUSANDS.exec(signed);
+  if (thousands && (thousands[2] !== undefined || (thousands[1].match(/\./g) ?? []).length >= 2)) {
+    return Number((thousands[1] + (thousands[2] ?? '')).replace(/\./g, '').replace(',', '.'));
+  }
+  const number = /^[+-]?[\d.,]*/.exec(signed)![0];
+  if (number.includes('.') && number.includes(',')) return Number.NaN;
+  if ((number.match(/\./g) ?? []).length > 1) return Number.NaN;
   return Number.parseFloat(signed.replace(',', '.'));
 }
+
+/**
+ * The book's thousands forms: groups of three after a full stop, then an optional
+ * decimal comma, and not followed by another digit or mark. Group 1 is the whole
+ * part, group 2 the decimal part.
+ */
+const THOUSANDS = /^([+-]?\d{1,3}(?:\.\d{3})+)(,\d+)?(?![\d.,])/;
 
 /**
  * Props for a field whose answer can be non-integer.

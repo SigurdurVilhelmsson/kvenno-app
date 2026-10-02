@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
-import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
-import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { Header, ErrorBoundary } from '@shared/components';
+import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
-import { gameTranslations } from './i18n';
 import { useTabletTopOnChange } from './utils/tabletBand';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
@@ -34,7 +33,6 @@ const DEFAULT_PROGRESS: Progress = {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
-  const { language, setLanguage, t } = useGameI18n({ gameTranslations });
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
     'vsepr-geometry-progress',
     DEFAULT_PROGRESS
@@ -188,17 +186,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-      <Header
-        variant="game"
-        backHref="/efnafraedi/2-ar/"
-        gameTitle={t('game.title')}
-        authSlot={
-          <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
-        }
-      />
+      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="VSEPR Rúmfræði" />
       <div className="min-h-screen p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
-          <p className="text-center text-warm-600 mb-8 phone:mb-3">{t('game.description')}</p>
+          <p className="text-center text-warm-600 mb-8 phone:mb-3">
+            Lærðu um lögun sameinda og VSEPR kenninguna
+          </p>
 
           {/* Pedagogical explanation. Teaching that comes before the level choice stays first
               on a phone: it is read first on purpose, and costs one scroll (design §5). */}
@@ -324,7 +317,7 @@ function App() {
                   <div className="text-xl sm:text-2xl font-bold text-teal-600">
                     {levelsCompleted}/3
                   </div>
-                  <div className="text-xs text-warm-600">Stig lokið</div>
+                  <div className="text-xs text-warm-600">Stigum lokið</div>
                 </div>
                 <div className="bg-green-50 rounded-lg p-2 sm:p-3">
                   <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>

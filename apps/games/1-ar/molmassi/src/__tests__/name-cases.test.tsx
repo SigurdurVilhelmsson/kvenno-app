@@ -15,7 +15,7 @@ import { ELEMENTS } from '../data/elements';
  *
  * Every question template put the compound's label name straight after `af`,
  * which governs the dative, so Stig 2 asked `Hversu mörg mól eru í 445 g af
- * Köfnunarefni (N₂)?` — capital and nominative — and `af Þvottasódi`. Stig 3
+ * Nitur (N₂)?` — capital and nominative — and `af Þvottasódi`. Stig 3
  * lower-cased it and was still nominative: `sameindir af vatn`. Stig 1 praised
  * a right answer with `Mólmassi Vatn er`, where `Mólmassi` wants the genitive.
  * And the atoms were built from the element's name, `Súrefni-atóm`, where the

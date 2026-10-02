@@ -196,7 +196,7 @@ const challenges: Challenge[] = [
     type: 'best_structure',
     molecule: 'CO',
     description:
-      'Kolsýringur getur teiknast á mismunandi vegu. Formleg hleðsla hjálpar okkur að velja bestu formúluna.',
+      'Kolmónoxíð getur teiknast á mismunandi vegu. Formleg hleðsla hjálpar okkur að velja bestu formúluna.',
     structures: [
       {
         id: 'triple',

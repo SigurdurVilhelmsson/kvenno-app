@@ -14,7 +14,7 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Auðvelt',
     gasLaw: 'ideal',
     given: {
-      P: { value: 1.0, unit: 'atm' },
+      P: { value: 1.0, unit: 'atm', label: '1,0' },
       T: { value: 310, unit: 'K' },
       n: { value: 0.15, unit: 'mól' },
     },
@@ -48,7 +48,7 @@ export const questions: GasLawQuestion[] = [
     gasLaw: 'ideal',
     given: {
       P: { value: 2.5, unit: 'atm' },
-      V: { value: 2.0, unit: 'L' },
+      V: { value: 2.0, unit: 'L', label: '2,0' },
       T: { value: 288, unit: 'K' },
     },
     find: 'n',
@@ -80,9 +80,9 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Auðvelt',
     gasLaw: 'ideal',
     given: {
-      V: { value: 2.0, unit: 'L' },
+      V: { value: 2.0, unit: 'L', label: '2,0' },
       T: { value: 298, unit: 'K' },
-      n: { value: 0.3, unit: 'mól' },
+      n: { value: 0.3, unit: 'mól', label: '0,30' },
     },
     find: 'P',
     answer: 3.67,
@@ -113,9 +113,9 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Auðvelt',
     gasLaw: 'ideal',
     given: {
-      P: { value: 1.0, unit: 'atm' },
-      V: { value: 5.0, unit: 'L' },
-      n: { value: 0.2, unit: 'mól' },
+      P: { value: 1.0, unit: 'atm', label: '1,0' },
+      V: { value: 5.0, unit: 'L', label: '5,0' },
+      n: { value: 0.2, unit: 'mól', label: '0,20' },
     },
     find: 'T',
     answer: 305,
@@ -147,8 +147,8 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Miðlungs',
     gasLaw: 'ideal',
     given: {
-      P: { value: 2.0, unit: 'atm' },
-      V: { value: 12.0, unit: 'L' },
+      P: { value: 2.0, unit: 'atm', label: '2,0' },
+      V: { value: 12.0, unit: 'L', label: '12,0' },
       T: { value: 283, unit: 'K' },
     },
     find: 'n',
@@ -181,7 +181,7 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Miðlungs',
     gasLaw: 'ideal',
     given: {
-      P: { value: 1.0, unit: 'atm' },
+      P: { value: 1.0, unit: 'atm', label: '1,0' },
       T: { value: 400, unit: 'K' },
       n: { value: 150, unit: 'mól' },
     },
@@ -216,9 +216,9 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Erfitt',
     gasLaw: 'ideal',
     given: {
-      V: { value: 50.0, unit: 'L' },
+      V: { value: 50.0, unit: 'L', label: '50,0' },
       T: { value: 298, unit: 'K' },
-      n: { value: 82.0, unit: 'mól' },
+      n: { value: 82.0, unit: 'mól', label: '82,0' },
     },
     find: 'P',
     answer: 40.1,
@@ -250,8 +250,8 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Erfitt',
     gasLaw: 'ideal',
     given: {
-      P: { value: 11.0, unit: 'atm' },
-      V: { value: 3.0, unit: 'L' },
+      P: { value: 11.0, unit: 'atm', label: '11,0' },
+      V: { value: 3.0, unit: 'L', label: '3,0' },
       n: { value: 1.5, unit: 'mól' },
     },
     find: 'T',
@@ -287,7 +287,7 @@ export const questions: GasLawQuestion[] = [
     gasLaw: 'ideal',
     given: {
       P: { value: 0.33, unit: 'atm' },
-      V: { value: 5.0, unit: 'L' },
+      V: { value: 5.0, unit: 'L', label: '5,0' },
       T: { value: 243, unit: 'K' },
     },
     find: 'n',
@@ -323,7 +323,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       P: { value: 0.26, unit: 'atm' },
       T: { value: 223, unit: 'K' },
-      n: { value: 0.5, unit: 'mól' },
+      n: { value: 0.5, unit: 'mól', label: '0,50' },
     },
     find: 'V',
     answer: 35.2,
@@ -391,7 +391,7 @@ export const questions: GasLawQuestion[] = [
     gasLaw: 'ideal',
     given: {
       P: { value: 0.7, unit: 'atm' },
-      V: { value: 50.0, unit: 'L' },
+      V: { value: 50.0, unit: 'L', label: '50,0' },
       T: { value: 295, unit: 'K' },
     },
     find: 'n',
@@ -425,7 +425,7 @@ export const questions: GasLawQuestion[] = [
     gasLaw: 'ideal',
     given: {
       P: { value: 0.74, unit: 'atm' },
-      V: { value: 10.0, unit: 'L' },
+      V: { value: 10.0, unit: 'L', label: '10,0' },
       n: { value: 0.35, unit: 'mól' },
     },
     find: 'T',
@@ -460,8 +460,8 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Auðvelt',
     gasLaw: 'boyles',
     given: {
-      P: { value: 1.0, unit: 'atm' },
-      V: { value: 10.0, unit: 'mL' },
+      P: { value: 1.0, unit: 'atm', label: '1,0' },
+      V: { value: 10.0, unit: 'mL', label: '10,0' },
     },
     find: 'V',
     answer: 4.0,
@@ -494,8 +494,8 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Miðlungs',
     gasLaw: 'boyles',
     given: {
-      P: { value: 1.0, unit: 'atm' },
-      V: { value: 6.0, unit: 'L' },
+      P: { value: 1.0, unit: 'atm', label: '1,0' },
+      V: { value: 6.0, unit: 'L', label: '6,0' },
     },
     find: 'P',
     answer: 3.0,
@@ -530,7 +530,7 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Auðvelt',
     gasLaw: 'charles',
     given: {
-      V: { value: 3.0, unit: 'L' },
+      V: { value: 3.0, unit: 'L', label: '3,0' },
       T: { value: 300, unit: 'K' },
     },
     find: 'V',
@@ -601,7 +601,7 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Auðvelt',
     gasLaw: 'gay-lussac',
     given: {
-      P: { value: 2.0, unit: 'atm' },
+      P: { value: 2.0, unit: 'atm', label: '2,0' },
       T: { value: 300, unit: 'K' },
     },
     find: 'P',
@@ -672,8 +672,8 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Miðlungs',
     gasLaw: 'combined',
     given: {
-      P: { value: 1.0, unit: 'atm' },
-      V: { value: 5.0, unit: 'L' },
+      P: { value: 1.0, unit: 'atm', label: '1,0' },
+      V: { value: 5.0, unit: 'L', label: '5,0' },
       T: { value: 293, unit: 'K' },
     },
     find: 'V',
@@ -708,8 +708,8 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Erfitt',
     gasLaw: 'combined',
     given: {
-      P: { value: 3.0, unit: 'atm' },
-      V: { value: 10.0, unit: 'L' },
+      P: { value: 3.0, unit: 'atm', label: '3,0' },
+      V: { value: 10.0, unit: 'L', label: '10,0' },
       T: { value: 300, unit: 'K' },
     },
     find: 'T',
@@ -745,8 +745,8 @@ export const questions: GasLawQuestion[] = [
     difficulty: 'Auðvelt',
     gasLaw: 'avogadro',
     given: {
-      V: { value: 2.0, unit: 'L' },
-      n: { value: 0.1, unit: 'mól' },
+      V: { value: 2.0, unit: 'L', label: '2,0' },
+      n: { value: 0.1, unit: 'mól', label: '0,10' },
     },
     find: 'V',
     answer: 6.0,
@@ -781,7 +781,7 @@ export const questions: GasLawQuestion[] = [
     gasLaw: 'avogadro',
     given: {
       V: { value: 5.0, unit: 'L' },
-      n: { value: 0.2, unit: 'mól' },
+      n: { value: 0.2, unit: 'mól', label: '0,20' },
     },
     find: 'n',
     answer: 0.5,

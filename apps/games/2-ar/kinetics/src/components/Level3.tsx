@@ -202,7 +202,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
-              <p className="font-bold text-blue-800 mb-1">Hratt jafnvægi (fast equilibrium)</p>
+              <p className="font-bold text-blue-800 mb-1">
+                Hratt jafnvægi{' '}
+                <span className="font-normal">
+                  (e. <em>fast equilibrium</em>)
+                </span>
+              </p>
               <p className="text-warm-700">
                 Ef hraðatakmarkandi skrefið inniheldur milliefni, notum við jafnvægisfastann úr
                 hröðu skrefinu á undan til að losna við milliefnið í lokajöfnunni.

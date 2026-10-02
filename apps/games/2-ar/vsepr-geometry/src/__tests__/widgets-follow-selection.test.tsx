@@ -48,44 +48,44 @@ const shapeTransition = (container: HTMLElement) =>
 describe('the Stig 1 widgets follow the shape the student picks', () => {
   it('the bond-angle tool measures the new shape', () => {
     const { ui, container } = start();
-    pick(ui, /Tetrahedral/);
+    pick(ui, /^Ferflötungur/);
     expect(angleTool(container).getAttribute('aria-label')).toContain('109,5°');
 
-    pick(ui, /Octahedral/);
+    pick(ui, /^Áttflötungur/);
     expect(angleTool(container).getAttribute('aria-label')).toContain('90°');
 
-    pick(ui, /Linear/);
+    pick(ui, /^Línuleg/);
     expect(angleTool(container).getAttribute('aria-label')).toContain('180°');
   });
 
   it("the bond-angle tool's own buttons still choose freely", () => {
     const { ui, container } = start();
-    pick(ui, /Octahedral/);
+    pick(ui, /^Áttflötungur/);
     fireEvent.click(ui.getByRole('button', { name: 'H₂O' }));
     expect(angleTool(container).getAttribute('aria-label')).toContain('104,5°');
   });
 
   it('the repulsion animation shows the new shape', () => {
     const { ui, container } = start();
-    pick(ui, /Tetrahedral/);
-    pick(ui, /Linear/);
+    pick(ui, /^Ferflötungur/);
+    pick(ui, /^Línuleg/);
     expect(container.textContent).toContain('hrinda hvort öðru 180° í sundur');
 
     // The four-domain bent shape is drawn by the animation as well.
-    pick(ui, /Trigonal Pyramidal/);
-    pick(ui, /^Beygð \(2 lp\)/);
+    pick(ui, /^Þríhyrningslaga pýramídi/);
+    pick(ui, /^Beygð \(2 stök pör\)/);
     expect(container.textContent).toContain('2 stök pör ýta bindandi pörum nær saman');
   });
 
   it('the shape-transition animation moves to the new domain count', () => {
     const { ui, container } = start();
-    pick(ui, /Tetrahedral/);
+    pick(ui, /^Ferflötungur/);
     expect(shapeTransition(container).textContent).toContain('4 svæði');
 
-    pick(ui, /Octahedral/);
+    pick(ui, /^Áttflötungur/);
     expect(shapeTransition(container).textContent).toContain('6 svæði');
 
-    pick(ui, /Linear/);
+    pick(ui, /^Línuleg/);
     expect(shapeTransition(container).textContent).toContain('2 svæði');
   });
 });

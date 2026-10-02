@@ -85,7 +85,7 @@ export const PROBLEMS: ProblemsData = {
     {
       id: 9,
       reaction: 'N₂(g) + O₂(g) → 2NO(g)',
-      name: 'Myndun köfnunarefnisoxíðs',
+      name: 'Myndun nituroxíðs',
       deltaH: 180,
       deltaS: 25,
       defaultTemp: 298,
@@ -95,7 +95,7 @@ export const PROBLEMS: ProblemsData = {
     {
       id: 10,
       reaction: 'CO(g) + ½O₂(g) → CO₂(g)',
-      name: 'Brennsla kolsýrings',
+      name: 'Brennsla kolmónoxíðs',
       deltaH: -283,
       deltaS: -87,
       defaultTemp: 298,

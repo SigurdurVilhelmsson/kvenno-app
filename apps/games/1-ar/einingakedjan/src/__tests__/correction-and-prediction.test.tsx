@@ -81,7 +81,7 @@ const BRANCHES: { name: string; build: (view: View) => void; correct: string }[]
   },
   {
     name: 'a ratio for the wrong substance',
-    build: (view) => tapCard(view, ': 32 g O₂'),
+    build: (view) => tapCard(view, ': 32,00 g O₂'),
     correct: 'Fjarlægja hlutfallið og velja annað',
   },
   {

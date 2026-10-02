@@ -114,7 +114,7 @@ export function coefficientsAreReduced(coefficients: number[]): boolean {
 const ELEMENT_NAMES_IS: Record<string, string> = {
   H: 'Vetni (H)',
   O: 'Súrefni (O)',
-  N: 'Köfnunarefni (N)',
+  N: 'Nitur (N)',
   C: 'Kolefni (C)',
   Na: 'Natríum (Na)',
   Cl: 'Klór (Cl)',

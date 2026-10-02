@@ -16,7 +16,7 @@
 export const ATOM_STEM: Record<string, string> = {
   H: 'vetnis',
   C: 'kolefnis',
-  N: 'köfnunarefnis',
+  N: 'nitur',
   O: 'súrefnis',
   Na: 'natríum',
   Mg: 'magnesíum',

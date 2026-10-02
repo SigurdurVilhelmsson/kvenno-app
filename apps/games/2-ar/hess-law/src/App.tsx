@@ -317,7 +317,7 @@ function App() {
                   <div className="text-xl sm:text-2xl font-bold text-blue-600">
                     {levelsCompleted}/3
                   </div>
-                  <div className="text-xs text-warm-600">Stig lokið</div>
+                  <div className="text-xs text-warm-600">Stigum lokið</div>
                 </div>
                 <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>

@@ -23,7 +23,13 @@ import {
 import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
 import { UnitCancellationVisualizer, chainUnits } from './UnitCancellationVisualizer';
 import { level2Problems } from '../data/problems';
-import { applyFactorPath, isAnswerCorrect, parseStudentNumber } from '../utils/grading';
+import {
+  applyFactorPath,
+  dotReadAsDecimal,
+  dotReadAsDecimalNote,
+  isAnswerCorrect,
+  parseStudentNumber,
+} from '../utils/grading';
 
 // The one drop zone. Its contents are the chain — see `selectedFactors` below.
 const CHAIN_ZONE = 'conversion-chain';
@@ -360,6 +366,11 @@ export function Level2({
       misconception = MISCONCEPTIONS.extra_step;
     } else if (problem.correctPath.some((step) => selectedFactors.includes(invertFactor(step)))) {
       misconception = MISCONCEPTIONS.wrong_direction;
+    }
+    // A full stop typed as a thousands separator reads as a decimal point (decisions
+    // item 5): say so where that is exactly what happened.
+    if (dotReadAsDecimal(userAnswer, userNum, expectedAnswer, isAnswerCorrect)) {
+      misconception = dotReadAsDecimalNote(userAnswer);
     }
 
     return {

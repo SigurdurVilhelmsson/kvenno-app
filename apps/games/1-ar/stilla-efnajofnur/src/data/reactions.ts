@@ -64,7 +64,7 @@ export const REACTIONS: Reaction[] = [
     ],
     products: [{ formula: 'NH₃', elements: { N: 1, H: 3 }, coefficient: 2 }],
     difficulty: 'easy',
-    hint: 'N₂ gefur 2 köfnunarefnisatóm - þú þarft 2 NH₃.',
+    hint: 'N₂ gefur 2 nituratóm - þú þarft 2 NH₃.',
   },
   {
     id: 5,

@@ -25,7 +25,7 @@ const VSEPR_MISCONCEPTIONS: Record<string, string> = {
     'Svæði rafeindaþéttleika = bindandi pör + stök pör. Tvítengi og þrítengi telja hvort sem EITT svæði.',
   lone_pairs: 'Stök pör taka meira pláss en bindandi pör og ýta horninu niður.',
   geometry:
-    'Rafeindaröðun (electron geometry) vs sameindaröðun (molecular geometry) - stök pör sjást ekki í sameindaröðun.',
+    'Rafeindaröðun og sameindaröðun eru ekki það sama: stök pör sjást ekki í sameindaröðun.',
   bond_angle:
     'Stök pör minnka hornið: ferflötungur (109,5°) → þríhyrningslaga pýramídi (107°) → beygð (104,5°).',
 };
@@ -57,7 +57,6 @@ interface Level1Props {
 interface Geometry {
   id: string;
   name: string;
-  nameEn: string;
   electronDomains: number;
   bondingPairs: number;
   lonePairs: number;
@@ -74,7 +73,6 @@ const GEOMETRIES: Geometry[] = [
   {
     id: 'linear',
     name: 'Línuleg',
-    nameEn: 'Linear',
     electronDomains: 2,
     bondingPairs: 2,
     lonePairs: 0,
@@ -89,7 +87,6 @@ const GEOMETRIES: Geometry[] = [
   {
     id: 'trigonal-planar',
     name: 'Þríhyrningslaga flatt',
-    nameEn: 'Trigonal Planar',
     electronDomains: 3,
     bondingPairs: 3,
     lonePairs: 0,
@@ -103,8 +100,7 @@ const GEOMETRIES: Geometry[] = [
   },
   {
     id: 'bent-2',
-    name: 'Beygð (2 bp)',
-    nameEn: 'Bent',
+    name: 'Beygð (1 stakt par)',
     electronDomains: 3,
     bondingPairs: 2,
     lonePairs: 1,
@@ -119,7 +115,6 @@ const GEOMETRIES: Geometry[] = [
   {
     id: 'tetrahedral',
     name: 'Ferflötungur',
-    nameEn: 'Tetrahedral',
     electronDomains: 4,
     bondingPairs: 4,
     lonePairs: 0,
@@ -134,7 +129,6 @@ const GEOMETRIES: Geometry[] = [
   {
     id: 'trigonal-pyramidal',
     name: 'Þríhyrningslaga pýramídi',
-    nameEn: 'Trigonal Pyramidal',
     electronDomains: 4,
     bondingPairs: 3,
     lonePairs: 1,
@@ -148,8 +142,7 @@ const GEOMETRIES: Geometry[] = [
   },
   {
     id: 'bent-4',
-    name: 'Beygð (2 lp)',
-    nameEn: 'Bent',
+    name: 'Beygð (2 stök pör)',
     electronDomains: 4,
     bondingPairs: 2,
     lonePairs: 2,
@@ -164,7 +157,6 @@ const GEOMETRIES: Geometry[] = [
   {
     id: 'trigonal-bipyramidal',
     name: 'Þríhyrndur tvípýramídi',
-    nameEn: 'Trigonal Bipyramidal',
     electronDomains: 5,
     bondingPairs: 5,
     lonePairs: 0,
@@ -179,7 +171,6 @@ const GEOMETRIES: Geometry[] = [
   {
     id: 'octahedral',
     name: 'Áttflötungur',
-    nameEn: 'Octahedral',
     electronDomains: 6,
     bondingPairs: 6,
     lonePairs: 0,
@@ -244,7 +235,7 @@ const challenges: Challenge[] = [
   {
     id: 2,
     type: 'electron_domains',
-    question: 'Hversu mörg svæði rafeindaþéttleika (electron domains) hefur vatn (H₂O)?',
+    question: 'Hversu mörg svæði rafeindaþéttleika hefur vatn (H₂O)?',
     geometryId: 'bent-4',
     options: [
       {
@@ -314,7 +305,7 @@ const challenges: Challenge[] = [
       topic: 'Munurinn á rafeindalögun og sameindarlögun.',
       strategy: 'Sameindarlögun lýsir aðeins stöðu atóma, ekki stakra para.',
       method:
-        'NH₃: 4 svæði rafeindaþéttleika (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
+        'NH₃: 4 svæði rafeindaþéttleika (3 bindandi pör + 1 stakt par). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
       solution:
         'Þríhyrningslaga pýramídi: 3 H-atóm í botninum, N á toppnum, staka parið ósýnilegt.',
     },
@@ -329,7 +320,7 @@ const challenges: Challenge[] = [
         id: 'a',
         text: '90°',
         correct: false,
-        explanation: '90° er fyrir áttflötung (octahedral).',
+        explanation: '90° er fyrir áttflötung.',
       },
       {
         id: 'b',
@@ -452,7 +443,7 @@ const challenges: Challenge[] = [
       topic: 'VSEPR lögun með 6 svæðum rafeindaþéttleika.',
       strategy: 'Nafnið kemur frá fjölda flata á fasta efninu sem lýsir þessari röðun.',
       method: '6 svæði rafeindaþéttleika í samhverfri röðun, öll 90° frá hvoru öðru.',
-      solution: 'Áttflötungur (octahedral) - fasta efnið hefur 8 fleti.',
+      solution: 'Áttflötungur: fasta efnið hefur 8 fleti.',
     },
   },
   {
@@ -689,7 +680,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="text-base sm:text-lg font-bold text-warm-800 phone:text-sm phone:inline">
               {geo.name}
             </div>
-            <div className="text-xs text-warm-500 phone:sr-only">{geo.nameEn}</div>
             <div className="text-sm text-teal-600 mt-1 phone:inline phone:text-xs phone:mt-0 phone:ml-1.5">
               {geo.example}
             </div>

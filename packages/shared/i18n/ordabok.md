@@ -78,6 +78,7 @@ Bunsen burner;Bunsen brennari
 burette;búretta
 capillary force;hárpípukraftur
 carbon dioxide;koldíoxíð
+carbon monoxide;kolmónoxíð
 catalysis;hvötun
 catalyst;hvati
 cathode;katóða
@@ -387,7 +388,7 @@ molecular orbital;sameindasvigrúm
 molecular orbital theory;sameindasvigrúmakenningin
 molecule;sameind
 momentum;skriðþungi
-monoatomic ion;einfrumeinda jón
+monoatomic ion;einatóma jón
 monochromator;ljósgreiða
 monodentate;eintenntur
 monomer;einliða
@@ -397,6 +398,7 @@ neutralization;hlutleysing
 neutron;nifteind
 nitric acid;saltpéturssýra
 nitrite ion;nítrítjón
+nitrogen;nitur
 nitrous acid;saltpéturssýrlingur
 noble gas;eðalgas
 node;nóða
@@ -456,7 +458,7 @@ pipette filler;pípettupumpa
 plum pudding model;atómbúðingur
 polar;skautaður
 polarizability;skautunarhæfni
-polyatomic ion;fjölfrumeinda jón
+polyatomic ion;fjölatóma jón
 polydentate;fjöltenntur
 polymer;fjölliða
 polymerization;fjölliðun

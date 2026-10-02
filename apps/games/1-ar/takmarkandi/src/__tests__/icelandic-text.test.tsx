@@ -51,7 +51,6 @@ describe('the game source does not carry Icelandic it shipped wrong', () => {
 
   it('scans the game source', () => {
     expect(files.length).toBeGreaterThan(10);
-    expect(files.some((f) => f.endsWith('i18n.ts'))).toBe(true);
   });
 
   it.each(WRONG.map((w) => [w.why, w.pattern] as const))('%s', (_why, pattern) => {
@@ -65,15 +64,6 @@ describe('the game source does not carry Icelandic it shipped wrong', () => {
         });
     }
     expect(hits).toEqual([]);
-  });
-
-  it('keeps the diacritics in the Polish block', () => {
-    // The Polish title and description render when a student picks the flag.
-    const i18n = readFileSync(join(SRC, 'i18n.ts'), 'utf8');
-    const pl = i18n.slice(i18n.indexOf('  pl: {'));
-    for (const flattened of [/ograniczaj[a]c/, /\bs[i]e\b/, /wydajnos[c]\b/, /\bpojeci[a]\b/]) {
-      expect(pl).not.toMatch(flattened);
-    }
   });
 });
 

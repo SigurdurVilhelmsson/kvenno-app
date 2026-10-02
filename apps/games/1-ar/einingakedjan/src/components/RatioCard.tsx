@@ -2,7 +2,7 @@ import { useIsPhone } from '@shared/utils';
 
 import { KIND_LABELS, KIND_STYLES } from '../data/ratios';
 import {
-  formatStated,
+  sideValue,
   type Equivalence,
   type EquivalenceSide,
   type OrientedRatio,
@@ -10,7 +10,7 @@ import {
 
 // A card states a fact, so it prints the value exactly as the engine uses it.
 const sideLabel = (side: EquivalenceSide): string =>
-  `${formatStated(side.value)} ${side.unit}${side.species ? ` ${side.species}` : ''}`;
+  `${sideValue(side)} ${side.unit}${side.species ? ` ${side.species}` : ''}`;
 
 /**
  * One side of a ratio, as text that wraps only between the number and the unit.
@@ -22,7 +22,7 @@ const sideLabel = (side: EquivalenceSide): string =>
 function SideText({ side }: { side: EquivalenceSide }) {
   return (
     <>
-      <span className="whitespace-nowrap">{formatStated(side.value)}</span>{' '}
+      <span className="whitespace-nowrap">{sideValue(side)}</span>{' '}
       <span className="whitespace-nowrap">
         {side.unit}
         {side.species ? ` ${side.species}` : ''}

@@ -19,6 +19,7 @@ import {
   type CountItem,
   type RoundItem,
 } from '../data/sigfig-items';
+import { dotReadAsDecimal, dotReadAsDecimalNote } from '../utils/grading';
 import { countSigFigs, readWritten, toggleSign } from '../utils/sigfigs';
 
 /**
@@ -480,7 +481,15 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
                 )}
                 {verdict === 'veldi' && (
                   <p className="mt-2">
-                    Talan er ekki af réttri stærð. Athugaðu veldisvísinn og hvar komman stendur.
+                    {entry.exponent.trim() === '' &&
+                    dotReadAsDecimal(
+                      entry.mantissa,
+                      readWritten(entry)?.value ?? Number.NaN,
+                      Number(roundItem.value.toPrecision(roundItem.figures)),
+                      (a, b) => Math.abs(a - b) <= 1e-9 * Math.abs(b)
+                    )
+                      ? dotReadAsDecimalNote(entry.mantissa)
+                      : 'Talan er ekki af réttri stærð. Athugaðu veldisvísinn og hvar komman stendur.'}
                   </p>
                 )}
                 {verdict === 'gildi' && <p className="mt-2">Námundunin sjálf stemmir ekki.</p>}

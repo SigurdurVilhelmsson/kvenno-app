@@ -26,6 +26,8 @@ function sourceFiles(dir: string): string[] {
 }
 
 const BANNED: { pattern: RegExp; why: string }[] = [
+  // Decision 39, 2026-10-02: a polyatomic ion is `fjölatóma jón`, as the rest of the game says.
+  { pattern: /Sameindajón/, why: 'fjölatóma jón (decision 39)' },
   // The textbook's prefix table (ch02/m68698) writes `mónó-`, and so does this
   // game's own Level 3 tray (`PREFIXES[1]` in data/naming.ts). Levels 1 and 2
   // taught it without its accents, so a student learned one spelling and was

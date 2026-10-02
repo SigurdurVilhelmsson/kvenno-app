@@ -268,7 +268,7 @@ describe('a desktop window keeps what the game did before', () => {
   it('reveals the new card and the unit it produced together in Kanna', () => {
     rules.push([(el) => el.hasAttribute('data-slot'), box(-400, -300)]);
     render(<ExploreScreen onComplete={() => {}} onBack={() => {}} />);
-    tapCard(': 40,3 g MgO');
+    tapCard(': 40,30 g MgO');
 
     expect(scrollBy).toHaveBeenCalledTimes(1);
   });

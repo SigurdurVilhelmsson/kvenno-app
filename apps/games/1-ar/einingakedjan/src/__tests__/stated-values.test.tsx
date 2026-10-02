@@ -199,3 +199,38 @@ describe('a fraction tells a screen reader which way up it is', () => {
     expect(words.className).toContain('sr-only');
   });
 });
+
+/**
+ * A card prints a measured value with the figures it was measured to (decisions item 10).
+ * A JS number drops trailing zeros, so the cards printed `0,1 mol NaOH = 1 L` above their own
+ * source `0,100 M NaOH`, water as `1 g = 1 mL` while a hint says `1,00 g/mL`, and molar masses
+ * `32` and `40` among two-decimal siblings. A side may now carry the label it prints, and the
+ * test above already holds every printed number to the value the engine uses.
+ */
+describe('a card keeps the significant zeros of what it states', () => {
+  const printedSides = (id: string): string[] => {
+    const view = render(<PoolCard equivalence={ratioById(id)} onAdd={() => {}} />);
+    const label = view.getByRole('button').getAttribute('aria-label') ?? '';
+    view.unmount();
+    return label.replace(/^Bæta við hlutfalli: /, '').split(' jafngildir ');
+  };
+
+  it('prints every molar mass to two decimals', () => {
+    for (const r of allRatios.filter((x) => x.kind === 'molmassi')) {
+      const [mass] = printedSides(r.id);
+      expect(mass, r.id).toMatch(/^\d+,\d\d g /);
+    }
+  });
+
+  it('prints a molarity with the figures its source states', () => {
+    for (const r of allRatios.filter((x) => x.kind === 'molstyrkur')) {
+      const stated = r.source?.match(/^([\d,]+) M/)?.[1];
+      expect(stated, r.id).toBeTruthy();
+      expect(printedSides(r.id)[0], r.id).toMatch(new RegExp(`^${stated} mól `));
+    }
+  });
+
+  it("prints water's density as 1,00 g", () => {
+    expect(printedSides('edlismassi-vatn')[0]).toBe('1,00 g H₂O');
+  });
+});
