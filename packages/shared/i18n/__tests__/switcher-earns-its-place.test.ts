@@ -18,18 +18,21 @@ import { describe, it, expect } from 'vitest';
  * too, as a second assertion, because the eight are exactly the ones whose dead
  * `i18n.ts` files were deleted and those files must not come back.
  *
- * **What this does not settle.** `2-ar/rafeindabygging` has exactly one `t()`
- * call (`game.title`) and `2-ar/vsepr-geometry` and `1-ar/takmarkandi` have two
- * each. They pass this test and are barely translated — finishing or stripping
- * them is a separate decision, tracked in the roadmap's i18n item. This test
- * draws the line at zero, which is where the ruling drew it.
+ * **The three title-only games followed on 2026-10-02** (decisions item 4,
+ * Siggi's ruling). `2-ar/rafeindabygging` had one `t()` call (`game.title`) and
+ * `2-ar/vsepr-geometry` and `1-ar/takmarkandi` two each, title and
+ * description: they passed the property below while translating nothing a
+ * student reads past the header. They are in the list now too.
  */
 
 const repoRoot = join(__dirname, '..', '..', '..', '..');
 const gamesRoot = join(repoRoot, 'apps', 'games');
 
-/** The eight stripped on 2026-09-19, as `year/game`. */
+/** The eight stripped on 2026-09-19 and the three on 2026-10-02, as `year/game`. */
 const STRIPPED = [
+  '1-ar/takmarkandi',
+  '2-ar/rafeindabygging',
+  '2-ar/vsepr-geometry',
   '2-ar/intermolecular-forces',
   '2-ar/kinetics',
   '2-ar/lewis-structures',
@@ -116,7 +119,7 @@ describe('the language switcher earns its place', () => {
     expect(src, `${id} re-added useGameI18n`).not.toMatch(/useGameI18n/);
     expect(
       existsSync(join(game!.dir, 'i18n.ts')),
-      `${id} re-added a dead i18n.ts — it was deleted 2026-09-19 with zero consumers`
+      `${id} re-added a dead i18n.ts — it was deleted with zero consumers`
     ).toBe(false);
   });
 

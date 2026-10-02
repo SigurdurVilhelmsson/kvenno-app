@@ -200,7 +200,7 @@ describe('every game has one name', () => {
     // The guard on the guard: if the t() reader stopped matching, the header
     // check above would quietly shrink back to the literal-only games.
     const viaT = GAMES.filter((g) => g.tCalls.length > 0).map((g) => g.slug);
-    expect(viaT.length, `games whose header title comes from t(): ${viaT.join(', ')}`).toBe(10);
+    expect(viaT.length, `games whose header title comes from t(): ${viaT.join(', ')}`).toBe(7);
     for (const g of GAMES.filter((x) => !HEADER_EXEMPT.has(x.slug))) {
       expect(g.opaque, `${g.slug} passes gameTitle an expression this test cannot read`).toEqual(
         []

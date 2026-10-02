@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 
-import { Header, LanguageSwitcher } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { Header } from '@shared/components';
 import {
   shuffleArray,
   useArmedAfter,
@@ -11,7 +10,6 @@ import {
 } from '@shared/utils';
 
 import { periodicPuzzles } from '../data/periodic-configs';
-import { gameTranslations } from '../i18n';
 import { valenceOf } from '../utils/electrons';
 import { ITEM_START } from '../utils/itemStart';
 
@@ -21,7 +19,6 @@ interface Level3Props {
 }
 
 export function Level3({ onComplete, onBack }: Level3Props) {
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -100,18 +97,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   if (showIntro) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-        <Header
-          variant="game"
-          backHref="/efnafraedi/2-ar/"
-          gameTitle="Eðalgasstytting — Kennsla"
-          authSlot={
-            <LanguageSwitcher
-              language={language}
-              onLanguageChange={setLanguage}
-              variant="compact"
-            />
-          }
-        />
+        <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Eðalgasstytting — Kennsla" />
         <div className="max-w-lg mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
           <button
             onClick={onBack}
@@ -168,14 +154,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-      <Header
-        variant="game"
-        backHref="/efnafraedi/2-ar/"
-        gameTitle="Lotukerfi og rafeindir"
-        authSlot={
-          <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
-        }
-      />
+      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Lotukerfi og rafeindir" />
 
       <div ref={pageRef} className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
         <div className="flex justify-between items-center gap-3 mb-4 phone:mb-2">
@@ -209,9 +188,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 </div>
               </div>
               <div className="text-left">
-                <div className="text-lg font-semibold text-warm-800">
-                  {language === 'is' ? puzzle.elementName_is : puzzle.elementName_en}
-                </div>
+                <div className="text-lg font-semibold text-warm-800">{puzzle.elementName_is}</div>
                 {puzzle.isException && (
                   <div className="text-xs text-amber-600 font-medium">⚠️ Undantekning</div>
                 )}
@@ -283,10 +260,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 </div>
                 {puzzle.isException && (
                   <div className="bg-amber-50 p-3 rounded-lg mb-2 text-sm text-amber-800 phone:p-2">
-                    ⚠️{' '}
-                    {language === 'is'
-                      ? puzzle.exceptionExplanation_is
-                      : puzzle.exceptionExplanation_en}
+                    ⚠️ {puzzle.exceptionExplanation_is}
                   </div>
                 )}
                 <p className="text-sm font-mono text-warm-800 mb-1">

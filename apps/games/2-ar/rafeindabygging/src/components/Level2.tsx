@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Header, LanguageSwitcher } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { Header } from '@shared/components';
 import {
   isPhone,
   revealSpan,
@@ -12,7 +11,6 @@ import {
 } from '@shared/utils';
 
 import { configPuzzles, normalizeConfig } from '../data/electron-configs';
-import { gameTranslations } from '../i18n';
 import { countElectrons, firstOutOfOrder, hundFilling, rafeindir } from '../utils/electrons';
 import { ITEM_START } from '../utils/itemStart';
 
@@ -22,7 +20,6 @@ interface Level2Props {
 }
 
 export function Level2({ onComplete, onBack }: Level2Props) {
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userInput, setUserInput] = useState('');
@@ -166,18 +163,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   if (showIntro) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-        <Header
-          variant="game"
-          backHref="/efnafraedi/2-ar/"
-          gameTitle="Rafeindasmíð — Kennsla"
-          authSlot={
-            <LanguageSwitcher
-              language={language}
-              onLanguageChange={setLanguage}
-              variant="compact"
-            />
-          }
-        />
+        <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Rafeindasmíð — Kennsla" />
         <div className="max-w-lg mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
           <button
             onClick={onBack}
@@ -271,14 +257,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-      <Header
-        variant="game"
-        backHref="/efnafraedi/2-ar/"
-        gameTitle="Rafeindasmíð"
-        authSlot={
-          <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
-        }
-      />
+      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Rafeindasmíð" />
 
       <div ref={pageRef} className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
         <div className="flex justify-between items-center gap-3 mb-4 phone:mb-2">
@@ -304,9 +283,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="text-sm text-teal-600">Z = {puzzle.atomicNumber}</div>
               </div>
               <div className="text-left">
-                <div className="text-lg font-semibold text-warm-800">
-                  {language === 'is' ? puzzle.elementName_is : puzzle.elementName_en}
-                </div>
+                <div className="text-lg font-semibold text-warm-800">{puzzle.elementName_is}</div>
                 <div className="text-sm text-warm-600">
                   {puzzle.atomicNumber} {rafeindir(puzzle.atomicNumber)}
                 </div>
@@ -394,9 +371,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       )}
                     </>
                   )}
-                  <p className="text-sm text-warm-700">
-                    {language === 'is' ? puzzle.explanation_is : puzzle.explanation_en}
-                  </p>
+                  <p className="text-sm text-warm-700">{puzzle.explanation_is}</p>
                 </div>
 
                 <button

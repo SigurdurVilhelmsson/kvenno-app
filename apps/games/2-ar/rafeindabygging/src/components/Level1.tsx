@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { Header, LanguageSwitcher } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { Header } from '@shared/components';
 import {
   isPhone,
   revealSpan,
@@ -13,7 +12,6 @@ import {
 } from '@shared/utils';
 
 import { puzzles } from '../data/quantum-numbers';
-import { gameTranslations } from '../i18n';
 import { formatQuantum } from '../utils/electrons';
 import { ITEM_START } from '../utils/itemStart';
 
@@ -23,7 +21,6 @@ interface Level1Props {
 }
 
 export function Level1({ onComplete, onBack }: Level1Props) {
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [phase, setPhase] = useState<'teach' | 'practice'>('teach');
   const [teachStep, setTeachStep] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -117,18 +114,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   if (phase === 'teach') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-        <Header
-          variant="game"
-          backHref="/efnafraedi/2-ar/"
-          gameTitle="Skammtatölur — Kennsla"
-          authSlot={
-            <LanguageSwitcher
-              language={language}
-              onLanguageChange={setLanguage}
-              variant="compact"
-            />
-          }
-        />
+        <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Skammtatölur — Kennsla" />
         <div className="max-w-lg mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
           <div className="flex justify-between items-center mb-4 phone:mb-2">
             <button
@@ -271,14 +257,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   // ==================== PRACTICE PHASE ====================
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-      <Header
-        variant="game"
-        backHref="/efnafraedi/2-ar/"
-        gameTitle="Skammtatölur"
-        authSlot={
-          <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
-        }
-      />
+      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Skammtatölur" />
 
       <div ref={pageRef} className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
         {/* Progress */}
@@ -309,7 +288,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             ref={questionRef}
             className="text-lg font-semibold text-warm-800 mb-4 text-center phone:text-base phone:mb-2 phone-land:mb-1"
           >
-            {language === 'is' ? puzzle.description_is : puzzle.description_en}
+            {puzzle.description_is}
           </h2>
 
           {/* Rules reminder */}
@@ -386,9 +365,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 <div id="rafeind-l1-verdict" className="text-lg font-bold mb-2 phone:mb-1">
                   {allRight ? '✅ Rétt!' : '❌ Ekki rétt'}
                 </div>
-                <p className="text-sm text-warm-700">
-                  {language === 'is' ? puzzle.explanation_is : puzzle.explanation_en}
-                </p>
+                <p className="text-sm text-warm-700">{puzzle.explanation_is}</p>
               </div>
               <button
                 ref={nextRef}

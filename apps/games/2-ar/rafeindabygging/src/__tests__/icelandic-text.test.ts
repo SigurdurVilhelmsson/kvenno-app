@@ -77,7 +77,6 @@ describe('corrected wording in rafeindabygging', () => {
       'src/data/electron-configs.ts',
       'src/data/periodic-configs.ts',
       'src/data/quantum-numbers.ts',
-      'src/i18n.ts',
     ]) {
       expect(names).toContain(expected);
     }

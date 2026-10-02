@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
-import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
-import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { ErrorBoundary, Header } from '@shared/components';
+import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
-import { gameTranslations } from './i18n';
 
 import './styles.css';
 
@@ -40,7 +39,6 @@ function App() {
     'takmarkandi-levels-progress',
     DEFAULT_PROGRESS
   );
-  const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
   // Each screen swap opens the new screen at the top of the page, as it always
   // has at every width (`anyWidth`), with its heading focused: the button that
@@ -102,21 +100,14 @@ function App() {
   // Main Menu - Year 1: Orange/Amber theme
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-      <Header
-        variant="game"
-        backHref="/efnafraedi/1-ar/"
-        gameTitle={t('game.title', 'Takmarkandi hvarfefni')}
-        authSlot={
-          <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
-        }
-      />
+      <Header variant="game" backHref="/efnafraedi/1-ar/" gameTitle="Takmarkandi hvarfefni" />
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-2xl w-full">
           {/* On a phone the card and its tiles are tighter, so all three levels
               show on first load. */}
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6 phone:p-3 phone:mb-4">
             <p className="text-center text-warm-600 mb-4 phone:mb-3">
-              {t('game.description', 'Lærðu að finna takmarkandi hvarfefni og reikna heimtur')}
+              Lærðu að finna takmarkandi hvarfefni og reikna heimtur
             </p>
 
             <div className="space-y-4 phone:space-y-3">
