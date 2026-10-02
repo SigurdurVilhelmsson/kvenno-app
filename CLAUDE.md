@@ -64,7 +64,7 @@ pnpm islenskubraut:export # Write an .xlsx of the content for a reviewer (--out 
 pnpm islenskubraut:import # Read a reviewed .xlsx back into the YAML (--dry-run, --force)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
-pnpm type-check           # TypeScript check across all packages
+pnpm type-check           # TypeScript check across all packages, and e2e/ (its own tsconfig)
 pnpm lint                 # ESLint check
 pnpm test                 # Run tests
 pnpm test:e2e             # Playwright E2E (incl. the Three.js lazy-load guard)
@@ -146,9 +146,11 @@ read it before using any of these. Design: `docs/plans/2026-09-23-vertical-scrol
   text. **`HintSystem startRevealed`** opens tiers on mount without firing callbacks.
 
 **`bg-kvenno-orange-dark` is not a colour.** The theme defines `kvenno-orange` and
-`kvenno-orange-50` … `-900`; there is no `-dark`, so the 77 `hover:bg-kvenno-orange-dark` in the
-games change nothing (`docs/REVIEW-QUEUE.md` D1). Use `hover:bg-kvenno-orange-600`, as the shared
-`Button` does.
+`kvenno-orange-50` … `-900`; there is no `-dark`, and Tailwind emits nothing for an unknown colour.
+The games carried 76 such hover states, a focus ring and eight text colours until 2026-10-02, when
+they became `-600` (hover, ring) and `-700` (text on white, 5,7:1). Use those, as the shared
+`Button` does. `packages/shared/styles/__tests__/kvenno-orange-tokens.test.ts` fails on any shade
+the theme does not define.
 
 **Removed (Aug 2026):** `ParticleCelebration`/`useParticleCelebration`, `AnimatedBackground`, and
 `SoundToggle`/`useGameSounds` were deleted from `packages/shared/`. The April 2026 restructure
@@ -280,15 +282,14 @@ Two causes, both needed fixing — the earlier diagnosis blamed only the second:
 2. `vite-plugin-singlefile` re-inlines dynamic chunks, so step 1 buys nothing while it is on.
    `createGameViteConfig` now takes `singleFile` (default `true`); those three games pass `false`.
 
-Consequences: the three games are no longer single portable files — each is `{game}.html` +
-`{game}.js` + `{game}.css` + `assets/{game}/*.js`. The entry script sits beside the HTML, not under
-`assets/` (`apps/games/shared-vite-config.ts:63-64`); copying only the HTML and CSS ships a game
-that cannot boot. nginx needed no location change (its `.js` location already precedes the
-games-HTML block) — but note `{game}.js`/`{game}.css` are **unhashed** and fall into that location's
-`expires 1y; Cache-Control "public, immutable"` block (`server/nginx-site.conf:49-51`); only the
-deferred chunks under `assets/{game}/` are content-hashed. A redeploy of these three games can
-therefore serve a returning visitor a year-cached stale entry bundle. (Inferred from the config plus
-the emitted filenames; not tested against the production cache.) `scripts/build-games.mjs` clears `assets/<game>/` before each build, since
+Consequences: the three games are no longer single portable files — each is `{game}.html` plus
+`assets/{game}/`, which holds the entry `{game}-[hash].js`, the stylesheet `{game}-[hash].css`
+and the deferred chunks; copying only the HTML ships a game that cannot boot. **Since 2026-10-02 the
+entry and stylesheet are hashed.** Until then they sat beside the HTML as a fixed `{game}.js` and
+`{game}.css`, and nginx's `.js`/`.css` location caches every such file for a year as immutable
+(`server/nginx-site.conf`), so a redeploy could serve a returning visitor a year-old entry bundle.
+The game HTML is not year-cached, so it names the current files. Single-file games are unchanged:
+their entry and stylesheet are inlined and the names never reach the server. `scripts/build-games.mjs` clears `assets/<game>/` before each build, since
 `emptyOutDir: false` would otherwise accumulate stale hashed chunks.
 `e2e/threejs-lazy-loading.spec.ts` guards the boundary — verified to fail when cause 1 is reintroduced.
 
@@ -325,8 +326,8 @@ The fix is in `MoleculeViewer3D.tsx`: a bundled Roboto Bold woff (Latin subset, 
 the component in `fonts/`) passed as `font`, and `configureTextBuilder({ useWorker: false })`. No
 CSP change was needed. The font is emitted under `assets/{game}/` with a hash, referenced only from
 the deferred viewer chunk, so it costs nothing until a 3D view opens. Non-CSS assets go there
-because `createGameViteConfig`'s `assetFileNames` sends them there; only the stylesheet keeps the
-fixed `{game}.css`.
+because `createGameViteConfig`'s `assetFileNames` sends them there, beside the hashed entry and
+stylesheet.
 
 **The other 3D tests could not see this**: they waited for a `<canvas>`, which appears at once, with
 the loading text drawn inside it for good. The viewer now sets `aria-busy` until its scene has
@@ -1466,8 +1467,8 @@ Do not invent Icelandic chemistry terms. A game written in April 2026 re-committ
 - **KVENNO-STRUCTURE.md:** The master design document lives at `docs/KVENNO-STRUCTURE.md`
 - **Most games build to single HTML files** via `vite-plugin-singlefile` (~275-400 KB each). The three
   Three.js games (VSEPR, Lewis, IMF) opt out via `singleFile: false` and emit `{game}.html` +
-  `{game}.js` + `{game}.css` + `assets/{game}/*.js`, which must be deployed together — the entry
-  `{game}.js` sits beside the HTML, not under `assets/`. See `docs/bundle-sizes.md`.
+  `assets/{game}/` (a hashed entry, a hashed stylesheet and the deferred chunks), which must be
+  deployed together. See `docs/bundle-sizes.md`.
 - **Lab reports need 2 builds:** One for `/efnafraedi/2-ar/lab-reports/` and one for `/efnafraedi/3-ar/lab-reports/`
 - **Server needs system deps:** `pandoc` and `libreoffice` for .docx processing
 - **API key security:** Claude API key lives in `server/.env` (never committed), proxied through Express backend

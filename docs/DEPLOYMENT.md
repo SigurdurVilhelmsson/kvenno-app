@@ -102,6 +102,13 @@ The deleted workflow is recoverable from git history if it is worth starting fro
 Checked in at `server/nginx-site.conf` — copy to
 `/etc/nginx/sites-available/kvenno.app` and symlink into `sites-enabled/`.
 
+**`scripts/deploy.sh` does not install it.** The script rsyncs `dist/` and the backend and
+restarts the backend; it never touches nginx. So whenever `server/nginx-site.conf` changes, copy it
+to the server yourself and run `sudo nginx -t && sudo systemctl reload nginx`. A change that only
+lives in the repo — a redirect, a header, a CSP — is not live until you do. Check the live file's
+name on the server first: `README.md` and this file have disagreed about it (`kvenno` against
+`kvenno.app`), and that is listed in `docs/REVIEW-QUEUE.md` D2.
+
 It serves the static site from `/var/www/kvenno.app`, proxies **`/api/` only**
 to the backend on port 8000, redirects legacy year URLs (`/1-ar` →
 `/efnafraedi/1-ar`), and applies per-location CSP headers.
