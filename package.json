@@ -21,7 +21,7 @@
     "islenskubraut:build": "node scripts/islenskubraut/build.mjs",
     "islenskubraut:export": "node scripts/islenskubraut/export-xlsx.mjs",
     "islenskubraut:import": "node scripts/islenskubraut/import-xlsx.mjs",
-    "type-check": "pnpm --recursive run type-check",
+    "type-check": "pnpm --recursive run type-check && tsc --noEmit -p e2e",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json}\"",
