@@ -22,7 +22,7 @@ export const gameTranslations = createGameTranslations({
       },
       level2: {
         name: 'Beiting',
-        description: 'Spá fyrir og rökstyðja',
+        description: 'Byggja umbreytingarkeðjur',
       },
       level3: {
         name: 'Útreikningar',
@@ -88,7 +88,7 @@ export const gameTranslations = createGameTranslations({
       },
       level2: {
         name: 'Application',
-        description: 'Predict and reason',
+        description: 'Build conversion chains',
       },
       level3: {
         name: 'Calculations',
@@ -154,7 +154,7 @@ export const gameTranslations = createGameTranslations({
       },
       level2: {
         name: 'Zastosowanie',
-        description: 'Przewiduj i rozumuj',
+        description: 'Buduj łańcuchy przeliczeń',
       },
       level3: {
         name: 'Obliczenia',

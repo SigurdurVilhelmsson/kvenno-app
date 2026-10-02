@@ -217,7 +217,7 @@ export function Level3({
         'Byrjaðu á að margfalda rúmmál með eðlismassa til að fá massa, síðan umbreyttu einingum.',
       real_world: 'Umbreyttu öllum gildum í sömu einingar áður en þú reiknar fjölda skammta.',
       derivation:
-        'Skrifaðu mjög stórar eða litlar tölur eins og 3,00 × 10⁸: tölustafina í fyrri reitinn og veldisvísinn í þann seinni.',
+        'Skrifaðu mjög stórar eða litlar tölur á staðalformi, eins og 3,00 × 10⁸: tölustafina í fyrri reitinn og veldisvísinn í þann seinni.',
     };
     // An item may override the type hint: the derivation hint talks about
     // scientific notation, which is no help on a derivation about minutes.
