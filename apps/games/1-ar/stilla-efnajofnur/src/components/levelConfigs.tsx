@@ -64,23 +64,25 @@ function Level1Intro() {
 
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6 phone:p-4 phone:mb-4">
         <h3 className="text-lg font-bold text-warm-800 mb-3">Aðferð til að stilla</h3>
+        {/* The book's principle rather than a fixed order of element kinds (decisions item 48):
+            the old list put súrefni third and vetni last, against the book and this game's
+            own Stig 2 hint, which both leave súrefni for the end. */}
         <ol className="space-y-2 text-sm text-warm-700 list-decimal list-inside">
           <li>
-            Stilltu <strong>málma</strong> fyrst (Na, Fe, Ca, ...)
+            Byrjaðu á frumefni sem kemur fyrir í <strong>aðeins einu efni</strong> hvorum megin við
+            örina.
+          </li>
+          <li>Stilltu síðan önnur frumefni sem koma aðeins fyrir í einu efni hvorum megin.</li>
+          <li>
+            Geymdu frumefni sem koma fyrir í <strong>fleiri en einu efni</strong> til síðast. Oftast
+            eru það <strong>súrefni</strong> og <strong>vetni</strong>.
           </li>
           <li>
-            Síðan <strong>málmleysingja</strong> sem ekki eru O eða H (Cl, N, S, ...)
-          </li>
-          <li>
-            Næst <strong>súrefni</strong> (O)
-          </li>
-          <li>
-            Að lokum <strong>vetni</strong> (H)
+            Frumefni sem stendur eitt og sér, eins og O<sub>2</sub> eða H<sub>2</sub>, er best að
+            stilla allra síðast, því stuðull þess breytir engu öðru.
           </li>
         </ol>
-        <p className="text-xs text-warm-500 mt-3">
-          Þessi röð virkar í flestum tilvikum. Athugaðu alltaf allan fjölda í lokin!
-        </p>
+        <p className="text-xs text-warm-500 mt-3">Athugaðu alltaf allan fjölda í lokin!</p>
       </div>
     </>
   );
