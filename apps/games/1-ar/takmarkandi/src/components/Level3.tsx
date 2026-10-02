@@ -272,7 +272,7 @@ export function Level3({
             </button>
             <button
               onClick={armedResults(() => onComplete(score))}
-              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
@@ -367,7 +367,7 @@ export function Level3({
 
             <button
               onClick={armed(nextProblem)}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               {index + 1 < TOTAL ? 'Næsta verkefni →' : 'Sjá niðurstöður →'}
             </button>
@@ -555,7 +555,7 @@ export function Level3({
                   ref={checkRef}
                   onClick={checkStep}
                   disabled={!canCheck}
-                  className={`mt-4 w-full bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:bg-warm-300 text-white font-bold py-3 rounded-xl transition-colors ${
+                  className={`mt-4 w-full bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:bg-warm-300 text-white font-bold py-3 rounded-xl transition-colors ${
                     step === 'limiting'
                       ? 'phone:mt-3'
                       : 'phone:mt-0 phone:w-auto phone:flex-[1_0_6rem] phone:whitespace-nowrap phone:px-4'
@@ -589,7 +589,7 @@ export function Level3({
                     key={`next-${step}`}
                     ref={nextRef}
                     onClick={armed(nextStep)}
-                    className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                    className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
                   >
                     Áfram →
                   </button>

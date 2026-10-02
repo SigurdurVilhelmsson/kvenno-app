@@ -255,7 +255,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               </p>
               <button
                 onClick={() => setTeachStep(1)}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
               >
                 Sjáum dæmi →
               </button>
@@ -311,7 +311,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
               <button
                 onClick={() => setTeachStep(2)}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
               >
                 Eitt dæmi til →
               </button>
@@ -369,7 +369,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
               <button
                 onClick={() => setPhase('practice')}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold px-4 py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold px-4 py-3 rounded-xl transition-colors"
               >
                 Ég er tilbúin/n — byrja æfingar →
               </button>
@@ -405,7 +405,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
             </button>
             <button
               onClick={armedResults(() => onComplete(correctCount, TOTAL, hintsUsed))}
-              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
@@ -532,7 +532,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                     key="check"
                     onClick={handleSubmit}
                     disabled={!input.trim()}
-                    className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
+                    className="bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
                   >
                     Athuga
                   </button>
@@ -610,7 +610,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                   key="next"
                   ref={nextRef}
                   onClick={armed(handleNext)}
-                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
                 >
                   {index + 1 < TOTAL ? 'Næsta dæmi →' : 'Sjá niðurstöður →'}
                 </button>

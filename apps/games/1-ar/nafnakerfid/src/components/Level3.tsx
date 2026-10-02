@@ -338,7 +338,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     key={part.id}
                     onClick={() => removePart(part)}
                     disabled={answered}
-                    className="px-4 py-2.5 min-h-[44px] bg-kvenno-orange text-white rounded-lg text-sm font-medium hover:bg-kvenno-orange-dark transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-kvenno-orange-dark focus-visible:ring-offset-1"
+                    className="px-4 py-2.5 min-h-[44px] bg-kvenno-orange text-white rounded-lg text-sm font-medium hover:bg-kvenno-orange-600 transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-kvenno-orange-600 focus-visible:ring-offset-1"
                   >
                     {part.text}
                     {!answered && <span className="ml-1.5 text-orange-200">x</span>}
@@ -453,7 +453,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 key="check"
                 onClick={handleCheck}
                 disabled={selected.length === 0}
-                className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t('level3.ui.check', 'Athuga')}
               </button>
@@ -475,7 +475,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               <button
                 key="next"
                 onClick={armed(handleNext)}
-                className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
               >
                 {idx + 1 < total
                   ? t('level3.ui.nextCompound', 'Næsta efni') + ' \u2192'

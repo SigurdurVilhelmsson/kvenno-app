@@ -26,6 +26,7 @@ import {
   formatDecimal,
   formatScientific,
   gradeScientific,
+  INVALID_ENTRY_MESSAGE,
   isPhone,
   revealTop,
   useArmedAfter,
@@ -33,11 +34,18 @@ import {
   useIsPhone,
   useItemStart,
   useRevealTopOnDesktop,
+  type InvalidReason,
 } from '@shared/utils';
 
 import { ScientificInput } from './ScientificInput';
 import { COUPLED_PROBLEMS } from '../data/coupled';
-import { DIRECTION_PROBLEMS, EXPRESSION_PROBLEMS, KP_PROBLEMS } from '../data/problems';
+import {
+  DIRECTION_PROBLEMS,
+  EXPRESSION_PROBLEMS,
+  KP_PROBLEMS,
+  kpSlip,
+  type KpSlip,
+} from '../data/problems';
 
 /**
  * Æfa — three skills, in the order the book teaches them.
@@ -310,7 +318,7 @@ function ExpressionTask({ onDone }: { onDone: () => void }) {
                           ? 'border-red-400 bg-red-50 text-red-900 line-through'
                           : 'border-warm-200 bg-white text-warm-400'
                       : on
-                        ? 'border-kvenno-orange bg-orange-50 text-kvenno-orange-dark'
+                        ? 'border-kvenno-orange bg-orange-50 text-kvenno-orange-700'
                         : 'border-warm-300 bg-white text-warm-700 hover:border-warm-400'
                   }`}
                 >
@@ -326,7 +334,7 @@ function ExpressionTask({ onDone }: { onDone: () => void }) {
               key="check"
               type="button"
               onClick={() => setChecked(true)}
-              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600"
             >
               Athuga
             </button>
@@ -497,6 +505,8 @@ function KpTask({ onDone }: { onDone: () => void }) {
   const [mantissa, setMantissa] = useState('');
   const [exponent, setExponent] = useState('');
   const [outcome, setOutcome] = useState<string | null>(null);
+  const [slip, setSlip] = useState<KpSlip | null>(null);
+  const [invalid, setInvalid] = useState<InvalidReason | undefined>();
   // Counts every check, so a repeated empty check still brings its message
   // into view.
   const [checks, setChecks] = useState(0);
@@ -536,15 +546,24 @@ function KpTask({ onDone }: { onDone: () => void }) {
   const MESSAGE: Record<string, string> = {
     rett: 'Rétt.',
     veldisvisir:
-      'Tölustafirnir stemma en veldisvísirinn ekki. Athugaðu formerkið á Δn — myndefni mínus hvarfefni — og að hitastigið fari í kelvin.',
+      'Tölustafirnir stemma en veldisvísirinn ekki: talan er rétt en tíuveldið skakkt. Athugaðu formerkið á veldisvísinum og hvort kommunni hafi verið hliðrað.',
     tolustafir: 'Rétt stærðarþrep en tölurnar stemma ekki. Reiknaðu (R·T) aftur.',
     baedi: 'Hvorugt stemmir. Byrjaðu á Δn og skrifaðu svo (R·T) í rétt veldi.',
     ogilt: 'Fylltu í báða reitina — tölu og veldisvísi, t.d. 2,8 og -3.',
   };
+  // A slip that can be read off the value outranks the generic message for its outcome.
+  const SLIP: Record<KpSlip, string> = {
+    formerki: 'Þetta er það sem fæst með Δn öfugt. Δn er gasmól myndefna mínus gasmól hvarfefna.',
+    celsius:
+      'Þetta er það sem fæst með hitastigið í °C. Í R·T fer hitastigið í kelvin: T = t + 273,15.',
+  };
 
   const check = () => {
     if (graded) return;
-    setOutcome(gradeScientific({ mantissa, exponent }, problem.kp).outcome);
+    const result = gradeScientific({ mantissa, exponent }, problem.kp);
+    setOutcome(result.outcome);
+    setInvalid(result.reason);
+    setSlip(result.outcome === 'rett' ? null : kpSlip(problem, result.value));
     setChecks((n) => n + 1);
   };
 
@@ -557,6 +576,7 @@ function KpTask({ onDone }: { onDone: () => void }) {
     setMantissa('');
     setExponent('');
     setOutcome(null);
+    setSlip(null);
   };
 
   return (
@@ -609,7 +629,7 @@ function KpTask({ onDone }: { onDone: () => void }) {
               <button
                 type="button"
                 onClick={check}
-                className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+                className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600"
               >
                 Athuga
               </button>
@@ -619,7 +639,7 @@ function KpTask({ onDone }: { onDone: () => void }) {
                   role="alert"
                   className="mt-4 rounded-lg border-2 border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 phone:mt-3 phone:p-3"
                 >
-                  {MESSAGE.ogilt}
+                  {invalid && invalid !== 'tomt' ? INVALID_ENTRY_MESSAGE[invalid] : MESSAGE.ogilt}
                 </div>
               )}
             </div>
@@ -636,7 +656,7 @@ function KpTask({ onDone }: { onDone: () => void }) {
               }`}
             >
               <p id={verdictId} className="mb-2 font-semibold text-warm-900">
-                {MESSAGE[outcome]}
+                {slip ? SLIP[slip] : MESSAGE[outcome]}
               </p>
               <p className="font-mono text-sm text-warm-800">
                 <span className="whitespace-nowrap">Δn = {problem.deltaN}</span> ·{' '}
@@ -701,6 +721,7 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
   const [mantissa, setMantissa] = useState('');
   const [exponent, setExponent] = useState('');
   const [outcome, setOutcome] = useState<string | null>(null);
+  const [invalid, setInvalid] = useState<InvalidReason | undefined>();
   const [wrongShape, setWrongShape] = useState(false);
   // Counts every check, so feedback is brought into view on a repeat check
   // with the same outcome as well as on a new one.
@@ -796,6 +817,7 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
     if (stage !== 'constant') return;
     const graded = gradeScientific({ mantissa, exponent }, answer, 0.03);
     setOutcome(graded.outcome);
+    setInvalid(graded.reason);
     if (graded.outcome === 'rett') setStage('done');
     setChecks((n) => n + 1);
   };
@@ -941,7 +963,7 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
               key="check-equation"
               type="button"
               onClick={checkOperations}
-              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark phone:py-2.5"
+              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600 phone:py-2.5"
             >
               Athuga jöfnuna
             </button>
@@ -996,7 +1018,7 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
                   ref={checkRef}
                   type="button"
                   onClick={checkConstant}
-                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600"
                 >
                   Athuga
                 </button>
@@ -1014,7 +1036,10 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
                       'Rétt stærðarþrep en tölurnar stemma ekki. Athugaðu hvort þú hafir snúið réttum fasta við.'}
                     {outcome === 'baedi' &&
                       'Hvorugt stemmir enn. Farðu í gegnum aðgerðirnar eina í einu: umhverfa, svo veldi, svo margfeldi.'}
-                    {outcome === 'ogilt' && 'Fylltu í báða reitina — tölu og veldisvísi.'}
+                    {outcome === 'ogilt' &&
+                      (invalid && invalid !== 'tomt'
+                        ? INVALID_ENTRY_MESSAGE[invalid]
+                        : 'Fylltu í báða reitina — tölu og veldisvísi.')}
                     <button
                       type="button"
                       onClick={armed(showAnswer)}

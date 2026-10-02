@@ -230,7 +230,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
           {config.intro}
           <button
             onClick={() => setShowIntro(false)}
-            className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors text-lg"
+            className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors text-lg"
           >
             Byrja æfingar →
           </button>
@@ -270,7 +270,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
             </button>
             <button
               onClick={armedResults(onComplete)}
-              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold px-2 py-3 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold px-2 py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
@@ -294,7 +294,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
       <button
         ref={checkRef}
         onClick={handleCheck}
-        className="w-full mb-3 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors phone:mb-0 phone:flex-1 phone:min-w-0"
+        className="w-full mb-3 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors phone:mb-0 phone:flex-1 phone:min-w-0"
       >
         Athuga
       </button>
@@ -446,7 +446,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
             <button
               ref={nextRef}
               onClick={armed(handleNext)}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               {index + 1 < total ? 'Næsta efnajafna →' : 'Sjá niðurstöður →'}
             </button>

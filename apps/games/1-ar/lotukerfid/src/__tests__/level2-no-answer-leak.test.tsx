@@ -23,7 +23,7 @@ function prompt(): string {
 }
 
 function periodicGrid() {
-  return screen.getByRole('grid', { name: 'Lotukerfið' });
+  return screen.getByRole('group', { name: 'Lotukerfið' });
 }
 
 function optionButtons() {

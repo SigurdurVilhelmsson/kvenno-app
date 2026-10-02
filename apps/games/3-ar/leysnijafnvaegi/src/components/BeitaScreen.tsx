@@ -263,7 +263,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   type="button"
                   onClick={submitRanking}
                   disabled={ranking.length !== fractional.candidates.length}
-                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark disabled:cursor-not-allowed disabled:bg-warm-300"
+                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600 disabled:cursor-not-allowed disabled:bg-warm-300"
                 >
                   Athuga röðina
                 </button>

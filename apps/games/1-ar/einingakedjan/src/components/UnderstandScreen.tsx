@@ -153,7 +153,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
       <button
         type="button"
         onClick={onComplete}
-        className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-5 py-3 font-semibold text-white hover:bg-kvenno-orange-dark phone:mt-4"
+        className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-5 py-3 font-semibold text-white hover:bg-kvenno-orange-600 phone:mt-4"
       >
         Áfram að æfingum
       </button>

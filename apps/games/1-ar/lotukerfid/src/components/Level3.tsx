@@ -290,7 +290,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             </button>
             <button
               onClick={armedResults(onComplete)}
-              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
@@ -374,7 +374,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
 
             <button
               onClick={() => setShowIntro(false)}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Byrja æfingar →
             </button>
@@ -481,7 +481,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
                     key="check"
                     onClick={handleSubmit}
                     disabled={!input.trim()}
-                    className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4 phone:py-2"
+                    className="bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4 phone:py-2"
                   >
                     Athuga
                   </button>
@@ -580,7 +580,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
                 key="next"
                 ref={nextRef}
                 onClick={armed(handleNext)}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
               >
                 {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
               </button>

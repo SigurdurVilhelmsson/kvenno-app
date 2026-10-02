@@ -169,7 +169,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               ref={onwardRef}
               type="button"
               onClick={armed(() => setStep(step + 1))}
-              className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-dark pointer-coarse:min-h-11"
+              className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-600 pointer-coarse:min-h-11"
             >
               Næsta skref
             </button>

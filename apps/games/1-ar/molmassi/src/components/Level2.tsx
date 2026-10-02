@@ -465,7 +465,7 @@ export function Level2({
 
             <button
               onClick={() => setShowIntro(false)}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Byrja æfingar →
             </button>
@@ -498,7 +498,7 @@ export function Level2({
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={armedResults(retry)}
-                className="bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                className="bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
               >
                 Reyna aftur
               </button>
@@ -628,7 +628,7 @@ export function Level2({
                   key="check"
                   onClick={submit}
                   disabled={!input.trim()}
-                  className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
+                  className="bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
                 >
                   Svara
                 </button>
@@ -675,7 +675,7 @@ export function Level2({
                   key="next"
                   ref={nextRef}
                   onClick={armed(next)}
-                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
                 >
                   {idx + 1 < TOTAL ? 'Næsta dæmi →' : 'Sjá niðurstöður →'}
                 </button>

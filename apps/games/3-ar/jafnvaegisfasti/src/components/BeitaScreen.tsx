@@ -4,11 +4,13 @@ import { APPROXIMATION_THRESHOLD, equationOf } from '@shared/engine/equilibrium'
 import {
   formatScientific,
   gradeScientific,
+  INVALID_ENTRY_MESSAGE,
   isPhone,
   useIsPhone,
   useArmedAfter,
   useCommitReveal,
   useItemStart,
+  type InvalidReason,
 } from '@shared/utils';
 
 import { ScientificInput } from './ScientificInput';
@@ -60,6 +62,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const [mantissa, setMantissa] = useState('');
   const [exponent, setExponent] = useState('');
   const [extentOutcome, setExtentOutcome] = useState<string | null>(null);
+  const [invalid, setInvalid] = useState<InvalidReason | undefined>();
   const [ruleAnswer, setRuleAnswer] = useState<boolean | null>(null);
   // Counts every step the student commits to, so a repeat check that fails the
   // same way still brings its feedback into view; `kind` says which step.
@@ -153,6 +156,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const checkExtent = () => {
     const graded = gradeScientific({ mantissa, exponent }, result.extent, 0.03);
     setExtentOutcome(graded.outcome);
+    setInvalid(graded.reason);
     if (graded.outcome === 'rett') setStage('approximation');
     committed('extent');
   };
@@ -327,7 +331,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   ref={checkRef}
                   type="button"
                   onClick={checkExtent}
-                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600"
                 >
                   Athuga
                 </button>
@@ -347,7 +351,10 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     {extentOutcome === 'tolustafir' &&
                       'Rétt stærðarþrep en tölurnar stemma ekki. Farðu aftur yfir stæðuna — fóru allir stuðlar í veldisvísi?'}
                     {extentOutcome === 'baedi' && 'Hvorugt stemmir enn. Skoðaðu stæðuna aftur.'}
-                    {extentOutcome === 'ogilt' && 'Fylltu í báða reitina — tölu og veldisvísi.'}
+                    {extentOutcome === 'ogilt' &&
+                      (invalid && invalid !== 'tomt'
+                        ? INVALID_ENTRY_MESSAGE[invalid]
+                        : 'Fylltu í báða reitina — tölu og veldisvísi.')}
                     <button
                       type="button"
                       onClick={armed(() => {

@@ -243,7 +243,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
             <button
               type="button"
               onClick={armed(advance)}
-              className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
+              className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-600"
             >
               Áfram
             </button>
@@ -282,7 +282,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                   key="athuga"
                   type="button"
                   onClick={submit}
-                  className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark max-sm:shrink-0 max-sm:px-4"
+                  className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-600 max-sm:shrink-0 max-sm:px-4"
                 >
                   Athuga
                 </button>
@@ -338,7 +338,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                   ref={nextRef}
                   type="button"
                   onClick={armed(advance)}
-                  className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
+                  className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-600"
                 >
                   {step === 'ph' && index + 1 === PRACTICE_PROBLEMS.length ? 'Ljúka Æfa' : 'Áfram'}
                 </button>

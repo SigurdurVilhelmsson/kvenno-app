@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
 import { Level3 } from '../components/Level3';
@@ -25,6 +25,13 @@ describe('reading a cell', () => {
     // The cell is a flex column, so source order is top-to-bottom order.
     expect(text.indexOf('6')).toBeLessThan(text.indexOf('C'));
     expect(text.indexOf('C')).toBeLessThan(text.indexOf('12,0'));
+  });
+
+  it('is a labelled group of buttons, not a grid without rows', () => {
+    // role="grid" promised rows and cells the markup never had (decisions D1, 2026-10-02).
+    const { container } = render(<PeriodicTable interactive={false} />);
+    expect(within(container).queryByRole('grid')).toBeNull();
+    expect(within(container).getByRole('group', { name: 'Lotukerfið' })).toBeTruthy();
   });
 
   it('Stig 3 teaches the same layout', () => {

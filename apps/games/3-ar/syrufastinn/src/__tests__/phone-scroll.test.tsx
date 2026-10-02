@@ -309,7 +309,10 @@ describe('the menu', () => {
     later();
     fireEvent.click(screen.getByRole('button', { name: 'Hann helst sá sami' }));
     later();
+    // "Áfram í Skilja" opens Skilja, as it says; back on the menu, Skilja is next.
     fireEvent.click(screen.getByRole('button', { name: 'Áfram í Skilja' }));
+    expect(focused()?.textContent).toMatch(/Skilja/);
+    fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
     expect(focused()?.getAttribute('data-phase-card')).toBe('skilja');
   });
 

@@ -224,7 +224,7 @@ describe('the table', () => {
     const strips = view.container.querySelectorAll('.phone\\:h-3');
     expect(strips).toHaveLength(18);
     // 7 periods × 18 cells plus the group numbers, as before.
-    expect(view.getByRole('grid').children).toHaveLength(18 + 7 * 18);
+    expect(view.getByRole('group', { name: 'Lotukerfið' }).children).toHaveLength(18 + 7 * 18);
   });
 
   it('puts the legend behind a closed button on a phone, and shows it everywhere else', () => {
@@ -372,7 +372,7 @@ describe('Stig 2', () => {
 
   it('on a phone puts the table between the question and the options', () => {
     const view = toPlay();
-    const grid = view.getByRole('grid', { name: 'Lotukerfið' });
+    const grid = view.getByRole('group', { name: 'Lotukerfið' });
     const question = view.container.querySelector('[data-item-start]')!;
     const order = (a: Node, b: Node) => a.compareDocumentPosition(b);
     expect(order(question, grid) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -382,7 +382,7 @@ describe('Stig 2', () => {
   it('everywhere else keeps the table after the options', () => {
     layout = 'desktop';
     const view = toPlay();
-    const grid = view.getByRole('grid', { name: 'Lotukerfið' });
+    const grid = view.getByRole('group', { name: 'Lotukerfið' });
     expect(
       options(view).compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();

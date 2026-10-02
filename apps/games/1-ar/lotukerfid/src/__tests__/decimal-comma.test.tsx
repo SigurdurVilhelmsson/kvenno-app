@@ -44,7 +44,7 @@ function playNext() {
 describe('decimal comma', () => {
   it('every cell of the table prints its mass with a comma', () => {
     render(<PeriodicTable interactive={false} />);
-    const grid = screen.getByRole('grid', { name: 'Lotukerfið' });
+    const grid = screen.getByRole('group', { name: 'Lotukerfið' });
     expect(grid.textContent).not.toMatch(DECIMAL_POINT);
 
     const carbon = screen.getByRole('button', { name: /\(C\), sætistala 6,/ });

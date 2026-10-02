@@ -297,7 +297,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
             <button
               type="button"
               onClick={armed(submitEquation)}
-              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600"
             >
               Athuga jöfnuna
             </button>
