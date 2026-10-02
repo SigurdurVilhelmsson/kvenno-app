@@ -2154,14 +2154,6 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Valmynd — enska',
-      steps: [
-        {
-          clickRole: ['button', 'English'],
-        },
-      ],
-    },
-    {
       name: 'Stig 1 — kynning',
       steps: [
         {
