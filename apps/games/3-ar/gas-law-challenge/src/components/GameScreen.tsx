@@ -1,13 +1,14 @@
 import { useEffect, useRef, type Ref } from 'react';
 
 import { Presence } from '@shared/components';
-import { focusTarget, formatDecimal, revealSpan } from '@shared/utils';
+import { focusTarget, revealSpan } from '@shared/utils';
 
 import type { Level } from '../data';
 import { GasLawQuestion, GameMode, GameStats, GasLaw, GAS_LAW_INFO } from '../types';
 import { FormulaText } from './FormulaText';
 import { GasLawSimulator } from './GasLawSimulator';
 import { answerText, answerUnit, getVariableNameAccusative } from '../utils/gas-calculations';
+import { givenLabel } from '../utils/given';
 
 interface GameScreenProps {
   currentQuestion: GasLawQuestion;
@@ -196,29 +197,25 @@ export function GameScreen({
                     {currentQuestion.given.P && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
                         <span className="font-semibold">P:</span>{' '}
-                        {formatDecimal(currentQuestion.given.P.value)}{' '}
-                        {currentQuestion.given.P.unit}
+                        {givenLabel(currentQuestion.given.P)} {currentQuestion.given.P.unit}
                       </div>
                     )}
                     {currentQuestion.given.V && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
                         <span className="font-semibold">V:</span>{' '}
-                        {formatDecimal(currentQuestion.given.V.value)}{' '}
-                        {currentQuestion.given.V.unit}
+                        {givenLabel(currentQuestion.given.V)} {currentQuestion.given.V.unit}
                       </div>
                     )}
                     {currentQuestion.given.T && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
                         <span className="font-semibold">T:</span>{' '}
-                        {formatDecimal(currentQuestion.given.T.value)}{' '}
-                        {currentQuestion.given.T.unit}
+                        {givenLabel(currentQuestion.given.T)} {currentQuestion.given.T.unit}
                       </div>
                     )}
                     {currentQuestion.given.n && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
                         <span className="font-semibold">n:</span>{' '}
-                        {formatDecimal(currentQuestion.given.n.value)}{' '}
-                        {currentQuestion.given.n.unit}
+                        {givenLabel(currentQuestion.given.n)} {currentQuestion.given.n.unit}
                       </div>
                     )}
                     <div className="bg-orange-50 px-2 py-1 rounded text-center">
@@ -335,29 +332,25 @@ export function GameScreen({
                     {currentQuestion.given.P && (
                       <div className="bg-white px-3 py-2 rounded phone:py-1">
                         <span className="font-semibold">P:</span>{' '}
-                        {formatDecimal(currentQuestion.given.P.value)}{' '}
-                        {currentQuestion.given.P.unit}
+                        {givenLabel(currentQuestion.given.P)} {currentQuestion.given.P.unit}
                       </div>
                     )}
                     {currentQuestion.given.V && (
                       <div className="bg-white px-3 py-2 rounded phone:py-1">
                         <span className="font-semibold">V:</span>{' '}
-                        {formatDecimal(currentQuestion.given.V.value)}{' '}
-                        {currentQuestion.given.V.unit}
+                        {givenLabel(currentQuestion.given.V)} {currentQuestion.given.V.unit}
                       </div>
                     )}
                     {currentQuestion.given.T && (
                       <div className="bg-white px-3 py-2 rounded phone:py-1">
                         <span className="font-semibold">T:</span>{' '}
-                        {formatDecimal(currentQuestion.given.T.value)}{' '}
-                        {currentQuestion.given.T.unit}
+                        {givenLabel(currentQuestion.given.T)} {currentQuestion.given.T.unit}
                       </div>
                     )}
                     {currentQuestion.given.n && (
                       <div className="bg-white px-3 py-2 rounded phone:py-1">
                         <span className="font-semibold">n:</span>{' '}
-                        {formatDecimal(currentQuestion.given.n.value)}{' '}
-                        {currentQuestion.given.n.unit}
+                        {givenLabel(currentQuestion.given.n)} {currentQuestion.given.n.unit}
                       </div>
                     )}
                   </div>

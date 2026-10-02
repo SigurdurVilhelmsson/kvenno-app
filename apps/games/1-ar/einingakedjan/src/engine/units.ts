@@ -54,6 +54,14 @@ export interface EquivalenceSide {
   value: number;
   unit: string;
   species?: string;
+  /**
+   * The value as the card prints it, when the number alone cannot carry its
+   * significant zeros: `0,100` mól for a 0,100 M solution, `1,00` g of water,
+   * `32,00` g/mól beside two-decimal siblings. A JS number drops them, so a card
+   * printed `0,1 mol NaOH = 1 L` directly above its own source `0,100 M NaOH`
+   * (decisions item 10). The data test holds every label to its value.
+   */
+  label?: string;
 }
 
 /**
@@ -306,6 +314,9 @@ export function formatStated(value: number): string {
   }
   return plain(value);
 }
+
+/** A ratio side's number as a card prints it: its stated label, else the value. */
+export const sideValue = (side: EquivalenceSide): string => side.label ?? formatStated(side.value);
 
 export const formatToken = (token: UnitToken): string =>
   token.species ? `${token.unit} ${token.species}` : token.unit;

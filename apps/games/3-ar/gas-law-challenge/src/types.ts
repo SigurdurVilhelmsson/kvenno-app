@@ -90,6 +90,11 @@ export type GameMode = 'practice' | 'challenge';
 export interface GasValue {
   value: number;
   unit: string;
+  /**
+   * The value as the givens panel prints it, when the number cannot carry the figures
+   * the question states (`2,0` L). A JS number drops trailing zeros (decisions item 10).
+   */
+  label?: string;
 }
 
 export interface GasLawQuestion {

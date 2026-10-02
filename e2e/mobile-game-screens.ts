@@ -2801,7 +2801,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="atóm Mg jafngildir"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
         },
         {
           css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mól Mg jafngildir 2 mól MgO"]',
@@ -2989,7 +2989,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
         },
         {
           clickRole: ['button', 'Leysa'],
@@ -3024,7 +3024,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
         },
         {
           clickRole: ['button', 'Leysa'],
@@ -3156,7 +3156,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
             css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
           },
           {
-            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,30 g MgO"]',
           },
         ],
         verdict: { css: 'main ol' },
