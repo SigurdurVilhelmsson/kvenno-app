@@ -94,19 +94,22 @@ leave".
 
 - [ ] 1–11 Platform-wide. Items 1 and 2 were ruled (b) for `lewis-structures` alone on
       2026-09-30, and item 7 applied there; each stays open for the other games it names. Item 3
-      (the Y2 chain) and item 7 in `vsepr-geometry` were applied 2026-10-01. Examples:
+      (the Y2 chain) and item 7 in `vsepr-geometry` were applied 2026-10-01. Items 4, 5, 6, 10
+      and 11 applied 2026-10-02; item 5's feedback wording is a draft, and its trailing-text
+      strictness was not ruled. Examples:
   - scores and streaks in practice;
   - the two games that still charge for hints;
   - the i18n question;
   - reading `1.300`;
   - which book's formation enthalpies to use.
-- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73).
+- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 15
+      and 16 done 2026-10-02.
 - [ ] 22–34 dimensional-analysis
 - [ ] 35 lotukerfid
-- [ ] 36–41 nafnakerfid
+- [ ] 36–41 nafnakerfid. Item 39 done 2026-10-02.
 - [ ] 42–45 molmassi
-- [ ] 46–47 reynsluformulur
-- [ ] 48–49 stilla-efnajofnur
+- [ ] 46–47 reynsluformulur. Item 46 done 2026-10-02.
+- [ ] 48–49 stilla-efnajofnur. Item 48 done 2026-10-02.
 - [ ] 50–53 utfellingarhvorf
 - [ ] 54–57 takmarkandi
 - [ ] 58–60 lausnir

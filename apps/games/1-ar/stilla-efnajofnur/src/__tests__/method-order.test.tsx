@@ -43,7 +43,7 @@ describe('the Stig 1 balancing method', () => {
   });
 
   it('agrees with every hint that says when to balance súrefni', () => {
-    const lastHints = REACTIONS.filter((r) => /súrefni síðast/.test(r.hint));
+    const lastHints = REACTIONS.filter((r) => /súrefni síðast/.test(r.hint ?? ''));
     expect(lastHints.length).toBeGreaterThan(0);
     expect(methodSteps().join(' ')).toMatch(/fleiri en einu efni[^.]*\. Oftast eru það súrefni/);
   });
