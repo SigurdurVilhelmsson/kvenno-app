@@ -30,9 +30,9 @@ afterEach(() => {
   localStorage.clear();
 });
 
-/** The "Stig lokið" tile's figure. */
+/** The "Stigum lokið" tile's figure. */
 function levelsCompleted(): string {
-  const label = screen.getByText('Stig lokið');
+  const label = screen.getByText('Stigum lokið');
   return label.previousElementSibling?.textContent ?? '';
 }
 

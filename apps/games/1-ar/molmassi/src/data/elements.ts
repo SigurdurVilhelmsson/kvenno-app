@@ -103,7 +103,7 @@ export const ELEMENTS: Element[] = [
   },
   {
     symbol: 'N',
-    name: 'Köfnunarefni',
+    name: 'Nitur',
     atomicMass: 14.007,
     atomicNumber: 7,
     period: 2,

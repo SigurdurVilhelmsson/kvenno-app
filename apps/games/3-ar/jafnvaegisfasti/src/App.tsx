@@ -204,7 +204,7 @@ function App() {
               <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-amber-800">Af hverju jafnvægisfastinn?</h3>
                 <p className="text-sm text-amber-700">
-                  Haber-ferlið bindur köfnunarefni úr andrúmsloftinu í áburð og heldur þar með uppi
+                  Haber-ferlið bindur nitur úr andrúmsloftinu í áburð og heldur þar með uppi
                   matvælaframleiðslu fyrir milljarða manna. Jafnvægisfastinn er talan sem segir
                   verkfræðingnum hversu mikið ammóníak fæst við tiltekinn hita og þrýsting — og hún
                   er líka ástæðan fyrir því að ferlið er keyrt við aðstæður sem eru dýrar en gefa

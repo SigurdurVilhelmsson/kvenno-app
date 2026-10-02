@@ -45,7 +45,7 @@ export const PREFIXES: Record<number, string> = {
 export const ELEMENT_ROOTS: Record<string, { root: string; full: string; stem?: string }> = {
   H: { root: 'vetni', full: 'Vetni' },
   C: { root: 'kol', full: 'Kolefni' },
-  N: { root: 'nitur', full: 'Köfnunarefni' },
+  N: { root: 'nitur', full: 'Nitur' },
   O: { root: 'oxíð', full: 'Súrefni' },
   F: { root: 'flúoríð', full: 'Flúor' },
   Cl: { root: 'klóríð', full: 'Klór', stem: 'klór' },

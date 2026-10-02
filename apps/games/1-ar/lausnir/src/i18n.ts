@@ -17,7 +17,7 @@ export const gameTranslations = createGameTranslations({
       inspiredBy: 'Innblásið af PhET Interactive Simulations (University of Colorado Boulder)',
       progress: 'Framvinda',
       reset: 'Endurstilla',
-      levelsCompleted: 'Stig lokið',
+      levelsCompleted: 'Stigum lokið',
       totalPoints: 'Heildarstig',
       games: 'Leikir',
       formulas: 'Formúlur (Stig 3)',

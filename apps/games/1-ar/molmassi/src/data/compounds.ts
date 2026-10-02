@@ -29,7 +29,7 @@ export interface Compound {
    * which is why this is written out rather than made with `toLowerCase()`.
    *
    * Every question template in Stig 2 and 3 puts the name after `af`, and they
-   * interpolated `name` itself, so they read `af Köfnunarefni` and `af
+   * interpolated `name` itself, so they read `af Nitur` and `af
    * Þvottasódi`. A case in Icelandic is not a string operation, so the forms
    * belong in the data — the same fix `3-ar/syrufastinn` made for its acids.
    * A hydrate declines its head noun only: `kopar(II)súlfat pentahýdrati`.
@@ -142,9 +142,9 @@ const DEFINITIONS: CompoundDefinition[] = [
   {
     formula: 'N₂',
     state: 'gas',
-    name: 'Köfnunarefni',
-    nameDative: 'köfnunarefni',
-    nameGenitive: 'köfnunarefnis',
+    name: 'Nitur',
+    nameDative: 'nitri',
+    nameGenitive: 'niturs',
     ionic: false,
     elements: [{ symbol: 'N', count: 2 }],
     difficulty: 'easy',

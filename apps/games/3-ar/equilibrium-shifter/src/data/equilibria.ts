@@ -13,7 +13,7 @@ export const equilibria: Equilibrium[] = [
     id: 1,
     equation: 'N₂O₄(g) ⇌ 2NO₂(g)',
     name: 'Dinitrogen Tetroxide',
-    nameIs: 'Díköfnunarefnisoxíð',
+    nameIs: 'Díniturtetroxíð',
     difficulty: 'beginner',
     reactants: [{ formula: 'N₂O₄', coefficient: 1, phase: 'g', display: '⚫' }],
     products: [{ formula: 'NO₂', coefficient: 2, phase: 'g', display: '🟤' }],
@@ -412,7 +412,7 @@ export const equilibria: Equilibrium[] = [
       products: 10,
     },
     description: 'Nitrogen oxide production for nitric acid.',
-    descriptionIs: 'Köfnunarefnisoxíðframleiðsla fyrir saltpéturssýru.',
+    descriptionIs: 'Nituroxíðframleiðsla fyrir saltpéturssýru.',
     possibleStresses: [
       { type: 'add-reactant', target: 'NH₃' },
       { type: 'increase-temp', target: null },
@@ -461,7 +461,7 @@ export const equilibria: Equilibrium[] = [
     id: 15,
     equation: '2NO(g) + O₂(g) ⇌ 2NO₂(g)',
     name: 'Nitrogen Oxide Formation',
-    nameIs: 'Myndun köfnunarefnisoxíðs',
+    nameIs: 'Myndun nituroxíðs',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'NO', coefficient: 2, phase: 'g', display: '🔴⚫' },
@@ -592,7 +592,7 @@ export const equilibria: Equilibrium[] = [
     id: 19,
     equation: 'N₂(g) + O₂(g) ⇌ 2NO(g)',
     name: 'Nitrogen Fixation',
-    nameIs: 'Köfnunarefnisbinding',
+    nameIs: 'Niturbinding',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
@@ -608,7 +608,7 @@ export const equilibria: Equilibrium[] = [
       products: 2,
     },
     description: 'Lightning in atmosphere fixes nitrogen.',
-    descriptionIs: 'Eldingar í andrúmslofti binda köfnunarefni.',
+    descriptionIs: 'Eldingar í andrúmslofti binda nitur.',
     possibleStresses: [
       { type: 'add-reactant', target: 'N₂' },
       { type: 'increase-temp', target: null },

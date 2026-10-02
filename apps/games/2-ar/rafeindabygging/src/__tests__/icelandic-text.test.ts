@@ -20,9 +20,8 @@ import { describe, expect, it } from 'vitest';
  * - repulsion is `fráhrinding` (corpus 28 to 0; `2-ar/vsepr-geometry` agrees)
  * - sodium, calcium and strontium take the -íum names the corpus uses (as bare
  *   words, natríum 73 to 2, kalsíum 37 to 5, strontíum 15 to 5), as `1-ar/lotukerfid` and
- *   this game's own menu already did. Nitrogen is deliberately not held here:
- *   the corpus writes both köfnunarefni and nitur, the platform ships both, and
- *   which one the games should use is Siggi's call.
+ *   this game's own menu already did. Nitrogen is `nitur`, Siggi's ruling of
+ *   2026-10-02 (decision 15), held platform-wide by `governed-terms.test.ts`.
  */
 const BANNED: { pattern: RegExp; why: string }[] = [
   { pattern: /rafeindauppsetning/i, why: 'electron configuration is rafeindaskipan' },

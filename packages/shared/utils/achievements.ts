@@ -125,7 +125,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   // Mastery achievements
   {
     id: 'first-level-complete',
-    name: 'Fyrsta stig lokið',
+    name: 'Fyrsta stigi lokið',
     description: 'Ljúktu stigi 1 í einhverjum leik',
     icon: '✅',
     category: 'mastery',

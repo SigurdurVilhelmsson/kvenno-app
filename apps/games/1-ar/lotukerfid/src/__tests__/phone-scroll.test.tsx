@@ -411,7 +411,7 @@ describe('Stig 2', () => {
       }
     }
     expect([...twoUp].sort()).toEqual(['classify', 'order-by-mass', 'trend']);
-    expect(optionsTwoUp(['Köfnunarefni (N)', 'Súrefni (O)'])).toBe(true);
+    expect(optionsTwoUp(['Brennisteinn (S)', 'Súrefni (O)'])).toBe(true);
     expect(optionsTwoUp(['Þau eru öll jarðalkalímálmar'])).toBe(false);
   });
 });

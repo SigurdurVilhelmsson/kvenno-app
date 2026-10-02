@@ -21,7 +21,7 @@ export const FORMATION_ENTHALPIES: Record<string, { value: number; name: string 
   'H2O(l)': { value: -285.8, name: 'Vatn (fljótandi)' },
   'H2O(g)': { value: -241.8, name: 'Vatnsgufa' },
   'CO2(g)': { value: -393.5, name: 'Koldíoxíð' },
-  'CO(g)': { value: -110.5, name: 'Kolsýringur' },
+  'CO(g)': { value: -110.5, name: 'Kolmónoxíð' },
   'CH4(g)': { value: -74.8, name: 'Metan' },
   'C2H6(g)': { value: -84.7, name: 'Etan' },
   'C2H5OH(l)': { value: -277.7, name: 'Etanól' },
