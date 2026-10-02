@@ -93,7 +93,7 @@ export const challenges: MechanismChallenge[] = [
     ],
     hint: 'Hugsaðu um umferð: hægasti bíllinn ákvarðar hraða allra',
     conceptExplanation:
-      'Hraðatakmarkandi skref (rate-determining step) er hægasta grunnskrefið. Heildarhraðinn getur aldrei verið hraðari en hægasta skrefið.',
+      'Hraðatakmarkandi skref er hægasta grunnskrefið. Heildarhraðinn getur aldrei verið hraðari en hægasta skrefið.',
   },
   {
     id: 3,

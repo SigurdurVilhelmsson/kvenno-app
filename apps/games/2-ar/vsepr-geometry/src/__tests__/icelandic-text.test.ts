@@ -48,6 +48,12 @@ describe('vsepr-geometry text', () => {
 
   it.each([
     ['Syna visbendingu', /Syna visbendingu/],
+    // Decision 6 (c): no English glosses outside a definition box, and no English subtitles
+    // under the Icelandic shape names; the lone-pair and bonding-pair abbreviations are
+    // written out in Icelandic.
+    ['an English gloss in parentheses', /\((?:electron|molecular|octahedral|hybridization)/i],
+    ['English shape subtitles', /nameEn/],
+    ['the pair abbreviations', /(?<![\w-])(?:lp|bp|LP|BP)(?![\w-])/],
     // Decisions item 68: sp³d² in complex-ion notation, offered as a wrong option on SF₆.
     ['d²sp³ as a distractor for sp³d²', /d²sp³/],
     // Decisions item 69: N-H dipoles drawn away from N, against Brown's δ− convention.

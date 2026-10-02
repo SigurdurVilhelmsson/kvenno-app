@@ -4112,7 +4112,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           // The shape picker is a radio group on a phone and a grid of buttons elsewhere
           // (desktop-compare replays this path at 1280 px), so the chip is found by its label.
-          css: 'button:has-text("Octahedral")',
+          css: 'button:has-text("Áttflötungur"):has-text("SF₆")',
         },
         {
           wait: 500,

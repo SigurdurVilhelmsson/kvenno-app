@@ -1125,8 +1125,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                                 strokeWidth="2"
                                 strokeDasharray="3 2"
                               />
-                              <text x="55" y="48" fontSize="8" fill="#ec4899" fontWeight="bold">
-                                LP
+                              <text
+                                x="57"
+                                y="48"
+                                fontSize="8"
+                                fill="#ec4899"
+                                fontWeight="bold"
+                                textAnchor="end"
+                              >
+                                stakt par
                               </text>
                               <ellipse
                                 cx="115"
@@ -1139,7 +1146,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                                 strokeDasharray="3 2"
                               />
                               <text x="125" y="108" fontSize="8" fill="#ec4899" fontWeight="bold">
-                                LP
+                                stakt par
                               </text>
                               <path
                                 d="M 90 50 A 30 30 0 0 1 120 80"
@@ -1383,8 +1390,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <thead>
                 <tr className="bg-warm-50">
                   <th className="p-1 sm:p-2 text-left">Svæði rafeindaþéttleika</th>
-                  <th className="p-1 sm:p-2 text-left">BP</th>
-                  <th className="p-1 sm:p-2 text-left">LP</th>
+                  <th className="p-1 sm:p-2 text-left">Tengisvæði</th>
+                  <th className="p-1 sm:p-2 text-left">Stök pör</th>
                   <th className="p-1 sm:p-2 text-left">Lögun</th>
                   <th className="p-1 sm:p-2 text-left">Horn</th>
                 </tr>

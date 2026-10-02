@@ -314,7 +314,8 @@ export function ElectronRepulsionAnimation({
             }`}
           >
             {geo.domains} svæði
-            {geo.lonePairs > 0 && ` (${geo.lonePairs} lp)`}
+            {geo.lonePairs > 0 &&
+              ` (${geo.lonePairs} ${geo.lonePairs === 1 ? 'stakt par' : 'stök pör'})`}
           </button>
         ))}
       </div>

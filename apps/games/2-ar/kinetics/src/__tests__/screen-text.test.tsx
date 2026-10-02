@@ -38,6 +38,12 @@ const RULES: { name: string; pattern: RegExp }[] = [
   { name: 'the English abbreviation RDS', pattern: /\bRDS\b/ },
   { name: 'English "vs"', pattern: /\bvs\b/ },
   { name: 'literal markdown', pattern: /\*\*/ },
+  // Decision 6 (c): an English term may follow its Icelandic one only in a definition box, and
+  // then in the book's `(e. …)` form. Bare glosses sat in question topics and hints.
+  {
+    name: 'a bare English gloss, not in (e. …) form',
+    pattern: /\((?:reaction|orientation|catalysts?|collision|rate-determining|fast equilibrium)/i,
+  },
   // Misspellings.
   { name: '"sameidir" for sameindir', pattern: /sameid/i },
   { name: '"kennning" with three n', pattern: /kennning/i },

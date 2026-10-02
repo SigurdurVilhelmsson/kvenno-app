@@ -181,7 +181,7 @@ describe('Stig 1, explore', () => {
     expect(view.getByRole('tabpanel').textContent).toContain('Smelltu á lögun');
 
     // A pick is shown in the open tab, and the tabs and that tab are brought into view.
-    fireEvent.click(view.getByRole('radio', { name: /Áttflötungur Octahedral/ }));
+    fireEvent.click(view.getByRole('radio', { name: /^Áttflötungur/ }));
     expect(view.getByRole('radio', { name: /Áttflötungur/ }).getAttribute('aria-checked')).toBe(
       'true'
     );
@@ -201,7 +201,7 @@ describe('Stig 1, explore', () => {
     const view = within(container);
     expect(view.queryByRole('tablist')).toBeNull();
     expect(view.queryByRole('radiogroup')).toBeNull();
-    fireEvent.click(view.getByRole('button', { name: /Línuleg Linear/ }));
+    fireEvent.click(view.getByRole('button', { name: /^Línuleg/ }));
     expect(view.getByText('Rafeindalögun')).toBeTruthy();
     expect(scrollBy).not.toHaveBeenCalled();
   });
@@ -209,7 +209,7 @@ describe('Stig 1, explore', () => {
   it('between a phone and md, brings the details into view as the old helper did', () => {
     width = 'tablet';
     const { container } = render(<Level1 onComplete={vi.fn()} onBack={vi.fn()} />);
-    fireEvent.click(within(container).getByRole('button', { name: /Línuleg Linear/ }));
+    fireEvent.click(within(container).getByRole('button', { name: /^Línuleg/ }));
     expect(scrollBy).toHaveBeenCalledWith({ top: -300, behavior: 'smooth' });
   });
 });
