@@ -28,6 +28,12 @@ import { deriveEmpirical, type Derivation } from '../engine/empirical';
  * ratio, and the feedback can say *which* column went wrong rather than only
  * that the formula does not match.
  *
+ * A wrong column is answered in two tiers, as `HintSystem` tiers its hints
+ * (decisions item 46, option b): the first wrong try marks which cells are wrong
+ * and gives that column's hint; only a second wrong try on the same column
+ * prints `rétt: x` beside them. It used to print every right value on the
+ * first try, so entering zeros and copying them passed every column.
+ *
  * No score and no timer — a practice phase, per the April 2026 structure.
  */
 
@@ -72,11 +78,30 @@ function close(got: number, want: number): boolean {
   return Math.abs(got - want) <= Math.abs(want) * TOLERANCE;
 }
 
+/**
+ * The Vísitala column's hint, built from the compound on screen. It used to say
+ * `1,5 námundað í 2` for every compound, Kalíumdíkrómat's 3,5 included, and said
+ * nothing at all where no multiplier was needed.
+ */
+export function subscriptHint(derived: Derivation): string {
+  if (derived.multiplier === 1) {
+    return 'Hlutföllin hér eru þegar heilar tölur, eða mjög nálægt þeim. Vísitölurnar eru hlutföllin sjálf, námunduð að næstu heilu tölu.';
+  }
+  const off = derived.rows.find((r) => Math.abs(r.ratio - Math.round(r.ratio)) > 0.1);
+  const example = off
+    ? ` ${fmt(off.ratio, 1)} námundað í ${Math.round(off.ratio)} gefur efni sem er ekki til.`
+    : '';
+  return `Hlutföllin hér eru ekki heil. Margfaldaðu þau öll með sömu tölu, ${derived.multiplier} dugar, í stað þess að námunda hvert fyrir sig.${example}`;
+}
+
 export function AefaScreen({ onComplete, onBack }: Props) {
   const [index, setIndex] = useState(0);
   const [column, setColumn] = useState<Column>('moles');
   const [entries, setEntries] = useState<Record<string, string>>({});
   const [verdict, setVerdict] = useState<null | { ok: boolean; wrong: string[] }>(null);
+  // Wrong tries on the column on screen; the right values show from the second.
+  const [wrongTries, setWrongTries] = useState(0);
+  const showValues = wrongTries >= 2;
 
   const problem = PROBLEMS[index];
   const derived: Derivation = useMemo(
@@ -98,11 +123,13 @@ export function AefaScreen({ onComplete, onBack }: Props) {
       .filter((r) => !close(parseStudentNumber(entries[r.element] ?? ''), expected(r.element)))
       .map((r) => r.element);
     setVerdict({ ok: wrong.length === 0, wrong });
+    if (wrong.length) setWrongTries((n) => n + 1);
   };
 
   const next = () => {
     setEntries({});
     setVerdict(null);
+    setWrongTries(0);
     if (column === 'moles') setColumn('ratio');
     else if (column === 'ratio') setColumn('subscript');
     else {
@@ -264,7 +291,16 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                     />
                     {verdict && (
                       <span className="ml-auto whitespace-nowrap text-sm text-warm-500 sm:ml-0">
-                        {isWrong ? `rétt: ${fmt(expected(r.element), decimals)}` : '✓'}
+                        {!isWrong ? (
+                          '✓'
+                        ) : showValues ? (
+                          `rétt: ${fmt(expected(r.element), decimals)}`
+                        ) : (
+                          <>
+                            <span aria-hidden="true">✗</span>
+                            <span className="sr-only">rangt</span>
+                          </>
+                        )}
                       </span>
                     )}
                   </div>
@@ -282,6 +318,13 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                 <p id="aefa-verdict" className="font-semibold">
                   Ekki alveg — {COLUMN_HEADING[column]}
                 </p>
+                <p className="mt-1">
+                  {showValues
+                    ? 'Rétt gildi eru sýnd við hvern rangan reit.'
+                    : verdict.wrong.length === 1
+                      ? 'Reiturinn sem er merktur ✗ er rangur. Lagaðu hann og athugaðu aftur.'
+                      : 'Reitirnir sem eru merktir ✗ eru rangir. Lagaðu þá og athugaðu aftur.'}
+                </p>
                 {column === 'moles' && (
                   <p className="mt-1">
                     Mundu að deila, ekki margfalda: prósentan er grömm og mólmassinn er g/mól, svo
@@ -294,13 +337,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                     talan á að verða nákvæmlega 1.
                   </p>
                 )}
-                {column === 'subscript' && derived.multiplier > 1 && (
-                  <p className="mt-1">
-                    Hlutföllin hér eru ekki heil. Margfaldaðu þau <strong>öll</strong> með sömu tölu
-                    —{` ${derived.multiplier}`} dugar — í stað þess að námunda hvert fyrir sig. 1,5
-                    námundað í 2 er efni sem er ekki til.
-                  </p>
-                )}
+                {column === 'subscript' && <p className="mt-1">{subscriptHint(derived)}</p>}
               </div>
             )}
 
