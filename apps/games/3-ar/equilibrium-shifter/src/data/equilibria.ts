@@ -361,7 +361,7 @@ export const equilibria: Equilibrium[] = [
     id: 12,
     equation: '2SO₂(g) + O₂(g) ⇌ 2SO₃(g)',
     name: 'Contact Process',
-    nameIs: 'Snertiaðferð',
+    nameIs: 'Snertiferlið',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'SO₂', coefficient: 2, phase: 'g', display: '💛' },

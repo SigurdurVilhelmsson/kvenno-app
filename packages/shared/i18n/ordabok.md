@@ -125,6 +125,7 @@ conical flask;keiluflaska
 conjugate acid;samoka sýra
 conjugate base;samoka basi
 constitutional isomer;byggingarhverfa
+contact process;snertiferlið
 coordination compound ;girðisamband
 coordination number;girðitala
 corrosion;tæring
@@ -279,10 +280,13 @@ homogeneous equilibrium;einsleitt jafnvægi
 hot plate;hitahræra
 Hund's rule;regla Hunds
 hydration;vötnun
+hydrochloric acid;saltsýra
 hydrocyanic acid;blásýra
 hydrofluoric acid;flússýra
 hydrogen bond;vetnistengi
+hydrogen chloride;vetnisklóríð
 hydrogen cyanide;vetnissýaníð
+hydrogen fluoride;vetnisflúoríð
 hydrogenation;vetnun
 hydrolysis;vatnsrof
 hydrophilic;vatnssækinn
@@ -329,8 +333,8 @@ isotope;samsæta
 kinetic energy;hreyfiorka
 kinetics;hraðafræði
 lab coat;sloppur
-lanthanide;lanþaníð
-lanthanides;lanþaníðar
+lanthanide;lantaníð
+lanthanides;lantaníðar
 lattice;grind
 lattice energy;grindarorka
 lattice point;grindarpunktur
@@ -464,6 +468,7 @@ polymer;fjölliða
 polymerization;fjölliðun
 polyprotic acid;fjölvirk sýra
 positron;jáeind
+post-transition metal;tregur málmur
 potential energy;stöðuorka
 potential function;mættisfall
 power;afl
@@ -529,6 +534,7 @@ saturated;mettaður
 scanning tunnel microscope;smugsjá
 Schlenk flask;Schlenk flaska
 Schlenk line;Schlenk lína
+scientific notation;staðalform
 second order reaction;annars stigs efnahvarf
 see-saw;vegasalt
 seed crystal;sáðkristall
@@ -634,6 +640,7 @@ volume percentage;rúmmálsprósenta
 volumetric flask;mæliflaska
 volumetric pipette;belgpípetta
 watch glass;úrgler
+water-gas shift reaction;vatnsgashvarf
 wave function;bylgjufall
 wavelength;bylgjulengd
 weak acid;veik sýra

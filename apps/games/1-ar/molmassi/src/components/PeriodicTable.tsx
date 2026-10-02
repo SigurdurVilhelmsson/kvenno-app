@@ -131,9 +131,9 @@ export function PeriodicTable({
     { key: 'alkali-metal', label: 'Alkalímálmar' },
     { key: 'alkaline-earth', label: 'Jarðalkalímálmar' },
     { key: 'transition-metal', label: 'Hliðarmálmar' },
-    { key: 'post-transition-metal', label: 'P-málmar' },
+    { key: 'post-transition-metal', label: 'Tregir málmar' },
     { key: 'metalloid', label: 'Hálfmálmar' },
-    { key: 'nonmetal', label: 'Málmleysingjar' },
+    { key: 'nonmetal', label: 'Aðrir málmleysingjar' },
     { key: 'halogen', label: 'Halógen' },
     { key: 'noble-gas', label: 'Eðalgös' },
   ];

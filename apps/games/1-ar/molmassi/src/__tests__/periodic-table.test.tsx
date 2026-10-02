@@ -27,3 +27,18 @@ describe('periodic table detail panel', () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * The legend's words, ruled 2026-10-02 (decisions items 21 and 35): post-transition metals are
+ * `tregir málmar`, not the coined `P-málmar`, and the plain-nonmetal swatch reads
+ * `Aðrir málmleysingjar`, because the halogens and noble gases beside it are málmleysingjar too.
+ */
+describe('periodic table legend', () => {
+  it('names the categories as ruled', () => {
+    const { container } = render(<PeriodicTable onClose={() => {}} />);
+    const text = container.textContent ?? '';
+    expect(text).toContain('Tregir málmar');
+    expect(text).toContain('Aðrir málmleysingjar');
+    expect(text).not.toMatch(/P-málm/);
+  });
+});

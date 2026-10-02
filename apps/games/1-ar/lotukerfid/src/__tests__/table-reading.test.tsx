@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 
 import { Level3 } from '../components/Level3';
 import { PeriodicTable } from '../components/PeriodicTable';
+import { CATEGORY_LABELS, getClassification } from '../data/elements';
 
 /**
  * The text that teaches a student to read a table cell describes the cell the
@@ -32,6 +33,32 @@ describe('reading a cell', () => {
     const text = heading.nextElementSibling?.textContent ?? '';
     expect(text).toMatch(/sætistalan er efst/);
     expect(text).toMatch(/meðalatómmassinn er neðst/);
+  });
+});
+
+/**
+ * The legend agrees with what Stig 2 grades.
+ *
+ * Stig 2 counts halogens and noble gases as málmleysingjar (`getClassification`), while the
+ * legend set them beside a swatch called plain `Málmleysingjar`, as if they were not. Ruled
+ * 2026-10-02 (decisions item 35): that swatch is `Aðrir málmleysingjar`. Item 21 named the
+ * post-transition metals `tregir málmar` and the f-block `lantaníð` and `aktiníð`.
+ */
+describe('the legend', () => {
+  it('calls the plain nonmetals the other ones, since Stig 2 counts halogens and noble gases too', () => {
+    expect(getClassification('halogen')).toBe('málmleysingi');
+    expect(getClassification('noble-gas')).toBe('málmleysingi');
+    const { container } = render(<PeriodicTable interactive={false} />);
+    const text = container.textContent ?? '';
+    expect(text).toContain('Ml — Aðrir málmleysingjar');
+    expect(text).toContain('Tm — Tregir málmar');
+    expect(text).not.toMatch(/P-málm/);
+  });
+
+  it('labels each category with the ruled word', () => {
+    expect(CATEGORY_LABELS['post-transition-metal']).toBe('Tregur málmur');
+    expect(CATEGORY_LABELS.lanthanide).toBe('Lantaníð');
+    expect(CATEGORY_LABELS.actinide).toBe('Aktiníð');
   });
 });
 

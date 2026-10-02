@@ -174,9 +174,9 @@ export const PUZZLES: Puzzle[] = [
   },
   {
     id: 5,
-    title: 'SO₃ - Snertiferlið (Contact Process)',
+    title: 'SO₃ - Snertiferlið',
     description:
-      '🏭 SO₃ framleiðsla er lykilskref í snertiferlinu (Contact Process) sem framleiðir brennisteinssýru - mest framleidda efnið í heiminum!',
+      '🏭 SO₃ framleiðsla er lykilskref í snertiferlinu sem framleiðir brennisteinssýru - mest framleidda efnið í heiminum!',
     targetEquation: {
       reactants: 'SO₂(g) + ½O₂(g)',
       products: 'SO₃(g)',

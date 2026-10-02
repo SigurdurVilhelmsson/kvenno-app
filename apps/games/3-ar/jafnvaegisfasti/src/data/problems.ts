@@ -76,7 +76,7 @@ export const EXPRESSION_PROBLEMS: ExpressionProblem[] = [
     reaction: reactionBy('brom'),
     difficulty: 'thung',
     point:
-      'Sama efnið beggja vegna, í sitt hvorum fasa. Vökvinn dettur út og K er einfaldlega gufuþrýstingurinn.',
+      'Sama efnið beggja vegna, í sitt hvorum fasa. Vökvinn dettur út og K er einfaldlega gufunarþrýstingurinn.',
   },
   {
     id: 'blyklorid',

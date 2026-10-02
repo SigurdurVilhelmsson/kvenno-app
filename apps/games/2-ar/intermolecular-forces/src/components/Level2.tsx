@@ -62,7 +62,7 @@ export const problems: RankingProblem[] = [
       {
         id: 'C',
         formula: 'HCl',
-        name: 'Saltsýra',
+        name: 'Vetnisklóríð',
         molarMass: 36.5,
         boilingPoint: -85,
         imfs: ['London', 'Tvískaut'],
@@ -113,9 +113,9 @@ export const problems: RankingProblem[] = [
   },
   {
     id: 3,
-    question: 'Raðaðu eftir GUFUÞRÝSTINGI við 25°C (lægst til hæst):',
+    question: 'Raðaðu eftir GUFUNARÞRÝSTINGI við 25°C (lægst til hæst):',
     property: 'vaporPressure',
-    propertyName: 'Gufuþrýstingur',
+    propertyName: 'Gufunarþrýstingur',
     compounds: [
       {
         id: 'A',
@@ -145,8 +145,8 @@ export const problems: RankingProblem[] = [
     correctOrder: ['A', 'C', 'B'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Gufuþrýstingur er ÖFUGUR við suðumark. Sterkari IMF → lægri gufuþrýstingur. H₂O hefur sterkustu vetnistengin → lægstan gufuþrýsting.',
-    hint: 'Gufuþrýstingur er öfugur við suðumark — sterkari kraftar = lægri gufuþrýstingur.',
+      'Gufunarþrýstingur er ÖFUGUR við suðumark. Sterkari IMF → lægri gufunarþrýstingur. H₂O hefur sterkustu vetnistengin → lægstan gufunarþrýsting.',
+    hint: 'Gufunarþrýstingur er öfugur við suðumark — sterkari kraftar = lægri gufunarþrýstingur.',
   },
   {
     id: 4,

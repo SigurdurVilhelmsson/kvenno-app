@@ -63,13 +63,13 @@ export const CATEGORY_LABELS: Record<ElementCategory, string> = {
   'alkali-metal': 'Alkalímálmur',
   'alkaline-earth': 'Jarðalkalímálmur',
   'transition-metal': 'Hliðarmálmur',
-  'post-transition-metal': 'P-málmur',
+  'post-transition-metal': 'Tregur málmur',
   metalloid: 'Hálfmálmur',
   nonmetal: 'Málmleysingi',
   halogen: 'Halógen',
   'noble-gas': 'Eðalgas',
   lanthanide: 'Lantaníð',
-  actinide: 'Aktíníð',
+  actinide: 'Aktiníð',
 };
 
 // Classification: metal, nonmetal, or metalloid
