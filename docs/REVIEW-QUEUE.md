@@ -254,6 +254,9 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 - [x] **Lewis +1 formal-charge badge** is red on a red O atom, so it is hard to see. Lewis no
       longer draws with `AnimatedMolecule` (PR #71); the shared badge now has a white ring as
       well, 2026-10-01, PR #72.
+- [ ] **vsepr Stig 1, the three-domain bent card** (`Level1.tsx`, `bent-2`) says `Stakt par ofan
+    á þremur bindandi pörum: þríhyrningslaga pýramídi`, which describes the trigonal pyramid.
+      Found 2026-10-02.
 - [ ] **`bg-kvenno-orange-dark` and `hover:bg-kvenno-orange-dark` do nothing.** No such colour
       token exists (the theme has `kvenno-orange-600`), so 77 hover states across the games never
       change colour. Found 2026-10-01; Lewis uses `kvenno-orange-600`.
