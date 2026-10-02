@@ -96,6 +96,9 @@ for (const game of ['vsepr-geometry', 'lewis-structures', 'intermolecular-forces
     );
     expect(referring.length).toBe(1);
     expect(referring[0]).toMatch(/^MoleculeViewer3D-/);
-    expect(readFileSync(join(dir, `${game}.js`), 'utf8')).not.toContain(font!);
+    // The entry is hashed beside the chunks (REVIEW-QUEUE D2), named for the game.
+    const entry = readdirSync(chunks).find((f) => f.startsWith(`${game}-`) && f.endsWith('.js'));
+    expect(entry, `entry bundle under assets/${game}/`).toBeDefined();
+    expect(readFileSync(join(chunks, entry!), 'utf8')).not.toContain(font!);
   });
 }
