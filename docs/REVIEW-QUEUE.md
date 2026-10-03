@@ -289,7 +289,9 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       or give them a short cache header. Hashed 2026-10-02 (PR #82), under `assets/{game}/`.
 - [x] **pnpm 9.15 → current:** 12.8.1, 2026-09-29, PR #69. It needed `allowBuilds` for esbuild
       and unrs-resolver. `pnpm deploy` still bundles the backend.
-- [ ] **`scripts/desktop-compare.mjs` is not in CI.** It needs a base build in the same job, and a
-      mask for the animated states: buffer Stig 2, vsepr Stig 2, the redox galvanic cell.
+- [x] **`scripts/desktop-compare.mjs` is not in CI.** It needs a base build in the same job, and a
+      mask for the animated states: buffer Stig 2, vsepr Stig 2, the redox galvanic cell. In CI
+      from 2026-10-03 as the `desktop-compare` job: a report in the job summary, not a gate,
+      since a content change moves desktop geometry on purpose.
 - [x] **`e2e/` has no `tsconfig`**, so `pnpm type-check` does not cover the specs. Added
       2026-10-02 (PR #82); `pnpm type-check` now runs it, and the specs were already clean.

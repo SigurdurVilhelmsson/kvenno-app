@@ -34,16 +34,31 @@
  * step semantics as the phone specs (e2e/screen-steps.ts) and `Math.random`
  * seeded, so a shuffle is the same in both builds.
  *
- * Usage (not in CI yet):
+ * Usage:
  *   pnpm build   # the head, into dist/
  *   git worktree add ../base <base-commit> && (cd ../base && pnpm install && pnpm build:games)
  *   node scripts/desktop-compare.mjs --base ../base/dist [--head dist]
- *        [--game 2-ar/hess-law] [--no-png] [--out <dir>] [--jobs 4]
+ *        [--game 2-ar/hess-law] [--no-png] [--out <dir>] [--jobs 4] [--markdown <file>]
  *
  * Exits 1 when any state differs, 0 when all are identical.
+ *
+ * **In CI as a report, not a gate (2026-10-03).** The `desktop-compare` job in
+ * `.github/workflows/ci.yml` runs this on every pull request against the PR's
+ * base and publishes the differing states in the job summary, with the PNGs as
+ * an artifact. It does not fail the PR: a content change — a reworded string, a
+ * renamed term — moves desktop geometry on purpose, and a gate that fails every
+ * such PR would be ignored. A difference in a PR that should not touch the
+ * desktop is still a defect; read the summary.
  */
 import { createServer } from 'node:http';
-import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from 'node:fs';
+import {
+  appendFileSync,
+  createReadStream,
+  existsSync,
+  mkdirSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -65,6 +80,8 @@ const { values: args } = parseArgs({
     out: { type: 'string', default: join(tmpdir(), 'desktop-compare') },
     jobs: { type: 'string', default: '4' },
     chromium: { type: 'string' },
+    // A Markdown summary of the run, appended to this file (CI passes $GITHUB_STEP_SUMMARY).
+    markdown: { type: 'string' },
   },
 });
 
@@ -311,6 +328,46 @@ function compare(state, base, head) {
   return { problems, notes };
 }
 
+/** The run as Markdown: what differs first, then the focus moves to check against P3. */
+function markdownSummary(report) {
+  const differ = report.filter((r) => r.problems.length);
+  const focus = report.filter((r) => r.notes.some((n) => n.startsWith('focus')));
+  const unstable = report.filter((r) => r.notes.some((n) => n.startsWith('unstable')));
+  const cell = (text) => text.split('\n')[0].replace(/\|/g, '\\|');
+  const lines = [
+    '## Desktop comparison (1280×800, base against head)',
+    '',
+    `${report.length} states: **${differ.length} differ**, ${unstable.length} unstable, ` +
+      `${focus.length} with a focus change to review.`,
+    '',
+  ];
+  if (differ.length) {
+    lines.push(
+      'A difference is expected where the PR changes what a desktop shows — text, a term, a ' +
+        'layout. Anywhere else it is a defect. PNGs of each differing state are in the ' +
+        '`desktop-compare` artifact.',
+      '',
+      '| State | First difference |',
+      '| --- | --- |',
+      ...differ.map((r) => `| ${cell(`${r.game} — ${r.name}`)} | ${cell(r.problems[0])} |`),
+      ''
+    );
+  }
+  if (focus.length) {
+    lines.push(
+      '<details><summary>Focus changes (P3 moves focus on purpose; check each is one of those)</summary>',
+      '',
+      ...focus.map(
+        (r) => `- ${r.game} — ${r.name}: ${r.notes.find((n) => n.startsWith('focus')).slice(7)}`
+      ),
+      '',
+      '</details>',
+      ''
+    );
+  }
+  return lines.join('\n') + '\n';
+}
+
 async function main() {
   const games = Object.entries(GAME_SCREENS).filter(
     ([game]) => !args.game?.length || args.game.includes(game)
@@ -385,6 +442,7 @@ async function main() {
 
   report.sort((x, y) => `${x.game}${x.name}`.localeCompare(`${y.game}${y.name}`));
   writeFileSync(join(args.out, 'report.json'), JSON.stringify(report, null, 2));
+  if (args.markdown) appendFileSync(args.markdown, markdownSummary(report));
   const differ = report.filter((r) => r.problems.length).length;
   const unstable = report.filter((r) => r.notes.some((n) => n.startsWith('unstable'))).length;
   const focusNotes = report.filter((r) => r.notes.some((n) => n.startsWith('focus'))).length;

@@ -431,7 +431,12 @@ games were migrated; the design's Outcome section has the before→after per gam
   both builds and replays every recorded state and loop at 1280×800: geometry and full-page PNGs
   must be identical, `scrollY` after each commit must match, and focus changes are reported (focus
   falling to `<body>` fails). A difference that is not a focus move is a defect, not a note — do
-  not mask it away.
+  not mask it away. **It runs on every PR since 2026-10-03** as the `desktop-compare` CI job:
+  the base's games are built in the same job, the comparison covers the games the PR touches
+  (all 26 when it touches shared code, `e2e/`, `scripts/` or the build), and the result is the
+  job summary plus a `desktop-compare` artifact of PNGs. **It is a report, not a gate** — a
+  content change moves desktop geometry on purpose — so read the summary on any PR that should
+  not touch the desktop.
 
 ### Adding a new experiment to lab reports
 
