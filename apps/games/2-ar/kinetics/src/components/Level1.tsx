@@ -7,7 +7,6 @@ import { CatalystEffectDemo } from './CatalystEffectDemo';
 import { CollisionDemo } from './CollisionDemo';
 import { MaxwellBoltzmann } from './MaxwellBoltzmann';
 import { challenges } from '../data/level1-questions';
-import { calculateScore } from '../utils/kinetics-scoring';
 
 // Misconceptions for kinetics concepts
 const MISCONCEPTIONS: Record<number, string> = {
@@ -30,7 +29,8 @@ const RELATED_CONCEPTS: Record<number, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  /** How many challenges were answered right, out of how many. A hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -39,8 +39,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [, setTotalHintsUsed] = useState(0);
-  const [score, setScore] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   // Shared state for visualizations
   const [temperature, setTemperature] = useState(350);
@@ -102,10 +102,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
     const selectedOption = shuffledOptions.find((opt) => opt.id === selectedAnswer);
     const isCorrect = selectedOption?.correct ?? false;
-    const points = calculateScore(isCorrect);
-    if (isCorrect) {
-      setScore((prev) => prev + points);
-    }
+    if (isCorrect) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -116,7 +113,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -141,7 +138,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* Header. On a phone the row is one line tall (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
@@ -153,7 +150,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="text-sm text-warm-600">
               Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-blue-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -238,10 +234,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <div className="contents phone:flex phone:flex-wrap phone:items-center phone:gap-x-4 phone:gap-y-2">
                 {!showHint && (
                   <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setTotalHintsUsed((prev) => prev + 1);
-                    }}
+                    onClick={() => setShowHint(true)}
                     className="text-blue-600 hover:text-blue-800 text-sm underline mb-4 phone:mb-0 phone:shrink-0 pointer-coarse:min-h-11"
                   >
                     Sýna vísbendingu

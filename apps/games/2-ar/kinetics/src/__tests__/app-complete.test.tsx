@@ -9,7 +9,7 @@ import { challenges } from '../data/level3-questions';
 /**
  * Levels are not gated (Siggi's ruling, 2026-08-29), so a student may play Stig 3 first. The
  * game then sent them to its completion screen — "Til hamingju! Þú hefur lokið öllum stigum!" —
- * with Stig 1 and Stig 2 still at zero. The screen that sums up the run must not claim a run
+ * with Stig 1 and Stig 2 never played. The screen that sums up the run must not claim a run
  * that did not happen.
  */
 function playLevel3(container: HTMLElement) {

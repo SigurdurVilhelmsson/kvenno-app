@@ -14,7 +14,8 @@ import type { MechanismStep } from '../data/level3-questions';
 import { keepFormulasWhole } from '../utils/keep-formulas-whole';
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  /** How many challenges were answered right, out of how many. A hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -25,8 +26,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -102,9 +103,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     if (!selectedAnswer) return;
 
     const selectedOption = shuffledOptions.find((opt) => opt.id === selectedAnswer);
-    if (selectedOption?.correct) {
-      setScore((prev) => prev + 20);
-    }
+    if (selectedOption?.correct) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -115,7 +114,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -236,7 +235,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* Header. On a phone the row is one line tall (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
@@ -248,7 +247,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="text-sm text-warm-600">
               Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-purple-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -402,10 +400,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <div className="contents phone:flex phone:flex-wrap phone:items-center phone:gap-x-4 phone:gap-y-2">
                 {!showHint && (
                   <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setTotalHintsUsed((prev) => prev + 1);
-                    }}
+                    onClick={() => setShowHint(true)}
                     className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 phone:mb-0 phone:shrink-0 pointer-coarse:min-h-11"
                   >
                     Sýna vísbendingu

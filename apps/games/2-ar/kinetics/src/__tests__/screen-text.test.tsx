@@ -99,12 +99,14 @@ describe('what a student reads in Hvarfhraði', () => {
       'kinetics-progress',
       JSON.stringify({
         level1Completed: true,
-        level1Score: 120,
+        level1Correct: 6,
+        level1Total: 6,
         level2Completed: true,
-        level2Score: 120,
+        level2Correct: 5,
+        level2Total: 6,
         level3Completed: true,
-        level3Score: 120,
-        totalGamesPlayed: 3,
+        level3Correct: 6,
+        level3Total: 6,
       })
     );
     const { container, unmount } = render(<App />);

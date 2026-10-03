@@ -31,11 +31,19 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
 
 export type Pick = 'correct' | 'wrong';
 
+/** One pick for every challenge, or a pick per challenge by its index. */
+export type Picks = Pick | ((index: number) => Pick);
+
+const pickAt = (picks: Picks, index: number): Pick =>
+  typeof picks === 'function' ? picks(index) : picks;
+
 export interface Playthrough {
   /** Everything read on every screen, joined. */
   text: string;
-  /** The score the level reported to `onComplete`. */
-  score: number;
+  /** The right answers the level reported to `onComplete`. */
+  correct: number;
+  /** The number of challenges it reported them out of. */
+  total: number;
 }
 
 /** Visible text plus accessible names, so an English aria-label is caught as well. */
@@ -72,13 +80,14 @@ function advance(ui: ReturnType<typeof within>, finishLabel: string) {
   fireEvent.click(next ?? ui.getByRole('button', { name: finishLabel }));
 }
 
-export function playLevel1(pick: Pick, { useHints = false } = {}): Playthrough {
+export function playLevel1(picks: Picks, { useHints = false } = {}): Playthrough {
   const onComplete = vi.fn();
   const { container, unmount } = render(<Level1 onComplete={onComplete} onBack={vi.fn()} />);
   const ui = within(container);
   const seen: string[] = [];
 
-  for (const challenge of level1Challenges) {
+  level1Challenges.forEach((challenge, index) => {
+    const pick = pickAt(picks, index);
     if (useHints) fireEvent.click(ui.getByRole('button', { name: 'Sýna vísbendingu' }));
     seen.push(readable(container));
     const target = challenge.options!.find((o) => (pick === 'correct' ? o.correct : !o.correct))!;
@@ -86,11 +95,11 @@ export function playLevel1(pick: Pick, { useHints = false } = {}): Playthrough {
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
     seen.push(readable(container));
     advance(ui, 'Ljúka stigi 1');
-  }
+  });
 
-  const score = onComplete.mock.calls[0]?.[0];
+  const [correct, total] = onComplete.mock.calls[0] ?? [];
   unmount();
-  return { text: seen.join('\n'), score };
+  return { text: seen.join('\n'), correct, total };
 }
 
 /** The order buttons (0, 1, 2) in the row labelled `Röð í [X]:`. */
@@ -106,7 +115,10 @@ function orderButton(container: HTMLElement, species: 'A' | 'B', order: number):
   return button;
 }
 
-export function playLevel2(pick: Pick, onEachResult?: (index: number, c: HTMLElement) => void) {
+export function playLevel2(
+  picks: Picks,
+  onEachResult?: (index: number, c: HTMLElement) => void
+): Playthrough {
   const onComplete = vi.fn();
   const { container, unmount } = render(<Level2 onComplete={onComplete} onBack={vi.fn()} />);
   const ui = within(container);
@@ -114,6 +126,7 @@ export function playLevel2(pick: Pick, onEachResult?: (index: number, c: HTMLEle
   fireEvent.click(ui.getByRole('button', { name: /Byrja æfingar/ }));
 
   level2Challenges.forEach((challenge, index) => {
+    const pick = pickAt(picks, index);
     fireEvent.click(ui.getByRole('button', { name: 'Sýna vísbendingu' }));
     const hasB = challenge.data.some((d) => d.concentrationB > 0);
     const wrong = (n: number) => (n + 1) % 3;
@@ -146,19 +159,20 @@ export function playLevel2(pick: Pick, onEachResult?: (index: number, c: HTMLEle
     advance(ui, 'Ljúka stigi 2');
   });
 
-  const score = onComplete.mock.calls[0]?.[0];
+  const [correct, total] = onComplete.mock.calls[0] ?? [];
   unmount();
-  return { text: seen.join('\n'), score };
+  return { text: seen.join('\n'), correct, total };
 }
 
-export function playLevel3(pick: Pick): Playthrough {
+export function playLevel3(picks: Picks): Playthrough {
   const onComplete = vi.fn();
   const { container, unmount } = render(<Level3 onComplete={onComplete} onBack={vi.fn()} />);
   const ui = within(container);
   const seen: string[] = [readable(container)];
   fireEvent.click(ui.getByRole('button', { name: /Byrja æfingar/ }));
 
-  for (const challenge of level3Challenges) {
+  level3Challenges.forEach((challenge, index) => {
+    const pick = pickAt(picks, index);
     fireEvent.click(ui.getByRole('button', { name: 'Sýna vísbendingu' }));
     seen.push(readable(container));
     const target = challenge.options.find((o) => (pick === 'correct' ? o.correct : !o.correct))!;
@@ -166,11 +180,11 @@ export function playLevel3(pick: Pick): Playthrough {
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
     seen.push(readable(container));
     advance(ui, 'Ljúka stigi 3');
-  }
+  });
 
-  const score = onComplete.mock.calls[0]?.[0];
+  const [correct, total] = onComplete.mock.calls[0] ?? [];
   unmount();
-  return { text: seen.join('\n'), score };
+  return { text: seen.join('\n'), correct, total };
 }
 
 /** Every string anywhere in a data structure, including hint tiers no screen shows yet. */
