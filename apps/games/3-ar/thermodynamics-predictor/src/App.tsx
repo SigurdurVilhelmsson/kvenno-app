@@ -30,6 +30,7 @@ import {
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
 import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
+import { practiceDeck } from './utils/deck';
 import { formatRounded } from './utils/format';
 import { toggleSign } from './utils/sign';
 import {
@@ -58,18 +59,38 @@ const screenOf = (mode: GameMode): Screen =>
 const toPageTop = () =>
   revealTop(document.documentElement, { anyWidth: true, always: true, gap: 0, instant: true });
 
-interface ThermoProgress {
-  score: number;
-  highScore: number;
-  bestStreak: number;
-  problemsCompleted: number;
+/** Right answers out of the problems in one Æfingarhamur round. */
+interface RoundResult {
+  correct: number;
+  total: number;
 }
 
-const DEFAULT_PROGRESS: ThermoProgress = {
-  score: 0,
-  highScore: 0,
-  bestStreak: 0,
-  problemsCompleted: 0,
+/**
+ * What the game remembers between visits, under `thermodynamics-predictor-progress`.
+ *
+ * Points and streaks belong to Keppnishamur only (mobile-pass decision 1 (b)): an
+ * Æfingarhamur round reports `N af M rétt`, and Keppnishamur keeps a best run. Progress saved
+ * before that change held a `score` that was never reset and that both modes added to, so
+ * Keppnishamur started from a lifetime total; its `highScore`, `bestStreak` and
+ * `problemsCompleted` mixed the modes too. None of it is read.
+ */
+interface ThermoProgress {
+  /** The best finished Æfingarhamur round at each difficulty. */
+  practice?: Partial<Record<Difficulty, RoundResult>>;
+  /** The best Keppnishamur run at each difficulty, in points. */
+  challengeBest?: Partial<Record<Difficulty, number>>;
+  /** The longest run of right answers in any Keppnishamur run. */
+  challengeBestStreak?: number;
+}
+
+const DEFAULT_PROGRESS: ThermoProgress = {};
+
+const DIFFICULTIES = ['beginner', 'intermediate', 'advanced'] as const;
+
+const DIFFICULTY_LABEL: Record<Difficulty, string> = {
+  beginner: '🟢 Auðvelt',
+  intermediate: '🟡 Miðlungs',
+  advanced: '🔴 Erfitt',
 };
 
 function App() {
@@ -94,6 +115,13 @@ function App() {
     resetProgress: resetStoredProgress,
   } = useGameProgress<ThermoProgress>('thermodynamics-predictor-progress', DEFAULT_PROGRESS);
   const [streak, setStreak] = useState(0);
+  // Keppnishamur's points, for the run being played: every run starts from 0.
+  const [runScore, setRunScore] = useState(0);
+  // Æfingarhamur plays a difficulty as a round, every problem once, then `N af M rétt`.
+  const [deck, setDeck] = useState<Problem[]>([]);
+  const [round, setRound] = useState<RoundResult>({ correct: 0, total: 0 });
+  /** The finished round, once its last problem is answered. */
+  const [roundResult, setRoundResult] = useState<RoundResult | null>(null);
   const [timeLeft, setTimeLeft] = useState(90);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
@@ -210,12 +238,10 @@ function App() {
     setStreak(0);
   };
 
-  // Start new problem
-  const startNewProblem = () => {
-    const problems = PROBLEMS[difficulty];
-    const randomProblem = problems[Math.floor(Math.random() * problems.length)];
-    setCurrentProblem(randomProblem);
-    setTemperature(randomProblem.defaultTemp);
+  /** Open a problem. */
+  const showProblem = (problem: Problem) => {
+    setCurrentProblem(problem);
+    setTemperature(problem.defaultTemp);
     setUserDeltaG('');
     setUserSpontaneity('');
     setShowSolution(false);
@@ -229,12 +255,36 @@ function App() {
     setTimeLeft(90);
   };
 
+  /** A Keppnishamur problem, drawn at random from the chosen difficulty. */
+  const randomProblem = () => {
+    const problems = PROBLEMS[difficulty];
+    return problems[Math.floor(Math.random() * problems.length)];
+  };
+
   /** Open Æfingarhamur or Keppnishamur at its first question. */
   const startRun = (next: 'learning' | 'challenge') => {
     setMode(next);
-    if (next === 'challenge') setStreak(0);
     setQuestionNumber(0);
-    startNewProblem();
+    if (next === 'challenge') {
+      setStreak(0);
+      setRunScore(0);
+      showProblem(randomProblem());
+    } else {
+      const newDeck = practiceDeck(PROBLEMS[difficulty]);
+      setDeck(newDeck);
+      setRound({ correct: 0, total: 0 });
+      setRoundResult(null);
+      showProblem(newDeck[0]);
+    }
+  };
+
+  /** Næsta spurning: the round's next problem, or a new draw in Keppnishamur. */
+  const nextProblem = () => {
+    if (mode === 'learning') {
+      showProblem(deck[Math.min(questionNumber, deck.length - 1)]);
+    } else {
+      showProblem(randomProblem());
+    }
   };
 
   // Calculate ΔG for the current problem at a given temperature
@@ -283,20 +333,40 @@ function App() {
 
     const deltaGCorrect = isDeltaGCorrect(userDeltaG, calculatedDeltaG);
     const spontaneityCorrect = userSpontaneity === correctSpontaneity;
-    setAnsweredCorrectly(deltaGCorrect && spontaneityCorrect);
+    const right = deltaGCorrect && spontaneityCorrect;
+    setAnsweredCorrectly(right);
 
-    if (deltaGCorrect && spontaneityCorrect) {
+    // Æfingarhamur counts the answer towards the round and scores nothing. Nothing in it shows
+    // the answer before it is given except the live ΔG° panel, which is decision 109's
+    // question, not this one; a right answer counts.
+    if (mode === 'learning') {
+      const nextRound = { correct: round.correct + (right ? 1 : 0), total: round.total + 1 };
+      setRound(nextRound);
+      if (nextRound.total >= deck.length) {
+        setRoundResult(nextRound);
+        const best = progress.practice?.[difficulty];
+        if (!best || best.total !== nextRound.total || nextRound.correct >= best.correct) {
+          updateProgress({ practice: { ...progress.practice, [difficulty]: nextRound } });
+        }
+      }
+    }
+
+    if (right && mode === 'challenge') {
       const points = 100 + streak * 10;
       const newStreak = streak + 1;
       setStreak(newStreak);
-      const newScore = progress.score + points;
+      const newScore = runScore + points;
+      setRunScore(newScore);
       updateProgress({
-        score: newScore,
-        problemsCompleted: progress.problemsCompleted + 1,
-        highScore: Math.max(progress.highScore, newScore),
-        bestStreak: Math.max(progress.bestStreak, newStreak),
+        challengeBest: {
+          ...progress.challengeBest,
+          [difficulty]: Math.max(progress.challengeBest?.[difficulty] ?? 0, newScore),
+        },
+        challengeBestStreak: Math.max(progress.challengeBestStreak ?? 0, newStreak),
       });
       setFeedback(`Rétt! +${points} stig`);
+    } else if (right) {
+      setFeedback('Rétt!');
     } else {
       setStreak(0);
       const reasoning = buildSpontaneityReasoning();
@@ -422,6 +492,10 @@ function App() {
     setStreak(0);
   }, [mode, timeLeft, showSolution]);
 
+  const hasProgress =
+    Object.keys(progress.practice ?? {}).length > 0 ||
+    Object.keys(progress.challengeBest ?? {}).length > 0;
+
   const renderMenu = () => (
     <div ref={menuRoot}>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
@@ -439,8 +513,9 @@ function App() {
                 Lærðu um Gibbs frjálsa orku og sjálfgengi efnahvarfa
               </p>
 
-              {/* Progress Stats */}
-              {(progress.highScore > 0 || progress.problemsCompleted > 0) && (
+              {/* Progress: each difficulty's best Æfingarhamur round as `N af M rétt`, and
+                  points only for Keppnishamur (mobile-pass decision 1 (b)). */}
+              {hasProgress && (
                 <div className="mb-8 bg-warm-50 p-4 rounded-lg phone:mb-4 phone:p-3">
                   <div className="flex justify-between items-center mb-3 phone:mb-2">
                     <h3 className="font-semibold text-warm-700">Framvinda</h3>
@@ -451,28 +526,36 @@ function App() {
                       Endurstilla
                     </button>
                   </div>
-                  {/* Below sm each stat is a row (label left, number right): three columns of a
-                      phone's width split "Spurningar" and a three-digit score mid-word. */}
+                  {/* Below sm each difficulty is a row (label left, results right). */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-center phone:gap-1.5">
-                    <div className="bg-yellow-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block phone:px-3 phone:py-1.5">
-                      <div className="text-2xl font-bold text-yellow-600 phone:text-xl">
-                        {progress.highScore}
-                      </div>
-                      <div className="text-sm sm:text-xs text-warm-600">Hæsta stig</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block phone:px-3 phone:py-1.5">
-                      <div className="text-2xl font-bold text-green-600 phone:text-xl">
-                        {progress.problemsCompleted}
-                      </div>
-                      <div className="text-sm sm:text-xs text-warm-600">Spurningar</div>
-                    </div>
-                    <div className="bg-orange-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block phone:px-3 phone:py-1.5">
-                      <div className="text-2xl font-bold text-orange-600 phone:text-xl">
-                        {progress.bestStreak}
-                      </div>
-                      <div className="text-sm sm:text-xs text-warm-600">Besta röð</div>
-                    </div>
+                    {DIFFICULTIES.map((level) => {
+                      const round = progress.practice?.[level];
+                      const best = progress.challengeBest?.[level];
+                      return (
+                        <div
+                          key={level}
+                          className="bg-white rounded-lg p-3 flex items-center justify-between gap-3 sm:block phone:px-3 phone:py-1.5"
+                        >
+                          <div className="text-sm text-warm-600">{DIFFICULTY_LABEL[level]}</div>
+                          <div className="text-right sm:text-center sm:mt-1">
+                            <div className="font-bold text-green-700 whitespace-nowrap">
+                              {round ? `${round.correct} af ${round.total} rétt` : '—'}
+                            </div>
+                            {best !== undefined && (
+                              <div className="text-xs text-orange-700 whitespace-nowrap">
+                                Keppnismet: {best} stig
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
+                  {(progress.challengeBestStreak ?? 0) > 0 && (
+                    <p className="mt-2 text-sm text-warm-600 text-center">
+                      🔥 Besta röð (Keppnishamur): {progress.challengeBestStreak}
+                    </p>
+                  )}
                 </div>
               )}
 
@@ -835,7 +918,7 @@ function App() {
                 <div className="flex gap-4 items-center order-last w-full justify-around sm:order-none sm:w-auto sm:justify-start">
                   <div className="text-center">
                     <div className="text-sm text-warm-600 phone:text-xs">Stig</div>
-                    <div className="text-xl font-bold phone:text-base">{progress.score}</div>
+                    <div className="text-xl font-bold phone:text-base">{runScore}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-sm text-warm-600 phone:text-xs">Runa</div>
@@ -855,7 +938,12 @@ function App() {
               <div className="flex gap-4 items-center">
                 <div className="text-center phone:flex phone:items-baseline phone:gap-1.5">
                   <div className="text-sm text-warm-600">Spurning</div>
-                  <div className="text-xl font-bold phone:text-lg">{questionNumber}</div>
+                  <div className="text-xl font-bold phone:text-lg">
+                    {questionNumber}
+                    {mode === 'learning' && (
+                      <span className="text-base font-normal text-warm-600"> af {deck.length}</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1295,14 +1383,24 @@ function App() {
                       feedback
                     )}
                   </div>
+                  {/* The end of an Æfingarhamur round: how many it got right, and no score. */}
+                  {showSolution && roundResult && mode === 'learning' && (
+                    <p className="mt-3 text-lg font-bold text-warm-800 phone:text-base">
+                      Æfingu lokið: {roundResult.correct} af {roundResult.total} rétt
+                    </p>
+                  )}
                   {showSolution && (
                     <button
                       ref={nextRef}
-                      onClick={armed(startNewProblem)}
+                      onClick={armed(
+                        roundResult && mode === 'learning'
+                          ? () => startRun('learning')
+                          : nextProblem
+                      )}
                       className="mt-4 w-full py-2 rounded-lg text-white font-bold pointer-coarse:min-h-11 phone:mt-3"
                       style={{ background: '#f36b22' }}
                     >
-                      Næsta spurning →
+                      {roundResult && mode === 'learning' ? 'Æfa aftur →' : 'Næsta spurning →'}
                     </button>
                   )}
                 </div>

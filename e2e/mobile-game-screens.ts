@@ -7565,6 +7565,276 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         scrollsToAction: 2,
       },
     },
+    // An Æfingarhamur round ends with `N af M rétt` (mobile-pass decision 1 (b)); Erfitt is
+    // the shortest, at eight problems.
+    {
+      name: 'Æfingarhamur — æfingu lokið',
+      steps: [
+        {
+          clickRole: ['button', 'Erfitt'],
+        },
+        {
+          clickRole: ['button', 'Æfingarhamur'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+    },
+    {
+      name: 'Valmynd með árangri',
+      steps: [
+        {
+          clickRole: ['button', 'Erfitt'],
+        },
+        {
+          clickRole: ['button', 'Æfingarhamur'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          fill: ['#thermo-delta-g', '99999'],
+        },
+        {
+          clickRole: ['radio', 'Jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Til baka'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+    },
     {
       name: 'Keppnishamur — lausn og endurgjöf',
       steps: [
