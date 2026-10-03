@@ -25,6 +25,9 @@ import { Level2 } from '../components/Level2';
  * - Misspellings and broken agreement, among them `skauttaðra`, `rafneikvæmni`,
  *   `Vatnsameind`, `Ísobútan`, `Óeðlilegar eiginleikar` and `Flókin samanburður`, and later
  *   `kúlulag` for spherical and `báðar` over a neuter and a masculine noun.
+ * - HCl and HF named as their acids, `Saltsýra` and `Flússýra`, beside the pure compounds'
+ *   boiling points; the compounds are `vetnisklóríð` and `vetnisflúoríð` (2026-10-02, item 14).
+ *   And `gufuþrýstingur`, where the glossary says `gufunarþrýstingur` (item 18).
  * - A title calling water an oil ('Hvaða olía er seigust?' over water, vegetable oil and
  *   petrol), and the undefined English acronym LDF.
  *
@@ -73,6 +76,9 @@ const BANNED: [RegExp, string][] = [
   [/kúlulag\b/i, 'spherical is kúlulaga'],
   [/Hvaða olía er seigust/, 'water is one of the three, and it is not an oil'],
   [/\bLDF\b/, 'an English acronym the game never defines'],
+  [/saltsýr/i, 'HCl here is the pure compound, vetnisklóríð; saltsýra is the solution'],
+  [/flússýr/i, 'HF here is the pure compound, vetnisflúoríð; flússýra is the solution'],
+  [/gufuþrýsting/i, 'vapour pressure is gufunarþrýstingur'],
 ];
 
 // Næsta ignores a press within 400 ms of appearing; these tests press it at once.

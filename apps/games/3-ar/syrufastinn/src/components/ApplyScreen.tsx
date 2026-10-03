@@ -168,7 +168,7 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
               key="svara"
               type="button"
               onClick={submit}
-              className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark max-sm:shrink-0 max-sm:px-4"
+              className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-600 max-sm:shrink-0 max-sm:px-4"
             >
               Svara
             </button>
@@ -206,7 +206,7 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
               ref={nextRef}
               type="button"
               onClick={armed(next)}
-              className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
+              className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-600"
             >
               {last ? 'Ljúka Beita' : 'Næsta dæmi'}
             </button>

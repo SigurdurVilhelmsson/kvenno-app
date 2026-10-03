@@ -11,6 +11,7 @@
  */
 
 import {
+  CELSIUS_OFFSET,
   canConvertToKp,
   deltaNGas,
   directionFromQ,
@@ -18,6 +19,7 @@ import {
   kcExpression,
   kcToKp,
   kpExpression,
+  R_GAS,
   reactionQuotient,
   totalPressure,
   type Amounts,
@@ -76,7 +78,7 @@ export const EXPRESSION_PROBLEMS: ExpressionProblem[] = [
     reaction: reactionBy('brom'),
     difficulty: 'thung',
     point:
-      'Sama efnið beggja vegna, í sitt hvorum fasa. Vökvinn dettur út og K er einfaldlega gufuþrýstingurinn.',
+      'Sama efnið beggja vegna, í sitt hvorum fasa. Vökvinn dettur út og K er einfaldlega gufunarþrýstingurinn.',
   },
   {
     id: 'blyklorid',
@@ -193,6 +195,32 @@ export const KP_PROBLEMS: KpProblem[] = REACTIONS.filter(canConvertToKp).map((re
     expression: kpExpression(reaction)!,
   };
 });
+
+/**
+ * The two slips a Kc→Kp conversion invites, each of which lands on a value that can be
+ * computed exactly: Δn taken the wrong way round (reactants minus products), and the
+ * temperature left in °C inside R·T. Returns which one a student's answer matches, or null.
+ *
+ * The `veldisvisir` message used to name both of these as the cause of right digits with the
+ * wrong power of ten. Neither produces that: each changes the digits as well, so they graded
+ * `baedi` and got only "Hvorugt stemmir". They are diagnosed from the value instead.
+ */
+export type KpSlip = 'formerki' | 'celsius';
+
+export function kpSlip(problem: KpProblem, value: number, tolerance = 0.02): KpSlip | null {
+  if (problem.deltaN === 0 || !(value > 0)) return null;
+  const near = (target: number) =>
+    Number.isFinite(target) && target > 0 && Math.abs(value - target) / target <= tolerance;
+  if (near(problem.kp)) return null;
+  const t = problem.temperatureC + CELSIUS_OFFSET;
+  if (near(problem.kc * Math.pow(R_GAS * t, -problem.deltaN))) return 'formerki';
+  if (
+    problem.temperatureC > 0 &&
+    near(problem.kc * Math.pow(R_GAS * problem.temperatureC, problem.deltaN))
+  )
+    return 'celsius';
+  return null;
+}
 
 /** "Start from this mixture — where does it end up?" */
 export interface IceProblem {

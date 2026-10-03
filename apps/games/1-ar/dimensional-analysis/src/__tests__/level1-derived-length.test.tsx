@@ -54,7 +54,7 @@ describe('a Stig 1 of three challenges', () => {
     });
     next();
 
-    expect(container.textContent).toContain('Þú svaraðir 3 af 3 rétt');
+    expect(container.textContent).toContain('Þú kláraðir allar 3 áskoranirnar');
     fireEvent.click(ui.getByRole('button', { name: /Halda áfram/ }));
     expect(onComplete).toHaveBeenCalledTimes(1);
     const [progress, maxScore] = onComplete.mock.calls[0];

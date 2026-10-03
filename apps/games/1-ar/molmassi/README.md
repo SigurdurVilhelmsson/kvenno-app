@@ -48,8 +48,9 @@ names the decahydrate here and nowhere names the anhydrous salt.
 `STANDARD_MOLAR_VOLUME = 22.4` at `STP_LABEL` (0 °C and 1 atm) — the textbook keeps the pre-1982
 definition, and at 1 bar the figure would be 22,7, so the conditions are printed with every
 question. Every compound declares a `state` at STP, describing the substance **as this game names
-it**, and the molar-volume slots draw only `'gas'`. Water is `vökvi`; HCl is `vökvi` because it is
-named `Saltsýra` (see Open). Guarded by `gas-volume.test.ts`.
+it**, and the molar-volume slots draw only `'gas'`. Water is `vökvi`. HCl was `vökvi` while it was
+named `Saltsýra`, the solution; since 2026-10-02 (decisions item 14) it is `Vetnisklóríð`, the
+compound, and a gas. Guarded by `gas-volume.test.ts`.
 
 **The subscript question.** `moles_to_element_atoms` draws only compounds with a subscript above
 one; on a flat formula it would multiply by 1 and teach that the subscript is decoration. Guarded by
@@ -97,9 +98,6 @@ LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 tha
 
 ## Open
 
-- **`Saltsýra` for HCl.** The name is HCl(aq), a solution, while the game quotes 36,46 g/mól, the
-  molar mass of the compound `vetnisklóríð`. HCl is excluded from molar-volume questions rather than
-  renamed; the naming is Siggi's call.
 - **Stig 3's completion threshold.** It records the level as complete on reaching the summary,
   whatever the score — 0 of 8 included — while Stig 2 requires 60 of 100 and Stig 1 a press of
   `Ljúka stigi`. Whether Stig 3 should have a threshold is a scoring decision; nothing was changed.
@@ -107,8 +105,9 @@ LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 tha
   textbook. If it means stoichiometry the ruled word is `hlutfallaefnafræði`; if it means
   quantitative chemistry, `magnbundin efnafræði`. Siggi's call.
 - **Periodic-table legend, two names.** `Eðallofttegundir`: `ordabok.md` says `eðalgas`, the textbook
-  prefers `eðallofttegund-` (54 to 25 in `02-mt-output`), so by the resolution order it is Siggi's call. `P-málmar`:
-  `ordabok.md` is silent and the textbook has one `eftirhliðarmálmar`.
+  prefers `eðallofttegund-` (54 to 25 in `02-mt-output`), so by the resolution order it is Siggi's call. `P-málmar`
+  became `Tregir málmar` on 2026-10-02 (decisions item 21), and the plain-nonmetal swatch `Aðrir
+málmleysingjar` (item 35).
 - **Stig 3's mass-to-molecules answers are nearly all the same number.** Five of its six problems
   (36 g H₂O, 88 g CO₂, 117 g NaCl, 34 g NH₃, 64 g O₂) are two moles each, so all five come to
   1,20 × 10²⁴; only CH₄ differs. A student who notices can answer without calculating. Varying the

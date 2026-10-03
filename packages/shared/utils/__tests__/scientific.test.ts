@@ -83,11 +83,42 @@ describe('gradeScientific reads only what each field asks for', () => {
 
   it('refuses an exponent that is not a whole number', () => {
     // parseInt read `1,5` as 1 and `10²` as 10, and graded what it had read.
-    for (const exponent of ['1,5', '-17,5', '-17.0', '5e1', '10²', '⁻¹⁷', '-17x', '--17', '-+17']) {
+    for (const exponent of [
+      '1,5',
+      '-17,5',
+      '-17,01',
+      '5e1',
+      '10²',
+      '⁻¹⁷',
+      '-17x',
+      '--17',
+      '-+17',
+    ]) {
       expect(gradeScientific({ mantissa: '8,3', exponent }, expected).outcome, exponent).toBe(
         'ogilt'
       );
     }
+  });
+
+  it('reads an exponent written as a whole number with a zero decimal', () => {
+    // `-17,0` is the whole number -17; it was refused until 2026-10-02 (REVIEW-QUEUE D1).
+    for (const exponent of ['-17,0', '-17.0', '-17,00']) {
+      expect(gradeScientific({ mantissa: '8,3', exponent }, expected).outcome, exponent).toBe(
+        'rett'
+      );
+    }
+  });
+
+  it('says why an entry could not be read', () => {
+    const reason = (mantissa: string, exponent: string) =>
+      gradeScientific({ mantissa, exponent }, expected).reason;
+    expect(reason('', '-17')).toBe('tomt');
+    expect(reason('8,3', ' ')).toBe('tomt');
+    expect(reason('8,3 × 10²', '-17')).toBe('olaesilegt');
+    expect(reason('8,3', '1,5')).toBe('olaesilegt');
+    expect(reason('0', '-17')).toBe('ekki-jakvaett');
+    expect(reason('-8,3', '-17')).toBe('ekki-jakvaett');
+    expect(reason('8,3', '-17')).toBeUndefined();
   });
 
   it('refuses empty, zero, negative and nonsense, as before', () => {
@@ -140,6 +171,40 @@ describe('gradeScientific reads only what each field asks for', () => {
         expect(gradeScientific(asTyped(printed), value).outcome, printed).toBe('rett');
       }
     }
+  });
+});
+
+describe('a power-of-ten slip is diagnosed however the fields split it', () => {
+  // Field by field, `83` with the right power read as wrong digits — though it is ten times
+  // the answer with every digit intact — while `8,3` a power off read as the power
+  // (REVIEW-QUEUE D1, 2026-10-02). The diagnosis now reads the value the fields make.
+  const expected = 8.3e-5;
+
+  it('ten times the answer is the power, written either way', () => {
+    for (const entry of [
+      { mantissa: '83', exponent: '-5' },
+      { mantissa: '8,3', exponent: '-4' },
+      { mantissa: '0,083', exponent: '-2' },
+      { mantissa: '0,83', exponent: '-5' },
+    ]) {
+      expect(gradeScientific(entry, expected).outcome, JSON.stringify(entry)).toBe('veldisvisir');
+    }
+  });
+
+  it('at the edge of a decade too', () => {
+    expect(gradeScientific({ mantissa: '9,9', exponent: '-5' }, 1.0e-5).outcome).toBe(
+      'veldisvisir'
+    );
+    expect(gradeScientific({ mantissa: '1,0', exponent: '-4' }, 9.9e-6).outcome).toBe(
+      'veldisvisir'
+    );
+  });
+
+  it('wrong digits with the right power is still the digits', () => {
+    expect(gradeScientific({ mantissa: '2,9', exponent: '-5' }, expected).outcome).toBe(
+      'tolustafir'
+    );
+    expect(gradeScientific({ mantissa: '2,9', exponent: '-3' }, expected).outcome).toBe('baedi');
   });
 });
 

@@ -45,7 +45,7 @@ describe('the constant', () => {
 describe('which substances the question may be asked about', () => {
   it('has gases to ask about', () => {
     expect(GASES.map((c) => c.formula).sort()).toEqual(
-      ['C₂H₆', 'C₃H₈', 'CH₄', 'CO₂', 'N₂', 'NH₃', 'O₂'].sort()
+      ['C₂H₆', 'C₃H₈', 'CH₄', 'CO₂', 'HCl', 'N₂', 'NH₃', 'O₂'].sort()
     );
   });
 
@@ -55,12 +55,14 @@ describe('which substances the question may be asked about', () => {
     expect(isGas(COMPOUNDS.find((c) => c.formula === 'H₂O')!)).toBe(false);
   });
 
-  it('does not count Saltsýra as a gas', () => {
-    // The pure compound HCl is a gas. This game calls it Saltsýra, which is HCl
-    // dissolved in water — a solution, and not something with a molar volume.
-    // The label is what a student reads, so the state follows the label.
-    // Flagged in HARVEST.md: the naming is worth a ruling of its own.
-    expect(isGas(COMPOUNDS.find((c) => c.formula === 'HCl')!)).toBe(false);
+  it('names HCl as the pure compound, which is a gas', () => {
+    // HCl was named Saltsýra here, which is HCl dissolved in water: a solution, with no
+    // molar volume, so it was kept out of these questions. Ruled 2026-10-02 (decisions
+    // item 14): the pure compound is vetnisklóríð, the molar mass quoted is the compound's,
+    // and at STP it is a gas (boiling point −85 °C). So it is asked about like any other gas.
+    const hcl = COMPOUNDS.find((c) => c.formula === 'HCl')!;
+    expect(hcl.name).toBe('Vetnisklóríð');
+    expect(isGas(hcl)).toBe(true);
   });
 
   it.each(NOT_GASES.map((c) => [c.formula, c] as const))(

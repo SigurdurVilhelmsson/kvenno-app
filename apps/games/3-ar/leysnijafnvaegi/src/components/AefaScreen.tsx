@@ -1,10 +1,12 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
 import {
+  INVALID_ENTRY_MESSAGE,
   revealBelowFoldOnDesktop,
   useArmedAfter,
   useItemStart,
   useRevealAfterCommit,
+  type InvalidReason,
 } from '@shared/utils';
 
 import { BackButton } from './BackButton';
@@ -85,7 +87,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   const [solved, setSolved] = useState(0);
   // An empty or unreadable entry is not an attempt: the fields stay open and
   // the answer stays hidden, so the student can do what the message asks.
-  const [invalid, setInvalid] = useState(false);
+  const [invalid, setInvalid] = useState<InvalidReason | null>(null);
   const answerLabelId = useId();
   const verdictId = useId();
   const problemRef = useRef<HTMLDivElement>(null);
@@ -124,10 +126,10 @@ export function AefaScreen({ onComplete, onBack }: Props) {
     if (outcome !== null) return;
     const result = gradeScientific({ mantissa, exponent }, problem.answer);
     if (result.outcome === 'ogilt') {
-      setInvalid(true);
+      setInvalid(result.reason ?? 'tomt');
       return;
     }
-    setInvalid(false);
+    setInvalid(null);
     setOutcome(result.outcome);
     if (result.outcome === 'rett') setSolved(solved + 1);
   };
@@ -141,7 +143,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
     setMantissa('');
     setExponent('');
     setOutcome(null);
-    setInvalid(false);
+    setInvalid(null);
   };
 
   const asksForSolubility = problem.direction === 'kspToS';
@@ -231,14 +233,14 @@ export function AefaScreen({ onComplete, onBack }: Props) {
               <>
                 {invalid && (
                   <p role="alert" className="mb-3 text-sm font-semibold text-amber-800">
-                    {MESSAGE.ogilt}
+                    {invalid === 'tomt' ? MESSAGE.ogilt : INVALID_ENTRY_MESSAGE[invalid]}
                   </p>
                 )}
                 <button
                   key="check"
                   type="button"
                   onClick={check}
-                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+                  className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600"
                 >
                   Athuga
                 </button>

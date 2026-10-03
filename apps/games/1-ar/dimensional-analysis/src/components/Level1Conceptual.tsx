@@ -197,7 +197,9 @@ export function Level1Conceptual({
   }
 
   if (showSummary) {
-    const mastered = progress.questionsCorrect >= MASTERY_THRESHOLD;
+    // No Stig 1 challenge can be answered wrong — each waits until it is solved — so the
+    // summary reports completion, not a score that could only ever read full marks, and
+    // there is no retry branch (decisions item 23, ruled 2026-10-02).
     return (
       <div
         ref={topRef}
@@ -206,12 +208,12 @@ export function Level1Conceptual({
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mt-2 sm:mt-8">
             <div className="text-center mb-8">
-              <div className="text-6xl mb-4">{mastered ? '🎉' : '📚'}</div>
+              <div className="text-6xl mb-4">🎉</div>
               <h1 data-item-start className="text-2xl sm:text-3xl font-bold text-warm-800 mb-2">
-                {mastered ? 'Frábært!' : 'Vel gert!'}
+                Frábært!
               </h1>
               <p className="text-lg text-warm-600">
-                Þú svaraðir {progress.questionsCorrect} af {challenges.length} rétt
+                Þú kláraðir allar {challenges.length} áskoranirnar
               </p>
             </div>
             <div className="mb-8">
@@ -230,47 +232,20 @@ export function Level1Conceptual({
                 ))}
               </div>
             </div>
-            {mastered ? (
-              <div className="space-y-4">
-                <div className="p-4 bg-blue-50 rounded-lg text-center">
-                  <p className="text-blue-800 font-semibold">Næsta skref: Stig 2</p>
-                  <p className="text-blue-600 text-sm">
-                    Þar munt þú nota þessi hugtök til að spá fyrir um niðurstöður.
-                  </p>
-                </div>
-                <button
-                  onClick={() => onComplete(progress, MAX_SCORE, totalHintsUsed)}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg transition-colors"
-                >
-                  Halda áfram →
-                </button>
+            <div className="space-y-4">
+              <div className="p-4 bg-blue-50 rounded-lg text-center">
+                <p className="text-blue-800 font-semibold">Næsta skref: Stig 2</p>
+                <p className="text-blue-600 text-sm">
+                  Þar byggir þú keðjur úr umbreytingarstuðlum.
+                </p>
               </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="p-4 bg-yellow-50 rounded-lg text-center">
-                  <p className="text-yellow-800 font-semibold">
-                    Reyndu aftur til að styrkja skilninginn!
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setCurrentChallengeIndex(0);
-                    setShowSummary(false);
-                    setProgress(INITIAL_PROGRESS);
-                    counted.current = new Set();
-                  }}
-                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white py-4 rounded-xl font-bold text-lg transition-colors"
-                >
-                  Reyna aftur
-                </button>
-                <button
-                  onClick={() => onComplete(progress, MAX_SCORE, totalHintsUsed)}
-                  className="w-full bg-warm-200 hover:bg-warm-300 text-warm-700 py-3 rounded-xl font-semibold transition-colors"
-                >
-                  Til baka í valmynd
-                </button>
-              </div>
-            )}
+              <button
+                onClick={() => onComplete(progress, MAX_SCORE, totalHintsUsed)}
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg transition-colors"
+              >
+                Halda áfram →
+              </button>
+            </div>
           </div>
         </div>
       </div>

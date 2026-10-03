@@ -179,7 +179,7 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
                 className={`game-btn rounded-lg px-4 py-2 text-sm transition-colors pointer-coarse:min-h-11 phone:whitespace-nowrap phone:px-1 ${
                   measured.includes(concentration)
                     ? 'cursor-default bg-warm-100 text-warm-400'
-                    : 'bg-kvenno-orange text-white hover:bg-kvenno-orange-dark'
+                    : 'bg-kvenno-orange text-white hover:bg-kvenno-orange-600'
                 }`}
               >
                 {fmt(concentration, 3)} M
@@ -314,7 +314,7 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
               ref={onwardRef}
               type="button"
               onClick={armed(onComplete)}
-              className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
+              className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-600"
             >
               Áfram í Skilja
             </button>

@@ -366,7 +366,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
           <div className="space-y-3">
             <button
               onClick={armedResults(retry)}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Reyna aftur
             </button>
@@ -498,7 +498,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     key="check"
                     onClick={submit}
                     disabled={!input.trim()}
-                    className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:bg-warm-300 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
+                    className="bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:bg-warm-300 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
                   >
                     Svara
                   </button>

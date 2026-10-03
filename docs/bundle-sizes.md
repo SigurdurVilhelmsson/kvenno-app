@@ -110,14 +110,15 @@ Every game now opens in 273–401 KB. Three changes got here:
   strings that no game rendered, inlined into every single-file build.
 
 To re-measure. **Do not use `ls` on the HTML alone** — the three Three.js games keep their entry JS
-and CSS beside it, so an HTML-only listing reads them ~200 KB light:
+and CSS under `assets/{game}/`, hashed since 2026-10-02, so an HTML-only listing reads them ~200 KB
+light:
 
 ```bash
 pnpm build:games
 for f in dist/efnafraedi/*/games/*.html; do
-  g="${f%.html}"
-  echo "$(( ($(stat -c%s "$f") + $(stat -c%s "$g.js" 2>/dev/null || echo 0) \
-    + $(stat -c%s "$g.css" 2>/dev/null || echo 0)) / 1024 )) KB  $(basename "$g")"
+  g="${f%.html}"; a="$(dirname "$f")/assets/$(basename "$g")"
+  extra=$(cat "$a/$(basename "$g")"-*.js "$a/$(basename "$g")"-*.css 2>/dev/null | wc -c)
+  echo "$(( ($(stat -c%s "$f") + extra) / 1024 )) KB  $(basename "$g")"
 done | sort -rn
 ```
 

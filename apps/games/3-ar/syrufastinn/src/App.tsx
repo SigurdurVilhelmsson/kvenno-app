@@ -36,7 +36,7 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
     number: '3',
     name: 'Æfa',
     description: 'Fimm dæmi í þremur skrefum, með vísbendingum og 5 % athuguninni.',
-    tone: 'bg-kvenno-orange hover:bg-kvenno-orange-dark',
+    tone: 'bg-kvenno-orange hover:bg-kvenno-orange-600',
   },
   {
     id: 'beita',
@@ -55,12 +55,12 @@ function App() {
 
   const completed = useMemo(() => progress.completed ?? [], [progress.completed]);
 
+  // Kanna and Skilja end on "Áfram í Skilja" / "Áfram í Æfa", so those two go
+  // on to the phase they name; they used to drop the student on the menu.
   const markCompleted = useCallback(
-    (phase: Screen) => {
-      if (!completed.includes(phase)) {
-        updateProgress({ completed: [...completed, phase] });
-      }
-      setScreen('menu');
+    (phase: Screen, next: Screen = 'menu') => {
+      if (!completed.includes(phase)) updateProgress({ completed: [...completed, phase] });
+      setScreen(next);
     },
     [completed, updateProgress]
   );
@@ -214,11 +214,14 @@ function App() {
         )}
 
         {screen === 'kanna' && (
-          <ExploreScreen onComplete={() => markCompleted('kanna')} onBack={backToMenu} />
+          <ExploreScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />
         )}
 
         {screen === 'skilja' && (
-          <UnderstandScreen onComplete={() => markCompleted('skilja')} onBack={backToMenu} />
+          <UnderstandScreen
+            onComplete={() => markCompleted('skilja', 'aefa')}
+            onBack={backToMenu}
+          />
         )}
 
         {screen === 'aefa' && (

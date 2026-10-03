@@ -431,7 +431,7 @@ export function ChainBuilder({
     ratio,
   }));
 
-  const leysaClasses = `game-btn rounded-lg bg-kvenno-orange py-2.5 font-semibold text-white hover:bg-kvenno-orange-dark disabled:opacity-40 ${
+  const leysaClasses = `game-btn rounded-lg bg-kvenno-orange py-2.5 font-semibold text-white hover:bg-kvenno-orange-600 disabled:opacity-40 ${
     pinLayout ? 'px-4' : 'px-5'
   }`;
   // In the pinned bar on a portrait phone the two secondary buttons may wrap
@@ -702,7 +702,7 @@ export function ChainBuilder({
                 key="show-trace"
                 type="button"
                 onClick={armedPrediction(() => setMode('tracing'))}
-                className="game-btn mt-3 rounded-lg bg-kvenno-orange px-5 py-2.5 font-semibold text-white hover:bg-kvenno-orange-dark phone:mt-2"
+                className="game-btn mt-3 rounded-lg bg-kvenno-orange px-5 py-2.5 font-semibold text-white hover:bg-kvenno-orange-600 phone:mt-2"
               >
                 Sýna útreikninginn
               </button>
@@ -758,7 +758,7 @@ export function ChainBuilder({
                   key="next"
                   type="button"
                   onClick={armedMode(nextProblem)}
-                  className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 font-semibold text-white hover:bg-kvenno-orange-dark"
+                  className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 font-semibold text-white hover:bg-kvenno-orange-600"
                 >
                   {index + 1 >= problems.length ? 'Ljúka' : 'Næsta dæmi'}
                 </button>
@@ -837,7 +837,7 @@ export function ChainBuilder({
                       key="apply-fix"
                       type="button"
                       onClick={armedFix(() => applyFix(chosenOption.id))}
-                      className="game-btn mt-3 rounded-lg bg-kvenno-orange px-5 py-2.5 font-semibold text-white hover:bg-kvenno-orange-dark"
+                      className="game-btn mt-3 rounded-lg bg-kvenno-orange px-5 py-2.5 font-semibold text-white hover:bg-kvenno-orange-600"
                     >
                       {chosenOption.id === 'addStep' ? 'Lengja keðjuna' : 'Laga og reyna aftur'}
                     </button>

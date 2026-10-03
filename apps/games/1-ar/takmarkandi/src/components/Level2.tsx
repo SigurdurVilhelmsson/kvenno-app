@@ -161,7 +161,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </button>
             <button
               onClick={armedResults(() => onComplete(score))}
-              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
@@ -336,7 +336,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     key="check"
                     onClick={handleCheck}
                     disabled={input.trim() === ''}
-                    className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:bg-warm-300 text-white font-bold py-3 rounded-xl transition-colors phone:w-auto phone:shrink-0 phone:px-5"
+                    className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 disabled:bg-warm-300 text-white font-bold py-3 rounded-xl transition-colors phone:w-auto phone:shrink-0 phone:px-5"
                   >
                     Athuga
                   </button>
@@ -404,7 +404,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   key={`next-${index}`}
                   ref={nextRef}
                   onClick={armed(handleNext)}
-                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
                 >
                   {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
                 </button>

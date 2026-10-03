@@ -29,7 +29,9 @@ needs no ruling, only time.
   - After Næsta, the next item should open at its top.
 - [ ] **Hard-refresh the three 3D games** (VSEPR, Lewis, IMF) on a device that visited before the
       deploy. Their `{game}.js` entry file has a fixed name and nginx caches it for a year, so a
-      returning browser can run the old bundle. See D for the lasting fix.
+      returning browser can run the old bundle. See D for the lasting fix. **Moot from the deploy
+      that carries PR #82**: the entry is hashed there, so new HTML names a file no browser has
+      cached.
 
 ## B. Device and accessibility checks (never run)
 
@@ -102,10 +104,10 @@ leave".
   - the i18n question;
   - reading `1.300`;
   - which book's formation enthalpies to use.
-- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 15
-      and 16 done 2026-10-02.
-- [ ] 22–34 dimensional-analysis
-- [ ] 35 lotukerfid
+- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 14,
+      15, 16, 17, 18, 19 and 21 done 2026-10-02. Items 12 and 13 left.
+- [ ] 22–34 dimensional-analysis. Items 22, 23 and 33 done 2026-10-02.
+- [x] 35 lotukerfid — done 2026-10-02
 - [ ] 36–41 nafnakerfid. Item 39 done 2026-10-02.
 - [ ] 42–45 molmassi
 - [ ] 46–47 reynsluformulur. Item 46 done 2026-10-02.
@@ -148,14 +150,14 @@ Same document, items 123–126. Each is reversible.
 - [ ] **Íslenskubraut review workbook.** The reviewer-facing Icelandic in
       `scripts/islenskubraut/export-xlsx.mjs` is marked `PLACEHOLDER ICELANDIC`. Siggi must rewrite it
       before any export goes to a colleague.
-- [ ] **molmassi names HCl `Saltsýra`** (a solution) while quoting the compound's molar mass. See
-      also C3 item 14.
+- [x] **molmassi names HCl `Saltsýra`** (a solution) while quoting the compound's molar mass. See
+      also C3 item 14. — 2026-10-02: now `Vetnisklóríð`, a gas, and in the molar-volume pool.
 - [ ] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
 jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken.
 - [ ] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
       C4 items 123 and 124.
-- [ ] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
-      item 19.
+- [x] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
+      item 19. — 2026-10-02: the compound, confirmed; a `governed-terms` row bans the split.
 - [ ] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
       Icelandic book's complex-ion constants (`m68869`), which is a new source.
 - [x] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
@@ -231,8 +233,9 @@ changes how the game teaches or looks rather than correcting a defect.
 
 From the vertical-scroll design's §7 and the mobile-pass decisions' last section.
 
-- [ ] **buffer Stig 1** shows a live 'Fullkomið!' pill on the pH readout that can contradict a
-      'Rangt' verdict.
+- [x] **buffer Stig 1** shows a live 'Fullkomið!' pill on the pH readout that can contradict a
+      'Rangt' verdict. Already fixed 2026-09-23, found 2026-10-02: the pill reads the grader's own
+      `isCorrect`, and `level1-flow.test.tsx` holds it.
 - [ ] **equilibrium-shifter** shows 'Stig: 0' in Lærdómshamur, a score in a learning mode. This
       overlaps C3 item 1.
 - [ ] **lausnir** Stig 1: 'Athuga lausn' gives no feedback outside the tolerance. This is C3 item
@@ -241,11 +244,15 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       reproduces, checked 2026-10-01 (PR #79): every Stig 2 molecule, branched ones included, is
       drawn with all atoms apart (tightest gap 12,8 units, hexane), and `molecule-drawing.test.tsx`
       now holds it.
-- [ ] **syrufastinn, leysnijafnvaegi:** `Áfram í Skilja` / `Áfram í Æfa` return to the menu
-      instead of the next phase.
-- [ ] **jafnvaegisfasti `AefaScreen.tsx`:** the KpTask `veldisvisir` message blames the wrong
-      mistakes.
-- [ ] **lotukerfid `PeriodicTable.tsx`:** `role="grid"` with no rows or cells.
+- [x] **syrufastinn, leysnijafnvaegi:** `Áfram í Skilja` / `Áfram í Æfa` return to the menu
+      instead of the next phase. Fixed 2026-10-02 (PR #82), held by each game's
+      `phase-flow.test.tsx`.
+- [x] **jafnvaegisfasti `AefaScreen.tsx`:** the KpTask `veldisvisir` message blames the wrong
+      mistakes. Fixed 2026-10-02 (PR #82): neither slip it named lands there, so the message now
+      names the power of ten, and `kpSlip` reads the Δn-sign and °C slips off the value and names
+      them (`kp-slip.test.tsx`).
+- [x] **lotukerfid `PeriodicTable.tsx`:** `role="grid"` with no rows or cells. Fixed 2026-10-02
+      (PR #82): a labelled group of buttons, arrow keys unchanged.
 - [x] **hess-law Stig 2 `EquationBlock`:** a `role="button"` card containing its own buttons.
       Fixed 2026-10-01 (PR #79): the card is a group, and selecting it is a real toggle button.
 - [x] **vsepr `BondAngleMeasurement.tsx`:** tick labels show the half-angle. Fixed 2026-10-01
@@ -254,13 +261,18 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 - [x] **Lewis +1 formal-charge badge** is red on a red O atom, so it is hard to see. Lewis no
       longer draws with `AnimatedMolecule` (PR #71); the shared badge now has a white ring as
       well, 2026-10-01, PR #72.
-- [ ] **vsepr Stig 1, the three-domain bent card** (`Level1.tsx`, `bent-2`) says `Stakt par ofan
-    á þremur bindandi pörum: þríhyrningslaga pýramídi`, which describes the trigonal pyramid.
-      Found 2026-10-02.
-- [ ] **`bg-kvenno-orange-dark` and `hover:bg-kvenno-orange-dark` do nothing.** No such colour
+- [x] **vsepr Stig 1, the three-domain bent card** — **not a defect, retracted 2026-10-02.** The
+      pyramid sentence belongs to the `trigonal-pyramidal` card two entries below; `bent-2` says
+      `Stakt par ýtir bindandi pörum saman — lægra horn.`, which is right. Misread from a grep.
+- [x] **`bg-kvenno-orange-dark` and `hover:bg-kvenno-orange-dark` do nothing.** No such colour
       token exists (the theme has `kvenno-orange-600`), so 77 hover states across the games never
-      change colour. Found 2026-10-01; Lewis uses `kvenno-orange-600`.
-- [ ] **`gradeScientific`:**
+      change colour. Found 2026-10-01; Lewis uses `kvenno-orange-600`. Fixed 2026-10-02 (PR #82):
+      hover and ring `-600`, the eight text uses `-700`, held by `kvenno-orange-tokens.test.ts`.
+      The text colour is a visible desktop change in `jafnvaegisfasti`.
+- [x] **`gradeScientific`:** fixed 2026-10-02 (PR #82) — it reads the value the fields make, so
+      a whole power of ten is the power however the fields split it; `-5,0` is read as -5; and an
+      `ogilt` carries a `reason`, so the four call sites say what to fix
+      (`INVALID_ENTRY_MESSAGE`).
   - it diagnoses a 10× slip as wrong digits;
   - its `ogilt` prompt could say what went wrong;
   - it rejects `-5,0` as an exponent.
@@ -269,14 +281,15 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 
 ### D2. Operations and tooling
 
-- [ ] **`deploy.sh` never installs `server/nginx-site.conf`.** Either document the manual step in
-      `docs/DEPLOYMENT.md`, or add an opt-in step to the script.
+- [x] **`deploy.sh` never installs `server/nginx-site.conf`.** Either document the manual step in
+      `docs/DEPLOYMENT.md`, or add an opt-in step to the script. Documented 2026-10-02 (PR #82).
 - [ ] **The docs disagree on the nginx site filename:** `README.md` says `kvenno`,
       `docs/DEPLOYMENT.md` says `kvenno.app`. Fix them to match whatever the server actually uses.
-- [ ] **The three 3D games' unhashed `{game}.js`/`{game}.css` are cached for a year.** Hash them,
-      or give them a short cache header.
+- [x] **The three 3D games' unhashed `{game}.js`/`{game}.css` are cached for a year.** Hash them,
+      or give them a short cache header. Hashed 2026-10-02 (PR #82), under `assets/{game}/`.
 - [x] **pnpm 9.15 → current:** 12.8.1, 2026-09-29, PR #69. It needed `allowBuilds` for esbuild
       and unrs-resolver. `pnpm deploy` still bundles the backend.
 - [ ] **`scripts/desktop-compare.mjs` is not in CI.** It needs a base build in the same job, and a
       mask for the animated states: buffer Stig 2, vsepr Stig 2, the redox galvanic cell.
-- [ ] **`e2e/` has no `tsconfig`**, so `pnpm type-check` does not cover the specs.
+- [x] **`e2e/` has no `tsconfig`**, so `pnpm type-check` does not cover the specs. Added
+      2026-10-02 (PR #82); `pnpm type-check` now runs it, and the specs were already clean.

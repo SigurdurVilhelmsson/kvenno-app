@@ -216,10 +216,10 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'HCl',
-    state: 'vökvi',
-    name: 'Saltsýra',
-    nameDative: 'saltsýru',
-    nameGenitive: 'saltsýru',
+    state: 'gas',
+    name: 'Vetnisklóríð',
+    nameDative: 'vetnisklóríði',
+    nameGenitive: 'vetnisklóríðs',
     ionic: false,
     elements: [
       { symbol: 'H', count: 1 },

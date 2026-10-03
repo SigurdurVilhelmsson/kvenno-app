@@ -130,7 +130,7 @@ function App() {
                       </h3>
                     </div>
                     <p className="text-blue-100">
-                      {t('levels.level2.description', 'Spá fyrir og rökstyðja')}
+                      {t('levels.level2.description', 'Byggja umbreytingarkeðjur')}
                     </p>
                     {completedLevels.includes(2) && (
                       <p className="text-sm text-blue-200 mt-2">Lokið</p>

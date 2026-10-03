@@ -138,7 +138,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             </p>
             <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-3 font-mono text-lg text-warm-800">{equationOf(ammoniak)}</p>
-              <p className="font-mono text-lg font-semibold text-kvenno-orange-dark">
+              <p className="font-mono text-lg font-semibold text-kvenno-orange-700">
                 {kcExpression(ammoniak)}
               </p>
             </div>
@@ -164,7 +164,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             </p>
             <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 font-mono text-warm-800">{equationOf(kalksteinn)}</p>
-              <p className="mb-3 font-mono font-semibold text-kvenno-orange-dark">
+              <p className="mb-3 font-mono font-semibold text-kvenno-orange-700">
                 {kcExpression(kalksteinn)}
               </p>
               <p className="text-sm text-warm-600">
@@ -218,7 +218,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               <p className="font-mono text-sm text-warm-700">
                 Δn = 2 − (1 + 3) = {deltaNGas(ammoniak)}
               </p>
-              <p className="mt-2 font-mono text-sm font-semibold text-kvenno-orange-dark">
+              <p className="mt-2 font-mono text-sm font-semibold text-kvenno-orange-700">
                 Kc = 0,50 við 400 °C → Kp ={' '}
                 <span className="whitespace-nowrap">
                   {formatScientific(kcToKp(0.5, deltaNGas(ammoniak), 400), 2)}
@@ -301,7 +301,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
                 Kc = {ammoniak.constant!.value.toString().replace('.', ',')}
               </p>
               <p className="font-mono text-sm text-warm-800">{equationOf(ammoniakBakhvarf)}</p>
-              <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">
+              <p className="font-mono text-sm font-semibold text-kvenno-orange-700">
                 Kc = 1 / {ammoniak.constant!.value.toString().replace('.', ',')} ={' '}
                 <span className="whitespace-nowrap">
                   {formatScientific(ammoniakBakhvarf.constant!.value, 2)}
@@ -318,7 +318,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
                 Kc = {vetnisjodid.constant!.value}
               </p>
               <p className="font-mono text-sm text-warm-800">{equationOf(vetnisjodidTvofalt)}</p>
-              <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">
+              <p className="font-mono text-sm font-semibold text-kvenno-orange-700">
                 Kc = {vetnisjodid.constant!.value}² ={' '}
                 <span className="whitespace-nowrap">
                   {formatScientific(vetnisjodidTvofalt.constant!.value, 2)}
@@ -333,7 +333,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               <p className="font-mono text-sm text-warm-700">A ⇌ B&nbsp;&nbsp;&nbsp;K₁</p>
               <p className="mb-2 font-mono text-sm text-warm-700">B ⇌ C&nbsp;&nbsp;&nbsp;K₂</p>
               <p className="font-mono text-sm text-warm-800">A ⇌ C</p>
-              <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">K = K₁ · K₂</p>
+              <p className="font-mono text-sm font-semibold text-kvenno-orange-700">K = K₁ · K₂</p>
               <p className="mt-2 text-sm text-warm-600">
                 B stendur sitt hvorum megin og styttist út. Það sama gerist með öll efni sem koma
                 fram beggja vegna — líka föst efni, sem voru hvort eð er ekki í K.
@@ -363,7 +363,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             ref={onwardRef}
             type="button"
             onClick={armed(onComplete)}
-            className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark phone:mt-4"
+            className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600 phone:mt-4"
           >
             Ljúka
           </button>
@@ -373,7 +373,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             ref={onwardRef}
             type="button"
             onClick={armed(() => setStep(step + 1))}
-            className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark phone:mt-4"
+            className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600 phone:mt-4"
           >
             Næsta
           </button>

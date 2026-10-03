@@ -314,7 +314,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
               <button
                 type="button"
                 onClick={armed(onComplete)}
-                className="game-btn mt-5 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
+                className="game-btn mt-5 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-600"
               >
                 Áfram í Æfa
               </button>

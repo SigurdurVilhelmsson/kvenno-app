@@ -723,7 +723,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         verdict: { css: '.feedback-panel' },
         next: { role: 'button', name: 'Næsta spurning' },
         // The question and every period of the table on one screen.
-        together: [[{ css: '[data-item-start]' }, { role: 'grid', name: 'Lotukerfið' }]],
+        together: [[{ css: '[data-item-start]' }, { role: 'group', name: 'Lotukerfið' }]],
         viewports: ['android', 'iphone', 'se', 'landscape'],
       },
     },
@@ -7918,8 +7918,12 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           fill: ['input[type=range]', '3'],
         },
+        // "Áfram í Skilja" opens Skilja, as it says; the menu is one step back.
         {
           clickRole: ['button', 'Áfram í Skilja'],
+        },
+        {
+          clickRole: ['button', 'Til baka'],
         },
         {
           wait: 300,

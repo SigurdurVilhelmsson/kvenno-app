@@ -157,7 +157,7 @@ export const PROBLEMS: ProblemsData = {
     {
       id: 16,
       reaction: '2SO₂(g) + O₂(g) → 2SO₃(g)',
-      name: 'Contact aðferðin',
+      name: 'Snertiferlið',
       deltaH: -198,
       deltaS: -188,
       defaultTemp: 723,

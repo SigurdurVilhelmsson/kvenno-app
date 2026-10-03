@@ -138,7 +138,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
                   onClick={() => choose(index)}
                   className={`game-btn rounded-lg border-2 px-2 py-3 text-sm font-semibold transition-colors sm:px-4 phone:relative phone:py-2 pointer-coarse:min-h-11 ${
                     amounts === preset.amounts
-                      ? 'border-kvenno-orange bg-orange-50 text-kvenno-orange-dark'
+                      ? 'border-kvenno-orange bg-orange-50 text-kvenno-orange-700'
                       : 'border-warm-300 bg-white text-warm-700 hover:border-warm-400'
                   }`}
                 >
@@ -262,7 +262,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
               type="button"
               onClick={armed(onComplete)}
               disabled={!allSeen}
-              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark disabled:cursor-not-allowed disabled:bg-warm-300"
+              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600 disabled:cursor-not-allowed disabled:bg-warm-300"
             >
               {allSeen ? 'Áfram' : `Prófaðu allar fjórar blöndurnar (${seen.length}/4)`}
             </button>

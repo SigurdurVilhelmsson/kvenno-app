@@ -179,7 +179,7 @@ const molecules: Molecule[] = [
   {
     id: 3,
     formula: 'HCl',
-    name: 'Saltsýra',
+    name: 'Vetnisklóríð',
     isPolar: true,
     hasHBond: false,
     molarMass: 36.5,
@@ -422,7 +422,7 @@ const molecules: Molecule[] = [
   {
     id: 9,
     formula: 'HF',
-    name: 'Flússýra',
+    name: 'Vetnisflúoríð',
     isPolar: true,
     hasHBond: true,
     molarMass: 20,

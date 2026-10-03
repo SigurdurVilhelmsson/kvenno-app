@@ -513,6 +513,48 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       "Siggi's ruling, 2026-10-02 (decision 39, option a), correcting ordabok.md to the book. The glossary said fjölfrumeinda jón and einfrumeinda jón; the book's running prose, including the naming module ch02/m68698, says fjölatóma jón (23 to 2) and einatóma jón (18 to 0), and the platform already said both. jón is feminine: fjölatóma jón, -jónina, -jóninni, -jónarinnar; plural fjölatóma jónir.",
   },
+  {
+    english: 'vapor pressure',
+    correct: 'gufunarþrýstingur',
+    banned: [/gufuþrýsting/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 18): vapour pressure is gufunarþrýstingur, as ordabok.md has always said, though the corpus leans 126 to 5 the other way. 2-ar/intermolecular-forces (four sites, one of them in capitals) and 3-ar/jafnvaegisfasti said gufuþrýstingur. Both masculine, so a pure string swap: gufunarþrýstingur / -þrýsting / -þrýstingi / -þrýstings.",
+  },
+  {
+    english: 'contact process',
+    correct: 'snertiferlið',
+    banned: [/snertiaðferð/i, /contact aðferð/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 17, option a). The platform had four names in three games: Snertiferlið (Contact Process) in 2-ar/hess-law, Snertiaðferð in 3-ar/equilibrium-shifter and Contact aðferðin in 3-ar/thermodynamics-predictor. ordabok.md was silent and the corpus has neither. Neuter and definite, like kjörgaslögmálið: snertiferlið / snertiferlinu / snertiferlisins. The English name in equilibrium-shifter's English data is English and is not matched.",
+  },
+  {
+    english: 'water-gas shift reaction',
+    correct: 'vatnsgashvarf',
+    banned: [/vatnsgas hvarf/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 19), confirming the compound that 3-ar/jafnvaegisfasti and 3-ar/equilibrium-shifter were harmonised to: a genitive compound cannot be split. The corpus has neither form. Neuter, like efnahvarf: vatnsgashvarf / -hvarf / -hvarfi / -hvarfs, definite vatnsgashvarfið.",
+  },
+  {
+    english: 'post-transition metal',
+    correct: 'tregur málmur',
+    banned: [/\bP-málm/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 21). The periodic-table legends in 1-ar/lotukerfid and 1-ar/molmassi said P-málmar, a coinage; ordabok.md was silent. Masculine, an adjective and a noun that both decline: tregur málmur / tregan málm / tregum málmi / tregs málms, plural tregir málmar / trega málma / tregum málmum / tregra málma. lotukerfid's cell abbreviation is Tm.",
+  },
+  {
+    english: 'lanthanide / actinide',
+    correct: 'lantaníð / aktiníð',
+    banned: [/lanþaníð/i, /aktíníð/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 21): lantaníðar and aktiníðar in the plural, correcting ordabok.md's lanþaníð to t; actinides;aktiníðar already agreed. 1-ar/lotukerfid's unused labels said Lantaníð and Aktíníð, the second with an accent the glossary does not have. Spelling only.",
+  },
+  {
+    english: 'scientific notation',
+    correct: 'staðalform',
+    banned: [/veldisrithátt/i, /vísindatölustaf/i],
+    guidance:
+      "Siggi's ruling, 2026-10-02 (decision 33): the book's defined term (Appendix B, 17 hits, and its own significant-figures exercise). 1-ar/dimensional-analysis had coined veldisritháttur in Stig 0 and vísindatölustafir in Level 3, neither in the corpus. Neuter: staðalform / staðalform / staðalformi / staðalforms, so á staðalformi, ritað á staðalformi. The same word means standard state in ch05 and ch16; in a game about numbers that does not arise.",
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

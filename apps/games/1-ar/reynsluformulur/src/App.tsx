@@ -36,7 +36,7 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
     number: '3',
     name: 'Æfa',
     description: 'Fylltu töfluna sjálf/ur, súlu fyrir súlu, á átta efnum.',
-    tone: 'bg-kvenno-orange hover:bg-kvenno-orange-dark',
+    tone: 'bg-kvenno-orange hover:bg-kvenno-orange-600',
   },
   {
     id: 'beita',

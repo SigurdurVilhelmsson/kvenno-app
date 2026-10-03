@@ -63,14 +63,32 @@ export interface ScientificEntry {
 export type GradeOutcome = 'rett' | 'veldisvisir' | 'tolustafir' | 'baedi' | 'ogilt';
 
 /**
+ * Why an entry graded `ogilt`, so a caller can say what to fix rather than repeat "fill in
+ * both fields" at a student who did: `tomt`, a field left empty; `olaesilegt`, a field holding
+ * something it does not ask for (`8,3 × 10²` in the number field, `1,5` as a power);
+ * `ekki-jakvaett`, a number that is zero or negative, which no answer here can be.
+ */
+export type InvalidReason = 'tomt' | 'olaesilegt' | 'ekki-jakvaett';
+
+/** What to tell a student whose entry graded `ogilt`, for the two reasons that are not "empty". */
+export const INVALID_ENTRY_MESSAGE: Record<Exclude<InvalidReason, 'tomt'>, string> = {
+  olaesilegt:
+    'Í fyrri reitinn fer talan sjálf, t.d. 2,8, og í þann seinni heil tala fyrir veldisvísinn — ekki × 10 eða e.',
+  'ekki-jakvaett': 'Svarið þarf að vera stærra en núll.',
+};
+
+/**
  * The mantissa field takes a written number and nothing else: digits, at most
  * one decimal comma or point, and a sign. No `×`, no `e`, no superscript — the
  * power of ten has a field of its own.
  */
 const PLAIN_MANTISSA = /^[+-]?(\d+([.,]\d*)?|[.,]\d+)$/;
 
-/** The exponent field takes a whole number, signed or not. */
-const INTEGER_EXPONENT = /^[+-]?\d+$/;
+/**
+ * The exponent field takes a whole number, signed or not — written `-5`, or `-5,0` / `-5.0`,
+ * which is the same whole number and was refused until 2026-10-02. `1,5` is still refused.
+ */
+const INTEGER_EXPONENT = /^[+-]?\d+([.,]0*)?$/;
 
 /**
  * Read both fields, or `null` if either holds something other than what it
@@ -85,12 +103,22 @@ const INTEGER_EXPONENT = /^[+-]?\d+$/;
  * caller asks again, the same rule `1-ar/dimensional-analysis`'s `readWritten`
  * applies to its own two fields.
  */
-function readEntry(entry: ScientificEntry): { mantissa: number; exponent: number } | null {
-  const mantissa = normaliseMinus(entry.mantissa.replace(/\s/g, ''));
-  const exponent = normaliseMinus(entry.exponent.replace(/\s/g, ''));
-  if (mantissa === null || exponent === null) return null;
-  if (!PLAIN_MANTISSA.test(mantissa) || !INTEGER_EXPONENT.test(exponent)) return null;
-  return { mantissa: Number(mantissa.replace(',', '.')), exponent: Number(exponent) };
+function readEntry(
+  entry: ScientificEntry
+): { mantissa: number; exponent: number } | { invalid: InvalidReason } {
+  const rawMantissa = entry.mantissa.replace(/\s/g, '');
+  const rawExponent = entry.exponent.replace(/\s/g, '');
+  if (rawMantissa === '' || rawExponent === '') return { invalid: 'tomt' };
+  const mantissa = normaliseMinus(rawMantissa);
+  const exponent = normaliseMinus(rawExponent);
+  if (mantissa === null || exponent === null) return { invalid: 'olaesilegt' };
+  if (!PLAIN_MANTISSA.test(mantissa) || !INTEGER_EXPONENT.test(exponent)) {
+    return { invalid: 'olaesilegt' };
+  }
+  return {
+    mantissa: Number(mantissa.replace(',', '.')),
+    exponent: Number(exponent.replace(',', '.')),
+  };
 }
 
 /**
@@ -126,16 +154,21 @@ export function gradeScientific(
   entry: ScientificEntry,
   expected: number,
   tolerance = 0.02
-): { outcome: GradeOutcome; value: number } {
+): { outcome: GradeOutcome; value: number; reason?: InvalidReason } {
   const read = readEntry(entry);
-  if (read === null) return { outcome: 'ogilt', value: Number.NaN };
+  if ('invalid' in read) return { outcome: 'ogilt', value: Number.NaN, reason: read.invalid };
   const { mantissa, exponent } = read;
 
   const value = mantissa * Math.pow(10, exponent);
-  if (value <= 0) return { outcome: 'ogilt', value };
+  if (!(value > 0)) {
+    return {
+      outcome: 'ogilt',
+      value,
+      reason: Number.isNaN(value) ? 'olaesilegt' : 'ekki-jakvaett',
+    };
+  }
 
   const expectedExponent = Math.floor(Math.log10(expected));
-  const expectedMantissa = expected / Math.pow(10, expectedExponent);
 
   const within = (a: number, b: number) => Math.abs(a - b) / b <= tolerance;
 
@@ -144,10 +177,15 @@ export function gradeScientific(
   // A normalised mantissa lets "right digits, wrong power" be told apart from
   // "wrong digits". 8,3 against 8,3 with the exponent adrift is a different
   // mistake from 2,9 against 8,3, and deserves a different sentence.
-  const mantissaRight = within(mantissa, expectedMantissa);
-  const exponentRight = exponent === expectedExponent;
-
-  if (mantissaRight && !exponentRight) return { outcome: 'veldisvisir', value };
-  if (!mantissaRight && exponentRight) return { outcome: 'tolustafir', value };
+  //
+  // The diagnosis reads the value the two fields make, not the fields one by one, so the
+  // student's way of splitting it does not decide the sentence. Compared field by field, `83`
+  // with the right power — ten times the answer, its digits intact — read as wrong digits
+  // (2026-10-02), while `8,3` with a power one off read as the power. Right digits now means
+  // exactly this: off by a whole power of ten and by nothing else.
+  const shift = Math.round(Math.log10(value / expected));
+  const digitsRight = shift !== 0 && within(value / Math.pow(10, shift), expected);
+  if (digitsRight) return { outcome: 'veldisvisir', value };
+  if (Math.floor(Math.log10(value)) === expectedExponent) return { outcome: 'tolustafir', value };
   return { outcome: 'baedi', value };
 }

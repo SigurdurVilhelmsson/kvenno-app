@@ -148,7 +148,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
         <button
           type="button"
           onClick={() => setPhase('drill')}
-          className="game-btn w-full rounded-xl bg-kvenno-orange px-4 py-3 font-bold text-white hover:bg-kvenno-orange-dark"
+          className="game-btn w-full rounded-xl bg-kvenno-orange px-4 py-3 font-bold text-white hover:bg-kvenno-orange-600"
         >
           Byrja að flokka
         </button>

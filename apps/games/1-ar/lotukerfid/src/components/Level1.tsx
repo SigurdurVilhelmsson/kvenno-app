@@ -345,7 +345,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
             </button>
             <button
               onClick={armedResults(onComplete)}
-              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
@@ -532,7 +532,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 key="next"
                 ref={nextRef}
                 onClick={armed(handleNext)}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
               >
                 {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
               </button>

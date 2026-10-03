@@ -52,7 +52,7 @@ const CATEGORY_ABBR: Record<ElementCategory, string> = {
   'alkali-metal': 'Al',
   'alkaline-earth': 'Jm',
   'transition-metal': 'Hl',
-  'post-transition-metal': 'Pm',
+  'post-transition-metal': 'Tm',
   metalloid: 'Hm',
   nonmetal: 'Ml',
   halogen: 'Ha',
@@ -333,9 +333,9 @@ export function PeriodicTable({
     { key: 'alkali-metal', label: 'Al — Alkalímálmar' },
     { key: 'alkaline-earth', label: 'Jm — Jarðalkalímálmar' },
     { key: 'transition-metal', label: 'Hl — Hliðarmálmar' },
-    { key: 'post-transition-metal', label: 'Pm — P-málmar' },
+    { key: 'post-transition-metal', label: 'Tm — Tregir málmar' },
     { key: 'metalloid', label: 'Hm — Hálfmálmar' },
-    { key: 'nonmetal', label: 'Ml — Málmleysingjar' },
+    { key: 'nonmetal', label: 'Ml — Aðrir málmleysingjar' },
     { key: 'halogen', label: 'Ha — Halógen' },
     { key: 'noble-gas', label: 'Eð — Eðalgös' },
   ];
@@ -367,8 +367,11 @@ export function PeriodicTable({
           }}
           className="overflow-x-auto overscroll-x-contain px-1.5 py-1 md:overflow-visible md:p-0"
         >
+          {/* A labelled group of buttons, not a grid: the cells sit straight in one CSS grid
+              with no row elements, and role="grid" without rows and cells is a broken grid
+              to a screen reader. The arrow keys still move between the buttons. */}
           <div
-            role="grid"
+            role="group"
             aria-label="Lotukerfið"
             className="grid gap-0.5 grid-cols-[repeat(18,minmax(46px,1fr))] md:grid-cols-[repeat(18,minmax(0,1fr))]"
           >

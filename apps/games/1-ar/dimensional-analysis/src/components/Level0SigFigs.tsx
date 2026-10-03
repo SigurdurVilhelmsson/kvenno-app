@@ -504,7 +504,7 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
                       {formatDecimal(Number(roundItem.value.toPrecision(roundItem.figures)))}
                     </code>{' '}
                     yrði talan lesin með færri markverðum stöfum, því núll aftast telja ekki nema
-                    komma sé skrifuð (regla 4). Skýrast er að skrifa hana sem{' '}
+                    komma sé skrifuð (regla 4). Skýrast er að skrifa hana á staðalformi,{' '}
                     <code className="whitespace-nowrap">{roundItem.answer}</code>, þar sem allir
                     tölustafirnir framan við <span className="whitespace-nowrap">× 10</span> eru
                     markverðir.
