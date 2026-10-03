@@ -67,7 +67,7 @@ function isValidCard(card: HTMLElement, index: number): boolean {
   return option.isValid;
 }
 
-/** Play the whole level, ticking the cards `choose` picks; returns the final score. */
+/** Play the whole level, ticking the cards `choose` picks; returns the count of right answers. */
 function play(choose: (valid: boolean) => boolean, onEachQuestion?: (c: HTMLElement[]) => void) {
   const { onComplete, ui, container } = startPractice();
   puzzles.forEach((_, index) => {
@@ -106,11 +106,11 @@ describe('the order of the option cards', () => {
 });
 
 describe('grading the shuffled cards', () => {
-  it('scores 8 of 8 when exactly the valid cards are ticked', () => {
+  it('counts 8 of 8 right when exactly the valid cards are ticked', () => {
     expect(play((valid) => valid)).toBe(8);
   });
 
-  it('scores 0 when exactly the invalid cards are ticked', () => {
+  it('counts 0 right when exactly the invalid cards are ticked', () => {
     expect(play((valid) => !valid)).toBe(0);
   });
 

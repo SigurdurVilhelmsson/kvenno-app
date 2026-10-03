@@ -15,7 +15,8 @@ import { countElectrons, firstOutOfOrder, hundFilling, rafeindir } from '../util
 import { ITEM_START } from '../utils/itemStart';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /** How many of the questions were answered right, out of how many. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -25,7 +26,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [userInput, setUserInput] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
+  // Right answers, counted (mobile-pass decision 1 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const puzzle = configPuzzles[currentIndex];
   const isLast = currentIndex >= configPuzzles.length - 1;
@@ -78,7 +80,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setIsCorrect(correct);
     setSubmitted(true);
     if (correct) {
-      setScore((s) => s + 1);
+      setCorrectCount((c) => c + 1);
       setDiagnostic(null);
     } else {
       // Counted from what the student typed, not from userNorm: normalizing
@@ -109,7 +111,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const handleNext = () => {
     if (isLast) {
-      onComplete(score);
+      onComplete(correctCount, configPuzzles.length);
       return;
     }
     setCurrentIndex((i) => i + 1);
@@ -268,7 +270,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             ← Til baka
           </button>
           <div className="text-sm text-warm-600 text-right">
-            Frumefni {currentIndex + 1} / {configPuzzles.length} &bull; Stig: {score}
+            Frumefni {currentIndex + 1} / {configPuzzles.length}
           </div>
         </div>
 
