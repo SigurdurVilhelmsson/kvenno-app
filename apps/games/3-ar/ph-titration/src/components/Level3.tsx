@@ -17,13 +17,18 @@ import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 const ANSWER_EXIT_MS = 250;
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  /** How many of the problems were answered right. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
 export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  // Right answers, counted flat: the hint never changes it, and there is no
+  // running score on screen (mobile-pass decisions 1 (b) and 2 (b)). It used to
+  // be 20 points a problem, shown as "Stig: N" in the header. Each problem is
+  // answered once, so there is no retry to guard.
+  const [correctCount, setCorrectCount] = useState(0);
   const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
@@ -91,9 +96,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   useEffect(() => {
     if (completed >= LEVEL3_CHALLENGES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score);
+      onComplete(correctCount, LEVEL3_CHALLENGES.length);
     }
-  }, [completed, score, onComplete]);
+  }, [completed, correctCount, onComplete]);
 
   const handleSubmit = () => {
     if (!userAnswer.trim()) return;
@@ -108,10 +113,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     setIsCorrect(correct);
     setShowResult(true);
 
-    if (correct) {
-      const points = 20;
-      setScore((prev) => prev + points);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
   };
 
   const handleShowHint = () => {
@@ -198,7 +200,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8 phone:px-3 phone:py-3">
       <div ref={levelRef} className="max-w-4xl mx-auto scroll-mt-4 phone:scroll-mt-3">
         {/* Header. On a phone it folds to one row (design P4): Til baka, the
-            title, the counters, with the progress bar under them. Til baka
+            title, the question counter, with the progress bar under them. Til baka
             comes first in the DOM as well as on screen. */}
         <div className="bg-white rounded-2xl shadow-xl p-4 mb-4 phone:flex phone:flex-wrap phone:items-center phone:gap-x-1.5 phone:px-2.5 phone:py-2 phone:mb-3">
           <div className="flex justify-between items-center phone:contents">
@@ -212,7 +214,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <div className="text-sm text-warm-500 phone:text-xs">
                 {currentIndex + 1} / {LEVEL3_CHALLENGES.length}
               </div>
-              <div className="text-lg font-bold text-purple-600 phone:text-sm">Stig: {score}</div>
             </div>
           </div>
 
@@ -394,7 +395,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
               >
                 {isCorrect ? '✓ Rétt!' : '✗ Rangt'}
-                {isCorrect && ' (+20 stig)'}
               </div>
 
               <div className="text-sm mb-2">

@@ -33,7 +33,8 @@ const HINT_EXIT_MS = 250;
 const TITRATION_RELATED: string[] = ['Títrun', 'Jafngildispunktur', 'Vísar', 'Stuðpúðasvæði'];
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  /** How many of the questions were answered right. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -48,7 +49,10 @@ const weakStrongTitration = titrations.find(
 export function Level1({ onComplete, onBack }: Level1Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  // Right answers, counted flat: a hint never lowers it, and there is no running
+  // score on screen (mobile-pass decisions 1 (b) and 2 (b)). It used to be 100
+  // points a question, shown as "Stig: N" in the header.
+  const [correctCount, setCorrectCount] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [, setHintsUsed] = useState(0);
@@ -109,9 +113,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   useEffect(() => {
     if (completed >= LEVEL1_CHALLENGES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score);
+      onComplete(correctCount, LEVEL1_CHALLENGES.length);
     }
-  }, [completed, score, onComplete]);
+  }, [completed, correctCount, onComplete]);
 
   const handleOptionSelect = (optionId: string) => {
     if (showResult) return;
@@ -126,12 +130,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
     setShowResult(true);
 
-    if (isCorrect) {
-      // Hints are free: the April 2026 restructure makes hint use unpenalised,
-      // so the tier reached never scales the points.
-      const points = 100;
-      setScore((prev) => prev + points);
-    }
+    // Hints are free (the April 2026 restructure, and decision 2 (b)): the tier
+    // reached never changes whether the answer counts. Each question is answered
+    // once, so there is no retry to guard.
+    if (isCorrect) setCorrectCount((prev) => prev + 1);
   };
 
   const handleNext = () => {
@@ -214,8 +216,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 scroll-mt-4 phone:p-3 phone:scroll-mt-3"
       >
         {/* Header. On a phone it folds to one row (design P4): Til baka, the
-            title, the counters. Til baka comes first in the DOM as well as on
-            screen, and the counters hold nothing focusable. */}
+            title, the question counter. Til baka comes first in the DOM as well
+            as on screen, and the counter holds nothing focusable. */}
         <div className="phone:flex phone:items-center phone:gap-2 phone:mb-2">
           <div className="flex justify-between items-center mb-6 phone:contents">
             <button
@@ -228,7 +230,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <div className="text-sm text-warm-500 phone:text-xs">
                 {currentIndex + 1} / {LEVEL1_CHALLENGES.length}
               </div>
-              <div className="text-lg font-bold text-blue-600 phone:text-sm">Stig: {score}</div>
             </div>
           </div>
 
@@ -335,7 +336,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="mb-4 phone:mb-3">
             <HintSystem
               hints={challenge.hints}
-              basePoints={100}
               onHintUsed={handleHintUsed}
               showPointCost={false}
               disabled={showResult}
@@ -356,7 +356,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <FeedbackPanel
               feedback={{
                 isCorrect,
-                explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}${isCorrect ? ' (+100 stig)' : ''}\n\n${challenge.explanationIs}`,
+                explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}\n\n${challenge.explanationIs}`,
                 misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
                 relatedConcepts: TITRATION_RELATED,
                 nextSteps: isCorrect
