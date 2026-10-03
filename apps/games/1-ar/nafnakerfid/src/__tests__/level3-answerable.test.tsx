@@ -83,10 +83,10 @@ describe('every question Level 3 asks can be answered', () => {
     }
 
     expect(onComplete).toHaveBeenCalledTimes(1);
-    // Full marks: ten questions, ten points each, no wrong attempts.
-    const [score, maxScore] = onComplete.mock.calls[0];
-    expect(maxScore).toBe(100);
-    expect(score).toBe(100);
+    // Full marks: ten questions, each right at the first check.
+    const [correct, total] = onComplete.mock.calls[0];
+    expect(total).toBe(10);
+    expect(correct).toBe(10);
 
     unmount();
   };

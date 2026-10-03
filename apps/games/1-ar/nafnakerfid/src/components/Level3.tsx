@@ -93,7 +93,7 @@ function renderDiff(userName: string, correctName: string): ReactNode {
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
@@ -134,7 +134,11 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<NamePart[]>([]);
   const [available, setAvailable] = useState<NamePart[]>(() => generateParts(compounds[0]));
-  const [score, setScore] = useState(0);
+  // Compounds named right at the first "Athuga". A wrong check prints the
+  // right name ("Rétt nafn: …") before "Reyna aftur" is offered, so a name
+  // built after that has been shown is not counted (decision 1 (b)). It used
+  // to pay 10 points, less 2 a retry down to 5, and show the running total.
+  const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -142,7 +146,6 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   const compound = compounds[idx];
   const total = compounds.length;
-  const maxScore = total * 10;
 
   const builtName = selected.map((p) => p.text).join('');
   const displayName = builtName.charAt(0).toUpperCase() + builtName.slice(1);
@@ -205,7 +208,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     setAnswered(true);
     setAttempts((prev) => prev + 1);
     if (correct) {
-      setScore((prev) => prev + Math.max(10 - attempts * 2, 5));
+      if (attempts === 0) setCorrectCount((prev) => prev + 1);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -220,7 +223,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   const handleNext = useCallback(() => {
     if (idx + 1 >= total) {
-      onComplete(score, maxScore, 0);
+      onComplete(correctCount, total);
       return;
     }
     const next = idx + 1;
@@ -229,12 +232,13 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     setAvailable(generateParts(compounds[next]));
     setAnswered(false);
     setAttempts(0);
-  }, [idx, total, compounds, score, maxScore, onComplete]);
+  }, [idx, total, compounds, correctCount, onComplete]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-3 sm:p-4">
       <div className="max-w-lg mx-auto">
-        {/* Header. On a phone each counter reads on one line ("0 Stig"). */}
+        {/* Header. On a phone the counter reads on one line ("1/10 Efni"). No
+            running score (decision 1 (b)); the count is on the menu after. */}
         <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-4 phone:py-2 phone:mb-3">
           <div className="flex flex-wrap justify-between items-center gap-x-2 gap-y-1">
             <button
@@ -247,12 +251,6 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level3.ui.title', 'Byggja nöfn')}
             </h1>
             <div className="flex gap-3 text-center">
-              <div className="phone:flex phone:items-baseline phone:gap-1">
-                <div className="text-lg font-bold text-kvenno-orange">{score}</div>
-                <div className="text-[10px] pointer-coarse:text-xs text-warm-500">
-                  {t('common.score', 'Stig')}
-                </div>
-              </div>
               <div className="phone:flex phone:items-baseline phone:gap-1">
                 <div className="text-lg font-bold text-warm-700">
                   {idx + 1}/{total}
