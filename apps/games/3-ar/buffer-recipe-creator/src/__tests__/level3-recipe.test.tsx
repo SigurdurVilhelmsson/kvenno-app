@@ -162,7 +162,7 @@ describe('Level 3 grades volumes against the derived recipe', () => {
       finishPuzzle(container);
     }
     expect(onComplete).toHaveBeenCalledTimes(1);
-    expect(onComplete).toHaveBeenCalledWith(500);
+    expect(onComplete).toHaveBeenCalledWith();
   });
 
   it('rejects volumes 6 % from the derived ones', () => {
@@ -214,7 +214,7 @@ describe('Level 3 grades volumes against the derived recipe', () => {
     const check = lastButton(container, 'Athuga svar');
     fireEvent.click(check);
     fireEvent.click(check);
-    expect(within(container).getByText('Stig: 100')).toBeTruthy();
+    expect(within(container).getByText('1 / 5')).toBeTruthy();
 
     // "Næsta verkefni" ignores a press within 400 ms of appearing (the double-tap guard);
     // a student reads the solution first.

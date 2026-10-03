@@ -341,20 +341,21 @@ describe('on a phone', () => {
     expect(nextComesFirst()).toBe(true);
   });
 
-  it('moves the hints under the step card without the "Stig" line, keeping open tiers', () => {
+  it('moves the hints under the step card, keeping open tiers', () => {
     const { container } = render(<Level2 onComplete={() => {}} onBack={() => {}} />);
     fireEvent.click(within(container).getByRole('button', { name: /Vísbending 1\/4/ }));
-    expect(within(container).getByText(/Stig: 80 \/ 100/)).toBeTruthy();
+    // Hints are free, so no point cost is shown at any width (decision 2 (b)).
+    expect(within(container).queryByText(/Stig: \d+ \/ \d+/)).toBeNull();
 
     setPhone(true);
     // The tier the student opened is still open, and the next one is offered.
     const hint = within(container).getByRole('button', { name: /Vísbending 2\/4/ });
-    expect(within(container).queryByText(/Stig: 80 \/ 100/)).toBeNull();
+    expect(within(container).queryByText(/Stig: \d+ \/ \d+/)).toBeNull();
     const step = within(container).getByText(/Skref 1:/);
     expect(step.compareDocumentPosition(hint) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     setPhone(false);
-    expect(within(container).getByText(/Stig: 80 \/ 100/)).toBeTruthy();
+    expect(within(container).getByRole('button', { name: /Vísbending 2\/4/ })).toBeTruthy();
   });
 
   it('Stig 1 shows the ratio and its target above the buttons, and the molecules after', () => {

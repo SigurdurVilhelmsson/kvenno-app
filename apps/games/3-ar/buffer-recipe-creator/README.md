@@ -62,13 +62,21 @@ list. Problem #30 (a hypothetical `Veikt sýra`, pKa 5.2) is the one value it sk
 - **TRIS was dropped**, which is why the problem ids skip 13 and 27 and why Stig 2 and Stig 3 each
   serve five puzzles, not six (their ids skip 4 and 3 respectively).
 
-## Hints cost points here
+## No points, and hints are free (2026-10-03)
 
-All three levels pass `onPointsChange` to the shared `HintSystem` and multiply the award by it
-(`Level1.tsx:159`, `Level2.tsx:185`, `Level3.tsx:186`), so the tier cost the component displays is
-genuinely charged. `docs/README.md` records this as deliberately left alone when ph-titration's
-penalty was removed, and `consumers-honest.test.ts` only requires that a displayed cost be real. It
-does sit against the platform's "hint usage is never penalised" rule — see Open.
+Siggi's rulings, mobile-pass decisions 1 (b) and 2 (b). All three levels used to pay 100 points times
+the shared `HintSystem`'s tier multiplier, down to 40 with every tier open; the HintSystem showed the
+shrinking award as "Stig: x / y", the verdict said "+40 stig", each level kept a running score in its
+header (a "Stig" tile in Stig 1), and the menu showed "N stig" per level beside a Heildarstig total.
+All of that is gone: the HintSystem is passed `showPointCost={false}` and no multiplier, and
+`hint-cost.test.tsx` plays each level with and without every tier open and requires the same end and
+no point on screen.
+
+No level reports a count of right answers either, where the ruling's default is "N af M rétt". None
+can end on a wrong answer — Næsta waits for a right one, and Stig 1's pH bar names the verdict before
+the check — so the count would always be full. Each level reports that it is done, and the menu shows
+"✓ Lokið", as Einingakeðjan's Stig 1 reports completion (decision 23). Progress saved before this
+carries `levelNScore` and `totalGamesPlayed`; both are ignored (`level-result.test.tsx`).
 
 ## Terminology and name
 
@@ -130,7 +138,7 @@ where a comma would break the path.
 Each has a test that fails against the version before it.
 
 - **Stig 1 counted a challenge every time it was checked.** Six taps on "Athuga stuðpúða" finished the
-  level from challenge 1 with 600 stig. A solved challenge is now counted once
+  level from challenge 1 with 600 points. A solved challenge is now counted once
   (`level1-flow.test.tsx`).
 - **Stig 1's last challenge was never seen.** Completion swapped to the menu on the last correct check;
   the level now ends on "Ljúka stigi", like Stig 2 and 3.
@@ -163,7 +171,6 @@ Each has a test that fails against the version before it.
 
 ## Open
 
-- **Hint cost** — whether this game should follow the platform's free-hints policy is Siggi's call.
 - **`Ammóníustuðpúði`** (8 sites, this game only). The corpus has no `ammóníu-` stem at all — every
   one of its 57 hits is `ammóníum…` — and neither compound appears in it. `ammóníumstuðpúði` looks
   right, but it is a coinage question and has not been ruled.

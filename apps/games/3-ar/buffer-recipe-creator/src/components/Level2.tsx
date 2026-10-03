@@ -27,7 +27,12 @@ import { BUFFER_PROBLEMS } from '../data/problems';
 import { solveBuffer } from '../engine/buffer';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /**
+   * The level is done. It reports no count: a puzzle cannot be left unsolved (Næsta waits for
+   * the last step to be right), so every run would read "N af N rétt" (mobile-pass decision
+   * 1 (b), as item 23 did for Einingakeðjan).
+   */
+  onComplete: () => void;
   onBack: () => void;
 }
 
@@ -59,9 +64,7 @@ type Direction = 'higher' | 'equal' | 'lower' | null;
 export default function Level2({ onComplete, onBack }: Level2Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [step, setStep] = useState<Step>('direction');
-  const [score, setScore] = useState(0);
   const [, setHintsUsedTotal] = useState(0);
-  const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   // How many hint tiers are open, so the hints keep them when a phone layout moves them.
@@ -118,9 +121,9 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
   useEffect(() => {
     if (completed >= LEVEL2_PUZZLES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score);
+      onComplete();
     }
-  }, [completed, score, onComplete]);
+  }, [completed, onComplete]);
 
   // The level opens with its heading focused: the menu card that opened it has gone.
   useLayoutEffect(() => {
@@ -298,9 +301,9 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
     if (acidOk && baseOk) {
       setMassCorrect(true);
-      const points = Math.round(100 * hintMultiplier);
-      setScore((prev) => prev + points);
-      setMassFeedback(`Frábært! +${points} stig`);
+      // Hints are free (mobile-pass decision 2 (b)): this used to pay 100 points times the
+      // HintSystem tier multiplier, down to 40 with every tier open, and said so here.
+      setMassFeedback('Frábært!');
       setShowExplanation(true);
       setStep('complete');
     } else {
@@ -339,24 +342,22 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     setMassFeedback(null);
     setMassCorrect(false);
     setShowExplanation(false);
-    setHintMultiplier(1.0);
     setHintTiers(0);
     setHintResetKey((prev) => prev + 1);
   };
 
-  // Rendered once, in the task card on desktop and under the step card on a phone. The
-  // "Stig: x / y" line stays where it always was and is not carried to the new place (design
-  // §4, §7). `startRevealed` keeps the student's open tiers when the move remounts it.
+  // Rendered once, in the task card on desktop and under the step card on a phone.
+  // `startRevealed` keeps the student's open tiers when the move remounts it. No point cost is
+  // shown: hints are free (mobile-pass decision 2 (b)), where the "Stig: x / y" line here once
+  // showed the award shrinking with each tier.
   const hintSystem = (
     <HintSystem
       hints={puzzle.hints}
-      basePoints={100}
       onHintUsed={handleHintUsed}
-      onPointsChange={setHintMultiplier}
       disabled={step === 'complete'}
       resetKey={hintResetKey}
       startRevealed={hintTiers}
-      showPointCost={!phone}
+      showPointCost={false}
     />
   );
 
@@ -395,7 +396,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
         ref={levelTopRef}
         className="max-w-4xl mx-auto phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-3 phone-land:items-start"
       >
-        {/* Header (on a phone: Til baka and the counters, then the title and the bar) */}
+        {/* Header (on a phone: Til baka and the puzzle counter, then the title and the bar) */}
         <div className="bg-white rounded-2xl shadow-xl p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3 phone-land:col-span-2">
           <div className="flex justify-between items-center">
             <button
@@ -407,9 +408,6 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
             <div className="flex items-center gap-4 phone:gap-3">
               <div className="text-sm text-warm-500">
                 {Math.min(completed + 1, LEVEL2_PUZZLES.length)} / {LEVEL2_PUZZLES.length}
-              </div>
-              <div className="text-lg font-bold text-kvenno-orange phone:text-base">
-                Stig: {score}
               </div>
             </div>
           </div>
