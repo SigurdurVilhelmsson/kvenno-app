@@ -93,9 +93,9 @@ describe('the crossover on screen', () => {
   });
 
   it('is still named where there is one', () => {
-    // Id 11, Haber at 500 K: T = −92 / −0,199 = 462 K.
+    // Id 11, Haber at 500 K: T = −91,8 / −0,199 = 461 K, with the book's ΔH°.
     openProblem(11);
     expect(screen.getByText(PANEL)).toBeTruthy();
-    expect(document.body.textContent).toContain('462 K');
+    expect(document.body.textContent).toContain('461 K');
   });
 });

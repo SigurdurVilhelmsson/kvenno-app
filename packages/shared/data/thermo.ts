@@ -24,6 +24,12 @@
  * figure is the one this platform shows, because it is the one a student can
  * look up in the book they own.
  *
+ * **Two more games read it since 2026-10-03** (mobile-pass decision 9, ruled
+ * (a)): `2-ar/hess-law` and `3-ar/thermodynamics-predictor`, which had each kept
+ * a table of their own. The rows they needed were added from the same appendix.
+ * The book has no row for ice or for glucose, so a reaction that needs one keeps
+ * a stored value and says so.
+ *
  * **Why derive rather than store a ΔH per reaction.** The same reason
  * `1-ar/reynsluformulur` stores formulas rather than percentages: a stored
  * ΔH can disagree with the equation it belongs to and nothing notices. Derived
@@ -32,33 +38,64 @@
 
 /** ΔHf° in kJ/mol at 298 K. The phase is part of the key: it changes the value. */
 export const FORMATION_ENTHALPY: Record<string, number> = {
-  // Elements in their standard state are zero by definition.
+  // Elements in their standard state are zero by definition. `C(s)` is graphite.
+  // `S(s)` is rhombic sulfur, which the book lists as S₈(s); per atom it is zero
+  // all the same, and the games write it S(s).
+  'Al(s)': 0,
+  'Br₂(l)': 0,
   'C(s)': 0,
+  'Ca(s)': 0,
   'Cl₂(g)': 0,
+  'Cu(s)': 0,
+  'Fe(s)': 0,
   'H₂(g)': 0,
   'I₂(s)': 0,
   'N₂(g)': 0,
+  'Na(s)': 0,
   'O₂(g)': 0,
+  'S(s)': 0,
+  'Zn(s)': 0,
 
+  // Diamond is not carbon's standard state, so it is not zero. The phase key
+  // carries the allotrope, as the book's row does: `C(s) (demantur)`.
+  'C(s, demantur)': 1.89,
+
+  'Al₂O₃(s)': -1676,
+  'Br₂(g)': 30.91,
+  'C₂H₅OH(l)': -277.6,
+  'C₂H₆(g)': -84.0,
   'CaCO₃(s)': -1220.0,
   'CaO(s)': -634.9,
   'CH₃OH(g)': -201.0,
   'CH₄(g)': -74.6,
   'CO(g)': -110.52,
   'CO₂(g)': -393.51,
+  'Fe₂O₃(s)': -824.2,
   'H₂O(g)': -241.82,
   'H₂O(l)': -285.83,
+  'H₂O₂(l)': -187.78,
   'H₂S(g)': -20.6,
+  'HCl(g)': -92.307,
   'HI(g)': 26.48,
   'I₂(g)': 62.438,
   'N₂O₄(g)': 11.1,
+  'NaCl(s)': -411.2,
   'NH₃(g)': -45.9,
+  'NH₄Cl(s)': -314.43,
   'NO(g)': 90.25,
   'NO₂(g)': 33.2,
+  'O₃(g)': 142.7,
   'PCl₃(g)': -287.0,
   'PCl₅(g)': -374.9,
   'SO₂(g)': -296.83,
   'SO₃(g)': -395.72,
+
+  // Ions in water. The book tabulates them on the usual convention that
+  // ΔHf°(H⁺, aq) = 0, so only sums of whole formulas mean anything.
+  'Cl⁻(aq)': -167.2,
+  'Cu²⁺(aq)': 64.77,
+  'Na⁺(aq)': -240.1,
+  'Zn²⁺(aq)': -153.9,
 };
 
 /** The gas constant in kJ/(mol·K), to match the kJ/mol of the table above. */

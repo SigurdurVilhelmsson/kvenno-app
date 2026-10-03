@@ -88,13 +88,13 @@ const EXAMPLES: PathExample[] = [
     title: 'Myndun NH₃',
     reactants: '½N₂(g) + 3/2H₂(g)',
     products: 'NH₃(g)',
-    totalDeltaH: -46.1,
+    totalDeltaH: -45.9,
     paths: [
       {
         id: 'direct',
         name: 'Haber-ferlið',
         color: '#22c55e',
-        steps: [{ label: '½N₂ + 3/2H₂ → NH₃', deltaH: -46.1 }],
+        steps: [{ label: '½N₂ + 3/2H₂ → NH₃', deltaH: -45.9 }],
         description: 'Bein samsetning í Haber-ferlinu',
       },
       {
@@ -103,8 +103,8 @@ const EXAMPLES: PathExample[] = [
         color: '#ef4444',
         steps: [
           { label: '½N₂ → N', deltaH: 472.7 },
-          { label: '3/2H₂ → 3H', deltaH: 654.8 },
-          { label: 'N + 3H → NH₃', deltaH: -1173.6 },
+          { label: '3/2H₂ → 3H', deltaH: 653.9 },
+          { label: 'N + 3H → NH₃', deltaH: -1172.5 },
         ],
         description: 'Sundrun í atóm, síðan samsetning - þetta er óraunhæft en sýnir sömu orku',
       },

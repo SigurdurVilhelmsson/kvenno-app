@@ -44,11 +44,11 @@ export const CHALLENGES: Challenge[] = [
       id: 'eq1',
       reactants: 'CH₄(g) + 2O₂(g)',
       products: 'CO₂(g) + 2H₂O(l)',
-      deltaH: -890,
+      deltaH: -891,
       isReversed: false,
       multiplier: 1,
     },
-    question: 'Brennsla metans gefur ΔH = -890 kJ/mól. Er þetta hvarf útvermið eða innvermið?',
+    question: 'Brennsla metans gefur ΔH = -891 kJ/mól. Er þetta hvarf útvermið eða innvermið?',
     options: [
       {
         text: 'Útvermið (gefur frá sér varma)',
@@ -65,7 +65,7 @@ export const CHALLENGES: Challenge[] = [
       topic: 'Þetta snýst um formerki ΔH og hvað það þýðir.',
       strategy: 'Hugsaðu um hvort orka fer inn í kerfið eða út úr því.',
       method: 'Neikvætt ΔH = orka fer út (útvermið). Jákvætt ΔH = orka fer inn (innvermið).',
-      solution: 'ΔH = -890 kJ er neikvætt, svo orka fer ÚT úr kerfinu. Þetta er útvermið hvarf.',
+      solution: 'ΔH = -891 kJ er neikvætt, svo orka fer ÚT úr kerfinu. Þetta er útvermið hvarf.',
     },
   },
   {

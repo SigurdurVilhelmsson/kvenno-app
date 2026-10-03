@@ -34,7 +34,8 @@ describe('hess-law level 2 grading', () => {
     fireEvent.click(so2);
     fireEvent.click(so3);
 
-    // Same ΔH as the target, printed with the decimal comma.
+    // A tenth from the target's −98,9, which a grader on the number alone would pass.
+    // Printed with the decimal comma.
     expect(page.getByText(/ΔH = -99,0 kJ/)).toBeTruthy();
 
     fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
@@ -53,7 +54,7 @@ describe('hess-law level 2 grading', () => {
     fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
     expect(page.getByText(/✓ Rétt!/)).toBeTruthy();
     // The worked explanation prints its numbers with the decimal comma.
-    expect(page.getByText(/\+297,0 \+ \(-396,0\) = -99,0 kJ/)).toBeTruthy();
+    expect(page.getByText(/\+296,8 \+ \(-395,7\) = -98,9 kJ/)).toBeTruthy();
   });
 
   it('withdraws a checked verdict when the combination is changed afterwards', () => {
@@ -99,7 +100,7 @@ describe('hess-law level 2 grading', () => {
 
   it('labels each equation card with its ΔH in Icelandic notation', () => {
     const { so2 } = openPuzzle5();
-    expect(so2.getAttribute('aria-label')).toMatch(/ΔH = -297,0 kJ$/);
+    expect(so2.getAttribute('aria-label')).toMatch(/ΔH = -296,8 kJ$/);
   });
 });
 

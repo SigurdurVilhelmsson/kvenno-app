@@ -13,6 +13,8 @@ import {
 import { toSubscripts } from '../utils/formula-display';
 import {
   FORMATION_ENTHALPIES,
+  calculateDeltaHrxn,
+  formationEnthalpy,
   answerTolerance,
   checkAnswer as checkAnswerTolerance,
 } from '../utils/hess-calculations';
@@ -40,115 +42,106 @@ interface Challenge {
   givenDeltaHrxn?: number;
 }
 
-const challenges: Challenge[] = [
-  {
-    id: 1,
-    titleKey: 'level3.c1title',
-    descKey: 'level3.c1desc',
-    type: 'calculate',
-    equation: 'CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(l)',
-    reactants: [
-      { formula: 'CH4(g)', coefficient: 1, deltaHf: -74.8 },
-      { formula: 'O2(g)', coefficient: 2, deltaHf: 0 },
-    ],
-    products: [
-      { formula: 'CO2(g)', coefficient: 1, deltaHf: -393.5 },
-      { formula: 'H2O(l)', coefficient: 2, deltaHf: -285.8 },
-    ],
-    correctAnswer: -890.3,
-    unit: 'kJ/mól',
-    hintKey: 'level3.c1hint',
-    explanationKey: 'level3.c1explanation',
-  },
-  {
-    id: 2,
-    titleKey: 'level3.c2title',
-    descKey: 'level3.c2desc',
-    type: 'calculate',
-    equation: 'N₂(g) + 3H₂(g) → 2NH₃(g)',
-    reactants: [
-      { formula: 'N2(g)', coefficient: 1, deltaHf: 0 },
-      { formula: 'H2(g)', coefficient: 3, deltaHf: 0 },
-    ],
-    products: [{ formula: 'NH3(g)', coefficient: 2, deltaHf: -46.1 }],
-    correctAnswer: -92.2,
-    unit: 'kJ/mól',
-    hintKey: 'level3.c2hint',
-    explanationKey: 'level3.c2explanation',
-  },
-  {
-    id: 3,
-    titleKey: 'level3.c3title',
-    descKey: 'level3.c3desc',
-    type: 'calculate',
-    equation: 'CaCO₃(s) → CaO(s) + CO₂(g)',
-    reactants: [{ formula: 'CaCO3(s)', coefficient: 1, deltaHf: -1206.9 }],
-    products: [
-      { formula: 'CaO(s)', coefficient: 1, deltaHf: -635.1 },
-      { formula: 'CO2(g)', coefficient: 1, deltaHf: -393.5 },
-    ],
-    correctAnswer: 178.3,
-    unit: 'kJ/mól',
-    hintKey: 'level3.c3hint',
-    explanationKey: 'level3.c3explanation',
-  },
-  {
-    id: 4,
-    titleKey: 'level3.c4title',
-    descKey: 'level3.c4desc',
-    type: 'reverse',
-    equation: 'S(s) + O₂(g) → SO₂(g)',
-    reactants: [
-      { formula: 'S(s)', coefficient: 1, deltaHf: 0 },
-      { formula: 'O2(g)', coefficient: 1, deltaHf: 0 },
-    ],
-    products: [{ formula: 'SO2(g)', coefficient: 1, deltaHf: -296.8 }],
-    unknownCompound: 'SO2(g)',
-    givenDeltaHrxn: -296.8,
-    correctAnswer: -296.8,
-    unit: 'kJ/mól',
-    hintKey: 'level3.c4hint',
-    explanationKey: 'level3.c4explanation',
-  },
-  {
-    id: 5,
-    titleKey: 'level3.c5title',
-    descKey: 'level3.c5desc',
-    type: 'calculate',
-    equation: 'C₂H₅OH(l) + 3O₂(g) → 2CO₂(g) + 3H₂O(l)',
-    reactants: [
-      { formula: 'C2H5OH(l)', coefficient: 1, deltaHf: -277.7 },
-      { formula: 'O2(g)', coefficient: 3, deltaHf: 0 },
-    ],
-    products: [
-      { formula: 'CO2(g)', coefficient: 2, deltaHf: -393.5 },
-      { formula: 'H2O(l)', coefficient: 3, deltaHf: -285.8 },
-    ],
-    correctAnswer: -1366.7,
-    unit: 'kJ/mól',
-    hintKey: 'level3.c5hint',
-    explanationKey: 'level3.c5explanation',
-  },
-  {
-    id: 6,
-    titleKey: 'level3.c6title',
-    descKey: 'level3.c6desc',
-    type: 'calculate',
-    equation: '2Al(s) + Fe₂O₃(s) → Al₂O₃(s) + 2Fe(s)',
-    reactants: [
-      { formula: 'Al(s)', coefficient: 2, deltaHf: 0 },
-      { formula: 'Fe2O3(s)', coefficient: 1, deltaHf: -824.2 },
-    ],
-    products: [
-      { formula: 'Al2O3(s)', coefficient: 1, deltaHf: -1675.7 },
-      { formula: 'Fe(s)', coefficient: 2, deltaHf: 0 },
-    ],
-    correctAnswer: -851.5,
-    unit: 'kJ/mól',
-    hintKey: 'level3.c6hint',
-    explanationKey: 'level3.c6explanation',
-  },
-];
+/** One side of an equation: a species, its coefficient, and its ΔH°f from the book. */
+const term = (formula: string, coefficient: number) => ({
+  formula,
+  coefficient,
+  deltaHf: formationEnthalpy(formula),
+});
+
+/** Answers are asked for, printed and graded to one decimal, as the book quotes them. */
+const oneDecimal = (x: number) => Math.round(x * 10) / 10;
+
+/**
+ * The challenges. Every ΔH°f comes from the shared table and every `calculate` answer is
+ * derived from those values below, so an answer cannot disagree with the numbers the
+ * level prints beside it (mobile-pass decision 9).
+ */
+/** A challenge as written: a `calculate` challenge's answer is derived, not typed. */
+type ChallengeData = Omit<Challenge, 'correctAnswer'> & { correctAnswer?: number };
+
+const challenges: Challenge[] = (
+  [
+    {
+      id: 1,
+      titleKey: 'level3.c1title',
+      descKey: 'level3.c1desc',
+      type: 'calculate',
+      equation: 'CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(l)',
+      reactants: [term('CH4(g)', 1), term('O2(g)', 2)],
+      products: [term('CO2(g)', 1), term('H2O(l)', 2)],
+      unit: 'kJ/mól',
+      hintKey: 'level3.c1hint',
+      explanationKey: 'level3.c1explanation',
+    },
+    {
+      id: 2,
+      titleKey: 'level3.c2title',
+      descKey: 'level3.c2desc',
+      type: 'calculate',
+      equation: 'N₂(g) + 3H₂(g) → 2NH₃(g)',
+      reactants: [term('N2(g)', 1), term('H2(g)', 3)],
+      products: [term('NH3(g)', 2)],
+      unit: 'kJ/mól',
+      hintKey: 'level3.c2hint',
+      explanationKey: 'level3.c2explanation',
+    },
+    {
+      id: 3,
+      titleKey: 'level3.c3title',
+      descKey: 'level3.c3desc',
+      type: 'calculate',
+      equation: 'CaCO₃(s) → CaO(s) + CO₂(g)',
+      reactants: [term('CaCO3(s)', 1)],
+      products: [term('CaO(s)', 1), term('CO2(g)', 1)],
+      unit: 'kJ/mól',
+      hintKey: 'level3.c3hint',
+      explanationKey: 'level3.c3explanation',
+    },
+    {
+      id: 4,
+      titleKey: 'level3.c4title',
+      descKey: 'level3.c4desc',
+      type: 'reverse',
+      equation: 'S(s) + O₂(g) → SO₂(g)',
+      reactants: [term('S(s)', 1), term('O2(g)', 1)],
+      products: [term('SO2(g)', 1)],
+      unknownCompound: 'SO2(g)',
+      givenDeltaHrxn: formationEnthalpy('SO2(g)'),
+      correctAnswer: formationEnthalpy('SO2(g)'),
+      unit: 'kJ/mól',
+      hintKey: 'level3.c4hint',
+      explanationKey: 'level3.c4explanation',
+    },
+    {
+      id: 5,
+      titleKey: 'level3.c5title',
+      descKey: 'level3.c5desc',
+      type: 'calculate',
+      equation: 'C₂H₅OH(l) + 3O₂(g) → 2CO₂(g) + 3H₂O(l)',
+      reactants: [term('C2H5OH(l)', 1), term('O2(g)', 3)],
+      products: [term('CO2(g)', 2), term('H2O(l)', 3)],
+      unit: 'kJ/mól',
+      hintKey: 'level3.c5hint',
+      explanationKey: 'level3.c5explanation',
+    },
+    {
+      id: 6,
+      titleKey: 'level3.c6title',
+      descKey: 'level3.c6desc',
+      type: 'calculate',
+      equation: '2Al(s) + Fe₂O₃(s) → Al₂O₃(s) + 2Fe(s)',
+      reactants: [term('Al(s)', 2), term('Fe2O3(s)', 1)],
+      products: [term('Al2O3(s)', 1), term('Fe(s)', 2)],
+      unit: 'kJ/mól',
+      hintKey: 'level3.c6hint',
+      explanationKey: 'level3.c6explanation',
+    },
+  ] satisfies ChallengeData[]
+).map((c: ChallengeData) => ({
+  ...c,
+  correctAnswer: c.correctAnswer ?? oneDecimal(calculateDeltaHrxn(c.products, c.reactants)),
+}));
 
 export function Level3({ t, onComplete, onBack }: Level3Props) {
   const [showIntro, setShowIntro] = useState(true);
