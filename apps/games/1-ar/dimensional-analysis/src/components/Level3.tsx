@@ -456,14 +456,6 @@ export function Level3({
     );
   }
 
-  const avgScore =
-    progress.compositeScores.length > 0
-      ? Math.round(
-          (progress.compositeScores.reduce((a, b) => a + b, 0) / progress.compositeScores.length) *
-            100
-        )
-      : 0;
-
   // What each type grades, and so what it needs before it can be sent. A reverse
   // item is graded on the route chosen, an efficiency item on the path and the
   // number; neither could be sent without its choice before, and a reverse item
@@ -505,15 +497,11 @@ export function Level3({
             <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-semibold phone:px-2 phone:py-0.5">
               Stig 3: Útreikningar
             </span>
+            {/* No running average: it was a score shown while practising
+                (mobile-pass decision 1 (b)). Mastery is still judged on the
+                whole run when it ends. */}
             <span>
               Áskorun {progress.problemsCompleted + 1} / {run.length}
-            </span>
-            <span
-              className={`px-2 py-1 rounded text-xs ${
-                avgScore >= 75 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-              }`}
-            >
-              Meðal: {avgScore}%
             </span>
           </div>
         </div>
