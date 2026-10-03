@@ -1,62 +1,114 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 
+import {
+  answerLevel1,
+  answerLevel3,
+  clockPastNextGuard,
+  level1Options,
+  nextLevel1,
+  nextLevel2,
+  nextLevel3,
+  solvePuzzle,
+  t,
+} from './level-play';
+import { Level1 } from '../components/Level1';
+import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
+import { CHALLENGES } from '../data/challenges';
+import { PUZZLES } from '../data/puzzles';
 import { gameTranslations } from '../i18n';
 
 // Level 3 used to award 20 points for an unaided correct answer and 10 for one
 // where the hint had been opened, and its button said so: "Sýna vísbendingu
-// (-10 stig)". The label was honest, but the penalty itself contradicts the
-// April 2026 restructure, whose rule is that hint use is never penalised —
-// Levels 1 and 2 of this same game already award a flat 100 either way.
+// (-10 stig)". The penalty contradicts the April 2026 restructure, whose rule is
+// that hint use is never penalised; it went in Aug 2026, as a flat 20.
 //
-// Both halves are gone as of Aug 2026. This drives the real component rather
-// than scanning source, so it fails if the branch comes back in any shape.
+// Points went altogether in Oct 2026 (mobile-pass decision 1 (b)): each level now
+// reports how many it was answered right, and a hint must not change that count
+// (decision 2 (b)). Each level is played through twice, once opening every hint,
+// and must report the same result. This drives the real components rather than
+// scanning source, so it fails if a charge comes back in any shape.
 
-// The component takes `t` as a prop, so the stub keeps keys visible as text.
-const t = (key: string, fallback?: string) => fallback ?? key;
+afterEach(cleanup);
+clockPastNextGuard();
 
-// Challenge 1: CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(l).
-// ΔH = [(-393.5) + 2(-285.8)] − [(-74.8) + 2(0)] = -890.3 kJ/mol.
-const CHALLENGE_1_ANSWER = '-890.3';
-
-// Level 3 opens on a teaching intro; the challenges are behind its start button.
-function startLevel() {
-  render(<Level3 t={t} onComplete={() => {}} onBack={() => {}} />);
-  fireEvent.click(screen.getByText(/Byrja æfingar/));
+function playLevel1(openHints: boolean) {
+  const onComplete = vi.fn();
+  const { container } = render(<Level1 onComplete={onComplete} onBack={vi.fn()} />);
+  const ui = within(container);
+  fireEvent.click(ui.getByText('Byrja →'));
+  CHALLENGES.forEach((_, i) => {
+    answerLevel1(ui, level1Options(i).right, openHints);
+    nextLevel1(ui);
+  });
+  return onComplete;
 }
 
-function answerFirstChallenge({ useHint }: { useHint: boolean }) {
-  startLevel();
-
-  if (useHint) {
-    fireEvent.click(screen.getByText('level3.showHint'));
+function playLevel2(openHints: boolean) {
+  const onComplete = vi.fn();
+  const { container } = render(<Level2 onComplete={onComplete} onBack={vi.fn()} />);
+  const ui = within(container);
+  for (const puzzle of PUZZLES) {
+    solvePuzzle(ui, container, puzzle, openHints);
+    nextLevel2(ui);
   }
-
-  fireEvent.change(screen.getByPlaceholderText('level3.placeholder'), {
-    target: { value: CHALLENGE_1_ANSWER },
-  });
-  fireEvent.click(screen.getByText('level3.check'));
-
-  // The score sits in its own node as `{score} {t('progress.points')}`.
-  return screen.getByText(/progress\.points/).textContent?.trim();
+  return onComplete;
 }
 
-describe('hess-law level 3 hint cost', () => {
-  afterEach(cleanup);
+/** Stig 3's six answers, read off its own feedback after a first run answering 0. */
+function level3Answers() {
+  const { container, unmount } = render(<Level3 t={t} onComplete={vi.fn()} onBack={vi.fn()} />);
+  const ui = within(container);
+  fireEvent.click(ui.getByText(/Byrja æfingar/));
+  const answers: string[] = [];
+  for (let i = 0; i < 6; i++) {
+    answers.push(answerLevel3(ui, container, '0'));
+    nextLevel3(ui);
+  }
+  unmount();
+  return answers;
+}
 
-  it('scores a correct answer the same with and without a hint', () => {
-    const unaided = answerFirstChallenge({ useHint: false });
+function playLevel3(answers: string[], openHints: boolean) {
+  const onComplete = vi.fn();
+  const { container } = render(<Level3 t={t} onComplete={onComplete} onBack={vi.fn()} />);
+  const ui = within(container);
+  fireEvent.click(ui.getByText(/Byrja æfingar/));
+  for (const answer of answers) {
+    answerLevel3(ui, container, answer, openHints);
+    expect(ui.getByText('common.correct')).toBeTruthy();
+    nextLevel3(ui);
+  }
+  return onComplete;
+}
+
+describe('hess-law: a hint never changes the result', () => {
+  it('Stig 1 reports 6 of 6 with or without the hint open', () => {
+    expect(playLevel1(false)).toHaveBeenCalledWith(6, 6);
     cleanup();
-    const hinted = answerFirstChallenge({ useHint: true });
-
-    expect(unaided).toBe('20 progress.points');
-    expect(hinted).toBe(unaided);
+    expect(playLevel1(true)).toHaveBeenCalledWith(6, 6);
   });
 
+  it('Stig 2 reports every puzzle solved with or without the hint open', () => {
+    expect(playLevel2(false)).toHaveBeenCalledWith(PUZZLES.length, PUZZLES.length);
+    cleanup();
+    expect(playLevel2(true)).toHaveBeenCalledWith(PUZZLES.length, PUZZLES.length);
+  });
+
+  it('Stig 3 reports 6 of 6 with or without the hint open', () => {
+    const answers = level3Answers();
+    expect(playLevel3(answers, false)).toHaveBeenCalledWith(6, 6);
+    cleanup();
+    expect(playLevel3(answers, true)).toHaveBeenCalledWith(6, 6);
+  });
+});
+
+describe('hess-law level 3 hint label', () => {
   it('offers the hint without advertising a price', () => {
-    startLevel();
+    render(<Level3 t={t} onComplete={() => {}} onBack={() => {}} />);
+    fireEvent.click(screen.getByText(/Byrja æfingar/));
     const button = screen.getByText('level3.showHint');
 
     // `t` here returns the key, so this asserts the call site appends nothing.

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 
 import { Level2 } from '../components/Level2';
 
@@ -14,15 +14,15 @@ import { Level2 } from '../components/Level2';
 
 afterEach(cleanup);
 
-function openPuzzle5() {
-  const view = render(<Level2 onComplete={() => {}} onBack={() => {}} />);
+function openPuzzle5(onComplete: (correct: number, total: number) => void = () => {}) {
+  const view = render(<Level2 onComplete={onComplete} onBack={() => {}} />);
   const page = within(view.container);
   fireEvent.click(page.getByRole('button', { name: '5' }));
   // The two equation cards; each holds a select button and its Snúa and ×n buttons.
   const [so2, so3] = Array.from(
     view.container.querySelectorAll<HTMLElement>('[data-equation-card]')
   );
-  return { page, so2, so3 };
+  return { page, so2, so3, view };
 }
 
 describe('hess-law level 2 grading', () => {
@@ -61,7 +61,8 @@ describe('hess-law level 2 grading', () => {
     // Check a wrong answer, then fix it. The verdict line used to follow the cards live,
     // so it read "✓ Rétt! Athugaðu hvort …" — a pass beside the wrong-answer advice, with
     // no point given and the puzzle still counted open.
-    const { page, so2, so3 } = openPuzzle5();
+    const onComplete = vi.fn();
+    const { page, so2, so3, view } = openPuzzle5(onComplete);
     fireEvent.click(so2);
     fireEvent.click(so3);
     fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
@@ -74,7 +75,14 @@ describe('hess-law level 2 grading', () => {
     // Checking again grades the combination now on the cards, and counts it.
     fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
     expect(page.getByText(/✓ Rétt!/).textContent).toMatch(/Snúa við jöfnu 1/);
-    expect(page.getByText('1/6')).toBeTruthy();
+    // Puzzle 6 left wrong, and the level ends: one puzzle solved, the fixed one.
+    fireEvent.click(page.getByRole('button', { name: '6' }));
+    fireEvent.click(view.container.querySelector<HTMLElement>('button[data-equation-select]')!);
+    fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
+    vi.spyOn(performance, 'now').mockReturnValue(performance.now() + 1000);
+    fireEvent.click(page.getByRole('button', { name: /Ljúka stigi/ }));
+    vi.restoreAllMocks();
+    expect(onComplete).toHaveBeenCalledWith(1, 6);
   });
 
   it('keeps the verdict when a multiplier already chosen is tapped again', () => {

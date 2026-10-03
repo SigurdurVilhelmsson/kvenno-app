@@ -49,10 +49,7 @@ export const gameTranslations = createGameTranslations({
     progress: {
       title: 'Framvinda',
       levelsCompleted: 'Stigum lokið',
-      totalScore: 'Heildarstig',
-      gamesPlayed: 'Leikir spilaðir',
       reset: 'Endurstilla',
-      points: 'stig',
     },
     formulas: {
       title: 'Lykilformúlur',
@@ -155,10 +152,7 @@ export const gameTranslations = createGameTranslations({
     progress: {
       title: 'Progress',
       levelsCompleted: 'Levels completed',
-      totalScore: 'Total score',
-      gamesPlayed: 'Games played',
       reset: 'Reset',
-      points: 'points',
     },
     formulas: {
       title: 'Key Formulas',
@@ -261,10 +255,7 @@ export const gameTranslations = createGameTranslations({
     progress: {
       title: 'Postęp',
       levelsCompleted: 'Ukończone poziomy',
-      totalScore: 'Całkowity wynik',
-      gamesPlayed: 'Rozegrane gry',
       reset: 'Resetuj',
-      points: 'punkty',
     },
     formulas: {
       title: 'Kluczowe wzory',

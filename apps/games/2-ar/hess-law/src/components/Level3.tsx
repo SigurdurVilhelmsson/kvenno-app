@@ -22,7 +22,8 @@ import { toggleSign } from '../utils/sign';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number) => void;
+  /** How many of the challenges were answered right. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -151,9 +152,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   const [showHint, setShowHint] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [score, setScore] = useState(0);
+  // Right answers, one try each, with no running score on screen (mobile-pass
+  // decision 1 (b)). A hint never changes it (decision 2 (b)).
+  const [correctCount, setCorrectCount] = useState(0);
   const [showTable, setShowTable] = useState(false);
-  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -188,18 +190,11 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     const correct = checkAnswerTolerance(userNum, challenge.correctAnswer);
 
     setIsCorrect(correct);
-    if (correct) {
-      // Hints are free: the April 2026 restructure makes hint use unpenalised,
-      // so an answer is worth the same 20 whether or not one was opened.
-      setScore((prev) => prev + 20);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
     setShowExplanation(true);
   };
 
-  const handleShowHint = () => {
-    setShowHint(true);
-    setTotalHintsUsed((prev) => prev + 1);
-  };
+  const handleShowHint = () => setShowHint(true);
 
   const nextChallenge = () => {
     if (currentChallenge < challenges.length - 1) {
@@ -209,8 +204,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
       setShowExplanation(false);
       setIsCorrect(null);
     } else {
-      // Max score is 20 per challenge × 6 challenges = 120
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -321,9 +315,6 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="text-right">
             <div className="text-sm text-warm-600">
               {t('levels.level3.name')} / {currentChallenge + 1} / {challenges.length}
-            </div>
-            <div className="text-lg font-bold text-purple-600 phone:text-base">
-              {score} {t('progress.points')}
             </div>
           </div>
         </div>
