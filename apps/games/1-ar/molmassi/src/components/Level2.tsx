@@ -49,7 +49,7 @@ export interface Problem {
 
 interface Level2Props {
   onBack: () => void;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
   /** Whether the student has previously completed this level */
@@ -289,7 +289,7 @@ export function Level2({
   const [problems, setProblems] = useState<Problem[]>(generateAllProblems);
   const [idx, setIdx] = useState(0);
   const [input, setInput] = useState('');
-  const [score, setScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
   const [feedback, setFeedback] = useState(false);
   const [correct, setCorrect] = useState(false);
   const [done, setDone] = useState(false);
@@ -335,7 +335,7 @@ export function Level2({
     setCorrect(ok);
     setFeedback(true);
     if (ok) {
-      setScore((s) => s + 10);
+      setCorrectCount((c) => c + 1);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -358,7 +358,7 @@ export function Level2({
     setIdx(0);
     setInput('');
     setError('');
-    setScore(0);
+    setCorrectCount(0);
     setFeedback(false);
     setDone(false);
   };
@@ -477,7 +477,9 @@ export function Level2({
 
   // ==================== SUMMARY SCREEN ====================
   if (done) {
-    const passed = score >= 60;
+    // Still six of ten to finish the level, as it was at 60 of 100 points:
+    // only the points went (decision 1 (b)), not the threshold.
+    const passed = correctCount >= 6;
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
@@ -487,12 +489,12 @@ export function Level2({
               {passed ? 'Vel gert!' : 'Haltu áfram að æfa!'}
             </h2>
             <p className="text-warm-600 mb-6">
-              Þú fékkst {score} af {TOTAL * 10} stigum
+              Þú svaraðir {correctCount} af {TOTAL} rétt
             </p>
             <div className="h-3 bg-warm-200 rounded-full overflow-hidden mb-6">
               <div
                 className={`h-full transition-all duration-700 ${passed ? 'bg-green-500' : 'bg-kvenno-orange'}`}
-                style={{ width: `${(score / (TOTAL * 10)) * 100}%` }}
+                style={{ width: `${(correctCount / TOTAL) * 100}%` }}
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -504,7 +506,7 @@ export function Level2({
               </button>
               {passed && (
                 <button
-                  onClick={armedResults(() => onComplete(score, TOTAL * 10, 0))}
+                  onClick={armedResults(() => onComplete(correctCount, TOTAL))}
                   className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Ljúka stigi →
@@ -526,29 +528,19 @@ export function Level2({
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
       <div className="max-w-lg mx-auto phone-land:max-w-none">
-        {/* Header. On a phone: the title and the score on one row (the
-            subtitle kept for screen readers), and a thinner progress bar. */}
+        {/* Header. On a phone the subtitle is kept for screen readers, and the
+            progress bar is thinner. No running score (decision 1 (b)): the
+            count of right answers comes at the end. */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
-          <div className="flex justify-between items-center phone:gap-3">
-            <div className="phone:min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold text-warm-800 phone:text-base">
-                Mól-umbreytingar - Stig 2
-              </h1>
-              <p className="text-sm text-warm-600 phone:sr-only">Massi, mól og sameindir</p>
-            </div>
-            <div className="text-center phone:shrink-0 phone:flex phone:items-baseline phone:gap-1">
-              <div className="text-2xl font-bold text-kvenno-orange phone:text-lg">{score}</div>
-              <div className="text-xs text-warm-600">Stig</div>
-            </div>
+          <div className="phone:min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold text-warm-800 phone:text-base">
+              Mól-umbreytingar - Stig 2
+            </h1>
+            <p className="text-sm text-warm-600 phone:sr-only">Massi, mól og sameindir</p>
           </div>
           <div className="mt-3 phone:mt-2">
-            <div className="flex justify-between text-xs text-warm-500 mb-1">
-              <span>
-                Dæmi {idx + 1}/{TOTAL}
-              </span>
-              <span>
-                {score}/{TOTAL * 10}
-              </span>
+            <div className="text-xs text-warm-500 mb-1">
+              Dæmi {idx + 1}/{TOTAL}
             </div>
             <div className="h-2 bg-warm-200 rounded-full overflow-hidden phone:h-1.5">
               <div

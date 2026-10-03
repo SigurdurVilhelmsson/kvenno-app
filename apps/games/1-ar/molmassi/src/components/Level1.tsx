@@ -61,7 +61,7 @@ function pickRandom<T>(arr: T[], n: number): T[] {
 
 interface Level1Props {
   onBack: () => void;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
 }
@@ -117,7 +117,6 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState('');
   const [correctCount, setCorrectCount] = useState(0);
-  const [hintsUsed, setHintsUsed] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
@@ -203,7 +202,6 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setInput('');
     setError('');
     setCorrectCount(0);
-    setHintsUsed(0);
     setAnswered(false);
     setIsCorrect(false);
     setShowHint(false);
@@ -404,7 +402,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               Reyna aftur
             </button>
             <button
-              onClick={armedResults(() => onComplete(correctCount, TOTAL, hintsUsed))}
+              onClick={armedResults(() => onComplete(correctCount, TOTAL))}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
@@ -552,10 +550,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 </button>
                 {!showHint && (
                   <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setHintsUsed((prev) => prev + 1);
-                    }}
+                    onClick={() => setShowHint(true)}
                     className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
                   >
                     Vísbending

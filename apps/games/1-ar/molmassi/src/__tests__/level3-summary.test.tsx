@@ -6,7 +6,7 @@ import { clockPastNextGuard } from './next-guard-clock';
 import App from '../App';
 
 /**
- * Stig 3 has a summary screen — score, percentage, "Reyna aftur" — and no
+ * Stig 3 has a summary screen — how many were right, "Reyna aftur" — and no
  * student had ever seen it. On the last question `next()` called `onComplete`,
  * and the App's handler recorded the level *and* switched to the menu, so the
  * summary rendered for no frames at all and the run ended on the menu without
@@ -39,7 +39,7 @@ describe('Stig 3 ends on its summary', () => {
     }
 
     expect(ui.getByRole('button', { name: 'Reyna aftur' })).toBeTruthy();
-    expect(ui.getByText('0/8')).toBeTruthy();
+    expect(ui.getByText('Þú svaraðir 0 af 8 rétt')).toBeTruthy();
     // `lokið` takes the dative: `Æfingu lokið`, as `Leik lokið`.
     expect(ui.getByRole('heading', { name: 'Æfingu lokið!' })).toBeTruthy();
 

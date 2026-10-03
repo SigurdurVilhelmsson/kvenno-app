@@ -11,10 +11,23 @@ import { gameTranslations } from './i18n';
 
 type AppMode = 'menu' | 'level1' | 'level2' | 'level3';
 
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — Stig 2 paid 10 points an answer and
+ * showed them as it went (mobile-pass decision 1 (b)), and a hint never
+ * changes a count. A level finished before counts were kept has no
+ * `levelNCorrect` and shows as done with no count.
+ */
 interface Progress {
   level1Completed: boolean;
+  level1Correct?: number;
+  level1Total?: number;
   level2Completed: boolean;
+  level2Correct?: number;
+  level2Total?: number;
   level3Completed: boolean;
+  level3Correct?: number;
+  level3Total?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
@@ -23,7 +36,7 @@ const DEFAULT_PROGRESS: Progress = {
   level3Completed: false,
 };
 
-const LEVEL_KEYS: Record<1 | 2 | 3, keyof Progress> = {
+const LEVEL_KEYS: Record<1 | 2 | 3, 'level1Completed' | 'level2Completed' | 'level3Completed'> = {
   1: 'level1Completed',
   2: 'level2Completed',
   3: 'level3Completed',
@@ -55,21 +68,42 @@ function App() {
     },
   });
 
-  const completeLevel = (level: 1 | 2 | 3) => {
-    updateProgress({ [LEVEL_KEYS[level]]: true } as Partial<Progress>);
+  const recordLevel = (level: 1 | 2 | 3, correct: number, total: number) => {
+    const key = `level${level}` as const;
+    updateProgress({
+      [`${key}Completed`]: true,
+      [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
+      [`${key}Total`]: total,
+    } as Partial<Progress>);
+  };
+
+  const completeLevel = (level: 1 | 2 | 3, correct: number, total: number) => {
+    recordLevel(level, correct, total);
     setMode('menu');
+  };
+
+  /** "6 af 8 rétt", or "Lokið" for a level finished before counts were kept. */
+  const resultLabel = (level: 1 | 2 | 3): string => {
+    const correct = progress[`level${level}Correct`];
+    const total = progress[`level${level}Total`];
+    return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
   };
 
   // Render current mode
   if (mode === 'level1') {
-    return <Level1 onBack={() => setMode('menu')} onComplete={() => completeLevel(1)} />;
+    return (
+      <Level1
+        onBack={() => setMode('menu')}
+        onComplete={(correct, total) => completeLevel(1, correct, total)}
+      />
+    );
   }
 
   if (mode === 'level2') {
     return (
       <Level2
         onBack={() => setMode('menu')}
-        onComplete={() => completeLevel(2)}
+        onComplete={(correct, total) => completeLevel(2, correct, total)}
         initialProgress={progress.level2Completed}
       />
     );
@@ -81,7 +115,7 @@ function App() {
     return (
       <Level3
         onBack={() => setMode('menu')}
-        onComplete={() => updateProgress({ level3Completed: true })}
+        onComplete={(correct, total) => recordLevel(3, correct, total)}
       />
     );
   }
@@ -120,12 +154,14 @@ function App() {
                     ⚖️
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <h2 className="text-xl phone:text-lg font-bold text-warm-800">
                         {t('menu.level1.title')}
                       </h2>
                       {progress.level1Completed && (
-                        <span className="text-green-500 text-lg">✓</span>
+                        <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                          ✓ {resultLabel(1)}
+                        </span>
                       )}
                     </div>
                     <p className="text-warm-600 text-sm">{t('menu.level1.description')}</p>
@@ -158,12 +194,14 @@ function App() {
                     🔄
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <h2 className="text-xl phone:text-lg font-bold text-warm-800">
                         {t('menu.level2.title')}
                       </h2>
                       {progress.level2Completed && (
-                        <span className="text-green-500 text-lg">✓</span>
+                        <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                          ✓ {resultLabel(2)}
+                        </span>
                       )}
                     </div>
                     <p className="text-warm-600 text-sm">{t('menu.level2.description')}</p>
@@ -196,12 +234,14 @@ function App() {
                     🧪
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <h2 className="text-xl phone:text-lg font-bold text-warm-800">
                         {t('menu.level3.title')}
                       </h2>
                       {progress.level3Completed && (
-                        <span className="text-green-500 text-lg">✓</span>
+                        <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                          ✓ {resultLabel(3)}
+                        </span>
                       )}
                     </div>
                     <p className="text-warm-600 text-sm">{t('menu.level3.description')}</p>

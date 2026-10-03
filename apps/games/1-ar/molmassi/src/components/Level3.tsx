@@ -254,7 +254,7 @@ interface Level3Props {
    * level and must not navigate: the summary is the screen it leads to, with
    * its own buttons for trying again and going back.
    */
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
 }
@@ -267,8 +267,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
   const [input, setInput] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [correct, setCorrect] = useState(false);
-  const [score, setScore] = useState(0);
-  const [hintsUsed] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
   const [showPT, setShowPT] = useState(false);
   const [error, setError] = useState('');
 
@@ -311,7 +310,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     setSubmitted(true);
     setError('');
     if (ok) {
-      setScore((s) => s + 1);
+      setCorrectCount((c) => c + 1);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -323,7 +322,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     if (ni >= TOTAL_QUESTIONS) {
       // Shows the summary below; `onComplete` only records the level.
       setIdx(ni);
-      onComplete(score, TOTAL_QUESTIONS, hintsUsed);
+      onComplete(correctCount, TOTAL_QUESTIONS);
       return;
     }
     setIdx(ni);
@@ -339,30 +338,22 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     setInput('');
     setSubmitted(false);
     setCorrect(false);
-    setScore(0);
+    setCorrectCount(0);
     setError('');
   };
 
   // --- Summary ---
   if (done) {
-    const pct = Math.round((score / TOTAL_QUESTIONS) * 100);
     return (
       <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex items-center justify-center p-4">
         <div className="max-w-lg w-full bg-white rounded-xl shadow-lg p-8 animate-fade-in-up text-center">
           <h2 className="text-3xl font-bold text-warm-800 mb-2">Æfingu lokið!</h2>
           <p className="text-warm-600 mb-6">Samþætt mól-æfing</p>
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="bg-green-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-green-600">
-                {score}/{TOTAL_QUESTIONS}
-              </div>
-              <div className="text-sm text-warm-600">Rétt svör</div>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-blue-600">{pct}%</div>
-              <div className="text-sm text-warm-600">Árangur</div>
-            </div>
-          </div>
+          {/* How many were right, and nothing more: no points and no
+              percentage grade (decision 1 (b)). */}
+          <p className="text-xl font-bold text-warm-800 mb-8">
+            Þú svaraðir {correctCount} af {TOTAL_QUESTIONS} rétt
+          </p>
           <div className="space-y-3">
             <button
               onClick={armedResults(retry)}
@@ -386,7 +377,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 to-white p-4">
       <div className="max-w-3xl mx-auto">
-        {/* Header. On a phone it is tighter; the title and its counter still
+        {/* Header. On a phone it is tighter; the title and its progress line still
             take a row of their own above the controls, which need the width. */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4 flex flex-wrap justify-between items-center gap-3 phone:px-3 phone:py-2 phone:mb-3 phone:gap-2">
           <div>
@@ -397,9 +388,8 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               Spurning {idx + 1} af {TOTAL_QUESTIONS}
             </p>
           </div>
-          {/* At 320px the three only fit on one row with a narrower gap. */}
+          {/* At 320px the two only fit on one row with a narrower gap. */}
           <div className="flex items-center gap-2 min-[360px]:gap-3 whitespace-nowrap">
-            <span className="text-sm font-semibold text-green-600">{score} rétt</span>
             <button
               onClick={() => setShowPT(true)}
               className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 px-3 pointer-coarse:min-h-11 rounded-lg transition-colors"
