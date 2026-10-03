@@ -12,25 +12,40 @@ import './styles.css';
 
 type Screen = 'menu' | 'level1' | 'level2' | 'level3';
 
+type Level = 1 | 2 | 3;
+
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — every level paid points, and Stig 3 paid
+ * a step put right after its answer was shown the same as one right at once
+ * (mobile-pass decisions 1 (b) and 54 (a)).
+ *
+ * Progress saved before the change carries points and no `levelNCorrect`; those
+ * levels show as done with no count, rather than reading old points as a
+ * number of right answers.
+ */
 interface Progress {
   level1Completed: boolean;
-  level1Score: number;
+  level1Correct?: number;
+  level1Total?: number;
   level2Completed: boolean;
-  level2Score: number;
-  level3BestScore: number;
+  level2Correct?: number;
+  level2Total?: number;
   /** Optional: progress saved before it existed lacks it. */
   level3Completed?: boolean;
-  totalGamesPlayed: number;
+  level3Correct?: number;
+  level3Total?: number;
+  /**
+   * The old format's Stig 3 points, read only to tell that the level was
+   * played before `level3Completed` existed. Never shown.
+   */
+  level3BestScore?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
-  level1Score: 0,
   level2Completed: false,
-  level2Score: 0,
-  level3BestScore: 0,
   level3Completed: false,
-  totalGamesPlayed: 0,
 };
 
 function App() {
@@ -45,56 +60,46 @@ function App() {
   // caused the swap has unmounted, and focus would otherwise fall to <body>.
   // Back on the menu, the first level not yet done is focused instead (Stig 1
   // once all are), and a phone also brings that card into view.
-  const nextLevel =
-    [
-      progress.level1Completed,
-      progress.level2Completed,
-      progress.level3Completed || progress.level3BestScore > 0,
-    ].findIndex((done) => !done) + 1 || 1;
+  // Finishing Stig 3 counts even with nothing right; old points alone stand in
+  // for progress saved before the flag.
+  const level3Done = Boolean(progress.level3Completed) || (progress.level3BestScore ?? 0) > 0;
+  const done = [progress.level1Completed, progress.level2Completed, level3Done];
+  const nextLevel = done.findIndex((d) => !d) + 1 || 1;
+  const levelsCompleted = done.filter(Boolean).length;
   useScreenTop(screen, {
     anyWidth: true,
     target: () =>
       screen === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
   });
 
-  const handleLevel1Complete = (score: number) => {
+  const completeLevel = (level: Level) => (correct: number, total: number) => {
+    const key = `level${level}` as const;
     updateProgress({
-      level1Completed: true,
-      level1Score: Math.max(progress.level1Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
+      [`${key}Completed`]: true,
+      [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
+      [`${key}Total`]: total,
+    } as Partial<Progress>);
     setScreen('menu');
   };
 
-  const handleLevel2Complete = (score: number) => {
-    updateProgress({
-      level2Completed: true,
-      level2Score: Math.max(progress.level2Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setScreen('menu');
-  };
-
-  const handleLevel3Complete = (score: number) => {
-    updateProgress({
-      level3Completed: true,
-      level3BestScore: Math.max(progress.level3BestScore, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setScreen('menu');
+  /** "6 af 8 rétt", or "Lokið" for a level finished before counts were kept. */
+  const resultLabel = (level: Level): string => {
+    const correct = progress[`level${level}Correct`];
+    const total = progress[`level${level}Total`];
+    return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
   };
 
   // Level screens
   if (screen === 'level1') {
-    return <Level1 onComplete={handleLevel1Complete} onBack={() => setScreen('menu')} />;
+    return <Level1 onComplete={completeLevel(1)} onBack={() => setScreen('menu')} />;
   }
 
   if (screen === 'level2') {
-    return <Level2 onComplete={handleLevel2Complete} onBack={() => setScreen('menu')} />;
+    return <Level2 onComplete={completeLevel(2)} onBack={() => setScreen('menu')} />;
   }
 
   if (screen === 'level3') {
-    return <Level3 onComplete={handleLevel3Complete} onBack={() => setScreen('menu')} />;
+    return <Level3 onComplete={completeLevel(3)} onBack={() => setScreen('menu')} />;
   }
 
   // Main Menu - Year 1: Orange/Amber theme
@@ -131,9 +136,8 @@ function App() {
                   </div>
                   <div className="text-right">
                     {progress.level1Completed ? (
-                      <div className="text-green-600">
-                        <div className="text-2xl font-bold">{progress.level1Score}</div>
-                        <div className="text-xs">stig - Lokið</div>
+                      <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
+                        ✓ {resultLabel(1)}
                       </div>
                     ) : (
                       <div className="text-warm-400 text-3xl">→</div>
@@ -164,9 +168,8 @@ function App() {
                   </div>
                   <div className="text-right">
                     {progress.level2Completed ? (
-                      <div className="text-green-600">
-                        <div className="text-2xl font-bold">{progress.level2Score}</div>
-                        <div className="text-xs">stig - Lokið</div>
+                      <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
+                        ✓ {resultLabel(2)}
                       </div>
                     ) : (
                       <div className="text-warm-400 text-3xl">→</div>
@@ -195,10 +198,9 @@ function App() {
                     </p>
                   </div>
                   <div className="text-right">
-                    {progress.level3Completed || progress.level3BestScore > 0 ? (
-                      <div className="text-green-600">
-                        <div className="text-2xl font-bold">{progress.level3BestScore}</div>
-                        <div className="text-xs">stig</div>
+                    {level3Done ? (
+                      <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
+                        ✓ {resultLabel(3)}
                       </div>
                     ) : (
                       <div className="text-warm-400 text-3xl">→</div>
@@ -209,8 +211,9 @@ function App() {
             </div>
           </div>
 
-          {/* Progress Summary */}
-          {progress.totalGamesPlayed > 0 && (
+          {/* Which levels are done, and the way to start over. No total: each
+              level's count is on its own card (decision 1 (b)). */}
+          {levelsCompleted > 0 && (
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-warm-700">Framvinda</h3>
@@ -221,34 +224,11 @@ function App() {
                   Endurstilla
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg p-2 sm:p-3">
-                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
-                    {
-                      [
-                        progress.level1Completed,
-                        progress.level2Completed,
-                        // Finishing Stig 3 counts even at 0 points; a best score
-                        // alone stands in for progress saved before the flag.
-                        progress.level3Completed || progress.level3BestScore > 0,
-                      ].filter(Boolean).length
-                    }
-                    /3
-                  </div>
-                  <div className="text-xs text-warm-600">Stigum lokið</div>
+              <div className="bg-blue-50 rounded-lg p-2 sm:p-3 text-center">
+                <div className="text-xl sm:text-2xl font-bold text-blue-600">
+                  {levelsCompleted}/3
                 </div>
-                <div className="bg-green-50 rounded-lg p-2 sm:p-3">
-                  <div className="text-xl sm:text-2xl font-bold text-green-600">
-                    {progress.level1Score + progress.level2Score + progress.level3BestScore}
-                  </div>
-                  <div className="text-xs text-warm-600">Heildarstig</div>
-                </div>
-                <div className="bg-purple-50 rounded-lg p-2 sm:p-3">
-                  <div className="text-xl sm:text-2xl font-bold text-purple-600">
-                    {progress.totalGamesPlayed}
-                  </div>
-                  <div className="text-xs text-warm-600">Leikir spilaðir</div>
-                </div>
+                <div className="text-xs text-warm-600">Stigum lokið</div>
               </div>
             </div>
           )}
