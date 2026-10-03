@@ -12,7 +12,7 @@ import {
 import { useTabletTopOnChange } from '../utils/tabletBand';
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -751,8 +751,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [showHint, setShowHint] = useState(false);
   const [showConcept, setShowConcept] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, one try each. No score, and the hint changes nothing (decisions 1 and 2).
+  const [correctCount, setCorrectCount] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -803,9 +803,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
     setIsCorrect(correct);
-    if (correct) {
-      setScore((prev) => prev + 12);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -818,7 +816,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
       setShowConcept(false);
       setIsCorrect(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -863,7 +861,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* Header: the back link and the counter, on one line on a phone (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
@@ -875,7 +873,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="text-sm text-warm-600">
               Spurning {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-teal-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -965,10 +962,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               {/* Hint */}
               {!showResult && !showHint && (
                 <button
-                  onClick={() => {
-                    setShowHint(true);
-                    setTotalHintsUsed((prev) => prev + 1);
-                  }}
+                  onClick={() => setShowHint(true)}
                   className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11 phone:mb-2"
                 >
                   Sýna vísbendingu

@@ -94,18 +94,13 @@ Detail: `docs/plans/2026-09-23-mobile-pass-decisions.md`. Each item gives the de
 lives, the options and a recommendation. Reply by number, e.g. "4 (b), 17 as recommended, 30
 leave".
 
-- [ ] 1–11 Platform-wide. Items 1 and 2 were ruled (b) for `lewis-structures` alone on
-      2026-09-30, and item 7 applied there; each stays open for the other games it names. Item 3
-      (the Y2 chain) and item 7 in `vsepr-geometry` were applied 2026-10-01. Items 4, 5, 6, 10
-      and 11 applied 2026-10-02; item 5's feedback wording is a draft, and its trailing-text
-      strictness was not ruled. Examples:
-  - scores and streaks in practice;
-  - the two games that still charge for hints;
-  - the i18n question;
-  - reading `1.300`;
-  - which book's formation enthalpies to use.
+- [ ] 1–11 Platform-wide. All eleven are now applied. Items 1, 2 and 9 were applied
+      2026-10-03 in every game they name (PR #85); items 3–8, 10 and 11 earlier. Still open:
+      item 5's feedback wording is a draft, and its trailing-text strictness was not ruled. Item
+      1's judgement calls are listed below, under "Item 1 as applied".
 - [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 14,
-      15, 16, 17, 18, 19 and 21 done 2026-10-02. Items 12 and 13 left.
+      15, 16, 17, 18, 19 and 21 done 2026-10-02; item 12 done 2026-10-03 (PR #85). Item 13
+      left.
 - [ ] 22–34 dimensional-analysis. Items 22, 23 and 33 done 2026-10-02.
 - [x] 35 lotukerfid — done 2026-10-02
 - [ ] 36–41 nafnakerfid. Item 39 done 2026-10-02.
@@ -113,8 +108,8 @@ leave".
 - [ ] 46–47 reynsluformulur. Item 46 done 2026-10-02.
 - [ ] 48–49 stilla-efnajofnur. Item 48 done 2026-10-02.
 - [ ] 50–53 utfellingarhvorf
-- [ ] 54–57 takmarkandi
-- [ ] 58–60 lausnir. Item 60 done 2026-10-03: a wrong `Athuga lausn` says whether the
+- [ ] 54–57 takmarkandi. Item 54 done 2026-10-03 with item 1 (PR #85).
+- [ ] 58–60 lausnir. Item 58 done 2026-10-03 with item 1 (PR #85). Item 60 done 2026-10-03: a wrong `Athuga lausn` says whether the
       concentration is too low or too high and points at the readout's arrows. The wording is a
       Claude draft, yours to change (`Level1.tsx`, the `missShown` block).
 - [ ] 61–62 einingakedjan
@@ -123,8 +118,8 @@ leave".
 - [ ] 67–71 vsepr-geometry. All five applied 2026-10-01; confirm 70's angle sets.
 - [ ] 72–74 intermolecular-forces. Items 72 and 74 done 2026-10-01; 73 left.
 - [ ] 75–79 hess-law. Items 75, 76, 77 and 79 done 2026-10-01; 78 left.
-- [ ] 80–82 kinetics. Item 82 done 2026-10-01; item 81 done except `stig efnahvarfs`, which
-      waits for item 1.
+- [x] 80–82 kinetics. Item 82 done 2026-10-01; item 81's `stig efnahvarfs` done 2026-10-03
+      with item 1 (PR #85). Item 80 was applied 2026-10-01.
 - [ ] 83–88 redox-reactions. Items 83, 85, 86, 87 and 88 done 2026-10-01; 84 left.
 - [ ] 89–92 organic-nomenclature. Items 90, 91 and 92 done 2026-10-01; 89 left.
 - [ ] 93–94 gas-law-challenge
@@ -137,6 +132,41 @@ leave".
 - [ ] 112–116 ph-titration
 - [ ] 117–119 buffer-recipe-creator
 - [ ] 120–122 leysnijafnvaegi
+
+#### Item 1 as applied (2026-10-03, PR #85): confirm or change
+
+Applying item 1 in seventeen games needed calls the ruling did not make. Each is reversible.
+
+- [ ] **Levels that cannot end wrong report completion, not a count** (as item 23 did):
+      `lausnir` Stig 1 (`Þú kláraðir öll 6 verkefnin`) and all three `buffer-recipe-creator`
+      levels (`✓ Lokið`). Buffer's Stig 2 and 3 steps can be answered wrong before the student
+      moves on, but a retried right answer counts, so a count would always be full.
+- [ ] **An answer the game had already printed does not count after a retry:** `redox-reactions`
+      Stig 1, `nafnakerfid` Stig 3, `takmarkandi` Stig 3 (item 54), `organic-nomenclature` Stig 2,
+      `hess-law` Stig 1, `ph-titration` Stig 2. The other way out is to hide the answer while a
+      retry is on offer, which would let retries count.
+- [ ] **Hints that state the answer still count** (item 2 says hints never change a count):
+      VSEPR Stig 2's second tier (`horn nálægt X`), gas-law's last practice hint,
+      equilibrium-shifter's fourth tier. Count them as a revealed answer instead?
+- [ ] **`redox-reactions` Stig 2 content change:** the diagram labelled `Cl afoxast` from the first
+      answer on, so `Hvað afoxast?` was asked under its own answer. The labels now appear after
+      the second answer.
+- [ ] **Practice became rounds** in `gas-law-challenge` (13, 6, 4 questions on Stig 1–3) and
+      `thermodynamics-predictor` (10, 12, 8 on Auðvelt–Erfitt), so there is an end to report
+      `N af M rétt` at; the best round is kept, and a round left early saves nothing.
+      Keppnishamur keeps its points and now starts every run at 0.
+- [ ] **What is counted:** VSEPR Stig 2 counts its three graded steps per molecule (30), not the
+      written explanation, which is checked only for length; `organic-nomenclature` Stig 2 keeps
+      its two modes' best as one right/total pair.
+- [ ] **Einingagreining Stig 2 and 3 end without `N af M rétt`,** because their mastery gate
+      (items 30 and 31) could contradict a count. `molmassi` Stig 2 keeps its 6/10 gate (item 42
+      is unruled).
+- [ ] **Wording to confirm:** `Stigi 3 lokið`, `Þú kláraðir öll 6 verkefnin` (lausnir);
+      `N af 15 skrefum rétt` (takmarkandi); `Stig í [A]:` (kinetics' rate-law rows; questions use
+      the book's `stig með tilliti til A`); `Met á Stigi N`, `Keppnismet`, `Æfingu lokið`,
+      `Æfa stigið aftur`, `Lærdómshamur, síðasta lota` (gas-law, thermodynamics,
+      equilibrium-shifter); `Framvinda: N af 3 stigum lokið`. The new en/pl strings in
+      `lausnir`, `nafnakerfid` and `redox-reactions` (`z`, `poprawnie`, `Ukończono`) are drafts.
 
 ### C4. Already applied: confirm or undo (PR #65)
 
@@ -238,8 +268,9 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 - [x] **buffer Stig 1** shows a live 'Fullkomið!' pill on the pH readout that can contradict a
       'Rangt' verdict. Already fixed 2026-09-23, found 2026-10-02: the pill reads the grader's own
       `isCorrect`, and `level1-flow.test.tsx` holds it.
-- [ ] **equilibrium-shifter** shows 'Stig: 0' in Lærdómshamur, a score in a learning mode. This
-      overlaps C3 item 1.
+- [x] **equilibrium-shifter** shows 'Stig: 0' in Lærdómshamur, a score in a learning mode. This
+      overlaps C3 item 1. Already gone since 2026-09-23 (`2f8340d`); with item 1 (PR #85),
+      Lærdómshamur also stops keeping a hidden score and counts `N af M rétt` instead.
 - [x] **lausnir** Stig 1: 'Athuga lausn' gives no feedback outside the tolerance. This is C3 item
       60, listed here because it is a plain defect. Fixed 2026-10-03: the message says which way
       the concentration is off and goes once the beaker changes, held by `phone-scroll.test.tsx`.

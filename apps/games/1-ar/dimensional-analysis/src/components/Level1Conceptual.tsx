@@ -221,8 +221,8 @@ export function Level1Conceptual({
               <div className="space-y-3">
                 {[
                   'Mismunandi tölur með mismunandi einingum geta táknað <strong>sama magn</strong>',
-                  'Umbreytingarstuðlar <strong>jafngilda 1</strong> - þeir breyta ekki magninu',
-                  'Eins einingar <strong>strikast út</strong> (teljari og nefnari)',
+                  'Umreikningsstuðlar <strong>jafngilda 1</strong> - þeir breyta ekki magninu',
+                  'Eins einingar <strong>styttast út</strong> (teljari og nefnari)',
                   'Einingin sem á að hverfa þarf að vera í <strong>nefnara</strong>',
                 ].map((text, i) => (
                   <div key={i} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
@@ -235,9 +235,7 @@ export function Level1Conceptual({
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 rounded-lg text-center">
                 <p className="text-blue-800 font-semibold">Næsta skref: Stig 2</p>
-                <p className="text-blue-600 text-sm">
-                  Þar byggir þú keðjur úr umbreytingarstuðlum.
-                </p>
+                <p className="text-blue-600 text-sm">Þar byggir þú keðjur úr umreikningsstuðlum.</p>
               </div>
               <button
                 onClick={() => onComplete(progress, MAX_SCORE, totalHintsUsed)}

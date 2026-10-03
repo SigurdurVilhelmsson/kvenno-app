@@ -1,31 +1,33 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
-import { describe, it, expect, afterEach, beforeAll } from 'vitest';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Level1 } from '../components/Level1';
+import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
 
 // Level 1 scaled its award by the shared HintSystem's tier multiplier
 // (1.0 / 0.8 / 0.6 / 0.4 / 0.4), so revealing all four tiers cut a correct
 // answer from 100 points to 40 — a real penalty, unlike Levels 2 and 3, which
-// only *claimed* one while awarding a flat 100 and 20 respectively.
+// only *claimed* one while awarding a flat 100 and 20 respectively. The
+// multiplier went in August 2026; the points went in October (mobile-pass
+// decision 1 (b)), and the level now reports how many questions were right.
 //
-// The April 2026 restructure's rule is that hint use is never penalised, so
-// the multiplier is gone. This drives the real component: reveal every tier,
-// answer correctly, and the award must still be the full 100.
+// This drives the real component through every question twice, once opening
+// every hint tier first, and the two runs must report the same count.
 
 // InteractiveGraph draws to a canvas, which jsdom does not implement.
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = (() => null) as never;
 });
 
-function startLevel() {
-  render(<Level1 onComplete={() => {}} onBack={() => {}} />);
-  fireEvent.click(screen.getByText(/Byrja æfingu/));
-}
+beforeEach(() => vi.useFakeTimers());
 
-// Options are shuffled at render, so the correct one is found by its text.
-// Challenge 1's answer is the curve that starts near pH 1: strong acid, equivalence at pH 7.
-const CORRECT_OPTION = /pH byrjar lágt \(~1\)/;
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
+
+const settle = () => act(() => vi.advanceTimersByTime(400));
 
 function revealEveryHint() {
   // The tier button is labelled "Vísbending n/4: ...". Four tiers exist, and
@@ -37,33 +39,31 @@ function revealEveryHint() {
   }
 }
 
-function scoreAfterAnsweringCorrectly({ useHints }: { useHints: boolean }) {
-  startLevel();
-  if (useHints) revealEveryHint();
-  fireEvent.click(screen.getByText(CORRECT_OPTION));
-  fireEvent.click(screen.getByText('Staðfesta'));
-  return screen.getByText(/^Stig: \d+$/).textContent;
+function playCorrectly({ useHints }: { useHints: boolean }) {
+  const onComplete = vi.fn();
+  render(<Level1 onComplete={onComplete} onBack={() => {}} />);
+  fireEvent.click(screen.getByText(/Byrja æfingu/));
+  settle();
+  for (const challenge of LEVEL1_CHALLENGES) {
+    if (useHints) revealEveryHint();
+    // HintSystem renders "Stig: <reduced> / <base>" unless showPointCost is off.
+    expect(screen.queryByText(/Stig: \d+ \/ \d+/)).toBeNull();
+    // Options are shuffled at render, so the correct one is found by its text.
+    fireEvent.click(screen.getByText(challenge.options!.find((o) => o.isCorrect)!.labelIs));
+    fireEvent.click(screen.getByText('Staðfesta'));
+    settle();
+    fireEvent.click(screen.getByRole('button', { name: /Næsta →|Ljúka stigi →/ }));
+    settle();
+  }
+  return onComplete;
 }
 
 describe('ph-titration level 1 hint cost', () => {
-  afterEach(cleanup);
-
-  it('awards the full 100 even when every hint tier is revealed', () => {
-    const unaided = scoreAfterAnsweringCorrectly({ useHints: false });
+  it('counts every right answer even when every hint tier is revealed', () => {
+    const n = LEVEL1_CHALLENGES.length;
+    expect(playCorrectly({ useHints: false })).toHaveBeenCalledWith(n, n);
     cleanup();
-    const hinted = scoreAfterAnsweringCorrectly({ useHints: true });
-
-    expect(unaided).toBe('Stig: 100');
-    // Before the fix this was 'Stig: 40' — the tier-4 multiplier of 0.4.
-    expect(hinted).toBe(unaided);
-  });
-
-  it('shows no running point cost while hints are open', () => {
-    startLevel();
-    revealEveryHint();
-
-    // HintSystem renders "Stig: <reduced> / <base>" unless showPointCost is off.
-    // The level's own header is a bare "Stig: <n>", so the slash distinguishes them.
-    expect(screen.queryByText(/Stig: \d+ \/ \d+/)).toBeNull();
+    // Before August 2026 the hinted run was worth 40 of 100 a question.
+    expect(playCorrectly({ useHints: true })).toHaveBeenCalledWith(n, n);
   });
 });

@@ -479,6 +479,32 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       "Decision 81, 2026-10-01: ordabok.md gives rate-determining step;hraðatakmarkandi skref, and the book's defining sentence uses hraðatakmarkandi þrep, though its prose leans 12 to 4 the other way — the glossary and the definition settle it, as with prósentuheimtur. 2-ar/kinetics said hraðaákvarðandi at 17 sites. A present participle, indeclinable, so this one is a pure string swap.",
   },
   {
+    english: 'order of reaction',
+    correct: 'stig efnahvarfs',
+    banned: [
+      /r[öo]ð\p{L}* hv[öo]rfunar/iu,
+      /ra[ðd]ar hv[öo]rfunar/iu,
+      /heildarr[öoa][ðd]/iu,
+      /hv[öo]rfunarr[öoa][ðd]/iu,
+    ],
+    guidance:
+      "Decision 81's third part, applied 2026-10-03 with decision 1 (b) in 2-ar/kinetics, which it waited on so that stig would not mean level, points and order on one screen. ordabok.md gives order of reaction;stig efnahvarfs, overall order;heildarstig efnahvarfs, and fyrsta/annars/núllta stigs efnahvarf; the book's ch12 writes the same (Veldisvísarnir m og n eru stig efnahvarfsins; stig með tilliti til NO = 2; heildarstig = 3). kinetics said röð hvörfunar, Heildarröð and Hvörfunarröð at 15 sites, and nothing else on the platform used them. NOT a string swap: röð is feminine and stig NEUTER, plural the same as the singular in nom/acc — hver er röðin becomes hvert er stigið. Bare röð (a sequence, as in Röð grunnskrefa for a mechanism) is untouched.",
+  },
+  {
+    english: 'conversion factor',
+    correct: 'umreikningsstuðull',
+    banned: [/umbreytingarstuð/i],
+    guidance:
+      "Decision 12, ruled (a) 2026-10-03: the book says umreikningsstuð- 33 times to 1, and umreikningsstuðull eininga is ch01's glossary headword; ordabok.md was silent and now carries conversion factor;umreikningsstuðull. 1-ar/dimensional-analysis, lausnir and molmassi said umbreytingarstuðull at about 25 sites. Both masculine with the same declension, so this one is a prefix swap: -stuðull / -stuðul / -stuðli / -stuðuls, plural -stuðlar / -stuðla / -stuðlum / -stuðla. Unrelated and left alone: umbreyting in its general sense (mól-umbreytingar, umbreytingarkeðjur).",
+  },
+  {
+    english: 'cancel out',
+    correct: 'styttast út',
+    banned: [/\bstrik(ast|ist|un)\b/i],
+    guidance:
+      "Decision 12, ruled (a) 2026-10-03: the book writes stytta/styttast út (13 hits) and never strika út. 1-ar/dimensional-analysis said both, strikast út at about 20 sites; molmassi, hess-law and utfellingarhvorf said it too. strika út stays only as the name of the on-screen strike-through, e.g. Einingagreining's Strika út button, which the ban does not match. NOT always a string swap: the middle voice agrees in number, so einingin styttist út but einingarnar styttast út, and the subjunctive is styttist for both. The noun strikun has no book equivalent, so Strikun eininga became the sentence Einingar styttast út rather than a coined styttun.",
+  },
+  {
     english: 'redox reaction',
     correct: 'redox-hvarf',
     banned: [/redox ?hv/i],

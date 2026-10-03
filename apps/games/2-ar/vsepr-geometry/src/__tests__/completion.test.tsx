@@ -8,7 +8,7 @@ import { clockPastNextGuard } from './next-guard-clock';
 /**
  * The completion screen says "Þú hefur lokið öllum stigum!". It used to follow
  * Stig 3 unconditionally, so a student who played only Stig 3 was told every
- * level was done beside two scores of 0. Levels are not gated (ruling
+ * level was done beside two levels never played. Levels are not gated (ruling
  * 2026-08-29), so it now follows whichever level completes the set.
  *
  * Queries are scoped to the rendered container (the repo runs vitest with
@@ -24,12 +24,8 @@ function seed(progress: Record<string, unknown>) {
     STORAGE_KEY,
     JSON.stringify({
       level1Completed: false,
-      level1Score: 0,
       level2Completed: false,
-      level2Score: 0,
       level3Completed: false,
-      level3Score: 0,
-      totalGamesPlayed: 0,
       ...progress,
     })
   );
@@ -86,14 +82,14 @@ describe('the completion screen', () => {
   });
 
   it('follows Stig 3 when it completes the set', () => {
-    seed({ level1Completed: true, level2Completed: true, totalGamesPlayed: 2 });
+    seed({ level1Completed: true, level2Completed: true });
     const { ui, container } = start();
     playLevel3(ui, container);
     expect(container.textContent).toContain(DONE);
   });
 
   it('follows whichever level completes the set', () => {
-    seed({ level2Completed: true, level3Completed: true, totalGamesPlayed: 2 });
+    seed({ level2Completed: true, level3Completed: true });
     const { ui, container } = start();
     playLevel1(ui, container);
     expect(container.textContent).toContain(DONE);

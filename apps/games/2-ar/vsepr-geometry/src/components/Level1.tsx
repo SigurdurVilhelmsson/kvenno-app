@@ -50,7 +50,7 @@ const VSEPR_RELATED: string[] = [
 ];
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -518,11 +518,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [hintMultiplier, setHintMultiplier] = useState(1.0);
-  const [hintsUsedTier, setHintsUsedTier] = useState(0);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, one try each. No score, and the hint changes nothing (decisions 1 and 2).
+  const [correctCount, setCorrectCount] = useState(0);
   const phone = useIsPhone();
 
   const challenge = challenges[currentChallenge];
@@ -588,35 +586,23 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
 
-  const basePoints = 15;
-
   const checkAnswer = () => {
     const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
     setIsCorrect(correct);
-    if (correct) {
-      const earnedPoints = Math.round(basePoints * hintMultiplier);
-      setScore((prev) => prev + earnedPoints);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
   const nextChallenge = () => {
-    // Track hints used for this question
-    if (hintsUsedTier > 0) {
-      setTotalHintsUsed((prev) => prev + hintsUsedTier);
-    }
-
     if (currentChallenge < challenges.length - 1) {
       setCurrentChallenge((prev) => prev + 1);
       setSelectedOption(null);
       setShowResult(false);
       setShowHint(false);
-      setHintMultiplier(1.0);
-      setHintsUsedTier(0);
       setIsCorrect(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -952,7 +938,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* The back link and the question counter, on one line on a phone (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={() => setPhase('explore')}
@@ -964,7 +950,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="text-sm text-warm-600">
               Spurning {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-teal-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -1055,10 +1040,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
               {!showResult && !showHint && (
                 <button
-                  onClick={() => {
-                    setShowHint(true);
-                    setTotalHintsUsed((prev) => prev + 1);
-                  }}
+                  onClick={() => setShowHint(true)}
                   className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11 phone:mb-2"
                 >
                   Sýna vísbendingu

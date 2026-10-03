@@ -145,21 +145,22 @@ describe('grading follows the shuffle', () => {
     }
 
     expect(onComplete).toHaveBeenCalledTimes(1);
-    const score = onComplete.mock.calls[0][0];
+    expect(onComplete.mock.calls[0][1]).toBe(challenges.length);
+    const correct = onComplete.mock.calls[0][0];
     unmount();
-    return score;
+    return correct;
   };
 
-  it('scores every correct answer, wherever the shuffle put it', () => {
-    // Six challenges at 20 points. Run it several times so more than one
-    // arrangement is exercised.
+  it('counts every correct answer, wherever the shuffle put it', () => {
+    // Six challenges. Run it several times so more than one arrangement is
+    // exercised.
     for (let run = 0; run < 5; run++) {
-      expect(playAllSix('correct'), `run ${run}`).toBe(120);
+      expect(playAllSix('correct'), `run ${run}`).toBe(6);
     }
   });
 
-  it('scores nothing when every answer is wrong', () => {
-    // The mirror case. A grader reading the unshuffled array would award points
+  it('counts none when every answer is wrong', () => {
+    // The mirror case. A grader reading the unshuffled array would count some
     // here roughly a quarter of the time.
     for (let run = 0; run < 5; run++) {
       expect(playAllSix('wrong'), `run ${run}`).toBe(0);

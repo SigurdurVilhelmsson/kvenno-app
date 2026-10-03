@@ -17,7 +17,7 @@ import type { Reaction } from '../types';
 import { calculateCorrectAnswer, generateReactantCounts } from '../utils/calculations';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -31,7 +31,6 @@ interface Question {
 }
 
 const TOTAL = 8;
-const POINTS_PER_Q = 10;
 const LEVEL2_REACTIONS = REACTIONS.filter(
   (r) => (r.difficulty === 'easy' || r.difficulty === 'medium') && r.products.length === 1
 );
@@ -53,7 +52,7 @@ function buildQuestions(): Question[] {
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [questions, setQuestions] = useState(buildQuestions);
   const [index, setIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
   const [input, setInput] = useState('');
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -108,7 +107,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setIsCorrect(correct);
     setAnswered(true);
     if (correct) {
-      setScore((s) => s + POINTS_PER_Q);
+      setCorrectCount((c) => c + 1);
     }
   };
 
@@ -129,17 +128,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center space-y-6 phone:p-4 phone:space-y-4">
           <div className="text-5xl phone:text-4xl">
-            {score >= 60 ? '🎉' : score >= 40 ? '👍' : '📚'}
+            {correctCount >= 6 ? '🎉' : correctCount >= 4 ? '👍' : '📚'}
           </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
-            Þú fékkst <span className="font-bold text-kvenno-orange">{score}</span> af{' '}
-            <span className="font-bold">{TOTAL * POINTS_PER_Q}</span> stigum
+            Þú svaraðir <span className="font-bold text-kvenno-orange">{correctCount}</span> af{' '}
+            <span className="font-bold">{TOTAL}</span> rétt
           </p>
           <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-kvenno-orange transition-all duration-700"
-              style={{ width: `${(score / (TOTAL * POINTS_PER_Q)) * 100}%` }}
+              style={{ width: `${(correctCount / TOTAL) * 100}%` }}
             />
           </div>
           <div className="flex gap-3">
@@ -149,7 +148,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 // one has just been shown, so replaying it would test memory.
                 setQuestions(buildQuestions());
                 setIndex(0);
-                setScore(0);
+                setCorrectCount(0);
                 setInput('');
                 setAnswered(false);
                 setIsCorrect(false);
@@ -160,7 +159,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               Reyna aftur
             </button>
             <button
-              onClick={armedResults(() => onComplete(score))}
+              onClick={armedResults(() => onComplete(correctCount, TOTAL))}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi

@@ -29,7 +29,7 @@ import { CLASSES, KIND_NAMES, SOLUTES, classOf, type ElectrolyteClass } from '..
  */
 
 interface Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -160,7 +160,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
     return (
       <Shell title="Stig 0 — Rafkleyfi" onBack={onBack}>
         <p className="mb-4 text-lg font-bold text-warm-800">
-          {correct} af {items.length} rétt.
+          {correct} af {items.length} rétt
         </p>
         <p className="mb-6 text-warm-700">
           Nú veistu hvað verður um efnið þegar það leysist. Næsta spurning er hversu mikið af því er
@@ -168,7 +168,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
         </p>
         <button
           type="button"
-          onClick={armedDone(() => onComplete(correct * 10))}
+          onClick={armedDone(() => onComplete(correct, items.length))}
           className="game-btn w-full rounded-xl bg-green-600 px-4 py-3 font-bold text-white hover:bg-green-700"
         >
           Til baka í valmynd
@@ -183,7 +183,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
           the progress line and focus the formula inside it. */}
       <div ref={itemRef}>
         <p className="mb-2 text-sm text-warm-600">
-          Efni {index + 1} af {items.length} · {correct} rétt
+          Efni {index + 1} af {items.length}
         </p>
 
         <div

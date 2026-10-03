@@ -39,7 +39,7 @@ describe('hess-law level 3 sign key', () => {
     expect(field.value).toBe('-890,3');
 
     fireEvent.click(screen.getByText('level3.check'));
-    expect(screen.getByText(/progress\.points/).textContent?.trim()).toBe('20 progress.points');
+    expect(screen.getByText('common.correct')).toBeTruthy();
   });
 
   it('is disabled with the field once the answer is checked', () => {

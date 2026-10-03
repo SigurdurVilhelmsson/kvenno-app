@@ -79,8 +79,11 @@ describe('the puzzle-5 look-alike', () => {
     { ...so3, isReversed: true, multiplier: 2 },
   ];
 
-  it('sums to the target ΔH', () => {
-    expect(calculateSum(lookAlike)).toBeCloseTo(puzzle.targetDeltaH);
+  // It summed to the target exactly while the level used its own roundings (4 × 297 =
+  // 3 × 396). With the book's values it misses by 0,1 kJ, which a 2 % grader would still
+  // accept, so the reason to grade the equation and not the number stands.
+  it('sums to within a tenth of the target ΔH', () => {
+    expect(Math.abs(calculateSum(lookAlike) - puzzle.targetDeltaH)).toBeLessThanOrEqual(0.11);
   });
 
   it('does not build the target equation', () => {

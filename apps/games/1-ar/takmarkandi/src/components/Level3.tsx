@@ -35,8 +35,9 @@ import { molarMassTable, YIELD_PROBLEMS, type YieldProblem } from '../data/yield
  */
 
 const TOTAL = YIELD_PROBLEMS.length;
-const PER_STEP = 10;
-const MAX_SCORE = TOTAL * 3 * PER_STEP;
+/** Three steps a problem: the limiting reactant, the theoretical yield, the percent yield. */
+const STEPS = 3;
+const TOTAL_STEPS = TOTAL * STEPS;
 
 /** Within two per cent of the mass, which is wider than any rounding a student does. */
 const MASS_TOLERANCE = 0.02;
@@ -51,14 +52,19 @@ export function Level3({
   onComplete,
   onBack,
 }: {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }) {
   const [problems, setProblems] = useState(() => shuffleArray(YIELD_PROBLEMS));
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState<Step>('limiting');
-  const [score, setScore] = useState(0);
-  const [problemScore, setProblemScore] = useState(0);
+  // Steps right at the first "Athuga", over the level and in this problem. A
+  // wrong step prints the answer ("Rétt svar: …") before "Reyna aftur", so a
+  // step put right after that is not counted (decisions 1 (b) and 54 (a)). It
+  // used to pay the same 10 points either way, so anyone reached 150 of 150.
+  const [correctCount, setCorrectCount] = useState(0);
+  const [problemCorrect, setProblemCorrect] = useState(0);
+  const [retried, setRetried] = useState(false);
   const [done, setDone] = useState(false);
 
   const [selectedLimiting, setSelectedLimiting] = useState<string | null>(null);
@@ -150,7 +156,8 @@ export function Level3({
     setPercentInput('');
     setStepAnswered(false);
     setStepCorrect(false);
-    setProblemScore(0);
+    setRetried(false);
+    setProblemCorrect(0);
   };
 
   // Nothing chosen or typed yet is not an answer. Grading it marked the step
@@ -177,15 +184,16 @@ export function Level3({
     }
     setStepCorrect(correct);
     setStepAnswered(true);
-    if (correct) {
-      setScore((s) => s + PER_STEP);
-      setProblemScore((s) => s + PER_STEP);
+    if (correct && !retried) {
+      setCorrectCount((c) => c + 1);
+      setProblemCorrect((c) => c + 1);
     }
   };
 
   const nextStep = () => {
     setStepAnswered(false);
     setStepCorrect(false);
+    setRetried(false);
     if (step === 'limiting') setStep('theoretical');
     else if (step === 'theoretical') setStep('percent');
     else setStep('review');
@@ -194,6 +202,7 @@ export function Level3({
   const retryStep = () => {
     setStepAnswered(false);
     setStepCorrect(false);
+    setRetried(true);
     if (step === 'limiting') setSelectedLimiting(null);
     else if (step === 'theoretical') setTheoreticalInput('');
     else setPercentInput('');
@@ -244,17 +253,21 @@ export function Level3({
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center space-y-6 phone:p-4 phone:space-y-4">
           <div className="text-5xl phone:text-4xl">
-            {score >= MAX_SCORE * 0.8 ? '🎉' : score >= MAX_SCORE * 0.5 ? '👍' : '📚'}
+            {correctCount >= TOTAL_STEPS * 0.8
+              ? '🎉'
+              : correctCount >= TOTAL_STEPS * 0.5
+                ? '👍'
+                : '📚'}
           </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
-            Þú fékkst <span className="font-bold text-kvenno-orange">{score}</span> af{' '}
-            <span className="font-bold">{MAX_SCORE}</span> stigum
+            Þú svaraðir <span className="font-bold text-kvenno-orange">{correctCount}</span> af{' '}
+            <span className="font-bold">{TOTAL_STEPS}</span> skrefum rétt
           </p>
           <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-kvenno-orange transition-all duration-700"
-              style={{ width: `${(score / MAX_SCORE) * 100}%` }}
+              style={{ width: `${(correctCount / TOTAL_STEPS) * 100}%` }}
             />
           </div>
           <div className="flex gap-3">
@@ -262,7 +275,7 @@ export function Level3({
               onClick={armedResults(() => {
                 setProblems(shuffleArray(YIELD_PROBLEMS));
                 setIndex(0);
-                setScore(0);
+                setCorrectCount(0);
                 resetProblemState();
                 setDone(false);
               })}
@@ -271,7 +284,7 @@ export function Level3({
               Reyna aftur
             </button>
             <button
-              onClick={armedResults(() => onComplete(score))}
+              onClick={armedResults(() => onComplete(correctCount, TOTAL_STEPS))}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
@@ -295,12 +308,14 @@ export function Level3({
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 phone:p-3">
             <div className="text-center mb-4 phone:mb-3">
               <div className="text-4xl mb-2 phone:text-3xl phone:mb-1">
-                {problemScore === 30 ? '✅' : '📝'}
+                {problemCorrect === STEPS ? '✅' : '📝'}
               </div>
               <h2 className="text-xl font-bold text-warm-800">
-                {problemScore === 30 ? 'Fullkomið!' : 'Verkefni lokið'}
+                {problemCorrect === STEPS ? 'Fullkomið!' : 'Verkefni lokið'}
               </h2>
-              <p className="text-warm-600 text-sm">{problemScore}/30 stig</p>
+              <p className="text-warm-600 text-sm">
+                {problemCorrect} af {STEPS} skrefum rétt
+              </p>
             </div>
 
             <div className="bg-warm-50 rounded-xl p-3 sm:p-4 mb-4 phone:mb-3">

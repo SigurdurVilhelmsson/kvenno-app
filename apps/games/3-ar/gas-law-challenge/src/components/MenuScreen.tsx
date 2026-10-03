@@ -3,26 +3,53 @@ import type { Ref } from 'react';
 import { Header } from '@shared/components';
 
 import { questions, type Level } from '../data';
-import { GameMode, GameStats } from '../types';
+import { GameMode, GasLawProgress } from '../types';
 
 interface MenuScreenProps {
-  stats: GameStats;
+  progress: GasLawProgress;
   selectedLevel: Level;
   setSelectedLevel: (level: Level) => void;
-  resetStats: () => void;
+  resetProgress: () => void;
   onStart: (mode: GameMode) => void;
   /** The screen's root, for App's screen-swap anchoring. */
   rootRef?: Ref<HTMLDivElement>;
 }
 
+/** A level's best practice round as `N af M rétt`, or null before one is finished. */
+function roundLabel(progress: GasLawProgress, level: Level): string | null {
+  const result = progress.practice?.[level];
+  return result ? `${result.correct} af ${result.total} rétt` : null;
+}
+
+/** The level's practice result, as a chip inside its button. */
+function LevelResult({ progress, level }: { progress: GasLawProgress; level: Level }) {
+  const label = roundLabel(progress, level);
+  if (!label) return null;
+  return (
+    <div className="mt-2 phone:mt-1">
+      <span className="inline-block bg-green-700 text-white text-xs px-2 py-0.5 rounded-full whitespace-nowrap">
+        ✓ {label}
+      </span>
+    </div>
+  );
+}
+
 export function MenuScreen({
-  stats,
+  progress,
   selectedLevel,
   setSelectedLevel,
-  resetStats,
+  resetProgress,
   onStart,
   rootRef,
 }: MenuScreenProps) {
+  // The menu shows each level's practice round as `N af M rétt`, and points only for
+  // Keppnishamur (mobile-pass decision 1 (b)).
+  const levelsDone = ([1, 2, 3] as const).filter((level) => progress.practice?.[level]).length;
+  const challengeBest = progress.challengeBest?.[selectedLevel];
+  const hasProgress =
+    levelsDone > 0 ||
+    Object.keys(progress.challengeBest ?? {}).length > 0 ||
+    (progress.challengeBestStreak ?? 0) > 0;
   return (
     <div ref={rootRef}>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
@@ -38,26 +65,15 @@ export function MenuScreen({
                   {questions.length} spurningar í boði • Auðvelt, Miðlungs, Erfitt
                 </p>
 
-                {stats.questionsAnswered > 0 && (
-                  <div className="mt-4 phone:mt-2">
-                    <div className="flex justify-center gap-4 text-sm flex-wrap phone:gap-1.5 phone:text-xs">
-                      <div className="bg-yellow-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-yellow-200">
-                        <span className="font-bold text-yellow-800">🏆 Stig: {stats.score}</span>
-                      </div>
-                      <div className="bg-green-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-green-200">
-                        <span className="font-bold text-green-800">
-                          ✓ Rétt: {stats.correctAnswers}/{stats.questionsAnswered}
-                        </span>
-                      </div>
-                      <div className="bg-blue-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-blue-200">
-                        <span className="font-bold text-blue-800">
-                          🔥 Besta röð: {stats.bestStreak}
-                        </span>
-                      </div>
-                    </div>
+                {hasProgress && (
+                  <div className="mt-4 phone:mt-2 flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-sm">
+                    <span className="text-warm-700">
+                      <span className="font-semibold">Framvinda:</span> {levelsDone} af 3 stigum
+                      lokið
+                    </span>
                     <button
-                      onClick={resetStats}
-                      className="mt-3 phone:mt-1 text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3"
+                      onClick={resetProgress}
+                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3"
                     >
                       Endurstilla framvindu
                     </button>
@@ -123,6 +139,7 @@ export function MenuScreen({
                     <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
                       Lærðu miðlögmálið og allar fjórar breyturnar.
                     </div>
+                    <LevelResult progress={progress} level={1} />
                   </button>
                   <button
                     onClick={() => setSelectedLevel(2)}
@@ -140,6 +157,7 @@ export function MenuScreen({
                     <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
                       Sjáðu hvað gerist þegar ein breyta er föst.
                     </div>
+                    <LevelResult progress={progress} level={2} />
                   </button>
                   <button
                     onClick={() => setSelectedLevel(3)}
@@ -157,6 +175,7 @@ export function MenuScreen({
                     <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
                       Beittu mörgum lögmálum saman.
                     </div>
+                    <LevelResult progress={progress} level={3} />
                   </button>
                 </div>
               </div>
@@ -194,6 +213,14 @@ export function MenuScreen({
                     <li>💡 Vísbendingar í boði</li>
                     <li>📊 Stigatafla og röð</li>
                   </ul>
+                  {challengeBest !== undefined && (
+                    <p className="text-sm font-semibold text-orange-900 mb-3 phone:mb-2">
+                      🏆 Met á Stigi {selectedLevel}: {challengeBest} stig
+                      {(progress.challengeBestStreak ?? 0) > 0 && (
+                        <> • 🔥 Besta röð: {progress.challengeBestStreak}</>
+                      )}
+                    </p>
+                  )}
                   <button
                     data-mode-start="challenge"
                     onClick={() => onStart('challenge')}

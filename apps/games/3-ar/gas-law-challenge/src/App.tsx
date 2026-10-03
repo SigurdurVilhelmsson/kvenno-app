@@ -7,18 +7,23 @@ import { focusTarget, parseStudentNumber, revealSpan, revealTop } from '@shared/
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { GameScreen } from './components/GameScreen';
 import { MenuScreen } from './components/MenuScreen';
-import { getRandomQuestionForLevel, type Level } from './data';
+import { getPracticeDeck, getRandomQuestionForLevel, type Level } from './data';
 import {
+  GasLawProgress,
   GasLawQuestion,
   GameMode,
   GameStats,
   QuestionFeedback,
   GasLaw,
   GAS_LAW_INFO,
+  RoundResult,
 } from './types';
 import { checkAnswer, calculateError } from './utils/gas-calculations';
 
-const DEFAULT_STATS: GameStats = {
+const DEFAULT_PROGRESS: GasLawProgress = {};
+
+/** A Keppnishamur run before its first answer: every run starts from 0. */
+const NEW_RUN: GameStats = {
   score: 0,
   questionsAnswered: 0,
   correctAnswers: 0,
@@ -38,8 +43,20 @@ function App() {
   const [feedback, setFeedback] = useState<QuestionFeedback | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [sessionHintsUsed, setSessionHintsUsed] = useState(0);
-  const [sessionQuestionsAnswered, setSessionQuestionsAnswered] = useState(0);
-  const [sessionCompleted, setSessionCompleted] = useState(false);
+
+  // Æfingahamur plays a level as a round: every question once, then `N af M rétt`. Nothing
+  // is scored while it runs (mobile-pass decision 1 (b)).
+  const [deck, setDeck] = useState<GasLawQuestion[]>([]);
+  const [deckPos, setDeckPos] = useState(0);
+  const [round, setRound] = useState<RoundResult>({ correct: 0, total: 0 });
+  /** The finished round, once its last question is answered. */
+  const [roundResult, setRoundResult] = useState<RoundResult | null>(null);
+  // Whether the worked solution, which prints the answer, was opened before the answer was
+  // checked. A right answer copied from it is not counted; a hint never changes a count.
+  const [solutionSeen, setSolutionSeen] = useState(false);
+
+  // Keppnishamur keeps its points and streak, and only for the run being played.
+  const [run, setRun] = useState<GameStats>(NEW_RUN);
 
   const [gameStep, setGameStep] = useState<'select-law' | 'solve'>('select-law');
   const [selectedLaw, setSelectedLaw] = useState<GasLaw | null>(null);
@@ -48,23 +65,21 @@ function App() {
   );
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const {
-    progress: stats,
-    updateProgress: updateStats,
-    resetProgress: resetStats,
-  } = useGameProgress<GameStats>('gas-law-challenge-progress', DEFAULT_STATS);
+  const { progress, updateProgress, resetProgress } = useGameProgress<GasLawProgress>(
+    'gas-law-challenge-progress',
+    DEFAULT_PROGRESS
+  );
 
-  // Start new question — draws from the pool for the currently selected level.
-  // Level 1 is always ideal gas law so the law-selection step is skipped; Levels 2/3 include
-  // multiple laws so the "identify the law first" scaffolding stays in practice mode.
-  const startNewQuestion = (mode: GameMode, level: Level = selectedLevel) => {
-    const question = getRandomQuestionForLevel(level);
+  // Open a question. Level 1 is always ideal gas law so the law-selection step is skipped;
+  // Levels 2/3 include multiple laws so the "identify the law first" scaffolding stays in
+  // practice mode.
+  const showQuestion = (mode: GameMode, level: Level, question: GasLawQuestion) => {
     setGameMode(mode);
-    setSelectedLevel(level);
     setCurrentQuestion(question);
     setUserAnswer('');
     setShowHint(0);
     setShowSolution(false);
+    setSolutionSeen(false);
     setFeedback(null);
     setValidationError(null);
     setTimeRemaining(mode === 'challenge' ? 90 : null);
@@ -73,6 +88,38 @@ function App() {
     setSelectedLaw(null);
     setLawFeedback(null);
     setScreen('game');
+  };
+
+  /** Start a mode from the menu (or a practice round again), on the selected level. */
+  const startRun = (mode: GameMode) => {
+    if (mode === 'practice') {
+      const newDeck = getPracticeDeck(selectedLevel);
+      setDeck(newDeck);
+      setDeckPos(0);
+      setRound({ correct: 0, total: 0 });
+      setRoundResult(null);
+      showQuestion(mode, selectedLevel, newDeck[0]);
+    } else {
+      setRun(NEW_RUN);
+      showQuestion(mode, selectedLevel, getRandomQuestionForLevel(selectedLevel));
+    }
+  };
+
+  /** Næsta spurning: the round's next question, or a new draw in Keppnishamur. */
+  const nextQuestion = () => {
+    if (gameMode === 'practice') {
+      const pos = Math.min(deckPos + 1, deck.length - 1);
+      setDeckPos(pos);
+      showQuestion(gameMode, selectedLevel, deck[pos]);
+    } else {
+      showQuestion(gameMode, selectedLevel, getRandomQuestionForLevel(selectedLevel));
+    }
+  };
+
+  /** Open or close the worked solution; opening it before answering is remembered. */
+  const toggleSolution = (show: boolean) => {
+    setShowSolution(show);
+    if (show && screen === 'game') setSolutionSeen(true);
   };
 
   const checkSelectedLaw = () => {
@@ -139,9 +186,10 @@ function App() {
       isCorrect = checkAnswer(userNum, currentQuestion.answer, currentQuestion.tolerance);
       const error = calculateError(userNum, currentQuestion.answer);
       if (isCorrect) {
-        points = 100;
-        if (error < 1) points = 150;
-        if (gameMode === 'challenge' && timeRemaining && timeRemaining > 60) points += 50;
+        if (gameMode === 'challenge') {
+          points = error < 1 ? 150 : 100;
+          if (timeRemaining && timeRemaining > 60) points += 50;
+        }
         message = error < 1 ? 'Fullkomið! Mjög nákvæmt svar! ⭐' : 'Rétt! Innan vikmarka ✓';
       } else {
         message =
@@ -149,21 +197,36 @@ function App() {
       }
     }
 
-    const newQuestionsAnswered = sessionQuestionsAnswered + 1;
-    setSessionQuestionsAnswered(newQuestionsAnswered);
-
-    if (newQuestionsAnswered === 15) {
-      setSessionCompleted(true);
+    if (gameMode === 'challenge') {
+      const next: GameStats = {
+        questionsAnswered: run.questionsAnswered + 1,
+        correctAnswers: isCorrect ? run.correctAnswers + 1 : run.correctAnswers,
+        streak: isCorrect ? run.streak + 1 : 0,
+        bestStreak: isCorrect ? Math.max(run.bestStreak, run.streak + 1) : run.bestStreak,
+        score: run.score + points,
+        hintsUsed: run.hintsUsed + showHint,
+      };
+      setRun(next);
+      updateProgress({
+        challengeBest: {
+          ...progress.challengeBest,
+          [selectedLevel]: Math.max(progress.challengeBest?.[selectedLevel] ?? 0, next.score),
+        },
+        challengeBestStreak: Math.max(progress.challengeBestStreak ?? 0, next.bestStreak),
+      });
+    } else {
+      const counted = isCorrect && !solutionSeen;
+      const nextRound = { correct: round.correct + (counted ? 1 : 0), total: round.total + 1 };
+      setRound(nextRound);
+      if (nextRound.total >= deck.length) {
+        setRoundResult(nextRound);
+        // The best round is kept, as a count of right answers out of the level's questions.
+        const best = progress.practice?.[selectedLevel];
+        if (!best || best.total !== nextRound.total || nextRound.correct >= best.correct) {
+          updateProgress({ practice: { ...progress.practice, [selectedLevel]: nextRound } });
+        }
+      }
     }
-
-    updateStats({
-      questionsAnswered: stats.questionsAnswered + 1,
-      correctAnswers: isCorrect ? stats.correctAnswers + 1 : stats.correctAnswers,
-      streak: isCorrect ? stats.streak + 1 : 0,
-      bestStreak: isCorrect ? Math.max(stats.bestStreak, stats.streak + 1) : stats.bestStreak,
-      score: stats.score + points,
-      hintsUsed: stats.hintsUsed + showHint,
-    });
     setFeedback({
       isCorrect,
       message,
@@ -256,9 +319,23 @@ function App() {
   // The window listener reads the handlers through a ref, so it always sees this render's
   // state. It used to be a closure refreshed only when the typed answer changed, and it
   // graded with the clock as it stood at the last keystroke (a stale time bonus).
-  const keyHandlers = useRef({ checkUserAnswer, getHint, screen, gameStep, showSolution });
+  const keyHandlers = useRef({
+    checkUserAnswer,
+    getHint,
+    toggleSolution,
+    screen,
+    gameStep,
+    showSolution,
+  });
   useLayoutEffect(() => {
-    keyHandlers.current = { checkUserAnswer, getHint, screen, gameStep, showSolution };
+    keyHandlers.current = {
+      checkUserAnswer,
+      getHint,
+      toggleSolution,
+      screen,
+      gameStep,
+      showSolution,
+    };
   });
 
   useEffect(() => {
@@ -284,7 +361,7 @@ function App() {
         current.getHint();
       } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
-        setShowSolution(!current.showSolution);
+        current.toggleSolution(!current.showSolution);
       }
     };
 
@@ -296,11 +373,11 @@ function App() {
     <>
       <FadePresence show={screen === 'menu'} exitDuration={200}>
         <MenuScreen
-          stats={stats}
+          progress={progress}
           selectedLevel={selectedLevel}
           setSelectedLevel={setSelectedLevel}
-          resetStats={resetStats}
-          onStart={startNewQuestion}
+          resetProgress={resetProgress}
+          onStart={startRun}
           rootRef={menuRoot}
         />
       </FadePresence>
@@ -318,10 +395,13 @@ function App() {
             setUserAnswer={setUserAnswer}
             showHint={showHint}
             showSolution={showSolution}
-            setShowSolution={setShowSolution}
+            setShowSolution={toggleSolution}
             validationError={validationError}
             lawFeedback={lawFeedback}
-            stats={stats}
+            stats={run}
+            questionPosition={
+              gameMode === 'practice' ? { index: deckPos + 1, total: deck.length } : undefined
+            }
             isGameScreenActive={screen === 'game'}
             simulatorShowAnswer={feedback?.isCorrect === true}
             onCheckAnswer={checkUserAnswer}
@@ -338,11 +418,13 @@ function App() {
           <FeedbackScreen
             feedback={feedback}
             currentQuestion={currentQuestion}
-            stats={stats}
-            sessionCompleted={sessionCompleted}
-            sessionQuestionsAnswered={sessionQuestionsAnswered}
+            stats={run}
+            selectedLevel={selectedLevel}
+            roundResult={gameMode === 'practice' ? roundResult : null}
+            solutionSeen={gameMode === 'practice' && solutionSeen}
             gameMode={gameMode}
-            onNext={startNewQuestion}
+            onNext={nextQuestion}
+            onRestart={() => startRun('practice')}
             onBackToMenu={() => setScreen('menu')}
             rootRef={feedbackRoot}
           />

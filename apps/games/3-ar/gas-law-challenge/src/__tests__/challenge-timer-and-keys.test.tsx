@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from '../App';
@@ -27,14 +27,16 @@ import App from '../App';
  * Stig 1 (find V, answer 3,82 L), question 14 on Stig 2.
  */
 
-const STATS_KEY = 'gas-law-challenge-progress';
-
-function stats() {
-  return JSON.parse(localStorage.getItem(STATS_KEY) ?? '{}') as {
-    score?: number;
-    questionsAnswered?: number;
-    correctAnswers?: number;
-  };
+/**
+ * The Keppnishamur run as its feedback screen shows it. Points belong to the run and are
+ * not saved (mobile-pass decision 1 (b)); only the best run is.
+ */
+function run() {
+  const block = screen.getByText('Árangur:').parentElement!;
+  const value = (label: string) =>
+    within(block).getByText(label).previousElementSibling?.textContent ?? '';
+  const [correctAnswers, questionsAnswered] = value('Rétt').split('/').map(Number);
+  return { score: Number(value('Stig')), correctAnswers, questionsAnswered };
 }
 
 function tick(seconds: number) {
@@ -69,8 +71,8 @@ describe('challenge timer', () => {
     expect(screen.getByText('Tíminn rann út!')).toBeTruthy();
     expect(screen.getByText('Skref fyrir skref lausn:')).toBeTruthy();
     expect(screen.queryByText('Vinsamlegast sláðu inn gilt númer')).toBeNull();
-    expect(stats().questionsAnswered).toBe(1);
-    expect(stats().correctAnswers).toBe(0);
+    expect(run().questionsAnswered).toBe(1);
+    expect(run().correctAnswers).toBe(0);
   });
 
   it('ends the question when time runs out on an answer it cannot read', () => {
@@ -81,7 +83,7 @@ describe('challenge timer', () => {
     tick(90);
 
     expect(screen.getByText('Tíminn rann út!')).toBeTruthy();
-    expect(stats().questionsAnswered).toBe(1);
+    expect(run().questionsAnswered).toBe(1);
   });
 
   it('grades a typed answer exactly once when time runs out', () => {
@@ -92,10 +94,10 @@ describe('challenge timer', () => {
     tick(90);
 
     expect(screen.getByText('Skref fyrir skref lausn:')).toBeTruthy();
-    expect(stats().questionsAnswered).toBe(1);
-    expect(stats().correctAnswers).toBe(1);
+    expect(run().questionsAnswered).toBe(1);
+    expect(run().correctAnswers).toBe(1);
     // Exact answer, no time bonus at 0 s left.
-    expect(stats().score).toBe(150);
+    expect(run().score).toBe(150);
   });
 
   it('lets the student leave a timed-out feedback screen for the menu', () => {
@@ -114,7 +116,8 @@ describe('challenge timer', () => {
 
     expect(screen.queryByText('Skref fyrir skref lausn:')).toBeNull();
     expect(screen.getByRole('button', { name: /Byrja Keppni/ })).toBeTruthy();
-    expect(stats().questionsAnswered).toBe(1);
+    // Graded once: a second grading would have made the run's best 300.
+    expect(screen.getByText(/Met á Stigi 1: 150 stig/)).toBeTruthy();
   });
 });
 
@@ -129,8 +132,8 @@ describe('Enter key', () => {
 
     fireEvent.keyDown(field, { key: 'Enter' });
 
-    expect(stats().questionsAnswered).toBe(1);
-    expect(stats().score).toBe(150);
+    expect(run().questionsAnswered).toBe(1);
+    expect(run().score).toBe(150);
   });
 
   it('leaves Enter on a focused button to the button', () => {
@@ -153,7 +156,7 @@ describe('Enter key', () => {
     fireEvent.keyDown(document.body, { key: 'Enter' });
 
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(stats().questionsAnswered ?? 0).toBe(0);
+    expect(screen.queryByText('Skref fyrir skref lausn:')).toBeNull();
   });
 
   it('leaves H and S typed into the answer field to the field', () => {
@@ -185,7 +188,7 @@ describe('Enter key', () => {
     fireEvent.keyDown(document.body, { key: 'Enter' });
 
     expect(screen.getByText('Skref fyrir skref lausn:')).toBeTruthy();
-    expect(stats().questionsAnswered).toBe(1);
+    expect(screen.getByText(/Fullkomið/)).toBeTruthy();
   });
 });
 

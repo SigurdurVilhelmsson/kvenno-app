@@ -6,7 +6,7 @@ export function FormulaCard({ themeColor }: FormulaCardProps) {
   return (
     <div className="formula-card" role="complementary" aria-label="Formúlukort">
       <h3 className="font-bold mb-2 text-lg" style={{ color: themeColor }}>
-        📐 Einingagreining — umbreytingarstuðlar
+        📐 Einingagreining — umreikningsstuðlar
       </h3>
       <div className="text-sm space-y-2">
         <div>
@@ -24,7 +24,7 @@ export function FormulaCard({ themeColor }: FormulaCardProps) {
         </div>
         <hr className="my-2" />
         <div>
-          <strong>Umbreytingarstuðlar:</strong>
+          <strong>Umreikningsstuðlar:</strong>
           <div className="font-mono ml-2">1 L = 1000 mL &nbsp;|&nbsp; 1 g = 1000 mg</div>
         </div>
       </div>

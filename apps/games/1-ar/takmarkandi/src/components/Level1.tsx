@@ -17,7 +17,7 @@ import { REACTIONS } from '../data/reactions';
 import type { Reaction } from '../types';
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -28,7 +28,6 @@ interface Question {
 }
 
 const TOTAL = 8;
-const POINTS_PER_Q = 10;
 
 /** Pick 8 questions from easy reactions with clear limiting reactants */
 function buildQuestions(): Question[] {
@@ -62,7 +61,7 @@ function buildQuestions(): Question[] {
 export function Level1({ onComplete, onBack }: Level1Props) {
   const [questions, setQuestions] = useState(buildQuestions);
   const [index, setIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
@@ -119,7 +118,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     setIsCorrect(correct);
     setAnswered(true);
     if (correct) {
-      setScore((s) => s + POINTS_PER_Q);
+      setCorrectCount((c) => c + 1);
     }
   };
 
@@ -140,17 +139,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center space-y-6 phone:p-4 phone:space-y-4">
           <div className="text-5xl phone:text-4xl">
-            {score >= 60 ? '🎉' : score >= 40 ? '👍' : '📚'}
+            {correctCount >= 6 ? '🎉' : correctCount >= 4 ? '👍' : '📚'}
           </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
-            Þú fékkst <span className="font-bold text-kvenno-orange">{score}</span> af{' '}
-            <span className="font-bold">{TOTAL * POINTS_PER_Q}</span> stigum
+            Þú svaraðir <span className="font-bold text-kvenno-orange">{correctCount}</span> af{' '}
+            <span className="font-bold">{TOTAL}</span> rétt
           </p>
           <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-kvenno-orange transition-all duration-700"
-              style={{ width: `${(score / (TOTAL * POINTS_PER_Q)) * 100}%` }}
+              style={{ width: `${(correctCount / TOTAL) * 100}%` }}
             />
           </div>
           <div className="flex gap-3">
@@ -160,7 +159,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 // so replaying it would test memory, not the method.
                 setQuestions(buildQuestions());
                 setIndex(0);
-                setScore(0);
+                setCorrectCount(0);
                 setAnswered(false);
                 setIsCorrect(false);
                 setSelected(null);
@@ -171,7 +170,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               Reyna aftur
             </button>
             <button
-              onClick={armedResults(() => onComplete(score))}
+              onClick={armedResults(() => onComplete(correctCount, TOTAL))}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi

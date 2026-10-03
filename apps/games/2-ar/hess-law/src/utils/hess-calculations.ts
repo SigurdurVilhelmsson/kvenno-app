@@ -1,3 +1,5 @@
+import { FORMATION_ENTHALPY } from '@shared/data/thermo';
+
 interface EquationForSum {
   deltaH: number;
   multiplier: number;
@@ -14,41 +16,68 @@ export function calculateSum(equations: EquationForSum[]): number {
   }, 0);
 }
 
+/** `CaCO3(s)` → `CaCO₃(s)`: this game's keys write subscripts as plain digits. */
+const subscripted = (key: string) => key.replace(/\d/g, (d) => '₀₁₂₃₄₅₆₇₈₉'[Number(d)]);
+
 /**
- * Standard enthalpies of formation table (kJ/mol)
+ * ΔH°f in kJ/mol, from the shared table — the Icelandic book's appendix m68865, which
+ * every game that weighs enthalpies now reads (mobile-pass decision 9, ruled (a)).
+ *
+ * This game kept a table of its own until 2026-10-03, from another book: CaCO₃ was
+ * −1206,9 where the student's book gives −1220,0, so Level 3 marked a student who
+ * looked the value up in their own book wrong by 13 kJ. Throws for a species the book
+ * has no row for, rather than inventing one.
  */
-export const FORMATION_ENTHALPIES: Record<string, { value: number; name: string }> = {
-  'H2O(l)': { value: -285.8, name: 'Vatn (fljótandi)' },
-  'H2O(g)': { value: -241.8, name: 'Vatnsgufa' },
-  'CO2(g)': { value: -393.5, name: 'Koldíoxíð' },
-  'CO(g)': { value: -110.5, name: 'Kolmónoxíð' },
-  'CH4(g)': { value: -74.8, name: 'Metan' },
-  'C2H6(g)': { value: -84.7, name: 'Etan' },
-  'C2H5OH(l)': { value: -277.7, name: 'Etanól' },
-  'C6H12O6(s)': { value: -1274, name: 'Glúkósi' },
-  'NH3(g)': { value: -46.1, name: 'Ammóníak' },
-  'NO(g)': { value: 90.3, name: 'Nituroxíð' },
-  'NO2(g)': { value: 33.2, name: 'Niturdíoxíð' },
-  'SO2(g)': { value: -296.8, name: 'Brennisteinsdíoxíð' },
-  'SO3(g)': { value: -395.7, name: 'Brennisteinstríoxíð' },
-  'HCl(g)': { value: -92.3, name: 'Vetnisklóríð' },
-  'NaCl(s)': { value: -411.2, name: 'Natríumklóríð' },
-  'CaCO3(s)': { value: -1206.9, name: 'Kalsíumkarbónat' },
-  'CaO(s)': { value: -635.1, name: 'Kalsíumoxíð' },
-  'Fe2O3(s)': { value: -824.2, name: 'Járn(III)oxíð' },
-  'Al2O3(s)': { value: -1675.7, name: 'Áloxíð' },
+export function formationEnthalpy(key: string): number {
+  const value = FORMATION_ENTHALPY[subscripted(key)];
+  if (value === undefined) {
+    throw new RangeError(`No ΔH°f for ${key} in @shared/data/thermo.`);
+  }
+  return value;
+}
+
+/** The reference table Level 3 prints: the species its challenges need, and a few more. */
+const REFERENCE_NAMES: [key: string, name: string][] = [
+  ['H2O(l)', 'Vatn (fljótandi)'],
+  ['H2O(g)', 'Vatnsgufa'],
+  ['CO2(g)', 'Koldíoxíð'],
+  ['CO(g)', 'Kolmónoxíð'],
+  ['CH4(g)', 'Metan'],
+  ['C2H6(g)', 'Etan'],
+  ['C2H5OH(l)', 'Etanól'],
+  ['NH3(g)', 'Ammóníak'],
+  ['NO(g)', 'Nituroxíð'],
+  ['NO2(g)', 'Niturdíoxíð'],
+  ['SO2(g)', 'Brennisteinsdíoxíð'],
+  ['SO3(g)', 'Brennisteinstríoxíð'],
+  ['HCl(g)', 'Vetnisklóríð'],
+  ['NaCl(s)', 'Natríumklóríð'],
+  ['CaCO3(s)', 'Kalsíumkarbónat'],
+  ['CaO(s)', 'Kalsíumoxíð'],
+  ['Fe2O3(s)', 'Járn(III)oxíð'],
+  ['Al2O3(s)', 'Áloxíð'],
   // Elements in standard state = 0
-  'O2(g)': { value: 0, name: 'Súrefni' },
-  'H2(g)': { value: 0, name: 'Vetni' },
-  'N2(g)': { value: 0, name: 'Nitur' },
-  'C(s)': { value: 0, name: 'Kolefni (grafít)' },
-  'Fe(s)': { value: 0, name: 'Járn' },
-  'Al(s)': { value: 0, name: 'Ál' },
-  'S(s)': { value: 0, name: 'Brennisteinn' },
-  'Cl2(g)': { value: 0, name: 'Klór' },
-  'Na(s)': { value: 0, name: 'Natríum' },
-  'Ca(s)': { value: 0, name: 'Kalsíum' },
-};
+  ['O2(g)', 'Súrefni'],
+  ['H2(g)', 'Vetni'],
+  ['N2(g)', 'Nitur'],
+  ['C(s)', 'Kolefni (grafít)'],
+  ['Fe(s)', 'Járn'],
+  ['Al(s)', 'Ál'],
+  ['S(s)', 'Brennisteinn'],
+  ['Cl2(g)', 'Klór'],
+  ['Na(s)', 'Natríum'],
+  ['Ca(s)', 'Kalsíum'],
+];
+
+/**
+ * Standard enthalpies of formation table (kJ/mol), for display. Glucose was in it and
+ * is not: the book's appendix has no row for it, and this table no longer prints a
+ * value the student cannot look up.
+ */
+export const FORMATION_ENTHALPIES: Record<string, { value: number; name: string }> =
+  Object.fromEntries(
+    REFERENCE_NAMES.map(([key, name]) => [key, { value: formationEnthalpy(key), name }])
+  );
 
 interface CompoundEntry {
   formula: string;

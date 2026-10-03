@@ -165,7 +165,7 @@ describe('a full Stig 1 run', () => {
     expect(screen.getByText('Þú kláraðir allar 6 áskoranirnar')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Reyna aftur' })).toBeNull();
     // Stig 2 builds chains; the old line promised a prediction step it no longer has (item 22).
-    expect(screen.getByText('Þar byggir þú keðjur úr umbreytingarstuðlum.')).toBeTruthy();
+    expect(screen.getByText('Þar byggir þú keðjur úr umreikningsstuðlum.')).toBeTruthy();
     expect(document.body.textContent).not.toMatch(/spá fyrir/i);
     expect(onCorrectAnswer).toHaveBeenCalledTimes(6);
     // Levels are not gated (2026-08-29): the summary points on, it opens nothing.

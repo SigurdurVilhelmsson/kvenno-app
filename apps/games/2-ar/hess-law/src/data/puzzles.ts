@@ -5,6 +5,11 @@ import type { Equation } from './challenges';
  * reverse, scale and combine to reach it. `solution` is the combination that reaches it;
  * the level grades on reaching the target equation itself, not on matching `solution`,
  * and `puzzles.test.ts` holds every `solution` to its target and to `targetDeltaH`.
+ *
+ * Every equation's ΔH is the book's, derived from `@shared/data/thermo` and printed to
+ * one decimal (mobile-pass decision 9), and `targetDeltaH` is the sum of those printed
+ * values, so the student's arithmetic lands on it exactly. `formation.test.ts` holds
+ * both. They used to be a third set of roundings, from neither book.
  */
 export interface Puzzle {
   id: number;
@@ -102,7 +107,7 @@ export const PUZZLES: Puzzle[] = [
       reactants: 'C₂H₅OH(l) + 3O₂(g)',
       products: '2CO₂(g) + 3H₂O(l)',
     },
-    targetDeltaH: -1367,
+    targetDeltaH: -1366.8,
     availableEquations: [
       {
         id: 'eq1',
@@ -124,7 +129,7 @@ export const PUZZLES: Puzzle[] = [
         id: 'eq3',
         reactants: '2C(s) + 3H₂(g) + ½O₂(g)',
         products: 'C₂H₅OH(l)',
-        deltaH: -277.0,
+        deltaH: -277.6,
         isReversed: false,
         multiplier: 1,
       },
@@ -135,7 +140,7 @@ export const PUZZLES: Puzzle[] = [
       { equationId: 'eq3', reverse: true, multiply: 1 },
     ],
     hint: 'Etanól er hvarfefni, en í jöfnu 3 er það myndefni. Þú þarft 2 CO₂ og 3 H₂O.',
-    explanation: '2×(-393,5) + 3×(-285,8) + (+277,0) = -787 - 857,4 + 277 = -1367,4 kJ',
+    explanation: '2×(-393,5) + 3×(-285,8) + (+277,6) = -787 - 857,4 + 277,6 = -1366,8 kJ',
   },
   {
     id: 4,
@@ -152,7 +157,7 @@ export const PUZZLES: Puzzle[] = [
         id: 'eq1',
         reactants: '½N₂(g) + ½O₂(g)',
         products: 'NO(g)',
-        deltaH: 90.2,
+        deltaH: 90.3,
         isReversed: false,
         multiplier: 1,
       },
@@ -160,7 +165,7 @@ export const PUZZLES: Puzzle[] = [
         id: 'eq2',
         reactants: 'NO(g) + ½O₂(g)',
         products: 'NO₂(g)',
-        deltaH: -57.0,
+        deltaH: -57.1,
         isReversed: false,
         multiplier: 1,
       },
@@ -170,7 +175,7 @@ export const PUZZLES: Puzzle[] = [
       { equationId: 'eq2', reverse: false, multiply: 1 },
     ],
     hint: 'NO er millistig. Leggðu saman til að NO styttist út.',
-    explanation: 'Jöfnur 1 + 2: NO styttist út. 90,2 + (-57,0) = 33,2 kJ',
+    explanation: 'Jöfnur 1 + 2: NO styttist út. 90,3 + (-57,1) = 33,2 kJ',
   },
   {
     id: 5,
@@ -181,13 +186,13 @@ export const PUZZLES: Puzzle[] = [
       reactants: 'SO₂(g) + ½O₂(g)',
       products: 'SO₃(g)',
     },
-    targetDeltaH: -99.0,
+    targetDeltaH: -98.9,
     availableEquations: [
       {
         id: 'eq1',
         reactants: 'S(s) + O₂(g)',
         products: 'SO₂(g)',
-        deltaH: -297.0,
+        deltaH: -296.8,
         isReversed: false,
         multiplier: 1,
       },
@@ -195,7 +200,7 @@ export const PUZZLES: Puzzle[] = [
         id: 'eq2',
         reactants: 'S(s) + 3/2O₂(g)',
         products: 'SO₃(g)',
-        deltaH: -396.0,
+        deltaH: -395.7,
         isReversed: false,
         multiplier: 1,
       },
@@ -205,7 +210,7 @@ export const PUZZLES: Puzzle[] = [
       { equationId: 'eq2', reverse: false, multiply: 1 },
     ],
     hint: 'SO₂ er hvarfefni í markmiðinu, en myndefni í jöfnu 1. Hvað þarftu að gera?',
-    explanation: 'Snúa við jöfnu 1 og leggja við jöfnu 2: +297,0 + (-396,0) = -99,0 kJ',
+    explanation: 'Snúa við jöfnu 1 og leggja við jöfnu 2: +296,8 + (-395,7) = -98,9 kJ',
   },
   {
     id: 6,
@@ -216,7 +221,7 @@ export const PUZZLES: Puzzle[] = [
       reactants: '2Al(s) + Fe₂O₃(s)',
       products: 'Al₂O₃(s) + 2Fe(s)',
     },
-    targetDeltaH: -852,
+    targetDeltaH: -851.8,
     availableEquations: [
       {
         id: 'eq1',
@@ -230,7 +235,7 @@ export const PUZZLES: Puzzle[] = [
         id: 'eq2',
         reactants: '2Fe(s) + 3/2O₂(g)',
         products: 'Fe₂O₃(s)',
-        deltaH: -824,
+        deltaH: -824.2,
         isReversed: false,
         multiplier: 1,
       },
@@ -240,6 +245,6 @@ export const PUZZLES: Puzzle[] = [
       { equationId: 'eq2', reverse: true, multiply: 1 },
     ],
     hint: 'Fe₂O₃ er hvarfefni í markmiðinu (neysla), en myndefni í jöfnu 2 (myndun).',
-    explanation: 'Jafna 1 + öfug jafna 2: -1676 + 824 = -852 kJ. Þetta er termít-efnahvarfið!',
+    explanation: 'Jafna 1 + öfug jafna 2: -1676 + 824,2 = -851,8 kJ. Þetta er termít-efnahvarfið!',
   },
 ];

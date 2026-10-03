@@ -9,7 +9,7 @@ import {
   FadePresence,
   PhoneDisclosure,
 } from '@shared/components';
-import { useProgress, useAccessibility, useGameI18n } from '@shared/hooks';
+import { useProgress, useAccessibility, useGameI18n, useGameProgress } from '@shared/hooks';
 import type { TieredHints } from '@shared/types';
 import {
   focusTarget,
@@ -72,6 +72,19 @@ function heatLabel(deltaH: number): string {
   return value;
 }
 
+/** Right answers out of the questions counted in one Lærdómshamur sitting. */
+interface LearningResult {
+  correct?: number;
+  total?: number;
+}
+
+/** The last Lærdómshamur sitting, kept apart from the shared progress record. */
+const LEARNING_KEY = 'equilibrium-shifter-laerdomshamur';
+
+/** One question in Lærdómshamur: an equilibrium and the stress put on it. */
+const questionKey = (eq: Equilibrium, stress: Stress) =>
+  `${eq.id}:${stress.type}:${stress.target ?? ''}`;
+
 function App() {
   const { progress, updateProgress } = useProgress({
     gameId: 'equilibrium-shifter',
@@ -123,6 +136,17 @@ function App() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   const [lastPoints, setLastPoints] = useState(0);
+
+  // Lærdómshamur scores nothing (mobile-pass decision 1 (b)); it counts. A sitting ends when
+  // the student goes back to the menu, which then shows `N af M rétt`. An answer the game has
+  // already shown in this sitting — the same stress on the same equilibrium, tried again
+  // after its explanation — is not counted; a hint never changes the count.
+  const [learningRound, setLearningRound] = useState({ correct: 0, total: 0 });
+  const shownAnswersRef = useRef<Set<string>>(new Set());
+  const { progress: lastLearning, updateProgress: saveLearning } = useGameProgress<LearningResult>(
+    LEARNING_KEY,
+    {}
+  );
 
   // Ref to track if timeout has been handled for current question
   const timeoutHandledRef = useRef(false);
@@ -315,6 +339,8 @@ function App() {
   const startGame = (mode: GameMode) => {
     cancelAdvance();
     setGameMode(mode);
+    setLearningRound({ correct: 0, total: 0 });
+    shownAnswersRef.current = new Set();
     setScreen('game');
     setStats({
       score: 0,
@@ -491,6 +517,19 @@ function App() {
     setIsCorrect(correct);
     setShowExplanation(true);
 
+    // Lærdómshamur: a count, and no points or streak.
+    if (gameMode === 'learning') {
+      if (!appliedStress) return;
+      const key = questionKey(currentEquilibrium, appliedStress);
+      if (shownAnswersRef.current.has(key)) return;
+      shownAnswersRef.current.add(key);
+      setLearningRound((prev) => ({
+        correct: prev.correct + (correct ? 1 : 0),
+        total: prev.total + 1,
+      }));
+      return;
+    }
+
     // No hint penalty — hints are free for learning
     const points = calculatePoints(correct, currentEquilibrium.difficulty);
     // What the feedback shows is what was added. Recomputing it after the
@@ -557,6 +596,7 @@ function App() {
 
   const goToMenu = () => {
     cancelAdvance();
+    if (gameMode === 'learning' && learningRound.total > 0) saveLearning(learningRound);
     setScreen('menu');
   };
 
@@ -679,6 +719,11 @@ function App() {
         <div className="bg-warm-50 rounded-lg p-4 phone:p-3">
           <h3 className="font-semibold text-warm-700 mb-2 phone:mb-1">Framvinda þín</h3>
           <p className="text-sm text-warm-600">Verkefni kláruð: {progress.problemsCompleted}</p>
+          {lastLearning.total !== undefined && lastLearning.correct !== undefined && (
+            <p className="text-sm text-warm-600">
+              Lærdómshamur, síðasta lota: {lastLearning.correct} af {lastLearning.total} rétt
+            </p>
+          )}
         </div>
 
         {/* Why this matters + curriculum */}

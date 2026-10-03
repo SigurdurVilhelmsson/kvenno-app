@@ -14,7 +14,7 @@ clockPastNextGuard();
  *
  * **Why this exists.** Until 2026-09-23 Stig 1 disagreed with itself in several
  * places a student could reach in a minute:
- * - "Athuga stuðpúða" on a mixture already marked correct added its 100 stig
+ * - "Athuga stuðpúða" on a mixture already marked correct added its points
  *   and its tick again, so six taps on challenge 1 finished the level.
  * - The pH bar said "Fullkomið!" inside a ±0,1 pH window while the check graded
  *   the ratio band: 5 acid : 6 base on challenge 1 read "Fullkomið!" and was
@@ -69,7 +69,6 @@ describe('Stig 1 counts each challenge once', () => {
     tap('Athuga stuðpúða');
     tap('Athuga stuðpúða');
     expect(stat('Kláruð')).toBe('1');
-    expect(stat('Stig')).toBe('100');
   });
 
   it('is not finished by tapping "Athuga" six times on challenge 1', () => {
@@ -91,13 +90,14 @@ describe('Stig 1 counts each challenge once', () => {
     tap('Ljúka stigi →');
     tap('Ljúka stigi →');
     expect(onLevelComplete).toHaveBeenCalledTimes(1);
-    expect(onLevelComplete).toHaveBeenCalledWith(600);
+    // Done, with no count: every challenge must be solved to move on (decision 1 (b)).
+    expect(onLevelComplete).toHaveBeenCalledWith();
   });
 
-  it('separates the verdict from the explanation with a full stop', () => {
+  it('ends the verdict before the explanation begins', () => {
     const { tap, feedback } = setup();
     tap('Athuga stuðpúða');
-    expect(feedback()).toContain('+100 stig. Þegar');
+    expect(feedback()).toContain('Stuðpúðinn er tilbúinn! Þegar');
   });
 });
 

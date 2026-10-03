@@ -14,7 +14,7 @@ import { solveBuffer } from '../engine/buffer';
  * - The direction feedback dropped `en` from the comparison in two of its three
  *   branches: `Markmiðs-pH (7,40) er stærra pKa (7,20)`.
  * - An answered step fades out for 250 ms with its button still live, so a
- *   quick second tap on the last check awarded the puzzle twice (200 stig).
+ *   quick second tap on the last check awarded the puzzle twice (200 points).
  * - After the last puzzle the counter read `6 / 5` while the level faded out.
  */
 
@@ -112,7 +112,7 @@ describe('Stig 2 counts each puzzle once', () => {
     const check = lastButton(container, 'Athuga svar');
     fireEvent.click(check);
     fireEvent.click(check); // still on screen while it fades out
-    expect(within(container).getByText('Stig: 100')).toBeTruthy();
+    expect(within(container).getByText('1 / 5')).toBeTruthy();
 
     // "Næsta verkefni" ignores a press within 400 ms of appearing (the double-tap guard);
     // a student reads the solution first.
@@ -130,7 +130,8 @@ describe('Stig 2 counts each puzzle once', () => {
       solve(container, i);
       next(container);
     }
-    expect(onComplete).toHaveBeenCalledWith(500);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledWith();
     expect(container.textContent).toContain(`${LEVEL2_PUZZLES.length} / ${LEVEL2_PUZZLES.length}`);
     expect(container.textContent).not.toContain(`${LEVEL2_PUZZLES.length + 1} / `);
   });

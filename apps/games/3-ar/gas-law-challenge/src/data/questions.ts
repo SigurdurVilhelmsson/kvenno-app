@@ -857,6 +857,22 @@ export function getRandomQuestionForLevel(level: Level): GasLawQuestion {
 }
 
 /**
+ * A practice round for a level: every question of the level once, in a random order.
+ *
+ * A round has an end, so it can report `N af M rétt` (mobile-pass decision 1 (b)); drawing
+ * at random with replacement had none, and repeated questions inside one sitting. The
+ * shuffle runs forward, so a `Math.random` pinned to 0 leaves the level's own order.
+ */
+export function getPracticeDeck(level: Level): GasLawQuestion[] {
+  const deck = [...getQuestionsForLevel(level)];
+  for (let i = 0; i < deck.length - 1; i++) {
+    const j = i + Math.floor(Math.random() * (deck.length - i));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+}
+
+/**
  * Get question by ID
  */
 export function getQuestionById(id: number): GasLawQuestion | undefined {

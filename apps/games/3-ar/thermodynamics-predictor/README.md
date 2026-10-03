@@ -18,12 +18,12 @@ change the verdict.
 
 One screen per mode, all in `src/App.tsx`; there are no level components.
 
-| Mode                       | What it does                                                                                                                                                                        |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Menu                       | A static derivation of ΔG = ΔH − TΔS, then a difficulty choice (Auðvelt / Miðlungs / Erfitt, 10 / 12 / 8 problems)                                                                  |
-| Könnun (`discover`)        | Ungraded. A fixed demo reaction (ΔH = −100 kJ/mol, ΔS = −200 J/(mol·K), crossover 500 K) and a 200–1200 K slider; ΔG and its sign update live                                       |
-| Æfingarhamur (`learning`)  | A random problem from the chosen difficulty. Enter ΔG° (kJ/mol) and pick one of three verdicts; the solution then shows the steps and, for scenarios 3–4, the crossover temperature |
-| Keppnishamur (`challenge`) | The same problems with a 90-second timer, a score and a streak                                                                                                                      |
+| Mode                       | What it does                                                                                                                                                                                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Menu                       | A static derivation of ΔG = ΔH − TΔS, then a difficulty choice (Auðvelt / Miðlungs / Erfitt, 10 / 12 / 8 problems)                                                                                                                                            |
+| Könnun (`discover`)        | Ungraded. A fixed demo reaction (ΔH = −100 kJ/mol, ΔS = −200 J/(mol·K), crossover 500 K) and a 200–1200 K slider; ΔG and its sign update live                                                                                                                 |
+| Æfingarhamur (`learning`)  | A round: every problem of the chosen difficulty once, in a random order. Enter ΔG° (kJ/mol) and pick one of three verdicts; the solution then shows the steps and, for scenarios 3–4, the crossover temperature. No points; the round ends with `N af M rétt` |
+| Keppnishamur (`challenge`) | Problems drawn at random from the chosen difficulty, with a 90-second timer, a score and a streak, both starting from 0 every run                                                                                                                             |
 
 Grading (`checkAnswer`, `src/App.tsx:184`): ΔG° goes through `isDeltaGCorrect`
 (`src/utils/thermo-calculations.ts`), parsed with `parseStudentNumber`, so the decimal comma works
@@ -79,10 +79,11 @@ src/utils/thermo-calculations.ts     calculateDeltaG, getSpontaneity, crossoverT
                                      isDeltaGCorrect, deltaGAxisHalfRange
 src/utils/sign.ts                    toggleSign, behind the ± button (see Phones)
 src/utils/format.ts                  formatRounded: formatDecimal that never prints -0
+src/utils/deck.ts                    practiceDeck: the order of an Æfingarhamur round
 src/__tests__/                       data-integrity, thermo-calculations, co-enthalpy, phone-play,
                                      grading, answer-checking, decimal-comma, graph-range,
-                                     crossover, icelandic-text (play-helpers.tsx drives the game
-                                     for them)
+                                     crossover, icelandic-text, points-in-keppnishamur-only
+                                     (play-helpers.tsx drives the game for them)
 ```
 
 ## Phones
@@ -110,6 +111,13 @@ stats take a row of their own; and Könnun's two buttons stack.
 
 ## Fixed
 
+- **Points and streaks are Keppnishamur's only — fixed 2026-10-03 (mobile-pass decision 1 (b)).**
+  Score and streak accrued in Æfingarhamur too, and the stored score was never reset, so
+  Keppnishamur's "Stig" was a lifetime total including practice and `Hæsta stig` always equalled
+  it. Keppnishamur now scores from 0 every run; Æfingarhamur scores nothing and ends each round
+  with `N af M rétt`, and the menu shows each difficulty's best round and Keppnishamur record. The
+  old `score`, `highScore`, `bestStreak` and `problemsCompleted` mixed the modes and are not read.
+  `points-in-keppnishamur-only.test.tsx` holds it.
 - **Id 25, C(s) + ½O₂(g) → CO(g), stored ΔG°f(CO) as its ΔH — fixed 2026-09-22.** It carried
   −137 kJ/mol, CO's Gibbs energy of formation; the enthalpy of formation is −110,5. Because the
   game computes ΔG° = ΔH − TΔS, it subtracted TΔS from a number that already had it subtracted and
@@ -179,7 +187,7 @@ hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`�
   source has. Two more problem names have no source term either: id 17 `Gufumyndun` (steam
   reforming, CH₄ + H₂O → CO + 3H₂, where the word reads as vapour formation) and id 27
   `ATP vatnsrofhvarfun` (the glossary has `vatnsrof` for hydrolysis, but not this compound).
-- **Score and streak accrue in Æfingarhamur too.** `checkAnswer` updates `score`, `highScore` and
-  `bestStreak` in both modes, and practice feedback says "Rétt! +100 stig". The score is never reset,
-  so Keppnishamur's "Stig" is a lifetime total including practice, `Hæsta stig` always equals it, and
-  the menu's `Spurningar` counts correct answers only.
+- **Every right Æfingarhamur answer counts, though the live panel above shows the answer.** The
+  counting rule of decision 1 (b) leaves out an answer the game showed first, but the panel is the
+  open design question above ("The answer is on screen before the student answers", mobile-pass
+  decision 109), so until that is ruled the count cannot tell a worked answer from a read one.

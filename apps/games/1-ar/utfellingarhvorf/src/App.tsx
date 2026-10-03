@@ -14,6 +14,12 @@ type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
 interface Progress {
   completed: Screen[];
+  /**
+   * Beita's best count of scenarios solved, of how many. Absent for a run
+   * finished before counts were kept, which shows as "Lokið" with no count.
+   */
+  beitaCorrect?: number;
+  beitaTotal?: number;
 }
 
 const PHASES: { id: Screen; number: string; name: string; description: string; tone: string }[] = [
@@ -134,7 +140,11 @@ function App() {
                     {/* On a phone, a badge in the corner of the title row. */}
                     {completed.includes(phase.id) && (
                       <p className="mt-2 text-sm text-white/80 phone:absolute phone:right-3 phone:top-3 phone:mt-0 phone:rounded-full phone:bg-white/20 phone:px-2 phone:py-0.5 phone:text-xs phone:font-semibold phone:text-white">
-                        Lokið
+                        {phase.id === 'beita' &&
+                        progress.beitaCorrect !== undefined &&
+                        progress.beitaTotal !== undefined
+                          ? `${progress.beitaCorrect} af ${progress.beitaTotal} rétt`
+                          : 'Lokið'}
                       </p>
                     )}
                   </button>
@@ -157,7 +167,7 @@ function App() {
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
                     <span>
-                      Að skrifa heildarjónajöfnu og strika út áhorfendajónirnar til að fá
+                      Að skrifa heildarjónajöfnu og stytta út áhorfendajónirnar til að fá
                       nettójónajöfnuna
                     </span>
                   </li>
@@ -185,7 +195,7 @@ function App() {
                     <strong>3.</strong> Leysnireglurnar svara því
                   </p>
                   <p>
-                    <strong>4.</strong> Strikaðu út það sem er eins beggja vegna
+                    <strong>4.</strong> Styttu út það sem er eins beggja vegna
                   </p>
                 </div>
               </div>
@@ -225,7 +235,16 @@ function App() {
         )}
 
         {screen === 'beita' && (
-          <BeitaScreen onComplete={() => markCompleted('beita')} onBack={backToMenu} />
+          <BeitaScreen
+            onComplete={(correct, total) => {
+              updateProgress({
+                beitaCorrect: Math.max(progress.beitaCorrect ?? 0, correct),
+                beitaTotal: total,
+              });
+              markCompleted('beita');
+            }}
+            onBack={backToMenu}
+          />
         )}
       </main>
     </div>

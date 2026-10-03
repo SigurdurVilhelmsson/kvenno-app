@@ -14,7 +14,8 @@ import { valenceOf } from '../utils/electrons';
 import { ITEM_START } from '../utils/itemStart';
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  /** How many of the questions were answered right, out of how many. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -23,7 +24,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
+  // Right answers, counted (mobile-pass decision 1 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const puzzle = periodicPuzzles[currentIndex];
   const isLast = currentIndex >= periodicPuzzles.length - 1;
@@ -80,12 +82,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const handleSubmit = () => {
     if (submitted || !selectedOption) return;
     setSubmitted(true);
-    if (selectedOption === puzzle.fullShorthand) setScore((s) => s + 1);
+    if (selectedOption === puzzle.fullShorthand) setCorrectCount((c) => c + 1);
   };
 
   const handleNext = () => {
     if (isLast) {
-      onComplete(score);
+      onComplete(correctCount, periodicPuzzles.length);
       return;
     }
     setCurrentIndex((i) => i + 1);
@@ -165,7 +167,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             ← Til baka
           </button>
           <div className="text-sm text-warm-600 text-right">
-            Frumefni {currentIndex + 1} / {periodicPuzzles.length} &bull; Stig: {score}
+            Frumefni {currentIndex + 1} / {periodicPuzzles.length}
           </div>
         </div>
 

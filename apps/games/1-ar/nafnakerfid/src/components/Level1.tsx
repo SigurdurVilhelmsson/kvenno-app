@@ -38,7 +38,7 @@ const RELATED_CONCEPTS: Record<RuleId, string[]> = {
 
 interface Level1Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
@@ -362,12 +362,6 @@ export function shortOptions(options: string[]): boolean {
   return options.every((o) => o.length <= 12 && o.split(' ').every((w) => w.length <= 9));
 }
 
-/** Points for a correct quiz answer. Hints are free, so there is no deduction. */
-const POINTS_PER_QUESTION = 10;
-
-/** What a perfect Level 1 scores; the menu shows the best score out of this. */
-export const LEVEL1_MAX_SCORE = quizQuestions.length * POINTS_PER_QUESTION;
-
 export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'warmup' | 'quiz'>('learn');
   const [currentRule, setCurrentRule] = useState(0);
@@ -378,13 +372,12 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [score, setScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
 
   // Warmup state
   const [currentWarmup, setCurrentWarmup] = useState(0);
   const [warmupAnswer, setWarmupAnswer] = useState<boolean | null>(null);
   const [warmupFeedback, setWarmupFeedback] = useState<string | null>(null);
-  const [warmupCorrect, setWarmupCorrect] = useState(0);
 
   const rule = namingRules[currentRule];
   const question = quizQuestions[currentQuestion];
@@ -464,7 +457,6 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
     if (correct) {
       setWarmupFeedback(`Rétt! ${warmupQ.hint}`);
-      setWarmupCorrect((prev) => prev + 1);
     } else {
       setWarmupFeedback(
         `Ekki rétt. ${warmupQ.name} er ${warmupQ.isMetal ? 'málmur' : 'málmleysingi'}. ${warmupQ.hint}`
@@ -488,7 +480,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     setShowFeedback(true);
 
     if (index === shuffledOptions.correctShuffledIndex) {
-      setScore((prev) => prev + POINTS_PER_QUESTION);
+      setCorrectCount((prev) => prev + 1);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -501,8 +493,9 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       setSelectedAnswer(null);
       setShowFeedback(false);
     } else {
-      // The quiz shows no hints, so none are ever used.
-      onComplete(score, LEVEL1_MAX_SCORE, 0);
+      // Each question is one try, and the right option is marked only after
+      // it, so every right answer counts (decision 1 (b)).
+      onComplete(correctCount, quizQuestions.length);
     }
   };
 
@@ -849,14 +842,9 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </button>
           )}
 
-          {/* Score summary */}
-          <div className="mt-6 text-center text-sm text-warm-500 phone:mt-3">
-            {t('level1.ui.correctCount', 'Rétt:')} {warmupCorrect} /{' '}
-            {currentWarmup + (warmupFeedback ? 1 : 0)}
-          </div>
-
-          {/* Key reminder */}
-          <div className="mt-4 bg-warm-50 rounded-xl p-4 phone:mt-3 phone:p-3">
+          {/* Key reminder. The warm-up keeps no tally of right answers: it
+              is practice, not scored for the level (decision 1 (b)). */}
+          <div className="mt-6 bg-warm-50 rounded-xl p-4 phone:mt-3 phone:p-3">
             <h3 className="font-semibold text-warm-700 mb-2 text-sm">
               {t('level1.ui.remember', 'Mundu:')}
             </h3>
@@ -892,8 +880,8 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         ref={cardRef}
         className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
       >
-        {/* One row on a phone (P4): the counter may wrap onto two short lines
-            rather than push the score onto a row of its own. */}
+        {/* One row on a phone (P4): the counter may wrap onto two short lines.
+            No running score (decision 1 (b)); the count is on the menu after. */}
         <div className="flex flex-wrap justify-between items-center gap-2 mb-6 phone:flex-nowrap phone:mb-2">
           <button
             onClick={onBack}
@@ -906,9 +894,6 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level1.ui.questionNOfM', 'Spurning {n} af {m}')
                 .replace('{n}', String(currentQuestion + 1))
                 .replace('{m}', String(quizQuestions.length))}
-            </div>
-            <div className="whitespace-nowrap bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold phone:px-2 phone:text-sm">
-              {t('common.score', 'Stig')}: {score}
             </div>
           </div>
         </div>

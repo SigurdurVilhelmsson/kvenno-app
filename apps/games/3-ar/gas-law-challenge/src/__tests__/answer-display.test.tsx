@@ -78,8 +78,7 @@ function renderFeedback(question: GasLawQuestion, userAnswer: number | null) {
       feedback={feedbackFor(question, userAnswer)}
       currentQuestion={question}
       stats={STATS}
-      sessionCompleted={false}
-      sessionQuestionsAnswered={1}
+      selectedLevel={1}
       gameMode="practice"
       onNext={noop}
       onBackToMenu={noop}

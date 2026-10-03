@@ -127,19 +127,20 @@ describe('grading follows the answer, not the position', () => {
     }
 
     expect(onComplete).toHaveBeenCalledTimes(1);
-    const score = onComplete.mock.calls[0][0];
+    const [correct, total] = onComplete.mock.calls[0];
+    expect(total).toBe(10);
     unmount();
-    return score;
+    return correct;
   };
 
-  it('scores every correct answer, wherever the shuffle put it', () => {
-    // Ten challenges at 10 points. Repeated so more than one arrangement runs.
+  it('counts every correct answer, wherever the shuffle put it', () => {
+    // Ten challenges. Repeated so more than one arrangement runs.
     for (let run = 0; run < 5; run++) {
-      expect(playAllTen('correct'), `run ${run}`).toBe(100);
+      expect(playAllTen('correct'), `run ${run}`).toBe(10);
     }
   });
 
-  it('scores nothing when every answer is wrong', () => {
+  it('counts nothing when every answer is wrong', () => {
     for (let run = 0; run < 5; run++) {
       expect(playAllTen('wrong'), `run ${run}`).toBe(0);
     }

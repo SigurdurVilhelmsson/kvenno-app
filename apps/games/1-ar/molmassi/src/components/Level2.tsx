@@ -49,7 +49,7 @@ export interface Problem {
 
 interface Level2Props {
   onBack: () => void;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
   /** Whether the student has previously completed this level */
@@ -157,7 +157,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hversu mörg mól eru í ${formatDecimal(m)} g af ${label}?`,
       solutionFormula: 'Einingagreining: g × (1 mól / g) → mól',
-      solutionSteps: `${formatDecimal(m)} g × (1 mól / ${fmtMolarMass(M)} g) = ${fmt(ans)} mól\nEiningin g strikast út og mól verður eftir.`,
+      solutionSteps: `${formatDecimal(m)} g × (1 mól / ${fmtMolarMass(M)} g) = ${fmt(ans)} mól\nEiningin g styttist út og mól verður eftir.`,
     };
   }
   if (type === 'moles_to_mass') {
@@ -168,7 +168,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hvað vega ${formatDecimal(n)} mól af ${label} í grömmum?`,
       solutionFormula: 'Einingagreining: mól × (g / 1 mól) → g',
-      solutionSteps: `${formatDecimal(n)} mól × (${fmtMolarMass(M)} g / 1 mól) = ${fmt(ans)} g\nEiningin mól strikast út og g verður eftir.`,
+      solutionSteps: `${formatDecimal(n)} mól × (${fmtMolarMass(M)} g / 1 mól) = ${fmt(ans)} g\nEiningin mól styttist út og g verður eftir.`,
     };
   }
   if (type === 'moles_to_particles') {
@@ -180,7 +180,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hversu margar ${particles} eru í ${formatDecimal(n)} mól af ${label}?`,
       solutionFormula: `Einingagreining: mól × (${particles} / 1 mól) → ${particles}`,
-      solutionSteps: `${formatDecimal(n)} mól × (6,022 × 10²³ ${particles} / 1 mól) = ${fmt(ans)} ${particles}\nEiningin mól strikast út.`,
+      solutionSteps: `${formatDecimal(n)} mól × (6,022 × 10²³ ${particles} / 1 mól) = ${fmt(ans)} ${particles}\nEiningin mól styttist út.`,
     };
   }
   if (type === 'moles_to_element_atoms') {
@@ -203,7 +203,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       // the worked line below does. It used to put atoms over moles there too,
       // which leaves atoms squared over moles once the second factor is applied.
       solutionFormula: 'Einingagreining: mól × (mól af frumefninu / 1 mól) × (atóm / 1 mól) → atóm',
-      solutionSteps: `Í hverri ${c.ionic ? 'formúlueiningu' : 'sameind'} af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${formatDecimal(n)} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
+      solutionSteps: `Í hverri ${c.ionic ? 'formúlueiningu' : 'sameind'} af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${formatDecimal(n)} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól styttist út tvisvar.`,
     };
   }
 
@@ -221,7 +221,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
         correctAnswer: ans,
         questionText: `Hvaða rúmmál taka ${formatDecimal(n)} mól af ${label} við ${STP_LABEL}?`,
         solutionFormula: 'Einingagreining: mól × (L / 1 mól) → L',
-        solutionSteps: `${formatDecimal(n)} mól × (${formatDecimal(STANDARD_MOLAR_VOLUME)} L / 1 mól) = ${fmt(ans)} L\nEiningin mól strikast út. Þetta gildir aðeins um gas — 22,4 L/mól segir ekkert um fast efni eða vökva.`,
+        solutionSteps: `${formatDecimal(n)} mól × (${formatDecimal(STANDARD_MOLAR_VOLUME)} L / 1 mól) = ${fmt(ans)} L\nEiningin mól styttist út. Þetta gildir aðeins um gas — 22,4 L/mól segir ekkert um fast efni eða vökva.`,
       };
     }
 
@@ -232,7 +232,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hversu mörg mól eru í ${formatDecimal(volume)} L af ${label} við ${STP_LABEL}?`,
       solutionFormula: 'Einingagreining: L × (1 mól / L) → mól',
-      solutionSteps: `${formatDecimal(volume)} L × (1 mól / ${formatDecimal(STANDARD_MOLAR_VOLUME)} L) = ${fmt(ans)} mól\nEiningin L strikast út. Þetta gildir aðeins um gas.`,
+      solutionSteps: `${formatDecimal(volume)} L × (1 mól / ${formatDecimal(STANDARD_MOLAR_VOLUME)} L) = ${fmt(ans)} mól\nEiningin L styttist út. Þetta gildir aðeins um gas.`,
     };
   }
 
@@ -244,7 +244,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     correctAnswer: ans,
     questionText: `Hversu mörg mól eru ${formatDecimal(coeff)} × 10²³ sameindir?`,
     solutionFormula: 'Einingagreining: sameindir × (1 mól / sameindir) → mól',
-    solutionSteps: `${formatDecimal(coeff)} × 10²³ sameindir × (1 mól / 6,022 × 10²³ sameindir) = ${fmt(ans)} mól\nEiningin sameindir strikast út.`,
+    solutionSteps: `${formatDecimal(coeff)} × 10²³ sameindir × (1 mól / 6,022 × 10²³ sameindir) = ${fmt(ans)} mól\nEiningin sameindir styttist út.`,
   };
 }
 
@@ -289,7 +289,7 @@ export function Level2({
   const [problems, setProblems] = useState<Problem[]>(generateAllProblems);
   const [idx, setIdx] = useState(0);
   const [input, setInput] = useState('');
-  const [score, setScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
   const [feedback, setFeedback] = useState(false);
   const [correct, setCorrect] = useState(false);
   const [done, setDone] = useState(false);
@@ -335,7 +335,7 @@ export function Level2({
     setCorrect(ok);
     setFeedback(true);
     if (ok) {
-      setScore((s) => s + 10);
+      setCorrectCount((c) => c + 1);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -358,7 +358,7 @@ export function Level2({
     setIdx(0);
     setInput('');
     setError('');
-    setScore(0);
+    setCorrectCount(0);
     setFeedback(false);
     setDone(false);
   };
@@ -477,7 +477,9 @@ export function Level2({
 
   // ==================== SUMMARY SCREEN ====================
   if (done) {
-    const passed = score >= 60;
+    // Still six of ten to finish the level, as it was at 60 of 100 points:
+    // only the points went (decision 1 (b)), not the threshold.
+    const passed = correctCount >= 6;
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
@@ -487,12 +489,12 @@ export function Level2({
               {passed ? 'Vel gert!' : 'Haltu áfram að æfa!'}
             </h2>
             <p className="text-warm-600 mb-6">
-              Þú fékkst {score} af {TOTAL * 10} stigum
+              Þú svaraðir {correctCount} af {TOTAL} rétt
             </p>
             <div className="h-3 bg-warm-200 rounded-full overflow-hidden mb-6">
               <div
                 className={`h-full transition-all duration-700 ${passed ? 'bg-green-500' : 'bg-kvenno-orange'}`}
-                style={{ width: `${(score / (TOTAL * 10)) * 100}%` }}
+                style={{ width: `${(correctCount / TOTAL) * 100}%` }}
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -504,7 +506,7 @@ export function Level2({
               </button>
               {passed && (
                 <button
-                  onClick={armedResults(() => onComplete(score, TOTAL * 10, 0))}
+                  onClick={armedResults(() => onComplete(correctCount, TOTAL))}
                   className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Ljúka stigi →
@@ -526,29 +528,19 @@ export function Level2({
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
       <div className="max-w-lg mx-auto phone-land:max-w-none">
-        {/* Header. On a phone: the title and the score on one row (the
-            subtitle kept for screen readers), and a thinner progress bar. */}
+        {/* Header. On a phone the subtitle is kept for screen readers, and the
+            progress bar is thinner. No running score (decision 1 (b)): the
+            count of right answers comes at the end. */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
-          <div className="flex justify-between items-center phone:gap-3">
-            <div className="phone:min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold text-warm-800 phone:text-base">
-                Mól-umbreytingar - Stig 2
-              </h1>
-              <p className="text-sm text-warm-600 phone:sr-only">Massi, mól og sameindir</p>
-            </div>
-            <div className="text-center phone:shrink-0 phone:flex phone:items-baseline phone:gap-1">
-              <div className="text-2xl font-bold text-kvenno-orange phone:text-lg">{score}</div>
-              <div className="text-xs text-warm-600">Stig</div>
-            </div>
+          <div className="phone:min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold text-warm-800 phone:text-base">
+              Mól-umbreytingar - Stig 2
+            </h1>
+            <p className="text-sm text-warm-600 phone:sr-only">Massi, mól og sameindir</p>
           </div>
           <div className="mt-3 phone:mt-2">
-            <div className="flex justify-between text-xs text-warm-500 mb-1">
-              <span>
-                Dæmi {idx + 1}/{TOTAL}
-              </span>
-              <span>
-                {score}/{TOTAL * 10}
-              </span>
+            <div className="text-xs text-warm-500 mb-1">
+              Dæmi {idx + 1}/{TOTAL}
             </div>
             <div className="h-2 bg-warm-200 rounded-full overflow-hidden phone:h-1.5">
               <div
@@ -566,7 +558,7 @@ export function Level2({
           {/* Dimensional analysis reference — a scaffold, so it stays in view. */}
           <div className="bg-white/80 border border-warm-200 rounded-xl p-3 mb-4 phone:py-2 phone:mb-3">
             <div className="text-center text-xs text-warm-500 mb-2 phone:mb-1">
-              Einingagreining — umbreytingarstuðlar
+              Einingagreining — umreikningsstuðlar
             </div>
             <div className="text-sm font-mono text-warm-700 space-y-1 text-center">
               <div>
@@ -652,7 +644,7 @@ export function Level2({
                       explanation: `${problem.solutionFormula}\n${problem.solutionSteps}`,
                       misconception: correct
                         ? undefined
-                        : 'Notaðu einingagreiningu: settu eininguna sem á að hverfa í nefnara umbreytingarstuðulsins.',
+                        : 'Notaðu einingagreiningu: settu eininguna sem á að hverfa í nefnara umreikningsstuðulsins.',
                     }}
                     config={{
                       showExplanation: true,

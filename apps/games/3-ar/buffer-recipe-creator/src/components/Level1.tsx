@@ -40,7 +40,12 @@ const BUFFER_RELATED: string[] = [
 ];
 
 interface Level1Props {
-  onLevelComplete?: (score: number) => void;
+  /**
+   * The level is done. It reports no count: a challenge cannot be left unsolved (Næsta waits
+   * for a right mixture) and the pH bar names the verdict live, so every run would read
+   * "N af N rétt" (mobile-pass decision 1 (b), as item 23 did for Einingakeðjan).
+   */
+  onLevelComplete?: () => void;
 }
 
 /**
@@ -59,14 +64,12 @@ export default function Level1({ onLevelComplete }: Level1Props) {
   const [baseCount, setBaseCount] = useState(5);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [score, setScore] = useState(0);
   const [challengesCompleted, setChallengesCompleted] = useState(0);
   // Whether the current challenge has been answered correctly. A correct mixture can be checked
-  // again, and before this each check added its points and its tick again: six taps on
+  // again, and before this each check added its tick again (and its points): six taps on
   // "Athuga stuðpúða" finished the level from challenge 1.
   const [solved, setSolved] = useState(false);
   const [, setHintsUsedTotal] = useState(0);
-  const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [, setHintsUsedTier] = useState(0);
   const [hintResetKey, setHintResetKey] = useState(0);
   // Each tap on "Athuga stuðpúða", so a repeated check with the same answer still moves focus.
@@ -203,10 +206,9 @@ export default function Level1({ onLevelComplete }: Level1Props) {
       if (solved) {
         setFeedback('Frábært! Stuðpúðinn er tilbúinn!');
       } else {
-        const basePoints = 100;
-        const points = Math.round(basePoints * hintMultiplier);
-        setScore(score + points);
-        setFeedback(`Frábært! Stuðpúðinn er tilbúinn! +${points} stig.`);
+        // Hints are free (mobile-pass decision 2 (b)): this used to pay 100 points times the
+        // HintSystem tier multiplier, down to 40 with every tier open, and said so here.
+        setFeedback('Frábært! Stuðpúðinn er tilbúinn!');
         setChallengesCompleted(challengesCompleted + 1);
         setSolved(true);
       }
@@ -232,7 +234,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
     if (isLastChallenge) {
       if (!levelCompleteReported.current) {
         levelCompleteReported.current = true;
-        onLevelComplete?.(score);
+        onLevelComplete?.();
       }
       return;
     }
@@ -242,7 +244,6 @@ export default function Level1({ onLevelComplete }: Level1Props) {
     setBaseCount(5);
     setFeedback(null);
     setShowExplanation(false);
-    setHintMultiplier(1.0);
     setHintsUsedTier(0);
     setHintResetKey((prev) => prev + 1);
   };
@@ -354,12 +355,9 @@ export default function Level1({ onLevelComplete }: Level1Props) {
         </p>
       </div>
 
-      {/* Stats: on a phone one short row, number beside its label */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 phone:mb-3">
-        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center phone:py-1 phone:px-1 phone:flex phone:flex-wrap phone:items-baseline phone:justify-center phone:gap-x-1">
-          <div className="text-2xl font-bold text-orange-600 phone:text-base">{score}</div>
-          <div className="text-sm text-warm-600 phone:text-xs">Stig</div>
-        </div>
+      {/* Progress: on a phone one short row, number beside its label. There is no score tile
+          (mobile-pass decision 1 (b)). */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-6 phone:mb-3">
         <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center phone:py-1 phone:px-1 phone:flex phone:flex-wrap phone:items-baseline phone:justify-center phone:gap-x-1">
           <div className="text-2xl font-bold text-green-600 phone:text-base">
             {challengesCompleted}
@@ -416,9 +414,8 @@ export default function Level1({ onLevelComplete }: Level1Props) {
             <div className="mb-4 phone:mb-0">
               <HintSystem
                 hints={currentChallenge.hints}
-                basePoints={100}
                 onHintUsed={handleHintUsed}
-                onPointsChange={setHintMultiplier}
+                showPointCost={false}
                 disabled={showExplanation}
                 resetKey={hintResetKey}
               />

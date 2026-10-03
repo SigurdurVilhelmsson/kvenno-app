@@ -730,7 +730,7 @@ function BeforeAfterVisual({
 }
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -738,7 +738,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentScenario, setCurrentScenario] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState<number[]>([]);
   const [showHint, setShowHint] = useState(false);
   const [showExplorer, setShowExplorer] = useState(false);
@@ -807,7 +806,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
     setShowResult(true);
     if (isCorrect) {
-      setScore((prev) => prev + 100);
       setCompleted((prev) => [...prev, scenario.id]);
     }
   }, [selectedAnswer, isCorrect, scenario.id]);
@@ -819,12 +817,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setSelectedAnswer(null);
       setShowResult(false);
     } else {
-      // `score` already holds this scenario's points: handleSubmit added them
-      // when the answer was checked. Adding them again here reported 1300 for a
-      // perfect 12 of 12.
-      onComplete(score);
+      // `completed` already holds this scenario if it was right: handleSubmit
+      // added it when the answer was checked. Each answer is one try, and the
+      // right option is shown only after it, so every right one counts.
+      onComplete(completed.length, SCENARIOS.length);
     }
-  }, [currentScenario, score, onComplete]);
+  }, [currentScenario, completed, onComplete]);
 
   const allComplete = currentScenario === SCENARIOS.length - 1 && showResult;
 
@@ -893,15 +891,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               >
                 🔬 Kanna
               </button>
-              <div className="text-center">
-                <div className="text-xl font-bold text-green-600 phone:text-base">{score}</div>
-                <div className="text-xs text-warm-600">Stig</div>
-              </div>
+              {/* How far along, not how many right: no running score inside a
+                  level (decision 58 (b)); the count is on the menu after. */}
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600 phone:text-base">
-                  {completed.length}/{SCENARIOS.length}
+                  {currentScenario + (showResult ? 1 : 0)}/{SCENARIOS.length}
                 </div>
-                <div className="text-xs text-warm-600">Rétt</div>
+                <div className="text-xs text-warm-600">Lokið</div>
               </div>
             </div>
           </div>

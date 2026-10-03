@@ -14,7 +14,8 @@ import { challenges, rateConstantMatches, rateConstantOf } from '../data/level2-
 import { formatSignificant } from '../utils/format';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /** How many challenges were answered right, out of how many. A hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -27,8 +28,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [showHint, setShowHint] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -43,9 +44,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     const correct = correctA && correctB && correctK;
     setIsCorrect(correct);
 
-    if (correct) {
-      setScore((prev) => prev + 20);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -59,7 +58,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setShowResult(false);
       setIsCorrect(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -108,11 +107,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             ← Til baka
           </button>
           <div className="bg-white rounded-2xl shadow-lg p-6 phone:p-4 space-y-4 animate-slide-in">
-            <h2 className="text-xl font-bold text-warm-800">Hvernig finna röð hvörfunar?</h2>
+            <h2 className="text-xl font-bold text-warm-800">
+              Hvernig finnum við stig efnahvarfsins?
+            </h2>
 
             <p className="text-warm-700">
               Hraðalögmálið er: <strong className="font-mono">hraði = k[A]ᵐ[B]ⁿ</strong>.
-              Veldisvísarnir m og n (röð hvörfunar) segja hversu mikil áhrif styrkur hefur á
+              Veldisvísarnir m og n (stig efnahvarfsins) segja hversu mikil áhrif styrkur hefur á
               hraðann.
             </p>
 
@@ -160,7 +161,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* Header. On a phone the row is one line tall (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
@@ -172,7 +173,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="text-sm text-warm-600">
               Stig 2 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-green-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -247,13 +247,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="contents phone-land:block">
             {/* Order selection */}
             <div ref={ordersRef} className="bg-warm-50 p-3 sm:p-4 rounded-xl mb-6 phone:mb-3">
-              <h3 className="font-bold text-warm-700 mb-4 phone:mb-2">Veldu röð hvörfunar:</h3>
+              <h3 className="font-bold text-warm-700 mb-4 phone:mb-2">Veldu stig efnahvarfsins:</h3>
 
               <div className="space-y-4 phone:space-y-2">
                 {/* Order for A */}
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap sm:gap-4 phone:flex-wrap">
                   <span className="font-mono font-bold whitespace-nowrap min-w-24 sm:w-32">
-                    Röð í [A]:
+                    Stig í [A]:
                   </span>
                   <div className="flex gap-2">
                     {[0, 1, 2].map((order) => (
@@ -288,7 +288,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 {hasSecondReactant && (
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap sm:gap-4 phone:flex-wrap">
                     <span className="font-mono font-bold whitespace-nowrap min-w-24 sm:w-32">
-                      Röð í [B]:
+                      Stig í [B]:
                     </span>
                     <div className="flex gap-2">
                       {[0, 1, 2].map((order) => (
@@ -384,10 +384,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="contents phone:flex phone:flex-wrap phone:items-center phone:gap-x-4 phone:gap-y-2">
                 {!showHint && (
                   <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setTotalHintsUsed((prev) => prev + 1);
-                    }}
+                    onClick={() => setShowHint(true)}
                     className="text-green-600 hover:text-green-800 text-sm underline mb-4 phone:mb-0 phone:shrink-0 pointer-coarse:min-h-11"
                   >
                     Sýna vísbendingu
@@ -451,7 +448,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
         {/* Method reminder */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-warm-700 mb-2">Aðferð til að finna röð:</h3>
+          <h3 className="font-bold text-warm-700 mb-2">Aðferð til að finna stig efnahvarfsins:</h3>
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li>Finndu tvær tilraunir þar sem aðeins EINN styrkur breytist</li>
             <li>

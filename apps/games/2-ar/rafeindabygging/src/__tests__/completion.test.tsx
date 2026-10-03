@@ -11,7 +11,7 @@ import { screenAfterLevel, type Progress } from '../utils/progress';
  * The summary screen opens with "Þú hefur lokið öllum stigum!". Levels are not
  * gated (Siggi's ruling, 2026-08-29), and the screen used to follow Stig 3
  * unconditionally — so a student who started with Stig 3 was congratulated on
- * finishing everything, beside two scores of 0. It now opens only when all
+ * finishing everything, beside two empty results. It now opens only when all
  * three are done: after Stig 3 as before, or after whichever level completes
  * the set. The screen also named Stig 3 `Eðalgasstytting`, where the menu card
  * and the level's own header call it `Lotukerfi og rafeindir`.
@@ -23,12 +23,8 @@ import { screenAfterLevel, type Progress } from '../utils/progress';
 const KEY = 'rafeindabygging-progress';
 const NONE: Progress = {
   level1Completed: false,
-  level1Score: 0,
   level2Completed: false,
-  level2Score: 0,
   level3Completed: false,
-  level3Score: 0,
-  totalGamesPlayed: 0,
 };
 
 clockPastNextGuard();
@@ -88,16 +84,17 @@ describe('after Stig 3', () => {
     playLevel3(ui, container);
     expect(container.textContent).not.toMatch(ALL_DONE);
     expect(container.textContent).toMatch(MENU);
-    expect(container.textContent).toMatch(/✓ 8 stig/);
+    expect(container.textContent).toMatch(/✓ 8 af 8 rétt/);
   });
 
   it('opens the summary when the other two are done, naming Stig 3 as the menu does', () => {
     const { ui, container } = renderApp({
       level1Completed: true,
-      level1Score: 6,
+      level1Correct: 6,
+      level1Total: 8,
       level2Completed: true,
-      level2Score: 7,
-      totalGamesPlayed: 2,
+      level2Correct: 7,
+      level2Total: 8,
     });
     playLevel3(ui, container);
     expect(container.textContent).toMatch(ALL_DONE);
@@ -111,7 +108,6 @@ describe('after Stig 1', () => {
     const { ui, container } = renderApp({
       level2Completed: true,
       level3Completed: true,
-      totalGamesPlayed: 2,
     });
     playLevel1(ui, container);
     expect(container.textContent).toMatch(ALL_DONE);
@@ -122,7 +118,6 @@ describe('after Stig 1', () => {
       level1Completed: true,
       level2Completed: true,
       level3Completed: true,
-      totalGamesPlayed: 3,
     });
     playLevel1(ui, container);
     expect(container.textContent).toMatch(MENU);

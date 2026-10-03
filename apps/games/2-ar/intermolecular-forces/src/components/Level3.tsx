@@ -3,7 +3,8 @@ import { useState, useMemo, useRef } from 'react';
 import { shuffleArray, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  /** How many were answered right, out of how many. A hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -19,7 +20,7 @@ interface Challenge {
   conceptNote: string;
 }
 
-const challenges: Challenge[] = [
+export const challenges: Challenge[] = [
   {
     id: 1,
     type: 'comparison',
@@ -396,16 +397,14 @@ const challenges: Challenge[] = [
   },
 ];
 
-// Max possible score: 10 challenges * 12 points = 120 points
-
 export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showConcept, setShowConcept] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -455,8 +454,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const checkAnswer = () => {
     const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
-    // A hint never costs points: the same 12 with or without it.
-    if (correct) setScore((prev) => prev + 12);
+    if (correct) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -468,13 +466,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
       setShowHint(false);
       setShowConcept(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
   const handleShowHint = () => {
     setShowHint(true);
-    setTotalHintsUsed((prev) => prev + 1);
   };
 
   const isCorrect = showResult && shuffledOptions.find((o) => o.id === selectedOption)?.correct;
@@ -499,7 +496,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* On a phone the row is one line tall (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
@@ -511,7 +508,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="text-sm text-warm-600">
               Spurning {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-indigo-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 

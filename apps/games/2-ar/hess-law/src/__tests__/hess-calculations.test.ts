@@ -123,8 +123,8 @@ describe('FORMATION_ENTHALPIES data integrity', () => {
   });
 
   it('contains water in both liquid and gas states', () => {
-    expect(FORMATION_ENTHALPIES['H2O(l)'].value).toBe(-285.8);
-    expect(FORMATION_ENTHALPIES['H2O(g)'].value).toBe(-241.8);
+    expect(FORMATION_ENTHALPIES['H2O(l)'].value).toBe(-285.83);
+    expect(FORMATION_ENTHALPIES['H2O(g)'].value).toBe(-241.82);
   });
 
   it('has negative formation enthalpies for stable compounds', () => {

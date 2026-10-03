@@ -156,12 +156,12 @@ describe('the waiting-to-cancel message', () => {
       />
     );
     expect(screen.getByText(/í bæði teljara og nefnara/).textContent).toBe(
-      'km, klst eru í bæði teljara og nefnara og strikast út!'
+      'km, klst eru í bæði teljara og nefnara og styttast út!'
     );
     cleanup();
     render(<UnitCancellationVisualizer numeratorUnits={['mg', 'g']} denominatorUnits={['mg']} />);
     expect(screen.getByText(/í bæði teljara og nefnara/).textContent).toBe(
-      'mg er í bæði teljara og nefnara og strikast út!'
+      'mg er í bæði teljara og nefnara og styttist út!'
     );
   });
 });

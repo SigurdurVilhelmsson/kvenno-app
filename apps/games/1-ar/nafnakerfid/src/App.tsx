@@ -5,31 +5,40 @@ import { useGameI18n } from '@shared/hooks/useGameI18n';
 import { useGameProgress } from '@shared/hooks/useGameProgress';
 import { useScreenTop } from '@shared/utils';
 
-import { LEVEL1_MAX_SCORE, Level1 } from './components/Level1';
-import { LEVEL2_MAX_SCORE, Level2 } from './components/Level2';
+import { Level1 } from './components/Level1';
+import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
 
 type Screen = 'menu' | 'level1' | 'level2' | 'level3';
+type Level = 1 | 2 | 3;
 
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — the levels paid points and showed them
+ * as they went (mobile-pass decision 1 (b)), and a hint never changes a count.
+ *
+ * Progress saved before the change carries `levelNScore` in points and no
+ * `levelNCorrect`; those levels show as done with no count, rather than
+ * reading old points as a number of right answers. That also retires the
+ * menu's mismatched denominators: Level 3's score was shown over nothing.
+ */
 interface Progress {
   level1Completed: boolean;
-  level1Score: number;
+  level1Correct?: number;
+  level1Total?: number;
   level2Completed: boolean;
-  level2Score: number;
+  level2Correct?: number;
+  level2Total?: number;
   level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
+  level3Correct?: number;
+  level3Total?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
-  level1Score: 0,
   level2Completed: false,
-  level2Score: 0,
   level3Completed: false,
-  level3Score: 0,
-  totalGamesPlayed: 0,
 };
 
 function App() {
@@ -61,44 +70,42 @@ function App() {
       screen === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
   });
 
-  const handleLevel1Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
+  const completeLevel = (level: Level) => (correct: number, total: number) => {
+    const key = `level${level}` as const;
     updateProgress({
-      level1Completed: true,
-      level1Score: Math.max(progress.level1Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
+      [`${key}Completed`]: true,
+      [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
+      [`${key}Total`]: total,
+    } as Partial<Progress>);
     setScreen('menu');
   };
 
-  const handleLevel2Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
-    updateProgress({
-      level2Completed: true,
-      level2Score: Math.max(progress.level2Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setScreen('menu');
+  /** "6 af 8 rétt", or "Lokið" for a level finished before counts were kept. */
+  const resultLabel = (level: Level): string => {
+    const correct = progress[`level${level}Correct`];
+    const total = progress[`level${level}Total`];
+    return correct === undefined || total === undefined
+      ? t('menu.completed')
+      : `${correct} ${t('menu.of')} ${total} ${t('menu.correct')}`;
   };
 
-  const handleLevel3Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
-    updateProgress({
-      level3Completed: true,
-      level3Score: Math.max(progress.level3Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setScreen('menu');
-  };
+  const levelsCompleted = [
+    progress.level1Completed,
+    progress.level2Completed,
+    progress.level3Completed,
+  ].filter(Boolean).length;
 
   // Level screens
   if (screen === 'level1') {
-    return <Level1 t={t} onComplete={handleLevel1Complete} onBack={() => setScreen('menu')} />;
+    return <Level1 t={t} onComplete={completeLevel(1)} onBack={() => setScreen('menu')} />;
   }
 
   if (screen === 'level2') {
-    return <Level2 t={t} onComplete={handleLevel2Complete} onBack={() => setScreen('menu')} />;
+    return <Level2 t={t} onComplete={completeLevel(2)} onBack={() => setScreen('menu')} />;
   }
 
   if (screen === 'level3') {
-    return <Level3 t={t} onComplete={handleLevel3Complete} onBack={() => setScreen('menu')} />;
+    return <Level3 t={t} onComplete={completeLevel(3)} onBack={() => setScreen('menu')} />;
   }
 
   // Main Menu
@@ -121,7 +128,7 @@ function App() {
             <p className="text-center text-warm-600 mb-4 phone:sr-only">{t('game.subtitle')}</p>
 
             {/* A phone on its side: the three levels side by side, so every
-                choice is on the first screen. Each tile then stacks its score
+                choice is on the first screen. Each tile then stacks its result
                 under its text, and drops the decorative arrow, so no title
                 breaks mid-word in a third of the width. */}
             <div className="space-y-4 phone-land:grid phone-land:grid-cols-3 phone-land:gap-3 phone-land:space-y-0">
@@ -145,11 +152,8 @@ function App() {
                   </div>
                   <div className="shrink-0 text-right phone-land:text-left">
                     {progress.level1Completed ? (
-                      <div className="text-green-600">
-                        <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
-                          {progress.level1Score}/{LEVEL1_MAX_SCORE}
-                        </div>
-                        <div className="text-xs">{t('menu.completed')}</div>
+                      <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
+                        ✓ {resultLabel(1)}
                       </div>
                     ) : (
                       <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>
@@ -178,11 +182,8 @@ function App() {
                   </div>
                   <div className="shrink-0 text-right phone-land:text-left">
                     {progress.level2Completed ? (
-                      <div className="text-green-600">
-                        <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
-                          {progress.level2Score}/{LEVEL2_MAX_SCORE}
-                        </div>
-                        <div className="text-xs">{t('menu.completed')}</div>
+                      <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
+                        ✓ {resultLabel(2)}
                       </div>
                     ) : (
                       <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>
@@ -211,11 +212,8 @@ function App() {
                   </div>
                   <div className="shrink-0 text-right phone-land:text-left">
                     {progress.level3Completed ? (
-                      <div className="text-green-600">
-                        <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
-                          {progress.level3Score}
-                        </div>
-                        <div className="text-xs">{t('menu.completed')}</div>
+                      <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
+                        ✓ {resultLabel(3)}
                       </div>
                     ) : (
                       <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>
@@ -227,7 +225,9 @@ function App() {
           </div>
 
           {/* Progress Summary */}
-          {progress.totalGamesPlayed > 0 && (
+          {/* Which levels are done, and the way to start over. No total: each
+              level's count is on its own card (decision 1 (b)). */}
+          {levelsCompleted > 0 && (
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
@@ -238,32 +238,9 @@ function App() {
                   {t('menu.reset')}
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg px-1 py-2 sm:p-3">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {
-                      [
-                        progress.level1Completed,
-                        progress.level2Completed,
-                        progress.level3Completed,
-                      ].filter(Boolean).length
-                    }
-                    /3
-                  </div>
-                  <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
-                </div>
-                <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
-                  <div className="text-2xl font-bold text-green-600">
-                    {progress.level1Score + progress.level2Score + progress.level3Score}
-                  </div>
-                  <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
-                </div>
-                <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
-                  <div className="text-2xl font-bold text-purple-600">
-                    {progress.totalGamesPlayed}
-                  </div>
-                  <div className="text-xs text-warm-600">{t('menu.gamesPlayed')}</div>
-                </div>
+              <div className="bg-blue-50 rounded-lg px-1 py-2 sm:p-3 text-center">
+                <div className="text-2xl font-bold text-blue-600">{levelsCompleted}/3</div>
+                <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
               </div>
             </div>
           )}

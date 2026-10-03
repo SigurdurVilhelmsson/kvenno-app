@@ -11,7 +11,8 @@ import {
 import { SolubilityPrediction } from './SolubilityPrediction';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /** How many were answered right, out of how many. A hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -390,15 +391,13 @@ export const problems: RankingProblem[] = [
   },
 ];
 
-// Max possible score: 10 problems * 15 points = 150 points
-
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentProblem, setCurrentProblem] = useState(0);
   const [userOrder, setUserOrder] = useState<string[]>([]);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const problem = problems[currentProblem];
   // The pool and the table list the compounds in a fresh order for each problem. In data
@@ -443,8 +442,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const checkAnswer = () => {
     const isCorrect = JSON.stringify(userOrder) === JSON.stringify(problem.correctOrder);
-    // A hint never costs points: the same 15 with or without it.
-    if (isCorrect) setScore((prev) => prev + 15);
+    if (isCorrect) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -455,13 +453,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, problems.length);
     }
   };
 
   const handleShowHint = () => {
     setShowHint(true);
-    setTotalHintsUsed((prev) => prev + 1);
   };
 
   const isCorrect =
@@ -470,7 +467,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* On a phone the row is one line tall (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
@@ -482,7 +479,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="text-sm text-warm-600">
               Verkefni {currentProblem + 1} af {problems.length}
             </div>
-            <div className="text-lg font-bold text-indigo-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 

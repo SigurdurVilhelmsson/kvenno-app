@@ -207,7 +207,7 @@ function SingleStepCancellation({
             <span className="text-red-400 line-through">mL</span>
             <span className="text-warm-600">og</span>
             <span className="text-red-400 line-through">mL</span>
-            <span className="text-warm-600">strikast út →</span>
+            <span className="text-warm-600">styttast út →</span>
             <span className="text-green-600 font-bold text-lg">L</span>
             <span className="text-warm-600">verður eftir!</span>
           </div>
@@ -224,10 +224,10 @@ function SingleStepCancellation({
       {animationPhase === 'done' && !isCorrect && selectedFactor !== null && (
         <div className="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
           <p className="text-red-800 mb-2">
-            <strong>mL</strong> er í teljara <em>beggja</em> - ekkert strikast út!
+            <strong>mL</strong> er í teljara <em>beggja</em> - ekkert styttist út!
           </p>
           <p className="text-red-600 text-sm mb-3">
-            Til að strika út einingu þarf hún að vera í teljara annarsvegar og nefnara hinsvegar.
+            Til að stytta út einingu þarf hún að vera í teljara annarsvegar og nefnara hinsvegar.
           </p>
           <button
             onClick={() => {
@@ -272,7 +272,7 @@ const mgToKgSteps: ChainStep[] = [
       { num: 1, numUnit: 'g', den: 1000, denUnit: 'mg', correct: true },
       { num: 1000, numUnit: 'mg', den: 1, denUnit: 'g', correct: false },
     ],
-    errorMessage: 'mg þarf að vera í nefnara til að strikast út!',
+    errorMessage: 'mg þarf að vera í nefnara til að styttast út!',
     resultLabel: '5 g',
   },
   {
@@ -281,7 +281,7 @@ const mgToKgSteps: ChainStep[] = [
       { num: 1, numUnit: 'kg', den: 1000, denUnit: 'g', correct: true },
       { num: 1000, numUnit: 'g', den: 1, denUnit: 'kg', correct: false },
     ],
-    errorMessage: 'g þarf að vera í nefnara til að strikast út!',
+    errorMessage: 'g þarf að vera í nefnara til að styttast út!',
     resultLabel: '0,005 kg',
   },
 ];
@@ -293,7 +293,7 @@ const timeSteps: ChainStep[] = [
       { num: 60, numUnit: 'mín', den: 1, denUnit: 'klst', correct: true },
       { num: 1, numUnit: 'klst', den: 60, denUnit: 'mín', correct: false },
     ],
-    errorMessage: 'klst þarf að vera í nefnara til að strikast út!',
+    errorMessage: 'klst þarf að vera í nefnara til að styttast út!',
     resultLabel: '60 mín',
   },
   {
@@ -302,7 +302,7 @@ const timeSteps: ChainStep[] = [
       { num: 60, numUnit: 's', den: 1, denUnit: 'mín', correct: true },
       { num: 1, numUnit: 'mín', den: 60, denUnit: 's', correct: false },
     ],
-    errorMessage: 'mín þarf að vera í nefnara til að strikast út!',
+    errorMessage: 'mín þarf að vera í nefnara til að styttast út!',
     resultLabel: '3600 s',
   },
 ];
@@ -404,7 +404,7 @@ function ChainCancellation({
       {stepsDone[0] && !stepsDone[1] && (
         <div className="p-3 bg-green-100 rounded-lg text-center">
           <p className="text-green-800 text-sm">
-            ✓ {steps[0].factors.find((f) => f.correct)?.denUnit} strikast út! Nú eru eftir{' '}
+            ✓ {steps[0].factors.find((f) => f.correct)?.denUnit} styttist út! Nú eru eftir{' '}
             {steps[0].resultLabel}.
           </p>
         </div>

@@ -141,7 +141,8 @@ const MISCONCEPTIONS = {
 };
 
 interface StructureFromNameChallengeProps {
-  onComplete: (score: number) => void;
+  /** How many of the names were built right. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -155,8 +156,9 @@ export function StructureFromNameChallenge({
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setHintsUsed] = useState(0);
+  // Right answers, one try each, with no running score on screen (mobile-pass
+  // decision 1 (b)). A hint never changes it (decision 2 (b)).
+  const [correctCount, setCorrectCount] = useState(0);
 
   const challenge = CHALLENGES[currentChallenge];
   // Each new name to build: on a phone the card's top comes back under the
@@ -203,7 +205,6 @@ export function StructureFromNameChallenge({
   const openHint = () => {
     hintAsked.current = true;
     setShowHint(true);
-    setHintsUsed((prev) => prev + 1);
   };
   useEffect(() => {
     if (!showHint || !hintAsked.current) return;
@@ -237,10 +238,7 @@ export function StructureFromNameChallenge({
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (correct) {
-      const points = 15;
-      setScore((prev) => prev + points);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
   }, [carbonCount, bonds, challenge]);
 
   // Get feedback details
@@ -306,7 +304,7 @@ export function StructureFromNameChallenge({
       setShowFeedback(false);
       setShowHint(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, CHALLENGES.length);
     }
   };
 
@@ -350,9 +348,6 @@ export function StructureFromNameChallenge({
           <div className="ml-auto flex items-center gap-3 sm:gap-4 phone:gap-2">
             <div className="text-sm text-warm-500 whitespace-nowrap">
               Áskorun {currentChallenge + 1} af {CHALLENGES.length}
-            </div>
-            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap phone:px-2 phone:py-0.5 phone:text-sm">
-              Stig: {score}
             </div>
           </div>
         </div>

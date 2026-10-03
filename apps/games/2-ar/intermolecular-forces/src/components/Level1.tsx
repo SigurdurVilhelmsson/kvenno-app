@@ -31,7 +31,8 @@ const RELATED_CONCEPTS: Record<string, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  /** How many were answered right, out of how many. A hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -114,7 +115,7 @@ interface Molecule {
   visualization?: MoleculeVisualization;
 }
 
-const molecules: Molecule[] = [
+export const molecules: Molecule[] = [
   {
     id: 1,
     formula: 'H₂O',
@@ -464,16 +465,14 @@ const molecules: Molecule[] = [
   },
 ];
 
-// Max possible score: 10 molecules * 15 points = 150 points
-
 export function Level1({ onComplete, onBack }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'quiz'>('learn');
   const [currentMolecule, setCurrentMolecule] = useState(0);
   const [selectedIMFs, setSelectedIMFs] = useState<Set<string>>(new Set());
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
   const molecule = molecules[currentMolecule];
@@ -526,8 +525,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       selectedIMFs.size === correctSet.size &&
       [...selectedIMFs].every((imf) => correctSet.has(imf as 'london' | 'dipole' | 'hydrogen'));
 
-    // A hint never costs points: the same 15 with or without it.
-    if (isCorrect) setScore((prev) => prev + 15);
+    if (isCorrect) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -538,13 +536,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, molecules.length);
     }
   };
 
   const handleShowHint = () => {
     setShowHint(true);
-    setTotalHintsUsed((prev) => prev + 1);
   };
 
   // IMF strength scale visualization
@@ -688,7 +685,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* On a phone the row is one line tall (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={() => setPhase('learn')}
@@ -700,7 +697,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="text-sm text-warm-600">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
-            <div className="text-lg font-bold text-indigo-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 

@@ -1,11 +1,29 @@
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — points were dropped from every level
+ * (mobile-pass decision 1 (b)).
+ *
+ * Progress saved before that change carries `levelNScore` and no
+ * `levelNCorrect`; those levels show as done with no count, rather than
+ * reading old points as a number of right answers.
+ */
 export interface Progress {
   level1Completed: boolean;
-  level1Score: number;
+  level1Correct?: number;
+  level1Total?: number;
   level2Completed: boolean;
-  level2Score: number;
+  level2Correct?: number;
+  level2Total?: number;
   level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
+  level3Correct?: number;
+  level3Total?: number;
+}
+
+/** "6 af 8 rétt", or "Lokið" for a level finished before counts were kept. */
+export function resultLabel(progress: Progress, level: 1 | 2 | 3): string {
+  const correct = progress[`level${level}Correct`];
+  const total = progress[`level${level}Total`];
+  return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
 }
 
 export const allLevelsDone = (p: Progress) =>

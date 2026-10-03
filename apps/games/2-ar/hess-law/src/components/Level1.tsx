@@ -20,7 +20,7 @@ const MISCONCEPTIONS: Record<number, string> = {
   2: 'Þegar þú snýrð við hvörfum, snýrðu við FORMERKINU á ΔH. Ef ΔH = -X, þá verður öfugt hvarf ΔH = +X.',
   3: 'Við margföldun breytist formerkið EKKI. Ef ΔH = -X, þá er 2×ΔH = -2X (enn neikvætt).',
   4: 'Hér þarf hvort tveggja: snúa við (sundrun breytir formerkinu) OG margfalda (4 mól NH₃ = 2× jafnan). Röðin skiptir ekki máli.',
-  5: 'Til að nota Hess, þarftu að stilla jöfnur þannig að hvarfefni og myndefni strikist út rétt.',
+  5: 'Til að nota Hess, þarftu að stilla jöfnur þannig að hvarfefni og myndefni styttist út rétt.',
   6: 'Orkubraut: leiðin skiptir ekki máli, aðeins upphafs- og lokastaða. Heildar-ΔH er summa allra skrefa.',
 };
 
@@ -234,7 +234,8 @@ function EquationDisplay({
 }
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  /** How many of the challenges were answered right. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -242,12 +243,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [equation, setEquation] = useState<Equation>(CHALLENGES[0].equation);
-  const [, setTotalHintsUsed] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [score, setScore] = useState(0);
+  // The challenges answered right, each once, with no running score on screen
+  // (mobile-pass decision 1 (b)). A hint never changes it (decision 2 (b)). A
+  // challenge whose answer has been shown — checked once, then revisited from the
+  // navigation below — is not counted when it is answered again.
   const [completed, setCompleted] = useState<number[]>([]);
+  const [shown, setShown] = useState<number[]>([]);
 
   const challenge = CHALLENGES[currentChallenge];
 
@@ -304,13 +308,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     const isCorrect = shuffledOptions[selectedAnswer].correct;
     setShowResult(true);
 
-    if (isCorrect) {
-      if (!completed.includes(challenge.id)) {
-        const points = 100;
-        setScore((prev) => prev + points);
-        setCompleted((prev) => [...prev, challenge.id]);
-      }
+    if (isCorrect && !shown.includes(challenge.id) && !completed.includes(challenge.id)) {
+      setCompleted((prev) => [...prev, challenge.id]);
     }
+    if (!shown.includes(challenge.id)) setShown((prev) => [...prev, challenge.id]);
   };
 
   // Next challenge
@@ -319,16 +320,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setCurrentChallenge((prev) => prev + 1);
       // useEffect will reset the equation when currentChallenge changes
     } else {
-      // Max score is 100 per challenge × 6 challenges = 600
-      onComplete(score);
+      onComplete(completed.length, CHALLENGES.length);
     }
   };
 
   // Handle hint usage
-  const handleShowHint = () => {
-    setShowHint(true);
-    setTotalHintsUsed((prev) => prev + 1);
-  };
+  const handleShowHint = () => setShowHint(true);
 
   // Show interactive controls for challenges 2-4
   const showEquationControls = challenge.id >= 2 && challenge.id <= 4;
@@ -418,14 +415,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 ← Til baka
               </button>
               <div className="text-center">
-                <div className="text-xl font-bold text-blue-600 phone:text-base">{score}</div>
-                <div className="text-xs text-warm-600">Stig</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-green-600 phone:text-base">
-                  {completed.length}/{CHALLENGES.length}
+                <div className="text-xl font-bold text-blue-600 phone:text-base">
+                  {currentChallenge + 1}/{CHALLENGES.length}
                 </div>
-                <div className="text-xs text-warm-600">Lokið</div>
+                <div className="text-xs text-warm-600">Þraut</div>
               </div>
             </div>
           </div>
@@ -434,7 +427,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="mt-4 bg-warm-200 rounded-full h-2 phone:mt-2 phone:h-1.5">
             <div
               className="bg-blue-500 h-2 phone:h-1.5 rounded-full transition-all duration-500"
-              style={{ width: `${(completed.length / CHALLENGES.length) * 100}%` }}
+              style={{ width: `${((currentChallenge + 1) / CHALLENGES.length) * 100}%` }}
             />
           </div>
         </div>

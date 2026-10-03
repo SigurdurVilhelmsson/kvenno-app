@@ -16,7 +16,7 @@ import { tabletBelowMd, useTabletTopOnChange } from '../utils/tabletBand';
 import { vseprToMolecule } from '../utils/vseprConverter';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -319,15 +319,20 @@ const STEPS: Step[] = [
   { id: 'explanation', label: 'Útskýra' },
 ];
 
+/** The steps a molecule is counted on: all but the written explanation. */
+const GRADED_STEPS = STEPS.filter((s) => s.id !== 'explanation').length;
+
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentMolecule, setCurrentMolecule] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
-  const [score, setScore] = useState(0);
+  // Right answers to the three graded steps of each molecule, one try each. The written
+  // explanation is not counted: it is checked only for length. No score, and the hints
+  // change nothing (decisions 1 and 2).
+  const [correctCount, setCorrectCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   // The angle hint comes in two tiers: a nudge toward the electron geometry first, and the
   // angle itself only if asked for again. One tier used to print the answer (decisions item 71).
   const [angleHintTier, setAngleHintTier] = useState<1 | 2>(1);
-  const [, setTotalHintsUsed] = useState(0);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
   // Step answers
@@ -422,7 +427,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setStepResult(correct ? 'correct' : 'incorrect');
 
     if (correct) {
-      setScore((prev) => prev + 10);
+      if (step.id !== 'explanation') setCorrectCount((prev) => prev + 1);
       if (step.id === 'geometry') {
         setGeometryRevealed(true);
       }
@@ -440,7 +445,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         setCurrentMolecule((prev) => prev + 1);
         resetStepAnswers();
       } else {
-        onComplete(score);
+        onComplete(correctCount, molecules.length * GRADED_STEPS);
       }
     }
   };
@@ -498,7 +503,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        {/* Header: the back link and the counter, on one line on a phone (P4). */}
         <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
@@ -510,7 +515,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="text-sm text-warm-600">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
-            <div className="text-lg font-bold text-teal-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -1279,7 +1283,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               onClick={() => {
                 setAngleHintTier(1);
                 setShowHint(true);
-                setTotalHintsUsed((prev) => prev + 1);
               }}
               className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11 phone:mb-2"
             >
@@ -1296,10 +1299,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <span className="text-yellow-900">{getHint()}</span>
               {step.id === 'angle' && angleHintTier === 1 && (
                 <button
-                  onClick={() => {
-                    setAngleHintTier(2);
-                    setTotalHintsUsed((prev) => prev + 1);
-                  }}
+                  onClick={() => setAngleHintTier(2)}
                   className="block mt-2 text-teal-600 hover:text-teal-800 text-sm underline pointer-coarse:min-h-11"
                 >
                   Sýna nánari vísbendingu

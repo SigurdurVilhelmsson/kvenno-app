@@ -90,7 +90,7 @@ describe('Stig 3 shuffles its options', () => {
 });
 
 describe('grading follows the shuffle', () => {
-  it('says Rétt! exactly when the clicked option is the green one, and scores it', () => {
+  it('says Rétt! exactly when the clicked option is the green one, and counts it', () => {
     for (let run = 0; run < 3; run++) {
       const { ui, container, onComplete } = start();
       let right = 0;
@@ -102,7 +102,7 @@ describe('grading follows the shuffle', () => {
         if (correctAt === position) right++;
         advance(ui);
       }
-      expect(onComplete).toHaveBeenCalledWith(right * 12);
+      expect(onComplete).toHaveBeenCalledWith(right, 12);
       unmount?.();
       unmount = null;
     }

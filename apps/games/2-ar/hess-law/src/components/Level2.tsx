@@ -132,7 +132,8 @@ function EquationBlock({
 }
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /** How many of the puzzles were solved. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -144,10 +145,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [selectedEquations, setSelectedEquations] = useState<string[]>([]);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [score, setScore] = useState(0);
+  // The puzzles solved, each once, with no running score on screen (mobile-pass
+  // decision 1 (b)). A solve after a wrong check counts — the level never shows the
+  // answer — and a hint never changes it (decision 2 (b)).
   const [completed, setCompleted] = useState<number[]>([]);
   const [explanation, setExplanation] = useState('');
-  const [, setTotalHintsUsed] = useState(0);
 
   const puzzle = PUZZLES[currentPuzzle];
 
@@ -222,20 +224,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         : 'Athugaðu hvort þú hefur snúið við réttum jöfnum og valið rétta margfeldisstuðla.'
     );
 
-    if (correct) {
-      if (!completed.includes(puzzle.id)) {
-        const points = 100;
-        setScore((prev) => prev + points);
-        setCompleted((prev) => [...prev, puzzle.id]);
-      }
+    if (correct && !completed.includes(puzzle.id)) {
+      setCompleted((prev) => [...prev, puzzle.id]);
     }
   };
 
   // Handle hint usage
-  const handleShowHint = () => {
-    setShowHint(true);
-    setTotalHintsUsed((prev) => prev + 1);
-  };
+  const handleShowHint = () => setShowHint(true);
 
   // Next puzzle
   const nextPuzzle = () => {
@@ -244,8 +239,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setCurrentPuzzle(next);
       resetPuzzle(next);
     } else {
-      // Max score is 100 per puzzle × 6 puzzles = 600
-      onComplete(score);
+      onComplete(completed.length, PUZZLES.length);
     }
   };
 
@@ -314,14 +308,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 ← Til baka
               </button>
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600 phone:text-base">{score}</div>
-                <div className="text-xs text-warm-600">Stig</div>
-              </div>
-              <div className="text-center">
                 <div className="text-xl font-bold text-blue-600 phone:text-base">
-                  {completed.length}/{PUZZLES.length}
+                  {currentPuzzle + 1}/{PUZZLES.length}
                 </div>
-                <div className="text-xs text-warm-600">Lokið</div>
+                <div className="text-xs text-warm-600">Þraut</div>
               </div>
             </div>
           </div>
@@ -330,7 +320,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="mt-4 bg-warm-200 rounded-full h-2 phone:mt-2 phone:h-1.5">
             <div
               className="bg-green-500 h-2 phone:h-1.5 rounded-full transition-all duration-500"
-              style={{ width: `${(completed.length / PUZZLES.length) * 100}%` }}
+              style={{ width: `${((currentPuzzle + 1) / PUZZLES.length) * 100}%` }}
             />
           </div>
         </div>

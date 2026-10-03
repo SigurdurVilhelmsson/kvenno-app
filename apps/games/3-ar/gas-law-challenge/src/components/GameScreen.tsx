@@ -25,7 +25,10 @@ interface GameScreenProps {
   setShowSolution: (b: boolean) => void;
   validationError: string | null;
   lawFeedback: { correct: boolean; message: string } | null;
+  /** The Keppnishamur run; shown only in Keppnishamur. */
   stats: GameStats;
+  /** Where a practice round stands: question `index` of `total`. */
+  questionPosition?: { index: number; total: number };
   isGameScreenActive: boolean;
   simulatorShowAnswer: boolean;
   onCheckAnswer: () => void;
@@ -65,6 +68,7 @@ export function GameScreen({
   validationError,
   lawFeedback,
   stats,
+  questionPosition,
   isGameScreenActive,
   simulatorShowAnswer,
   onCheckAnswer,
@@ -128,8 +132,8 @@ export function GameScreen({
                   Gaslögmál
                 </h1>
                 <p className="text-sm text-warm-600 phone:text-xs">
-                  Stig {selectedLevel} • {gameMode === 'practice' ? 'Æfingahamur' : 'Keppnishamur'}{' '}
-                  • Spurning {currentQuestion.id}
+                  Stig {selectedLevel} • {gameMode === 'practice' ? 'Æfingahamur' : 'Keppnishamur'}
+                  {!questionPosition && <> • Spurning {currentQuestion.id}</>}
                 </p>
               </div>
               <div className="flex gap-2 shrink-0">
@@ -153,19 +157,33 @@ export function GameScreen({
               </div>
             </div>
 
-            {/* Score, streak and difficulty: compacted on a phone, never hidden (design §4). */}
+            {/* Score, streak and difficulty: compacted on a phone, never hidden (design §4). The
+                score and streak are Keppnishamur's only: a practice round keeps no running score
+                (mobile-pass decision 1 (b)). */}
             <div className="flex flex-wrap gap-2 sm:gap-4 mb-6 text-sm phone:gap-1.5 phone:mb-2.5 phone:text-xs">
-              <div className="bg-yellow-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-yellow-200">
-                <span className="font-bold text-yellow-800">🏆 {stats.score}</span>
-              </div>
-              <div className="bg-green-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-green-200">
-                <span className="font-bold text-green-800">
-                  ✓ {stats.correctAnswers}/{stats.questionsAnswered}
-                </span>
-              </div>
-              <div className="bg-blue-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-blue-200">
-                <span className="font-bold text-blue-800">🔥 {stats.streak}</span>
-              </div>
+              {gameMode === 'challenge' && (
+                <>
+                  <div className="bg-yellow-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-yellow-200">
+                    <span className="font-bold text-yellow-800">🏆 {stats.score}</span>
+                  </div>
+                  <div className="bg-green-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-green-200">
+                    <span className="font-bold text-green-800">
+                      ✓ {stats.correctAnswers}/{stats.questionsAnswered}
+                    </span>
+                  </div>
+                  <div className="bg-blue-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-blue-200">
+                    <span className="font-bold text-blue-800">🔥 {stats.streak}</span>
+                  </div>
+                </>
+              )}
+              {/* Where the practice round stands, in the row the score chips leave free. */}
+              {questionPosition && (
+                <div className="bg-warm-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-warm-200">
+                  <span className="font-bold text-warm-800">
+                    Spurning {questionPosition.index} af {questionPosition.total}
+                  </span>
+                </div>
+              )}
               <div
                 className={`px-3 py-2 phone:px-2 phone:py-1 rounded-lg border ${
                   currentQuestion.difficulty === 'Auðvelt'

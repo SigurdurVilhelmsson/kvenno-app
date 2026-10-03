@@ -37,7 +37,8 @@ import { renderEquation, type Term } from '../engine/precipitation';
  */
 
 interface Props {
-  onComplete: () => void;
+  /** How many scenarios were solved at the first try, of how many. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -55,6 +56,9 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const [chosen, setChosen] = useState<string | null>(null);
   const [picks, setPicks] = useState<Record<string, number>>({});
   const [wrongAt, setWrongAt] = useState<Stage | null>(null);
+  // Scenarios solved without a slip. A wrong step ends the scenario with the
+  // answer shown, so nothing is retried and every solved one counts. Shown only
+  // when the run ends: no running tally (mobile-pass decision 1 (b)).
   const [solved, setSolved] = useState(0);
 
   const scenario = RUN[index];
@@ -188,7 +192,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
         </div>
 
         <p ref={counterRef} className="mb-4 text-sm text-warm-600 phone:mb-1">
-          Dæmi {index + 1} af {RUN.length} · {solved} leyst
+          Dæmi {index + 1} af {RUN.length}
         </p>
 
         <div
@@ -345,10 +349,16 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
             <p className="mt-3 text-sm text-warm-700 phone:mt-2">{scenario.context}</p>
 
+            {last && (
+              <p className="mt-3 font-semibold text-warm-900 phone:mt-2">
+                {solved} af {RUN.length} rétt
+              </p>
+            )}
+
             <button
               key="naesta"
               type="button"
-              onClick={armed(() => (last ? onComplete() : reset(index + 1)))}
+              onClick={armed(() => (last ? onComplete(solved, RUN.length) : reset(index + 1)))}
               className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               {last ? 'Ljúka' : 'Næsta dæmi'}

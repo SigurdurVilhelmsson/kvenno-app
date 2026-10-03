@@ -12,10 +12,10 @@ import {
 import { ElectrochemicalCell } from './ElectrochemicalCell';
 import { HalfReactionBalancer } from './HalfReactionBalancer';
 import { OxidationStateDisplay } from './OxidationStateDisplay';
-import { L2_SCORING } from '../config/scoring';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /** How many questions were answered right, out of how many. A hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
   t: (key: string, fallback?: string) => string;
 }
@@ -32,7 +32,7 @@ interface RedoxReaction {
   explanation: string;
 }
 
-const reactions: RedoxReaction[] = [
+export const reactions: RedoxReaction[] = [
   {
     id: 1,
     equation: '2Na + Cl2 → 2NaCl',
@@ -177,10 +177,10 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [, setTotalHintsUsed] = useState(0);
 
   const reaction = reactions[currentReaction];
   const question = questionTypes[currentQuestion];
@@ -224,9 +224,11 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
   );
 
   // The diagram labels which species is oxidised and which reduced, so it must not do that while
-  // "Hvað oxast?" is on screen. From the first answer on the student has been told, and the
-  // labels are what the oxidising- and reducing-agent questions reason from.
-  const verdictShown = showFeedback || currentQuestion > 0;
+  // "Hvað oxast?" or "Hvað afoxast?" is on screen: it printed "Cl afoxast" above the second
+  // question, and an answer shown before it is given does not count (mobile-pass decision 1 (b)).
+  // From the second answer on the student has been told both, and the labels are what the
+  // oxidising- and reducing-agent questions reason from.
+  const verdictShown = (currentQuestion === 1 && showFeedback) || currentQuestion > 1;
 
   // Intro → practice starts the practice screen at its top, heading focused.
   useScreenTop(showIntro);
@@ -272,9 +274,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (correct) {
-      setScore((prev) => prev + L2_SCORING.POINTS_PER_QUESTION);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
   };
 
   const handleNext = () => {
@@ -285,7 +285,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
       setCurrentQuestion(0);
       setShowExplanation(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, totalQuestions);
       return;
     }
     setShowFeedback(false);
@@ -385,9 +385,6 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
             <div className="text-sm text-warm-500 whitespace-nowrap">
               {currentProgress} {t('level2.progressOf', 'af')} {totalQuestions}
             </div>
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
-              {t('level2.score', 'Stig')}: {score}
-            </div>
           </div>
         </div>
 
@@ -463,10 +460,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
                 </div>
                 {!showHint && (
                   <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setTotalHintsUsed((prev) => prev + 1);
-                    }}
+                    onClick={() => setShowHint(true)}
                     className="w-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm pointer-coarse:min-h-11"
                   >
                     💡 {t('common.hint', 'Sýna vísbendingu')}

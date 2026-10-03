@@ -81,7 +81,7 @@ export function OrientationChallenge({ onComplete, onAttempt }: OrientationChall
               </div>
               <p className="text-red-600 text-xs text-center">
                 <span className="text-blue-600 font-bold">km</span> er í teljara <em>beggja</em> -
-                strikast ekki út!
+                styttist ekki út!
               </p>
               <p className="text-red-500 text-xs text-center mt-1">
                 Við fáum km×km/m sem er vitlaust.
@@ -122,7 +122,7 @@ export function OrientationChallenge({ onComplete, onAttempt }: OrientationChall
                 <span className="text-red-400 line-through">km</span>
               </div>
               <p className="text-green-600 text-xs text-center">
-                <span className="line-through text-red-400">km</span> strikast út →
+                <span className="line-through text-red-400">km</span> styttist út →
                 <span className="text-green-600 font-bold"> m</span> verður eftir!
               </p>
               <p className="text-green-700 text-sm text-center mt-2 font-semibold">= 5000 m ✓</p>

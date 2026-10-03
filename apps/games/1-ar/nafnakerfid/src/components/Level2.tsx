@@ -11,7 +11,7 @@ import {
 
 interface Level2Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
@@ -293,13 +293,6 @@ export const greekPrefixes = [
 
 type Step = 'identify' | 'build' | 'answer' | 'feedback';
 
-/** 5 for the compound type, 10 for the name. The hint is free. */
-const TYPE_POINTS = 5;
-const NAME_POINTS = 10;
-
-/** What a perfect Level 2 scores; the menu shows the best score out of this. */
-export const LEVEL2_MAX_SCORE = challenges.length * (TYPE_POINTS + NAME_POINTS);
-
 const SUPPORT = supportLadder(challenges);
 
 export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
@@ -307,10 +300,14 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const [step, setStep] = useState<Step>('identify');
   const [selectedType, setSelectedType] = useState<CompoundType | null>(null);
   const [userAnswer, setUserAnswer] = useState('');
-  const [score, setScore] = useState(0);
+  // Compounds named right. The name is the answer; Step 1's type is a step
+  // towards it, so it is not counted on its own. The hint is free, and the
+  // name is shown only after "Athuga svar", so every right name counts
+  // (decisions 1 (b) and 2 (b)). It used to pay 5 points for the type and 10
+  // for the name, and show the running total.
+  const [correctCount, setCorrectCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [typeCorrect, setTypeCorrect] = useState<boolean | null>(null);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
   const typeInfo = typeNames[challenge.type];
@@ -419,10 +416,6 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     const correct = type === challenge.type;
     setTypeCorrect(correct);
 
-    if (correct) {
-      setScore((prev) => prev + TYPE_POINTS);
-    }
-
     // Move to build step after a short delay
     setTimeout(() => {
       setStep('build');
@@ -435,7 +428,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     const normalizedCorrect = normalizeAnswer(challenge.correctName);
 
     if (normalizedUser === normalizedCorrect) {
-      setScore((prev) => prev + NAME_POINTS);
+      setCorrectCount((prev) => prev + 1);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -451,7 +444,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       setShowHint(false);
       setTypeCorrect(null);
     } else {
-      onComplete(score, LEVEL2_MAX_SCORE, totalHintsUsed);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -503,8 +496,8 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
-        {/* One row on a phone (P4): the counter may wrap onto two short lines
-            rather than push the score onto a row of its own. */}
+        {/* One row on a phone (P4): the counter may wrap onto two short lines.
+            No running score (decision 1 (b)); the count is on the menu after. */}
         <div className="flex flex-wrap justify-between items-center gap-2 mb-6 phone:flex-nowrap phone:mb-2">
           <button
             onClick={onBack}
@@ -517,9 +510,6 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level2.ui.compoundNOfM', 'Efnasamband {n} af {m}')
                 .replace('{n}', String(currentChallenge + 1))
                 .replace('{m}', String(challenges.length))}
-            </div>
-            <div className="whitespace-nowrap bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold phone:px-2 phone:text-sm">
-              {t('common.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
@@ -741,10 +731,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               <div ref={answerActionsRef} className="flex gap-3 sm:gap-4 phone-land:shrink-0">
                 {!showHint && (
                   <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setTotalHintsUsed((prev) => prev + 1);
-                    }}
+                    onClick={() => setShowHint(true)}
                     className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-3 sm:px-6 rounded-xl"
                   >
                     💡 {t('common.hint', 'Vísbending')}

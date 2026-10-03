@@ -10,24 +10,31 @@ import { Level3 } from './components/Level3';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
 
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — points were dropped from every level
+ * (mobile-pass decision 1 (b)), and a hint never changes a count (decision 2 (b)).
+ *
+ * Progress saved before that change carries `levelNScore` in points and no
+ * `levelNCorrect`; those levels show as done with no count, rather than
+ * reading old points as a number of right answers.
+ */
 interface Progress {
   level1Completed: boolean;
-  level1Score: number;
+  level1Correct?: number;
+  level1Total?: number;
   level2Completed: boolean;
-  level2Score: number;
+  level2Correct?: number;
+  level2Total?: number;
   level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
+  level3Correct?: number;
+  level3Total?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
-  level1Score: 0,
   level2Completed: false,
-  level2Score: 0,
   level3Completed: false,
-  level3Score: 0,
-  totalGamesPlayed: 0,
 };
 
 function App() {
@@ -53,23 +60,34 @@ function App() {
    * completion screen — "Þú hefur lokið öllum stigum!" — follows a finished level only once all
    * three are done, whichever of them completes the set; before that it is back to the menu. It
    * used to follow Stig 3 unconditionally, so a student who started there was congratulated on
-   * finishing all three with Stig 1 and Stig 2 at zero.
+   * finishing all three with Stig 1 and Stig 2 never played.
    */
-  const finishLevel = (updates: Partial<Progress>) => {
-    const next = { ...progress, ...updates, totalGamesPlayed: progress.totalGamesPlayed + 1 };
+  const applyLevelResult = (level: 1 | 2 | 3, correct: number, total: number) => {
+    const key = `level${level}` as const;
+    const next: Progress = {
+      ...progress,
+      [`${key}Completed`]: true,
+      [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
+      [`${key}Total`]: total,
+    };
     updateProgress(next);
     const allDone = next.level1Completed && next.level2Completed && next.level3Completed;
     setActiveLevel(allDone ? 'complete' : 'menu');
   };
 
-  const handleLevel1Complete = (score: number) =>
-    finishLevel({ level1Completed: true, level1Score: Math.max(progress.level1Score, score) });
+  const handleLevel1Complete = (correct: number, total: number) =>
+    applyLevelResult(1, correct, total);
+  const handleLevel2Complete = (correct: number, total: number) =>
+    applyLevelResult(2, correct, total);
+  const handleLevel3Complete = (correct: number, total: number) =>
+    applyLevelResult(3, correct, total);
 
-  const handleLevel2Complete = (score: number) =>
-    finishLevel({ level2Completed: true, level2Score: Math.max(progress.level2Score, score) });
-
-  const handleLevel3Complete = (score: number) =>
-    finishLevel({ level3Completed: true, level3Score: Math.max(progress.level3Score, score) });
+  /** "5 af 6 rétt", or "Lokið" for a level finished before counts were kept. */
+  const resultLabel = (level: 1 | 2 | 3): string => {
+    const correct = progress[`level${level}Correct`];
+    const total = progress[`level${level}Total`];
+    return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
+  };
 
   // Render active level
   if (activeLevel === 'level1') {
@@ -86,8 +104,6 @@ function App() {
 
   // Complete screen
   if (activeLevel === 'complete') {
-    const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
-
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
@@ -108,7 +124,7 @@ function App() {
                 <div className="font-bold text-blue-800">Stig 1: Hraðahugtök</div>
                 <div className="text-sm text-blue-600">Hvað hefur áhrif á hraða?</div>
               </div>
-              <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
+              <div className="font-bold text-blue-700 whitespace-nowrap">{resultLabel(1)}</div>
             </div>
 
             <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
@@ -116,7 +132,7 @@ function App() {
                 <div className="font-bold text-green-800">Stig 2: Hraðalögmál</div>
                 <div className="text-sm text-green-600">Byggja hraðalögmál</div>
               </div>
-              <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
+              <div className="font-bold text-green-700 whitespace-nowrap">{resultLabel(2)}</div>
             </div>
 
             <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
@@ -124,12 +140,7 @@ function App() {
                 <div className="font-bold text-purple-800">Stig 3: Hvarfgangur</div>
                 <div className="text-sm text-purple-600">Grunnskref og milliefni</div>
               </div>
-              <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
-            </div>
-
-            <div className="bg-orange-100 p-4 phone:p-3 rounded-xl flex justify-between items-center border-2 border-orange-400">
-              <div className="font-bold text-orange-800 text-lg">Heildarstig</div>
-              <div className="text-3xl font-bold text-orange-600">{totalScore}</div>
+              <div className="font-bold text-purple-700 whitespace-nowrap">{resultLabel(3)}</div>
             </div>
           </div>
 
@@ -144,7 +155,8 @@ function App() {
                 styrk
               </li>
               <li>
-                ✓ <strong>Röð hvörfunar:</strong> Veldisvísir segir hversu mikið styrkur hefur áhrif
+                ✓ <strong>Stig efnahvarfs:</strong> Veldisvísir segir hversu mikið styrkur hefur
+                áhrif
               </li>
               <li>
                 ✓ <strong>Hvarfgangur:</strong> Röð grunnskrefa sem mynda heildarhvarfið
@@ -167,7 +179,6 @@ function App() {
   }
 
   // Main menu
-  const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
   const levelsCompleted = [
     progress.level1Completed,
     progress.level2Completed,
@@ -198,7 +209,7 @@ function App() {
                 hraði = k[A]<sup>m</sup>[B]<sup>n</sup>
               </p>
               <p className="text-xs text-warm-600 text-center mt-1">
-                þar sem k = hraðafasti, m og n = veldisvísar (röð hvörfunar)
+                þar sem k = hraðafasti, m og n = veldisvísar (stig efnahvarfsins)
               </p>
             </div>
           </div>
@@ -219,8 +230,8 @@ function App() {
                       Stig 1: Hraðahugtök
                     </span>
                     {progress.level1Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                        ✓ {progress.level1Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(1)}
                       </span>
                     )}
                   </div>
@@ -247,14 +258,14 @@ function App() {
                       Stig 2: Hraðalögmál
                     </span>
                     {progress.level2Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                        ✓ {progress.level2Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(2)}
                       </span>
                     )}
                   </div>
                   <div className="text-sm text-green-600 mt-1">Byggja og túlka hraðalögmál</div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Notaðu gögn til að finna röð hvörfunar og hraðafastann.
+                    Notaðu gögn til að finna stig efnahvarfsins og hraðafastann.
                   </div>
                 </div>
               </div>
@@ -274,8 +285,8 @@ function App() {
                       Stig 3: Hvarfgangur
                     </span>
                     {progress.level3Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                        ✓ {progress.level3Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(3)}
                       </span>
                     )}
                   </div>
@@ -290,37 +301,19 @@ function App() {
             </button>
           </div>
 
-          {/* Progress Summary */}
-          {progress.totalGamesPlayed > 0 && (
-            <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl phone:mt-4">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="font-semibold text-warm-700">Framvinda</h3>
-                <button
-                  onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
-                >
-                  Endurstilla
-                </button>
+          {/* Progress: which levels are done, and the way to start over. */}
+          {levelsCompleted > 0 && (
+            <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl phone:mt-4 flex justify-between items-center gap-3">
+              <div className="text-warm-700">
+                <span className="font-semibold">Framvinda:</span> {levelsCompleted} af 3 stigum
+                lokið
               </div>
-              {/* Narrower gaps on a phone, so 'Heildarstig' fits its third at 320 px. */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 phone:gap-1 text-center">
-                <div className="bg-blue-50 rounded-lg p-2 sm:p-3 phone:px-1">
-                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
-                    {levelsCompleted}/3
-                  </div>
-                  <div className="text-xs text-warm-600">Stigum lokið</div>
-                </div>
-                <div className="bg-green-50 rounded-lg p-2 sm:p-3 phone:px-1">
-                  <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildarstig</div>
-                </div>
-                <div className="bg-purple-50 rounded-lg p-2 sm:p-3 phone:px-1">
-                  <div className="text-xl sm:text-2xl font-bold text-purple-600">
-                    {progress.totalGamesPlayed}
-                  </div>
-                  <div className="text-xs text-warm-600">Leikir spilaðir</div>
-                </div>
-              </div>
+              <button
+                onClick={resetProgress}
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
+              >
+                Endurstilla
+              </button>
             </div>
           )}
 
@@ -335,7 +328,7 @@ function App() {
                 <strong>Hraðalögmál:</strong> hraði = k[A]<sup>m</sup>[B]<sup>n</sup>
               </p>
               <p>
-                <strong>Röð hvörfunar:</strong> m + n = heildarröð
+                <strong>Stig efnahvarfs:</strong> m + n = heildarstig
               </p>
               <p>
                 <strong>Arrhenius:</strong> k = Ae

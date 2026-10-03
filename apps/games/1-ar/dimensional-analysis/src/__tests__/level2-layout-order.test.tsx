@@ -33,7 +33,7 @@ function precedes(a: Element, b: Element): boolean {
 }
 /** Everything a chosen factor changes. */
 function reactiveParts(): Element[] {
-  return [screen.getByText('Stuðlar notaðir:'), screen.getByText('Eins einingar strikast út')];
+  return [screen.getByText('Stuðlar notaðir:'), screen.getByText('Eins einingar styttast út')];
 }
 
 afterEach(cleanup);
@@ -48,7 +48,7 @@ describe('Level 2 — the chain shows below the controls that build it', () => {
 
     // The click-mode grid: the buttons under its instruction line.
     const instruction = screen.getByText(
-      (_, el) => el?.tagName === 'P' && /umbreytingarstuð.*:$/.test(el.textContent ?? '')
+      (_, el) => el?.tagName === 'P' && /umreikningsstuð.*:$/.test(el.textContent ?? '')
     );
     const buttons = [...(instruction.nextElementSibling as HTMLElement).querySelectorAll('button')];
     expect(buttons.length).toBeGreaterThan(1);

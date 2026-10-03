@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 import { FeedbackPanel } from '@shared/components';
 import { useArmedAfter, useItemTop, useRevealAfterCommit, useScreenTop } from '@shared/utils';
 
-import { L1_SCORING } from '../config/scoring';
 import { parseWholeNumber } from '../utils/answers';
 
 // Misconceptions for oxidation states
@@ -20,7 +19,11 @@ const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox-hvörf', 'Rafeindafl
 
 interface Level1Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number) => void;
+  /**
+   * How many problems were answered right, out of how many. A right answer after
+   * Reyna aftur is not counted: the wrong answer's feedback has printed the right one.
+   */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -79,7 +82,7 @@ const oxidationRules: OxidationRule[] = [
   },
 ];
 
-const problems: OxidationProblem[] = [
+export const problems: OxidationProblem[] = [
   {
     id: 1,
     compound: 'NaCl',
@@ -178,10 +181,12 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
   const [userAnswer, setUserAnswer] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
+  // Right answers, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score, and
+  // no lower award for a second try. A wrong answer's feedback prints the right one, so a
+  // right answer after Reyna aftur is one the student has been shown, and does not count.
+  const [correctCount, setCorrectCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [attempts, setAttempts] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
   // Set only by the hint button, so Reyna aftur (which opens the hint too) keeps its own focus.
   const [hintAsked, setHintAsked] = useState(false);
 
@@ -234,15 +239,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (correct) {
-      const points =
-        attempts === 0
-          ? L1_SCORING.FIRST_TRY
-          : attempts === 1
-            ? L1_SCORING.SECOND_TRY
-            : L1_SCORING.THIRD_PLUS_TRY;
-      setScore((prev) => prev + points);
-    }
+    if (correct && attempts === 0) setCorrectCount((prev) => prev + 1);
   };
 
   const handleNext = () => {
@@ -254,7 +251,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
       setHintAsked(false);
       setAttempts(0);
     } else {
-      onComplete(score);
+      onComplete(correctCount, problems.length);
     }
   };
 
@@ -379,9 +376,6 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
               {t('level1.questionProgress', 'Spurning')} {currentProblem + 1} {t('level1.of', 'af')}{' '}
               {problems.length}
             </div>
-            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
-              {t('level1.score', 'Stig')}: {score}
-            </div>
           </div>
         </div>
 
@@ -466,7 +460,6 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
                       onClick={() => {
                         setShowHint(true);
                         setHintAsked(true);
-                        setTotalHintsUsed((prev) => prev + 1);
                       }}
                       className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-3 sm:px-6 rounded-xl"
                     >

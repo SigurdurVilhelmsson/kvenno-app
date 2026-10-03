@@ -39,7 +39,7 @@ function t(key: string, fallback?: string): string {
   return SHARED[key] ?? fallback ?? key;
 }
 
-const ANSWERS = ['-890,3', '-92,2', '178,3', '-296,8', '-1366,7', '-851,5'];
+const ANSWERS = ['-890,6', '-91,8', '191,6', '-296,83', '-1366,9', '-851,8'];
 
 function start() {
   const view = render(<Level3 t={t} onComplete={() => {}} onBack={() => {}} />);
@@ -67,9 +67,9 @@ describe('hess-law level 3 wrong-answer line', () => {
     answer(page, '-800');
     const line = page.getByText(/munurinn er/).textContent ?? '';
     expect(line).toMatch(/^Þú slóst inn -800/);
-    // 2 % of 890,3 kJ/mol is 17,8 kJ/mol — the old line said ±2.
+    // 2 % of 890,6 kJ/mol is 17,8 kJ/mol — the old line said ±2.
     expect(line).toMatch(/leyft svigrúm: ±17,8 kJ\/mól\)\./);
-    expect(page.getByText(/Rétt svar:/).textContent).toBe('Rétt svar: -890,3 kJ/mól');
+    expect(page.getByText(/Rétt svar:/).textContent).toBe('Rétt svar: -890,6 kJ/mól');
   });
 
   it('is right about the tolerance: an answer 17 kJ/mol out is accepted', () => {
@@ -94,7 +94,7 @@ describe('hess-law level 3 reverse challenge', () => {
     expect(total).not.toMatch(/296/);
 
     answer(page, ANSWERS[3]);
-    expect(card.textContent).toContain('-296,8 kJ/mól');
+    expect(card.textContent).toContain('-296,83 kJ/mól');
   });
 });
 

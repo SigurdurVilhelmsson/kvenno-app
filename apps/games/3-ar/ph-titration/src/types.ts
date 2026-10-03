@@ -65,37 +65,3 @@ export interface Indicator {
   colorBasic: string;
   description: string;
 }
-
-export interface GameStats {
-  score: number;
-  titrationsCompleted: number;
-  accuracy: number; // Average accuracy in mL
-  correctIndicators: number;
-  totalIndicators: number;
-  totalTime: number; // in seconds
-}
-
-export interface TitrationResult {
-  volumeUsed: number;
-  selectedIndicator: IndicatorType | null;
-  accuracy: number; // Difference from equivalence volume in mL
-  indicatorCorrect: boolean;
-  points: number;
-  timeBonus: number;
-  accuracyBonus: number;
-  indicatorBonus: number;
-}
-
-export type GameMode = 'practice' | 'challenge';
-
-export interface GameState {
-  mode: GameMode;
-  currentTitration: Titration | null;
-  volumeAdded: number;
-  currentPH: number;
-  selectedIndicator: IndicatorType | null;
-  isComplete: boolean;
-  result: TitrationResult | null;
-  stats: GameStats;
-  phCurveData: Array<{ volume: number; pH: number }>;
-}

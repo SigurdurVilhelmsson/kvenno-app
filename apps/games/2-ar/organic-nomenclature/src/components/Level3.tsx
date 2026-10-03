@@ -12,7 +12,8 @@ import {
 } from '@shared/utils';
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  /** How many of the challenges were answered right. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -175,7 +176,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [phase, setPhase] = useState<'learn' | 'challenge'>('learn');
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentChallenge, setCurrentChallenge] = useState(0);
-  const [score, setScore] = useState(0);
+  // Right answers, one try each, with no running score on screen (mobile-pass decision 1 (b)).
+  const [correctCount, setCorrectCount] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   // (quiz has no hints)
@@ -251,9 +253,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (correct) {
-      setScore((prev) => prev + 10);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
   };
 
   const handleNextChallenge = () => {
@@ -261,7 +261,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
       setCurrentChallenge((prev) => prev + 1);
       setShowFeedback(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -415,9 +415,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           <div className="ml-auto flex items-center gap-3 sm:gap-4 phone:gap-2">
             <div className="text-sm text-warm-500 whitespace-nowrap">
               Áskorun {currentChallenge + 1} af {challenges.length}
-            </div>
-            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold whitespace-nowrap phone:px-2 phone:py-0.5 phone:text-sm">
-              Stig: {score}
             </div>
           </div>
         </div>

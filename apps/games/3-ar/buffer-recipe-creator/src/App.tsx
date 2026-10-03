@@ -11,14 +11,20 @@ import './styles.css';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3';
 
+/**
+ * What the game remembers: which levels are done. There is no score — points were dropped
+ * from every level (mobile-pass decision 1 (b)), and a hint costs nothing (decision 2 (b)).
+ *
+ * No level keeps a count of right answers either. None can be left unsolved — Næsta waits
+ * for a right answer, and Stig 1's pH bar names the verdict before the check — so every run
+ * would read "N af N rétt". Each level reports that it is done instead, as Einingakeðjan's
+ * Stig 1 does (decision 23). Progress saved before this carries `levelNScore` and
+ * `totalGamesPlayed`; they are ignored, and a finished level shows "Lokið" either way.
+ */
 interface Progress {
   level1Completed: boolean;
-  level1Score: number;
   level2Completed: boolean;
-  level2Score: number;
   level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
 }
 
 /** How long a screen takes to fade out (each FadePresence's exitDuration below). */
@@ -26,12 +32,8 @@ const SCREEN_FADE_MS = 200;
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
-  level1Score: 0,
   level2Completed: false,
-  level2Score: 0,
   level3Completed: false,
-  level3Score: 0,
-  totalGamesPlayed: 0,
 };
 
 /**
@@ -84,20 +86,14 @@ function App() {
     if (card) window.setTimeout(() => revealSpan(card), SCREEN_FADE_MS + 20);
   }, []);
 
-  const applyLevelResult = (levelKey: 'level1' | 'level2' | 'level3', score: number) => {
-    const completedKey = `${levelKey}Completed` as const;
-    const scoreKey = `${levelKey}Score` as const;
-    updateProgress({
-      [completedKey]: true,
-      [scoreKey]: Math.max(progress[scoreKey], score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    } as Partial<Progress>);
+  const applyLevelResult = (level: 1 | 2 | 3) => {
+    updateProgress({ [`level${level}Completed`]: true } as Partial<Progress>);
     setActiveLevel('menu');
   };
 
-  const handleLevel1Complete = (score: number) => applyLevelResult('level1', score);
-  const handleLevel2Complete = (score: number) => applyLevelResult('level2', score);
-  const handleLevel3Complete = (score: number) => applyLevelResult('level3', score);
+  const handleLevel1Complete = () => applyLevelResult(1);
+  const handleLevel2Complete = () => applyLevelResult(2);
+  const handleLevel3Complete = () => applyLevelResult(3);
 
   const handleResetProgress = () => {
     if (!window.confirm('Ertu viss um að þú viljir endurstilla alla framvindu?')) return;
@@ -105,7 +101,6 @@ function App() {
   };
 
   // Main Menu computed values
-  const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
   const levelsCompleted = [
     progress.level1Completed,
     progress.level2Completed,
@@ -182,8 +177,8 @@ function App() {
                           Stig 1: Hugmyndafræði
                         </span>
                         {progress.level1Completed && (
-                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                            ✓ {progress.level1Score} stig
+                          <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full">
+                            ✓ Lokið
                           </span>
                         )}
                       </div>
@@ -216,8 +211,8 @@ function App() {
                           Stig 2: Útreikningar
                         </span>
                         {progress.level2Completed && (
-                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                            ✓ {progress.level2Score} stig
+                          <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full">
+                            ✓ Lokið
                           </span>
                         )}
                       </div>
@@ -250,8 +245,8 @@ function App() {
                           Stig 3: Hönnun
                         </span>
                         {progress.level3Completed && (
-                          <span className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full">
-                            ✓ {progress.level3Score} stig
+                          <span className="bg-emerald-700 text-white text-xs px-2 py-1 rounded-full">
+                            ✓ Lokið
                           </span>
                         )}
                       </div>
@@ -267,38 +262,19 @@ function App() {
                 </button>
               </div>
 
-              {/* Progress Summary */}
-              {progress.totalGamesPlayed > 0 && (
-                <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl">
-                  <div className="flex justify-between items-center mb-3">
-                    <h3 className="font-semibold text-warm-700">Framvinda</h3>
-                    <button
-                      onClick={handleResetProgress}
-                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
-                    >
-                      Endurstilla
-                    </button>
+              {/* Progress: which levels are done, and the way to start over. */}
+              {levelsCompleted > 0 && (
+                <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl flex justify-between items-center gap-3">
+                  <div className="text-warm-700">
+                    <span className="font-semibold">Framvinda:</span> {levelsCompleted} af 3 stigum
+                    lokið
                   </div>
-                  <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-                    <div className="rounded-lg px-1 py-2 sm:p-3 bg-kvenno-orange/10">
-                      <div className="text-xl sm:text-2xl font-bold text-kvenno-orange">
-                        {levelsCompleted}/3
-                      </div>
-                      <div className="text-xs text-warm-600">Stigum lokið</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
-                      <div className="text-xl sm:text-2xl font-bold text-green-600">
-                        {totalScore}
-                      </div>
-                      <div className="text-xs text-warm-600">Heildarstig</div>
-                    </div>
-                    <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
-                      <div className="text-xl sm:text-2xl font-bold text-purple-600">
-                        {progress.totalGamesPlayed}
-                      </div>
-                      <div className="text-xs text-warm-600">Leikir spilaðir</div>
-                    </div>
-                  </div>
+                  <button
+                    onClick={handleResetProgress}
+                    className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
+                  >
+                    Endurstilla
+                  </button>
                 </div>
               )}
 

@@ -24,7 +24,8 @@ import type { MonoproticTitration, IndicatorType } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /** How many of the problems were answered right. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -40,7 +41,15 @@ const isBelowLg = () =>
 
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  // Puzzles solved, counted flat: the hint never changes it, and there is no
+  // running score on screen (mobile-pass decisions 1 (b) and 2 (b)). It used to
+  // be 100 points a puzzle, shown as "Stig: N" in the header.
+  const [correctCount, setCorrectCount] = useState(0);
+  // Whether this puzzle's result has been shown. The result prints the
+  // equivalence volume and the explanation names the good indicators, so a
+  // "Reyna aftur" after it is answered with the answer on screen and does not
+  // count. Before this a retry after a right answer paid its points again.
+  const [answerShown, setAnswerShown] = useState(false);
   const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
@@ -94,6 +103,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setMarkedVolume(0);
     setIsCorrect(false);
     setIndicatorCorrect(false);
+    setAnswerShown(false);
   }, [currentIndex]);
 
   // The level heading takes focus as the level mounts (the menu button that
@@ -149,9 +159,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   useEffect(() => {
     if (completed >= LEVEL2_PUZZLES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score);
+      onComplete(correctCount, LEVEL2_PUZZLES.length);
     }
-  }, [completed, score, onComplete]);
+  }, [completed, correctCount, onComplete]);
 
   // Pouring interval
   useEffect(() => {
@@ -261,10 +271,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setIndicatorCorrect(indicatorOk);
     setPhase('result');
 
-    if (volumeCorrect && indicatorOk) {
-      const points = 100;
-      setScore((prev) => prev + points);
-    }
+    if (volumeCorrect && indicatorOk && !answerShown) setCorrectCount((prev) => prev + 1);
+    setAnswerShown(true);
   };
 
   const handleShowHint = () => {
@@ -388,7 +396,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8 phone:px-3 phone:py-3">
       <div ref={levelRef} className="max-w-7xl mx-auto scroll-mt-4 phone:scroll-mt-3">
         {/* Header. On a phone it folds to one row (design P4): Til baka, the
-            title, the counters, with the progress bar under them. Til baka
+            title, the question counter, with the progress bar under them. Til baka
             comes first in the DOM as well as on screen. */}
         <div className="bg-white rounded-2xl shadow-xl p-4 mb-4 phone:flex phone:flex-wrap phone:items-center phone:gap-x-1.5 phone:px-2.5 phone:py-2 phone:mb-3">
           <div className="flex justify-between items-center phone:contents">
@@ -402,7 +410,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="text-sm text-warm-500 phone:text-xs">
                 {currentIndex + 1} / {LEVEL2_PUZZLES.length}
               </div>
-              <div className="text-lg font-bold text-green-600 phone:text-sm">Stig: {score}</div>
             </div>
           </div>
 
@@ -709,7 +716,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
                 >
                   {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
-                  {isCorrect && ' (+100 stig)'}
                 </div>
 
                 <div className="text-sm space-y-2">

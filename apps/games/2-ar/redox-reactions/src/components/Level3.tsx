@@ -10,24 +10,31 @@ import {
   useScreenTop,
 } from '@shared/utils';
 
-import { L3_SCORING } from '../config/scoring';
 import { problems } from '../data/half-reactions';
 import { matchesSpecies, parseWholeNumber } from '../utils/answers';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number) => void;
+  /**
+   * How many steps were answered right, out of how many: four per problem (identify, the
+   * two half-reactions, the multipliers). A hint never changes it.
+   */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
 type Step = 'identify' | 'write-ox' | 'write-red' | 'balance' | 'complete';
+
+/** The steps a student answers in each problem: identify, the two half-reactions, balance. */
+const STEPS_ANSWERED = 4;
 
 export function Level3({ t, onComplete, onBack }: Level3Props) {
   const [showIntro, setShowIntro] = useState(true);
   useEscapeKey(onBack, showIntro);
   const [currentProblem, setCurrentProblem] = useState(0);
   const [step, setStep] = useState<Step>('identify');
-  const [score, setScore] = useState(0);
+  // Right steps, counted (mobile-pass decisions 1 (b) and 2 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [answers, setAnswers] = useState({
     oxidized: '',
@@ -42,7 +49,6 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     correct: false,
     message: '',
   });
-  const [, setTotalHintsUsed] = useState(0);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const verdictRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef<HTMLDivElement>(null);
@@ -90,7 +96,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     const redCorrect = matchesSpecies(answers.reduced, problem.reductionHalf.species);
 
     if (oxCorrect && redCorrect) {
-      setScore((prev) => prev + L3_SCORING.IDENTIFY);
+      setCorrectCount((prev) => prev + 1);
       setFeedback({
         show: true,
         correct: true,
@@ -110,7 +116,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     const redM = parseWholeNumber(answers.redMultiplier);
 
     if (oxM === problem.multiplierOx && redM === problem.multiplierRed) {
-      setScore((prev) => prev + L3_SCORING.BALANCE);
+      setCorrectCount((prev) => prev + 1);
       setFeedback({
         show: true,
         correct: true,
@@ -129,7 +135,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     if (feedback.show || !answers.oxElectrons) return;
     const correct = parseWholeNumber(answers.oxElectrons) === problem.oxidationHalf.electrons;
     if (correct) {
-      setScore((prev) => prev + L3_SCORING.OXIDATION_HALF);
+      setCorrectCount((prev) => prev + 1);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
     } else {
       setFeedback({
@@ -144,7 +150,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     if (feedback.show || !answers.redElectrons) return;
     const correct = parseWholeNumber(answers.redElectrons) === problem.reductionHalf.electrons;
     if (correct) {
-      setScore((prev) => prev + L3_SCORING.REDUCTION_HALF);
+      setCorrectCount((prev) => prev + 1);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
     } else {
       setFeedback({
@@ -180,7 +186,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           redMultiplier: '',
         });
       } else {
-        onComplete(score);
+        onComplete(correctCount, problems.length * STEPS_ANSWERED);
       }
     }
   };
@@ -608,9 +614,6 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               {t('level3.problem', 'Dæmi')} {currentProblem + 1} {t('level3.of', 'af')}{' '}
               {problems.length}
             </div>
-            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
-              {t('level3.score', 'Stig')}: {score}
-            </div>
           </div>
         </div>
 
@@ -693,10 +696,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
         {!showHint && !feedback.show && step !== 'complete' && (
           <button
-            onClick={() => {
-              setShowHint(true);
-              setTotalHintsUsed((prev) => prev + 1);
-            }}
+            onClick={() => setShowHint(true)}
             className="w-full mt-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm pointer-coarse:min-h-11"
           >
             {t('common.hint', 'Sýna vísbendingu')}

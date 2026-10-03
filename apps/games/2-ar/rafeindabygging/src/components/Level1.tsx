@@ -16,7 +16,8 @@ import { formatQuantum } from '../utils/electrons';
 import { ITEM_START } from '../utils/itemStart';
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  /** How many of the questions were answered right, out of how many. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -26,7 +27,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
+  // Right answers, counted (mobile-pass decision 1 (b)): no running score.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const puzzle = puzzles[currentIndex];
   const isLast = currentIndex >= puzzles.length - 1;
@@ -97,12 +99,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     setSubmitted(true);
 
     // Every valid option ticked and every invalid one left alone.
-    if (allRight) setScore((s) => s + 1);
+    if (allRight) setCorrectCount((c) => c + 1);
   };
 
   const handleNext = () => {
     if (isLast) {
-      onComplete(score);
+      onComplete(correctCount, puzzles.length);
       return;
     }
     setCurrentIndex((i) => i + 1);
@@ -269,7 +271,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             ← Til baka
           </button>
           <div className="text-sm text-warm-600 text-right">
-            Spurning {currentIndex + 1} / {puzzles.length} &bull; Stig: {score}
+            Spurning {currentIndex + 1} / {puzzles.length}
           </div>
         </div>
 

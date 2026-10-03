@@ -33,7 +33,11 @@ const NOMENCLATURE_MISCONCEPTIONS: Record<string, string> = {
 const NOMENCLATURE_RELATED = ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni', 'Virknihópar'];
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /**
+   * How many were answered right: in Nefna sameindir, the molecules named right at the
+   * first try; in Byggja sameindir, the names built right. Hints never change it.
+   */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -226,10 +230,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [userAnswer, setUserAnswer] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
+  // Molecules named right at the first try, with no running score on screen (mobile-pass
+  // decision 1 (b)). A wrong answer's feedback prints the right name before Reyna aftur, so
+  // a later try is not counted; it used to earn 5 or 2 points. A hint never changes the
+  // count (decision 2 (b)).
+  const [correctCount, setCorrectCount] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [attempts, setAttempts] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
   const [useDragDrop, setUseDragDrop] = useState(true);
   const [zoneState, setZoneState] = useState<ZoneState>({});
 
@@ -292,7 +299,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const openHint = () => {
     hintAsked.current = true;
     setShowHint(true);
-    setTotalHintsUsed((prev) => prev + 1);
   };
   useEffect(() => {
     if (!showHint || !hintAsked.current) return;
@@ -498,11 +504,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
     setIsCorrect(correct);
     setShowFeedback(true);
-
-    if (correct) {
-      const points = attempts === 0 ? 10 : attempts === 1 ? 5 : 2;
-      setScore((prev) => prev + points);
-    }
+    if (correct && attempts === 0) setCorrectCount((prev) => prev + 1);
   };
 
   // Get detailed feedback
@@ -564,11 +566,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
     setIsCorrect(correct);
     setShowFeedback(true);
-
-    if (correct) {
-      const points = attempts === 0 ? 10 : attempts === 1 ? 5 : 2;
-      setScore((prev) => prev + points);
-    }
+    if (correct && attempts === 0) setCorrectCount((prev) => prev + 1);
   };
 
   const handleNext = () => {
@@ -580,7 +578,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setAttempts(0);
       setZoneState({});
     } else {
-      onComplete(score);
+      onComplete(correctCount, molecules.length);
     }
   };
 
@@ -696,9 +694,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="ml-auto flex items-center gap-3 sm:gap-4 phone:gap-2">
             <div className="text-sm text-warm-500 whitespace-nowrap">
               Sameind {currentMolecule + 1} af {molecules.length}
-            </div>
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold whitespace-nowrap phone:px-2 phone:py-0.5 phone:text-sm">
-              Stig: {score}
             </div>
           </div>
         </div>

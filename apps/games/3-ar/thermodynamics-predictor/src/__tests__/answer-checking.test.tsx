@@ -40,8 +40,12 @@ afterEach(() => {
 
 /** The feedback box: the group focus moves to, around the alert that carries the message. */
 const box = () => screen.getByRole('alert').closest<HTMLElement>('[role="group"]')!;
+/** The question's number in the run; Æfingarhamur adds "af M", the size of its round. */
 const questionNumber = () =>
-  screen.getByText('Spurning').parentElement!.querySelector('.text-xl')!.textContent;
+  screen
+    .getByText('Spurning')
+    .parentElement!.querySelector('.text-xl')!
+    .textContent!.match(/^\d+/)?.[0];
 
 describe('the feedback box is green only for a right answer', () => {
   // Id 3, 2H₂O₂ → 2H₂O + O₂, is spontaneous at every temperature.
