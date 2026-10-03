@@ -160,10 +160,12 @@ function geometry(page) {
       if (!r.width || !r.height) continue;
       const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
       if (!own && !/^(BUTTON|INPUT|SELECT|TEXTAREA|svg|IMG|CANVAS)$/.test(el.tagName)) continue;
+      // A running animation's content differs between any two runs; its box still counts.
+      if (el.closest('[data-live]') && !el.matches('[data-live]')) continue;
       const cs = getComputedStyle(el);
       if (cs.visibility === 'hidden' || cs.display === 'none') continue;
       out.push(
-        `${el.tagName}|${(el.textContent || '').trim().slice(0, 24)}|` +
+        `${el.tagName}|${el.matches('[data-live]') ? '(live)' : (el.textContent || '').trim().slice(0, 24)}|` +
           `${Math.round(r.x)},${Math.round(r.y + scrollY)},${Math.round(r.width)}x${Math.round(r.height)}|` +
           `${cs.fontSize}|${cs.color}`
       );
@@ -250,12 +252,27 @@ async function capture(browser, baseUrl, state, png) {
     await page.setViewportSize({ width: DESKTOP.width + 1, height: DESKTOP.height });
     await page.setViewportSize(DESKTOP);
     await page.waitForTimeout(200);
+    // SVG <animate> runs on its own clock, which `animations: 'disabled'` does not stop:
+    // buffer Stig 2's flasks pulse their opacity, and differed between two captures of one
+    // build. Pausing the SVG clock did not hold them, so the animate elements are removed in
+    // both builds, which leaves each attribute at its static value — the drawing, not the
+    // moment.
+    // It runs just before capture, after the repaint, because a hint tier that opens late
+    // can mount its flasks after any earlier pass.
+    await page.evaluate(() => {
+      for (const a of document.querySelectorAll('animate, animateTransform, animateMotion')) {
+        a.remove();
+      }
+    });
     result.geometry = await geometry(page);
     if (png) {
       result.png = await page.screenshot({
         fullPage: true,
         animations: 'disabled',
-        mask: [page.locator('canvas')],
+        // Canvases, and whatever a game marks `data-live`: a simulation or counter that
+        // moves on every frame, so two captures of one build never match (found by
+        // comparing a build with itself, 2026-10-03).
+        mask: [page.locator('canvas, [data-live]')],
       });
     }
     if (state.loop) {

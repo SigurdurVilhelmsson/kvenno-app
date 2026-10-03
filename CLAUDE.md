@@ -436,7 +436,12 @@ games were migrated; the design's Outcome section has the before→after per gam
   (all 26 when it touches shared code, `e2e/`, `scripts/` or the build), and the result is the
   job summary plus a `desktop-compare` artifact of PNGs. **It is a report, not a gate** — a
   content change moves desktop geometry on purpose — so read the summary on any PR that should
-  not touch the desktop.
+  not touch the desktop. **Mark anything that moves on every frame `data-live`** (a simulation, a
+  live counter): the script masks it and compares only its box, as it does a canvas. Comparing a
+  build with itself found five (kinetics' collision counter, IMF's force animation, VSEPR's two
+  shape animations, buffer's pulsing flasks — the last are SVG `<animate>`, which the script now
+  strips before capture instead). A new animation without the mark shows up as a difference on
+  every PR that touches its game.
 
 ### Adding a new experiment to lab reports
 

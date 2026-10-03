@@ -324,6 +324,8 @@ export function ShapeTransitionAnimation({
           className="bg-warm-900 rounded-xl max-w-full h-auto"
           role="img"
           aria-label="Hreyfimynd sem sýnir umbreytingu milli VSEPR löguna"
+          // Moves on every frame, so scripts/desktop-compare.mjs masks it.
+          data-live
         >
           <title>VSEPR lögunarumbreyting</title>
           <defs>

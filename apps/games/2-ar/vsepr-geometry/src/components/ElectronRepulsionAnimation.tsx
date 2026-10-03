@@ -320,8 +320,10 @@ export function ElectronRepulsionAnimation({
         ))}
       </div>
 
-      {/* Animation canvas */}
-      <div className="bg-white rounded-xl p-2 sm:p-4 mb-4 shadow-inner">
+      {/* Animation canvas. It moves on every frame, so scripts/desktop-compare.mjs masks it;
+          the mark is on this panel, not the svg, because the svg draws with overflow visible
+          and its atoms can sit outside its own box. */}
+      <div className="bg-white rounded-xl p-2 sm:p-4 mb-4 shadow-inner" data-live>
         <svg
           width={width}
           height={height}
