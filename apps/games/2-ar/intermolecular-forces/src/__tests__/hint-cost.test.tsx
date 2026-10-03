@@ -11,12 +11,13 @@ import { Level3 } from '../components/Level3';
  * All three levels here still did: a correct answer was worth 15 points unaided and 8 after
  * "Sýna vísbendingu" in Stig 1 and Stig 2, and 12 against 6 in Stig 3.
  *
- * Each case takes the hint and then answers the first question correctly, and reads the
- * running score in the level header. Queries are scoped to the rendered container because
+ * Points are gone altogether now (mobile-pass decision 1 (b)): each case takes the hint, answers
+ * the first question correctly, and checks it is marked right with no score anywhere. That a
+ * hint never changes the count a level reports is played through in `right-count.test.tsx`. Queries are scoped to the rendered container because
  * the repo runs vitest with `retry: 2` and no RTL auto-cleanup.
  */
 describe('a hint costs nothing', () => {
-  it('Stig 1: a correct answer after the hint is still worth 15', () => {
+  it('Stig 1: a correct answer after the hint is still right, with no score shown', () => {
     const { container } = render(<Level1 onComplete={vi.fn()} onBack={vi.fn()} />);
     const view = within(container);
     fireEvent.click(view.getByRole('button', { name: /Hefja æfingar/ }));
@@ -29,10 +30,11 @@ describe('a hint costs nothing', () => {
     }
     fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
 
-    expect(view.getByText('15 stig')).toBeTruthy();
+    expect(container.textContent).toContain('Rétt!');
+    expect(container.textContent).not.toMatch(/\d+ stig\b/);
   });
 
-  it('Stig 2: a correct ranking after the hint is still worth 15', () => {
+  it('Stig 2: a correct ranking after the hint is still right, with no score shown', () => {
     const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
     const view = within(container);
 
@@ -48,10 +50,10 @@ describe('a hint costs nothing', () => {
     fireEvent.click(view.getByRole('button', { name: 'Athuga röðun' }));
 
     expect(view.getByText('Rétt röðun!')).toBeTruthy();
-    expect(view.getByText('15 stig')).toBeTruthy();
+    expect(container.textContent).not.toMatch(/\d+ stig\b/);
   });
 
-  it('Stig 3: a correct answer after the hint is still worth 12', () => {
+  it('Stig 3: a correct answer after the hint is still right, with no score shown', () => {
     const { container } = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
     const view = within(container);
 
@@ -62,6 +64,6 @@ describe('a hint costs nothing', () => {
     fireEvent.click(view.getByRole('button', { name: 'Athuga svar' }));
 
     expect(view.getByText('Rétt!')).toBeTruthy();
-    expect(view.getByText('12 stig')).toBeTruthy();
+    expect(container.textContent).not.toMatch(/\d+ stig\b/);
   });
 });

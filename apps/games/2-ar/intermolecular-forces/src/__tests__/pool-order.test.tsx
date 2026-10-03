@@ -77,7 +77,7 @@ describe('Stig 2 pool order', () => {
         fireEvent.click(buttonByText(container, /^(Næsta verkefni|Ljúka stigi 2)$/));
       });
 
-      expect(onComplete).toHaveBeenCalledWith(15 * problems.length);
+      expect(onComplete).toHaveBeenCalledWith(problems.length, problems.length);
       unmount();
     }
 

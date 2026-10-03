@@ -10,24 +10,31 @@ import { Level3 } from './components/Level3';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
 
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — points were dropped from every level
+ * (mobile-pass decision 1 (b)), and a hint never changes a count (decision 2 (b)).
+ *
+ * Progress saved before that change carries `levelNScore` in points and no
+ * `levelNCorrect`; those levels show as done with no count, rather than
+ * reading old points as a number of right answers.
+ */
 interface Progress {
   level1Completed: boolean;
-  level1Score: number;
+  level1Correct?: number;
+  level1Total?: number;
   level2Completed: boolean;
-  level2Score: number;
+  level2Correct?: number;
+  level2Total?: number;
   level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
+  level3Correct?: number;
+  level3Total?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
-  level1Score: 0,
   level2Completed: false,
-  level2Score: 0,
   level3Completed: false,
-  level3Score: 0,
-  totalGamesPlayed: 0,
 };
 
 function App() {
@@ -48,12 +55,12 @@ function App() {
         : null,
   });
 
-  const applyLevelResult = (level: 1 | 2 | 3, score: number) => {
+  const applyLevelResult = (level: 1 | 2 | 3, correct: number, total: number) => {
     const key = `level${level}` as const;
     updateProgress({
       [`${key}Completed`]: true,
-      [`${key}Score`]: Math.max(progress[`${key}Score`], score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
+      [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
+      [`${key}Total`]: total,
     } as Partial<Progress>);
     // The closing screen says every level is done, so it opens only when that is true, after
     // whichever level completes the set. Levels are not gated, and finishing Stig 3 first used
@@ -64,9 +71,19 @@ function App() {
     setActiveLevel(allDone ? 'complete' : 'menu');
   };
 
-  const handleLevel1Complete = (score: number) => applyLevelResult(1, score);
-  const handleLevel2Complete = (score: number) => applyLevelResult(2, score);
-  const handleLevel3Complete = (score: number) => applyLevelResult(3, score);
+  const handleLevel1Complete = (correct: number, total: number) =>
+    applyLevelResult(1, correct, total);
+  const handleLevel2Complete = (correct: number, total: number) =>
+    applyLevelResult(2, correct, total);
+  const handleLevel3Complete = (correct: number, total: number) =>
+    applyLevelResult(3, correct, total);
+
+  /** "6 af 10 rétt", or "Lokið" for a level finished before counts were kept. */
+  const resultLabel = (level: 1 | 2 | 3): string => {
+    const correct = progress[`level${level}Correct`];
+    const total = progress[`level${level}Total`];
+    return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
+  };
 
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
@@ -81,8 +98,6 @@ function App() {
   }
 
   if (activeLevel === 'complete') {
-    const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
-
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 phone:p-4">
@@ -98,33 +113,28 @@ function App() {
           </div>
 
           <div className="space-y-4 mb-8 phone:space-y-2 phone:mb-4">
-            <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-purple-800">Stig 1: Tegundir</div>
                 <div className="text-sm text-purple-600">Greina millisameindakrafta</div>
               </div>
-              <div className="text-2xl font-bold text-purple-600">{progress.level1Score}</div>
+              <div className="font-bold text-purple-700 whitespace-nowrap">{resultLabel(1)}</div>
             </div>
 
-            <div className="bg-blue-50 p-4 phone:p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-blue-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-blue-800">Stig 2: Röðun</div>
                 <div className="text-sm text-blue-600">Raða efnum eftir eiginleikum</div>
               </div>
-              <div className="text-2xl font-bold text-blue-600">{progress.level2Score}</div>
+              <div className="font-bold text-blue-700 whitespace-nowrap">{resultLabel(2)}</div>
             </div>
 
-            <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-green-800">Stig 3: Greining</div>
                 <div className="text-sm text-green-600">Flókinn samanburður</div>
               </div>
-              <div className="text-2xl font-bold text-green-600">{progress.level3Score}</div>
-            </div>
-
-            <div className="bg-indigo-100 p-4 phone:p-3 rounded-xl flex justify-between items-center border-2 border-indigo-400">
-              <div className="font-bold text-indigo-800 text-lg">Heildarstig</div>
-              <div className="text-3xl font-bold text-indigo-600">{totalScore}</div>
+              <div className="font-bold text-green-700 whitespace-nowrap">{resultLabel(3)}</div>
             </div>
           </div>
 
@@ -158,7 +168,6 @@ function App() {
   }
 
   // Main menu
-  const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
   const levelsCompleted = [
     progress.level1Completed,
     progress.level2Completed,
@@ -217,8 +226,8 @@ function App() {
                       Stig 1: Greina IMF tegundir
                     </span>
                     {progress.level1Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        ✓ {progress.level1Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(1)}
                       </span>
                     )}
                   </div>
@@ -242,8 +251,8 @@ function App() {
                       Stig 2: Raða eftir eiginleikum
                     </span>
                     {progress.level2Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        ✓ {progress.level2Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(2)}
                       </span>
                     )}
                   </div>
@@ -267,8 +276,8 @@ function App() {
                       Stig 3: Flókin greining
                     </span>
                     {progress.level3Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        ✓ {progress.level3Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(3)}
                       </span>
                     )}
                   </div>
@@ -280,37 +289,19 @@ function App() {
             </button>
           </div>
 
-          {/* Progress Summary */}
-          {progress.totalGamesPlayed > 0 && (
-            <div className="mt-8 bg-warm-50 p-4 rounded-xl phone:mt-4 phone:p-3">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="font-semibold text-warm-700">Framvinda</h3>
-                <button
-                  onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
-                >
-                  Endurstilla
-                </button>
+          {/* Progress: which levels are done, and the way to start over. */}
+          {levelsCompleted > 0 && (
+            <div className="mt-8 bg-warm-50 p-4 rounded-xl phone:mt-4 phone:p-3 flex justify-between items-center gap-3">
+              <div className="text-warm-700">
+                <span className="font-semibold">Framvinda:</span> {levelsCompleted} af 3 stigum
+                lokið
               </div>
-              {/* Narrower gaps on a phone, so 'Heildarstig' fits its third at 320 px. */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 phone:gap-1 text-center">
-                <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
-                  <div className="text-xl sm:text-2xl font-bold text-purple-600">
-                    {levelsCompleted}/3
-                  </div>
-                  <div className="text-xs text-warm-600">Stigum lokið</div>
-                </div>
-                <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
-                  <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildarstig</div>
-                </div>
-                <div className="bg-blue-50 rounded-lg px-1 py-2 sm:p-3">
-                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
-                    {progress.totalGamesPlayed}
-                  </div>
-                  <div className="text-xs text-warm-600">Leikir spilaðir</div>
-                </div>
-              </div>
+              <button
+                onClick={resetProgress}
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
+              >
+                Endurstilla
+              </button>
             </div>
           )}
 

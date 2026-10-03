@@ -8,7 +8,7 @@ import { clockPastNextGuard } from './next-guard-clock';
 /**
  * Finishing Stig 3 always opened the closing screen, which says "Þú hefur lokið öllum
  * stigum!". Levels are not gated (ruling 2026-08-29), so a student who went straight to Stig 3
- * was told they had finished two levels they had never opened, with 0 against both.
+ * was told they had finished two levels they had never opened.
  *
  * The screen now opens only when the level just finished completes the set.
  *
@@ -51,7 +51,7 @@ describe('the closing screen', () => {
     expect(container.textContent).not.toContain(DONE_ALL);
     // Back on the menu, with Stig 3 now marked done.
     expect(container.textContent).toContain('Stig 1: Greina IMF tegundir');
-    expect(container.textContent).toContain('1/3');
+    expect(container.textContent).toContain('1 af 3 stigum lokið');
   });
 
   it('opens after Stig 3 when it completes the set', () => {
