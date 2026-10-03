@@ -11,8 +11,9 @@
  *    input, svg and img — tag, text, rounded box, font size and colour — and
  *    the document height. Must be identical.
  *  - **Pixels**: a full-page screenshot, live canvases masked. Must be
- *    byte-identical (skip with --no-png where a machine's font rendering is not
- *    stable between two runs).
+ *    identical, except that a pixel off by at most FAINT levels in every channel
+ *    is anti-aliasing and is noted, not counted (skip with --no-png where a
+ *    machine's font rendering is not stable between two runs).
  *  - **Behaviour**, which geometry cannot see: the page's scrollY once the
  *    state is reached, and the focused element. A changed scrollY fails — that
  *    is the P2 regression, a reveal that stopped (or started) moving a desktop
@@ -34,16 +35,31 @@
  * step semantics as the phone specs (e2e/screen-steps.ts) and `Math.random`
  * seeded, so a shuffle is the same in both builds.
  *
- * Usage (not in CI yet):
+ * Usage:
  *   pnpm build   # the head, into dist/
  *   git worktree add ../base <base-commit> && (cd ../base && pnpm install && pnpm build:games)
  *   node scripts/desktop-compare.mjs --base ../base/dist [--head dist]
- *        [--game 2-ar/hess-law] [--no-png] [--out <dir>] [--jobs 4]
+ *        [--game 2-ar/hess-law] [--no-png] [--out <dir>] [--jobs 4] [--markdown <file>]
  *
  * Exits 1 when any state differs, 0 when all are identical.
+ *
+ * **In CI as a report, not a gate (2026-10-03).** The `desktop-compare` job in
+ * `.github/workflows/ci.yml` runs this on every pull request against the PR's
+ * base and publishes the differing states in the job summary, with the PNGs as
+ * an artifact. It does not fail the PR: a content change — a reworded string, a
+ * renamed term — moves desktop geometry on purpose, and a gate that fails every
+ * such PR would be ignored. A difference in a PR that should not touch the
+ * desktop is still a defect; read the summary.
  */
 import { createServer } from 'node:http';
-import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from 'node:fs';
+import {
+  appendFileSync,
+  createReadStream,
+  existsSync,
+  mkdirSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -65,6 +81,8 @@ const { values: args } = parseArgs({
     out: { type: 'string', default: join(tmpdir(), 'desktop-compare') },
     jobs: { type: 'string', default: '4' },
     chromium: { type: 'string' },
+    // A Markdown summary of the run, appended to this file (CI passes $GITHUB_STEP_SUMMARY).
+    markdown: { type: 'string' },
   },
 });
 
@@ -143,10 +161,12 @@ function geometry(page) {
       if (!r.width || !r.height) continue;
       const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
       if (!own && !/^(BUTTON|INPUT|SELECT|TEXTAREA|svg|IMG|CANVAS)$/.test(el.tagName)) continue;
+      // A running animation's content differs between any two runs; its box still counts.
+      if (el.closest('[data-live]') && !el.matches('[data-live]')) continue;
       const cs = getComputedStyle(el);
       if (cs.visibility === 'hidden' || cs.display === 'none') continue;
       out.push(
-        `${el.tagName}|${(el.textContent || '').trim().slice(0, 24)}|` +
+        `${el.tagName}|${el.matches('[data-live]') ? '(live)' : (el.textContent || '').trim().slice(0, 24)}|` +
           `${Math.round(r.x)},${Math.round(r.y + scrollY)},${Math.round(r.width)}x${Math.round(r.height)}|` +
           `${cs.fontSize}|${cs.color}`
       );
@@ -233,12 +253,27 @@ async function capture(browser, baseUrl, state, png) {
     await page.setViewportSize({ width: DESKTOP.width + 1, height: DESKTOP.height });
     await page.setViewportSize(DESKTOP);
     await page.waitForTimeout(200);
+    // SVG <animate> runs on its own clock, which `animations: 'disabled'` does not stop:
+    // buffer Stig 2's flasks pulse their opacity, and differed between two captures of one
+    // build. Pausing the SVG clock did not hold them, so the animate elements are removed in
+    // both builds, which leaves each attribute at its static value — the drawing, not the
+    // moment.
+    // It runs just before capture, after the repaint, because a hint tier that opens late
+    // can mount its flasks after any earlier pass.
+    await page.evaluate(() => {
+      for (const a of document.querySelectorAll('animate, animateTransform, animateMotion')) {
+        a.remove();
+      }
+    });
     result.geometry = await geometry(page);
     if (png) {
       result.png = await page.screenshot({
         fullPage: true,
         animations: 'disabled',
-        mask: [page.locator('canvas')],
+        // Canvases, and whatever a game marks `data-live`: a simulation or counter that
+        // moves on every frame, so two captures of one build never match (found by
+        // comparing a build with itself, 2026-10-03).
+        mask: [page.locator('canvas, [data-live]')],
       });
     }
     if (state.loop) {
@@ -264,7 +299,54 @@ async function capture(browser, baseUrl, state, png) {
   return result;
 }
 
-function compare(state, base, head) {
+/**
+ * The largest per-channel difference, out of 255, that still counts as the same pixel.
+ * Two captures of one build can differ at an input's anti-aliased border: 24 pixels,
+ * none by more than 11, at Stig 3 of 2-ar/redox-reactions under load (2026-10-03). A
+ * real change — a moved edge, other text, another colour token — differs by far more.
+ */
+const FAINT = 16;
+
+/** Decodes two PNGs in the browser and counts the pixels that differ beyond FAINT. */
+function pixelDiff(page, a, b) {
+  return page.evaluate(
+    async ([a, b, faint]) => {
+      const load = async (data) => {
+        const img = new Image();
+        img.src = `data:image/png;base64,${data}`;
+        await img.decode();
+        const canvas = new OffscreenCanvas(img.width, img.height);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        return ctx.getImageData(0, 0, img.width, img.height);
+      };
+      const [x, y] = await Promise.all([load(a), load(b)]);
+      if (x.width !== y.width || x.height !== y.height) {
+        return { size: `${x.width}×${x.height} against ${y.width}×${y.height}` };
+      }
+      let strong = 0;
+      let weak = 0;
+      let max = 0;
+      for (let i = 0; i < x.data.length; i += 4) {
+        const d = Math.max(
+          Math.abs(x.data[i] - y.data[i]),
+          Math.abs(x.data[i + 1] - y.data[i + 1]),
+          Math.abs(x.data[i + 2] - y.data[i + 2]),
+          Math.abs(x.data[i + 3] - y.data[i + 3])
+        );
+        if (d > faint) strong++;
+        else if (d) {
+          weak++;
+          max = Math.max(max, d);
+        }
+      }
+      return { strong, weak, max };
+    },
+    [a.toString('base64'), b.toString('base64'), FAINT]
+  );
+}
+
+async function compare(state, base, head, diffPage) {
   const problems = [];
   const notes = [];
   if (base.error || head.error) {
@@ -286,7 +368,12 @@ function compare(state, base, head) {
     );
   }
   if (base.png && head.png && Buffer.compare(base.png, head.png) !== 0) {
-    problems.push('pixels: full-page PNG differs');
+    const d = await pixelDiff(diffPage, base.png, head.png);
+    if (d.size) problems.push(`pixels: full-page PNG is ${d.size}`);
+    else if (d.strong) problems.push(`pixels: ${d.strong} pixel(s) differ`);
+    else if (d.weak) {
+      notes.push(`pixels: ${d.weak} pixel(s) differ by at most ${d.max}/255 (anti-aliasing)`);
+    }
   }
   if (base.behaviour.scrollY !== head.behaviour.scrollY) {
     problems.push(`scrollY: base ${base.behaviour.scrollY}, head ${head.behaviour.scrollY}`);
@@ -309,6 +396,46 @@ function compare(state, base, head) {
     }
   }
   return { problems, notes };
+}
+
+/** The run as Markdown: what differs first, then the focus moves to check against P3. */
+function markdownSummary(report) {
+  const differ = report.filter((r) => r.problems.length);
+  const focus = report.filter((r) => r.notes.some((n) => n.startsWith('focus')));
+  const unstable = report.filter((r) => r.notes.some((n) => n.startsWith('unstable')));
+  const cell = (text) => text.split('\n')[0].replace(/\|/g, '\\|');
+  const lines = [
+    '## Desktop comparison (1280×800, base against head)',
+    '',
+    `${report.length} states: **${differ.length} differ**, ${unstable.length} unstable, ` +
+      `${focus.length} with a focus change to review.`,
+    '',
+  ];
+  if (differ.length) {
+    lines.push(
+      'A difference is expected where the PR changes what a desktop shows — text, a term, a ' +
+        'layout. Anywhere else it is a defect. PNGs of each differing state are in the ' +
+        '`desktop-compare` artifact.',
+      '',
+      '| State | First difference |',
+      '| --- | --- |',
+      ...differ.map((r) => `| ${cell(`${r.game} — ${r.name}`)} | ${cell(r.problems[0])} |`),
+      ''
+    );
+  }
+  if (focus.length) {
+    lines.push(
+      '<details><summary>Focus changes (P3 moves focus on purpose; check each is one of those)</summary>',
+      '',
+      ...focus.map(
+        (r) => `- ${r.game} — ${r.name}: ${r.notes.find((n) => n.startsWith('focus')).slice(7)}`
+      ),
+      '',
+      '</details>',
+      ''
+    );
+  }
+  return lines.join('\n') + '\n';
 }
 
 async function main() {
@@ -334,6 +461,7 @@ async function main() {
   const browser = await chromium.launch(
     args.chromium ? { executablePath: args.chromium } : undefined
   );
+  const diffPage = await browser.newPage();
   mkdirSync(args.out, { recursive: true });
   const png = !args['no-png'];
   const jobs = Math.max(1, Number(args.jobs) || 1);
@@ -347,7 +475,7 @@ async function main() {
         capture(browser, base.url, state, png),
         capture(browser, head.url, state, png),
       ]);
-      let { problems, notes } = compare(state, b, h);
+      let { problems, notes } = await compare(state, b, h, diffPage);
       // A few recorded paths do not land on the same scroll position every run
       // in either build (a drag, an animation racing a click). A difference
       // counts only if it reproduces; one that goes away is reported as a note.
@@ -357,7 +485,7 @@ async function main() {
           capture(browser, base.url, state, png),
           capture(browser, head.url, state, png),
         ]);
-        const again = compare(state, b, h);
+        const again = await compare(state, b, h, diffPage);
         if (!again.problems.length) {
           problems = [];
           notes = [
@@ -385,6 +513,7 @@ async function main() {
 
   report.sort((x, y) => `${x.game}${x.name}`.localeCompare(`${y.game}${y.name}`));
   writeFileSync(join(args.out, 'report.json'), JSON.stringify(report, null, 2));
+  if (args.markdown) appendFileSync(args.markdown, markdownSummary(report));
   const differ = report.filter((r) => r.problems.length).length;
   const unstable = report.filter((r) => r.notes.some((n) => n.startsWith('unstable'))).length;
   const focusNotes = report.filter((r) => r.notes.some((n) => n.startsWith('focus'))).length;

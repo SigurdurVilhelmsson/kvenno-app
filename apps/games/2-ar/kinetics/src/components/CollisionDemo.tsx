@@ -127,7 +127,13 @@ export function CollisionDemo({
       <div className="mb-3 flex flex-wrap justify-between items-center gap-x-4 gap-y-1">
         <h3 className="text-white font-semibold text-sm">Árekstrarhermun</h3>
         <div className="flex gap-4 text-xs">
-          <span className="text-yellow-400 whitespace-nowrap">Árekstrar/sek: {collisionRate}</span>
+          {/* A live count, different every run, so scripts/desktop-compare.mjs masks it. The
+              number keeps three tabular digits of width, so the count ticking over does not
+              shift "Hvörf" beside it and the mask covers the same box in every run. Any wider
+              and the counters wrap under the title on desktop. */}
+          <span className="text-yellow-400 whitespace-nowrap tabular-nums" data-live>
+            Árekstrar/sek: <span className="inline-block w-[3ch] text-right">{collisionRate}</span>
+          </span>
           <span className="text-green-400 whitespace-nowrap">Hvörf: {reactionCount}</span>
         </div>
       </div>

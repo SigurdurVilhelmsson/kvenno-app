@@ -255,3 +255,114 @@ jobs:
           name: e2e-test-results
           path: test-results/
           retention-days: 7
+
+  # The desktop must not move unless a PR means it to (CLAUDE.md, "Desktop must not move").
+  # This replays every recorded state and loop at 1280×800 in the PR's base and head and
+  # reports the differences. It is a report, not a gate: a content change moves desktop
+  # geometry on purpose, so the job never fails the PR — read its summary.
+  desktop-compare:
+    name: Desktop comparison (report)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v6
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Every state takes two browser replays, so all 26 games take most of an hour. A PR
+      # that touches only some games is compared on those; one that touches shared code,
+      # the recorded paths or the build is compared on all of them.
+      - name: Choose the games to compare
+        id: games
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-only "$BASE_SHA"...HEAD)
+          if echo "$changed" | grep -qE '^(packages/shared/|e2e/|scripts/|apps/games/shared-vite-config\.ts|package\.json|pnpm-lock\.yaml)'; then
+            echo "args=" >> "$GITHUB_OUTPUT"
+          else
+            games=$(echo "$changed" | sed -nE 's#^apps/games/([0-9]-ar/[^/]+)/.*#\1#p' | sort -u)
+            if [ -z "$games" ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "No game changed; nothing to compare." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "args=$(echo "$games" | sed 's/^/--game /' | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Download the head build
+        if: steps.games.outputs.skip != 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+
+      # The base's games, built in this job from the commit the PR starts from. Only the
+      # games: every state the script replays is a game page.
+      - name: Build the base's games
+        if: steps.games.outputs.skip != 'true'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git worktree add ../base "$BASE_SHA"
+          cd ../base
+          pnpm install --frozen-lockfile
+          pnpm build:games
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers
+        if: steps.games.outputs.skip != 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Install Playwright system deps
+        if: steps.games.outputs.skip != 'true' && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      # Exits 1 when any state differs. That is the report, not a failure of the job, so
+      # the step may fail without turning the PR red; a setup failure above still does.
+      - name: Compare base and head at 1280×800
+        if: steps.games.outputs.skip != 'true'
+        continue-on-error: true
+        run: >
+          node scripts/desktop-compare.mjs --base ../base/dist --head dist
+          --out desktop-compare --jobs 4 --markdown "$GITHUB_STEP_SUMMARY"
+          ${{ steps.games.outputs.args }}
+
+      - name: Upload the report and the differing states' PNGs
+        if: always() && steps.games.outputs.skip != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: desktop-compare
+          path: desktop-compare/
+          retention-days: 7

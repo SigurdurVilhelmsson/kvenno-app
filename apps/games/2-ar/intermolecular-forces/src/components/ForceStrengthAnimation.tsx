@@ -208,6 +208,8 @@ export function ForceStrengthAnimation({
           className="bg-warm-950 rounded-lg"
           role="img"
           aria-label="Styrkur millisameindakrafta samanburður"
+          // Moves on every frame, so scripts/desktop-compare.mjs masks it.
+          data-live
         >
           <defs>
             {/* Gradients for molecules */}
