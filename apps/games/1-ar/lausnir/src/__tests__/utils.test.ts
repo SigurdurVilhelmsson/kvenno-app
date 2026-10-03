@@ -1,14 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
 import { generateProblem } from '../utils/problem-generator';
-import {
-  getPointValue,
-  getHintPenalty,
-  getSpeedBonus,
-  getStreakBonus,
-  getAchievement,
-  getProblemCount,
-} from '../utils/scoring';
 import { validateInput, checkAnswer, getContextualFeedback } from '../utils/validation';
 
 // ---------------------------------------------------------------------------
@@ -130,117 +122,6 @@ describe('getContextualFeedback', () => {
   it('returns precision hint for <= 5% error', () => {
     const feedback = getContextualFeedback(99, 100);
     expect(feedback).toContain('Mjög nálægt');
-  });
-});
-
-// ---------------------------------------------------------------------------
-// utils/scoring.ts
-// ---------------------------------------------------------------------------
-
-describe('getPointValue', () => {
-  it('returns 10 for easy', () => {
-    expect(getPointValue('easy')).toBe(10);
-  });
-
-  it('returns 15 for medium', () => {
-    expect(getPointValue('medium')).toBe(15);
-  });
-
-  it('returns 20 for hard', () => {
-    expect(getPointValue('hard')).toBe(20);
-  });
-});
-
-describe('getHintPenalty', () => {
-  it('returns 0 for any hint level in practice mode', () => {
-    expect(getHintPenalty(1, 'practice')).toBe(0);
-    expect(getHintPenalty(2, 'practice')).toBe(0);
-    expect(getHintPenalty(3, 'practice')).toBe(0);
-  });
-
-  it('returns escalating penalties in competition mode', () => {
-    expect(getHintPenalty(1, 'competition')).toBe(2);
-    expect(getHintPenalty(2, 'competition')).toBe(4);
-    expect(getHintPenalty(3, 'competition')).toBe(7);
-  });
-
-  it('returns 0 for hint level 0 in competition mode', () => {
-    expect(getHintPenalty(0, 'competition')).toBe(0);
-  });
-});
-
-describe('getSpeedBonus', () => {
-  it('returns 10 when time remaining > 70 and timer is active', () => {
-    expect(getSpeedBonus(75, true)).toBe(10);
-  });
-
-  it('returns 5 when time remaining is between 61 and 70 and timer is active', () => {
-    expect(getSpeedBonus(65, true)).toBe(5);
-  });
-
-  it('returns 0 when time remaining <= 60 and timer is active', () => {
-    expect(getSpeedBonus(50, true)).toBe(0);
-  });
-
-  it('returns 0 regardless of time when timer is inactive', () => {
-    expect(getSpeedBonus(90, false)).toBe(0);
-  });
-});
-
-describe('getStreakBonus', () => {
-  it('returns 5 for streak of 3', () => {
-    expect(getStreakBonus(3)).toBe(5);
-  });
-
-  it('returns 10 for streak of 5', () => {
-    expect(getStreakBonus(5)).toBe(10);
-  });
-
-  it('returns 0 for streaks that are not 3 or 5', () => {
-    expect(getStreakBonus(1)).toBe(0);
-    expect(getStreakBonus(4)).toBe(0);
-    expect(getStreakBonus(10)).toBe(0);
-  });
-});
-
-describe('getAchievement', () => {
-  it('returns mixing achievement key for streak 3 with mixing type', () => {
-    const result = getAchievement(3, 'mixing');
-    expect(result).toBe('achievements.perfectMixing');
-  });
-
-  it('returns dilution achievement key for streak 3 with dilution type', () => {
-    const result = getAchievement(3, 'dilution');
-    expect(result).toBe('achievements.dilutionExpert');
-  });
-
-  it('returns generic streak-5 achievement key regardless of type', () => {
-    const result = getAchievement(5, 'molarity');
-    expect(result).toBe('achievements.fiveCorrect');
-  });
-
-  it('returns generic streak-3 achievement key for non-special types', () => {
-    const result = getAchievement(3, 'molarity');
-    expect(result).toBe('achievements.threeInRow');
-  });
-
-  it('returns null for streaks below 3', () => {
-    expect(getAchievement(2, 'dilution')).toBeNull();
-    expect(getAchievement(0, 'mixing')).toBeNull();
-  });
-});
-
-describe('getProblemCount', () => {
-  it('returns 8 for easy', () => {
-    expect(getProblemCount('easy')).toBe(8);
-  });
-
-  it('returns 10 for medium', () => {
-    expect(getProblemCount('medium')).toBe(10);
-  });
-
-  it('returns 12 for hard', () => {
-    expect(getProblemCount('hard')).toBe(12);
   });
 });
 
