@@ -9,8 +9,11 @@ import { OxidationStateDisplay } from '../components/OxidationStateDisplay';
 /**
  * Stig 2 asks "Hvað oxast?" under a diagram of the reaction. That diagram labelled the answer —
  * "↑ OXAST" on one species, "↓ AFOXAST" on the other, and "Na oxast: 0 → +1" beneath — before
- * the student had answered. Queries are scoped to the rendered container and every render is
- * unmounted (vitest `retry: 2`, no RTL auto-cleanup).
+ * the student had answered. Once that was fixed the labels came in with the first answer, so
+ * they printed "Cl afoxast" above the second question, "Hvað afoxast?" — an answer shown before
+ * it is given, which a count of right answers cannot count (mobile-pass decision 1 (b)). They now
+ * come in with the second answer. Queries are scoped to the rendered container and every render
+ * is unmounted (vitest `retry: 2`, no RTL auto-cleanup).
  */
 const t = (key: string, fallback?: string) => fallback ?? key;
 
@@ -48,8 +51,26 @@ function answerButtons(view: ReturnType<typeof within>): HTMLButtonElement[] {
 
 const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms));
 
+const LABELS = /OXAST|AFOXAST|oxast:|afoxast:|Tapar|Öðlast/;
+
+/** Answer whichever option is offered first; the labels follow the answer, right or wrong. */
+function answerAny(view: ReturnType<typeof within>) {
+  fireEvent.click(
+    view
+      .getAllByRole('button')
+      .find((b: HTMLElement) => /^(Na|Cl|Cl₂)$/.test(b.textContent ?? '')) as HTMLElement
+  );
+}
+
+/** Answer the first two questions of the first reaction, which is when the labels arrive. */
+function pastSecondAnswer(view: ReturnType<typeof within>) {
+  fireEvent.click(view.getByRole('button', { name: 'Na' }));
+  fireEvent.click(view.getByRole('button', { name: /Næsta spurning/ }));
+  answerAny(view);
+}
+
 describe('Stig 2 does not print the answer above its question', () => {
-  it('shows the oxidation numbers but not which species is oxidised, until the first answer', () => {
+  it('shows the oxidation numbers but not which species is oxidised or reduced, until the second answer', () => {
     const { view } = start();
     wait(3000);
     const panel = diagram(view);
@@ -57,9 +78,18 @@ describe('Stig 2 does not print the answer above its question', () => {
     expect(panel.querySelector('[aria-label="Oxunartala Na: +1"]')).not.toBeNull();
     expect(panel.querySelector('[aria-label="Oxunartala Cl: -1"]')).not.toBeNull();
     // The answer does not.
-    expect(panel.textContent).not.toMatch(/OXAST|AFOXAST|oxast:|afoxast:|Tapar|Öðlast/);
+    expect(panel.textContent).not.toMatch(LABELS);
 
+    // Not after the first answer either, nor while "Hvað afoxast?" is asked.
     fireEvent.click(view.getByRole('button', { name: 'Na' }));
+    wait(3000);
+    expect(diagram(view).textContent).not.toMatch(LABELS);
+    fireEvent.click(view.getByRole('button', { name: /Næsta spurning/ }));
+    wait(3000);
+    expect(view.getByText('Hvað afoxast?')).toBeTruthy();
+    expect(diagram(view).textContent).not.toMatch(LABELS);
+
+    answerAny(view);
     wait(3000);
     expect(diagram(view).textContent).toMatch(/↑ OXAST/);
     expect(diagram(view).textContent).toMatch(/Na oxast: 0 → \+1/);
@@ -67,17 +97,12 @@ describe('Stig 2 does not print the answer above its question', () => {
 
   it('keeps the labels for the questions that reason from them, and hides them for the next reaction', () => {
     const { view } = start();
-    fireEvent.click(view.getByRole('button', { name: 'Na' }));
-    for (const next of ['Næsta spurning', 'Næsta spurning', 'Næsta spurning']) {
-      fireEvent.click(view.getByRole('button', { name: new RegExp(next) }));
+    pastSecondAnswer(view);
+    for (let question = 3; question <= 4; question++) {
+      fireEvent.click(view.getByRole('button', { name: /Næsta spurning/ }));
       wait(3000);
-      expect(diagram(view).textContent).toMatch(/↑ OXAST/);
-      // Answer whichever option is offered first; the label must stay either way.
-      fireEvent.click(
-        view
-          .getAllByRole('button')
-          .find((b) => /^(Na|Cl|Cl₂)$/.test(b.textContent ?? '')) as HTMLElement
-      );
+      expect(diagram(view).textContent, `question ${question}`).toMatch(/↑ OXAST/);
+      answerAny(view);
     }
     fireEvent.click(view.getByRole('button', { name: /Næsta hvarf/ }));
     wait(3000);
@@ -87,7 +112,7 @@ describe('Stig 2 does not print the answer above its question', () => {
 
   it('does not replay the animation, and hide the explanation, when a hint is opened', () => {
     const { view } = start();
-    fireEvent.click(view.getByRole('button', { name: 'Na' }));
+    pastSecondAnswer(view);
     fireEvent.click(view.getByRole('button', { name: /Næsta spurning/ }));
     wait(3000);
     expect(diagram(view).textContent).toMatch(/Na oxast:/);
