@@ -23,7 +23,12 @@ intermediate, 8 advanced); the tag only sets the points a correct answer is wort
 
 The Q vs K and numbers panels render in learning mode and after any wrong answer in challenge mode
 (`App.tsx:828-869`). Hints are free: `HintSystem` is passed `showPointCost={false}`. Points and
-streaks are shown in Keppnishamur only.
+streaks are Keppnishamur's only (mobile-pass decision 1 (b)). Lærdómshamur scores nothing and
+counts instead: when the student goes back to the menu, it shows the sitting as
+`Lærdómshamur, síðasta lota: N af M rétt`, kept under its own storage key
+(`equilibrium-shifter-laerdomshamur`). The same stress on the same equilibrium, answered again
+after its explanation has shown the answer, is not counted; a hint never changes the count.
+`learning-count.test.tsx` holds this, and that the count writes nothing to `problemsCompleted`.
 
 ## What matters before touching it
 
@@ -88,7 +93,7 @@ src/components/NumbersPanel.tsx   the same comparison in computed numbers
 src/components/ParticleEquilibrium.tsx  particle picture
 src/types.ts, src/i18n.ts, src/styles.css, src/main.tsx
 src/__tests__/                    le-chatelier, numbers, numbers-panel, qk-pressure,
-                                  screen-anchoring, bar-labels
+                                  screen-anchoring, bar-labels, learning-count
 ```
 
 **On a phone (2026-09-23).** Everything below `sm` is a phone layout and `sm:`/`md:` restore the
@@ -158,6 +163,9 @@ Each has a test that fails against the version before it.
   mode, and «Framvinda þín: Verkefni kláruð» on the menu stays at 0 however much Lærdómshamur a
   student plays. The gate itself was already flagged as needing a ruling (a mode gate, outside the
   2026-08-29 level-gating ruling); it now also needs fixing or removing, whichever the ruling is.
+  The Lærdómshamur count added on 2026-10-03 is kept apart from `problemsCompleted` on purpose, so
+  the gate behaves exactly as before until decision 101 is ruled; its option (a), counting correct
+  Lærdómshamur answers, could read that count.
 - **The ten unsourced systems** would need the Icelandic book's complex-ion formation constants
   (`m68869`) or another new source — Siggi's call.
 - **Aqueous temperature stresses stay directional.** They have a constant but no derivable ΔH,

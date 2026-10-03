@@ -6908,6 +6908,37 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         teachingFeedbackScrolls: 3,
       },
     },
+    // A Lærdómshamur sitting is counted, and the menu shows it as `N af M rétt` once the
+    // student goes back (mobile-pass decision 1 (b)).
+    {
+      name: 'Valmynd með árangri',
+      steps: [
+        {
+          clickRole: ['button', 'Lærdómshamur'],
+        },
+        {
+          wait: 600,
+        },
+        {
+          css: '.stress-btn',
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Til vinstri'],
+        },
+        {
+          wait: 600,
+        },
+        {
+          clickRole: ['button', 'Til baka'],
+        },
+        {
+          wait: 600,
+        },
+      ],
+    },
     {
       name: 'Lærdómshamur — allar vísbendingar opnar',
       steps: [
