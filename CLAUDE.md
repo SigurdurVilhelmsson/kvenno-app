@@ -224,6 +224,14 @@ Games follow a **teach-before-test** structure:
 
 **No scoring, timers, or streaks during learning phases.** Hint usage is never penalized.
 
+**Applied to every game on 2026-10-03 (mobile-pass decision 1 (b), PR #85).** No level shows a
+running score; each ends `N af M rétt` and the menu shows that per level. A right answer counts
+after a retry, except one the game had already printed. A level that cannot end wrong reports
+completion instead. Old saved points show `Lokið`. Points live only in the timed Keppnishamur
+modes, and each run starts at 0. `apps/games/2-ar/lewis-structures` (commit `a01736c`) is the
+template: `levelNCorrect`/`levelNTotal` beside the old fields, and `resultLabel`. A new game
+follows it.
+
 Gold standard games: Stilla efnajöfnur (real-time atom counter), IMF Level 3 (real-world scenarios), Redox Level 3 (scaffolded half-reactions), Buffer Level 1 (visual ratio builder).
 
 ### Restructure status (April 2026)
@@ -231,7 +239,7 @@ Gold standard games: Stilla efnajöfnur (real-time atom counter), IMF Level 3 (r
 **mighty-mixing-puffin plan — all phases completed:**
 
 - Phase 1: Teaching intros added to all games that tested before teaching (Y1-Y3)
-- Phase 2: Hint penalties removed from Y1 **code**, DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all", and used to claim Y1 was clean in "code + UI text" — both measured false.** **Finished 2026-08-26 across all four stragglers**, so no game now charges for a hint: `1-ar/dimensional-analysis` (two phantom strings), `3-ar/gas-law-challenge` (a phantom string, never rendered), `2-ar/hess-law` (a **real** penalty, 20 unaided against 10, now a flat 20), and `3-ar/ph-titration` — where the recorded claim that all three levels "apply a multiplier" held for **Level 1 only**: L2 and L3 awarded a flat 100 and 20 while _displaying_ "(50 stig)" and "(10 stig)", so they were phantom. L1's was real, via the shared `HintSystem` tier multiplier (1.0/0.8/0.6/0.4/0.4), and is now a flat 100. Each of the four carries a test that fails if the penalty returns. **"No game now charges" was false again:** the 2026-09-23 mobile pass found `2-ar/lewis-structures` (L1 via the `HintSystem` multiplier, L3 15 → 8, silently) and `3-ar/buffer-recipe-creator` (all three levels) still charging. Lewis was fixed 2026-09-30 — flat counts, no running score, guarded by its `hint-cost.test.tsx`; buffer is still open, `docs/REVIEW-QUEUE.md` C3 item 2
+- Phase 2: Hint penalties removed from Y1 **code**, DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all", and used to claim Y1 was clean in "code + UI text" — both measured false.** **Finished 2026-08-26 across all four stragglers**, so no game now charges for a hint: `1-ar/dimensional-analysis` (two phantom strings), `3-ar/gas-law-challenge` (a phantom string, never rendered), `2-ar/hess-law` (a **real** penalty, 20 unaided against 10, now a flat 20), and `3-ar/ph-titration` — where the recorded claim that all three levels "apply a multiplier" held for **Level 1 only**: L2 and L3 awarded a flat 100 and 20 while _displaying_ "(50 stig)" and "(10 stig)", so they were phantom. L1's was real, via the shared `HintSystem` tier multiplier (1.0/0.8/0.6/0.4/0.4), and is now a flat 100. Each of the four carries a test that fails if the penalty returns. **"No game now charges" was false again:** the 2026-09-23 mobile pass found `2-ar/lewis-structures` (L1 via the `HintSystem` multiplier, L3 15 → 8, silently) and `3-ar/buffer-recipe-creator` (all three levels) still charging. Lewis was fixed 2026-09-30 — flat counts, no running score, guarded by its `hint-cost.test.tsx`; buffer followed on 2026-10-03 (decision 2 (b), PR #85), guarded by its own `hint-cost.test.tsx`, so no game now charges for a hint
 - Phase 3-4: Real-world "Af hverju?" context cards + curriculum chain positions added to all 20 games
 - Phase 5a: Stilla efnajöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
@@ -1285,8 +1293,11 @@ specifics — read the README, not them.
 - **`3-ar/thermodynamics-predictor` id 25 stored ΔH = −137 kJ/mol for C + ½O₂ → CO — fixed
   2026-09-22.** That was CO's ΔG°f; its ΔH°f is −110,5, so the game showed ΔG° = −163,8 instead of
   −137,2. Now −110,5, guarded by `co-enthalpy.test.ts`, which also checks the game's ΔG° at 298 K
-  lands on ΔG°f(CO). **Still open:** the game keeps its own ΔH/ΔS and does not use
-  `packages/shared/data/thermo.ts`; ids 12 and 21 disagree with it, without changing a sign.
+  lands on ΔG°f(CO). **Since 2026-10-03 (decision 9 (a), PR #85)** the game's ΔH comes from
+  `packages/shared/data/thermo.ts` for the 25 reactions the book's table reaches, ids 12 and 21
+  included (191,6 and −55,3); the five it cannot reach are pinned by `formation-enthalpy.test.ts`.
+  `2-ar/hess-law` reads the same table, so its Level 3 CaCO₃ answer is the book's +191,6. ΔS is
+  still the game's own.
 - **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest — fixed
   2026-09-22.** On three of five puzzles a student who copied the revealed solution was marked
   wrong. Every number in the hints and explanation now comes from `solveBuffer`, guarded by
@@ -1400,9 +1411,14 @@ platform-wide, because `tengsl` also means a relationship.
 `hliðarskammtatala`), `hraðalögmál` (not `hraðajafna`; neuter, so `í hraðalögmálinu`) and
 `hraðatakmarkandi` (not `hraðaákvarðandi`). `redox-hvarf` is ruled acceptable beside
 `oxunar-afoxunarhvarf`, always hyphenated. `London-kraftar` and `London-dreifikraftar` are hyphenated, as the
-book always writes them (decision 74); the open form is a platform row. Reaction order stays `röð hvörfunar` in `kinetics`
-until its running score goes (decision 1), since `stig efnahvarfs` would put three meanings of
-`stig` on one screen.
+book always writes them (decision 74); the open form is a platform row. Reaction order is `stig efnahvarfs` /
+`heildarstig` since 2026-10-03, applied with decision 1 once `stig` stopped meaning points in
+`kinetics` (neuter: `hvert er stigið`); the old `röð hvörfunar` forms are a platform row.
+
+**Decision 12, 2026-10-03:** `umreikningsstuðull` (not `umbreytingarstuðull`; same declension) and
+`styttast út` for cancelling units and terms (not `strikast út`; it agrees in number, `einingin
+styttist`, `einingarnar styttast`). `strika út` stays only as the name of the on-screen
+strike-through, Einingagreining's `Strika út` button. Both are platform rows.
 
 **Four more on 2026-10-02, Siggi's rulings from the review tracker** (decisions 11, 15, 16, 39):
 `nitur` for nitrogen, not `köfnunarefni` (neuter: `nitur`/`nitri`/`niturs`; compounds take the bare

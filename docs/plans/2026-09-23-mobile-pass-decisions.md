@@ -39,6 +39,7 @@ Items 23, 42, 54, 58 and 66 are this question in one game each.
 **Ruled 2026-09-30 for `lewis-structures` only: (b).** No running score in any level; each level
 reports `N af M rétt`, and the menu and the end screen show that. Every other game above is still
 open.
+**Ruled (b) platform-wide 2026-10-03 and applied (PR #85)** in every game that showed a running score: the Year-1 games (`lausnir`, `molmassi`, `nafnakerfid`, `takmarkandi`, Einingagreining's Stig 3 average, `utfellingarhvorf`'s Beita tally), `rafeindabygging`, `intermolecular-forces`, `kinetics`, `redox-reactions`, `vsepr-geometry`, `hess-law`, `organic-nomenclature`, `ph-titration`, `buffer-recipe-creator`, and the practice modes of `gas-law-challenge`, `thermodynamics-predictor` and `equilibrium-shifter`. Each level ends `N af M rétt` and the menu shows that; a right answer counts after a retry unless the game had already shown it; old saved points show `Lokið`. Keppnishamur keeps points, and each run now starts at 0. Gas-law and thermodynamics practice became rounds (each question of the level once) so they have an end to report at. Where a level cannot end wrong it reports completion, as item 23 did (`lausnir` Stig 1, `buffer-recipe-creator`). The judgement calls this needed are listed in `docs/REVIEW-QUEUE.md` C3.
 
 **2. Two games still charge for hints.**
 `CLAUDE.md` says no game charges for a hint any more; two do. `lewis-structures` Level 1 scales its
@@ -51,6 +52,7 @@ cost. **Recommendation:** (b). A silent penalty is the worst of the three. `docs
 records Lewis Level 1 as deliberately left, so it changes with the ruling.
 **Ruled 2026-09-30 for `lewis-structures`: (b), applied** — flat counts in Levels 1 and 3, guarded
 by `lewis-structures/src/__tests__/hint-cost.test.tsx`. Still open for `buffer-recipe-creator`.
+**Ruled (b) 2026-10-03 and applied to `buffer-recipe-creator` (PR #85):** no multiplier in any level, no hint cost on screen, and a `hint-cost.test.tsx` that plays each level with and without every tier open. No game now charges for a hint.
 
 **3. The Year-2 Námsleiðin chain is half English.**
 `Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic`, in all eight Y2
@@ -135,6 +137,7 @@ from `thermo.ts`, as `equilibrium-shifter` does, adding the missing rows (Fe₂O
 (b) keep the stored tables and say whose they are; (c) wait for a check against Brown.
 **Recommendation:** (a), once you confirm the Icelandic appendix is acceptable here. `hess-law`
 Level 2 uses a third set of roundings, which (a) retires too.
+**Ruled (a) 2026-10-03 and applied (PR #85).** Both games read `@shared/data/thermo`, which gained the book's rows they needed. `hess-law`: Level 3 derives its answers (CaCO₃ +191,6), Level 2 prints the book's values to one decimal with each target the sum of what is printed, Level 1 rounds them to whole kJ (methane −891), and glucose left the reference table. `thermodynamics-predictor`: 25 of 30 reactions carry the book's ΔH (CaCO₃ 191,6, NO₂ dimerisation −55,3); the five the book cannot reach (ice, glucose, a protein, ATP) keep stored values, pinned by `formation-enthalpy.test.ts`.
 
 **10. Printed givens cannot carry trailing zeros.**
 A stored JS number drops them. `einingakedjan`'s ratio cards print `0,1 mol NaOH = 1 L` directly
@@ -166,6 +169,7 @@ sites, 0 in the corpus) and `styttast út` (about 12, the book's word). Options:
 `umreikningsstuðull` and `styttast út`, with governed-terms rows; (b) keep `umbreytingarstuðull`
 but pick one verb; (c) leave. **Recommendation:** (a) for the noun; for the verb, `styttast út` in
 prose and `strika út` only as the name of the on-screen strike-through.
+**Ruled (a) 2026-10-03 and applied (PR #85):** `umreikningsstuðull` at about 25 sites and `styttast út` (agreeing in number: `einingin styttist`, `einingarnar styttast`) in Einingagreining, `molmassi`, `hess-law` and `utfellingarhvorf`; `Strikun eininga` became `Einingar styttast út`, and the `Strika út` button keeps its name. `ordabok.md` and `governed-terms.test.ts` carry both.
 
 **13. Words for subscript and superscript.**
 `ordabok.md` has neither. Three games use three words, and the two agents that looked recommended
@@ -515,6 +519,7 @@ A wrong step shows `Rétt svar: …`, then offers a retry worth the same 10 poin
 150/150 (`Level3.tsx` `feedbackForStep`, `retryStep`). Options: (a) a retried step earns 0 or 5;
 (b) hide the number while a retry is on offer; (c) drop per-step retry. **Recommendation:** (a),
 score the first attempt only, if points stay at all (item 1).
+**Applied 2026-10-03 with item 1 (PR #85), (a):** Stig 3 counts a step only if it was right at the first `Athuga`; each problem's review says `N af 3 skrefum rétt` and the level ends `N af 15 skrefum rétt`.
 
 **55. Stig 1 never poses the case its own misconception text is about.**
 The panel says the limiting reactant is not always the one there is less of (`Level1.tsx:330`),
@@ -545,6 +550,7 @@ game, and finishing it always opens `Þú hefur lokið öllum stigum!` even if 0
 Options: (a) 100 per item everywhere, Stig 0 in the totals, no gate, the closing screen only when
 all four are done; (b) no points: `x af N rétt` per level, no `Heildarstig`, the same gate and
 closing-screen changes. **Recommendation:** (b), per item 1.
+**Applied 2026-10-03 with item 1 (PR #85), (b):** `x af N rétt` per level, no `Heildarstig`, no ≥5/8 completion gate in Stig 3, and the closing screen only when all four levels are done. Stig 1 reports completion, since every challenge is adjust-until-right.
 
 **59. `Þess vegna er kalt gos fríðara!`**
 `Level2.tsx:295`, the cold-soda explanation; `fríðara` means prettier. Options: (a) `Þess vegna
@@ -778,6 +784,7 @@ but only with item 1, so `stig` stops meaning level, points and order on one scr
 sites). Both are `governed-terms` rows. **`stig efnahvarfs` is not applied**, because the
 recommendation ties it to item 1: while the game still shows a running `Stig`, it would mean
 level, points and order on one screen. It waits for item 1 in `kinetics`.
+**`stig efnahvarfs` applied 2026-10-03 with item 1 (PR #85):** `röð hvörfunar`, `Heildarröð` and `Hvörfunarröð` became `stig efnahvarfs` / `heildarstig`, with the neuter agreement (`hver er röðin` → `hvert er stigið`) and the book's `stig með tilliti til A` in question text. A `governed-terms` row bans the old forms.
 
 **82. Level 2 challenge 6 asks the student to compute k and has nowhere to enter it.**
 `data/level2-questions.ts` id 6 `Reikna k`; `Level2.tsx` grades only the two orders. Options:

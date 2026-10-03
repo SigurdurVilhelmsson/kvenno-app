@@ -17,9 +17,10 @@ import { HintTier } from '../HintTier';
 // so the indicator quoted a price nothing charged). Both now opt out via
 // `showPointCost={false}`.
 //
-// The default must stay `true`: `2-ar/lewis-structures` L1 and
-// `3-ar/buffer-recipe-creator` L1/L2/L3 do apply the multiplier, and flipping the
-// default would silently stop telling their students what a hint costs.
+// No game applies the multiplier any more: `2-ar/lewis-structures` stopped on
+// 2026-09-30 and `3-ar/buffer-recipe-creator` on 2026-10-03 (mobile-pass decision 2).
+// The default stays `true` all the same, so that a consumer which did charge for a hint
+// would have to say so on screen rather than charge silently.
 
 const HINTS = {
   topic: 'Efnisvísbending',
