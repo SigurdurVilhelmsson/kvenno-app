@@ -2,18 +2,32 @@ import type { Ref } from 'react';
 
 import { formatDecimal, useArmedAfter } from '@shared/utils';
 
-import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GAS_LAW_INFO } from '../types';
+import type { Level } from '../data';
+import {
+  GasLawQuestion,
+  GameMode,
+  GameStats,
+  QuestionFeedback,
+  GAS_LAW_INFO,
+  RoundResult,
+} from '../types';
 import { FormulaText } from './FormulaText';
 import { answerText, answerUnit, formatDifference } from '../utils/gas-calculations';
 
 interface FeedbackScreenProps {
   feedback: QuestionFeedback;
   currentQuestion: GasLawQuestion;
+  /** The Keppnishamur run; shown only in Keppnishamur. */
   stats: GameStats;
-  sessionCompleted: boolean;
-  sessionQuestionsAnswered: number;
+  selectedLevel: Level;
+  /** The practice round, once its last question is answered; null until then. */
+  roundResult?: RoundResult | null;
+  /** The worked solution was open before this practice answer was checked. */
+  solutionSeen?: boolean;
   gameMode: GameMode;
-  onNext: (mode: GameMode) => void;
+  onNext: () => void;
+  /** Play the practice round again, from the end of one. */
+  onRestart?: () => void;
   onBackToMenu: () => void;
   /** The screen's root, for App's screen-swap anchoring. */
   rootRef?: Ref<HTMLDivElement>;
@@ -23,16 +37,21 @@ export function FeedbackScreen({
   feedback,
   currentQuestion,
   stats,
-  sessionCompleted,
-  sessionQuestionsAnswered,
+  selectedLevel,
+  roundResult = null,
+  solutionSeen = false,
   gameMode,
   onNext,
+  onRestart,
   onBackToMenu,
   rootRef,
 }: FeedbackScreenProps) {
   // "Athuga Svar" opened this screen. A press on Næsta within 400 ms of it appearing is the
   // second half of a double tap, not a decision, and is dropped (design P3).
   const armed = useArmedAfter(400);
+  // Points and streaks are Keppnishamur's alone (mobile-pass decision 1 (b)); a practice
+  // round says how many it got right when it ends.
+  const challenge = gameMode === 'challenge';
 
   return (
     <div ref={rootRef}>
@@ -63,14 +82,28 @@ export function FeedbackScreen({
               >
                 {feedback.message}
               </h2>
-              {feedback.isCorrect && (
+              {challenge && feedback.isCorrect && (
                 <div className="text-2xl font-bold text-yellow-600 phone:text-base phone:w-full phone:mt-0.5">
                   +{feedback.points} stig
                 </div>
               )}
+              {solutionSeen && feedback.isCorrect && (
+                <p className="text-sm text-warm-700 mt-1 phone:w-full phone:mt-0.5">
+                  Lausnin var opin þegar þú svaraðir, svo svarið telst ekki með.
+                </p>
+              )}
             </div>
 
-            {sessionCompleted && sessionQuestionsAnswered === 15 && (
+            {roundResult && (
+              <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-4 mb-6 text-center phone:p-3 phone:mb-3">
+                <p className="font-bold text-blue-900 text-lg">Stigi {selectedLevel} lokið</p>
+                <p className="text-blue-800 text-2xl font-bold phone:text-xl">
+                  {roundResult.correct} af {roundResult.total} rétt
+                </p>
+              </div>
+            )}
+
+            {challenge && stats.questionsAnswered === 15 && (
               <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-2 border-yellow-400 rounded-xl p-4 mb-6 text-center phone:p-3 phone:mb-3">
                 <div className="text-3xl mb-1 phone:text-xl">🎉⭐</div>
                 <p className="font-bold text-yellow-800 text-lg">Þú hefur lokið Gaslögmálum!</p>
@@ -152,45 +185,58 @@ export function FeedbackScreen({
               </p>
             </div>
 
-            {/* Árangur is compacted on a phone (one row from 360 px), never hidden (design §4, §7.8). */}
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6 phone:p-2.5 phone:mb-3">
-              <h3 className="font-bold text-blue-900 mb-2 phone:mb-1 phone:text-sm">Árangur:</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-sm phone:min-[360px]:grid-cols-4 phone:gap-1 phone:text-xs">
-                <div>
-                  <div className="text-2xl font-bold text-yellow-600 phone:text-lg">
-                    {stats.score}
+            {/* Árangur is compacted on a phone (one row from 360 px), never hidden (design §4, §7.8).
+                Keppnishamur only: it is this run's points and streak. */}
+            {challenge && (
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6 phone:p-2.5 phone:mb-3">
+                <h3 className="font-bold text-blue-900 mb-2 phone:mb-1 phone:text-sm">Árangur:</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-sm phone:min-[360px]:grid-cols-4 phone:gap-1 phone:text-xs">
+                  <div>
+                    <div className="text-2xl font-bold text-yellow-600 phone:text-lg">
+                      {stats.score}
+                    </div>
+                    <div className="text-warm-600">Stig</div>
                   </div>
-                  <div className="text-warm-600">Stig</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-green-600 phone:text-lg">
-                    {stats.correctAnswers}/{stats.questionsAnswered}
+                  <div>
+                    <div className="text-2xl font-bold text-green-600 phone:text-lg">
+                      {stats.correctAnswers}/{stats.questionsAnswered}
+                    </div>
+                    <div className="text-warm-600">Rétt</div>
                   </div>
-                  <div className="text-warm-600">Rétt</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-blue-600 phone:text-lg">
-                    {stats.streak}
+                  <div>
+                    <div className="text-2xl font-bold text-blue-600 phone:text-lg">
+                      {stats.streak}
+                    </div>
+                    <div className="text-warm-600">Núverandi röð</div>
                   </div>
-                  <div className="text-warm-600">Núverandi röð</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-purple-600 phone:text-lg">
-                    {stats.bestStreak}
+                  <div>
+                    <div className="text-2xl font-bold text-purple-600 phone:text-lg">
+                      {stats.bestStreak}
+                    </div>
+                    <div className="text-warm-600">Besta röð</div>
                   </div>
-                  <div className="text-warm-600">Besta röð</div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={armed(() => onNext(gameMode))}
-                className="flex-1 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
-                style={{ backgroundColor: '#f36b22' }}
-              >
-                ➡️ Næsta spurning
-              </button>
+              {roundResult ? (
+                <button
+                  onClick={armed(() => onRestart?.())}
+                  className="flex-1 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
+                  style={{ backgroundColor: '#f36b22' }}
+                >
+                  🔁 Æfa stigið aftur
+                </button>
+              ) : (
+                <button
+                  onClick={armed(onNext)}
+                  className="flex-1 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
+                  style={{ backgroundColor: '#f36b22' }}
+                >
+                  ➡️ Næsta spurning
+                </button>
+              )}
               <button
                 onClick={onBackToMenu}
                 className="px-6 py-3 bg-warm-600 text-white rounded-lg hover:bg-warm-700 transition font-bold whitespace-nowrap"

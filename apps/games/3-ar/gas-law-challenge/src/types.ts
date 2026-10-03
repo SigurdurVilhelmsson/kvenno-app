@@ -121,6 +121,7 @@ export interface GasLawQuestion {
   };
 }
 
+/** One Keppnishamur run, as its header and feedback screen show it. Never saved. */
 export interface GameStats {
   score: number;
   questionsAnswered: number;
@@ -128,6 +129,30 @@ export interface GameStats {
   streak: number;
   bestStreak: number;
   hintsUsed: number;
+}
+
+/** Right answers out of the questions in one practice round. */
+export interface RoundResult {
+  correct: number;
+  total: number;
+}
+
+/**
+ * What the game remembers between visits, under `gas-law-challenge-progress`.
+ *
+ * Points and streaks belong to Keppnishamur only (mobile-pass decision 1 (b)): a practice
+ * round reports `N af M rétt`, and only Keppnishamur keeps a best score. Progress saved
+ * before that change held one `score`, `streak` and `bestStreak` that both modes added to,
+ * so none of it can be read as either a count or a Keppnishamur best; it is left unread, and
+ * a level shows no result until a round of it is played again.
+ */
+export interface GasLawProgress {
+  /** The best finished practice round of each level. */
+  practice?: Partial<Record<1 | 2 | 3, RoundResult>>;
+  /** The best Keppnishamur run on each level, in points. */
+  challengeBest?: Partial<Record<1 | 2 | 3, number>>;
+  /** The longest run of right answers in any Keppnishamur run. */
+  challengeBestStreak?: number;
 }
 
 export interface GameState {

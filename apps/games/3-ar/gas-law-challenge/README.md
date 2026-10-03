@@ -10,9 +10,10 @@ variables are held constant: Boyle, Charles, Gay-Lussac, the combined gas law an
 
 ## Structure
 
-A menu with an intro card ("Af hverju PV = nRT?"), a level picker and two modes. Each question is
-drawn at random, with replacement, from the chosen level's pool (`getRandomQuestionForLevel` in
-`src/data/questions.ts`). Levels are not gated.
+A menu with an intro card ("Af hverju PV = nRT?"), a level picker and two modes. Æfingahamur plays
+the chosen level as a round, every question once in a random order (`getPracticeDeck` in
+`src/data/questions.ts`); Keppnishamur draws each question at random, with replacement
+(`getRandomQuestionForLevel`). Levels are not gated.
 
 | Stig | Laws                       | Questions | Law-selection step |
 | ---- | -------------------------- | --------- | ------------------ |
@@ -24,18 +25,26 @@ Before this, every question was drawn at random from all six laws, which the Y3 
 a P3 failure. The iteration-5 restructure split them by law into the three curriculum-ordered levels
 above (`LEVEL_LAWS`, `src/data/questions.ts`).
 
-- **Æfingahamur** — no timer, unlimited hints, a "Sýna lausn" panel. On Levels 2 and 3 the student
-  first picks which law applies ("Skref 1: Hvaða lögmál á við?") and is told why if wrong.
-- **Keppnishamur** — 90 seconds per question, no law-selection step, no solution panel, and a
-  50-point bonus for answering with more than 60 seconds left.
+- **Æfingahamur** — no timer, unlimited hints, a "Sýna lausn" panel, and no points or streak. On
+  Levels 2 and 3 the student first picks which law applies ("Skref 1: Hvaða lögmál á við?") and is
+  told why if wrong. The round ends with `N af M rétt`, and the menu shows each level's best round.
+- **Keppnishamur** — 90 seconds per question, no law-selection step, no solution panel, points, a
+  streak, and a 50-point bonus for answering with more than 60 seconds left. Each run starts from
+  0; the menu shows the best run on the selected level and the longest streak.
 
 Feedback shows the student's and the correct answer, the step-by-step solution, and an
 "Af hverju virkar …?" card carrying the law's molecular-level `principleIs` from `src/types.ts`.
 
 ## Before touching it
 
-- **Hints cost nothing.** Points come from accuracy only — 100 within tolerance, 150 within 1 %, plus
-  the challenge time bonus (`finishQuestion` in `src/App.tsx`); `getHint()` only counts hints for the stats. A
+- **Points and streaks are Keppnishamur's only** — mobile-pass decision 1 (b), ruled platform-wide.
+  A practice answer counts towards `N af M rétt` when it is right, unless "Sýna lausn" (which prints
+  the answer) was opened before it was checked. Progress saved before the change held one score both
+  modes added to; it is not read, so a level shows no result until a round of it is played again.
+  `points-in-keppnishamur-only.test.tsx` holds all of this.
+- **Hints cost nothing.** Keppnishamur points come from accuracy only — 100 within tolerance, 150
+  within 1 %, plus the time bonus (`finishQuestion` in `src/App.tsx`); a hint never changes a
+  practice count either. A
   phantom "hints cost points" string lived in the old `i18n.ts` and went with it (see
   `docs/README.md`).
 - **The language switcher was stripped on 2026-09-19** — the game had zero `t()` calls, and the
@@ -76,7 +85,7 @@ Feedback shows the student's and the correct answer, the step-by-step solution, 
 index.html                      <title>Gaslögmál - Kvennaskólinn</title>
 src/App.tsx                     state, grading, timer, keyboard (Enter / H / S)
 src/types.ts                    GasLawQuestion, GAS_LAW_INFO (six laws), R
-src/data/questions.ts           23 questions, LEVEL_LAWS, level pools
+src/data/questions.ts           23 questions, LEVEL_LAWS, level pools, the practice round
 src/utils/gas-calculations.ts   solveGasLaw, checkAnswer, calculateError, units, names
 src/components/MenuScreen.tsx   intro, level picker, modes, Námsleiðin chain
 src/components/GameScreen.tsx   law selection, answer input, hints, solution
@@ -90,13 +99,11 @@ src/__tests__/answer-display.test.tsx         a printed answer is one the grader
 src/__tests__/simulator-readouts.test.tsx     the simulator shows only what the question gives
 src/__tests__/challenge-timer-and-keys.test.tsx
 src/__tests__/icelandic-grammar.test.tsx
+src/__tests__/points-in-keppnishamur-only.test.tsx   practice counts, Keppnishamur points
 ```
 
 ## Open
 
-- **Score, streak and "Besta röð" are shown in both modes**, including practice, and a correct
-  practice answer still awards points. That sits uneasily with the no-scoring-while-learning rule;
-  whether practice should keep them is a ruling, not a code fix.
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle
   deferred a manipulable pre-game simulator.
 - **"Næstum rétt! Reyndu aftur."** tells a near-miss student to try again, but the feedback
@@ -105,6 +112,14 @@ src/__tests__/icelandic-grammar.test.tsx
   number the grader accepts (`Reiknaðu: V = 3,82 L`), hints cost nothing, and four presses of H
   take 150 points plus the 50-point time bonus. Whether challenge hints should stop short of the
   final line is a ruling about the scored mode, not a code fix.
+- **In Æfingahamur the last hint is the answer too, and it still counts.** A hint never changes a
+  count under decision 1 (b), as in `lewis-structures`; only "Sýna lausn" opened first stops a right
+  answer counting. Whether a hint that prints the number should count as a revealed solution is
+  Siggi's call.
+
+**Closed 2026-10-03.** Score, streak and "Besta röð" showed in practice too, and both modes added
+to one saved score. Points now stay in Keppnishamur and practice ends with `N af M rétt` (decision 1
+(b)).
 
 **Closed 2026-09-23.** Stored answers are now re-derived from their questions
 (`answers-derive.test.ts`), which found questions 2 and 11 worked with R = 0,0821: 0,211 → 0,212

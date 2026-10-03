@@ -5974,11 +5974,177 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // A practice round ends with `N af M rétt` (mobile-pass decision 1 (b)); Stig 3 is the
+    // shortest, at four questions.
+    {
+      name: 'Stig 3 — æfingu lokið',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3 — Samanburður'],
+        },
+        {
+          clickRole: ['button', 'Byrja að Æfa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#gas-law-answer', '999999'],
+        },
+        {
+          clickRole: ['button', 'Athuga Svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#gas-law-answer', '999999'],
+        },
+        {
+          clickRole: ['button', 'Athuga Svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#gas-law-answer', '999999'],
+        },
+        {
+          clickRole: ['button', 'Athuga Svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#gas-law-answer', '999999'],
+        },
+        {
+          clickRole: ['button', 'Athuga Svar'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+    },
     {
       name: 'Valmynd með árangri',
       steps: [
         {
+          clickRole: ['button', 'Stig 3 — Samanburður'],
+        },
+        {
           clickRole: ['button', 'Byrja að Æfa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#gas-law-answer', '999999'],
+        },
+        {
+          clickRole: ['button', 'Athuga Svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#gas-law-answer', '999999'],
+        },
+        {
+          clickRole: ['button', 'Athuga Svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#gas-law-answer', '999999'],
+        },
+        {
+          clickRole: ['button', 'Athuga Svar'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
         },
         {
           wait: 400,
