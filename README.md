@@ -146,7 +146,8 @@ The production server is a Linode instance running Ubuntu 24.04.
 - **Service:** `kvenno-backend.service` (systemd)
 - **Domain:** `kvenno.app` + `www.kvenno.app`
 - **SSL:** Let's Encrypt via certbot (auto-renewal)
-- **Nginx:** `/etc/nginx/sites-available/kvenno` — serves static files, proxies `/api/*` to port 8000
+- **Nginx:** `/etc/nginx/sites-available/kvenno.app` (from `server/nginx-site.conf`; see
+  `docs/DEPLOYMENT.md`) — serves static files, proxies `/api/*` to port 8000
 
 ### Deploy
 

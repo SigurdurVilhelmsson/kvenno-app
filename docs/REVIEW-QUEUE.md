@@ -114,7 +114,9 @@ leave".
 - [ ] 48–49 stilla-efnajofnur. Item 48 done 2026-10-02.
 - [ ] 50–53 utfellingarhvorf
 - [ ] 54–57 takmarkandi
-- [ ] 58–60 lausnir
+- [ ] 58–60 lausnir. Item 60 done 2026-10-03: a wrong `Athuga lausn` says whether the
+      concentration is too low or too high and points at the readout's arrows. The wording is a
+      Claude draft, yours to change (`Level1.tsx`, the `missShown` block).
 - [ ] 61–62 einingakedjan
 - [ ] 63–64 rafeindabygging. Items 63 and 64 done 2026-10-01.
 - [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
@@ -238,8 +240,10 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       `isCorrect`, and `level1-flow.test.tsx` holds it.
 - [ ] **equilibrium-shifter** shows 'Stig: 0' in Lærdómshamur, a score in a learning mode. This
       overlaps C3 item 1.
-- [ ] **lausnir** Stig 1: 'Athuga lausn' gives no feedback outside the tolerance. This is C3 item
-      60, listed here because it is a plain defect.
+- [x] **lausnir** Stig 1: 'Athuga lausn' gives no feedback outside the tolerance. This is C3 item
+      60, listed here because it is a plain defect. Fixed 2026-10-03: the message says which way
+      the concentration is off and goes once the beaker changes, held by `phone-scroll.test.tsx`.
+      Its wording is a draft.
 - [x] **organic-nomenclature `AnimatedMolecule`** overlapped atoms from 4 carbons up. No longer
       reproduces, checked 2026-10-01 (PR #79): every Stig 2 molecule, branched ones included, is
       drawn with all atoms apart (tightest gap 12,8 units, hexane), and `molecule-drawing.test.tsx`
@@ -285,6 +289,9 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       `docs/DEPLOYMENT.md`, or add an opt-in step to the script. Documented 2026-10-02 (PR #82).
 - [ ] **The docs disagree on the nginx site filename:** `README.md` says `kvenno`,
       `docs/DEPLOYMENT.md` says `kvenno.app`. Fix them to match whatever the server actually uses.
+      2026-10-03: `README.md` now says `kvenno.app`, as `server/nginx-site.conf`'s own header,
+      `server/README.md` and `docs/DEPLOYMENT.md` do. Nobody has looked at the server, so tick
+      this when the A-section redirect check reads the live filename.
 - [x] **The three 3D games' unhashed `{game}.js`/`{game}.css` are cached for a year.** Hash them,
       or give them a short cache header. Hashed 2026-10-02 (PR #82), under `assets/{game}/`.
 - [x] **pnpm 9.15 → current:** 12.8.1, 2026-09-29, PR #69. It needed `allowBuilds` for esbuild
@@ -293,7 +300,7 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       mask for the animated states: buffer Stig 2, vsepr Stig 2, the redox galvanic cell. In CI
       from 2026-10-03 as the `desktop-compare` job: a report in the job summary, not a gate,
       since a content change moves desktop geometry on purpose. A build compared with itself
-      differed at 9 of 370 states; with the running animations marked `data-live`, SVG
+      differed at 9 of 370 states (PR #83); with the running animations marked `data-live`, SVG
       `<animate>` stripped before capture, and pixels off by at most 16/255 counted as
       anti-aliasing (an input border in redox Stig 3 differed by 11/255 under load), it differs
       at 0 to 1 (nafnakerfid Stig 2, under load).
