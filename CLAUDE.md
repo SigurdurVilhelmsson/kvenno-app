@@ -1315,11 +1315,11 @@ shown as `36.458000000000006 g` — and prints Avogadro-scale values through `fo
 `1-ar/lausnir`. Other games were not audited for this; use `formatDecimal` rather than a local
 `fmt` when you find one.
 
-Reported by the audit and recorded in the READMEs, not independently re-verified: points
-and streaks shown in practice modes (`equilibrium-shifter`, `gas-law-challenge`,
-`thermodynamics-predictor`); ungoverned terms in `thermodynamics-predictor` (enthalpy loanword in
-t-spelling, four names for entropy); dead `needScore`
-gating strings in `lausnir/src/i18n.ts`; wrong menu score denominators in `nafnakerfid`. Two
+Reported by the audit and recorded in the READMEs, not independently re-verified: ungoverned
+terms in `thermodynamics-predictor` (enthalpy loanword in t-spelling, four names for entropy).
+The audit's other three reports are closed: points and streaks in practice modes and
+`nafnakerfid`'s wrong menu score denominators went with decision 1 (PR #85), and `lausnir`'s dead
+`needScore` strings are gone, as is its unused `utils/scoring.ts`. Two
 misspellings in `equilibrium-shifter` (`hvarfstuðullinn` with a stray `a`, `efni` with an accent)
 were fixed with the audit.
 

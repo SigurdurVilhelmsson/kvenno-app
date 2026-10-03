@@ -62,12 +62,6 @@ export const gameTranslations = createGameTranslations({
       moles: 'g → mól: g × (1 mól / mólmassi g)',
       mixing: 'Blöndun: heildarmól / heildarrúmmál',
     },
-    achievements: {
-      perfectMixing: 'Fullkomin blöndun! 🧪',
-      dilutionExpert: 'Útþynningar sérfræðingur! 💧',
-      fiveCorrect: '5 réttar! 🔥🔥',
-      threeInRow: '3 í röð! 🔥',
-    },
   },
   en: {
     game: {
@@ -125,12 +119,6 @@ export const gameTranslations = createGameTranslations({
       moles: 'mol = mass(g) / molar mass(g/mol)',
       mixing: 'M = (M₁V₁ + M₂V₂) / (V₁ + V₂) (mixing)',
     },
-    achievements: {
-      perfectMixing: 'Perfect mixing! 🧪',
-      dilutionExpert: 'Dilution expert! 💧',
-      fiveCorrect: '5 correct! 🔥🔥',
-      threeInRow: '3 in a row! 🔥',
-    },
   },
   pl: {
     game: {
@@ -187,12 +175,6 @@ export const gameTranslations = createGameTranslations({
       dilution: 'M₁V₁ = M₂V₂ (rozcieńczanie)',
       moles: 'mol = masa(g) / masa molowa(g/mol)',
       mixing: 'M = (M₁V₁ + M₂V₂) / (V₁ + V₂) (mieszanie)',
-    },
-    achievements: {
-      perfectMixing: 'Idealne mieszanie! 🧪',
-      dilutionExpert: 'Ekspert od rozcieńczania! 💧',
-      fiveCorrect: '5 poprawnych! 🔥🔥',
-      threeInRow: '3 z rzędu! 🔥',
     },
   },
 });
