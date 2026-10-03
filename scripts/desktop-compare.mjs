@@ -11,8 +11,9 @@
  *    input, svg and img — tag, text, rounded box, font size and colour — and
  *    the document height. Must be identical.
  *  - **Pixels**: a full-page screenshot, live canvases masked. Must be
- *    byte-identical (skip with --no-png where a machine's font rendering is not
- *    stable between two runs).
+ *    identical, except that a pixel off by at most FAINT levels in every channel
+ *    is anti-aliasing and is noted, not counted (skip with --no-png where a
+ *    machine's font rendering is not stable between two runs).
  *  - **Behaviour**, which geometry cannot see: the page's scrollY once the
  *    state is reached, and the focused element. A changed scrollY fails — that
  *    is the P2 regression, a reveal that stopped (or started) moving a desktop
@@ -298,7 +299,54 @@ async function capture(browser, baseUrl, state, png) {
   return result;
 }
 
-function compare(state, base, head) {
+/**
+ * The largest per-channel difference, out of 255, that still counts as the same pixel.
+ * Two captures of one build can differ at an input's anti-aliased border: 24 pixels,
+ * none by more than 11, at Stig 3 of 2-ar/redox-reactions under load (2026-10-03). A
+ * real change — a moved edge, other text, another colour token — differs by far more.
+ */
+const FAINT = 16;
+
+/** Decodes two PNGs in the browser and counts the pixels that differ beyond FAINT. */
+function pixelDiff(page, a, b) {
+  return page.evaluate(
+    async ([a, b, faint]) => {
+      const load = async (data) => {
+        const img = new Image();
+        img.src = `data:image/png;base64,${data}`;
+        await img.decode();
+        const canvas = new OffscreenCanvas(img.width, img.height);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        return ctx.getImageData(0, 0, img.width, img.height);
+      };
+      const [x, y] = await Promise.all([load(a), load(b)]);
+      if (x.width !== y.width || x.height !== y.height) {
+        return { size: `${x.width}×${x.height} against ${y.width}×${y.height}` };
+      }
+      let strong = 0;
+      let weak = 0;
+      let max = 0;
+      for (let i = 0; i < x.data.length; i += 4) {
+        const d = Math.max(
+          Math.abs(x.data[i] - y.data[i]),
+          Math.abs(x.data[i + 1] - y.data[i + 1]),
+          Math.abs(x.data[i + 2] - y.data[i + 2]),
+          Math.abs(x.data[i + 3] - y.data[i + 3])
+        );
+        if (d > faint) strong++;
+        else if (d) {
+          weak++;
+          max = Math.max(max, d);
+        }
+      }
+      return { strong, weak, max };
+    },
+    [a.toString('base64'), b.toString('base64'), FAINT]
+  );
+}
+
+async function compare(state, base, head, diffPage) {
   const problems = [];
   const notes = [];
   if (base.error || head.error) {
@@ -320,7 +368,12 @@ function compare(state, base, head) {
     );
   }
   if (base.png && head.png && Buffer.compare(base.png, head.png) !== 0) {
-    problems.push('pixels: full-page PNG differs');
+    const d = await pixelDiff(diffPage, base.png, head.png);
+    if (d.size) problems.push(`pixels: full-page PNG is ${d.size}`);
+    else if (d.strong) problems.push(`pixels: ${d.strong} pixel(s) differ`);
+    else if (d.weak) {
+      notes.push(`pixels: ${d.weak} pixel(s) differ by at most ${d.max}/255 (anti-aliasing)`);
+    }
   }
   if (base.behaviour.scrollY !== head.behaviour.scrollY) {
     problems.push(`scrollY: base ${base.behaviour.scrollY}, head ${head.behaviour.scrollY}`);
@@ -408,6 +461,7 @@ async function main() {
   const browser = await chromium.launch(
     args.chromium ? { executablePath: args.chromium } : undefined
   );
+  const diffPage = await browser.newPage();
   mkdirSync(args.out, { recursive: true });
   const png = !args['no-png'];
   const jobs = Math.max(1, Number(args.jobs) || 1);
@@ -421,7 +475,7 @@ async function main() {
         capture(browser, base.url, state, png),
         capture(browser, head.url, state, png),
       ]);
-      let { problems, notes } = compare(state, b, h);
+      let { problems, notes } = await compare(state, b, h, diffPage);
       // A few recorded paths do not land on the same scroll position every run
       // in either build (a drag, an animation racing a click). A difference
       // counts only if it reproduces; one that goes away is reported as a note.
@@ -431,7 +485,7 @@ async function main() {
           capture(browser, base.url, state, png),
           capture(browser, head.url, state, png),
         ]);
-        const again = compare(state, b, h);
+        const again = await compare(state, b, h, diffPage);
         if (!again.problems.length) {
           problems = [];
           notes = [

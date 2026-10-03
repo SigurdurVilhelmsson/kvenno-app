@@ -422,6 +422,8 @@ export function ElectrochemicalCell({
           // aspect-ratio sizes the border box, as the width/height attributes did: height
           // 'auto' alone would size the content box and grow the desktop diagram by a pixel.
           style={{ maxWidth: width, aspectRatio: `${width} / ${height}` }}
+          // Moves on every frame while running, so scripts/desktop-compare.mjs masks it.
+          data-live
           role="img"
           aria-label={`Galvaníhlað: ${pair.anode.metal} anóða og ${pair.cathode.metal} katóða með rafeinda- og jónaflæði`}
         >

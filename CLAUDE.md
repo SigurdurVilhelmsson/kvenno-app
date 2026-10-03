@@ -429,7 +429,8 @@ games were migrated; the design's Outcome section has the before→after per gam
   change**, exactly as for the paths above. The checks live in `e2e/mobile-vertical-checks.ts`.
 - **Desktop must not move.** `scripts/desktop-compare.mjs --base <base dist> --head dist` serves
   both builds and replays every recorded state and loop at 1280×800: geometry and full-page PNGs
-  must be identical, `scrollY` after each commit must match, and focus changes are reported (focus
+  must be identical (a pixel off by at most 16/255 in every channel is anti-aliasing, noted and
+  not counted), `scrollY` after each commit must match, and focus changes are reported (focus
   falling to `<body>` fails). A difference that is not a focus move is a defect, not a note — do
   not mask it away. **It runs on every PR since 2026-10-03** as the `desktop-compare` CI job:
   the base's games are built in the same job, the comparison covers the games the PR touches
@@ -438,9 +439,9 @@ games were migrated; the design's Outcome section has the before→after per gam
   content change moves desktop geometry on purpose — so read the summary on any PR that should
   not touch the desktop. **Mark anything that moves on every frame `data-live`** (a simulation, a
   live counter): the script masks it and compares only its box, as it does a canvas. Comparing a
-  build with itself found five (kinetics' collision counter, IMF's force animation, VSEPR's two
-  shape animations, buffer's pulsing flasks — the last are SVG `<animate>`, which the script now
-  strips before capture instead). A new animation without the mark shows up as a difference on
+  build with itself found six (kinetics' collision counter, IMF's force animation, VSEPR's two
+  shape animations, redox's running galvanic cell, buffer's pulsing flasks — the last are SVG
+  `<animate>`, which the script now strips before capture instead). A new animation without the mark shows up as a difference on
   every PR that touches its game.
 
 ### Adding a new experiment to lab reports

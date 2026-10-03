@@ -293,8 +293,9 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       mask for the animated states: buffer Stig 2, vsepr Stig 2, the redox galvanic cell. In CI
       from 2026-10-03 as the `desktop-compare` job: a report in the job summary, not a gate,
       since a content change moves desktop geometry on purpose. A build compared with itself
-      differed at 9 of 370 states; with the running animations marked `data-live` and SVG
-      `<animate>` stripped before capture, it differs at 0 to 1 (an anti-aliased edge in
-      nafnakerfid Stig 2, under load).
+      differed at 9 of 370 states; with the running animations marked `data-live`, SVG
+      `<animate>` stripped before capture, and pixels off by at most 16/255 counted as
+      anti-aliasing (an input border in redox Stig 3 differed by 11/255 under load), it differs
+      at 0 to 1 (nafnakerfid Stig 2, under load).
 - [x] **`e2e/` has no `tsconfig`**, so `pnpm type-check` does not cover the specs. Added
       2026-10-02 (PR #82); `pnpm type-check` now runs it, and the specs were already clean.
