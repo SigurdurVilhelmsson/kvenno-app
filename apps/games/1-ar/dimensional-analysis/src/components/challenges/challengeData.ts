@@ -23,15 +23,15 @@ export const challenges: Challenge[] = [
       solution: '1000 mL = 1 L. Stilltu á 1 lítra.',
     },
     whyExplanation:
-      'Umbreytingarstuðull jafngildir 1 vegna þess að teljari og nefnari tákna sama magn',
+      'Umreikningsstuðull jafngildir 1 vegna þess að teljari og nefnari tákna sama magn',
   },
   {
     id: 'C2',
     type: 'factor_building',
-    title: 'Byggja umbreytingarstuðul',
+    title: 'Byggja umreikningsstuðul',
     instruction: 'Smelltu á einingar til að setja þær í brotið og búa til stuðul sem jafngildir 1.',
     hints: {
-      topic: 'Þetta snýst um umbreytingarstuðla og hvernig þeir virka.',
+      topic: 'Þetta snýst um umreikningsstuðla og hvernig þeir virka.',
       strategy: 'Stuðull jafngildir 1 þegar teljari og nefnari tákna sama magn.',
       method: 'Veldu tvær einingar sem tákna nákvæmlega sama rúmmál.',
       solution: '1000 mL / 1 L = 1 eða 1 L / 1000 mL = 1',
@@ -42,16 +42,16 @@ export const challenges: Challenge[] = [
   {
     id: 'C3',
     type: 'cancellation',
-    title: 'Strikun eininga',
+    title: 'Einingar styttast út',
     instruction:
-      'Veldu réttan stuðul til að breyta mL í L. Horfðu á hvernig einingarnar strikast út!',
+      'Veldu réttan stuðul til að breyta mL í L. Horfðu á hvernig einingarnar styttast út!',
     hints: {
-      topic: 'Þetta snýst um strikun eininga í einingagreiningu.',
+      topic: 'Þetta snýst um hvernig einingar styttast út í einingagreiningu.',
       strategy: 'Einingin sem þú vilt losna við þarf að vera í nefnara stuðulsins.',
       method: 'mL í byrjunargildi þarf að para við mL í nefnara stuðulsins.',
-      solution: 'Veldu (1 L / 1000 mL) þar sem mL er í nefnara og strikast út.',
+      solution: 'Veldu (1 L / 1000 mL) þar sem mL er í nefnara og styttist út.',
     },
-    whyExplanation: 'Einingin strikast út vegna þess að sama einingin er bæði í teljara og nefnara',
+    whyExplanation: 'Einingin styttist út vegna þess að sama einingin er bæði í teljara og nefnara',
   },
   {
     id: 'C4',
@@ -59,13 +59,13 @@ export const challenges: Challenge[] = [
     title: 'Snúningur stuðuls',
     instruction: 'Prófaðu báða stuðla. Hver virkar til að breyta km í m?',
     hints: {
-      topic: 'Þetta snýst um stefnu umbreytingarstuðla.',
+      topic: 'Þetta snýst um stefnu umreikningsstuðla.',
       strategy: 'Einingin sem á að hverfa þarf að vera í nefnara.',
       method: 'km er í byrjunargildi, svo km þarf að vera í nefnara stuðulsins.',
-      solution: 'Veldu (1000 m / 1 km) þar sem km í nefnara strikast út með km í teljara.',
+      solution: 'Veldu (1000 m / 1 km) þar sem km í nefnara styttist út með km í teljara.',
     },
     whyExplanation:
-      'Rétt stefna tryggir að óæskilega einingin strikist út og æskilega einingin verði eftir',
+      'Rétt stefna tryggir að óæskilega einingin styttist út og æskilega einingin verði eftir',
   },
   {
     id: 'C5',
@@ -88,7 +88,7 @@ export const challenges: Challenge[] = [
     hints: {
       topic: 'Þetta snýst um keðjubreytingar með tímaeiningum.',
       strategy: 'Byrjaðu með klst → mín, síðan mín → s. Einingin sem á að hverfa fer í nefnara.',
-      method: 'klst strikast út með klst í nefnara, mín strikast út með mín í nefnara.',
+      method: 'klst styttist út með klst í nefnara, mín styttist út með mín í nefnara.',
       solution: 'Skref 1: (60 mín / 1 klst), Skref 2: (60 s / 1 mín)',
     },
     whyExplanation: 'Sama regla gildir um tímaeiningar og önnur stærðfræðileg sambönd',
@@ -106,6 +106,6 @@ export const cancellationVariants: Record<string, 'mL-to-L' | 'mg-to-kg' | 'time
 export const successMessages: Record<string, string> = {
   equivalence: 'Þú skildir að mismunandi tölur með mismunandi einingum geta táknað sama magn!',
   factor_building: 'Þú bjóst til stuðul sem jafngildir 1 - lykilhugtak í einingagreiningu!',
-  cancellation: 'Þú sást hvernig einingarnar strikast út þegar þær eru eins!',
+  cancellation: 'Þú sást hvernig einingarnar styttast út þegar þær eru eins!',
   orientation: 'Þú lærðir að einingin sem á að hverfa þarf að vera í nefnara!',
 };

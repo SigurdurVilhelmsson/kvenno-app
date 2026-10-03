@@ -250,7 +250,7 @@ export function UnitCancellationVisualizer({
       {/* Header */}
       <div className="text-center mb-4 phone:mb-2 phone:flex phone:flex-wrap phone:items-baseline phone:justify-center phone:gap-x-2">
         <h3 className="text-sm font-bold text-warm-700 uppercase tracking-wide">Einingagreining</h3>
-        <p className="text-xs text-warm-500">Eins einingar strikast út</p>
+        <p className="text-xs text-warm-500">Eins einingar styttast út</p>
       </div>
 
       {/* Numerator */}
@@ -348,7 +348,8 @@ export function UnitCancellationVisualizer({
         <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl text-center phone:mb-2 phone:p-2">
           <p className="text-sm text-orange-700">
             <span className="font-bold">{matchingUnits.join(', ')}</span>{' '}
-            {matchingUnits.length > 1 ? 'eru' : 'er'} í bæði teljara og nefnara og strikast út!
+            {matchingUnits.length > 1 ? 'eru' : 'er'} í bæði teljara og nefnara og{' '}
+            {matchingUnits.length > 1 ? 'styttast' : 'styttist'} út!
           </p>
         </div>
       )}

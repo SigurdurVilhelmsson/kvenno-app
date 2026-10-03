@@ -167,7 +167,7 @@ function App() {
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
                     <span>
-                      Að skrifa heildarjónajöfnu og strika út áhorfendajónirnar til að fá
+                      Að skrifa heildarjónajöfnu og stytta út áhorfendajónirnar til að fá
                       nettójónajöfnuna
                     </span>
                   </li>
@@ -195,7 +195,7 @@ function App() {
                     <strong>3.</strong> Leysnireglurnar svara því
                   </p>
                   <p>
-                    <strong>4.</strong> Strikaðu út það sem er eins beggja vegna
+                    <strong>4.</strong> Styttu út það sem er eins beggja vegna
                   </p>
                 </div>
               </div>

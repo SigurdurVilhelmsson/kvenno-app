@@ -47,12 +47,12 @@ export const gameTranslations = createGameTranslations({
       accuracy: 'Nákvæmni',
       selectFactor:
         'Veldu stuðul þannig að einingin sem þú vilt losna við sé á gagnstæðri hlið við upphafsmagn',
-      correctExplanation: 'Rétt! Þú skildir hvernig á að nota umbreytingarstuðla.',
+      correctExplanation: 'Rétt! Þú skildir hvernig á að nota umreikningsstuðla.',
     },
     level2: {
       title: 'Stig 2: Beiting',
       problem: 'Verkefni',
-      selectConversionFactor: 'Veldu umbreytingarstuðul',
+      selectConversionFactor: 'Veldu umreikningsstuðul',
       correctPath: 'Rétt umbreytingarleið',
       correctAnswer: 'Rétt!',
     },

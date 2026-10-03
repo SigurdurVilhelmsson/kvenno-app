@@ -157,7 +157,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hversu mörg mól eru í ${formatDecimal(m)} g af ${label}?`,
       solutionFormula: 'Einingagreining: g × (1 mól / g) → mól',
-      solutionSteps: `${formatDecimal(m)} g × (1 mól / ${fmtMolarMass(M)} g) = ${fmt(ans)} mól\nEiningin g strikast út og mól verður eftir.`,
+      solutionSteps: `${formatDecimal(m)} g × (1 mól / ${fmtMolarMass(M)} g) = ${fmt(ans)} mól\nEiningin g styttist út og mól verður eftir.`,
     };
   }
   if (type === 'moles_to_mass') {
@@ -168,7 +168,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hvað vega ${formatDecimal(n)} mól af ${label} í grömmum?`,
       solutionFormula: 'Einingagreining: mól × (g / 1 mól) → g',
-      solutionSteps: `${formatDecimal(n)} mól × (${fmtMolarMass(M)} g / 1 mól) = ${fmt(ans)} g\nEiningin mól strikast út og g verður eftir.`,
+      solutionSteps: `${formatDecimal(n)} mól × (${fmtMolarMass(M)} g / 1 mól) = ${fmt(ans)} g\nEiningin mól styttist út og g verður eftir.`,
     };
   }
   if (type === 'moles_to_particles') {
@@ -180,7 +180,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hversu margar ${particles} eru í ${formatDecimal(n)} mól af ${label}?`,
       solutionFormula: `Einingagreining: mól × (${particles} / 1 mól) → ${particles}`,
-      solutionSteps: `${formatDecimal(n)} mól × (6,022 × 10²³ ${particles} / 1 mól) = ${fmt(ans)} ${particles}\nEiningin mól strikast út.`,
+      solutionSteps: `${formatDecimal(n)} mól × (6,022 × 10²³ ${particles} / 1 mól) = ${fmt(ans)} ${particles}\nEiningin mól styttist út.`,
     };
   }
   if (type === 'moles_to_element_atoms') {
@@ -203,7 +203,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       // the worked line below does. It used to put atoms over moles there too,
       // which leaves atoms squared over moles once the second factor is applied.
       solutionFormula: 'Einingagreining: mól × (mól af frumefninu / 1 mól) × (atóm / 1 mól) → atóm',
-      solutionSteps: `Í hverri ${c.ionic ? 'formúlueiningu' : 'sameind'} af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${formatDecimal(n)} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
+      solutionSteps: `Í hverri ${c.ionic ? 'formúlueiningu' : 'sameind'} af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${formatDecimal(n)} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól styttist út tvisvar.`,
     };
   }
 
@@ -221,7 +221,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
         correctAnswer: ans,
         questionText: `Hvaða rúmmál taka ${formatDecimal(n)} mól af ${label} við ${STP_LABEL}?`,
         solutionFormula: 'Einingagreining: mól × (L / 1 mól) → L',
-        solutionSteps: `${formatDecimal(n)} mól × (${formatDecimal(STANDARD_MOLAR_VOLUME)} L / 1 mól) = ${fmt(ans)} L\nEiningin mól strikast út. Þetta gildir aðeins um gas — 22,4 L/mól segir ekkert um fast efni eða vökva.`,
+        solutionSteps: `${formatDecimal(n)} mól × (${formatDecimal(STANDARD_MOLAR_VOLUME)} L / 1 mól) = ${fmt(ans)} L\nEiningin mól styttist út. Þetta gildir aðeins um gas — 22,4 L/mól segir ekkert um fast efni eða vökva.`,
       };
     }
 
@@ -232,7 +232,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       correctAnswer: ans,
       questionText: `Hversu mörg mól eru í ${formatDecimal(volume)} L af ${label} við ${STP_LABEL}?`,
       solutionFormula: 'Einingagreining: L × (1 mól / L) → mól',
-      solutionSteps: `${formatDecimal(volume)} L × (1 mól / ${formatDecimal(STANDARD_MOLAR_VOLUME)} L) = ${fmt(ans)} mól\nEiningin L strikast út. Þetta gildir aðeins um gas.`,
+      solutionSteps: `${formatDecimal(volume)} L × (1 mól / ${formatDecimal(STANDARD_MOLAR_VOLUME)} L) = ${fmt(ans)} mól\nEiningin L styttist út. Þetta gildir aðeins um gas.`,
     };
   }
 
@@ -244,7 +244,7 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     correctAnswer: ans,
     questionText: `Hversu mörg mól eru ${formatDecimal(coeff)} × 10²³ sameindir?`,
     solutionFormula: 'Einingagreining: sameindir × (1 mól / sameindir) → mól',
-    solutionSteps: `${formatDecimal(coeff)} × 10²³ sameindir × (1 mól / 6,022 × 10²³ sameindir) = ${fmt(ans)} mól\nEiningin sameindir strikast út.`,
+    solutionSteps: `${formatDecimal(coeff)} × 10²³ sameindir × (1 mól / 6,022 × 10²³ sameindir) = ${fmt(ans)} mól\nEiningin sameindir styttist út.`,
   };
 }
 
@@ -558,7 +558,7 @@ export function Level2({
           {/* Dimensional analysis reference — a scaffold, so it stays in view. */}
           <div className="bg-white/80 border border-warm-200 rounded-xl p-3 mb-4 phone:py-2 phone:mb-3">
             <div className="text-center text-xs text-warm-500 mb-2 phone:mb-1">
-              Einingagreining — umbreytingarstuðlar
+              Einingagreining — umreikningsstuðlar
             </div>
             <div className="text-sm font-mono text-warm-700 space-y-1 text-center">
               <div>
@@ -644,7 +644,7 @@ export function Level2({
                       explanation: `${problem.solutionFormula}\n${problem.solutionSteps}`,
                       misconception: correct
                         ? undefined
-                        : 'Notaðu einingagreiningu: settu eininguna sem á að hverfa í nefnara umbreytingarstuðulsins.',
+                        : 'Notaðu einingagreiningu: settu eininguna sem á að hverfa í nefnara umreikningsstuðulsins.',
                     }}
                     config={{
                       showExplanation: true,

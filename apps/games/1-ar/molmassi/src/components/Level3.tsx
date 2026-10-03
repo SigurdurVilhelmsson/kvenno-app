@@ -196,8 +196,8 @@ export function buildProblem(d: Desc): Problem {
       particles,
       steps: [
         `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mól`,
-        `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g strikast út.`,
-        `Skref 3: mól → ${particles} (einingagreining)\n  ${formatDecimal(n, 3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${particles}\n  Einingin mól strikast út.`,
+        `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g styttist út.`,
+        `Skref 3: mól → ${particles} (einingagreining)\n  ${formatDecimal(n, 3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${particles}\n  Einingin mól styttist út.`,
       ],
     };
   }
@@ -212,8 +212,8 @@ export function buildProblem(d: Desc): Problem {
       particles,
       steps: [
         `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mól`,
-        `Skref 2: ${particles} → mól (einingagreining)\n  ${d.countLabel} × (1 mól / 6,022 × 10²³) = ${formatDecimal(n, 3)} mól\n  Einingin ${particles} strikast út.`,
-        `Skref 3: mól → g (einingagreining)\n  ${formatDecimal(n, 3)} mól × (${formatDecimal(M, 3)} g / 1 mól) = ${formatDecimal(m, 2)} g\n  Einingin mól strikast út.`,
+        `Skref 2: ${particles} → mól (einingagreining)\n  ${d.countLabel} × (1 mól / 6,022 × 10²³) = ${formatDecimal(n, 3)} mól\n  Einingin ${particles} styttist út.`,
+        `Skref 3: mól → g (einingagreining)\n  ${formatDecimal(n, 3)} mól × (${formatDecimal(M, 3)} g / 1 mól) = ${formatDecimal(m, 2)} g\n  Einingin mól styttist út.`,
       ],
     };
   }
@@ -231,7 +231,7 @@ export function buildProblem(d: Desc): Problem {
     particles,
     steps: [
       `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 2)} g/mól`,
-      `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 2)} g) = ${formatDecimal(n, 3)} mól ${c.formula}\n  Einingin g strikast út.`,
+      `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 2)} g) = ${formatDecimal(n, 3)} mól ${c.formula}\n  Einingin g styttist út.`,
       `Skref 3: Nota hlutfallið úr efnaformúlunni\n  Í hverju móli af ${c.formula} eru ${d.atomCount} mól af ${d.element}\n  ${formatDecimal(n, 3)} mól ${c.formula} × (${d.atomCount} mól ${d.element} / 1 mól ${c.formula}) = ${formatDecimal(nAtom, 2)} mól ${d.element}`,
     ],
   };

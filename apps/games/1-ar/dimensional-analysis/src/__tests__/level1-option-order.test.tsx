@@ -89,7 +89,7 @@ describe.each(Object.keys(CHAINS) as Variant[])('the %s chain', (variant) => {
 
     tap(first.wrong);
     expect(
-      ui.getByText(`${first.cancels} þarf að vera í nefnara til að strikast út!`)
+      ui.getByText(`${first.cancels} þarf að vera í nefnara til að styttast út!`)
     ).toBeTruthy();
     act(() => {
       vi.advanceTimersByTime(900);
@@ -103,7 +103,7 @@ describe.each(Object.keys(CHAINS) as Variant[])('the %s chain', (variant) => {
       vi.advanceTimersByTime(900);
     });
     expect(
-      ui.getByText(`✓ ${first.cancels} strikast út! Nú eru eftir ${first.left}.`, {
+      ui.getByText(`✓ ${first.cancels} styttist út! Nú eru eftir ${first.left}.`, {
         normalizer: (s) => s.replace(/\s+/g, ' ').trim(),
       })
     ).toBeTruthy();

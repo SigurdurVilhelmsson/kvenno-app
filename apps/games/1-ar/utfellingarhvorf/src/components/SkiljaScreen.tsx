@@ -49,7 +49,7 @@ const STEPS = [
   {
     title: '3. Nettójónajafna',
     blurb:
-      'Sumar jónir standa óbreyttar beggja vegna örvarinnar. Þær heita áhorfendajónir og þær gera ekkert — strikum þær út. Eftir stendur efnahvarfið sjálft.',
+      'Sumar jónir standa óbreyttar beggja vegna örvarinnar. Þær heita áhorfendajónir og þær gera ekkert — styttum þær út. Eftir stendur efnahvarfið sjálft.',
   },
 ] as const;
 

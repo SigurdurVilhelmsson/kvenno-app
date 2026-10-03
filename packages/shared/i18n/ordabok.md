@@ -76,6 +76,7 @@ buffer;stuðpúði
 buffer solution;stuðpúðalausn
 Bunsen burner;Bunsen brennari
 burette;búretta
+cancel out;styttast út
 capillary force;hárpípukraftur
 carbon dioxide;koldíoxíð
 carbon monoxide;kolmónoxíð
@@ -126,6 +127,7 @@ conjugate acid;samoka sýra
 conjugate base;samoka basi
 constitutional isomer;byggingarhverfa
 contact process;snertiferlið
+conversion factor;umreikningsstuðull
 coordination compound ;girðisamband
 coordination number;girðitala
 corrosion;tæring

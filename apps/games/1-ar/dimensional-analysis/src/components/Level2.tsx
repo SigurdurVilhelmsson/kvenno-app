@@ -68,14 +68,14 @@ const MISCONCEPTIONS: Record<string, string> = {
   wrong_direction:
     'Stuðullinn er rangt snúinn - einingin sem þú vilt losna við þarf að vera á gagnstæðri hlið (ef þú hefur g, settu g í nefnara).',
   missing_step:
-    'Þú gætir þurft fleiri umbreytingarstuðla til að komast frá upphafseiningu til markeiningar.',
+    'Þú gætir þurft fleiri umreikningsstuðla til að komast frá upphafseiningu til markeiningar.',
   extra_step: 'Þú gætir notað of marga stuðla. Reyndu að finna beina leið.',
 };
 
 // Related concepts
 const RELATED_CONCEPTS = [
-  'Umbreytingarstuðlar',
-  'Strikun eininga',
+  'Umreikningsstuðlar',
+  'Einingar styttast út',
   'Víddagreining',
   'Factor-label aðferð',
 ];
@@ -234,7 +234,7 @@ export function Level2({
         label: 'Dragðu stuðla hingað til að byggja umbreytingakeðju',
         maxItems: 5,
         // The pool sits above the zone at every width (the builder is a column).
-        placeholder: '↑ Dragðu umbreytingarstuðla hingað',
+        placeholder: '↑ Dragðu umreikningsstuðla hingað',
       },
     ];
 
@@ -378,7 +378,7 @@ export function Level2({
       explanation: `Rétta leiðin er: ${problem.correctPath.join(' × ')}`,
       misconception,
       relatedConcepts: RELATED_CONCEPTS,
-      nextSteps: 'Athugaðu hvort einingarnar strikist rétt út í hverju skrefi.',
+      nextSteps: 'Athugaðu hvort einingarnar styttist rétt út í hverju skrefi.',
     };
   };
 
@@ -477,7 +477,7 @@ export function Level2({
             <div className="bg-blue-50 rounded-xl p-4 sm:p-6 border-l-4 border-blue-500">
               <h3 className="font-bold text-blue-800 mb-3">Lykilhugmyndin</h3>
               <p className="text-warm-700 mb-3">
-                Umbreytingarstuðull er <strong>brot sem jafngildir 1</strong>. Til dæmis:
+                Umreikningsstuðull er <strong>brot sem jafngildir 1</strong>. Til dæmis:
               </p>
               <div className="flex justify-center my-4">
                 <div className="inline-flex flex-col items-center bg-white px-6 py-3 rounded-lg shadow-sm border">
@@ -535,7 +535,7 @@ export function Level2({
             <div className="bg-warm-50 rounded-xl p-4 sm:p-6">
               <h3 className="font-bold text-warm-800 mb-2">Hvað gerist á þessu stigi?</h3>
               <p className="text-warm-700">
-                Þú velur umbreytingarstuðla og byggir keðjur til að breyta einingum. Byrjað er á
+                Þú velur umreikningsstuðla og byggir keðjur til að breyta einingum. Byrjað er á
                 einföldum (eitt skref) og síðan flóknari (tvö skref).
               </p>
             </div>
@@ -658,7 +658,7 @@ export function Level2({
                   {useDragDrop ? (
                     <div className="mb-6 phone:mb-3">
                       <p className="text-sm font-semibold mb-3 phone:mb-2">
-                        Dragðu eða smelltu á umbreytingarstuðla til að byggja keðju:
+                        Dragðu eða smelltu á umreikningsstuðla til að byggja keðju:
                       </p>
                       <DragDropBuilder
                         items={draggableItems}
@@ -676,8 +676,7 @@ export function Level2({
                     /* Classic button-based factor selection */
                     <div className="mb-6 phone:mb-3">
                       <p className="text-sm font-semibold mb-3 phone:mb-2">
-                        Smelltu á umbreytingarstuðla til að byggja keðju, og aftur til að taka þá
-                        út:
+                        Smelltu á umreikningsstuðla til að byggja keðju, og aftur til að taka þá út:
                       </p>
                       <div className="flex flex-wrap justify-center gap-4 phone:gap-2">
                         {options.map(({ id, factor }) => {

@@ -242,7 +242,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     hints: {
       topic: 'Þetta snýst um að nota Hess lögmál til að finna ΔH.',
-      strategy: 'Þú þarft að stilla jöfnur þannig að CO sé myndefni og annað strikist út.',
+      strategy: 'Þú þarft að stilla jöfnur þannig að CO sé myndefni og annað styttist út.',
       method: 'Nota jöfnu (1) eins og hún er. Snúa við jöfnu (2) svo CO verði myndefni.',
       solution: 'Jafna (1): -394 kJ. Öfug jafna (2): +283 kJ. Heildar: -394 + 283 = -111 kJ.',
     },

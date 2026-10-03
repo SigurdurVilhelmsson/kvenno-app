@@ -219,7 +219,7 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-1',
     type: 'reverse',
     prompt:
-      'Nemandi byrjaði með 5000 mg og endaði með 0,005 kg. Hvaða umbreytingarstuðla notaði hann líklega?',
+      'Nemandi byrjaði með 5000 mg og endaði með 0,005 kg. Hvaða umreikningsstuðla notaði hann líklega?',
     setup: { start: '5000 mg', end: '0,005 kg', startValue: 5000, endValue: 0.005 },
     options: [
       {

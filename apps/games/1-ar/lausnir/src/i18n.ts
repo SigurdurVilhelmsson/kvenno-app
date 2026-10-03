@@ -37,7 +37,7 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 3: Útreikningar',
         description: 'Reikna styrk með einingagreiningu',
         details:
-          'Notaðu umbreytingarstuðla og einingagreiningu til að leysa útþynningar- og styrkreikningsdæmi.',
+          'Notaðu umreikningsstuðla og einingagreiningu til að leysa útþynningar- og styrkreikningsdæmi.',
       },
       completed: 'Lokið',
       of: 'af',
