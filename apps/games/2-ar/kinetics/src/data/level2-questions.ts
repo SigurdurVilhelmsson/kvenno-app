@@ -55,7 +55,8 @@ export const challenges: RateLawChallenge[] = [
   {
     id: 1,
     title: 'Einföld hvörf',
-    description: 'Finndu röð hvörfunar fyrir A og B með því að bera saman tilraunir.',
+    description:
+      'Finndu stig efnahvarfsins með tilliti til A og B með því að bera saman tilraunir.',
     equation: 'A + B → myndefni',
     data: [
       { experiment: 1, concentrationA: 0.1, concentrationB: 0.1, initialRate: 0.015 },
@@ -82,7 +83,7 @@ export const challenges: RateLawChallenge[] = [
     correctOrderA: 0,
     correctOrderB: 0,
     rateConstantUnit: 'M·s⁻¹',
-    hint: 'Ef hraðinn breytist ekki þegar styrkur breytist, hver er röðin?',
+    hint: 'Ef hraðinn breytist ekki þegar styrkur breytist, hvert er stigið?',
     explanation:
       'Styrkur tvöfaldast en hraðinn helst sá sami → 0. stigs hvörf, svo hraði = k = 0,020 M·s⁻¹ (eining: styrkur/tími fyrir 0. stigs hvörf).',
   },
@@ -106,7 +107,7 @@ export const challenges: RateLawChallenge[] = [
   {
     id: 4,
     title: 'Tvö hvarfefni',
-    description: 'Greindu röðina fyrir bæði BrO₃⁻ og Br⁻.',
+    description: 'Greindu stig efnahvarfsins með tilliti til bæði BrO₃⁻ og Br⁻.',
     equation: 'BrO₃⁻ + 5Br⁻ + 6H⁺ → 3Br₂ + 3H₂O',
     data: [
       { experiment: 1, concentrationA: 0.1, concentrationB: 0.1, initialRate: 0.8 },
@@ -123,7 +124,7 @@ export const challenges: RateLawChallenge[] = [
   {
     id: 5,
     title: 'Flóknari tilfelli',
-    description: 'Ákvarðaðu heildarröð hvörfunar.',
+    description: 'Ákvarðaðu heildarstig efnahvarfsins.',
     equation: '2H₂ + 2NO → N₂ + 2H₂O',
     data: [
       { experiment: 1, concentrationA: 0.1, concentrationB: 0.1, initialRate: 0.005 },
@@ -133,13 +134,14 @@ export const challenges: RateLawChallenge[] = [
     correctOrderA: 1,
     correctOrderB: 2,
     rateConstantUnit: 'M⁻²s⁻¹',
-    hint: 'A = H₂, B = NO. Heildarröð = m + n',
-    explanation: 'H₂ er 1. stigs, NO er 2. stigs. Heildarröð = 1 + 2 = 3. stigs hvörf.',
+    hint: 'A = H₂, B = NO. Heildarstig = m + n',
+    explanation:
+      '1. stig með tilliti til H₂ og 2. stig með tilliti til NO. Heildarstig = 1 + 2 = 3, svo hvörfin eru 3. stigs.',
   },
   {
     id: 6,
     title: 'Reikna k',
-    description: 'Þú veist nú röðina. Reiknaðu hraðafastann k.',
+    description: 'Þú veist nú stig efnahvarfsins. Reiknaðu hraðafastann k.',
     equation: 'A + 2B → C',
     data: [
       { experiment: 1, concentrationA: 0.5, concentrationB: 0.5, initialRate: 0.25 },

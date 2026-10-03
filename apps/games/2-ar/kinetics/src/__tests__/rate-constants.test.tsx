@@ -98,7 +98,7 @@ describe('the challenges that ask for k', () => {
       const c = challenges[i];
       const pick = (reactant: 'A' | 'B', order: number) =>
         fireEvent.click(
-          within(ui.getByText(`Röð í [${reactant}]:`).parentElement!).getByRole('button', {
+          within(ui.getByText(`Stig í [${reactant}]:`).parentElement!).getByRole('button', {
             name: String(order),
           })
         );
@@ -110,7 +110,7 @@ describe('the challenges that ask for k', () => {
     const c = challenges[index];
     const pickOrder = (reactant: 'A' | 'B', order: number) =>
       fireEvent.click(
-        within(ui.getByText(`Röð í [${reactant}]:`).parentElement!).getByRole('button', {
+        within(ui.getByText(`Stig í [${reactant}]:`).parentElement!).getByRole('button', {
           name: String(order),
         })
       );

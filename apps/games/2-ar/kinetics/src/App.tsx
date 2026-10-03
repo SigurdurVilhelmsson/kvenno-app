@@ -155,7 +155,8 @@ function App() {
                 styrk
               </li>
               <li>
-                ✓ <strong>Röð hvörfunar:</strong> Veldisvísir segir hversu mikið styrkur hefur áhrif
+                ✓ <strong>Stig efnahvarfs:</strong> Veldisvísir segir hversu mikið styrkur hefur
+                áhrif
               </li>
               <li>
                 ✓ <strong>Hvarfgangur:</strong> Röð grunnskrefa sem mynda heildarhvarfið
@@ -208,7 +209,7 @@ function App() {
                 hraði = k[A]<sup>m</sup>[B]<sup>n</sup>
               </p>
               <p className="text-xs text-warm-600 text-center mt-1">
-                þar sem k = hraðafasti, m og n = veldisvísar (röð hvörfunar)
+                þar sem k = hraðafasti, m og n = veldisvísar (stig efnahvarfsins)
               </p>
             </div>
           </div>
@@ -264,7 +265,7 @@ function App() {
                   </div>
                   <div className="text-sm text-green-600 mt-1">Byggja og túlka hraðalögmál</div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Notaðu gögn til að finna röð hvörfunar og hraðafastann.
+                    Notaðu gögn til að finna stig efnahvarfsins og hraðafastann.
                   </div>
                 </div>
               </div>
@@ -327,7 +328,7 @@ function App() {
                 <strong>Hraðalögmál:</strong> hraði = k[A]<sup>m</sup>[B]<sup>n</sup>
               </p>
               <p>
-                <strong>Röð hvörfunar:</strong> m + n = heildarröð
+                <strong>Stig efnahvarfs:</strong> m + n = heildarstig
               </p>
               <p>
                 <strong>Arrhenius:</strong> k = Ae

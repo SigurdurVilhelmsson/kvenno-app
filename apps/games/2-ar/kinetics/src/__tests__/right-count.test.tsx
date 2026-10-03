@@ -26,8 +26,11 @@ clockPastNextGuard();
 
 beforeEach(() => localStorage.clear());
 
-/** A running score: `Stig: 3`, `60 stig`. Not `1. stigs`, the order buttons in the graph. */
-const RUNNING_SCORE = [/\bStig:\s*\d/, /\d+\s*stig\b/i];
+/**
+ * A running score: `Stig: 3`, `60 stig`. Not `1. stig`, the order buttons in the graph, and
+ * case-sensitive, since the text runs the order buttons `012` straight into `Stig í [B]:`.
+ */
+const RUNNING_SCORE = [/\bStig:\s*\d/, /\d+\s*stig\b/];
 
 /** Wrong on every third challenge (0, 3, 6, …), right on the rest. */
 const mixed = (i: number): Pick => (i % 3 === 0 ? 'wrong' : 'correct');

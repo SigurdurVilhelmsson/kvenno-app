@@ -102,10 +102,10 @@ export function playLevel1(picks: Picks, { useHints = false } = {}): Playthrough
   return { text: seen.join('\n'), correct, total };
 }
 
-/** The order buttons (0, 1, 2) in the row labelled `Röð í [X]:`. */
+/** The order buttons (0, 1, 2) in the row labelled `Stig í [X]:`. */
 function orderButton(container: HTMLElement, species: 'A' | 'B', order: number): HTMLElement {
   const label = Array.from(container.querySelectorAll('span')).find(
-    (s) => s.textContent?.trim() === `Röð í [${species}]:`
+    (s) => s.textContent?.trim() === `Stig í [${species}]:`
   );
   if (!label) throw new Error(`no order row for [${species}]`);
   const button = Array.from(label.parentElement!.querySelectorAll('button')).find(

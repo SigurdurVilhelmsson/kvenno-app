@@ -201,7 +201,7 @@ describe('Stig 2', () => {
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
     expect(focused()?.textContent).toBe('Einföld hvörf');
 
-    // Every "Röð í" row: order 0.
+    // Every "Stig í" row: order 0.
     for (const row of container.querySelectorAll('.space-y-4 > div')) {
       fireEvent.click(row.querySelector('button')!);
     }

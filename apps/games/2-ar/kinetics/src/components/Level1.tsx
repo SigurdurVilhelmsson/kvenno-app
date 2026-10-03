@@ -21,7 +21,7 @@ const MISCONCEPTIONS: Record<number, string> = {
 // Related concepts for each challenge
 const RELATED_CONCEPTS: Record<number, string[]> = {
   1: ['Hvarfhraði', 'Styrkbreyting', 'M/s'],
-  2: ['Hvörfunarröð', 'Hraðalögmál', 'k[A]^n'],
+  2: ['Stig efnahvarfs', 'Hraðalögmál', 'k[A]^n'],
   3: ['Maxwell-Boltzmann', 'Arrhenius', 'Ea og T'],
   4: ['Hvatar', 'Virkjunarorka', 'Hvarfgangur'],
   5: ['Yfirborð', 'Árekstur', 'Misleit hvörf'],

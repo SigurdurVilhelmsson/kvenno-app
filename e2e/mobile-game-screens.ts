@@ -3596,7 +3596,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         verdict: { css: '#kinetics-l2-verdict' },
         next: { role: 'button', name: 'Næsta þraut' },
         // The data and the order buttons worked from it, on one screen.
-        together: [[{ css: 'table' }, { text: 'Röð í [B]:' }]],
+        together: [[{ css: 'table' }, { text: 'Stig í [B]:' }]],
         // On the SE Athuga is about 90 px below the screen: the SE is the stretch target (§5).
         viewports: ['android', 'iphone', 'landscape'],
       },
