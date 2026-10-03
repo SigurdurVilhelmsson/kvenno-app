@@ -31,7 +31,8 @@ const RELATED_CONCEPTS: Record<string, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  /** How many of the quiz questions were answered right. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -169,7 +170,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [phase, setPhase] = useState<'prefixes' | 'suffixes' | 'builder' | 'quiz'>('prefixes');
   const [currentItem, setCurrentItem] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
+  // Right answers, one try each, with no running score on screen (mobile-pass decision 1 (b)).
+  const [correctCount, setCorrectCount] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   // (quiz has no hints)
@@ -207,9 +209,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (correct) {
-      setScore((prev) => prev + 10);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
   };
 
   const handleNextQuestion = () => {
@@ -217,7 +217,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setCurrentQuestion((prev) => prev + 1);
       setShowFeedback(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, quizQuestions.length);
     }
   };
 
@@ -548,9 +548,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="ml-auto flex items-center gap-3 sm:gap-4 phone:gap-2">
             <div className="text-sm text-warm-500 whitespace-nowrap">
               Spurning {currentQuestion + 1} af {quizQuestions.length}
-            </div>
-            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap phone:px-2 phone:py-0.5 phone:text-sm">
-              Stig: {score}
             </div>
           </div>
         </div>
