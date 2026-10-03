@@ -214,6 +214,40 @@ describe('Stig 1', () => {
     expectFeedbackFocused(/Rétt/);
   });
 
+  // Decisions item 60: a wrong "Athuga lausn" used to do nothing at all.
+  it('says which way a wrong "Athuga lausn" is off, and drops it once the beaker changes', () => {
+    const { container } = render(<Level1 onComplete={() => {}} onBack={() => {}} />);
+    const ui = within(container);
+    press(ui.getByRole('button', { name: '2' }));
+    press(ui.getByRole('button', { name: /Eykst/ }));
+    press(ui.getByRole('button', { name: 'Athuga spá' }));
+    later();
+    press(ui.getByRole('button', { name: /Áfram í verkefni/ }));
+
+    // 20 sameindir in 200 mL is 1,0 M, under the 1,5 M asked for.
+    press(ui.getByRole('button', { name: /Athuga lausn/ }));
+    expectFeedbackFocused(/Ekki alveg — styrkurinn er of lágur\./);
+    expect(focused()?.getAttribute('aria-labelledby')).toBe('lausnir-l1-miss');
+    expect(scrollBy).toHaveBeenCalled();
+
+    // 21 sameindir is still too low, but the message was about 20: it goes.
+    press(ui.getByRole('button', { name: '+1' }));
+    expect(ui.queryByText(/Ekki alveg/)).toBeNull();
+
+    // Too high says so.
+    press(ui.getByRole('button', { name: '+10' }));
+    press(ui.getByRole('button', { name: '+10' }));
+    press(ui.getByRole('button', { name: /Athuga lausn/ }));
+    expectFeedbackFocused(/styrkurinn er of hár\./);
+
+    // Right: the concept panel, and no miss message beside it.
+    press(ui.getByRole('button', { name: '-10' }));
+    press(ui.getByRole('button', { name: '-1' }));
+    press(ui.getByRole('button', { name: /Athuga lausn/ }));
+    expectFeedbackFocused(/Rétt/);
+    expect(ui.queryByText(/Ekki alveg/)).toBeNull();
+  });
+
   it('focuses the hint when it opens', () => {
     const { container } = render(<Level1 onComplete={() => {}} onBack={() => {}} />);
     const ui = within(container);

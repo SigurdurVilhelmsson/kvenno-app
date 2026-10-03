@@ -350,9 +350,16 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const hintRef = useRef<HTMLDivElement>(null);
   const conceptRef = useRef<HTMLDivElement>(null);
   const checkRef = useRef<HTMLButtonElement>(null);
+  const missRef = useRef<HTMLDivElement>(null);
   // Bumped on every "Athuga spá", right or wrong: each check moves focus to
   // the feedback, and a second wrong guess replaces the first's text.
   const [predictionChecks, setPredictionChecks] = useState(0);
+  // A wrong "Athuga lausn" says so, and which way the concentration is off.
+  // `missAt` is the concentration it was said about: once the student moves
+  // the beaker the message no longer describes it, so it goes. Bumped on every
+  // miss so each one moves focus to it.
+  const [missAt, setMissAt] = useState<number | null>(null);
+  const [misses, setMisses] = useState(0);
 
   // Calculate current concentration (molecules per liter)
   // Using a scale where 10 molecules = 0.1 mol for simplicity
@@ -373,6 +380,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setVolumeML(challenge.initialState.volumeML);
       setShowHint(false);
       setShowConcept(false);
+      setMissAt(null);
       // Reset prediction state
       setShowPrediction(true);
       setPredictionAnswer(null);
@@ -422,6 +430,20 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     ],
     focus: conceptRef.current,
   }));
+
+  // After a wrong "Athuga lausn", focus moves to the message, and a phone
+  // shows it with the concentration readout above it where both fit.
+  useEffect(() => {
+    if (misses === 0) return;
+    const id = requestAnimationFrame(() => {
+      revealSpan(checkRef.current, [
+        cardRef.current?.querySelector('[data-concentration-indicator]') ?? null,
+        missRef.current,
+      ]);
+      focusTarget(missRef.current);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [misses, cardRef]);
 
   // Opening the hint removes the button that opened it, so focus moves to the
   // hint itself, and a phone keeps "Athuga lausn" on screen with it.
@@ -504,8 +526,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           setGameComplete(true);
         }
       }, 2500);
+    } else {
+      setMissAt(currentConcentration);
+      setMisses((n) => n + 1);
     }
-  }, [isCorrect, challenge.id, currentChallenge]);
+  }, [isCorrect, challenge.id, currentChallenge, currentConcentration]);
+
+  const missShown = missAt !== null && missAt === currentConcentration && !isCorrect;
 
   // Game complete screen
   if (gameComplete) {
@@ -904,6 +931,27 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               >
                 <h4 className="font-semibold text-yellow-800 mb-2 phone:mb-1">💡 Vísbending:</h4>
                 <p className="text-yellow-900">{challenge.hints.method}</p>
+              </div>
+            )}
+
+            {/* A wrong "Athuga lausn": the readout's arrows already say which
+                way to go, so the message points at them. The wording is a
+                draft for Siggi (decisions item 60). */}
+            {missShown && (
+              <div
+                ref={missRef}
+                role="group"
+                tabIndex={-1}
+                aria-labelledby="lausnir-l1-miss"
+                className="mb-6 bg-orange-50 border-2 border-orange-300 p-4 rounded-xl phone:p-3 phone:mb-3"
+              >
+                <p id="lausnir-l1-miss" className="font-semibold text-orange-800">
+                  Ekki alveg — styrkurinn er of{' '}
+                  {currentConcentration < challenge.targetConcentration ? 'lágur' : 'hár'}.
+                </p>
+                <p className="text-orange-900">
+                  Fylgstu með örvunum við núverandi styrk: þær sýna í hvaða átt þú átt að fara.
+                </p>
               </div>
             )}
 
