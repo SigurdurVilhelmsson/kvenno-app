@@ -12,28 +12,40 @@ import { gameTranslations } from './i18n';
 
 type ActiveLevel = 'menu' | 'level0' | 'level1' | 'level2' | 'level3' | 'complete';
 
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — points were dropped from every level
+ * (mobile-pass decisions 1 (b) and 58 (b)), and a hint never changes a count.
+ *
+ * Stig 1 keeps no count: every challenge ends at the right concentration, and
+ * the readout turns green before "Athuga lausn" is pressed, so it reports
+ * completion. Progress saved before the change carries `levelNScore` in points
+ * and no `levelNCorrect`; those levels show as done with no count, rather than
+ * reading old points as a number of right answers.
+ */
 interface Progress {
-  level0Score: number | null;
   level0Completed: boolean;
-  level1Score: number | null;
+  level0Correct?: number;
+  level0Total?: number;
   level1Completed: boolean;
-  level2Score: number | null;
   level2Completed: boolean;
-  level3Score: number | null;
+  level2Correct?: number;
+  level2Total?: number;
   level3Completed: boolean;
-  totalGamesPlayed: number;
+  level3Correct?: number;
+  level3Total?: number;
 }
 
+type Level = 0 | 1 | 2 | 3;
+type CountedLevel = 0 | 2 | 3;
+
+const LEVELS: Level[] = [0, 1, 2, 3];
+
 const DEFAULT_PROGRESS: Progress = {
-  level0Score: null,
   level0Completed: false,
-  level1Score: null,
   level1Completed: false,
-  level2Score: null,
   level2Completed: false,
-  level3Score: null,
   level3Completed: false,
-  totalGamesPlayed: 0,
 };
 
 function App() {
@@ -67,42 +79,50 @@ function App() {
     },
   });
 
-  const handleLevel0Complete = (score: number) => {
+  const recordCount = (level: CountedLevel, correct: number, total: number) => {
+    const key = `level${level}` as const;
     updateProgress({
-      level0Score: Math.max(progress.level0Score || 0, score),
-      level0Completed: true,
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
+      [`${key}Completed`]: true,
+      [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
+      [`${key}Total`]: total,
+    } as Partial<Progress>);
+  };
+
+  const completedLevels = LEVELS.filter((level) => progress[`level${level}Completed`]).length;
+
+  const handleLevel0Complete = (correct: number, total: number) => {
+    recordCount(0, correct, total);
     setActiveLevel('menu');
   };
 
   // Stig 1's last screen says "Áfram í Stig 2 →", so it goes there. It used to
   // drop the student back on the menu instead.
-  const handleLevel1Complete = (score: number) => {
-    updateProgress({
-      level1Score: Math.max(progress.level1Score || 0, score),
-      level1Completed: true,
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
+  const handleLevel1Complete = () => {
+    updateProgress({ level1Completed: true });
     setActiveLevel('level2');
   };
 
-  const handleLevel2Complete = (score: number) => {
-    updateProgress({
-      level2Score: Math.max(progress.level2Score || 0, score),
-      level2Completed: true,
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
+  const handleLevel2Complete = (correct: number, total: number) => {
+    recordCount(2, correct, total);
     setActiveLevel('menu');
   };
 
-  const handleLevel3Complete = (score: number) => {
-    updateProgress({
-      level3Score: Math.max(progress.level3Score || 0, score),
-      level3Completed: true,
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setActiveLevel('complete');
+  // The closing screen says every level is done, so it opens only when that is
+  // true; finishing Stig 3 with another level unplayed goes back to the menu.
+  const handleLevel3Complete = (correct: number, total: number) => {
+    recordCount(3, correct, total);
+    const othersDone = ([0, 1, 2] as const).every((level) => progress[`level${level}Completed`]);
+    setActiveLevel(othersDone ? 'complete' : 'menu');
+  };
+
+  /** "6 af 8 rétt", or "Lokið" for Stig 1 and for a level finished before counts were kept. */
+  const resultLabel = (level: Level): string => {
+    if (level === 1) return t('levels.completed');
+    const correct = progress[`level${level}Correct`];
+    const total = progress[`level${level}Total`];
+    return correct === undefined || total === undefined
+      ? t('levels.completed')
+      : `${correct} ${t('levels.of')} ${total} ${t('levels.correct')}`;
   };
 
   // Render active level
@@ -126,9 +146,6 @@ function App() {
 
   // Complete screen
   if (activeLevel === 'complete') {
-    const totalScore =
-      (progress.level1Score || 0) + (progress.level2Score || 0) + (progress.level3Score || 0);
-
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 phone:p-4">
@@ -143,34 +160,40 @@ function App() {
             </div>
           </div>
 
+          {/* Each level's own result; there is no total (decision 58 (b)). */}
           <div className="space-y-4 mb-8 phone:space-y-2 phone:mb-4">
-            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-warm-50 p-4 rounded-xl flex justify-between items-center gap-3">
+              <div>
+                <div className="font-bold text-warm-800">Stig 0: Rafkleyfi</div>
+                <div className="text-sm text-warm-600">
+                  Sterkur rafkleyfi, veikur rafkleyfi, órafkleyft efni
+                </div>
+              </div>
+              <div className="font-bold text-warm-700 whitespace-nowrap">{resultLabel(0)}</div>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-blue-800">{t('levels.level1.name')}</div>
                 <div className="text-sm text-blue-600">{t('completion.visualHandling')}</div>
               </div>
-              <div className="text-2xl font-bold text-blue-600">{progress.level1Score || 0}</div>
+              <div className="font-bold text-blue-700 whitespace-nowrap">{resultLabel(1)}</div>
             </div>
 
-            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-green-800">{t('levels.level2.name')}</div>
                 <div className="text-sm text-green-600">{t('completion.predictChanges')}</div>
               </div>
-              <div className="text-2xl font-bold text-green-600">{progress.level2Score || 0}</div>
+              <div className="font-bold text-green-700 whitespace-nowrap">{resultLabel(2)}</div>
             </div>
 
-            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-purple-800">{t('levels.level3.name')}</div>
                 <div className="text-sm text-purple-600">{t('completion.useFormulas')}</div>
               </div>
-              <div className="text-2xl font-bold text-purple-600">{progress.level3Score || 0}</div>
-            </div>
-
-            <div className="bg-orange-100 p-4 rounded-xl flex justify-between items-center border-2 border-orange-400">
-              <div className="font-bold text-orange-800 text-lg">{t('completion.totalScore')}</div>
-              <div className="text-3xl font-bold text-orange-600">{totalScore}</div>
+              <div className="font-bold text-purple-700 whitespace-nowrap">{resultLabel(3)}</div>
             </div>
           </div>
 
@@ -253,13 +276,8 @@ function App() {
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-warm-800 phone:text-lg">Rafkleyfi</span>
                     {progress.level0Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        ✓ {t('levels.completed')}
-                      </span>
-                    )}
-                    {progress.level0Score !== null && (
-                      <span className="bg-warm-600 text-white text-xs px-2 py-1 rounded-full">
-                        {progress.level0Score} {t('levels.points')}
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(0)}
                       </span>
                     )}
                   </div>
@@ -287,13 +305,8 @@ function App() {
                       {t('levels.level1.name')}
                     </span>
                     {progress.level1Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        ✓ {t('levels.completed')}
-                      </span>
-                    )}
-                    {progress.level1Score !== null && (
-                      <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                        {progress.level1Score} {t('levels.points')}
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(1)}
                       </span>
                     )}
                   </div>
@@ -319,13 +332,8 @@ function App() {
                       {t('levels.level2.name')}
                     </span>
                     {progress.level2Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        ✓ {t('levels.completed')}
-                      </span>
-                    )}
-                    {progress.level2Score !== null && (
-                      <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
-                        {progress.level2Score} {t('levels.points')}
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(2)}
                       </span>
                     )}
                   </div>
@@ -353,13 +361,8 @@ function App() {
                       {t('levels.level3.name')}
                     </span>
                     {progress.level3Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        ✓ {t('levels.completed')}
-                      </span>
-                    )}
-                    {progress.level3Score !== null && (
-                      <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">
-                        {progress.level3Score} {t('levels.points')}
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(3)}
                       </span>
                     )}
                   </div>
@@ -374,8 +377,9 @@ function App() {
             </button>
           </div>
 
-          {/* Progress summary */}
-          {progress.totalGamesPlayed > 0 && (
+          {/* Progress: which levels are done, and the way to start over. No
+              total: each level's count is on its own card (decision 58 (b)). */}
+          {completedLevels > 0 && (
             <div className="mt-8 bg-warm-50 p-4 rounded-xl phone:mt-6 phone:p-3">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
@@ -386,36 +390,9 @@ function App() {
                   {t('menu.reset')}
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-3 text-center text-sm phone:gap-1.5">
-                <div className="bg-blue-50 rounded-lg p-2 phone:px-1">
-                  <div className="text-lg font-bold text-blue-600">
-                    {/* Four levels since Stig 0 landed; this counted three. */}
-                    {
-                      [
-                        progress.level0Completed,
-                        progress.level1Completed,
-                        progress.level2Completed,
-                        progress.level3Completed,
-                      ].filter(Boolean).length
-                    }
-                    /4
-                  </div>
-                  <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
-                </div>
-                <div className="bg-green-50 rounded-lg p-2 phone:px-1">
-                  <div className="text-lg font-bold text-green-600">
-                    {(progress.level1Score || 0) +
-                      (progress.level2Score || 0) +
-                      (progress.level3Score || 0)}
-                  </div>
-                  <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
-                </div>
-                <div className="bg-purple-50 rounded-lg p-2 phone:px-1">
-                  <div className="text-lg font-bold text-purple-600">
-                    {progress.totalGamesPlayed}
-                  </div>
-                  <div className="text-xs text-warm-600">{t('menu.games')}</div>
-                </div>
+              <div className="bg-blue-50 rounded-lg p-2 text-center text-sm">
+                <div className="text-lg font-bold text-blue-600">{completedLevels}/4</div>
+                <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
               </div>
             </div>
           )}

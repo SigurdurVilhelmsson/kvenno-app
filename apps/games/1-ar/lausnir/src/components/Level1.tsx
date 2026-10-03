@@ -284,7 +284,7 @@ function ConcentrationIndicator({
 }
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  onComplete: () => void;
   onBack: () => void;
 }
 
@@ -330,7 +330,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [volumeML, setVolumeML] = useState(100);
   const [showHint, setShowHint] = useState(false);
   const [completed, setCompleted] = useState<number[]>([]);
-  const [score, setScore] = useState(0);
   const [showConcept, setShowConcept] = useState(false);
   const [gameComplete, setGameComplete] = useState(false);
 
@@ -513,8 +512,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   // Submit answer
   const checkAnswer = useCallback(() => {
     if (isCorrect) {
-      const pointsEarned = 100;
-      setScore((prev) => prev + pointsEarned);
       setCompleted((prev) => [...prev, challenge.id]);
       setShowConcept(true);
 
@@ -546,8 +543,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="text-center mb-8 phone:mb-4">
             <div className="text-6xl mb-4 phone:text-4xl phone:mb-2">🎉</div>
             <div className="text-2xl font-bold text-warm-800 mb-2">Þú hefur lokið Stigi 1!</div>
+            {/* Completion, not a count: every challenge ends at the right
+                concentration, and the readout turns green before "Athuga
+                lausn" is pressed, so a count could only ever read full
+                marks (decision 58 (b), as item 23 did in Einingagreining). */}
             <div className="text-lg text-warm-600">
-              Stig: {score} / {CHALLENGES.length * 100}
+              Þú kláraðir öll {CHALLENGES.length} verkefnin
             </div>
           </div>
 
@@ -566,7 +567,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               onClick={() => {
                 setGameComplete(false);
                 setCurrentChallenge(0);
-                setScore(0);
                 setCompleted([]);
               }}
               className="flex-1 bg-warm-600 hover:bg-warm-700 text-white font-bold py-3 px-8 rounded-xl transition-colors"
@@ -574,7 +574,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               Spila aftur
             </button>
             <button
-              onClick={() => onComplete(score)}
+              onClick={() => onComplete()}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors"
             >
               Áfram í Stig 2 →
@@ -610,10 +610,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               >
                 ← Til baka
               </button>
-              <div className="text-center">
-                <div className="text-xl font-bold text-blue-600 phone:text-base">{score}</div>
-                <div className="text-xs text-warm-600">Stig</div>
-              </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-green-600 phone:text-base">
                   {completed.length}/{CHALLENGES.length}

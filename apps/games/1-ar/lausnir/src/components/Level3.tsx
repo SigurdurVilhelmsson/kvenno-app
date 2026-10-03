@@ -27,7 +27,7 @@ const TOTAL = 8;
 const THEME = '#8b5cf6';
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -148,7 +148,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   };
 
   if (done) {
-    const passed = correctCount >= 5;
+    // No pass mark: the level is done once the set is, whatever the count
+    // (decision 58 (b)). It used to record completion only at 5 of 8 or more,
+    // a completion gate in a game whose levels are not gated.
+    //
     // A new set: the worked solution to every problem in the old one has
     // just been shown, so replaying it would test copying, not calculating.
     const retry = () => {
@@ -164,16 +167,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center">
-            <div className="text-5xl mb-4">{passed ? '🎉' : '📚'}</div>
-            <h2 className="text-2xl font-bold text-warm-800 mb-2">
-              {passed ? 'Vel gert!' : 'Haltu áfram að æfa!'}
-            </h2>
+            <div className="text-5xl mb-4">📐</div>
+            <h2 className="text-2xl font-bold text-warm-800 mb-2">Stigi 3 lokið</h2>
             <p className="text-warm-600 mb-6">
               Þú svaraðir {correctCount} af {TOTAL} rétt
             </p>
             <div className="h-3 bg-warm-200 rounded-full overflow-hidden mb-6">
               <div
-                className={`h-full transition-all duration-700 ${passed ? 'bg-green-500' : 'bg-kvenno-orange'}`}
+                className="h-full transition-all duration-700 bg-kvenno-orange"
                 style={{ width: `${(correctCount / TOTAL) * 100}%` }}
               />
             </div>
@@ -184,14 +185,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               >
                 Reyna aftur
               </button>
-              {passed && (
-                <button
-                  onClick={armedDone(() => onComplete(correctCount))}
-                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-                >
-                  Ljúka stigi →
-                </button>
-              )}
+              <button
+                onClick={armedDone(() => onComplete(correctCount, TOTAL))}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
+              >
+                Ljúka stigi →
+              </button>
             </div>
             <button
               onClick={armedDone(onBack)}
@@ -228,12 +227,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <p className="text-sm text-warm-600 phone:sr-only">
                 Notaðu formúlurnar til að reikna
               </p>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-kvenno-orange phone:text-base">
-                {correctCount}/{TOTAL}
-              </div>
-              <div className="text-xs text-warm-600">Rétt</div>
             </div>
           </div>
           <div className="mt-3 phone:mt-1">

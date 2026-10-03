@@ -16,8 +16,9 @@ clockPastNextGuard();
  * Two defects this guards, both found in the 2026-09 mobile pass:
  *
  * - **The final score counted the last scenario twice.** `handleSubmit` adds
- *   100 when the answer is checked, and `handleNext` added it again on the way
- *   out, so a perfect 12 of 12 reported 1300.
+ *   the answer when it is checked, and `handleNext` added it again on the way
+ *   out, so a perfect 12 of 12 reported 1300 points. The level reports a count
+ *   now, not points (decision 58 (b)); the double count is still guarded.
  * - **Scenario 1's summary contradicted the scenario.** "Samantekt á
  *   breytingum" turns the particle count back into a molarity, and scenario 1
  *   stored 40 particles in 100 mL of what its prose calls 2,0 M — so the panel
@@ -40,8 +41,8 @@ function next() {
   fireEvent.click(screen.getByRole('button', { name: /Næsta spurning|Ljúka Stigi 2/ }));
 }
 
-describe('Stig 2 reports the score the student earned', () => {
-  it('a perfect run reports 100 per scenario, not one extra', () => {
+describe('Stig 2 reports how many the student got right', () => {
+  it('a perfect run reports every scenario once, not one extra', () => {
     const onComplete = vi.fn();
     render(<Level2 onComplete={onComplete} onBack={() => {}} />);
     SCENARIOS.forEach((_, i) => {
@@ -49,17 +50,17 @@ describe('Stig 2 reports the score the student earned', () => {
       next();
     });
     expect(onComplete).toHaveBeenCalledTimes(1);
-    expect(onComplete).toHaveBeenCalledWith(SCENARIOS.length * 100);
+    expect(onComplete).toHaveBeenCalledWith(SCENARIOS.length, SCENARIOS.length);
   });
 
-  it('a run with only the last scenario right reports 100', () => {
+  it('a run with only the last scenario right reports 1', () => {
     const onComplete = vi.fn();
     render(<Level2 onComplete={onComplete} onBack={() => {}} />);
     SCENARIOS.forEach((_, i) => {
       answer(i, i === SCENARIOS.length - 1);
       next();
     });
-    expect(onComplete).toHaveBeenCalledWith(100);
+    expect(onComplete).toHaveBeenCalledWith(1, SCENARIOS.length);
   });
 });
 
