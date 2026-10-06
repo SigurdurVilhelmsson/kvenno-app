@@ -118,9 +118,12 @@ const documentLimiter = rateLimit({
   message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
 });
 
+// A school network usually reaches the internet through one public address, so a
+// whole class downloading teaching cards at once counts as a single client here.
+// 120 a minute covers a class taking a card at each of the three levels together.
 const pdfLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 30,
+  max: 120,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },

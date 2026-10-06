@@ -4,7 +4,7 @@
  * The server uses express-rate-limit with per-endpoint configuration:
  * - /api/analyze and /api/analyze-2ar: 10 requests per 60s (analyzeLimiter)
  * - /api/process-document: 20 requests per 60s (documentLimiter)
- * - /api/islenskubraut/pdf: 30 requests per 60s (pdfLimiter)
+ * - /api/islenskubraut/pdf: 120 requests per 60s (pdfLimiter)
  *
  * These tests verify rate limiting behavior using the supertest library.
  */
@@ -71,6 +71,14 @@ describe('Rate limiting: standard headers', () => {
       res.headers['x-ratelimit-remaining'] !== undefined;
 
     expect(hasRemainingHeader).toBe(true);
+  });
+
+  it('allows 120 PDF downloads a minute per client', async () => {
+    const res = await request(app)
+      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
+      .set('Origin', 'https://kvenno.app');
+
+    expect(Number(res.headers['ratelimit-limit'] ?? res.headers['x-ratelimit-limit'])).toBe(120);
   });
 });
 
