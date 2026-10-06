@@ -1,0 +1,75 @@
+/**
+ * The Íslenskubraut teaching-card PDF must render with no network access, in the
+ * font it registers.
+ *
+ * Until 2026-10-06 the fonts were URLs on cdn.jsdelivr.net, fetched when the first
+ * card was rendered, so a server that could not reach the CDN answered every download
+ * with a 500. They were also the `latin-ext` subset, which holds no A–Z and no
+ * Icelandic letter, so react-pdf set every card in Helvetica instead. Each test below
+ * fails against one of those two.
+ */
+
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import request from 'supertest';
+import { generatePdf } from '../lib/islenskubraut-pdf.js';
+import { categories } from '../lib/islenskubraut-data.js';
+
+const LEVELS = ['A1', 'A2', 'B1'];
+
+const realFetch = globalThis.fetch;
+const networkRequests: string[] = [];
+
+// Installed before the first render: react-pdf loads a registered font lazily, on
+// first use, and caches it for the life of the process. A `data:` URL is not network
+// access (react-pdf's layout engine loads its own WebAssembly that way), so it passes.
+beforeAll(() => {
+  vi.stubGlobal('fetch', async (input: string | URL | Request, init?: RequestInit) => {
+    const url = input instanceof Request ? input.url : String(input);
+    if (url.startsWith('data:')) return realFetch(input, init);
+    networkRequests.push(url);
+    throw new Error(`Network access attempted while rendering a card: ${url}`);
+  });
+});
+
+afterAll(() => {
+  vi.unstubAllGlobals();
+});
+
+/** The PostScript names of the fonts a PDF embeds or references. */
+function baseFonts(pdf: Buffer): Set<string> {
+  const names = pdf.toString('latin1').matchAll(/\/BaseFont\s*\/(?:[A-Z]{6}\+)?([\w-]+)/g);
+  return new Set([...names].map((m) => m[1]));
+}
+
+describe('Íslenskubraut teaching-card PDF', () => {
+  it('downloads through the route without reaching the network', async () => {
+    const { app } = await import('../index.js');
+    const res = await request(app)
+      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
+      .buffer(true)
+      .parse((r, cb) => {
+        const chunks: Buffer[] = [];
+        r.on('data', (c: Buffer) => chunks.push(c));
+        r.on('end', () => cb(null, Buffer.concat(chunks)));
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toBe('application/pdf');
+    expect((res.body as Buffer).subarray(0, 5).toString()).toBe('%PDF-');
+    expect(networkRequests).toEqual([]);
+  });
+
+  // Every category at every level, because a character the font lacks sends only that
+  // glyph to the fallback, and any card could be the one carrying it.
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`sets ${category.id} ${level} in Noto Sans alone`, async () => {
+        const fonts = baseFonts(await generatePdf(category, level));
+
+        expect(fonts).toContain('NotoSans-Regular');
+        expect(fonts).toContain('NotoSans-Bold');
+        expect([...fonts].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});

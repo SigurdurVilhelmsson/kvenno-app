@@ -1,24 +1,34 @@
 /**
- * PDF generation for Islenskubraut teaching cards
- * Adapted from apps/islenskubraut/src/lib/pdf.ts -- keep in sync
+ * PDF generation for Islenskubraut teaching cards.
+ * The only copy: the SPA has no PDF code of its own and calls this route.
  */
 
+import { fileURLToPath } from 'node:url';
 import ReactPDF, { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import React from 'react';
 import type { Category, CEFRLevel, GuidingQuestion } from '../types/index.js';
 
-// Register Noto Sans font for Icelandic character support
+/**
+ * Noto Sans, bundled in `server/fonts/` (@fontsource/noto-sans 5.3.0 — SIL Open Font
+ * License, `fonts/OFL.txt`). Two things were wrong with the fonts this replaced:
+ *
+ * - They were URLs on cdn.jsdelivr.net, fetched when the first card was rendered. Any
+ *   server that could not reach the CDN answered every download with a 500.
+ * - They were the `latin-ext` subset, which starts at U+0100 and so holds neither
+ *   A–Z nor a single Icelandic letter (á ð é í ó ú ý þ æ ö are all U+00C0–00FF).
+ *   react-pdf silently fell back to Helvetica for every character, so even when the
+ *   fetch worked the card was never set in Noto Sans. `latin` covers U+0000–00FF.
+ *
+ * The path is resolved from this module, and `../../fonts` is `server/fonts` from both
+ * `src/lib/` (tsx, vitest) and `dist/lib/` (production), since tsc copies no assets.
+ */
+const fontPath = (file: string) => fileURLToPath(new URL(`../../fonts/${file}`, import.meta.url));
+
 Font.register({
   family: 'NotoSans',
   fonts: [
-    {
-      src: 'https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.0/files/noto-sans-latin-ext-400-normal.woff',
-      fontWeight: 'normal',
-    },
-    {
-      src: 'https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.0/files/noto-sans-latin-ext-700-normal.woff',
-      fontWeight: 'bold',
-    },
+    { src: fontPath('noto-sans-latin-400-normal.woff'), fontWeight: 'normal' },
+    { src: fontPath('noto-sans-latin-700-normal.woff'), fontWeight: 'bold' },
   ],
 });
 
