@@ -152,9 +152,8 @@ The production server is a Linode instance running Ubuntu 24.04.
 ### Deploy
 
 ```bash
-pnpm build
-./scripts/deploy.sh           # Deploy to production
-./scripts/deploy.sh --dry-run # Preview changes without deploying
+./scripts/deploy.sh           # Build (pnpm build), then deploy to production
+./scripts/deploy.sh --dry-run # Build, then preview changes without deploying
 ```
 
 The deploy script:

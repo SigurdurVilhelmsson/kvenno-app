@@ -6,8 +6,10 @@
 #
 # Prerequisites:
 #   - SSH access to server (siggi@server)
-#   - dist/ built via: pnpm build
-#   - server/ contains Express backend
+#   - dependencies installed (pnpm install)
+#
+# It builds first (pnpm build), so what ships is always the checkout you run it
+# from. Pull before deploying.
 
 set -euo pipefail
 
@@ -26,13 +28,20 @@ if [[ "${1:-}" == "--dry-run" ]]; then
   echo "🔍 DRY RUN MODE - no changes will be made"
 fi
 
-# Verify dist/ exists
+echo "🚀 Deploying kvenno.app at $(git -C "$ROOT_DIR" log -1 --format='%h %s')"
+
+# Step 0: Build the static site (dist/) and the backend (server/dist/).
+# Deploying used to ship whatever an earlier `pnpm build` had left behind. On
+# 2026-10-06 a deploy without one shipped the previous backend, and the health
+# check below passed against it, so the fix it carried never went live.
+echo ""
+echo "🔨 Building (pnpm build)..."
+(cd "$ROOT_DIR" && pnpm build)
+
 if [ ! -d "$DIST_DIR" ]; then
-  echo "❌ dist/ directory not found. Run 'pnpm build' first."
+  echo "❌ pnpm build did not produce dist/ — refusing to deploy."
   exit 1
 fi
-
-echo "🚀 Deploying kvenno.app..."
 
 # Step 1: Build and validate the backend bundle — before anything is shipped.
 # Nothing reaches the server until we know both halves are deployable;
@@ -62,7 +71,7 @@ pnpm --filter kvenno-server deploy --prod "$BUNDLE_DIR"
 # `pnpm deploy` copies the package as-is; it does not run the build.
 if [ ! -f "$BUNDLE_DIR/dist/index.js" ]; then
   echo "❌ Backend bundle is missing dist/index.js — refusing to deploy."
-  echo "   The backend was not compiled. Run 'pnpm build' first."
+  echo "   pnpm build did not compile the backend (server/dist/index.js)."
   exit 1
 fi
 

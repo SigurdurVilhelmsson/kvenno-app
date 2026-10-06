@@ -560,7 +560,7 @@ sudo journalctl -u kvenno-backend -f
 sudo journalctl -u kvenno-backend -n 100
 
 # Update backend code — do NOT edit on the server.
-# Edit server/src/index.ts locally, then:  pnpm build && ./scripts/deploy.sh
+# Edit server/src/index.ts locally, then:  ./scripts/deploy.sh  (it runs pnpm build first)
 # (deploy.sh rsyncs a compiled bundle to /opt/kvenno-server and restarts the service)
 ```
 
@@ -590,7 +590,7 @@ sudo journalctl -u kvenno-backend -n 50
 
 # Common issues:
 # - Missing/incomplete bundle: the unit runs `node dist/index.js` from /opt/kvenno-server.
-#   Nothing is installed on the host — rebuild and redeploy (pnpm build && ./scripts/deploy.sh);
+#   Nothing is installed on the host — redeploy (./scripts/deploy.sh, which builds first);
 #   deploy.sh refuses to ship a bundle without dist/index.js.
 # - Port already in use: sudo lsof -i :8000
 # - Permission issues: sudo chown -R www-data:www-data /opt/kvenno-server
@@ -822,10 +822,7 @@ kvenno-app/
 ### Deployment Workflow
 
 ```bash
-# Build everything
-pnpm build
-
-# Deploy to production (rsync + restart backend)
+# Build everything and deploy to production (pnpm build, rsync, restart backend)
 ./scripts/deploy.sh
 ```
 
