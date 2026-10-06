@@ -563,9 +563,11 @@ nobody has yet opened an exported workbook in real Excel.
 ### Deployment
 
 ```bash
-pnpm build                 # Build everything
-./scripts/deploy.sh        # rsync to server + restart backend
+./scripts/deploy.sh        # pnpm build, then rsync to server + restart backend
 ```
+
+`deploy.sh` runs `pnpm build` itself (since 2026-10-06), so what ships is always the checkout it
+runs from — pull first.
 
 `deploy.sh` runs on a dev machine and pushes over SSH. It does **not** install
 `server/nginx-site.conf`: copy that to the server and run `sudo nginx -t && sudo systemctl reload nginx`

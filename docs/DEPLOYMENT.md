@@ -39,8 +39,8 @@ backend. Both are gitignored.
 
 > **The backend build is not optional.** The systemd unit runs
 > `node dist/index.js`. Deploying without compiling first leaves the service
-> crash-looping. Both deploy paths now refuse to proceed if `dist/index.js` is
-> missing from the bundle, but the correct fix is always to run `pnpm build`.
+> crash-looping. `scripts/deploy.sh` runs `pnpm build` itself, and both deploy
+> paths refuse to proceed if `dist/index.js` is missing from the bundle.
 
 Skip flags for faster iteration: `--skip-landing`, `--skip-games`,
 `--skip-lab-reports`, `--skip-islenskubraut`, `--skip-server`.
@@ -50,9 +50,8 @@ Skip flags for faster iteration: `--skip-landing`, `--skip-games`,
 ### Manual (primary path today)
 
 ```bash
-pnpm build                    # Required — builds frontend AND backend
-./scripts/deploy.sh           # Deploy to production
-./scripts/deploy.sh --dry-run # Preview without changes
+./scripts/deploy.sh           # Build (pnpm build), then deploy to production
+./scripts/deploy.sh --dry-run # Build, then preview without changes
 ```
 
 The script:

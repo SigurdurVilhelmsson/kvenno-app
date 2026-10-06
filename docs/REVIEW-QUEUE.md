@@ -36,8 +36,9 @@ needs no ruling, only time.
       The check: on https://kvenno.app/islenskubraut/, open any card and press
       `Hlaða niður PDF`. Expect a PDF in Noto Sans, not the alert
       `Villa kom upp við niðurhal`.
-  - The first deploy of #88 still failed because `pnpm build` was skipped: `deploy.sh` ships
-    whatever is in `server/dist`, and its health check passes against the old backend too.
+  - The first deploy of #88 still failed because `pnpm build` was skipped: `deploy.sh` shipped
+    whatever was in `server/dist`, and its health check passes against the old backend too.
+    Since then `deploy.sh` runs `pnpm build` itself.
   - The deploy carrying only the bundled-font fix (PR #87) still failed, as reported the same
     day. The cause was the backend's production rule refusing every request with no `Origin`
     header: a browser sends none on a same-origin GET, which is what the button makes, so every
