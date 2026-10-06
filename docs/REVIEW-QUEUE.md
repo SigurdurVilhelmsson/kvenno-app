@@ -32,6 +32,17 @@ needs no ruling, only time.
       returning browser can run the old bundle. See D for the lasting fix. **Moot from the deploy
       that carries PR #82**: the entry is hashed there, so new HTML names a file no browser has
       cached.
+- [ ] **Íslenskubraut PDF download**, after the deploy that carries the bundled-font fix
+      (2026-10-06). On https://kvenno.app/islenskubraut/, open any card and press
+      `Hlaða niður PDF`. Expect a PDF in Noto Sans, not the alert
+      `Villa kom upp við niðurhal`.
+  - Before the fix the backend fetched its fonts from cdn.jsdelivr.net, so a server that could
+    not reach the CDN gave a 500 for every card. Whether production was failing that way was
+    never confirmed. `journalctl -u kvenno-backend | grep "Failed to fetch font"` on the host
+    shows it.
+  - If the download still fails after the deploy, the cause is outside the backend. Check that
+    the live nginx config has the `/api/` location from `server/nginx-site.conf`: `deploy.sh`
+    does not install it.
 
 ## B. Device and accessibility checks (never run)
 
