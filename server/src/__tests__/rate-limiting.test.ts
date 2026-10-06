@@ -4,7 +4,7 @@
  * The server uses express-rate-limit with per-endpoint configuration:
  * - /api/analyze and /api/analyze-2ar: 10 requests per 60s (analyzeLimiter)
  * - /api/process-document: 20 requests per 60s (documentLimiter)
- * - /api/islenskubraut/pdf: 30 requests per 60s (pdfLimiter)
+ * - /api/islenskubraut/pdf: 120 requests per 60s (pdfLimiter)
  *
  * These tests verify rate limiting behavior using the supertest library.
  */
@@ -71,6 +71,14 @@ describe('Rate limiting: standard headers', () => {
       res.headers['x-ratelimit-remaining'] !== undefined;
 
     expect(hasRemainingHeader).toBe(true);
+  });
+
+  it('allows 120 PDF downloads a minute per client', async () => {
+    const res = await request(app)
+      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
+      .set('Origin', 'https://kvenno.app');
+
+    expect(Number(res.headers['ratelimit-limit'] ?? res.headers['x-ratelimit-limit'])).toBe(120);
   });
 });
 
@@ -170,5 +178,34 @@ describe('Rate limiting: error response format', () => {
       // "Of margar beiðnir - reyndu aftur eftir smástund"
       expect(rateLimitedResponse.body.error).toContain('Of margar');
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Each client gets its own bucket behind nginx (trust proxy)
+// ---------------------------------------------------------------------------
+describe('Rate limiting: one bucket per client behind nginx', () => {
+  // nginx appends the client's address to X-Forwarded-For. Without
+  // `trust proxy` every request counted against 127.0.0.1, so one busy
+  // client used up the limit for everybody. The addresses here are
+  // reserved for documentation and appear nowhere else in these tests.
+  const send = (clientIp: string) =>
+    request(app)
+      .post('/api/analyze')
+      .set('Origin', 'https://kvenno.app')
+      .set('X-Forwarded-For', clientIp)
+      // An invalid mode is refused with 400 after the limiter has counted it,
+      // so no request here reaches the Claude API.
+      .send({ content: 'x', systemPrompt: 'y', mode: 'not-a-mode' });
+
+  it('limits a client without limiting the next one', async () => {
+    const first: number[] = [];
+    for (let i = 0; i < 11; i++) {
+      first.push((await send('192.0.2.10')).status);
+    }
+    expect(first.slice(0, 10)).not.toContain(429);
+    expect(first[10]).toBe(429);
+
+    expect((await send('192.0.2.20')).status).not.toBe(429);
   });
 });

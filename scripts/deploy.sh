@@ -109,8 +109,8 @@ if [ -z "$DRY_RUN" ]; then
 
   # Verify the backend actually came back up. Checked on the host against the
   # backend port (nginx only proxies /api/, so a public /health request returns
-  # the SPA with HTTP 200 even when the backend is dead), and with an Origin
-  # header (production CORS rejects origin-less requests with HTTP 500).
+  # the SPA with HTTP 200 even when the backend is dead). The Origin header is
+  # optional for a GET; production requires one only on other methods.
   echo ""
   echo "🩺 Checking backend health..."
   HEALTH_STATUS="000"

@@ -207,8 +207,9 @@ FRONTEND_URL=https://kvenno.app
 ```
 
 `FRONTEND_URL` is load-bearing beyond CORS convenience: in production the server
-**rejects requests with no `Origin` header**, and any `Origin` that does not
-match, with HTTP 500.
+**rejects any `Origin` that does not match**, with HTTP 500. It also rejects a
+**POST with no `Origin`**; a GET or HEAD with none is allowed, because a browser
+sends none on a same-origin GET, which is what the Íslenskubraut download makes.
 
 ## Verification
 
@@ -224,8 +225,8 @@ After deployment:
 - [ ] Icelandic characters render correctly
 - [ ] Mobile responsive layout works
 
-Backend health — must be run **on the host** and **with an `Origin` header**,
-for the two reasons documented above:
+Backend health — must be run **on the host**: nginx proxies `/api/` only, so a
+public `/health` request returns the SPA. The `Origin` header is optional for a GET:
 
 ```bash
 ssh siggi@kvenno.app \
