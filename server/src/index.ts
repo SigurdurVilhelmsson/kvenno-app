@@ -30,6 +30,13 @@ const execFileAsync = promisify(execFile);
 const app: ReturnType<typeof express> = express();
 const PORT = Number(process.env.PORT) || 8000;
 
+// The server listens on 127.0.0.1 only (see app.listen below), so every request
+// comes through nginx, which appends the client's address to X-Forwarded-For.
+// Trusting that one hop gives req.ip the client's address. Without it every
+// request came from 127.0.0.1, so each rate limit was one bucket shared by all
+// users, and express-rate-limit logged ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(
   helmet({
@@ -55,19 +62,33 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const filteredOrigins = allowedOrigins.filter((o): o is string => Boolean(o));
 
+// In production, refuse a request with no Origin header to deter non-browser
+// clients — but only where a browser would have sent one. Browsers send Origin
+// on every cross-origin request and on same-origin requests other than GET and
+// HEAD (the Fetch standard's "serializing a request origin"). The Íslenskubraut
+// download button is a same-origin GET, so it carries none: refusing every
+// origin-less request answered each card download on kvenno.app with a 500.
+const ORIGINLESS_METHODS = new Set(['GET', 'HEAD']);
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    !req.headers.origin &&
+    !ORIGINLESS_METHODS.has(req.method)
+  ) {
+    return next(new Error('Origin header required'));
+  }
+  next();
+});
+
 app.use(
   cors({
     origin: (
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void
     ) => {
-      // In production, reject requests without Origin header to prevent
-      // abuse from curl, extensions, and non-browser clients
+      // An absent Origin was already judged above; there is nothing for CORS to check.
       if (!origin) {
-        if (process.env.NODE_ENV !== 'production') {
-          return callback(null, true);
-        }
-        return callback(new Error('Origin header required'));
+        return callback(null, true);
       }
 
       if (filteredOrigins.includes(origin)) {

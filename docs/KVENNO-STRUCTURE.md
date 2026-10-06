@@ -515,7 +515,7 @@ NODE_ENV=production
 ```
 
 > The live list is longer — `FRONTEND_URL` is load-bearing (in production the server rejects
-> requests with a missing or mismatched `Origin`), and the file lives at `/opt/kvenno-server/.env`,
+> a mismatched `Origin`, and a POST with none), and the file lives at `/opt/kvenno-server/.env`,
 > not under `/var/www`. Template: `server/.env.example`. See `docs/DEPLOYMENT.md` § Environment
 > variables.
 
@@ -567,10 +567,10 @@ sudo journalctl -u kvenno-backend -n 100
 ### Testing the Backend
 
 ```bash
-# Test health endpoint — must run ON THE HOST, with an Origin header.
+# Test health endpoint — must run ON THE HOST.
 # nginx proxies /api/ only, so there is no public /api/health route, and a public
 # request for /health falls through to the SPA and returns HTTP 200 even when the
-# backend is dead. Production CORS also rejects origin-less requests.
+# backend is dead. The Origin header is optional for a GET.
 ssh siggi@kvenno.app \
   "curl -s -H 'Origin: https://kvenno.app' http://127.0.0.1:8000/health"
 

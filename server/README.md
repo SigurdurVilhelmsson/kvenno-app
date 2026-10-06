@@ -196,9 +196,9 @@ sudo nginx -t && sudo systemctl reload nginx
 sudo certbot renew --dry-run
 ```
 
-*(This happened in production on 2026-08-27: the lineage had been on `standalone`
+_(This happened in production on 2026-08-27: the lineage had been on `standalone`
 with no pre/post hooks, so every automatic renewal had been failing silently
-against a running nginx.)*
+against a running nginx.)_
 
 The `webroot` authenticator is also viable — `nginx-site.conf` serves
 `/.well-known/acme-challenge/` from `/var/www/certbot` for it — but that
@@ -231,8 +231,8 @@ half the people who type the address.
 
 1. **Check backend is running** — must be run **on the host** and **with an
    `Origin` header** (nginx proxies `/api/` only, so no public URL reaches
-   `/health`; and in production the CORS middleware rejects requests with no
-   `Origin` — `server/src/index.ts:63-69`):
+   `/health`. The `Origin` header is not required for a GET, but
+   production rejects a mismatched one — `server/src/index.ts:71-81`):
 
    ```bash
    ssh siggi@kvenno.app \
@@ -311,7 +311,7 @@ sudo chmod 644 /var/www/labreports/server/.env
 ### CORS errors
 
 Check that your frontend URL is in the allowed origins list at
-`server/src/index.ts:47-52`:
+`server/src/index.ts:55-59`:
 
 ```typescript
 const allowedOrigins: (string | undefined)[] = [
@@ -321,10 +321,10 @@ const allowedOrigins: (string | undefined)[] = [
 ];
 ```
 
-Setting `FRONTEND_URL` in `.env` is the supported way to add a domain. Note that
-in production the same middleware rejects requests with **no** `Origin` header
-(`server/src/index.ts:63-69` — the origin callback errors out), which is why
-`curl` health checks must pass one.
+Setting `FRONTEND_URL` in `.env` is the supported way to add a domain. In production the
+server also rejects a **POST** with no `Origin` header (`server/src/index.ts:71-81`).
+A GET or HEAD with none is allowed: browsers send no `Origin` on a same-origin
+GET, and the Íslenskubraut PDF download is one.
 
 ## Updating the Application
 

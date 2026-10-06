@@ -251,14 +251,37 @@ describe('Security: CORS no-origin rejection in production', () => {
     }
   });
 
-  it('rejects requests without Origin header when NODE_ENV=production', async () => {
+  it('rejects a POST without Origin header when NODE_ENV=production', async () => {
     process.env.NODE_ENV = 'production';
 
-    const res = await request(app).get('/health');
-    // No Origin header set — should be rejected in production
+    // A browser always sends Origin on a POST, so a missing one is not a browser.
+    const res = await request(app)
+      .post('/api/analyze')
+      .send({ content: 'x', systemPrompt: 'y', mode: 'teacher' });
 
-    // The CORS middleware calls callback(new Error('Origin header required'))
-    // which triggers the Express error handler returning 500
+    // next(new Error('Origin header required')) reaches the Express error handler
+    expect(res.headers['access-control-allow-origin']).toBeUndefined();
+    expect(res.status).toBe(500);
+  });
+
+  // Browsers send no Origin on a same-origin GET, which is exactly what the
+  // Íslenskubraut download button makes. Refusing it returned a 500 for every card
+  // on kvenno.app; the other PDF tests set an Origin a browser never sends here,
+  // which is how that went unnoticed.
+  it('allows a same-origin GET without Origin header when NODE_ENV=production', async () => {
+    process.env.NODE_ENV = 'production';
+
+    const res = await request(app).get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toBe('application/pdf');
+  });
+
+  it('still refuses a GET from a foreign Origin when NODE_ENV=production', async () => {
+    process.env.NODE_ENV = 'production';
+
+    const res = await request(app).get('/health').set('Origin', 'http://evil.com');
+
     expect(res.headers['access-control-allow-origin']).toBeUndefined();
     expect(res.status).toBe(500);
   });

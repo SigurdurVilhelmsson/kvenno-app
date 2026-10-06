@@ -172,3 +172,32 @@ describe('Rate limiting: error response format', () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// Each client gets its own bucket behind nginx (trust proxy)
+// ---------------------------------------------------------------------------
+describe('Rate limiting: one bucket per client behind nginx', () => {
+  // nginx appends the client's address to X-Forwarded-For. Without
+  // `trust proxy` every request counted against 127.0.0.1, so one busy
+  // client used up the limit for everybody. The addresses here are
+  // reserved for documentation and appear nowhere else in these tests.
+  const send = (clientIp: string) =>
+    request(app)
+      .post('/api/analyze')
+      .set('Origin', 'https://kvenno.app')
+      .set('X-Forwarded-For', clientIp)
+      // An invalid mode is refused with 400 after the limiter has counted it,
+      // so no request here reaches the Claude API.
+      .send({ content: 'x', systemPrompt: 'y', mode: 'not-a-mode' });
+
+  it('limits a client without limiting the next one', async () => {
+    const first: number[] = [];
+    for (let i = 0; i < 11; i++) {
+      first.push((await send('192.0.2.10')).status);
+    }
+    expect(first.slice(0, 10)).not.toContain(429);
+    expect(first[10]).toBe(429);
+
+    expect((await send('192.0.2.20')).status).not.toBe(429);
+  });
+});
