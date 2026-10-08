@@ -274,6 +274,20 @@ changes how the game teaches or looks rather than correcting a defect.
   - **Done 2026-10-01, all eight Y2 games.** Item 3: the `Námsleiðin` chain uses the hub-card
     names (`VSEPR` kept as the acronym), guarded by a Y2 `chain-string.test.ts` like Y1's and Y3's.
 
+### C7. Íslenskubraut against BÍN (2026-10-08)
+
+`pnpm islenskubraut:bin` checks every word in `content/islenskubraut/*.yaml` against
+BÍN-kjarninn. It was written from the API documentation and has never reached the live API;
+D2 has the first run. These two need a ruling once that run is in.
+
+- [ ] **Gate CI on it?** The check is offline once `content/islenskubraut/bin/ordmyndir.json`
+      is committed, so CI could run it. The cost is that every new word needs a fetch, or an
+      entry in `bin/ekki-i-bin.yaml`, before its PR goes green.
+- [ ] **Show gender and the needed form on the cards.** The original ask: a frame like
+      `Það hefur ___.` needs `feld`, `hala`, `gogg`, while the chips say `feldur`, `hali`,
+      `goggur`. BÍN supplies the gender and the forms; it cannot say which case each frame's
+      blank takes. That tagging is a teaching call, per frame.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -352,3 +366,14 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       at 0 to 1 (nafnakerfid Stig 2, under load).
 - [x] **`e2e/` has no `tsconfig`**, so `pnpm type-check` does not cover the specs. Added
       2026-10-02 (PR #82); `pnpm type-check` now runs it, and the specs were already clean.
+- [ ] **First BÍN lookup.** In a session or on a machine that can reach `bin.arnastofnun.is`
+      (not yet allowed in the cloud environment as of 2026-10-08), run
+      `pnpm islenskubraut:bin --fetch` and commit `content/islenskubraut/bin/ordmyndir.json`.
+  - Check one raw response first, e.g. `curl https://bin.arnastofnun.is/api/beygingarmynd/hest`.
+    The parser (`scripts/islenskubraut/bin.mjs`) assumes the documented shape, reads the forms
+    field as either `bmyndir` or `beygingarmyndir`, and has guessed what "not found" looks like.
+  - Expect it to flag `endurunnru` (`úr endurunnru efni`, three categories). By eye, `hálkt`
+    (matur, klaednadur) and the dýr sound words `gelur`, `mjallar`, `súðar`, `umar`, `dúnar`
+    and `þrymir` look wrong too; let the run confirm before changing any.
+  - Read BÍN's licence and attribution terms. `_heimild` in the cache names the source; the
+    printed PDF does not yet, and should if the cards ever show BÍN data.
