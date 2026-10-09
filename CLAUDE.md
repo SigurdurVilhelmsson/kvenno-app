@@ -561,6 +561,10 @@ the form carries, are saved in `content/islenskubraut/bin/ordmyndir.json`, which
 `HTTPS_PROXY` is set, since Node's `fetch` ignores the proxy otherwise. The host was blocked from
 cloud sessions when this was written, so the parser follows the API's documentation, not a real
 response; `docs/REVIEW-QUEUE.md` D2 and C7 hold the first run and the two open rulings.
+**`ordmyndir.json` is CC BY-SA 4.0, not MIT** (licence supplied 2026-10-09): BÍN's terms forbid
+changing the data and require naming it as from Beygingarlýsing íslensks nútímamáls, owned by
+Stofnun Árna Magnússonar í íslenskum fræðum. The file carries that in `_heimild`/`_leyfi`, and
+`content/islenskubraut/bin/README.md` has the wording any page or PDF showing the forms must use.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

@@ -18,8 +18,26 @@
 
 export const BIN_API = 'https://bin.arnastofnun.is/api';
 
+/**
+ * BÍN's terms of use: anyone may use BÍN-kjarninn and publish data from it, but must not
+ * change the data and must name its origin — that it comes from Beygingarlýsing íslensks
+ * nútímamáls and is owned by Stofnun Árna Magnússonar í íslenskum fræðum. The data is
+ * licensed CC BY-SA 4.0. The saved lookups carry both, so the file states its own terms
+ * wherever it is copied; the forms in it are stored exactly as BÍN sent them.
+ */
 export const SOURCE =
-  'Beygingarlýsing íslensks nútímamáls (BÍN-kjarninn), Stofnun Árna Magnússonar í íslenskum fræðum — https://bin.arnastofnun.is/';
+  'Gögnin eru úr Beygingarlýsingu íslensks nútímamáls (BÍN-kjarnanum) og eru í eigu Stofnunar Árna Magnússonar í íslenskum fræðum. https://bin.arnastofnun.is/';
+export const LICENSE = 'CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/';
+
+/** The saved-lookups file: attribution and licence first, then every form in Icelandic order. */
+export function cacheDocument(cache) {
+  const ordmyndir = Object.fromEntries(
+    Object.keys(cache)
+      .sort((a, b) => a.localeCompare(b, 'is'))
+      .map((k) => [k, cache[k]])
+  );
+  return { _heimild: SOURCE, _leyfi: LICENSE, ordmyndir };
+}
 
 /** Letter runs. `___` blanks, punctuation, digits and parentheses all split words. */
 const WORD_RE = /\p{L}+/gu;

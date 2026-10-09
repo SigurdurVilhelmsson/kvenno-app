@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  cacheDocument,
   candidateForms,
   classify,
   collectWords,
@@ -200,5 +201,21 @@ describe('validateAccepted', () => {
     expect(() => validateAccepted({ grasæta: '' })).toThrow(/reason/);
     expect(() => validateAccepted({ Grasæta: 'x' })).toThrow(/lower case/);
     expect(() => validateAccepted(['grasæta'])).toThrow(/map/);
+  });
+});
+
+describe('cacheDocument', () => {
+  it('names BÍN and its owner and states the licence, as BÍN requires', () => {
+    const doc = cacheDocument({});
+    expect(doc._heimild).toMatch(/Beygingarlýsingu íslensks nútímamáls/);
+    expect(doc._heimild).toMatch(/Stofnunar Árna Magnússonar í íslenskum fræðum/);
+    expect(doc._leyfi).toMatch(/CC BY-SA 4\.0/);
+  });
+
+  it('stores each entry exactly as given, in Icelandic alphabetical order', () => {
+    const entry = { found: true, lemmas: [{ ord: 'þú', guid: 'g', ofl: 'pfn', kyn: '' }] };
+    const doc = cacheDocument({ þú: entry, ár: { found: false }, af: { found: false } });
+    expect(Object.keys(doc.ordmyndir)).toEqual(['af', 'ár', 'þú']);
+    expect(doc.ordmyndir['þú']).toBe(entry);
   });
 });

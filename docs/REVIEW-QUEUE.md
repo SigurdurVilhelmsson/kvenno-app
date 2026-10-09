@@ -287,6 +287,10 @@ D2 has the first run. These two need a ruling once that run is in.
       `Það hefur ___.` needs `feld`, `hala`, `gogg`, while the chips say `feldur`, `hali`,
       `goggur`. BÍN supplies the gender and the forms; it cannot say which case each frame's
       blank takes. That tagging is a teaching call, per frame.
+  - When the cards show BÍN forms, the SPA card and the printed PDF must name the source in
+    BÍN's wording (see `content/islenskubraut/bin/README.md`). The data is CC BY-SA 4.0, so
+    also decide whether the card content that carries it is published under that licence too.
+    That is a licensing question, not a code one.
 
 ## D. Work that needs no ruling
 
@@ -375,5 +379,9 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
   - Expect it to flag `endurunnru` (`úr endurunnru efni`, three categories). By eye, `hálkt`
     (matur, klaednadur) and the dýr sound words `gelur`, `mjallar`, `súðar`, `umar`, `dúnar`
     and `þrymir` look wrong too; let the run confirm before changing any.
-  - Read BÍN's licence and attribution terms. `_heimild` in the cache names the source; the
-    printed PDF does not yet, and should if the cards ever show BÍN data.
+  - [x] **BÍN's licence** — 2026-10-09, supplied by Siggi: CC BY-SA 4.0, and the terms of use
+        say not to change the data and to name it as from Beygingarlýsing íslensks
+        nútímamáls, owned by Stofnun Árna Magnússonar í íslenskum fræðum. The saved lookups
+        carry both statements (`_heimild`, `_leyfi`), and `content/islenskubraut/bin/README.md`
+        marks that file as CC BY-SA in an otherwise MIT repo. Nothing a student sees uses BÍN
+        data yet, so no page or PDF needs the attribution yet. C7 covers the cards.

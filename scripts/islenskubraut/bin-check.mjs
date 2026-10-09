@@ -16,7 +16,7 @@ import { resolve } from 'node:path';
 import { parse } from 'yaml';
 
 import {
-  SOURCE,
+  cacheDocument,
   classify,
   collectWords,
   fetchForm,
@@ -51,13 +51,7 @@ function readCache() {
 
 function writeCache(cache) {
   mkdirSync(BIN_DIR, { recursive: true });
-  const sorted = Object.fromEntries(
-    Object.keys(cache)
-      .sort((a, b) => a.localeCompare(b, 'is'))
-      .map((k) => [k, cache[k]])
-  );
-  const doc = { _heimild: SOURCE, ordmyndir: sorted };
-  writeFileSync(CACHE_FILE, `${JSON.stringify(doc, null, 2)}\n`);
+  writeFileSync(CACHE_FILE, `${JSON.stringify(cacheDocument(cache), null, 2)}\n`);
 }
 
 const words = collectWords(loadCategories());

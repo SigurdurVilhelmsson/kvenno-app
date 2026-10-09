@@ -78,6 +78,9 @@ The check fails on a word BÍN does not know. Usually that is a misspelling: fix
 category file. Sometimes it is a real word BÍN-kjarninn does not carry, such as a rare
 compound. List that one in `bin/ekki-i-bin.yaml` with the reason you checked it.
 
+BÍN's data is CC BY-SA 4.0, not MIT like the rest of the repo: `bin/README.md` has the terms
+and the attribution wording.
+
 > **Not yet run against BÍN.** The script was written from the API documentation in a session
 > that could not reach the site, so `bin/ordmyndir.json` does not exist yet. See D2 in
 > `docs/REVIEW-QUEUE.md`.
