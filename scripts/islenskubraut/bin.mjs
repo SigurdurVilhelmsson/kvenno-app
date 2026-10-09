@@ -98,8 +98,10 @@ export function candidateForms(word) {
  * paradigm when a single word matches, and an array of `{ ord, guid, ofl, kyn, hluti }`
  * without forms when several do. The documentation names the forms field
  * `beygingarmyndir` in its prose and `bmyndir` in its example, so both are read. What the
- * API sends for no match is not documented: a 404, an empty array and an empty object are
- * all read as "not found". Anything else unexpected throws rather than being guessed at.
+ * API sends for no match is not documented. The live API answered `{"0":""}` for `umar`
+ * (first run, 2026-10-09), so a body whose every value is an empty string is "not found",
+ * as are a 404, an empty array and an empty object. Anything else unexpected throws rather
+ * than being guessed at.
  *
  * Each lemma is stored with the tags under which `form` appears in it, when the response
  * carries the paradigm, so a later step can read case and number without a second fetch.
@@ -109,7 +111,7 @@ export function parseBinResponse(form, status, body) {
   if (status < 200 || status >= 300) {
     throw new Error(`BÍN answered ${status} for "${form}"`);
   }
-  if (body == null || (typeof body === 'object' && Object.keys(body).length === 0)) {
+  if (body == null || (typeof body === 'object' && Object.values(body).every((v) => v === ''))) {
     return { found: false };
   }
   const entries = Array.isArray(body) ? body : [body];

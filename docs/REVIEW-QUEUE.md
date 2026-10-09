@@ -400,7 +400,8 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       `pnpm islenskubraut:bin --fetch` and commit `content/islenskubraut/bin/ordmyndir.json`.
   - Check one raw response first, e.g. `curl https://bin.arnastofnun.is/api/beygingarmynd/hest`.
     The parser (`scripts/islenskubraut/bin.mjs`) assumes the documented shape, reads the forms
-    field as either `bmyndir` or `beygingarmyndir`, and has guessed what "not found" looks like.
+    field as either `bmyndir` or `beygingarmyndir`. "Not found" is `{"0":""}`, seen on the first
+    run (2026-10-09), which stopped at `umar` until the parser read it.
   - Expect it to flag `endurunnru` (`úr endurunnru efni`, three categories). By eye, `hálkt`
     (matur, klaednadur) and the dýr sound words `gelur`, `mjallar`, `súðar`, `umar`, `dúnar`
     and `þrymir` look wrong too; let the run confirm before changing any.
