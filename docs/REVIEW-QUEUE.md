@@ -395,10 +395,10 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       at 0 to 1 (nafnakerfid Stig 2, under load).
 - [x] **`e2e/` has no `tsconfig`**, so `pnpm type-check` does not cover the specs. Added
       2026-10-02 (PR #82); `pnpm type-check` now runs it, and the specs were already clean.
-- [x] **First BÍN lookup.** Done 2026-10-09 (this PR), from a cloud session that could now
+- [x] **First BÍN lookup.** Done 2026-10-09 (PRs #92, #93), from a cloud session that could now
       reach `bin.arnastofnun.is`; `content/islenskubraut/bin/ordmyndir.json` is committed.
   - The live API answers an unknown form with HTTP 200 and `{"0":""}`, which the documentation
-    does not mention and the parser threw on. It reads that as not found now (`bin.test.ts`).
+    does not mention; the first run stopped at `umar` until #92 read it as not found.
     The forms field is `bmyndir`, as the documentation's example says.
   - It flagged `endurunnru` and `hálkt`, now `endurunnu` and `hált` (BÍN's neuter dative of
     `endurunninn` and neuter of `háll`). It passed `mjallar` and `súðar` as real forms of

@@ -127,9 +127,14 @@ describe('parseBinResponse', () => {
     expect(parseBinResponse('endurunnru', 200, {})).toEqual({ found: false });
   });
 
-  it('reads the live API\'s no-match answer, {"0":""} with a 200, as not found', () => {
-    expect(parseBinResponse('endurunnru', 200, { 0: '' })).toEqual({ found: false });
-    expect(() => parseBinResponse('endurunnru', 200, { 0: 'x' })).toThrow(/unexpected/);
+  it("reads the live API's answer for an unknown form as not found", () => {
+    // What bin.arnastofnun.is actually sent for `umar` on the first live run, 2026-10-09.
+    expect(parseBinResponse('umar', 200, { 0: '' })).toEqual({ found: false });
+    expect(parseBinResponse('umar', 200, [''])).toEqual({ found: false });
+  });
+
+  it('still refuses a body with content it does not recognise', () => {
+    expect(() => parseBinResponse('umar', 200, { 0: 'eitthvað' })).toThrow(/unexpected/);
   });
 
   it('throws on a server error rather than recording the word as unknown', () => {
@@ -157,6 +162,7 @@ describe('fetchForm', () => {
 
   it('reads an empty body as not found', async () => {
     expect(await fetchForm('endurunnru', respond(200, ''))).toEqual({ found: false });
+    expect(await fetchForm('umar', respond(200, '{"0":""}'))).toEqual({ found: false });
     expect(await fetchForm('endurunnru', respond(404, 'Not found'))).toEqual({ found: false });
   });
 
