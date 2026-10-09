@@ -292,6 +292,31 @@ D2 has the first run. These two need a ruling once that run is in.
     also decide whether the card content that carries it is published under that licence too.
     That is a licensing question, not a code one.
 
+### C8. Íslenskubraut levels (2026-10-09)
+
+From a review of the app on 2026-10-09. The levels differ less than they look: the vocabulary
+page is the same at A1, A2 and B1, and A2 and B1 mostly add more words of the same kind. The
+proposal below keeps A2 and B1 and splits A1 into steps, each a different card with a new
+language function rather than a longer list:
+
+| Step | The learner…             | Frames                            | Words                             |
+| ---- | ------------------------ | --------------------------------- | --------------------------------- |
+| A1.1 | names things             | `Þetta er ___.`                   | a handful of nouns, with pictures |
+| A1.2 | describes them           | `Hann/Hún/Það er ___.`            | adjectives in the noun's gender   |
+| A1.3 | says what it does or has | `Það hefur ___.`, `Það étur ___.` | in the right case                 |
+
+Gender comes before case, so the steps follow the grammar, and A1.3 depends on C7's case
+tagging.
+
+- [ ] **Split A1 into two or three steps, as above?** Before deciding:
+  - If the Íslenskubraut courses already have names or numbers, match them rather than adding
+    a second scheme.
+  - The content to write and proofread grows by one card per category per new step.
+  - The code hard-codes `A1 | A2 | B1` in about five places (the SPA's types, the server's
+    level check, `scripts/islenskubraut/load.mjs`, the spreadsheet export and the PDF's
+    teacher notes). Move the level list into the content first, so changing levels later
+    needs no code edit.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
