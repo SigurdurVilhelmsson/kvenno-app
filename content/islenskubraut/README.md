@@ -81,9 +81,10 @@ compound. List that one in `bin/ekki-i-bin.yaml` with the reason you checked it.
 BÍN's data is CC BY-SA 4.0, not MIT like the rest of the repo: `bin/README.md` has the terms
 and the attribution wording.
 
-> **Not yet run against BÍN.** The script was written from the API documentation in a session
-> that could not reach the site, so `bin/ordmyndir.json` does not exist yet. See D2 in
-> `docs/REVIEW-QUEUE.md`.
+**What it cannot catch: a real word in the wrong place.** It asks only whether BÍN knows the
+form. The first run (2026-10-09) passed `mjallar` and `súðar` in the animal-sound list, because
+both are real forms — the genitives of `mjöll` (snow) and `súð` — where a cat `mjálmar` and a
+bee `suðar`. Read the words for sense as well.
 
 ## Why this exists
 

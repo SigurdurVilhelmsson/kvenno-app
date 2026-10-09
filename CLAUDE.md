@@ -552,15 +552,18 @@ or formula, and a row carrying text with no `lykill`. It strips invisible charac
 normalises silently but reports every one. `scripts/islenskubraut/rows.mjs` (row mapping) and
 `review.mjs` (sheet → rows, category → YAML) are the pure halves both commands share.
 
-**BÍN check (2026-10-08, never yet run live).** `pnpm islenskubraut:bin` looks up every word of
+**BÍN check (2026-10-08; first live run 2026-10-09).** `pnpm islenskubraut:bin` looks up every word of
 the content in BÍN-kjarninn (`https://bin.arnastofnun.is/api/beygingarmynd/<form>`) and fails on
 one BÍN does not know, unless `content/islenskubraut/bin/ekki-i-bin.yaml` accepts it with a
 reason. Only `--fetch` goes online; the answers, with each lemma's word class, gender and the tags
 the form carries, are saved in `content/islenskubraut/bin/ordmyndir.json`, which the check reads.
 `bin.mjs` is the pure half; `bin-check.mjs` re-runs itself with `NODE_USE_ENV_PROXY=1` when
-`HTTPS_PROXY` is set, since Node's `fetch` ignores the proxy otherwise. The host was blocked from
-cloud sessions when this was written, so the parser follows the API's documentation, not a real
-response; `docs/REVIEW-QUEUE.md` D2 and C7 hold the first run and the two open rulings.
+`HTTPS_PROXY` is set, since Node's `fetch` ignores the proxy otherwise. **The live API answers a
+form it does not know with HTTP 200 and `{"0":""}`**, which its documentation does not mention;
+the parser was written before the host was reachable and threw on it until the first run. That
+run fixed four words and left eight unknown (`docs/REVIEW-QUEUE.md` D2, D3), and **it cannot
+catch a real word in the wrong place**: `mjallar` and `súðar` passed as genitives of `mjöll` and
+`súð` in a list of animal sounds. C7 holds the two open rulings.
 **`ordmyndir.json` is CC BY-SA 4.0, not MIT** (licence supplied 2026-10-09): BÍN's terms forbid
 changing the data and require naming it as from Beygingarlýsing íslensks nútímamáls, owned by
 Stofnun Árna Magnússonar í íslenskum fræðum. The file carries that in `_heimild`/`_leyfi`, and

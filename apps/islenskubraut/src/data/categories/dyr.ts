@@ -194,7 +194,7 @@ export const dyr: Category = {
         },
         {
           level: 'A2',
-          options: ['hátt', 'lágt', 'þögult', 'gelur', 'mjallar', 'öskrar', 'súðar', 'hringir'],
+          options: ['hátt', 'lágt', 'þögult', 'gelur', 'mjálmar', 'öskrar', 'suðar', 'hringir'],
         },
         {
           level: 'B1',
@@ -203,9 +203,9 @@ export const dyr: Category = {
             'lágt',
             'þögult',
             'gelur',
-            'mjallar',
+            'mjálmar',
             'öskrar',
-            'súðar',
+            'suðar',
             'hringir',
             'hvæsir',
             'umar',

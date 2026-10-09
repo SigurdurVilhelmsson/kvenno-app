@@ -226,7 +226,7 @@ export const matur: Category = {
             'blautt',
             'þurrt',
             'loðið',
-            'hálkt',
+            'hált',
             'stinnt',
             'sveigjanlegt',
           ],

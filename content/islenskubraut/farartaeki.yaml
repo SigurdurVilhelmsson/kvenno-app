@@ -152,14 +152,14 @@ guidingQuestions:
         - hátt
         - lágt
         - þögult
-        - súðar
+        - suðar
         - hringir
         - öskrar
       B1:
         - hátt
         - lágt
         - þögult
-        - súðar
+        - suðar
         - hringir
         - öskrar
         - hvæsir
@@ -186,7 +186,7 @@ guidingQuestions:
         - úr tré
         - úr steini
         - úr gleri
-        - úr endurunnru efni
+        - úr endurunnu efni
         - úr náttúrulegum efnum
         - úr gerviefnum
   - id: q5

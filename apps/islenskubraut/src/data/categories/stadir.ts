@@ -189,7 +189,7 @@ export const stadir: Category = {
             'úr málmi',
             'úr gleri',
             'úr plasti',
-            'úr endurunnru efni',
+            'úr endurunnu efni',
             'úr náttúrulegum efnum',
             'úr gerviefnum',
           ],
