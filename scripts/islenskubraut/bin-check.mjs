@@ -25,6 +25,7 @@ import {
   validateAccepted,
 } from './bin.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
+import { prettify } from './render.mjs';
 
 const BIN_DIR = resolve(CONTENT_DIR, 'bin');
 const CACHE_FILE = resolve(BIN_DIR, 'ordmyndir.json');
@@ -49,9 +50,14 @@ function readCache() {
   return JSON.parse(readFileSync(CACHE_FILE, 'utf8')).ordmyndir ?? {};
 }
 
-function writeCache(cache) {
+// Written as the repo's Prettier would write it, so `format:check` and lint-staged leave the
+// file alone. Only whitespace changes; every form is still stored exactly as BÍN sent it.
+async function writeCache(cache) {
   mkdirSync(BIN_DIR, { recursive: true });
-  writeFileSync(CACHE_FILE, `${JSON.stringify(cacheDocument(cache), null, 2)}\n`);
+  writeFileSync(
+    CACHE_FILE,
+    await prettify(JSON.stringify(cacheDocument(cache), null, 2), CACHE_FILE)
+  );
 }
 
 const words = collectWords(loadCategories());
@@ -87,7 +93,7 @@ if (fetching) {
     console.error(`kept the ${fetched} form(s) looked up before the failure`);
     process.exitCode = 1;
   } finally {
-    if (fetched > 0 || refresh) writeCache(cache);
+    if (fetched > 0 || refresh) await writeCache(cache);
   }
   if (process.exitCode) process.exit(process.exitCode);
   console.log(

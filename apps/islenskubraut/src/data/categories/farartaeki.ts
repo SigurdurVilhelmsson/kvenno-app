@@ -153,7 +153,7 @@ export const farartaeki: Category = {
         },
         {
           level: 'A2',
-          options: ['hátt', 'lágt', 'þögult', 'súðar', 'hringir', 'öskrar'],
+          options: ['hátt', 'lágt', 'þögult', 'suðar', 'hringir', 'öskrar'],
         },
         {
           level: 'B1',
@@ -161,7 +161,7 @@ export const farartaeki: Category = {
             'hátt',
             'lágt',
             'þögult',
-            'súðar',
+            'suðar',
             'hringir',
             'öskrar',
             'hvæsir',
@@ -192,7 +192,7 @@ export const farartaeki: Category = {
             'úr tré',
             'úr steini',
             'úr gleri',
-            'úr endurunnru efni',
+            'úr endurunnu efni',
             'úr náttúrulegum efnum',
             'úr gerviefnum',
           ],
