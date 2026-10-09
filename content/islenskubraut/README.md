@@ -65,6 +65,26 @@ Refuses the whole run, writing nothing:
 Notes left in the `athugasemd` column are written to `_athugasemdir-YYYY-MM.md`, for the pull
 request rather than into the content. A second import in the same month overwrites that file.
 
+## Checking words against BÍN
+
+    pnpm islenskubraut:bin            # check, offline
+    pnpm islenskubraut:bin --fetch    # look up words not checked before, then check
+
+Every word in these files is looked up in BÍN-kjarninn, the Árni Magnússon Institute's
+inflection database (https://bin.arnastofnun.is/). The answers are saved in
+`bin/ordmyndir.json`, so the check itself never goes online. Run `--fetch` after adding words.
+
+The check fails on a word BÍN does not know. Usually that is a misspelling: fix it in the
+category file. Sometimes it is a real word BÍN-kjarninn does not carry, such as a rare
+compound. List that one in `bin/ekki-i-bin.yaml` with the reason you checked it.
+
+BÍN's data is CC BY-SA 4.0, not MIT like the rest of the repo: `bin/README.md` has the terms
+and the attribution wording.
+
+> **Not yet run against BÍN.** The script was written from the API documentation in a session
+> that could not reach the site, so `bin/ordmyndir.json` does not exist yet. See D2 in
+> `docs/REVIEW-QUEUE.md`.
+
 ## Why this exists
 
 Until August 2026 the content lived in TypeScript object literals, duplicated by hand between

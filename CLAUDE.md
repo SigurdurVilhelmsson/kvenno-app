@@ -62,6 +62,7 @@ pnpm islenskubraut:build  # Regenerate the Íslenskubraut TS from content/islens
                           #   — add --check to fail instead of rewrite (CI)
 pnpm islenskubraut:export # Write an .xlsx of the content for a reviewer (--out <file>)
 pnpm islenskubraut:import # Read a reviewed .xlsx back into the YAML (--dry-run, --force)
+pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to look up new ones)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages, and e2e/ (its own tsconfig)
@@ -550,6 +551,20 @@ Import refuses, rather than repairs, anything it cannot read as text: a cell Exc
 or formula, and a row carrying text with no `lykill`. It strips invisible characters and NFC-
 normalises silently but reports every one. `scripts/islenskubraut/rows.mjs` (row mapping) and
 `review.mjs` (sheet → rows, category → YAML) are the pure halves both commands share.
+
+**BÍN check (2026-10-08, never yet run live).** `pnpm islenskubraut:bin` looks up every word of
+the content in BÍN-kjarninn (`https://bin.arnastofnun.is/api/beygingarmynd/<form>`) and fails on
+one BÍN does not know, unless `content/islenskubraut/bin/ekki-i-bin.yaml` accepts it with a
+reason. Only `--fetch` goes online; the answers, with each lemma's word class, gender and the tags
+the form carries, are saved in `content/islenskubraut/bin/ordmyndir.json`, which the check reads.
+`bin.mjs` is the pure half; `bin-check.mjs` re-runs itself with `NODE_USE_ENV_PROXY=1` when
+`HTTPS_PROXY` is set, since Node's `fetch` ignores the proxy otherwise. The host was blocked from
+cloud sessions when this was written, so the parser follows the API's documentation, not a real
+response; `docs/REVIEW-QUEUE.md` D2 and C7 hold the first run and the two open rulings.
+**`ordmyndir.json` is CC BY-SA 4.0, not MIT** (licence supplied 2026-10-09): BÍN's terms forbid
+changing the data and require naming it as from Beygingarlýsing íslensks nútímamáls, owned by
+Stofnun Árna Magnússonar í íslenskum fræðum. The file carries that in `_heimild`/`_leyfi`, and
+`content/islenskubraut/bin/README.md` has the wording any page or PDF showing the forms must use.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

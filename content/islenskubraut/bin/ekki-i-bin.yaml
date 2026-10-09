@@ -1,0 +1,10 @@
+# Words in the Íslenskubraut content that are spelled right but are not in BÍN-kjarninn.
+#
+# `pnpm islenskubraut:bin` fails on any word BÍN does not know. When that word is a real
+# word the core set simply does not carry (a rare compound, say), list it here, in lower
+# case, with the reason someone checked it:
+#
+#   grasæta: Samsett orð (gras + æta); stendur í Íslenskri nútímamálsorðabók.
+#
+# Do not list a misspelling here to make the check pass. Fix it in the category YAML.
+{}
