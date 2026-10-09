@@ -561,7 +561,8 @@ the form carries, are saved in `content/islenskubraut/bin/ordmyndir.json`, which
 `HTTPS_PROXY` is set, since Node's `fetch` ignores the proxy otherwise. **The live API answers a
 form it does not know with HTTP 200 and `{"0":""}`**, which its documentation does not mention;
 the parser was written before the host was reachable and threw on it until the first run. That
-run fixed four words and left eight unknown (`docs/REVIEW-QUEUE.md` D2, D3), and **it cannot
+run fixed four words and left eight unknown, five after three were removed
+(`docs/REVIEW-QUEUE.md` D2, D3), and **it cannot
 catch a real word in the wrong place**: `mjallar` and `súðar` passed as genitives of `mjöll` and
 `súð` in a list of animal sounds. C7 holds the two open rulings.
 **`ordmyndir.json` is CC BY-SA 4.0, not MIT** (licence supplied 2026-10-09): BÍN's terms forbid

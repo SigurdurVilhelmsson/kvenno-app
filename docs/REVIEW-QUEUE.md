@@ -278,7 +278,7 @@ changes how the game teaches or looks rather than correcting a defect.
 
 `pnpm islenskubraut:bin` checks every word in `content/islenskubraut/*.yaml` against
 BÍN-kjarninn. The first live run was 2026-10-09 (D2): 522 words, 514 known, 8 left for a
-person (D3). These two need a ruling.
+person, now 5 (D3). These two need a ruling.
 
 - [ ] **Gate CI on it?** The check is offline once `content/islenskubraut/bin/ordmyndir.json`
       is committed, so CI could run it. The cost is that every new word needs a fetch, or an
@@ -404,9 +404,10 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
     `endurunninn` and neuter of `háll`). It passed `mjallar` and `súðar` as real forms of
     `mjöll` and `súð`: a check of forms cannot see a real word in the wrong place. In a list of
     animal sounds they are now `mjálmar` and `suðar`. `gelur` is right (`gala`, as a cock
-    crows). The four corrections are D3's to confirm.
-  - Eight words remain unknown to BÍN-kjarninn; see D3's "Words and grammar" item. The check
-    exits 1 until a person settles them, which matters only if C7 gates CI on it.
+    crows). Siggi confirmed all four the same day.
+  - Eight words were left unknown to BÍN-kjarninn. Three sound words were removed the same day;
+    five compounds remain (D3's "Words and grammar" item). The check exits 1 until a person
+    settles them, which matters only if C7 gates CI on it.
   - [x] **BÍN's licence** — 2026-10-09, supplied by Siggi: CC BY-SA 4.0, and the terms of use
         say not to change the data and to name it as from Beygingarlýsing íslensks
         nútímamáls, owned by Stofnun Árna Magnússonar í íslenskum fræðum. The saved lookups
@@ -431,13 +432,12 @@ what students read, so an Icelandic teacher should confirm the new wording in th
       not answer it.
 - [ ] **Words and grammar that look wrong.** The first BÍN run (D2, 2026-10-09) settled part of
       this.
-  - **Fixed, for a teacher to confirm:** `endurunnru` → `endurunnu` (three categories),
+  - **Fixed, and confirmed by Siggi 2026-10-09:** `endurunnru` → `endurunnu` (three categories),
     `hálkt` → `hált` (Matur, Klæðnaður), and in the sound lists `mjallar` → `mjálmar` and
     `súðar` → `suðar` (Dýr; `suðar` in Farartæki too). The first two are BÍN's forms; the
     last two were real forms of the wrong words, so BÍN alone could not have caught them.
-  - **Not in BÍN, intent unclear:** the sound words `umar`, `dúnar` and `þrymir` (Dýr and
-    Farartæki, B1). BÍN knows `ymur` (`ymja`), `dynur` (`dynja`), `drynur` (`drynja`) and
-    `þrumar` (`þruma`); which was meant is a teacher's call.
+  - **Removed 2026-10-09, Siggi's call:** the sound words `umar`, `dúnar` and `þrymir` (Dýr and
+    Farartæki, B1). BÍN knew none of them and which word was meant was unclear.
   - **Not in BÍN-kjarninn, probably right:** `lestarbraut`, `sportvagn`, `sívalningslaga`,
     `straumlínulaga` and `þríhyrningslaga` (the last is in `ordabok.md`'s chemistry terms). Each
     part is in BÍN. A person who has checked them lists them in `bin/ekki-i-bin.yaml` with a
