@@ -410,3 +410,98 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
         carry both statements (`_heimild`, `_leyfi`), and `content/islenskubraut/bin/README.md`
         marks that file as CC BY-SA in an otherwise MIT repo. Nothing a student sees uses BÍN
         data yet, so no page or PDF needs the attribution yet. C7 covers the cards.
+
+### D3. Íslenskubraut review (2026-10-09)
+
+A full review of the app, its content and its PDFs. The levels question is C8 and the grammar work
+is C7; everything else is here. All 18 PDFs were generated and read for this. Content fixes change
+what students read, so an Icelandic teacher should confirm the new wording in the same PR.
+
+**Content (`content/islenskubraut/*.yaml`)**
+
+- [ ] **Frames copied into categories they do not fit.** Manneskja carries
+      `Maður notar það til að ___.`, `Maður finnur það ___.` and
+      `Það er oftast notað af ___ til að ___.`, which treat a person as an object. Staðir has
+      `Það er ___ að snerta vegna þess að ___.` and Dýr `Maður notar það til að ___.` A1 repeats
+      `Það er ___.` twice in Dýr, Matur and Klæðnaður. Manneskja's
+      `Fyrir hvað er manneskjan þekkt?` is answered with `til að vinna`, `til að læra`, which do
+      not answer it.
+- [ ] **Words and grammar that look wrong.** Unrecognised: the sound words `gelur`, `mjallar`,
+      `súðar`, `umar`, `dúnar`, `þrymir` (Dýr, Farartæki), `hálkt` (Matur, Klæðnaður),
+      `endurunnru` (three categories), `sælgæti-sætt`. Grammar: `Hvenær er þetta sést?` →
+      `Hvenær sést þetta?`, `í hátíðum` → `á hátíðum`, `í sérstakar tilefni` →
+      `við sérstök tilefni`, the definite `pilsið` among indefinites. The first BÍN run (D2)
+      confirms the non-words.
+- [ ] **The shape question is not about shape.** The same 14-item list sits under
+      `Hvaða lögun hefur það?` in five categories. It mixes in size (`stórt`, `lítið`, `hátt`,
+      `lágt`), and `fernt` means four of something, not square. Farartæki's
+      `Hvernig lítur það út?` offers `hraðvirkt`, which is speed.
+- [ ] **Chips repeat what the frame already says.** `Það er gert úr ___` takes the chip
+      `úr málmi`, giving `úr úr málmi`; the vocabulary page has `étur plöntur` and `hefur feld`
+      for frames that already say `étur` and `hefur`. Pick one side to carry the word.
+- [ ] **Colours and other adjectives offer no feminine form.** Klæðnaður lists `rauður/rautt` but
+      no `rauð`, while `peysa`, `úlpa`, `húfa` and `skyrta` are feminine. Add the feminine (and
+      plural, for `buxur`, `sokkar`, `skór`, `hanskar`) until C7's gender data can choose the
+      form.
+
+**Examples and teacher notes**
+
+- [ ] **Move the examples (`Dæmi`) and teacher notes into the YAML.** They are hard-coded twice,
+      in `apps/islenskubraut/src/components/SpjaldPreview.tsx` and as `\u` escapes in
+      `server/src/lib/islenskubraut-pdf.tsx`, so neither the spreadsheet review nor the BÍN check
+      sees them. They hold the most errors: `delfínn` → `höfrungur`, `ólíkt fisk` → `ólíkt fiski`,
+      `mynduleg` → `myndarleg`, `flugvél sem er notað` → `notuð`, and pronouns that ignore the
+      noun's gender (`Þetta er úlpa. Það er blátt.`, `peysa … klæðist því`,
+      `jakki … Það er svart`, `ávöxtur … Það er sætt`).
+- [ ] **Take the teacher note off the student card.** The PDF prints `Fyrir kennara` on the sheet
+      students laminate, and the note is the same in all six categories.
+
+**PDF and preview**
+
+- [ ] **10 of the 18 PDFs run onto a fourth page**: A2 and B1 in every category but Manneskja. The
+      question card overflows, and the second row of context boxes splits, with their coloured
+      headers at the foot of page 3 and their words on page 4. Make each page fit, keep a box from
+      splitting across a page break, and add a test that every PDF is three pages.
+- [ ] **The vocabulary page fills half of A4 at 10 pt.** Larger type for laminated cards.
+- [ ] **Pre-render the 18 PDFs at build time** and serve them as static files. Each depends only
+      on category and level. It removes the backend from the download (the failures behind PRs
+      #87–#89), lets the button become a plain link, and lets CI run the three-page test.
+- [ ] **The preview does not match the PDF.** Different page order, and the preview's fixed-ratio
+      boxes scroll inside themselves instead of showing where the page overflows.
+
+**Accessibility and UX (`apps/islenskubraut/`)**
+
+- [ ] **Contrast below WCAG AA.** White on Klæðnaður `#F4A261` is 2,1:1 and on Matur `#E76F51`
+      3,1:1 (home card, page header, download button); the orange chip text on Klæðnaður is 2,0:1,
+      in the PDF too; the green and orange context headers are 3,3:1 and 3,6:1 for small text.
+      `a11y.test.tsx` cannot catch it: jsdom has no contrast check and the test mocks the real
+      header and footer. Add a Playwright axe run on the real pages.
+- [ ] **Level and tab buttons do not expose their state.** No `aria-pressed` on the level buttons,
+      no `role="tab"`/`aria-selected` on the tabs.
+- [ ] **Put the level in the URL** (`/spjald/dyr?stig=B1`) so a card can be bookmarked and shared;
+      every visit starts at A1 today.
+- [ ] **Google Fonts are imported in `src/index.css`**, which the CSP in `server/nginx-site.conf`
+      (`font-src 'self'`) blocks wherever that config is live. Self-host the two fonts or drop
+      them.
+- [ ] **Download errors use `alert()`**, and the client and server name the file differently
+      (`dyr-A1-spjald.pdf` against `spjald-dyr-A1.pdf`). Moot once the PDFs are static.
+
+**Code**
+
+- [ ] **Which questions are "context" (the coloured boxes) is decided by their emoji**, from a
+      list kept in both `SpurningaSpjald.tsx` and the PDF renderer, as is each question's label.
+      Make it an explicit field in the YAML.
+- [ ] **Smaller items.** `Home.tsx` hard-codes `grid-rows-3`/`grid-rows-2`, so a seventh category
+      breaks the grid. The `Category` type is duplicated between the app and the server. The PDF
+      renderer writes `React.createElement` in a `.tsx` file. `content/islenskubraut/README.md`
+      still says `data/index.ts` is edited by hand; it is generated.
+
+**Features (larger, each its own PR)**
+
+- [ ] **Sentence builder for students**: pick a frame, tap words, get the correctly inflected
+      sentence. Needs C7's gender and case data.
+- [ ] **Picture support**: a printable picture set per category, and pictograms on the A1 chips.
+      Check any pictogram set's licence first.
+- [ ] **A teacher sheet per category** with activities (guessing games, pair work), replacing the
+      note on the student card.
+- [ ] **Optional glosses in learners' languages.** Needs a decision on who writes and checks them.
