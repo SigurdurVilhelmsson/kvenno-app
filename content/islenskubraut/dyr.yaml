@@ -29,30 +29,33 @@ subCategories:
   - id: s4
     name: Útlit
     options:
-      - hefur feld
-      - hefur fjaðrir
-      - hefur hreistur
-      - hefur hala
-      - hefur gogg
-      - hefur horn
-      - hefur fjóra fætur
-      - hefur tvo fætur
+      - feld
+      - fjaðrir
+      - hreistur
+      - hala
+      - gogg
+      - horn
+      - fjóra fætur
+      - tvo fætur
+  - id: s5
+    name: Hreyfing
+    options:
       - flýgur
       - syndir
       - hleypur
-  - id: s5
+  - id: s6
     name: Stærð
     options:
       - lítið
       - meðalstórt
       - stórt
       - mjög stórt
-  - id: s6
+  - id: s7
     name: Fæða
     options:
-      - étur plöntur (grasæta)
-      - étur kjöt (kjötæta)
-      - étur bæði (alæta)
+      - plöntur (grasæta)
+      - kjöt (kjötæta)
+      - bæði (alæta)
 sentenceFrames:
   - id: f1
     level: A1
@@ -60,9 +63,8 @@ sentenceFrames:
       - Þetta er dýr.
       - Það er ___.
       - Það hefur ___.
-      - Það er ___.
       - Það hljómar ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
@@ -79,7 +81,7 @@ sentenceFrames:
       - Þetta dýr er ___ og ___.
       - Það er líkt ___ en ólíkt ___.
       - Það er ___ að snerta vegna þess að ___.
-      - Það er oftast notað af ___ til að ___.
+      - ___ nota það oftast ___.
 guidingQuestions:
   - id: q1
     question: Hvers konar dýr er þetta?
@@ -199,32 +201,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -302,7 +300,7 @@ guidingQuestions:
         - á hálendinu
         - í skóginum
   - id: q9
-    question: Hvenær er þetta sést?
+    question: Hvenær sést þetta?
     icon: 🕐
     answers:
       A1:

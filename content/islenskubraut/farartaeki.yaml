@@ -33,12 +33,12 @@ subCategories:
   - id: s4
     name: Eiginleikar
     options:
-      - hefur hjól
-      - hefur ekki hjól
+      - hjól
+      - ekki hjól
       - með vél
       - án vélar
-      - hraðvirkt
-      - hægvirkt
+      - hraðskreitt
+      - hægfara
   - id: s5
     name: Hvenær notað
     options:
@@ -60,24 +60,24 @@ sentenceFrames:
       - Það fer ___.
       - Það er ___.
       - Það hljómar ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
       - Þetta er ___ sem fer ___.
       - Það hefur ___ og er ___.
       - Það finnst ___ við snertingu.
-      - Það er gert úr ___.
+      - Það er gert ___.
       - Maður finnur það ___.
       - Maður notar það ___.
   - id: f3
     level: B1
     frames:
-      - Þetta farartæki er ___ sem er notað til að ___.
+      - Þetta farartæki er ___ sem er notað ___.
       - Það getur flutt ___ og fer ___.
       - Það er ___ að snerta vegna þess að ___.
-      - Það er gert úr ___ sem er ___.
-      - Það er oftast notað af ___ til að ___.
+      - Það er gert ___ sem er ___.
+      - ___ nota það oftast ___.
 guidingQuestions:
   - id: q1
     question: Hvers konar farartæki er þetta?
@@ -138,8 +138,8 @@ guidingQuestions:
         - hátt
         - lágt
         - straumlínulaga
-        - fernt
-        - hraðvirkt
+        - ferkantað
+        - litríkt
   - id: q3
     question: Hvaða hljóð gefur það frá sér?
     icon: 🔊
@@ -191,32 +191,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -316,7 +312,7 @@ guidingQuestions:
         - um helgar
         - á virkum dögum
         - í sérstökum tilvikum
-        - í hátíðum
+        - á hátíðum
         - daglega
         - sjaldan
         - oft

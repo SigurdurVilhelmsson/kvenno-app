@@ -62,8 +62,7 @@ sentenceFrames:
       - Þetta er ___.
       - Það er ___.
       - Maður borðar það ___.
-      - Það er ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
@@ -82,7 +81,7 @@ sentenceFrames:
       - Mér finnst ___.
       - Það er ___ að snerta vegna þess að ___.
       - Það er gert úr ___ sem er ___.
-      - Það er oftast notað af ___ til að ___.
+      - ___ nota það oftast ___.
 guidingQuestions:
   - id: q1
     question: Hvers konar matur er þetta?
@@ -172,7 +171,7 @@ guidingQuestions:
         - ferskt
         - bragðmikið
         - bragðlaust
-        - sælgæti-sætt
+        - mjög sætt
         - náttúrulega sætt
   - id: q4
     question: Hvernig finnst það við snertingu?
@@ -240,32 +239,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -361,7 +356,7 @@ guidingQuestions:
         - um helgar
         - á virkum dögum
         - í sérstökum tilvikum
-        - í hátíðum
+        - á hátíðum
         - daglega
         - sjaldan
         - oft

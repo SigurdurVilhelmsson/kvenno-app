@@ -16,11 +16,11 @@ export const manneskja: Category = {
   subCategories: [
     {
       name: 'Staða',
-      options: ['á lífi', 'látin', 'skálduð persóna'],
+      options: ['á lífi', 'látin/látinn', 'skálduð persóna'],
     },
     {
       name: 'Frægð',
-      options: ['fræg', 'ekki fræg'],
+      options: ['fræg/frægur', 'ekki fræg/frægur'],
     },
     {
       name: 'Starf/hlutverk',
@@ -39,7 +39,7 @@ export const manneskja: Category = {
     },
     {
       name: 'Aldur',
-      options: ['barn', 'unglingur', 'fullorðinn', 'aldraður/öldruð'],
+      options: ['barn', 'unglingur', 'fullorðin/fullorðinn', 'öldruð/aldraður'],
     },
     {
       name: 'Útlit',
@@ -50,7 +50,7 @@ export const manneskja: Category = {
         'gömul/gamall',
         'með sítt hár',
         'með stutt hár',
-        'sköllótt',
+        'sköllótt/sköllóttur',
         'með gleraugu',
         'án gleraugna',
         'með skegg',
@@ -65,7 +65,7 @@ export const manneskja: Category = {
   sentenceFrames: [
     {
       level: 'A1',
-      frames: ['Þetta er ___.', 'Hún/Hann er ___.', 'Hún/Hann ___.', 'Maður notar það til að ___.'],
+      frames: ['Þetta er ___.', 'Hún/Hann er ___.', 'Hún/Hann ___.'],
     },
     {
       level: 'A2',
@@ -73,8 +73,7 @@ export const manneskja: Category = {
         'Þetta er ___ sem er ___.',
         'Hún/Hann er ___ og ___.',
         'Hún/Hann vinnur sem ___.',
-        'Maður finnur það ___.',
-        'Maður notar það ___.',
+        'Hún/Hann er oft ___.',
       ],
     },
     {
@@ -82,7 +81,7 @@ export const manneskja: Category = {
       frames: [
         'Ég held að þetta sé ___ vegna þess að ___.',
         'Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.',
-        'Það er oftast notað af ___ til að ___.',
+        'Hún/Hann er oft ___ vegna þess að ___.',
       ],
     },
   ],
@@ -93,23 +92,30 @@ export const manneskja: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['barn', 'fullorðinn', 'gamall/gömul'],
+          options: ['barn', 'fullorðin/fullorðinn', 'gamall/gömul'],
         },
         {
           level: 'A2',
-          options: ['barn', 'unglingur', 'fullorðinn', 'aldraður/öldruð', 'fræg', 'ekki fræg'],
+          options: [
+            'barn',
+            'unglingur',
+            'fullorðin/fullorðinn',
+            'öldruð/aldraður',
+            'fræg/frægur',
+            'ekki fræg/frægur',
+          ],
         },
         {
           level: 'B1',
           options: [
             'barn',
             'unglingur',
-            'fullorðinn',
-            'aldraður/öldruð',
-            'fræg',
-            'ekki fræg',
+            'fullorðin/fullorðinn',
+            'öldruð/aldraður',
+            'fræg/frægur',
+            'ekki fræg/frægur',
             'á lífi',
-            'látin',
+            'látin/látinn',
             'skálduð persóna',
           ],
         },
@@ -144,7 +150,7 @@ export const manneskja: Category = {
             'gömul/gamall',
             'með sítt hár',
             'með stutt hár',
-            'sköllótt',
+            'sköllótt/sköllóttur',
             'með gleraugu',
             'með skegg',
             'án skeggs',
@@ -153,35 +159,28 @@ export const manneskja: Category = {
       ],
     },
     {
-      question: 'Fyrir hvað er manneskjan þekkt?',
+      question: 'Hvað gerir hún/hann?',
       icon: '🎯',
       answers: [
         {
           level: 'A1',
-          options: ['til að vinna', 'til að læra', 'til að leika sér'],
+          options: ['vinnur', 'lærir', 'leikur sér'],
         },
         {
           level: 'A2',
-          options: [
-            'til að vinna',
-            'til að læra',
-            'til að leika sér',
-            'til að syngja',
-            'til að lækna',
-            'til að kenna',
-          ],
+          options: ['vinnur', 'lærir', 'leikur sér', 'syngur', 'læknar', 'kennir'],
         },
         {
           level: 'B1',
           options: [
-            'til að vinna',
-            'til að læra',
-            'til að leika sér',
-            'til að syngja',
-            'til að lækna',
-            'til að kenna',
-            'til að stjórna',
-            'til að skapa',
+            'vinnur',
+            'lærir',
+            'leikur sér',
+            'syngur',
+            'læknar',
+            'kennir',
+            'stjórnar',
+            'skapar',
           ],
         },
       ],
@@ -246,7 +245,7 @@ export const manneskja: Category = {
             'um helgar',
             'á virkum dögum',
             'í sérstökum tilvikum',
-            'í hátíðum',
+            'á hátíðum',
             'daglega',
             'sjaldan',
             'oft',

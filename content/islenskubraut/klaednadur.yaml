@@ -11,7 +11,7 @@ subCategories:
       - peysa
       - skyrta
       - buxur
-      - pilsið/pils
+      - pils
       - jakki
       - úlpa
       - sokkar
@@ -22,30 +22,41 @@ subCategories:
   - id: s2
     name: Litur
     options:
-      - rauður/rautt
-      - blár/blátt
-      - grænn/grænt
-      - gulur/gult
-      - svartur/svart
-      - hvítur/hvítt
-      - bleikur/bleikt
-      - brúnn/brúnt
+      - rauður/rauð/rautt
+      - blár/blá/blátt
+      - grænn/græn/grænt
+      - gulur/gul/gult
+      - svartur/svört/svart
+      - hvítur/hvít/hvítt
+      - bleikur/bleik/bleikt
+      - brúnn/brún/brúnt
   - id: s3
+    name: Litur í fleirtölu
+    options:
+      - rauðir/rauðar
+      - bláir/bláar
+      - grænir/grænar
+      - gulir/gular
+      - svartir/svartar
+      - hvítir/hvítar
+      - bleikir/bleikar
+      - brúnir/brúnar
+  - id: s4
     name: Efni
     options:
       - úr ull
       - úr bómull
       - úr leðri
       - úr plasti
-  - id: s4
+  - id: s5
     name: Hvenær
     options:
       - á veturna
       - á sumrin
       - allt árið
       - þegar rignir
-      - í sérstakar tilefni
-  - id: s5
+      - við sérstök tilefni
+  - id: s6
     name: Á hvaða líkamshluta
     options:
       - á höfðinu
@@ -59,25 +70,24 @@ sentenceFrames:
     frames:
       - Þetta er ___.
       - Það er ___.
-      - Það er ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
       - Þetta er ___ sem er ___.
       - Maður klæðist því ___.
       - Það finnst ___ við snertingu.
-      - Það er gert úr ___.
+      - Það er gert ___.
       - Maður finnur það ___.
       - Maður notar það ___.
   - id: f3
     level: B1
     frames:
-      - Þetta er ___ úr ___ sem maður notar ___.
+      - Þetta er ___ sem er ___. Maður notar það ___.
       - Það er ___ og hentar vel ___.
       - Það er ___ að snerta vegna þess að ___.
-      - Það er gert úr ___ sem er ___.
-      - Það er oftast notað af ___ til að ___.
+      - Það er gert ___ sem er ___.
+      - ___ nota það oftast ___.
 guidingQuestions:
   - id: q1
     question: Hvers konar klæðnaður er þetta?
@@ -93,7 +103,7 @@ guidingQuestions:
         - peysa
         - skyrta
         - buxur
-        - pilsið
+        - pils
         - jakki
         - úlpa
         - sokkar
@@ -104,7 +114,7 @@ guidingQuestions:
         - peysa
         - skyrta
         - buxur
-        - pilsið
+        - pils
         - jakki
         - úlpa
         - sokkar
@@ -216,32 +226,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -265,7 +271,7 @@ guidingQuestions:
         - til að líta vel út
         - til að stunda íþróttir
         - til að vinna
-        - til að vera þægilegur
+        - til að líða vel
   - id: q7
     question: Hver notar þetta?
     icon: 👤
@@ -340,7 +346,7 @@ guidingQuestions:
         - um helgar
         - á virkum dögum
         - í sérstökum tilvikum
-        - í hátíðum
+        - á hátíðum
         - daglega
         - sjaldan
         - oft
