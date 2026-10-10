@@ -82,6 +82,14 @@ sentenceFrames:
       - Það er líkt ___ en ólíkt ___.
       - Það er ___ að snerta vegna þess að ___.
       - ___ nota það oftast ___.
+examples:
+  A1: Þetta er dýr. Það er stórt. Það hefur feld.
+  A2: Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.
+  B1: Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar dýr er þetta?

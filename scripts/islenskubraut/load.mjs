@@ -58,6 +58,18 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
     return { question: q.question, icon: q.icon, answers };
   });
 
+  // One worked example and one teacher note per level, printed with the sentence frames.
+  // Until Oct 2026 both were hard-coded twice, in the SPA and in the PDF renderer, where
+  // neither the spreadsheet review nor the BÍN check could see them.
+  const perLevel = (field) =>
+    LEVELS.map((level) => {
+      const text = doc[field]?.[level];
+      checkString(text, `${id}.${field}.${level}`);
+      return { level, text };
+    });
+  const examples = perLevel('examples');
+  const teacherNotes = perLevel('teacherNotes');
+
   return {
     id: doc.id,
     name: doc.name,
@@ -66,6 +78,8 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
     color: doc.color,
     subCategories,
     sentenceFrames,
+    examples,
+    teacherNotes,
     guidingQuestions,
   };
 }

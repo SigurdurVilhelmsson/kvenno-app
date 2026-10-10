@@ -83,6 +83,34 @@ export const matur: Category = {
       ],
     },
   ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.',
+    },
+    {
+      level: 'B1',
+      text: 'Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+    },
+  ],
   guidingQuestions: [
     {
       question: 'Hvers konar matur er þetta?',

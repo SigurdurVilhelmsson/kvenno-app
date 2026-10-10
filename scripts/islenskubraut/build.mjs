@@ -5,12 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadCategories } from './load.mjs';
-import {
-  prettify,
-  renderServerModule,
-  renderSpaCategory,
-  renderSpaIndex,
-} from './render.mjs';
+import { prettify, renderServerModule, renderSpaCategory, renderSpaIndex } from './render.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');

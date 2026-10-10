@@ -86,6 +86,34 @@ export const categories: Category[] = [
         ],
       },
     ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er dýr. Það er stórt. Það hefur feld.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.',
+      },
+      {
+        level: 'B1',
+        text: 'Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+      },
+    ],
     guidingQuestions: [
       {
         question: 'Hvers konar dýr er þetta?',
@@ -455,6 +483,34 @@ export const categories: Category[] = [
           'Það er gert úr ___ sem er ___.',
           '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -874,6 +930,34 @@ export const categories: Category[] = [
         ],
       },
     ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er bíll. Hann fer á landi. Hann er stór.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+      },
+    ],
     guidingQuestions: [
       {
         question: 'Hvers konar farartæki er þetta?',
@@ -1229,6 +1313,34 @@ export const categories: Category[] = [
         ],
       },
     ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er kennari. Hún er ung. Hún les.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.',
+      },
+      {
+        level: 'B1',
+        text: 'Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+      },
+    ],
     guidingQuestions: [
       {
         question: 'Hvers konar manneskja er þetta?',
@@ -1464,6 +1576,34 @@ export const categories: Category[] = [
           'Það er gert ___ sem er ___.',
           '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er skóli. Maður lærir þar.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -1858,6 +1998,34 @@ export const categories: Category[] = [
           'Það er gert ___ sem er ___.',
           '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er úlpa. Hún er blá.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er peysa sem er rauð. Maður klæðist henni á veturna.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta er jakki sem er úr leðri. Maður notar hann á veturna. Hann er svartur og hentar vel í kulda.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [

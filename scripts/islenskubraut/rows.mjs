@@ -35,6 +35,11 @@ export function toRows(category) {
     for (const text of frame.frames) rows.push(row(id, 'Setningarammi', frame.level, '', text));
   });
 
+  for (const e of category.examples)
+    rows.push(row(`${category.id}.examples.${e.level}`, 'Dæmi', e.level, '', e.text));
+  for (const n of category.teacherNotes)
+    rows.push(row(`${category.id}.notes.${n.level}`, 'Fyrir kennara', n.level, '', n.text));
+
   category.guidingQuestions.forEach((q, i) => {
     const id = `${category.id}.q${i + 1}`;
     rows.push(row(id, 'Spurning', '', '', q.question));
@@ -78,7 +83,7 @@ function requireMany(groups, key) {
  */
 function recognised(categoryId) {
   return new RegExp(
-    `^${categoryId}\\.(description|s\\d+\\.(name|options)|f\\d+|q\\d+(\\.(${LEVELS.join('|')}))?)$`
+    `^${categoryId}\\.(description|s\\d+\\.(name|options)|f\\d+|(examples|notes)\\.(${LEVELS.join('|')})|q\\d+(\\.(${LEVELS.join('|')}))?)$`
   );
 }
 
@@ -135,6 +140,16 @@ export function fromRows(categoryId, rows, base) {
     sentenceFrames: frameKeys.map((key) => ({
       level: groups.get(key)[0].stig,
       frames: requireMany(groups, key),
+    })),
+    // One string per level, and every level is required: a card printed without its
+    // example would leave a blank box, so a deleted row is an error, not an omission.
+    examples: LEVELS.map((level) => ({
+      level,
+      text: require1(groups, `${categoryId}.examples.${level}`),
+    })),
+    teacherNotes: LEVELS.map((level) => ({
+      level,
+      text: require1(groups, `${categoryId}.notes.${level}`),
     })),
     guidingQuestions: qKeys.map((key) => {
       const answers = LEVELS.filter((l) => groups.has(`${key}.${l}`)).map((level) => ({

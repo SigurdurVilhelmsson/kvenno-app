@@ -137,16 +137,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   exampleText: { fontSize: 12, color: '#374151' },
-  teacherBox: {
-    backgroundColor: '#FFFBEB',
-    borderWidth: 1,
-    borderColor: '#FDE68A',
-    borderRadius: 6,
-    padding: 10,
-    marginTop: 16,
-  },
-  teacherText: { fontSize: 9, color: '#92400E' },
-  teacherBold: { fontSize: 9, fontWeight: 'bold', color: '#92400E' },
   footer: {
     position: 'absolute',
     bottom: 20,
@@ -189,51 +179,6 @@ const styles = StyleSheet.create({
   contextCardBody: { paddingHorizontal: 8, paddingVertical: 4 },
   contextCardOption: { fontSize: 9, fontWeight: 'bold', marginBottom: 2 },
 });
-
-interface ExamplesByLevel {
-  A1: string;
-  A2: string;
-  B1: string;
-}
-
-const EXAMPLES: Record<string, ExamplesByLevel> = {
-  dyr: {
-    A1: '\u00deetta er d\u00fdr. \u00dea\u00f0 er st\u00f3rt. \u00dea\u00f0 hefur feld.',
-    A2: '\u00deetta er d\u00fdr sem b\u00fdr \u00ed vatni. \u00dea\u00f0 hefur hreistur og syndir. \u00dea\u00f0 \u00e9tur pl\u00f6ntur.',
-    B1: '\u00c9g held a\u00f0 \u00feetta s\u00e9 delf\u00ednn vegna \u00feess a\u00f0 hann syndir og b\u00fdr \u00ed sj\u00f3num. \u00deetta d\u00fdr er gr\u00e1tt og snjallt. \u00dea\u00f0 er l\u00edkt hval en \u00f3l\u00edkt fisk.',
-  },
-  matur: {
-    A1: '\u00deetta er \u00e1v\u00f6xtur. \u00dea\u00f0 er s\u00e6tt. Ma\u00f0ur bor\u00f0ar \u00fea\u00f0 \u00ed morgunmat.',
-    A2: '\u00deetta er gr\u00e6nmeti sem er gr\u00e6nt. Ma\u00f0ur bor\u00f0ar \u00fea\u00f0 hr\u00e1tt. \u00dea\u00f0 er hollt.',
-    B1: '\u00deetta er \u00e1v\u00f6xtur sem brag\u00f0ast s\u00e6tt og s\u00fart. \u00dea\u00f0 er oft bor\u00f0a\u00f0 sem millim\u00e1l. M\u00e9r finnst \u00fea\u00f0 mj\u00f6g gott.',
-  },
-  farartaeki: {
-    A1: '\u00deetta er b\u00edll. \u00dea\u00f0 fer \u00e1 landi. \u00dea\u00f0 er st\u00f3rt.',
-    A2: '\u00deetta er skip sem fer \u00e1 sj\u00f3. \u00dea\u00f0 hefur ekki hj\u00f3l og er st\u00f3rt.',
-    B1: '\u00deetta farart\u00e6ki er flugv\u00e9l sem er nota\u00f0 til a\u00f0 fer\u00f0ast langar lei\u00f0ir. \u00dea\u00f0 getur flutt marga og fer \u00ed lofti.',
-  },
-  manneskja: {
-    A1: '\u00deetta er kennari. H\u00fan er ung. H\u00fan les.',
-    A2: '\u00deetta er kona sem er h\u00e1. H\u00fan er ung og mynduleg. H\u00fan vinnur sem l\u00e6knir.',
-    B1: '\u00c9g held a\u00f0 \u00feetta s\u00e9 s\u00f6ngvari vegna \u00feess a\u00f0 h\u00fan er fr\u00e6g og syngur. \u00dessi manneskja er ung og er \u00feekkt fyrir t\u00f3nlist.',
-  },
-  stadir: {
-    A1: '\u00deetta er sk\u00f3li. Ma\u00f0ur l\u00e6rir \u00fear.',
-    A2: '\u00deetta er sundlaug sem er \u00ed b\u00e6num. Ma\u00f0ur fer \u00feanga\u00f0 til a\u00f0 synda.',
-    B1: '\u00deetta er safn sem er sta\u00f0sett \u00ed borginni. F\u00f3lk fer \u00feanga\u00f0 til a\u00f0 l\u00e6ra og sko\u00f0a list.',
-  },
-  klaednadur: {
-    A1: '\u00deetta er \u00falpa. \u00dea\u00f0 er bl\u00e1tt.',
-    A2: '\u00deetta er peysa sem er rau\u00f0. Ma\u00f0ur kl\u00e6\u00f0ist \u00fev\u00ed \u00e1 veturna.',
-    B1: '\u00deetta er jakki \u00far le\u00f0ri sem ma\u00f0ur notar \u00e1 veturna. \u00dea\u00f0 er svart og hentar vel \u00ed kulda.',
-  },
-};
-
-const TEACHER_NOTES: Record<CEFRLevel, string> = {
-  A1: 'Nemandi bendir \u00e1 or\u00f0 af spjaldinu og myndar einfaldar setningar. Hj\u00e1lpi\u00f0 nemandanum a\u00f0 velja r\u00e9tt or\u00f0 og segja heila setningu.',
-  A2: 'Nemandi tengir saman tv\u00e6r e\u00f0a \u00ferj\u00e1r setningar. Hvetji\u00f0 nemandann til a\u00f0 nota mismunandi or\u00f0 \u00far undirflokkunum.',
-  B1: 'Nemandi notar setningaramma sem grunn en b\u00e6tir vi\u00f0 eigin hugmyndum. Hvetji\u00f0 til samanburðar og r\u00f6kstu\u00f0nings.',
-};
 
 interface RGB {
   r: number;
@@ -320,8 +265,9 @@ function createContextCard(
   );
 }
 
-function createSpjaldDocument(category: Category, level: CEFRLevel): React.ReactElement {
+export function createSpjaldDocument(category: Category, level: CEFRLevel): React.ReactElement {
   const sentenceFrame = category.sentenceFrames.find((sf) => sf.level === level);
+  const example = category.examples.find((e) => e.level === level)?.text ?? '';
   const rgb = hexToRgb(category.color);
   const lightBg = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.05)`;
   const borderColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`;
@@ -407,18 +353,10 @@ function createSpjaldDocument(category: Category, level: CEFRLevel): React.React
         View,
         { style: styles.exampleBox },
         React.createElement(Text, { style: styles.exampleLabel }, 'D\u00e6mi'),
-        React.createElement(
-          Text,
-          { style: styles.exampleText },
-          EXAMPLES[category.id]?.[level] || ''
-        )
+        React.createElement(Text, { style: styles.exampleText }, example)
       ),
-      React.createElement(
-        View,
-        { style: styles.teacherBox },
-        React.createElement(Text, { style: styles.teacherBold }, 'Fyrir kennara: '),
-        React.createElement(Text, { style: styles.teacherText }, TEACHER_NOTES[level] || '')
-      ),
+      // No teacher note: students handle the printed card. The note is on the web page.
+
       React.createElement(Text, { style: styles.footer }, footerText)
     ),
     // Page 3: Question card

@@ -78,6 +78,14 @@ sentenceFrames:
       - Það er ___ að snerta vegna þess að ___.
       - Það er gert ___ sem er ___.
       - ___ nota það oftast ___.
+examples:
+  A1: Þetta er bíll. Hann fer á landi. Hann er stór.
+  A2: Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.
+  B1: Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar farartæki er þetta?

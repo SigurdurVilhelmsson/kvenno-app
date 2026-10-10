@@ -65,6 +65,14 @@ sentenceFrames:
       - Mér finnst þetta ___ vegna þess að ___.
       - Það er gert ___ sem er ___.
       - ___ nota það oftast ___.
+examples:
+  A1: Þetta er skóli. Maður lærir þar.
+  A2: Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.
+  B1: Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar staður er þetta?

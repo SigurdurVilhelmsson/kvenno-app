@@ -66,6 +66,8 @@ export function collectWords(categories) {
       for (const o of s.options) add(c.id, s.name, o);
     }
     for (const f of c.sentenceFrames) for (const x of f.frames) add(c.id, `rammi ${f.level}`, x);
+    for (const e of c.examples ?? []) add(c.id, `dæmi ${e.level}`, e.text);
+    for (const n of c.teacherNotes ?? []) add(c.id, `fyrir kennara ${n.level}`, n.text);
     for (const q of c.guidingQuestions) {
       add(c.id, q.question, q.question);
       for (const a of q.answers)

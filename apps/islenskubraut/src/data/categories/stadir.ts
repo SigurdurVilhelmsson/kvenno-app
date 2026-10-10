@@ -68,6 +68,34 @@ export const stadir: Category = {
       ],
     },
   ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er skóli. Maður lærir þar.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.',
+    },
+    {
+      level: 'B1',
+      text: 'Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+    },
+  ],
   guidingQuestions: [
     {
       question: 'Hvers konar staður er þetta?',

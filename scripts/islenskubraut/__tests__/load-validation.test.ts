@@ -34,6 +34,17 @@ function makeDir(): string {
   return dir;
 }
 
+/** The per-level fields every category must carry, for fixtures that should load. */
+const PER_LEVEL = `examples:
+  A1: Dæmi eitt.
+  A2: Dæmi tvö.
+  B1: Dæmi þrjú.
+teacherNotes:
+  A1: Athugasemd eitt.
+  A2: Athugasemd tvö.
+  B1: Athugasemd þrjú.
+`;
+
 function write(target: string, filename: string, content: string) {
   writeFileSync(join(target, filename), content, 'utf8');
 }
@@ -235,6 +246,14 @@ sentenceFrames:
     level: A1
     frames:
       - Þetta er ___.
+examples:
+  A1: Dæmi eitt.
+  A2: Dæmi tvö.
+  B1: Dæmi þrjú.
+teacherNotes:
+  A1: Athugasemd eitt.
+  A2: Athugasemd tvö.
+  B1: Athugasemd þrjú.
 guidingQuestions:
   - id: q1
     question: Hvað er þetta?
@@ -258,6 +277,16 @@ guidingQuestions:
       color: '#123456',
       subCategories: [{ name: 'Tegund', options: ['fyrsti valkostur', 'annar valkostur'] }],
       sentenceFrames: [{ level: 'A1', frames: ['Þetta er ___.'] }],
+      examples: [
+        { level: 'A1', text: 'Dæmi eitt.' },
+        { level: 'A2', text: 'Dæmi tvö.' },
+        { level: 'B1', text: 'Dæmi þrjú.' },
+      ],
+      teacherNotes: [
+        { level: 'A1', text: 'Athugasemd eitt.' },
+        { level: 'A2', text: 'Athugasemd tvö.' },
+        { level: 'B1', text: 'Athugasemd þrjú.' },
+      ],
       guidingQuestions: [
         {
           question: 'Hvað er þetta?',
@@ -266,6 +295,36 @@ guidingQuestions:
         },
       ],
     });
+  });
+});
+
+describe('examples and teacher notes', () => {
+  const head = `id: prufa
+name: Prufa
+description: Lýsing.
+color: "#123456"
+icon: 🧪
+`;
+
+  it('throws when a level has no example, which would print an empty box', () => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', head + PER_LEVEL.replace('  B1: Dæmi þrjú.\n', ''));
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.examples\.B1 must be a non-empty/);
+  });
+
+  it('throws when a teacher note is empty', () => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', head + PER_LEVEL.replace('Athugasemd tvö.', '""'));
+    expect(() => loadCategory('prufa', target)).toThrow(
+      /prufa\.teacherNotes\.A2 must be a non-empty/
+    );
+  });
+
+  it('holds an example to the same text checks as everything else', () => {
+    const target = makeDir();
+    // U+00AD soft hyphen, built from an escape.
+    write(target, 'prufa.yaml', head + PER_LEVEL.replace('Dæmi eitt.', '"D\u00ADæmi eitt."'));
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.examples\.A1 contains U\+00AD/);
   });
 });
 
@@ -297,6 +356,14 @@ name: ${id}
 description: Lýsing fyrir ${id}.
 color: "#123456"
 icon: 🧪
+examples:
+  A1: Dæmi eitt.
+  A2: Dæmi tvö.
+  B1: Dæmi þrjú.
+teacherNotes:
+  A1: Athugasemd eitt.
+  A2: Athugasemd tvö.
+  B1: Athugasemd þrjú.
 `
       );
     }

@@ -85,6 +85,34 @@ export const manneskja: Category = {
       ],
     },
   ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er kennari. Hún er ung. Hún les.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.',
+    },
+    {
+      level: 'B1',
+      text: 'Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+    },
+  ],
   guidingQuestions: [
     {
       question: 'Hvers konar manneskja er þetta?',

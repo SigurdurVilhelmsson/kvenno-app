@@ -144,6 +144,8 @@ export function toYamlShape(category) {
       level: f.level,
       frames: f.frames,
     })),
+    examples: Object.fromEntries(category.examples.map((e) => [e.level, e.text])),
+    teacherNotes: Object.fromEntries(category.teacherNotes.map((n) => [n.level, n.text])),
     guidingQuestions: category.guidingQuestions.map((q, i) => ({
       id: `q${i + 1}`,
       question: q.question,
@@ -173,6 +175,8 @@ function flatten(category) {
     out.set(`${category.id}.s${i + 1}`, [s.name, ...s.options])
   );
   category.sentenceFrames.forEach((f, i) => out.set(`${category.id}.f${i + 1}`, f.frames));
+  for (const e of category.examples) out.set(`${category.id}.examples.${e.level}`, [e.text]);
+  for (const n of category.teacherNotes) out.set(`${category.id}.notes.${n.level}`, [n.text]);
   category.guidingQuestions.forEach((q, i) => {
     out.set(`${category.id}.q${i + 1}`, [q.question]);
     for (const a of q.answers) out.set(`${category.id}.q${i + 1}.${a.level}`, a.options);

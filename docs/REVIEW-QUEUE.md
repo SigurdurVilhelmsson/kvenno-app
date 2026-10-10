@@ -481,15 +481,20 @@ wording, item by item below. The words it introduced have not been looked up in 
 
 **Examples and teacher notes**
 
-- [ ] **Move the examples (`Dæmi`) and teacher notes into the YAML.** They are hard-coded twice,
-      in `apps/islenskubraut/src/components/SpjaldPreview.tsx` and as `\u` escapes in
-      `server/src/lib/islenskubraut-pdf.tsx`, so neither the spreadsheet review nor the BÍN check
-      sees them. They hold the most errors: `delfínn` → `höfrungur`, `ólíkt fisk` → `ólíkt fiski`,
-      `mynduleg` → `myndarleg`, `flugvél sem er notað` → `notuð`, and pronouns that ignore the
-      noun's gender (`Þetta er úlpa. Það er blátt.`, `peysa … klæðist því`,
-      `jakki … Það er svart`, `ávöxtur … Það er sætt`).
-- [ ] **Take the teacher note off the student card.** The PDF prints `Fyrir kennara` on the sheet
-      students laminate, and the note is the same in all six categories.
+- [x] **Move the examples (`Dæmi`) and teacher notes into the YAML.** Done 2026-10-10: each
+      category's YAML now has `examples` and `teacherNotes`, one per level, and the loader
+      refuses a missing or empty one. The SPA and the PDF read them from there, so the
+      spreadsheet review (`Dæmi`, `Fyrir kennara` rows) and the BÍN check see them too.
+      Corrected on the way, for a teacher to confirm: `delfínn` → `höfrungur`, `ólíkt fisk` →
+      `ólíkt fiski`, `mynduleg` → `myndarleg`, `flugvél sem er notað` → `notuð`, and the
+      pronoun now follows the noun (`Þetta er úlpa. Hún er blá.`, `peysa … klæðist henni`,
+      `jakki … Hann er svartur`, `ávöxtur … Hann er sætur`, `bíll … Hann er stór`). Klæðnaður B1
+      follows its new frame (`Þetta er jakki sem er úr leðri. Maður notar hann …`). The A1 note
+      gains one sentence on the pronoun, since the examples now show it.
+- [x] **Take the teacher note off the student card.** Done 2026-10-10: the PDF no longer prints
+      it, and the web page shows it below the card, marked as not printed. The notes still read
+      the same in all six categories; each category now has its own copy, so a teacher can make
+      them specific there.
 
 **PDF and preview**
 

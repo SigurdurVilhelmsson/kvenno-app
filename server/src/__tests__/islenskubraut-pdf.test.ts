@@ -11,8 +11,9 @@
 
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
-import { generatePdf } from '../lib/islenskubraut-pdf.js';
+import { createSpjaldDocument, generatePdf } from '../lib/islenskubraut-pdf.js';
 import { categories } from '../lib/islenskubraut-data.js';
+import type { ReactElement, ReactNode } from 'react';
 
 const LEVELS = ['A1', 'A2', 'B1'];
 
@@ -69,6 +70,34 @@ describe('Íslenskubraut teaching-card PDF', () => {
         expect(fonts).toContain('NotoSans-Regular');
         expect(fonts).toContain('NotoSans-Bold');
         expect([...fonts].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});
+
+/** Every string a document element tree would print, in order. */
+function printedText(node: ReactNode): string[] {
+  if (typeof node === 'string' || typeof node === 'number') return [String(node)];
+  if (Array.isArray(node)) return node.flatMap(printedText);
+  if (node && typeof node === 'object' && 'props' in node) {
+    return printedText((node as ReactElement<{ children?: ReactNode }>).props.children);
+  }
+  return [];
+}
+
+describe('examples and teacher notes on the printed card', () => {
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`prints ${category.id} ${level}'s example from the content, and no teacher note`, () => {
+        const text = printedText(createSpjaldDocument(category, level as 'A1' | 'A2' | 'B1'));
+        const example = category.examples.find((e) => e.level === level)?.text;
+        const note = category.teacherNotes.find((n) => n.level === level)?.text;
+
+        expect(example).toBeTruthy();
+        expect(text).toContain(example);
+        // Students handle the laminated card; the note belongs on the teacher's screen.
+        expect(text.join(' ')).not.toContain('Fyrir kennara');
+        expect(text).not.toContain(note);
       });
     }
   }

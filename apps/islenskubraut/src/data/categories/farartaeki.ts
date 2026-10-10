@@ -82,6 +82,34 @@ export const farartaeki: Category = {
       ],
     },
   ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er bíll. Hann fer á landi. Hann er stór.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.',
+    },
+    {
+      level: 'B1',
+      text: 'Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+    },
+  ],
   guidingQuestions: [
     {
       question: 'Hvers konar farartæki er þetta?',

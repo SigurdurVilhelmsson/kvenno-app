@@ -76,6 +76,34 @@ export const dyr: Category = {
       ],
     },
   ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er dýr. Það er stórt. Það hefur feld.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.',
+    },
+    {
+      level: 'B1',
+      text: 'Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
+    },
+  ],
   guidingQuestions: [
     {
       question: 'Hvers konar dýr er þetta?',

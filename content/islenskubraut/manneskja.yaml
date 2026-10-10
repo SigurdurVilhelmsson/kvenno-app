@@ -80,6 +80,14 @@ sentenceFrames:
       - Ég held að þetta sé ___ vegna þess að ___.
       - Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.
       - Hún/Hann er oft ___ vegna þess að ___.
+examples:
+  A1: Þetta er kennari. Hún er ung. Hún les.
+  A2: Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.
+  B1: Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar manneskja er þetta?

@@ -19,4 +19,11 @@ export function getCategoryById(id: string): Category | undefined {
   return categories.find((c) => c.id === id);
 }
 
-export type { Category, Level, SubCategory, SentenceFrame, GuidingQuestion } from './types';
+export type {
+  Category,
+  Level,
+  LevelText,
+  SubCategory,
+  SentenceFrame,
+  GuidingQuestion,
+} from './types';
