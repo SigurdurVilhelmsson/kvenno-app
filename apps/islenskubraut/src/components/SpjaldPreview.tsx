@@ -32,7 +32,10 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
                     {category.name}
                   </h2>
                 </div>
-                <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-bold">
+                <span
+                  className="bg-white px-3 py-1 rounded-full text-sm font-bold"
+                  style={{ color: category.color }}
+                >
                   {level}
                 </span>
               </div>
@@ -47,7 +50,7 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
                 <div key={index} className="rounded-xl border border-gray-200 overflow-hidden">
                   <div
                     className="px-3 py-1.5 text-xs font-bold text-white uppercase tracking-wider"
-                    style={{ backgroundColor: category.color + 'CC' }}
+                    style={{ backgroundColor: category.color }}
                   >
                     {sub.name}
                   </div>
@@ -93,7 +96,10 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
                     {category.name}
                   </h2>
                 </div>
-                <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-bold">
+                <span
+                  className="bg-white px-3 py-1 rounded-full text-sm font-bold"
+                  style={{ color: category.color }}
+                >
                   {level}
                 </span>
               </div>

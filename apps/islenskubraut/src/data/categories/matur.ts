@@ -12,7 +12,7 @@ export const matur: Category = {
   name: 'Matur og drykkur',
   icon: '🍽️',
   description: 'Orðaforði um mat og drykk — tegundir, bragð og undirbúning',
-  color: '#E76F51',
+  color: '#BF3B1A',
   subCategories: [
     {
       name: 'Tegund',

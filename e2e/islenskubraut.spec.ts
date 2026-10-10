@@ -119,3 +119,26 @@ test.describe('Islenskubraut — Teaching card page navigation', () => {
     await expect(page.locator('text=Manneskja').first()).toBeVisible();
   });
 });
+
+test.describe('Islenskubraut — fonts', () => {
+  test('loads its two fonts from the site itself, not from Google', async ({ page }) => {
+    // The site CSP (server/nginx-site.conf) allows fonts and stylesheets from 'self' only, so
+    // anything fetched from elsewhere would be refused in production.
+    const offSite: string[] = [];
+    await page.route(
+      (url) => url.hostname !== 'localhost',
+      (route) => {
+        offSite.push(route.request().url());
+        return route.abort();
+      }
+    );
+    await page.goto('/islenskubraut/spjald/dyr');
+    await page.evaluate(() => document.fonts.ready);
+
+    expect(offSite).toEqual([]);
+    const loaded = await page.evaluate(() =>
+      [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family)
+    );
+    expect(loaded).toEqual(expect.arrayContaining(['DM Sans', 'Plus Jakarta Sans']));
+  });
+});

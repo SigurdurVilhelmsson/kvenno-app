@@ -11,6 +11,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/plus-jakarta-sans": "^5.3.0",
     "@kvenno/shared": "workspace:*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",

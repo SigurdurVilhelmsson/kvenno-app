@@ -6,10 +6,10 @@ interface SpurningaSpjaldProps {
 }
 
 const CONTEXT_COLORS: Record<string, { bg: string; text: string }> = {
-  '📍': { bg: '#DC2626', text: '#FFFFFF' },
-  '🕐': { bg: '#16A34A', text: '#FFFFFF' },
-  '👤': { bg: '#EA580C', text: '#FFFFFF' },
-  '🎯': { bg: '#2563EB', text: '#FFFFFF' },
+  '📍': { bg: '#B91C1C', text: '#FFFFFF' },
+  '🕐': { bg: '#107837', text: '#FFFFFF' },
+  '👤': { bg: '#C2410C', text: '#FFFFFF' },
+  '🎯': { bg: '#1D4ED8', text: '#FFFFFF' },
 };
 
 const CONTEXT_ICONS = new Set(['📍', '🕐', '👤', '🎯']);
@@ -36,7 +36,12 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
                 {category.name}
               </h2>
             </div>
-            <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-bold">{level}</span>
+            <span
+              className="bg-white px-3 py-1 rounded-full text-sm font-bold"
+              style={{ color: category.color }}
+            >
+              {level}
+            </span>
           </div>
         </div>
 
@@ -55,7 +60,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
           {contextQuestions.length > 0 && (
             <div className="flex items-center gap-3 py-2">
               <div className="flex-1 border-t border-gray-300" />
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Notagildi og samhengi
               </span>
               <div className="flex-1 border-t border-gray-300" />
@@ -74,7 +79,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
 
         {/* Footer */}
         <div className="px-4 py-2 text-center border-t border-gray-100">
-          <p className="text-xs text-gray-400">Íslenskubraut — Kvennaskólinn í Reykjavík</p>
+          <p className="text-xs text-gray-500">Íslenskubraut — Kvennaskólinn í Reykjavík</p>
         </div>
       </div>
     </div>

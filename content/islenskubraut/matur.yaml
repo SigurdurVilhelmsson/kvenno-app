@@ -2,7 +2,7 @@ id: matur
 name: Matur og drykkur
 icon: 🍽️
 description: Orðaforði um mat og drykk — tegundir, bragð og undirbúning
-color: "#E76F51"
+color: "#BF3B1A"
 subCategories:
   - id: s1
     name: Tegund

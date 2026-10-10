@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 
 import { App } from '../App';
@@ -221,7 +221,7 @@ describe('SpjaldPage', () => {
 
   it('shows the example from the content on the card, and the teacher note beside it', () => {
     renderWithRouter(<App />, ['/spjald/klaednadur']);
-    fireEvent.click(screen.getByRole('button', { name: 'Setningarammar' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Setningarammar' }));
 
     const card = screen.getByTestId('spjald-bakhlid');
     expect(card.textContent).toContain('Þetta er úlpa. Hún er blá.');
@@ -268,6 +268,93 @@ describe('SpjaldPage', () => {
     renderWithRouter(<App />, ['/spjald/dyr']);
 
     expect(screen.getByTestId('download-button')).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Level and tab state: what a screen reader hears, and what the URL keeps
+// ---------------------------------------------------------------------------
+function LocationProbe() {
+  const location = useLocation();
+  return <output data-testid="location">{location.pathname + location.search}</output>;
+}
+
+function renderPage(entry: string) {
+  return render(
+    <MemoryRouter initialEntries={[entry]}>
+      <App />
+      <LocationProbe />
+    </MemoryRouter>
+  );
+}
+
+// A level button's name is its label and its description, e.g. "A1 Byrjandi".
+const levelButton = (level: string) =>
+  within(screen.getByRole('group', { name: 'Veldu erfiðleikastig' })).getByRole('button', {
+    name: new RegExp(`^${level}`),
+  });
+
+describe('SpjaldPage level and tabs', () => {
+  it('marks the chosen level as pressed, and only that one', () => {
+    renderPage('/spjald/dyr');
+    expect(levelButton('A1').getAttribute('aria-pressed')).toBe('true');
+    expect(levelButton('A2').getAttribute('aria-pressed')).toBe('false');
+    fireEvent.click(levelButton('B1'));
+    expect(levelButton('B1').getAttribute('aria-pressed')).toBe('true');
+    expect(levelButton('A1').getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('opens at the level the URL names, so a card can be bookmarked', () => {
+    renderPage('/spjald/dyr?stig=B1');
+    expect(levelButton('B1').getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByTestId('download-button').textContent).toContain('dyr, B1');
+  });
+
+  it('writes the chosen level into the URL', () => {
+    renderPage('/spjald/matur');
+    fireEvent.click(levelButton('A2'));
+    expect(screen.getByTestId('location').textContent).toBe('/spjald/matur?stig=A2');
+  });
+
+  it('falls back to A1 for a level that does not exist', () => {
+    renderPage('/spjald/dyr?stig=C2');
+    expect(levelButton('A1').getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('exposes the three views as tabs controlling one panel', () => {
+    renderPage('/spjald/dyr');
+    const tabs = screen.getAllByRole('tab');
+    expect(tabs.map((t) => t.textContent)).toEqual([
+      'Spurningaspjald',
+      'Orðaforði',
+      'Setningarammar',
+    ]);
+    expect(tabs.map((t) => t.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false']);
+    // Only the selected tab is in the Tab order; the arrow keys reach the others.
+    expect(tabs.map((t) => t.tabIndex)).toEqual([0, -1, -1]);
+    const panel = screen.getByRole('tabpanel');
+    expect(panel.getAttribute('aria-labelledby')).toBe(tabs[0].id);
+    expect(tabs[0].getAttribute('aria-controls')).toBe(panel.id);
+  });
+
+  it('moves between tabs with the arrow keys, Home and End', () => {
+    renderPage('/spjald/dyr');
+    const tab = (name: string) => screen.getByRole('tab', { name });
+    tab('Spurningaspjald').focus();
+    fireEvent.keyDown(tab('Spurningaspjald'), { key: 'ArrowRight' });
+    expect(tab('Orðaforði').getAttribute('aria-selected')).toBe('true');
+    expect(document.activeElement).toBe(tab('Orðaforði'));
+    fireEvent.keyDown(tab('Orðaforði'), { key: 'End' });
+    expect(tab('Setningarammar').getAttribute('aria-selected')).toBe('true');
+    fireEvent.keyDown(tab('Setningarammar'), { key: 'ArrowRight' });
+    expect(tab('Spurningaspjald').getAttribute('aria-selected')).toBe('true');
+    fireEvent.keyDown(tab('Spurningaspjald'), { key: 'ArrowLeft' });
+    expect(tab('Setningarammar').getAttribute('aria-selected')).toBe('true');
+    fireEvent.keyDown(tab('Setningarammar'), { key: 'Home' });
+    expect(tab('Spurningaspjald').getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tabpanel').getAttribute('aria-labelledby')).toBe(
+      tab('Spurningaspjald').id
+    );
   });
 });
 

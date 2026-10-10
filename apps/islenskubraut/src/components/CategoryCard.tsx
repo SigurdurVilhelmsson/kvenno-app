@@ -19,10 +19,10 @@ export function CategoryCard({ category }: CategoryCardProps) {
           <h2 className="font-heading text-xl sm:text-2xl font-bold text-white mb-2">
             {category.name}
           </h2>
-          <p className="text-white/80 text-sm sm:text-base leading-relaxed flex-1">
+          <p className="text-white text-sm sm:text-base leading-relaxed flex-1">
             {category.description}
           </p>
-          <div className="mt-4 flex items-center text-white/70 text-sm font-medium group-hover:text-white transition-colors">
+          <div className="mt-4 flex items-center text-white text-sm font-medium">
             <span>Skoða spjald</span>
             <svg
               className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform"
