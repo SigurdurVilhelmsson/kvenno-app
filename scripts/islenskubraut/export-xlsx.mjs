@@ -29,7 +29,7 @@ const UNLOCKED_COLUMNS = [1, 5, 6];
 // header and spelled out on the Leiðbeiningar tab.
 const COLUMN_HELP = {
   lykill: 'Auðkenni línunnar. Ekki breyta — innflutningur notar það til að finna réttan stað.',
-  gerð: 'Hvers konar texti þetta er: Spurning, Svar, Valkostur, Setningarammi, Undirflokkur eða Lýsing.',
+  gerð: 'Hvers konar texti þetta er: Spurning, Svar, Valkostur, Setningarammi, Dæmi, Fyrir kennara, Undirflokkur eða Lýsing.',
   stig: 'Færnistig: A1, A2 eða B1. Tómt þar sem það á ekki við.',
   samhengi: 'Spurningin sem svarið tilheyrir, til upplýsingar. Ekki breyta.',
   íslenska: 'Textinn sem nemandinn sér. Breyttu hér.',

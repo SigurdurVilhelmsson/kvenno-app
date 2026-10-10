@@ -21,9 +21,7 @@ describe('generated modules', () => {
 
   it('carry the corrected strings from the August fix', () => {
     const manneskja = spaCategories.find((c) => c.id === 'manneskja');
-    expect(manneskja?.guidingQuestions.map((q) => q.question)).toContain(
-      'Fyrir hvað er manneskjan þekkt?'
-    );
+    expect(manneskja?.description).toBe('Orðaforði um fólk — útlit, starf og athafnir');
     const dyr = spaCategories.find((c) => c.id === 'dyr');
     expect(dyr?.description).toBe('Orðaforði um dýr — gæludýr, villt dýr og húsdýr');
   });

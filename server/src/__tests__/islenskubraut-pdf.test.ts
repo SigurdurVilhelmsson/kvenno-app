@@ -11,8 +11,9 @@
 
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
-import { generatePdf } from '../lib/islenskubraut-pdf.js';
+import { createSpjaldDocument, generatePdf } from '../lib/islenskubraut-pdf.js';
 import { categories } from '../lib/islenskubraut-data.js';
+import type { ReactElement, ReactNode } from 'react';
 
 const LEVELS = ['A1', 'A2', 'B1'];
 
@@ -34,6 +35,11 @@ beforeAll(() => {
 afterAll(() => {
   vi.unstubAllGlobals();
 });
+
+/** Pages in a rendered PDF: each page object, not the /Pages tree that holds them. */
+function pageCount(pdf: Buffer): number {
+  return pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g)?.length ?? 0;
+}
 
 /** The PostScript names of the fonts a PDF embeds or references. */
 function baseFonts(pdf: Buffer): Set<string> {
@@ -69,6 +75,47 @@ describe('Íslenskubraut teaching-card PDF', () => {
         expect(fonts).toContain('NotoSans-Regular');
         expect(fonts).toContain('NotoSans-Bold');
         expect([...fonts].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});
+
+/** Every string a document element tree would print, in order. */
+function printedText(node: ReactNode): string[] {
+  if (typeof node === 'string' || typeof node === 'number') return [String(node)];
+  if (Array.isArray(node)) return node.flatMap(printedText);
+  if (node && typeof node === 'object' && 'props' in node) {
+    return printedText((node as ReactElement<{ children?: ReactNode }>).props.children);
+  }
+  return [];
+}
+
+describe('examples and teacher notes on the printed card', () => {
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`prints ${category.id} ${level}'s example from the content, and no teacher note`, () => {
+        const text = printedText(createSpjaldDocument(category, level as 'A1' | 'A2' | 'B1'));
+        const example = category.examples.find((e) => e.level === level)?.text;
+        const note = category.teacherNotes.find((n) => n.level === level)?.text;
+
+        expect(example).toBeTruthy();
+        expect(text).toContain(example);
+        // Students handle the laminated card; the note belongs on the teacher's screen.
+        expect(text.join(' ')).not.toContain('Fyrir kennara');
+        expect(text).not.toContain(note);
+      });
+    }
+  }
+});
+
+// A card is three sheets: vocabulary, sentence frames, questions. Until 2026-10-10, 10 of
+// the 18 ran onto a fourth page, splitting the question card's coloured boxes from their
+// words. Content grows, so every card at every level is held to it.
+describe('three pages, no more', () => {
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`fits ${category.id} ${level} on three A4 pages`, async () => {
+        expect(pageCount(await generatePdf(category, level))).toBe(3);
       });
     }
   }

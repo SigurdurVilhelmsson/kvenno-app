@@ -10,6 +10,12 @@ export interface SentenceFrame {
   frames: string[];
 }
 
+/** One string per level: a worked example, or a note for the teacher. */
+export interface LevelText {
+  level: Level;
+  text: string;
+}
+
 export interface GuidingQuestion {
   question: string;
   icon: string;
@@ -27,5 +33,7 @@ export interface Category {
   color: string;
   subCategories: SubCategory[];
   sentenceFrames: SentenceFrame[];
+  examples: LevelText[];
+  teacherNotes: LevelText[];
   guidingQuestions: GuidingQuestion[];
 }

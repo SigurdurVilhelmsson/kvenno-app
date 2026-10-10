@@ -423,59 +423,92 @@ what students read, so an Icelandic teacher should confirm the new wording in th
 
 **Content (`content/islenskubraut/*.yaml`)**
 
-- [ ] **Frames copied into categories they do not fit.** Manneskja carries
-      `Maður notar það til að ___.`, `Maður finnur það ___.` and
-      `Það er oftast notað af ___ til að ___.`, which treat a person as an object. Staðir has
-      `Það er ___ að snerta vegna þess að ___.` and Dýr `Maður notar það til að ___.` A1 repeats
-      `Það er ___.` twice in Dýr, Matur and Klæðnaður. Manneskja's
-      `Fyrir hvað er manneskjan þekkt?` is answered with `til að vinna`, `til að læra`, which do
-      not answer it.
+Applied 2026-10-10 (PR for this branch). An Icelandic teacher still has to confirm the new
+wording, item by item below. The words it introduced have not been looked up in BÍN: run
+`pnpm islenskubraut:bin --fetch` (45 new forms, among them `ferkantað`, `ílangt`, `kúlulaga`,
+`oddhvasst`, `hraðskreitt`, `hægfara`, `litríkt` and the new feminine and plural adjectives).
+
+- [x] **Frames copied into categories they do not fit.** Manneskja no longer treats a person as
+      an object: `Maður notar það til að ___.` is gone, `Maður finnur það ___.` is
+      `Hún/Hann er oft ___.`, `Maður notar það ___.` is gone, and
+      `Það er oftast notað af ___ til að ___.` is `Hún/Hann er oft ___ vegna þess að ___.`
+      Its `Fyrir hvað er manneskjan þekkt?` is now `Hvað gerir hún/hann?`, answered with
+      `vinnur`, `lærir`, `leikur sér`, `syngur`, `læknar`, `kennir`, `stjórnar`, `skapar`, which
+      also fill A1's `Hún/Hann ___.` Staðir's touch frame is
+      `Mér finnst þetta ___ vegna þess að ___.` The repeated A1 `Það er ___.` is gone from Dýr,
+      Matur and Klæðnaður.
+  - **Left as it was:** Dýr's `Maður notar það ___.` It matches the card's own question
+    `Til hvers er það notað?`; whether animals should be asked about at all in terms of use is
+    a teaching call.
 - [ ] **Words and grammar that look wrong.** The first BÍN run (D2, 2026-10-09) settled part of
-      this.
+      this, and the rest was fixed 2026-10-10.
   - **Fixed, and confirmed by Siggi 2026-10-09:** `endurunnru` → `endurunnu` (three categories),
     `hálkt` → `hált` (Matur, Klæðnaður), and in the sound lists `mjallar` → `mjálmar` and
     `súðar` → `suðar` (Dýr; `suðar` in Farartæki too). The first two are BÍN's forms; the
     last two were real forms of the wrong words, so BÍN alone could not have caught them.
   - **Removed 2026-10-09, Siggi's call:** the sound words `umar`, `dúnar` and `þrymir` (Dýr and
     Farartæki, B1). BÍN knew none of them and which word was meant was unclear.
+  - **Fixed 2026-10-10, to confirm:** `Hvenær er þetta sést?` → `Hvenær sést þetta?`,
+    `í hátíðum` → `á hátíðum` (five categories), `í sérstakar tilefni` →
+    `við sérstök tilefni`, `pilsið` → `pils`, and `sælgæti-sætt` → `mjög sætt`.
   - **Not in BÍN-kjarninn, probably right:** `lestarbraut`, `sportvagn`, `sívalningslaga`,
     `straumlínulaga` and `þríhyrningslaga` (the last is in `ordabok.md`'s chemistry terms). Each
     part is in BÍN. A person who has checked them lists them in `bin/ekki-i-bin.yaml` with a
     reason; Íslensk nútímamálsorðabók was not reachable from the session to do it.
-  - **Still open:** `sælgæti-sætt` (both halves are words, so BÍN passes it). Grammar:
-    `Hvenær er þetta sést?` → `Hvenær sést þetta?`, `í hátíðum` → `á hátíðum`,
-    `í sérstakar tilefni` → `við sérstök tilefni`, the definite `pilsið` among indefinites.
-- [ ] **The shape question is not about shape.** The same 14-item list sits under
-      `Hvaða lögun hefur það?` in five categories. It mixes in size (`stórt`, `lítið`, `hátt`,
-      `lágt`), and `fernt` means four of something, not square. Farartæki's
-      `Hvernig lítur það út?` offers `hraðvirkt`, which is speed.
-- [ ] **Chips repeat what the frame already says.** `Það er gert úr ___` takes the chip
-      `úr málmi`, giving `úr úr málmi`; the vocabulary page has `étur plöntur` and `hefur feld`
-      for frames that already say `étur` and `hefur`. Pick one side to carry the word.
-- [ ] **Colours and other adjectives offer no feminine form.** Klæðnaður lists `rauður/rautt` but
-      no `rauð`, while `peysa`, `úlpa`, `húfa` and `skyrta` are feminine. Add the feminine (and
-      plural, for `buxur`, `sokkar`, `skór`, `hanskar`) until C7's gender data can choose the
-      form.
+- [x] **The shape question is not about shape.** Now shapes only, in all five categories: A1
+      `kringlótt`, `ferkantað`, `ílangt`, `flatt`; A2 adds `kúlulaga`, `oddhvasst`, `bogið`,
+      `beint`; B1 adds `sporöskjulaga`, `þríhyrningslaga`, `sívalningslaga`, `óreglulegt`. Size
+      stays where it already was, in each card's size and looks lists. Farartæki's looks
+      question has `ferkantað` for `fernt` and `litríkt` for `hraðvirkt`, and its Eiginleikar
+      list `hraðskreitt`/`hægfara` for `hraðvirkt`/`hægvirkt`.
+- [x] **Chips repeat what the frame already says.** Where the chips carry the word, the frame
+      gives it up: `Það er gert ___.` in Farartæki, Staðir and Klæðnaður, whose chips read
+      `úr málmi`; frames end `notað ___` and `fer þangað ___` where the chips read `til að …`;
+      Klæðnaður B1 is `Þetta er ___ sem er ___. Maður notar það ___.` The old
+      `Það er oftast notað af ___ til að ___.` needed the dative of its who-chips and is now
+      `___ nota það oftast ___.`, which takes them as written. Matur keeps `gert úr ___`: it has
+      no `úr` chips. Dýr's vocabulary page drops the frame's verb from its chips (`feld`, not
+      `hefur feld`; `plöntur (grasæta)`, not `étur plöntur`), with `flýgur`, `syndir`,
+      `hleypur` moved to a new `Hreyfing` list, and Farartæki's `hefur hjól` is `hjól`.
+  - **Not done here, C7's:** the question cards still give nouns in the nominative
+    (`feldur`, `fjórir fætur`) where the frames want another case.
+- [x] **Colours and other adjectives offer no feminine form.** Klæðnaður's colours are
+      `rauður/rauð/rautt` and so on, with a new `Litur í fleirtölu` list (`rauðir/rauðar`) for
+      `buxur`, `sokkar`, `skór` and `hanskar`. Manneskja's one-gender adjectives got the other
+      (`látin/látinn`, `fræg/frægur`, `fullorðin/fullorðinn`, `sköllótt/sköllóttur`, and
+      `öldruð/aldraður` in the fem/masc order the rest use); Staðir's size is
+      `lítill/lítil/lítið`. Neuter-only adjectives that describe `það` (Dýr, Matur) are C7's.
 
 **Examples and teacher notes**
 
-- [ ] **Move the examples (`Dæmi`) and teacher notes into the YAML.** They are hard-coded twice,
-      in `apps/islenskubraut/src/components/SpjaldPreview.tsx` and as `\u` escapes in
-      `server/src/lib/islenskubraut-pdf.tsx`, so neither the spreadsheet review nor the BÍN check
-      sees them. They hold the most errors: `delfínn` → `höfrungur`, `ólíkt fisk` → `ólíkt fiski`,
-      `mynduleg` → `myndarleg`, `flugvél sem er notað` → `notuð`, and pronouns that ignore the
-      noun's gender (`Þetta er úlpa. Það er blátt.`, `peysa … klæðist því`,
-      `jakki … Það er svart`, `ávöxtur … Það er sætt`).
-- [ ] **Take the teacher note off the student card.** The PDF prints `Fyrir kennara` on the sheet
-      students laminate, and the note is the same in all six categories.
+- [x] **Move the examples (`Dæmi`) and teacher notes into the YAML.** Done 2026-10-10: each
+      category's YAML now has `examples` and `teacherNotes`, one per level, and the loader
+      refuses a missing or empty one. The SPA and the PDF read them from there, so the
+      spreadsheet review (`Dæmi`, `Fyrir kennara` rows) and the BÍN check see them too.
+      Corrected on the way, for a teacher to confirm: `delfínn` → `höfrungur`, `ólíkt fisk` →
+      `ólíkt fiski`, `mynduleg` → `myndarleg`, `flugvél sem er notað` → `notuð`, and the
+      pronoun now follows the noun (`Þetta er úlpa. Hún er blá.`, `peysa … klæðist henni`,
+      `jakki … Hann er svartur`, `ávöxtur … Hann er sætur`, `bíll … Hann er stór`). Klæðnaður B1
+      follows its new frame (`Þetta er jakki sem er úr leðri. Maður notar hann …`). The A1 note
+      gains one sentence on the pronoun, since the examples now show it.
+- [x] **Take the teacher note off the student card.** Done 2026-10-10: the PDF no longer prints
+      it, and the web page shows it below the card, marked as not printed. The notes still read
+      the same in all six categories; each category now has its own copy, so a teacher can make
+      them specific there.
 
 **PDF and preview**
 
-- [ ] **10 of the 18 PDFs run onto a fourth page**: A2 and B1 in every category but Manneskja. The
-      question card overflows, and the second row of context boxes splits, with their coloured
-      headers at the foot of page 3 and their words on page 4. Make each page fit, keep a box from
-      splitting across a page break, and add a test that every PDF is three pages.
-- [ ] **The vocabulary page fills half of A4 at 10 pt.** Larger type for laminated cards.
+- [x] **10 of the 18 PDFs ran onto a fourth page**: A2 and B1 in every category but Manneskja,
+      with the question card's second row of context boxes split from their words. Fixed
+      2026-10-10 in `server/src/lib/islenskubraut-pdf.tsx`: each question's label sits beside it
+      rather than under it, context answers wrap as a line instead of one per line, the question
+      page's header is smaller, and no question, context box, word group or frame is split across
+      a page break (`wrap: false`). `islenskubraut-pdf.test.ts` holds all 18 to three pages; it
+      fails on exactly those 10 against the old renderer. Also fixed while there: react-pdf
+      hyphenated words at line ends (`sér-` / `fræðingar`), which a learner reads as two words.
+      It now never breaks a word.
+- [x] **The vocabulary page filled half of A4 at 10 pt.** Its words are 12 pt now, in larger chips,
+      and Klæðnaður's seven word groups still fit one page. 13 pt did not.
 - [ ] **Pre-render the 18 PDFs at build time** and serve them as static files. Each depends only
       on category and level. It removes the backend from the download (the failures behind PRs
       #87–#89), lets the button become a plain link, and lets CI run the three-page test.

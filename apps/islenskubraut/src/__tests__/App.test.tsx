@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 
@@ -217,6 +217,17 @@ describe('SpjaldPage', () => {
     expect(screen.getAllByText('Spurningaspjald').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Orðaforði')).toBeDefined();
     expect(screen.getByText('Setningarammar')).toBeDefined();
+  });
+
+  it('shows the example from the content on the card, and the teacher note beside it', () => {
+    renderWithRouter(<App />, ['/spjald/klaednadur']);
+    fireEvent.click(screen.getByRole('button', { name: 'Setningarammar' }));
+
+    const card = screen.getByTestId('spjald-bakhlid');
+    expect(card.textContent).toContain('Þetta er úlpa. Hún er blá.');
+    // The note is for the teacher, so it sits outside the card a student would print.
+    const note = screen.getByText(/Fornafnið fer eftir kyni orðsins/);
+    expect(card.contains(note)).toBe(false);
   });
 
   it('renders Matur category content via App', () => {

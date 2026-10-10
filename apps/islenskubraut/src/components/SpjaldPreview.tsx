@@ -8,6 +8,8 @@ interface SpjaldPreviewProps {
 
 export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewProps) {
   const sentenceFrame = category.sentenceFrames.find((sf) => sf.level === level);
+  const example = category.examples.find((e) => e.level === level)?.text;
+  const teacherNote = category.teacherNotes.find((n) => n.level === level)?.text;
 
   return (
     <div className="space-y-8">
@@ -78,6 +80,7 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
             Bakhlið — Setningarammar
           </h3>
           <div
+            data-testid="spjald-bakhlid"
             className="bg-white rounded-2xl shadow-lg overflow-hidden border-2"
             style={{ borderColor: category.color, aspectRatio: '210/297' }}
           >
@@ -123,65 +126,23 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
                 <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
                   Dæmi
                 </h4>
-                <p className="text-gray-700 italic">{getExample(category.id, level)}</p>
-              </div>
-
-              {/* Teacher note */}
-              <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                <p className="text-xs text-yellow-800">
-                  <span className="font-bold">Fyrir kennara:</span> {getTeacherNote(level)}
-                </p>
+                <p className="text-gray-700 italic">{example}</p>
               </div>
             </div>
           </div>
+
+          {/* For the teacher, outside the card: the printed PDF does not carry it, since
+              students handle the card. */}
+          {teacherNote && (
+            <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+              <p className="text-xs text-yellow-800">
+                <span className="font-bold">Fyrir kennara</span> (prentast ekki á spjaldið):{' '}
+                {teacherNote}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
-}
-
-function getExample(categoryId: string, level: Level): string {
-  const examples: Record<string, Record<Level, string>> = {
-    dyr: {
-      A1: 'Þetta er dýr. Það er stórt. Það hefur feld.',
-      A2: 'Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.',
-      B1: 'Ég held að þetta sé delfínn vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fisk.',
-    },
-    matur: {
-      A1: 'Þetta er ávöxtur. Það er sætt. Maður borðar það í morgunmat.',
-      A2: 'Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.',
-      B1: 'Þetta er ávöxtur sem bragðast sætt og súrt. Það er oft borðað sem millimál. Mér finnst það mjög gott.',
-    },
-    farartaeki: {
-      A1: 'Þetta er bíll. Það fer á landi. Það er stórt.',
-      A2: 'Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.',
-      B1: 'Þetta farartæki er flugvél sem er notað til að ferðast langar leiðir. Það getur flutt marga og fer í lofti.',
-    },
-    manneskja: {
-      A1: 'Þetta er kennari. Hún er ung. Hún les.',
-      A2: 'Þetta er kona sem er há. Hún er ung og mynduleg. Hún vinnur sem læknir.',
-      B1: 'Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.',
-    },
-    stadir: {
-      A1: 'Þetta er skóli. Maður lærir þar.',
-      A2: 'Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.',
-      B1: 'Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.',
-    },
-    klaednadur: {
-      A1: 'Þetta er úlpa. Það er blátt.',
-      A2: 'Þetta er peysa sem er rauð. Maður klæðist því á veturna.',
-      B1: 'Þetta er jakki úr leðri sem maður notar á veturna. Það er svart og hentar vel í kulda.',
-    },
-  };
-
-  return examples[categoryId]?.[level] || '';
-}
-
-function getTeacherNote(level: Level): string {
-  const notes: Record<Level, string> = {
-    A1: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu.',
-    A2: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
-    B1: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
-  };
-  return notes[level];
 }

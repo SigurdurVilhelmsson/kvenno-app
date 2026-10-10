@@ -35,7 +35,7 @@ export const stadir: Category = {
     },
     {
       name: 'Stærð',
-      options: ['lítill/lítið', 'meðalstór/meðalstórt', 'stór/stórt'],
+      options: ['lítill/lítil/lítið', 'meðalstór/meðalstórt', 'stór/stórt'],
     },
     {
       name: 'Hvað gerir maður þar',
@@ -45,14 +45,14 @@ export const stadir: Category = {
   sentenceFrames: [
     {
       level: 'A1',
-      frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.', 'Maður notar það til að ___.'],
+      frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.', 'Maður notar það ___.'],
     },
     {
       level: 'A2',
       frames: [
         'Þetta er ___ sem er ___.',
-        'Maður fer þangað til að ___.',
-        'Það er gert úr ___.',
+        'Maður fer þangað ___.',
+        'Það er gert ___.',
         'Maður finnur það ___.',
         'Maður notar það ___.',
       ],
@@ -61,11 +61,39 @@ export const stadir: Category = {
       level: 'B1',
       frames: [
         'Þetta er ___ sem er staðsett ___.',
-        'Fólk fer þangað til að ___ og ___.',
-        'Það er ___ að snerta vegna þess að ___.',
-        'Það er gert úr ___ sem er ___.',
-        'Það er oftast notað af ___ til að ___.',
+        'Fólk fer þangað ___ og ___.',
+        'Mér finnst þetta ___ vegna þess að ___.',
+        'Það er gert ___ sem er ___.',
+        '___ nota það oftast ___.',
       ],
+    },
+  ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er skóli. Maður lærir þar.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.',
+    },
+    {
+      level: 'B1',
+      text: 'Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
     },
   ],
   guidingQuestions: [
@@ -202,36 +230,32 @@ export const stadir: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+          options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
         },
         {
           level: 'A2',
           options: [
-            'stórt',
-            'lítið',
             'kringlótt',
-            'fernt',
-            'langt',
-            'stutt',
-            'hátt',
-            'lágt',
+            'ferkantað',
+            'ílangt',
             'flatt',
-            'þykkt',
+            'kúlulaga',
+            'oddhvasst',
+            'bogið',
+            'beint',
           ],
         },
         {
           level: 'B1',
           options: [
-            'stórt',
-            'lítið',
             'kringlótt',
-            'fernt',
-            'langt',
-            'stutt',
-            'hátt',
-            'lágt',
+            'ferkantað',
+            'ílangt',
             'flatt',
-            'þykkt',
+            'kúlulaga',
+            'oddhvasst',
+            'bogið',
+            'beint',
             'sporöskjulaga',
             'þríhyrningslaga',
             'sívalningslaga',
@@ -354,7 +378,7 @@ export const stadir: Category = {
             'um helgar',
             'á virkum dögum',
             'í sérstökum tilvikum',
-            'í hátíðum',
+            'á hátíðum',
             'daglega',
             'sjaldan',
             'oft',

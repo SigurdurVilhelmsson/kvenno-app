@@ -57,13 +57,7 @@ export const matur: Category = {
   sentenceFrames: [
     {
       level: 'A1',
-      frames: [
-        'Þetta er ___.',
-        'Það er ___.',
-        'Maður borðar það ___.',
-        'Það er ___.',
-        'Maður notar það til að ___.',
-      ],
+      frames: ['Þetta er ___.', 'Það er ___.', 'Maður borðar það ___.', 'Maður notar það ___.'],
     },
     {
       level: 'A2',
@@ -85,8 +79,36 @@ export const matur: Category = {
         'Mér finnst ___.',
         'Það er ___ að snerta vegna þess að ___.',
         'Það er gert úr ___ sem er ___.',
-        'Það er oftast notað af ___ til að ___.',
+        '___ nota það oftast ___.',
       ],
+    },
+  ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.',
+    },
+    {
+      level: 'B1',
+      text: 'Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
     },
   ],
   guidingQuestions: [
@@ -183,7 +205,7 @@ export const matur: Category = {
             'ferskt',
             'bragðmikið',
             'bragðlaust',
-            'sælgæti-sætt',
+            'mjög sætt',
             'náttúrulega sætt',
           ],
         },
@@ -268,36 +290,32 @@ export const matur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+          options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
         },
         {
           level: 'A2',
           options: [
-            'stórt',
-            'lítið',
             'kringlótt',
-            'fernt',
-            'langt',
-            'stutt',
-            'hátt',
-            'lágt',
+            'ferkantað',
+            'ílangt',
             'flatt',
-            'þykkt',
+            'kúlulaga',
+            'oddhvasst',
+            'bogið',
+            'beint',
           ],
         },
         {
           level: 'B1',
           options: [
-            'stórt',
-            'lítið',
             'kringlótt',
-            'fernt',
-            'langt',
-            'stutt',
-            'hátt',
-            'lágt',
+            'ferkantað',
+            'ílangt',
             'flatt',
-            'þykkt',
+            'kúlulaga',
+            'oddhvasst',
+            'bogið',
+            'beint',
             'sporöskjulaga',
             'þríhyrningslaga',
             'sívalningslaga',
@@ -416,7 +434,7 @@ export const matur: Category = {
             'um helgar',
             'á virkum dögum',
             'í sérstökum tilvikum',
-            'í hátíðum',
+            'á hátíðum',
             'daglega',
             'sjaldan',
             'oft',

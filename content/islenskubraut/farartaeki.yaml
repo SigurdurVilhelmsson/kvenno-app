@@ -33,12 +33,12 @@ subCategories:
   - id: s4
     name: Eiginleikar
     options:
-      - hefur hjól
-      - hefur ekki hjól
+      - hjól
+      - ekki hjól
       - með vél
       - án vélar
-      - hraðvirkt
-      - hægvirkt
+      - hraðskreitt
+      - hægfara
   - id: s5
     name: Hvenær notað
     options:
@@ -60,24 +60,32 @@ sentenceFrames:
       - Það fer ___.
       - Það er ___.
       - Það hljómar ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
       - Þetta er ___ sem fer ___.
       - Það hefur ___ og er ___.
       - Það finnst ___ við snertingu.
-      - Það er gert úr ___.
+      - Það er gert ___.
       - Maður finnur það ___.
       - Maður notar það ___.
   - id: f3
     level: B1
     frames:
-      - Þetta farartæki er ___ sem er notað til að ___.
+      - Þetta farartæki er ___ sem er notað ___.
       - Það getur flutt ___ og fer ___.
       - Það er ___ að snerta vegna þess að ___.
-      - Það er gert úr ___ sem er ___.
-      - Það er oftast notað af ___ til að ___.
+      - Það er gert ___ sem er ___.
+      - ___ nota það oftast ___.
+examples:
+  A1: Þetta er bíll. Hann fer á landi. Hann er stór.
+  A2: Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.
+  B1: Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar farartæki er þetta?
@@ -138,8 +146,8 @@ guidingQuestions:
         - hátt
         - lágt
         - straumlínulaga
-        - fernt
-        - hraðvirkt
+        - ferkantað
+        - litríkt
   - id: q3
     question: Hvaða hljóð gefur það frá sér?
     icon: 🔊
@@ -191,32 +199,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -316,7 +320,7 @@ guidingQuestions:
         - um helgar
         - á virkum dögum
         - í sérstökum tilvikum
-        - í hátíðum
+        - á hátíðum
         - daglega
         - sjaldan
         - oft

@@ -62,8 +62,7 @@ sentenceFrames:
       - Þetta er ___.
       - Það er ___.
       - Maður borðar það ___.
-      - Það er ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
@@ -82,7 +81,15 @@ sentenceFrames:
       - Mér finnst ___.
       - Það er ___ að snerta vegna þess að ___.
       - Það er gert úr ___ sem er ___.
-      - Það er oftast notað af ___ til að ___.
+      - ___ nota það oftast ___.
+examples:
+  A1: Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.
+  A2: Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.
+  B1: Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar matur er þetta?
@@ -172,7 +179,7 @@ guidingQuestions:
         - ferskt
         - bragðmikið
         - bragðlaust
-        - sælgæti-sætt
+        - mjög sætt
         - náttúrulega sætt
   - id: q4
     question: Hvernig finnst það við snertingu?
@@ -240,32 +247,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -361,7 +364,7 @@ guidingQuestions:
         - um helgar
         - á virkum dögum
         - í sérstökum tilvikum
-        - í hátíðum
+        - á hátíðum
         - daglega
         - sjaldan
         - oft

@@ -30,18 +30,19 @@ export const categories: Category[] = [
       {
         name: 'Útlit',
         options: [
-          'hefur feld',
-          'hefur fjaðrir',
-          'hefur hreistur',
-          'hefur hala',
-          'hefur gogg',
-          'hefur horn',
-          'hefur fjóra fætur',
-          'hefur tvo fætur',
-          'flýgur',
-          'syndir',
-          'hleypur',
+          'feld',
+          'fjaðrir',
+          'hreistur',
+          'hala',
+          'gogg',
+          'horn',
+          'fjóra fætur',
+          'tvo fætur',
         ],
+      },
+      {
+        name: 'Hreyfing',
+        options: ['flýgur', 'syndir', 'hleypur'],
       },
       {
         name: 'Stærð',
@@ -49,7 +50,7 @@ export const categories: Category[] = [
       },
       {
         name: 'Fæða',
-        options: ['étur plöntur (grasæta)', 'étur kjöt (kjötæta)', 'étur bæði (alæta)'],
+        options: ['plöntur (grasæta)', 'kjöt (kjötæta)', 'bæði (alæta)'],
       },
     ],
     sentenceFrames: [
@@ -59,9 +60,8 @@ export const categories: Category[] = [
           'Þetta er dýr.',
           'Það er ___.',
           'Það hefur ___.',
-          'Það er ___.',
           'Það hljómar ___.',
-          'Maður notar það til að ___.',
+          'Maður notar það ___.',
         ],
       },
       {
@@ -82,8 +82,36 @@ export const categories: Category[] = [
           'Þetta dýr er ___ og ___.',
           'Það er líkt ___ en ólíkt ___.',
           'Það er ___ að snerta vegna þess að ___.',
-          'Það er oftast notað af ___ til að ___.',
+          '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er dýr. Það er stórt. Það hefur feld.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.',
+      },
+      {
+        level: 'B1',
+        text: 'Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -219,36 +247,32 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
           },
           {
             level: 'A2',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
             ],
           },
           {
             level: 'B1',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
               'sporöskjulaga',
               'þríhyrningslaga',
               'sívalningslaga',
@@ -346,7 +370,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvenær er þetta sést?',
+        question: 'Hvenær sést þetta?',
         icon: '🕐',
         answers: [
           {
@@ -435,13 +459,7 @@ export const categories: Category[] = [
     sentenceFrames: [
       {
         level: 'A1',
-        frames: [
-          'Þetta er ___.',
-          'Það er ___.',
-          'Maður borðar það ___.',
-          'Það er ___.',
-          'Maður notar það til að ___.',
-        ],
+        frames: ['Þetta er ___.', 'Það er ___.', 'Maður borðar það ___.', 'Maður notar það ___.'],
       },
       {
         level: 'A2',
@@ -463,8 +481,36 @@ export const categories: Category[] = [
           'Mér finnst ___.',
           'Það er ___ að snerta vegna þess að ___.',
           'Það er gert úr ___ sem er ___.',
-          'Það er oftast notað af ___ til að ___.',
+          '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -570,7 +616,7 @@ export const categories: Category[] = [
               'ferskt',
               'bragðmikið',
               'bragðlaust',
-              'sælgæti-sætt',
+              'mjög sætt',
               'náttúrulega sætt',
             ],
           },
@@ -655,36 +701,32 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
           },
           {
             level: 'A2',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
             ],
           },
           {
             level: 'B1',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
               'sporöskjulaga',
               'þríhyrningslaga',
               'sívalningslaga',
@@ -803,7 +845,7 @@ export const categories: Category[] = [
               'um helgar',
               'á virkum dögum',
               'í sérstökum tilvikum',
-              'í hátíðum',
+              'á hátíðum',
               'daglega',
               'sjaldan',
               'oft',
@@ -844,7 +886,7 @@ export const categories: Category[] = [
       },
       {
         name: 'Eiginleikar',
-        options: ['hefur hjól', 'hefur ekki hjól', 'með vél', 'án vélar', 'hraðvirkt', 'hægvirkt'],
+        options: ['hjól', 'ekki hjól', 'með vél', 'án vélar', 'hraðskreitt', 'hægfara'],
       },
       {
         name: 'Hvenær notað',
@@ -863,7 +905,7 @@ export const categories: Category[] = [
           'Það fer ___.',
           'Það er ___.',
           'Það hljómar ___.',
-          'Maður notar það til að ___.',
+          'Maður notar það ___.',
         ],
       },
       {
@@ -872,7 +914,7 @@ export const categories: Category[] = [
           'Þetta er ___ sem fer ___.',
           'Það hefur ___ og er ___.',
           'Það finnst ___ við snertingu.',
-          'Það er gert úr ___.',
+          'Það er gert ___.',
           'Maður finnur það ___.',
           'Maður notar það ___.',
         ],
@@ -880,12 +922,40 @@ export const categories: Category[] = [
       {
         level: 'B1',
         frames: [
-          'Þetta farartæki er ___ sem er notað til að ___.',
+          'Þetta farartæki er ___ sem er notað ___.',
           'Það getur flutt ___ og fer ___.',
           'Það er ___ að snerta vegna þess að ___.',
-          'Það er gert úr ___ sem er ___.',
-          'Það er oftast notað af ___ til að ___.',
+          'Það er gert ___ sem er ___.',
+          '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er bíll. Hann fer á landi. Hann er stór.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -952,8 +1022,8 @@ export const categories: Category[] = [
               'hátt',
               'lágt',
               'straumlínulaga',
-              'fernt',
-              'hraðvirkt',
+              'ferkantað',
+              'litríkt',
             ],
           },
         ],
@@ -1009,36 +1079,32 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
           },
           {
             level: 'A2',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
             ],
           },
           {
             level: 'B1',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
               'sporöskjulaga',
               'þríhyrningslaga',
               'sívalningslaga',
@@ -1159,7 +1225,7 @@ export const categories: Category[] = [
               'um helgar',
               'á virkum dögum',
               'í sérstökum tilvikum',
-              'í hátíðum',
+              'á hátíðum',
               'daglega',
               'sjaldan',
               'oft',
@@ -1178,11 +1244,11 @@ export const categories: Category[] = [
     subCategories: [
       {
         name: 'Staða',
-        options: ['á lífi', 'látin', 'skálduð persóna'],
+        options: ['á lífi', 'látin/látinn', 'skálduð persóna'],
       },
       {
         name: 'Frægð',
-        options: ['fræg', 'ekki fræg'],
+        options: ['fræg/frægur', 'ekki fræg/frægur'],
       },
       {
         name: 'Starf/hlutverk',
@@ -1201,7 +1267,7 @@ export const categories: Category[] = [
       },
       {
         name: 'Aldur',
-        options: ['barn', 'unglingur', 'fullorðinn', 'aldraður/öldruð'],
+        options: ['barn', 'unglingur', 'fullorðin/fullorðinn', 'öldruð/aldraður'],
       },
       {
         name: 'Útlit',
@@ -1212,7 +1278,7 @@ export const categories: Category[] = [
           'gömul/gamall',
           'með sítt hár',
           'með stutt hár',
-          'sköllótt',
+          'sköllótt/sköllóttur',
           'með gleraugu',
           'án gleraugna',
           'með skegg',
@@ -1227,12 +1293,7 @@ export const categories: Category[] = [
     sentenceFrames: [
       {
         level: 'A1',
-        frames: [
-          'Þetta er ___.',
-          'Hún/Hann er ___.',
-          'Hún/Hann ___.',
-          'Maður notar það til að ___.',
-        ],
+        frames: ['Þetta er ___.', 'Hún/Hann er ___.', 'Hún/Hann ___.'],
       },
       {
         level: 'A2',
@@ -1240,8 +1301,7 @@ export const categories: Category[] = [
           'Þetta er ___ sem er ___.',
           'Hún/Hann er ___ og ___.',
           'Hún/Hann vinnur sem ___.',
-          'Maður finnur það ___.',
-          'Maður notar það ___.',
+          'Hún/Hann er oft ___.',
         ],
       },
       {
@@ -1249,8 +1309,36 @@ export const categories: Category[] = [
         frames: [
           'Ég held að þetta sé ___ vegna þess að ___.',
           'Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.',
-          'Það er oftast notað af ___ til að ___.',
+          'Hún/Hann er oft ___ vegna þess að ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er kennari. Hún er ung. Hún les.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.',
+      },
+      {
+        level: 'B1',
+        text: 'Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -1260,23 +1348,30 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['barn', 'fullorðinn', 'gamall/gömul'],
+            options: ['barn', 'fullorðin/fullorðinn', 'gamall/gömul'],
           },
           {
             level: 'A2',
-            options: ['barn', 'unglingur', 'fullorðinn', 'aldraður/öldruð', 'fræg', 'ekki fræg'],
+            options: [
+              'barn',
+              'unglingur',
+              'fullorðin/fullorðinn',
+              'öldruð/aldraður',
+              'fræg/frægur',
+              'ekki fræg/frægur',
+            ],
           },
           {
             level: 'B1',
             options: [
               'barn',
               'unglingur',
-              'fullorðinn',
-              'aldraður/öldruð',
-              'fræg',
-              'ekki fræg',
+              'fullorðin/fullorðinn',
+              'öldruð/aldraður',
+              'fræg/frægur',
+              'ekki fræg/frægur',
               'á lífi',
-              'látin',
+              'látin/látinn',
               'skálduð persóna',
             ],
           },
@@ -1311,7 +1406,7 @@ export const categories: Category[] = [
               'gömul/gamall',
               'með sítt hár',
               'með stutt hár',
-              'sköllótt',
+              'sköllótt/sköllóttur',
               'með gleraugu',
               'með skegg',
               'án skeggs',
@@ -1320,35 +1415,28 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Fyrir hvað er manneskjan þekkt?',
+        question: 'Hvað gerir hún/hann?',
         icon: '🎯',
         answers: [
           {
             level: 'A1',
-            options: ['til að vinna', 'til að læra', 'til að leika sér'],
+            options: ['vinnur', 'lærir', 'leikur sér'],
           },
           {
             level: 'A2',
-            options: [
-              'til að vinna',
-              'til að læra',
-              'til að leika sér',
-              'til að syngja',
-              'til að lækna',
-              'til að kenna',
-            ],
+            options: ['vinnur', 'lærir', 'leikur sér', 'syngur', 'læknar', 'kennir'],
           },
           {
             level: 'B1',
             options: [
-              'til að vinna',
-              'til að læra',
-              'til að leika sér',
-              'til að syngja',
-              'til að lækna',
-              'til að kenna',
-              'til að stjórna',
-              'til að skapa',
+              'vinnur',
+              'lærir',
+              'leikur sér',
+              'syngur',
+              'læknar',
+              'kennir',
+              'stjórnar',
+              'skapar',
             ],
           },
         ],
@@ -1413,7 +1501,7 @@ export const categories: Category[] = [
               'um helgar',
               'á virkum dögum',
               'í sérstökum tilvikum',
-              'í hátíðum',
+              'á hátíðum',
               'daglega',
               'sjaldan',
               'oft',
@@ -1457,7 +1545,7 @@ export const categories: Category[] = [
       },
       {
         name: 'Stærð',
-        options: ['lítill/lítið', 'meðalstór/meðalstórt', 'stór/stórt'],
+        options: ['lítill/lítil/lítið', 'meðalstór/meðalstórt', 'stór/stórt'],
       },
       {
         name: 'Hvað gerir maður þar',
@@ -1467,14 +1555,14 @@ export const categories: Category[] = [
     sentenceFrames: [
       {
         level: 'A1',
-        frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.', 'Maður notar það til að ___.'],
+        frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.', 'Maður notar það ___.'],
       },
       {
         level: 'A2',
         frames: [
           'Þetta er ___ sem er ___.',
-          'Maður fer þangað til að ___.',
-          'Það er gert úr ___.',
+          'Maður fer þangað ___.',
+          'Það er gert ___.',
           'Maður finnur það ___.',
           'Maður notar það ___.',
         ],
@@ -1483,11 +1571,39 @@ export const categories: Category[] = [
         level: 'B1',
         frames: [
           'Þetta er ___ sem er staðsett ___.',
-          'Fólk fer þangað til að ___ og ___.',
-          'Það er ___ að snerta vegna þess að ___.',
-          'Það er gert úr ___ sem er ___.',
-          'Það er oftast notað af ___ til að ___.',
+          'Fólk fer þangað ___ og ___.',
+          'Mér finnst þetta ___ vegna þess að ___.',
+          'Það er gert ___ sem er ___.',
+          '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er skóli. Maður lærir þar.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -1624,36 +1740,32 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
           },
           {
             level: 'A2',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
             ],
           },
           {
             level: 'B1',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
               'sporöskjulaga',
               'þríhyrningslaga',
               'sívalningslaga',
@@ -1782,7 +1894,7 @@ export const categories: Category[] = [
               'um helgar',
               'á virkum dögum',
               'í sérstökum tilvikum',
-              'í hátíðum',
+              'á hátíðum',
               'daglega',
               'sjaldan',
               'oft',
@@ -1806,7 +1918,7 @@ export const categories: Category[] = [
           'peysa',
           'skyrta',
           'buxur',
-          'pilsið/pils',
+          'pils',
           'jakki',
           'úlpa',
           'sokkar',
@@ -1819,14 +1931,27 @@ export const categories: Category[] = [
       {
         name: 'Litur',
         options: [
-          'rauður/rautt',
-          'blár/blátt',
-          'grænn/grænt',
-          'gulur/gult',
-          'svartur/svart',
-          'hvítur/hvítt',
-          'bleikur/bleikt',
-          'brúnn/brúnt',
+          'rauður/rauð/rautt',
+          'blár/blá/blátt',
+          'grænn/græn/grænt',
+          'gulur/gul/gult',
+          'svartur/svört/svart',
+          'hvítur/hvít/hvítt',
+          'bleikur/bleik/bleikt',
+          'brúnn/brún/brúnt',
+        ],
+      },
+      {
+        name: 'Litur í fleirtölu',
+        options: [
+          'rauðir/rauðar',
+          'bláir/bláar',
+          'grænir/grænar',
+          'gulir/gular',
+          'svartir/svartar',
+          'hvítir/hvítar',
+          'bleikir/bleikar',
+          'brúnir/brúnar',
         ],
       },
       {
@@ -1835,7 +1960,7 @@ export const categories: Category[] = [
       },
       {
         name: 'Hvenær',
-        options: ['á veturna', 'á sumrin', 'allt árið', 'þegar rignir', 'í sérstakar tilefni'],
+        options: ['á veturna', 'á sumrin', 'allt árið', 'þegar rignir', 'við sérstök tilefni'],
       },
       {
         name: 'Á hvaða líkamshluta',
@@ -1851,7 +1976,7 @@ export const categories: Category[] = [
     sentenceFrames: [
       {
         level: 'A1',
-        frames: ['Þetta er ___.', 'Það er ___.', 'Það er ___.', 'Maður notar það til að ___.'],
+        frames: ['Þetta er ___.', 'Það er ___.', 'Maður notar það ___.'],
       },
       {
         level: 'A2',
@@ -1859,7 +1984,7 @@ export const categories: Category[] = [
           'Þetta er ___ sem er ___.',
           'Maður klæðist því ___.',
           'Það finnst ___ við snertingu.',
-          'Það er gert úr ___.',
+          'Það er gert ___.',
           'Maður finnur það ___.',
           'Maður notar það ___.',
         ],
@@ -1867,12 +1992,40 @@ export const categories: Category[] = [
       {
         level: 'B1',
         frames: [
-          'Þetta er ___ úr ___ sem maður notar ___.',
+          'Þetta er ___ sem er ___. Maður notar það ___.',
           'Það er ___ og hentar vel ___.',
           'Það er ___ að snerta vegna þess að ___.',
-          'Það er gert úr ___ sem er ___.',
-          'Það er oftast notað af ___ til að ___.',
+          'Það er gert ___ sem er ___.',
+          '___ nota það oftast ___.',
         ],
+      },
+    ],
+    examples: [
+      {
+        level: 'A1',
+        text: 'Þetta er úlpa. Hún er blá.',
+      },
+      {
+        level: 'A2',
+        text: 'Þetta er peysa sem er rauð. Maður klæðist henni á veturna.',
+      },
+      {
+        level: 'B1',
+        text: 'Þetta er jakki sem er úr leðri. Maður notar hann á veturna. Hann er svartur og hentar vel í kulda.',
+      },
+    ],
+    teacherNotes: [
+      {
+        level: 'A1',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      },
+      {
+        level: 'A2',
+        text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+      },
+      {
+        level: 'B1',
+        text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
       },
     ],
     guidingQuestions: [
@@ -1891,7 +2044,7 @@ export const categories: Category[] = [
               'peysa',
               'skyrta',
               'buxur',
-              'pilsið',
+              'pils',
               'jakki',
               'úlpa',
               'sokkar',
@@ -1906,7 +2059,7 @@ export const categories: Category[] = [
               'peysa',
               'skyrta',
               'buxur',
-              'pilsið',
+              'pils',
               'jakki',
               'úlpa',
               'sokkar',
@@ -2049,36 +2202,32 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
           },
           {
             level: 'A2',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
             ],
           },
           {
             level: 'B1',
             options: [
-              'stórt',
-              'lítið',
               'kringlótt',
-              'fernt',
-              'langt',
-              'stutt',
-              'hátt',
-              'lágt',
+              'ferkantað',
+              'ílangt',
               'flatt',
-              'þykkt',
+              'kúlulaga',
+              'oddhvasst',
+              'bogið',
+              'beint',
               'sporöskjulaga',
               'þríhyrningslaga',
               'sívalningslaga',
@@ -2112,7 +2261,7 @@ export const categories: Category[] = [
               'til að líta vel út',
               'til að stunda íþróttir',
               'til að vinna',
-              'til að vera þægilegur',
+              'til að líða vel',
             ],
           },
         ],
@@ -2204,7 +2353,7 @@ export const categories: Category[] = [
               'um helgar',
               'á virkum dögum',
               'í sérstökum tilvikum',
-              'í hátíðum',
+              'á hátíðum',
               'daglega',
               'sjaldan',
               'oft',

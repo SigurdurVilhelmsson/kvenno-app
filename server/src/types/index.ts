@@ -122,6 +122,12 @@ export interface SentenceFrame {
   frames: string[];
 }
 
+/** One string per level: a worked example, or a note for the teacher */
+export interface LevelText {
+  level: CEFRLevel;
+  text: string;
+}
+
 /** An answer option set for a guiding question at a specific level */
 export interface GuidingQuestionAnswer {
   level: CEFRLevel;
@@ -144,5 +150,7 @@ export interface Category {
   color: string;
   subCategories: SubCategory[];
   sentenceFrames: SentenceFrame[];
+  examples: LevelText[];
+  teacherNotes: LevelText[];
   guidingQuestions: GuidingQuestion[];
 }

@@ -28,19 +28,11 @@ export const dyr: Category = {
     },
     {
       name: 'Útlit',
-      options: [
-        'hefur feld',
-        'hefur fjaðrir',
-        'hefur hreistur',
-        'hefur hala',
-        'hefur gogg',
-        'hefur horn',
-        'hefur fjóra fætur',
-        'hefur tvo fætur',
-        'flýgur',
-        'syndir',
-        'hleypur',
-      ],
+      options: ['feld', 'fjaðrir', 'hreistur', 'hala', 'gogg', 'horn', 'fjóra fætur', 'tvo fætur'],
+    },
+    {
+      name: 'Hreyfing',
+      options: ['flýgur', 'syndir', 'hleypur'],
     },
     {
       name: 'Stærð',
@@ -48,7 +40,7 @@ export const dyr: Category = {
     },
     {
       name: 'Fæða',
-      options: ['étur plöntur (grasæta)', 'étur kjöt (kjötæta)', 'étur bæði (alæta)'],
+      options: ['plöntur (grasæta)', 'kjöt (kjötæta)', 'bæði (alæta)'],
     },
   ],
   sentenceFrames: [
@@ -58,9 +50,8 @@ export const dyr: Category = {
         'Þetta er dýr.',
         'Það er ___.',
         'Það hefur ___.',
-        'Það er ___.',
         'Það hljómar ___.',
-        'Maður notar það til að ___.',
+        'Maður notar það ___.',
       ],
     },
     {
@@ -81,8 +72,36 @@ export const dyr: Category = {
         'Þetta dýr er ___ og ___.',
         'Það er líkt ___ en ólíkt ___.',
         'Það er ___ að snerta vegna þess að ___.',
-        'Það er oftast notað af ___ til að ___.',
+        '___ nota það oftast ___.',
       ],
+    },
+  ],
+  examples: [
+    {
+      level: 'A1',
+      text: 'Þetta er dýr. Það er stórt. Það hefur feld.',
+    },
+    {
+      level: 'A2',
+      text: 'Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.',
+    },
+    {
+      level: 'B1',
+      text: 'Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.',
+    },
+  ],
+  teacherNotes: [
+    {
+      level: 'A1',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+    },
+    {
+      level: 'A2',
+      text: 'Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.',
+    },
+    {
+      level: 'B1',
+      text: 'Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.',
     },
   ],
   guidingQuestions: [
@@ -218,36 +237,32 @@ export const dyr: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+          options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
         },
         {
           level: 'A2',
           options: [
-            'stórt',
-            'lítið',
             'kringlótt',
-            'fernt',
-            'langt',
-            'stutt',
-            'hátt',
-            'lágt',
+            'ferkantað',
+            'ílangt',
             'flatt',
-            'þykkt',
+            'kúlulaga',
+            'oddhvasst',
+            'bogið',
+            'beint',
           ],
         },
         {
           level: 'B1',
           options: [
-            'stórt',
-            'lítið',
             'kringlótt',
-            'fernt',
-            'langt',
-            'stutt',
-            'hátt',
-            'lágt',
+            'ferkantað',
+            'ílangt',
             'flatt',
-            'þykkt',
+            'kúlulaga',
+            'oddhvasst',
+            'bogið',
+            'beint',
             'sporöskjulaga',
             'þríhyrningslaga',
             'sívalningslaga',
@@ -345,7 +360,7 @@ export const dyr: Category = {
       ],
     },
     {
-      question: 'Hvenær er þetta sést?',
+      question: 'Hvenær sést þetta?',
       icon: '🕐',
       answers: [
         {

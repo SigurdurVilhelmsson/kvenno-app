@@ -3,6 +3,10 @@
 These six YAML files are the **source of truth** for everything a student reads in
 Íslenskubraut — the category grid, the teaching cards, and the generated PDF.
 
+Each file also holds one worked example (`examples`) and one note for the teacher
+(`teacherNotes`) per level. The example is printed on the sentence-frame page; the note is shown
+on the web page only, since students handle the printed card.
+
 ## Editing directly
 
 Edit the YAML, then run:

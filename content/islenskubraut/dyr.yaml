@@ -29,30 +29,33 @@ subCategories:
   - id: s4
     name: Útlit
     options:
-      - hefur feld
-      - hefur fjaðrir
-      - hefur hreistur
-      - hefur hala
-      - hefur gogg
-      - hefur horn
-      - hefur fjóra fætur
-      - hefur tvo fætur
+      - feld
+      - fjaðrir
+      - hreistur
+      - hala
+      - gogg
+      - horn
+      - fjóra fætur
+      - tvo fætur
+  - id: s5
+    name: Hreyfing
+    options:
       - flýgur
       - syndir
       - hleypur
-  - id: s5
+  - id: s6
     name: Stærð
     options:
       - lítið
       - meðalstórt
       - stórt
       - mjög stórt
-  - id: s6
+  - id: s7
     name: Fæða
     options:
-      - étur plöntur (grasæta)
-      - étur kjöt (kjötæta)
-      - étur bæði (alæta)
+      - plöntur (grasæta)
+      - kjöt (kjötæta)
+      - bæði (alæta)
 sentenceFrames:
   - id: f1
     level: A1
@@ -60,9 +63,8 @@ sentenceFrames:
       - Þetta er dýr.
       - Það er ___.
       - Það hefur ___.
-      - Það er ___.
       - Það hljómar ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
@@ -79,7 +81,15 @@ sentenceFrames:
       - Þetta dýr er ___ og ___.
       - Það er líkt ___ en ólíkt ___.
       - Það er ___ að snerta vegna þess að ___.
-      - Það er oftast notað af ___ til að ___.
+      - ___ nota það oftast ___.
+examples:
+  A1: Þetta er dýr. Það er stórt. Það hefur feld.
+  A2: Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.
+  B1: Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar dýr er þetta?
@@ -199,32 +209,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -302,7 +308,7 @@ guidingQuestions:
         - á hálendinu
         - í skóginum
   - id: q9
-    question: Hvenær er þetta sést?
+    question: Hvenær sést þetta?
     icon: 🕐
     answers:
       A1:

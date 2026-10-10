@@ -28,7 +28,7 @@ subCategories:
   - id: s3
     name: Stærð
     options:
-      - lítill/lítið
+      - lítill/lítil/lítið
       - meðalstór/meðalstórt
       - stór/stórt
   - id: s4
@@ -48,23 +48,31 @@ sentenceFrames:
       - Þetta er ___.
       - Maður ___ þar.
       - Það er ___.
-      - Maður notar það til að ___.
+      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
       - Þetta er ___ sem er ___.
-      - Maður fer þangað til að ___.
-      - Það er gert úr ___.
+      - Maður fer þangað ___.
+      - Það er gert ___.
       - Maður finnur það ___.
       - Maður notar það ___.
   - id: f3
     level: B1
     frames:
       - Þetta er ___ sem er staðsett ___.
-      - Fólk fer þangað til að ___ og ___.
-      - Það er ___ að snerta vegna þess að ___.
-      - Það er gert úr ___ sem er ___.
-      - Það er oftast notað af ___ til að ___.
+      - Fólk fer þangað ___ og ___.
+      - Mér finnst þetta ___ vegna þess að ___.
+      - Það er gert ___ sem er ___.
+      - ___ nota það oftast ___.
+examples:
+  A1: Þetta er skóli. Maður lærir þar.
+  A2: Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.
+  B1: Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.
+teacherNotes:
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
+  B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
   - id: q1
     question: Hvers konar staður er þetta?
@@ -182,32 +190,28 @@ guidingQuestions:
     icon: 🔷
     answers:
       A1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
+        - ferkantað
+        - ílangt
+        - flatt
       A2:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
       B1:
-        - stórt
-        - lítið
         - kringlótt
-        - fernt
-        - langt
-        - stutt
-        - hátt
-        - lágt
+        - ferkantað
+        - ílangt
         - flatt
-        - þykkt
+        - kúlulaga
+        - oddhvasst
+        - bogið
+        - beint
         - sporöskjulaga
         - þríhyrningslaga
         - sívalningslaga
@@ -310,7 +314,7 @@ guidingQuestions:
         - um helgar
         - á virkum dögum
         - í sérstökum tilvikum
-        - í hátíðum
+        - á hátíðum
         - daglega
         - sjaldan
         - oft

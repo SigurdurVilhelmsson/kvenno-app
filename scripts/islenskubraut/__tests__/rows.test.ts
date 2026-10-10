@@ -10,6 +10,16 @@ const category = {
   color: '#7B2CBF',
   subCategories: [{ name: 'Aldur', options: ['barn', 'unglingur'] }],
   sentenceFrames: [{ level: 'A1', frames: ['Þetta er ___.'] }],
+  examples: [
+    { level: 'A1', text: 'Dæmi A1.' },
+    { level: 'A2', text: 'Dæmi A2.' },
+    { level: 'B1', text: 'Dæmi B1.' },
+  ],
+  teacherNotes: [
+    { level: 'A1', text: 'Kennari A1.' },
+    { level: 'A2', text: 'Kennari A2.' },
+    { level: 'B1', text: 'Kennari B1.' },
+  ],
   guidingQuestions: [
     {
       question: 'Fyrir hvað er manneskjan þekkt?',
@@ -28,6 +38,12 @@ describe('toRows', () => {
       'barn',
       'unglingur',
       'Þetta er ___.',
+      'Dæmi A1.',
+      'Dæmi A2.',
+      'Dæmi B1.',
+      'Kennari A1.',
+      'Kennari A2.',
+      'Kennari B1.',
       'Fyrir hvað er manneskjan þekkt?',
       'til að vinna',
       'til að læra',
@@ -139,6 +155,22 @@ describe('fromRows', () => {
     const rows = toRows(category);
     rows.push({ ...rows[0], lykill: '', islenska: 'gleymdi lyklinum' });
     expect(() => fromRows('manneskja', rows, category)).toThrow(/gleymdi lyklinum/);
+  });
+
+  it('applies an edit to an example', () => {
+    const rows = toRows(category);
+    rows.find((r) => r.lykill === 'manneskja.examples.A2')!.islenska = 'Nýtt dæmi.';
+    expect(fromRows('manneskja', rows, category).examples[1]).toEqual({
+      level: 'A2',
+      text: 'Nýtt dæmi.',
+    });
+  });
+
+  it('throws when an example or teacher note row is deleted, rather than printing a blank', () => {
+    const noExample = toRows(category).filter((r) => r.lykill !== 'manneskja.examples.B1');
+    expect(() => fromRows('manneskja', noExample, category)).toThrow(/manneskja\.examples\.B1/);
+    const noNote = toRows(category).filter((r) => r.lykill !== 'manneskja.notes.A1');
+    expect(() => fromRows('manneskja', noNote, category)).toThrow(/manneskja\.notes\.A1/);
   });
 
   it('ignores a wholly blank row, which Excel appends freely', () => {

@@ -487,7 +487,10 @@ pnpm islenskubraut:build --check   # exit 1 if either is stale (CI-friendly)
 ```
 
 - `content/islenskubraut/{dyr,matur,farartaeki,manneskja,stadir,klaednadur}.yaml` — source of truth,
-  hand-edited, plain YAML a teacher can read without knowing TypeScript
+  hand-edited, plain YAML a teacher can read without knowing TypeScript. Each also carries one
+  worked example (`examples`) and one teacher note (`teacherNotes`) per level; until Oct 2026 those
+  were hard-coded twice, in `SpjaldPreview.tsx` and the PDF renderer. The note is shown on the web
+  page only, never printed on the card students handle
 - `apps/islenskubraut/src/data/categories/*.ts` — **generated; never edit by hand**
 - `server/src/lib/islenskubraut-data.ts` — **generated; never edit by hand**. The Express server
   renders the teaching-card PDFs and must not import the Vite/React app, which is why a second copy
