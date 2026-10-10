@@ -100,6 +100,7 @@ guidingQuestions:
   - id: q1
     question: Hvers konar klæðnaður er þetta?
     icon: 📚
+    label: Flokkar
     answers:
       A1:
         - bolur
@@ -133,6 +134,7 @@ guidingQuestions:
   - id: q2
     question: Hvernig lítur það út?
     icon: 👁️
+    label: Útlit
     answers:
       A1:
         - rautt
@@ -167,6 +169,7 @@ guidingQuestions:
   - id: q3
     question: Hvernig finnst það við snertingu?
     icon: ✋
+    label: Áferð
     answers:
       A1:
         - mjúkt
@@ -202,6 +205,7 @@ guidingQuestions:
   - id: q4
     question: Úr hverju er það gert?
     icon: 🧱
+    label: Efniviður
     answers:
       A1:
         - úr ull
@@ -232,6 +236,7 @@ guidingQuestions:
   - id: q5
     question: Hvaða lögun hefur það?
     icon: 🔷
+    label: Lögun
     answers:
       A1:
         - kringlótt
@@ -263,6 +268,7 @@ guidingQuestions:
   - id: q6
     question: Til hvers er það notað?
     icon: 🎯
+    context: notagildi
     answers:
       A1:
         - til að hlýja sér
@@ -283,6 +289,7 @@ guidingQuestions:
   - id: q7
     question: Hver notar þetta?
     icon: 👤
+    context: hver
     answers:
       A1:
         - allir
@@ -307,6 +314,7 @@ guidingQuestions:
   - id: q8
     question: Hvar er hægt að nota þetta?
     icon: 📍
+    context: hvar
     answers:
       A1:
         - inni
@@ -329,6 +337,7 @@ guidingQuestions:
   - id: q9
     question: Hvenær er þetta notað?
     icon: 🕐
+    context: hvenaer
     answers:
       A1:
         - á morgnana

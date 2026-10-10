@@ -109,7 +109,7 @@ function rejectUnusable(categoryId, rows) {
 
 /**
  * Rebuild a category from rows. `base` supplies the fields the sheet does not
- * carry (id, name, icon, color, and each question's icon), which are structural
+ * carry (id, name, icon, color, and each question's icon, label and context kind), which are structural
  * rather than reviewable prose. Always the real category loaded from YAML in
  * production — never inferred, since a fabricated fallback would hardcode one
  * category's identity into a module that must handle all six.
@@ -162,10 +162,14 @@ export function fromRows(categoryId, rows, base) {
       // position within qKeys — qKeys order tracks sheet order, which a reviewer
       // is free to reorder or shorten by deleting a question. Indexing by position
       // would silently reassign icons to the wrong question the moment either happens.
+      // The label and the context kind are structural too, and travel with the icon. A
+      // question the sheet adds has neither, so the loader refuses it until one is written.
       const n = Number(key.slice(`${categoryId}.q`.length));
+      const baseQ = base.guidingQuestions?.[n - 1];
       return {
         question: require1(groups, key),
-        icon: base.guidingQuestions?.[n - 1]?.icon ?? '❓',
+        icon: baseQ?.icon ?? '❓',
+        ...(baseQ?.context ? { context: baseQ.context } : { label: baseQ?.label }),
         answers,
       };
     }),

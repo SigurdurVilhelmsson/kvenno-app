@@ -92,6 +92,7 @@ guidingQuestions:
   - id: q1
     question: Hvers konar manneskja er þetta?
     icon: 📚
+    label: Flokkar
     answers:
       A1:
         - barn
@@ -117,6 +118,7 @@ guidingQuestions:
   - id: q2
     question: Hvernig lítur hún/hann út?
     icon: 👁️
+    label: Útlit
     answers:
       A1:
         - há/hár
@@ -145,6 +147,7 @@ guidingQuestions:
   - id: q3
     question: Hvað gerir hún/hann?
     icon: 🎯
+    context: notagildi
     answers:
       A1:
         - vinnur
@@ -169,6 +172,7 @@ guidingQuestions:
   - id: q4
     question: Hvar er hægt að finna þessa manneskju?
     icon: 📍
+    context: hvar
     answers:
       A1:
         - heima
@@ -192,6 +196,7 @@ guidingQuestions:
   - id: q5
     question: Hvenær er hún/hann virk/virkur?
     icon: 🕐
+    context: hvenaer
     answers:
       A1:
         - á morgnana

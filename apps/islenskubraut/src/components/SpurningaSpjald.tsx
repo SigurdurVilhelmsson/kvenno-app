@@ -5,18 +5,10 @@ interface SpurningaSpjaldProps {
   level: Level;
 }
 
-const CONTEXT_COLORS: Record<string, { bg: string; text: string }> = {
-  '📍': { bg: '#B91C1C', text: '#FFFFFF' },
-  '🕐': { bg: '#107837', text: '#FFFFFF' },
-  '👤': { bg: '#C2410C', text: '#FFFFFF' },
-  '🎯': { bg: '#1D4ED8', text: '#FFFFFF' },
-};
-
-const CONTEXT_ICONS = new Set(['📍', '🕐', '👤', '🎯']);
-
 export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
-  const mainQuestions = category.guidingQuestions.filter((q) => !CONTEXT_ICONS.has(q.icon));
-  const contextQuestions = category.guidingQuestions.filter((q) => CONTEXT_ICONS.has(q.icon));
+  // Which questions are coloured context boxes is declared in the YAML (`context:`).
+  const mainQuestions = category.guidingQuestions.filter((q) => !q.context);
+  const contextQuestions = category.guidingQuestions.filter((q) => q.context);
 
   return (
     <div>
@@ -70,9 +62,17 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
           {/* Context questions */}
           {contextQuestions.length > 0 && (
             <div className="grid grid-cols-2 gap-3">
-              {contextQuestions.map((question, index) => (
-                <ContextCard key={index} question={question} level={level} />
-              ))}
+              {contextQuestions.map(
+                (question, index) =>
+                  question.context && (
+                    <ContextCard
+                      key={index}
+                      question={question}
+                      level={level}
+                      color={question.context.color}
+                    />
+                  )
+              )}
             </div>
           )}
         </div>
@@ -103,7 +103,7 @@ function QuestionBlock({
       <div className="px-3 py-2 bg-gray-50">
         <p className="text-sm font-semibold text-gray-800">{question.question}</p>
         <p className="text-xs text-gray-500">
-          {question.icon} {getQuestionLabel(question.icon)}
+          {question.icon} {question.label}
         </p>
       </div>
       <div className="px-3 py-2 flex flex-wrap gap-1.5">
@@ -125,47 +125,32 @@ function QuestionBlock({
   );
 }
 
-function ContextCard({ question, level }: { question: GuidingQuestion; level: Level }) {
+function ContextCard({
+  question,
+  level,
+  color,
+}: {
+  question: GuidingQuestion;
+  level: Level;
+  color: string;
+}) {
   const answers = question.answers.find((a) => a.level === level);
   if (!answers || answers.options.length === 0) return null;
 
-  const colors = CONTEXT_COLORS[question.icon] || {
-    bg: '#6B7280',
-    text: '#FFFFFF',
-  };
-
   return (
-    <div className="rounded-xl overflow-hidden" style={{ backgroundColor: colors.bg + '15' }}>
-      <div className="px-3 py-2 text-white" style={{ backgroundColor: colors.bg }}>
+    <div className="rounded-xl overflow-hidden" style={{ backgroundColor: color + '15' }}>
+      <div className="px-3 py-2 text-white" style={{ backgroundColor: color }}>
         <p className="text-xs font-bold">
           {question.icon} {question.question}
         </p>
       </div>
       <div className="px-3 py-2 space-y-1">
         {answers.options.map((option, index) => (
-          <p key={index} className="text-xs font-medium" style={{ color: colors.bg }}>
+          <p key={index} className="text-xs font-medium" style={{ color }}>
             {option}
           </p>
         ))}
       </div>
     </div>
   );
-}
-
-function getQuestionLabel(icon: string): string {
-  const labels: Record<string, string> = {
-    '📚': 'Flokkar',
-    '👁️': 'Útlit',
-    '✋': 'Áferð',
-    '🔊': 'Hljóð',
-    '👃': 'Lykt',
-    '👅': 'Bragð',
-    '🧱': 'Efniviður',
-    '🔷': 'Lögun',
-    '🎯': 'Notagildi',
-    '👤': 'Hver?',
-    '📍': 'Hvar?',
-    '🕐': 'Hvenær?',
-  };
-  return labels[icon] || '';
 }

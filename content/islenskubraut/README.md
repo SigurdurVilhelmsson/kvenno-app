@@ -7,20 +7,27 @@ Each file also holds one worked example (`examples`) and one note for the teache
 (`teacherNotes`) per level. The example is printed on the sentence-frame page; the note is shown
 on the web page only, since students handle the printed card.
 
+Each question is either a **main question**, with a short `label` printed under it (`Útlit`,
+`Lögun`), or a **context question**, with `context: hvar`, `hvenaer`, `hver` or `notagildi`,
+which prints as a coloured box under "Notagildi og samhengi". It has one or the other, never
+both, and the build refuses a question with neither. The four colours are set once, in
+`CONTEXT_COLORS` in `scripts/islenskubraut/load.mjs`.
+
 ## Editing directly
 
 Edit the YAML, then run:
 
     pnpm islenskubraut:build
 
-That regenerates `apps/islenskubraut/src/data/categories/*.ts` and
-`server/src/lib/islenskubraut-data.ts`. **Never edit those files** — they are output, and CI
-fails if they do not match the YAML.
+That regenerates `apps/islenskubraut/src/data/categories/*.ts`,
+`apps/islenskubraut/src/data/index.ts` and `server/src/lib/islenskubraut-data.ts`, and the types
+both copies share (`apps/islenskubraut/src/data/types.ts`, `server/src/types/islenskubraut.ts`).
+**Never edit those files** — they are output, and CI fails if they do not match the YAML.
 
-Adding a whole new category needs two more edits: `CATEGORY_ORDER` in
-`scripts/islenskubraut/load.mjs` (the taught order, deliberately not alphabetical) and
-`apps/islenskubraut/src/data/index.ts`. Omitting either is caught by the test suite, but as a
-deep-equality failure that does not say "you forgot to register the new category".
+Adding a whole new category needs one more edit: `CATEGORY_ORDER` in
+`scripts/islenskubraut/load.mjs` (the taught order, deliberately not alphabetical). Omitting it is
+caught by the test suite, but as a deep-equality failure that does not say "you forgot to
+register the new category".
 
 ## Editing by spreadsheet
 

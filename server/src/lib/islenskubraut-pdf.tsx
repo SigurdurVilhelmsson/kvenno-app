@@ -5,8 +5,8 @@
 
 import { fileURLToPath } from 'node:url';
 import ReactPDF, { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
-import React from 'react';
-import type { Category, CEFRLevel, GuidingQuestion } from '../types/index.js';
+import type { ReactElement } from 'react';
+import type { Category, GuidingQuestion, Level } from '../types/index.js';
 
 /**
  * Noto Sans, bundled in `server/fonts/` (@fontsource/noto-sans 5.3.0 — SIL Open Font
@@ -36,30 +36,6 @@ Font.register({
   ],
 });
 
-const CONTEXT_COLORS: Record<string, string> = {
-  '\u{1F4CD}': '#B91C1C',
-  '\u{1F550}': '#107837',
-  '\u{1F464}': '#C2410C',
-  '\u{1F3AF}': '#1D4ED8',
-};
-
-const CONTEXT_ICONS = new Set(['\u{1F4CD}', '\u{1F550}', '\u{1F464}', '\u{1F3AF}']);
-
-const QUESTION_LABELS: Record<string, string> = {
-  '\u{1F4DA}': 'Flokkar',
-  '\u{1F441}\u{FE0F}': '\u00datlit',
-  '\u270B': '\u00c1fer\u00f0',
-  '\u{1F50A}': 'Hlj\u00f3\u00f0',
-  '\u{1F443}': 'Lykt',
-  '\u{1F445}': 'Brag\u00f0',
-  '\u{1F9F1}': 'Efnivi\u00f0ur',
-  '\u{1F537}': 'L\u00f6gun',
-  '\u{1F3AF}': 'Notagildi',
-  '\u{1F464}': 'Hver?',
-  '\u{1F4CD}': 'Hvar?',
-  '\u{1F550}': 'Hven\u00e6r?',
-};
-
 const styles = StyleSheet.create({
   page: { fontFamily: 'NotoSans', padding: 30, backgroundColor: '#FFFFFF' },
   frontHeader: {
@@ -71,13 +47,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   frontHeaderText: { fontSize: 28, fontWeight: 'bold', color: '#FFFFFF' },
+  // White with the level in the category colour: white text on a white wash fell below 4.5:1.
   levelBadge: {
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
-  levelBadgeText: { color: '#FFFFFF', fontSize: 14, fontWeight: 'bold' },
+  levelBadgeText: { fontSize: 14, fontWeight: 'bold' },
   subCategoryBox: {
     marginBottom: 10,
     borderWidth: 1,
@@ -159,7 +136,7 @@ const styles = StyleSheet.create({
     right: 30,
     textAlign: 'center',
     fontSize: 8,
-    color: '#9CA3AF',
+    color: '#6B7280',
   },
   questionBox: {
     marginBottom: 6,
@@ -191,7 +168,7 @@ const styles = StyleSheet.create({
   dividerText: {
     fontSize: 8,
     fontWeight: 'bold',
-    color: '#9CA3AF',
+    color: '#6B7280',
     textTransform: 'uppercase',
     paddingHorizontal: 8,
   },
@@ -236,229 +213,180 @@ function hexToRgb(hex: string): RGB {
     : { r: 0, g: 0, b: 0 };
 }
 
-function createQuestionBlock(
-  question: GuidingQuestion,
-  level: CEFRLevel,
-  categoryColor: string,
-  index: number
-): React.ReactElement | null {
-  const answers = question.answers.find((a) => a.level === level);
-  if (!answers || answers.options.length === 0) return null;
-  const rgb = hexToRgb(categoryColor);
-  const lightBg = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.05)`;
-  const borderColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`;
+/** The tinted background and border of an answer tag, from its text colour. */
+function tint(hex: string, alpha: number): string {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
-  return React.createElement(
-    View,
-    { key: `q-${index}`, style: styles.questionBox, wrap: false },
-    React.createElement(
-      View,
-      { style: styles.questionHeader },
-      React.createElement(Text, { style: styles.questionText }, question.question),
-      React.createElement(
-        Text,
-        { style: styles.questionLabel },
-        QUESTION_LABELS[question.icon] || ''
-      )
-    ),
-    React.createElement(
-      View,
-      { style: styles.questionBody },
-      ...answers.options.map((option, i) =>
-        React.createElement(
-          View,
-          { key: i, style: { ...styles.optionTag, borderColor, backgroundColor: lightBg } },
-          React.createElement(
-            Text,
-            { style: { ...styles.optionText, color: categoryColor } },
-            option
-          )
-        )
-      )
-    )
+function LevelBadge({ level, color }: { level: Level; color: string }) {
+  return (
+    <View style={styles.levelBadge}>
+      <Text style={{ ...styles.levelBadgeText, color }}>{level}</Text>
+    </View>
   );
 }
 
-function createContextCard(
-  question: GuidingQuestion,
-  level: CEFRLevel,
-  index: number
-): React.ReactElement | null {
+function QuestionBlock({
+  question,
+  level,
+  categoryColor,
+}: {
+  question: GuidingQuestion;
+  level: Level;
+  categoryColor: string;
+}) {
   const answers = question.answers.find((a) => a.level === level);
   if (!answers || answers.options.length === 0) return null;
-  const color = CONTEXT_COLORS[question.icon] || '#6B7280';
-  const rgb = hexToRgb(color);
-  const lightBg = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08)`;
+  const tag = {
+    ...styles.optionTag,
+    borderColor: tint(categoryColor, 0.25),
+    backgroundColor: tint(categoryColor, 0.05),
+  };
 
-  return React.createElement(
-    View,
-    {
-      key: `ctx-${index}`,
-      style: { ...styles.contextCard, backgroundColor: lightBg },
-      wrap: false,
-    },
-    React.createElement(
-      View,
-      { style: { ...styles.contextCardHeader, backgroundColor: color } },
-      React.createElement(Text, { style: styles.contextCardHeaderText }, question.question)
-    ),
-    React.createElement(
-      View,
-      { style: styles.contextCardBody },
-      // Each answer is its own box, so a line breaks between answers, never inside one,
-      // and no separator is left dangling at a line's start or end.
-      React.createElement(
-        View,
-        { style: styles.contextCardOptions },
-        ...answers.options.map((option, i) =>
-          React.createElement(
-            Text,
-            { key: i, style: { ...styles.contextCardOption, color } },
-            i < answers.options.length - 1 ? `${option} ·` : option
-          )
-        )
-      )
-    )
+  return (
+    <View style={styles.questionBox} wrap={false}>
+      <View style={styles.questionHeader}>
+        <Text style={styles.questionText}>{question.question}</Text>
+        <Text style={styles.questionLabel}>{question.label ?? ''}</Text>
+      </View>
+      <View style={styles.questionBody}>
+        {answers.options.map((option, i) => (
+          <View key={i} style={tag}>
+            <Text style={{ ...styles.optionText, color: categoryColor }}>{option}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
   );
 }
 
-export function createSpjaldDocument(category: Category, level: CEFRLevel): React.ReactElement {
+function ContextCard({
+  question,
+  level,
+  color,
+}: {
+  question: GuidingQuestion;
+  level: Level;
+  color: string;
+}) {
+  const answers = question.answers.find((a) => a.level === level);
+  if (!answers || answers.options.length === 0) return null;
+
+  return (
+    <View style={{ ...styles.contextCard, backgroundColor: tint(color, 0.08) }} wrap={false}>
+      <View style={{ ...styles.contextCardHeader, backgroundColor: color }}>
+        <Text style={styles.contextCardHeaderText}>{question.question}</Text>
+      </View>
+      <View style={styles.contextCardBody}>
+        {/* Each answer is its own box, so a line breaks between answers, never inside one,
+            and no separator is left dangling at a line's start or end. */}
+        <View style={styles.contextCardOptions}>
+          {answers.options.map((option, i) => (
+            <Text key={i} style={{ ...styles.contextCardOption, color }}>
+              {i < answers.options.length - 1 ? `${option} ·` : option}
+            </Text>
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+}
+
+export function createSpjaldDocument(category: Category, level: Level): ReactElement {
   const sentenceFrame = category.sentenceFrames.find((sf) => sf.level === level);
   const example = category.examples.find((e) => e.level === level)?.text ?? '';
-  const rgb = hexToRgb(category.color);
-  const lightBg = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.05)`;
-  const borderColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`;
-  const headerBgFaded = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)`;
-  const mainQuestions = category.guidingQuestions.filter((q) => !CONTEXT_ICONS.has(q.icon));
-  const contextQuestions = category.guidingQuestions.filter((q) => CONTEXT_ICONS.has(q.icon));
-  const footerText = `\u00cdslenskubraut \u2014 Kvennask\u00f3linn \u00ed Reykjav\u00edk \u2014 ${category.name} ${level}`;
+  const vocabTag = {
+    ...styles.vocabTag,
+    borderColor: tint(category.color, 0.25),
+    backgroundColor: tint(category.color, 0.05),
+  };
+  // Which questions are coloured context boxes is declared in the YAML (`context:`).
+  const mainQuestions = category.guidingQuestions.filter((q) => !q.context);
+  const contextQuestions = category.guidingQuestions.filter((q) => q.context);
+  const footerText = `Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level}`;
+  const footer = <Text style={styles.footer}>{footerText}</Text>;
 
-  return React.createElement(
-    Document,
-    null,
-    // Page 1: Vocabulary
-    React.createElement(
-      Page,
-      { size: 'A4', style: styles.page },
-      React.createElement(
-        View,
-        { style: { ...styles.frontHeader, backgroundColor: category.color } },
-        React.createElement(Text, { style: styles.frontHeaderText }, category.name.toUpperCase()),
-        React.createElement(
-          View,
-          { style: styles.levelBadge },
-          React.createElement(Text, { style: styles.levelBadgeText }, level)
-        )
-      ),
-      ...category.subCategories.map((sub, index) =>
-        React.createElement(
-          View,
-          { key: index, style: styles.subCategoryBox, wrap: false },
-          React.createElement(
-            View,
-            { style: { ...styles.subCategoryHeader, backgroundColor: headerBgFaded } },
-            React.createElement(Text, { style: styles.subCategoryHeaderText }, sub.name)
-          ),
-          React.createElement(
-            View,
-            { style: styles.subCategoryBody },
-            ...sub.options.map((option, i) =>
-              React.createElement(
-                View,
-                { key: i, style: { ...styles.vocabTag, borderColor, backgroundColor: lightBg } },
-                React.createElement(
-                  Text,
-                  { style: { ...styles.vocabText, color: category.color } },
-                  option
-                )
-              )
-            )
-          )
-        )
-      ),
-      React.createElement(Text, { style: styles.footer }, footerText)
-    ),
-    // Page 2: Sentence frames
-    React.createElement(
-      Page,
-      { size: 'A4', style: styles.page },
-      React.createElement(
-        View,
-        { style: { ...styles.backHeader, backgroundColor: category.color } },
-        React.createElement(Text, { style: styles.frontHeaderText }, category.name.toUpperCase()),
-        React.createElement(
-          View,
-          { style: styles.levelBadge },
-          React.createElement(Text, { style: styles.levelBadgeText }, level)
-        )
-      ),
-      React.createElement(Text, { style: styles.sentenceTitle }, 'Setningarammar'),
-      ...(sentenceFrame
-        ? sentenceFrame.frames.map((frame, index) =>
-            React.createElement(
-              View,
-              { key: index, style: { ...styles.frameBox, borderColor }, wrap: false },
-              React.createElement(
-                Text,
-                { style: { ...styles.frameText, color: category.color } },
-                frame
-              )
-            )
-          )
-        : []),
-      React.createElement(
-        View,
-        { style: styles.exampleBox },
-        React.createElement(Text, { style: styles.exampleLabel }, 'D\u00e6mi'),
-        React.createElement(Text, { style: styles.exampleText }, example)
-      ),
-      // No teacher note: students handle the printed card. The note is on the web page.
-      React.createElement(Text, { style: styles.footer }, footerText)
-    ),
-    // Page 3: Question card
-    React.createElement(
-      Page,
-      { size: 'A4', style: styles.page },
-      React.createElement(
-        View,
-        { style: { ...styles.questionPageHeader, backgroundColor: category.color } },
-        React.createElement(
-          Text,
-          { style: styles.questionPageHeaderText },
-          category.name.toUpperCase()
-        ),
-        React.createElement(
-          View,
-          { style: styles.levelBadge },
-          React.createElement(Text, { style: styles.levelBadgeText }, level)
-        )
-      ),
-      React.createElement(Text, { style: styles.questionPageTitle }, 'Spurningaspjald'),
-      ...mainQuestions
-        .map((q, i) => createQuestionBlock(q, level, category.color, i))
-        .filter(Boolean),
-      ...(contextQuestions.length > 0
-        ? [
-            React.createElement(
-              View,
-              { key: 'divider', style: styles.dividerContainer },
-              React.createElement(View, { style: styles.dividerLine }),
-              React.createElement(Text, { style: styles.dividerText }, 'Notagildi og samhengi'),
-              React.createElement(View, { style: styles.dividerLine })
-            ),
-          ]
-        : []),
-      ...(contextQuestions.length > 0
-        ? [
-            React.createElement(
-              View,
-              { key: 'context-grid', style: styles.contextGrid },
-              ...contextQuestions.map((q, i) => createContextCard(q, level, i)).filter(Boolean)
-            ),
-          ]
-        : []),
-      React.createElement(Text, { style: styles.footer }, footerText)
-    )
+  return (
+    <Document>
+      {/* Page 1: Vocabulary */}
+      <Page size="A4" style={styles.page}>
+        <View style={{ ...styles.frontHeader, backgroundColor: category.color }}>
+          <Text style={styles.frontHeaderText}>{category.name.toUpperCase()}</Text>
+          <LevelBadge level={level} color={category.color} />
+        </View>
+        {category.subCategories.map((sub, index) => (
+          <View key={index} style={styles.subCategoryBox} wrap={false}>
+            {/* The full colour, not a faded one: white text on 80 % fell below 4.5:1. */}
+            <View style={{ ...styles.subCategoryHeader, backgroundColor: category.color }}>
+              <Text style={styles.subCategoryHeaderText}>{sub.name}</Text>
+            </View>
+            <View style={styles.subCategoryBody}>
+              {sub.options.map((option, i) => (
+                <View key={i} style={vocabTag}>
+                  <Text style={{ ...styles.vocabText, color: category.color }}>{option}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        ))}
+        {footer}
+      </Page>
+
+      {/* Page 2: Sentence frames */}
+      <Page size="A4" style={styles.page}>
+        <View style={{ ...styles.backHeader, backgroundColor: category.color }}>
+          <Text style={styles.frontHeaderText}>{category.name.toUpperCase()}</Text>
+          <LevelBadge level={level} color={category.color} />
+        </View>
+        <Text style={styles.sentenceTitle}>Setningarammar</Text>
+        {sentenceFrame?.frames.map((frame, index) => (
+          <View
+            key={index}
+            style={{ ...styles.frameBox, borderColor: tint(category.color, 0.25) }}
+            wrap={false}
+          >
+            <Text style={{ ...styles.frameText, color: category.color }}>{frame}</Text>
+          </View>
+        ))}
+        <View style={styles.exampleBox}>
+          <Text style={styles.exampleLabel}>Dæmi</Text>
+          <Text style={styles.exampleText}>{example}</Text>
+        </View>
+        {/* No teacher note: students handle the printed card. The note is on the web page. */}
+        {footer}
+      </Page>
+
+      {/* Page 3: Question card */}
+      <Page size="A4" style={styles.page}>
+        <View style={{ ...styles.questionPageHeader, backgroundColor: category.color }}>
+          <Text style={styles.questionPageHeaderText}>{category.name.toUpperCase()}</Text>
+          <LevelBadge level={level} color={category.color} />
+        </View>
+        <Text style={styles.questionPageTitle}>Spurningaspjald</Text>
+        {mainQuestions.map((q, i) => (
+          <QuestionBlock key={i} question={q} level={level} categoryColor={category.color} />
+        ))}
+        {contextQuestions.length > 0 && (
+          <>
+            <View style={styles.dividerContainer}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>Notagildi og samhengi</Text>
+              <View style={styles.dividerLine} />
+            </View>
+            <View style={styles.contextGrid}>
+              {contextQuestions.map(
+                (q, i) =>
+                  q.context && (
+                    <ContextCard key={i} question={q} level={level} color={q.context.color} />
+                  )
+              )}
+            </View>
+          </>
+        )}
+        {footer}
+      </Page>
+    </Document>
   );
 }
 
@@ -469,7 +397,7 @@ export function createSpjaldDocument(category: Category, level: CEFRLevel): Reac
  * @returns A Buffer containing the PDF bytes
  */
 export async function generatePdf(category: Category, level: string): Promise<Buffer> {
-  const doc = createSpjaldDocument(category, level as CEFRLevel);
+  const doc = createSpjaldDocument(category, level as Level);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pdfStream = await ReactPDF.renderToStream(doc as any);
   const chunks: Buffer[] = [];

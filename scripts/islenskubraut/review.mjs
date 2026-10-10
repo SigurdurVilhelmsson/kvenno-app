@@ -150,6 +150,7 @@ export function toYamlShape(category) {
       id: `q${i + 1}`,
       question: q.question,
       icon: q.icon,
+      ...(q.context ? { context: q.context.kind } : { label: q.label }),
       answers: Object.fromEntries(q.answers.map((a) => [a.level, a.options])),
     })),
   };
