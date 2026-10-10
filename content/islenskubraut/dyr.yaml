@@ -94,6 +94,7 @@ guidingQuestions:
   - id: q1
     question: Hvers konar dýr er þetta?
     icon: 📚
+    label: Flokkar
     answers:
       A1:
         - gæludýr
@@ -119,6 +120,7 @@ guidingQuestions:
   - id: q2
     question: Hvernig lítur það út?
     icon: 👁️
+    label: Útlit
     answers:
       A1:
         - feldur
@@ -149,6 +151,7 @@ guidingQuestions:
   - id: q3
     question: Hvernig finnst það við snertingu?
     icon: ✋
+    label: Áferð
     answers:
       A1:
         - mjúkt
@@ -180,6 +183,7 @@ guidingQuestions:
   - id: q4
     question: Hvaða hljóð gefur það frá sér?
     icon: 🔊
+    label: Hljóð
     answers:
       A1:
         - hátt
@@ -207,6 +211,7 @@ guidingQuestions:
   - id: q5
     question: Hvaða lögun hefur það?
     icon: 🔷
+    label: Lögun
     answers:
       A1:
         - kringlótt
@@ -238,6 +243,7 @@ guidingQuestions:
   - id: q6
     question: Til hvers er það notað?
     icon: 🎯
+    context: notagildi
     answers:
       A1:
         - til að gæta
@@ -262,6 +268,7 @@ guidingQuestions:
   - id: q7
     question: Hver notar þetta?
     icon: 👤
+    context: hver
     answers:
       A1:
         - allir
@@ -286,6 +293,7 @@ guidingQuestions:
   - id: q8
     question: Hvar er hægt að finna þetta?
     icon: 📍
+    context: hvar
     answers:
       A1:
         - heima
@@ -310,6 +318,7 @@ guidingQuestions:
   - id: q9
     question: Hvenær sést þetta?
     icon: 🕐
+    context: hvenaer
     answers:
       A1:
         - á morgnana

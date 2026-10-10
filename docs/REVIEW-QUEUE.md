@@ -433,9 +433,9 @@ what students read, so an Icelandic teacher should confirm the new wording in th
 **Content (`content/islenskubraut/*.yaml`)**
 
 Applied 2026-10-10 (PR for this branch). An Icelandic teacher still has to confirm the new
-wording, item by item below. The words it introduced have not been looked up in BÍN: run
-`pnpm islenskubraut:bin --fetch` (45 new forms, among them `ferkantað`, `ílangt`, `kúlulaga`,
-`oddhvasst`, `hraðskreitt`, `hægfara`, `litríkt` and the new feminine and plural adjectives).
+wording, item by item below. Siggi looked up the new words in BÍN on 2026-10-10 (98 forms,
+from the content fixes and the examples and notes). BÍN knew all but one, `setningaramma`, which
+joins the list of probably-right compounds below.
 
 - [x] **Frames copied into categories they do not fit.** Manneskja no longer treats a person as
       an object: `Maður notar það til að ___.` is gone, `Maður finnur það ___.` is
@@ -461,8 +461,9 @@ wording, item by item below. The words it introduced have not been looked up in 
     `í hátíðum` → `á hátíðum` (five categories), `í sérstakar tilefni` →
     `við sérstök tilefni`, `pilsið` → `pils`, and `sælgæti-sætt` → `mjög sætt`.
   - **Not in BÍN-kjarninn, probably right:** `lestarbraut`, `sportvagn`, `sívalningslaga`,
-    `straumlínulaga` and `þríhyrningslaga` (the last is in `ordabok.md`'s chemistry terms). Each
-    part is in BÍN. A person who has checked them lists them in `bin/ekki-i-bin.yaml` with a
+    `straumlínulaga` and `þríhyrningslaga` (the last is in `ordabok.md`'s chemistry terms), and
+    since 2026-10-10 `setningaramma` (B1 teacher note in all six; the app's own tab is
+    `Setningarammar`). Each part is in BÍN. A person who has checked them lists them in `bin/ekki-i-bin.yaml` with a
     reason; Íslensk nútímamálsorðabók was not reachable from the session to do it.
 - [x] **The shape question is not about shape.** Now shapes only, in all five categories: A1
       `kringlótt`, `ferkantað`, `ílangt`, `flatt`; A2 adds `kúlulaga`, `oddhvasst`, `bogið`,
@@ -556,13 +557,26 @@ All five fixed 2026-10-10 (PR for this branch).
 
 **Code**
 
-- [ ] **Which questions are "context" (the coloured boxes) is decided by their emoji**, from a
-      list kept in both `SpurningaSpjald.tsx` and the PDF renderer, as is each question's label.
-      Make it an explicit field in the YAML.
-- [ ] **Smaller items.** `Home.tsx` hard-codes `grid-rows-3`/`grid-rows-2`, so a seventh category
-      breaks the grid. The `Category` type is duplicated between the app and the server. The PDF
-      renderer writes `React.createElement` in a `.tsx` file. `content/islenskubraut/README.md`
-      still says `data/index.ts` is edited by hand; it is generated.
+Both fixed 2026-10-10 (PR for this branch).
+
+- [x] **Which questions are "context" (the coloured boxes) is decided by their emoji.** Each
+      question in the YAML now says which it is: a main question carries `label: Útlit`, a
+      context question `context: hvar` (or `hvenaer`, `hver`, `notagildi`), and the loader refuses
+      one with neither or both. The four colours are set once, in `CONTEXT_COLORS` in
+      `scripts/islenskubraut/load.mjs`, and reach both renderers through the generated data. Every
+      question kept the role its emoji gave it, so no card changed; that includes Manneskja's
+      `Hvað gerir hún/hann?`, which stays a context box (`notagildi`) and could as well be a main
+      question. The labels are now words the BÍN check reads, and three of them (`Flokkar`,
+      `Lykt`, `Efniviður`) need a `--fetch`. The spreadsheet carries them as it carries icons:
+      from the YAML, not as editable rows.
+- [x] **Smaller items.** The home grid adds rows as needed (`sm:auto-rows-fr`). The types are
+      generated once into both `apps/islenskubraut/src/data/types.ts` and
+      `server/src/types/islenskubraut.ts`, and a test holds the two identical; the server's
+      `CEFRLevel` is `Level`, as in the app. The PDF renderer is JSX, and its test now calls the
+      renderer's components, so it checks every question and label the card prints. The README
+      no longer says `data/index.ts` is edited by hand. Also fixed in the PDF while there: the
+      vocabulary page's faded subheaders, the white-on-white level badge and the grey footer were
+      below 4,5:1, as they were on the web (accessibility, above).
 
 **Features (larger, each its own PR)**
 

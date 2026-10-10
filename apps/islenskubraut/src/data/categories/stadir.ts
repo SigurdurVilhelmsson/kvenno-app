@@ -100,6 +100,7 @@ export const stadir: Category = {
     {
       question: 'Hvers konar staður er þetta?',
       icon: '📚',
+      label: 'Flokkar',
       answers: [
         {
           level: 'A1',
@@ -142,6 +143,7 @@ export const stadir: Category = {
     {
       question: 'Hvernig lítur þetta út?',
       icon: '👁️',
+      label: 'Útlit',
       answers: [
         {
           level: 'A1',
@@ -171,6 +173,7 @@ export const stadir: Category = {
     {
       question: 'Hvernig lyktar þar?',
       icon: '👃',
+      label: 'Lykt',
       answers: [
         {
           level: 'A1',
@@ -200,6 +203,7 @@ export const stadir: Category = {
     {
       question: 'Úr hverju er það gert?',
       icon: '🧱',
+      label: 'Efniviður',
       answers: [
         {
           level: 'A1',
@@ -227,6 +231,7 @@ export const stadir: Category = {
     {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
+      label: 'Lögun',
       answers: [
         {
           level: 'A1',
@@ -267,6 +272,10 @@ export const stadir: Category = {
     {
       question: 'Til hvers er þetta notað?',
       icon: '🎯',
+      context: {
+        kind: 'notagildi',
+        color: '#1D4ED8',
+      },
       answers: [
         {
           level: 'A1',
@@ -293,6 +302,10 @@ export const stadir: Category = {
     {
       question: 'Hver notar þetta?',
       icon: '👤',
+      context: {
+        kind: 'hver',
+        color: '#C2410C',
+      },
       answers: [
         {
           level: 'A1',
@@ -322,6 +335,10 @@ export const stadir: Category = {
     {
       question: 'Hvar er þetta?',
       icon: '📍',
+      context: {
+        kind: 'hvar',
+        color: '#B91C1C',
+      },
       answers: [
         {
           level: 'A1',
@@ -348,6 +365,10 @@ export const stadir: Category = {
     {
       question: 'Hvenær er þetta notað?',
       icon: '🕐',
+      context: {
+        kind: 'hvenaer',
+        color: '#107837',
+      },
       answers: [
         {
           level: 'A1',

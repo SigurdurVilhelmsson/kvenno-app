@@ -70,6 +70,7 @@ export function collectWords(categories) {
     for (const n of c.teacherNotes ?? []) add(c.id, `fyrir kennara ${n.level}`, n.text);
     for (const q of c.guidingQuestions) {
       add(c.id, q.question, q.question);
+      if (q.label) add(c.id, q.question, q.label);
       for (const a of q.answers)
         for (const o of a.options) add(c.id, `${q.question} ${a.level}`, o);
     }

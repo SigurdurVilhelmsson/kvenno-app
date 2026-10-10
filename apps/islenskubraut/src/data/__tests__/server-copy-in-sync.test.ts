@@ -8,8 +8,8 @@
  * against the two consumers drifting apart — a generated file that was hand-edited, or
  * one not regenerated after the YAML changed.
  *
- * `../index` is NOT generated. It is a hand-maintained barrel re-exporting the generated
- * category modules, which is why adding a category still means editing it by hand.
+ * `../index` and both copies of the types (`../types.ts`, `server/src/types/islenskubraut.ts`)
+ * are generated too, so adding a category means editing only the YAML and `CATEGORY_ORDER`.
  *
  * The data drifted for months while both copies were hand-mirrored, and shipped corrupted
  * Icelandic onto the PDFs students are handed — "Orðaforði" became "Orda<U+00AD>fordi",
@@ -17,6 +17,8 @@
  *
  * If this fails, do NOT edit either generated file: run `pnpm islenskubraut:build`.
  */
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, it } from 'vitest';
 
 import { categories as serverCategories } from '../../../../../server/src/lib/islenskubraut-data';
@@ -31,6 +33,11 @@ describe('server copy of the íslenskubraut data', () => {
 
   it('exposes the same category ids, so the PDF route cannot 400 on a valid category', () => {
     expect(serverCategories.map((c) => c.id)).toEqual(clientCategories.map((c) => c.id));
+  });
+
+  it('is typed by an identical copy of the same types', () => {
+    const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8');
+    expect(read('../../../../../server/src/types/islenskubraut.ts')).toBe(read('../types.ts'));
   });
 });
 
