@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
 import { DownloadButton } from '../components/DownloadButton';
-import { LevelSelector } from '../components/LevelSelector';
+import { LEVELS, LevelSelector } from '../components/LevelSelector';
 import { SpjaldPreview } from '../components/SpjaldPreview';
 import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
@@ -19,11 +19,38 @@ const TABS: { id: ViewTab; label: string }[] = [
   { id: 'setningarammar', label: 'Setningarammar' },
 ];
 
+/** The level lives in the URL (`?stig=B1`), so a card can be bookmarked and shared. */
+function parseLevel(value: string | null): Level {
+  return LEVELS.find((l) => l.value === value)?.value ?? 'A1';
+}
+
 export function SpjaldPage() {
   const { flokkur } = useParams<{ flokkur: string }>();
   const category = getCategoryById(flokkur || '');
-  const [level, setLevel] = useState<Level>('A1');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const level = parseLevel(searchParams.get('stig'));
+  const setLevel = (next: Level) => setSearchParams({ stig: next }, { replace: true });
   const [activeTab, setActiveTab] = useState<ViewTab>('spurningaspjald');
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Arrow keys, Home and End move between tabs, as in the WAI-ARIA tabs pattern.
+  const onTabKeyDown = (event: KeyboardEvent, index: number) => {
+    const last = TABS.length - 1;
+    const next =
+      event.key === 'ArrowRight'
+        ? (index + 1) % TABS.length
+        : event.key === 'ArrowLeft'
+          ? (index + last) % TABS.length
+          : event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? last
+              : null;
+    if (next === null) return;
+    event.preventDefault();
+    setActiveTab(TABS[next].id);
+    tabRefs.current[next]?.focus();
+  };
 
   if (!category) {
     return (
@@ -84,10 +111,18 @@ export function SpjaldPage() {
 
       {/* Level selector */}
       <div className="mb-8">
-        <h2 className="font-heading text-sm font-semibold text-warm-500 uppercase tracking-wider mb-3">
+        <h2
+          id="erfidleikastig"
+          className="font-heading text-sm font-semibold text-warm-500 uppercase tracking-wider mb-3"
+        >
           Veldu erfiðleikastig
         </h2>
-        <LevelSelector selected={level} onChange={setLevel} color={category.color} />
+        <LevelSelector
+          selected={level}
+          onChange={setLevel}
+          color={category.color}
+          labelledBy="erfidleikastig"
+        />
       </div>
 
       {/* Download button */}
@@ -97,25 +132,48 @@ export function SpjaldPage() {
 
       {/* Tab navigation */}
       <div className="mb-6">
-        <div className="flex gap-1 p-1 bg-warm-100 rounded-xl max-w-lg mx-auto">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
-                activeTab === tab.id
-                  ? 'bg-surface-raised text-warm-900 shadow-xs'
-                  : 'text-warm-500 hover:text-warm-700'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div
+          role="tablist"
+          aria-label="Hlutar spjaldsins"
+          className="flex gap-1 p-1 bg-warm-100 rounded-xl max-w-lg mx-auto"
+        >
+          {TABS.map((tab, index) => {
+            const selected = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                ref={(el) => {
+                  tabRefs.current[index] = el;
+                }}
+                type="button"
+                role="tab"
+                id={`flipi-${tab.id}`}
+                aria-selected={selected}
+                aria-controls="spjald-synishorn"
+                tabIndex={selected ? 0 : -1}
+                onClick={() => setActiveTab(tab.id)}
+                onKeyDown={(event) => onTabKeyDown(event, index)}
+                className={`flex-1 px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
+                  selected
+                    ? 'bg-surface-raised text-warm-900 shadow-xs'
+                    : 'text-warm-600 hover:text-warm-800'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Preview content */}
-      <div className="max-w-lg mx-auto">
+      <div
+        role="tabpanel"
+        id="spjald-synishorn"
+        aria-labelledby={`flipi-${activeTab}`}
+        tabIndex={0}
+        className="max-w-lg mx-auto"
+      >
         {activeTab === 'spurningaspjald' && <SpurningaSpjald category={category} level={level} />}
         {activeTab === 'ordafordi' && (
           <SpjaldPreview category={category} level={level} view="front" />

@@ -12,7 +12,7 @@ export const klaednadur: Category = {
   name: 'Föt og klæðnaður',
   icon: '👕',
   description: 'Orðaforði um föt — tegundir, litir, efni og hvenær þau eru notuð',
-  color: '#F4A261',
+  color: '#A6500C',
   subCategories: [
     {
       name: 'Tegund',

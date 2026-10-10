@@ -2,8 +2,8 @@
 @import '../../../packages/shared/styles/theme.css';
 @source "../../../packages/shared";
 
-/* Font loading for íslenskubraut SPA */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+/* The two fonts are bundled from @fontsource (imported in main.tsx), not fetched from Google:
+   the site CSP in server/nginx-site.conf allows fonts and stylesheets from 'self' only. */
 
 @utility card-shadow {
   box-shadow:

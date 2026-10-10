@@ -39,29 +39,6 @@ vi.mock('@kvenno/shared/components', () => ({
 vi.mock('../components/DownloadButton', () => ({
   DownloadButton: () => <button>Hala niður PDF</button>,
 }));
-vi.mock('../components/LevelSelector', () => ({
-  LevelSelector: ({
-    selected,
-    onChange,
-  }: {
-    selected: string;
-    onChange: (v: string) => void;
-    color?: string;
-  }) => (
-    <div role="radiogroup" aria-label="Erfiðleikastig">
-      {['A1', 'A2', 'B1'].map((lvl) => (
-        <button
-          key={lvl}
-          role="radio"
-          aria-checked={selected === lvl}
-          onClick={() => onChange(lvl)}
-        >
-          {lvl}
-        </button>
-      ))}
-    </div>
-  ),
-}));
 vi.mock('../components/SpjaldPreview', () => ({
   SpjaldPreview: () => <div data-testid="spjald-preview">Preview</div>,
 }));

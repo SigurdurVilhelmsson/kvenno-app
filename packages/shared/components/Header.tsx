@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className={[
                     'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors no-underline min-h-[44px]',
                     isActive
-                      ? 'text-kvenno-orange bg-kvenno-orange-50'
+                      ? 'text-kvenno-orange-700 bg-kvenno-orange-50'
                       : 'text-warm-500 hover:text-warm-700 hover:bg-warm-50',
                   ].join(' ')}
                   aria-current={isActive ? 'true' : undefined}

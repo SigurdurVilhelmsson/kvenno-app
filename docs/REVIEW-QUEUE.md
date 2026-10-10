@@ -372,6 +372,15 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 
   See the decisions doc's last section.
 
+- [ ] **The brand fonts never load on landing, lab-reports or the games** (found 2026-10-10, with
+      D3). `theme.css` names DM Sans and Plus Jakarta Sans, and `apps/landing/src/index.css`,
+      `apps/lab-reports/src/index.css` and `packages/shared/styles/game-base.css` import them from
+      Google, but each `@import url(…)` comes after other rules, so the build drops it: the landing
+      bundle's CSS holds no import at all. Every page has shown the system font. The CSP would
+      block Google anyway. Íslenskubraut now bundles both from `@fontsource`; doing the same
+      elsewhere changes how every page looks, so `desktop-compare` will report every game. The
+      alternative is to drop the two names from `theme.css` and keep the system font on purpose.
+
 ### D2. Operations and tooling
 
 - [x] **`deploy.sh` never installs `server/nginx-site.conf`.** Either document the manual step in
@@ -517,20 +526,33 @@ wording, item by item below. The words it introduced have not been looked up in 
 
 **Accessibility and UX (`apps/islenskubraut/`)**
 
-- [ ] **Contrast below WCAG AA.** White on Klæðnaður `#F4A261` is 2,1:1 and on Matur `#E76F51`
-      3,1:1 (home card, page header, download button); the orange chip text on Klæðnaður is 2,0:1,
-      in the PDF too; the green and orange context headers are 3,3:1 and 3,6:1 for small text.
-      `a11y.test.tsx` cannot catch it: jsdom has no contrast check and the test mocks the real
-      header and footer. Add a Playwright axe run on the real pages.
-- [ ] **Level and tab buttons do not expose their state.** No `aria-pressed` on the level buttons,
-      no `role="tab"`/`aria-selected` on the tabs.
-- [ ] **Put the level in the URL** (`/spjald/dyr?stig=B1`) so a card can be bookmarked and shared;
-      every visit starts at A1 today.
-- [ ] **Google Fonts are imported in `src/index.css`**, which the CSP in `server/nginx-site.conf`
-      (`font-src 'self'`) blocks wherever that config is live. Self-host the two fonts or drop
-      them.
-- [ ] **Download errors use `alert()`**, and the client and server name the file differently
-      (`dyr-A1-spjald.pdf` against `spjald-dyr-A1.pdf`). Moot once the PDFs are static.
+All five fixed 2026-10-10 (PR for this branch).
+
+- [x] **Contrast below WCAG AA.** White on Klæðnaður `#F4A261` was 2,1:1 and on Matur `#E76F51`
+      3,1:1, and axe found 63 more failures across the pages. Klæðnaður is now `#A6500C` and Matur
+      `#BF3B1A`, the least darkening of each hue that carries white text and its own tinted chips
+      at 4,5:1; the other four already passed. The context colours are the `-700` shades, on the web
+      and in the PDF. The card text drops its white-on-white washes (`text-white/80`, the `CC`
+      subheader, the `bg-white/20` level badge), the grey and warm text on the cards and buttons
+      is one shade darker, and the shared header's active track tab is `kvenno-orange-700`.
+      `e2e/islenskubraut-a11y.spec.ts` runs axe (WCAG 2.1 AA) on the home page and on every tab of
+      every category, with the real header, fonts and colours; it fails on 7 of 7 pages against
+      the old code. **Siggi to confirm the two new category colours**, which also print on the
+      PDFs.
+- [x] **Level and tab buttons do not expose their state.** The level buttons are a labelled group
+      with `aria-pressed`; the views are a `tablist` of `tab`s with `aria-selected`, one
+      `tabpanel`, and arrow keys, Home and End between them.
+- [x] **Put the level in the URL.** `/spjald/dyr?stig=B1` opens at B1, and choosing a level
+      writes it there (replacing the history entry, so Back still leaves the page). An unknown
+      level falls back to A1.
+- [x] **Google Fonts are imported in `src/index.css`.** They never loaded, CSP or not: the
+      `@import url(…)` comes after other rules, so the build drops it, and the app has always shown
+      the system font. DM Sans and Plus Jakarta Sans are now bundled from `@fontsource` (Latin
+      subset, 84 KB of woff2), so Íslenskubraut shows its fonts for the first time; an e2e test
+      asserts both load with every off-site request refused. The same import is dead in landing,
+      lab-reports and the games (D1).
+- [x] **Download errors use `alert()`.** The error now shows below the button in a live region,
+      and the file is saved as `spjald-dyr-A1.pdf`, the name the server gives it.
 
 **Code**
 

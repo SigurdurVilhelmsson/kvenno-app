@@ -37,10 +37,10 @@ Font.register({
 });
 
 const CONTEXT_COLORS: Record<string, string> = {
-  '\u{1F4CD}': '#DC2626',
-  '\u{1F550}': '#16A34A',
-  '\u{1F464}': '#EA580C',
-  '\u{1F3AF}': '#2563EB',
+  '\u{1F4CD}': '#B91C1C',
+  '\u{1F550}': '#107837',
+  '\u{1F464}': '#C2410C',
+  '\u{1F3AF}': '#1D4ED8',
 };
 
 const CONTEXT_ICONS = new Set(['\u{1F4CD}', '\u{1F550}', '\u{1F464}', '\u{1F3AF}']);
