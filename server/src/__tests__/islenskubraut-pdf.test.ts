@@ -36,6 +36,11 @@ afterAll(() => {
   vi.unstubAllGlobals();
 });
 
+/** Pages in a rendered PDF: each page object, not the /Pages tree that holds them. */
+function pageCount(pdf: Buffer): number {
+  return pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g)?.length ?? 0;
+}
+
 /** The PostScript names of the fonts a PDF embeds or references. */
 function baseFonts(pdf: Buffer): Set<string> {
   const names = pdf.toString('latin1').matchAll(/\/BaseFont\s*\/(?:[A-Z]{6}\+)?([\w-]+)/g);
@@ -98,6 +103,19 @@ describe('examples and teacher notes on the printed card', () => {
         // Students handle the laminated card; the note belongs on the teacher's screen.
         expect(text.join(' ')).not.toContain('Fyrir kennara');
         expect(text).not.toContain(note);
+      });
+    }
+  }
+});
+
+// A card is three sheets: vocabulary, sentence frames, questions. Until 2026-10-10, 10 of
+// the 18 ran onto a fourth page, splitting the question card's coloured boxes from their
+// words. Content grows, so every card at every level is held to it.
+describe('three pages, no more', () => {
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`fits ${category.id} ${level} on three A4 pages`, async () => {
+        expect(pageCount(await generatePdf(category, level))).toBe(3);
       });
     }
   }

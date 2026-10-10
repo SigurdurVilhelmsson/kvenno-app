@@ -24,6 +24,10 @@ import type { Category, CEFRLevel, GuidingQuestion } from '../types/index.js';
  */
 const fontPath = (file: string) => fileURLToPath(new URL(`../../fonts/${file}`, import.meta.url));
 
+// react-pdf hyphenates long words at line ends by default, which split words a learner is
+// trying to read (`sér-` / `fræðingar`). A word now moves to the next line whole.
+Font.registerHyphenationCallback((word) => [word]);
+
 Font.register({
   family: 'NotoSans',
   fonts: [
@@ -83,7 +87,7 @@ const styles = StyleSheet.create({
   },
   subCategoryHeader: { paddingHorizontal: 10, paddingVertical: 5 },
   subCategoryHeaderText: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textTransform: 'uppercase',
@@ -104,6 +108,17 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   optionText: { fontSize: 10 },
+  // The vocabulary page is read across a table once laminated, so its words are larger
+  // than the question card's, which has to fit nine questions on one page.
+  vocabTag: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 5,
+    borderWidth: 1,
+    marginRight: 5,
+    marginBottom: 5,
+  },
+  vocabText: { fontSize: 12 },
   backHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -147,23 +162,31 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
   },
   questionBox: {
-    marginBottom: 8,
+    marginBottom: 6,
     borderWidth: 1,
     borderColor: '#E5E7EB',
     borderRadius: 6,
     overflow: 'hidden',
   },
-  questionHeader: { paddingHorizontal: 8, paddingVertical: 4, backgroundColor: '#F9FAFB' },
+  questionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    backgroundColor: '#F9FAFB',
+  },
   questionText: { fontSize: 10, fontWeight: 'bold', color: '#1F2937' },
   questionLabel: { fontSize: 8, color: '#6B7280' },
   questionBody: {
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingTop: 4,
+    paddingBottom: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 3,
   },
-  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 8 },
+  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 6 },
   dividerLine: { flex: 1, borderBottomWidth: 1, borderBottomColor: '#D1D5DB' },
   dividerText: {
     fontSize: 8,
@@ -177,7 +200,27 @@ const styles = StyleSheet.create({
   contextCardHeader: { paddingHorizontal: 8, paddingVertical: 4 },
   contextCardHeaderText: { fontSize: 9, fontWeight: 'bold', color: '#FFFFFF' },
   contextCardBody: { paddingHorizontal: 8, paddingVertical: 4 },
-  contextCardOption: { fontSize: 9, fontWeight: 'bold', marginBottom: 2 },
+  // One wrapping line rather than one answer per line: a column of thirteen time words
+  // is what pushed the A2 and B1 question cards onto a fourth page.
+  contextCardOptions: { flexDirection: 'row', flexWrap: 'wrap' },
+  contextCardOption: { fontSize: 9, fontWeight: 'bold', marginRight: 4, lineHeight: 1.5 },
+  questionPageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  questionPageHeaderText: { fontSize: 22, fontWeight: 'bold', color: '#FFFFFF' },
+  questionPageTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
 });
 
 interface RGB {
@@ -207,7 +250,7 @@ function createQuestionBlock(
 
   return React.createElement(
     View,
-    { key: `q-${index}`, style: styles.questionBox },
+    { key: `q-${index}`, style: styles.questionBox, wrap: false },
     React.createElement(
       View,
       { style: styles.questionHeader },
@@ -249,7 +292,11 @@ function createContextCard(
 
   return React.createElement(
     View,
-    { key: `ctx-${index}`, style: { ...styles.contextCard, backgroundColor: lightBg } },
+    {
+      key: `ctx-${index}`,
+      style: { ...styles.contextCard, backgroundColor: lightBg },
+      wrap: false,
+    },
     React.createElement(
       View,
       { style: { ...styles.contextCardHeader, backgroundColor: color } },
@@ -258,8 +305,18 @@ function createContextCard(
     React.createElement(
       View,
       { style: styles.contextCardBody },
-      ...answers.options.map((option, i) =>
-        React.createElement(Text, { key: i, style: { ...styles.contextCardOption, color } }, option)
+      // Each answer is its own box, so a line breaks between answers, never inside one,
+      // and no separator is left dangling at a line's start or end.
+      React.createElement(
+        View,
+        { style: styles.contextCardOptions },
+        ...answers.options.map((option, i) =>
+          React.createElement(
+            Text,
+            { key: i, style: { ...styles.contextCardOption, color } },
+            i < answers.options.length - 1 ? `${option} ·` : option
+          )
+        )
       )
     )
   );
@@ -296,7 +353,7 @@ export function createSpjaldDocument(category: Category, level: CEFRLevel): Reac
       ...category.subCategories.map((sub, index) =>
         React.createElement(
           View,
-          { key: index, style: styles.subCategoryBox },
+          { key: index, style: styles.subCategoryBox, wrap: false },
           React.createElement(
             View,
             { style: { ...styles.subCategoryHeader, backgroundColor: headerBgFaded } },
@@ -308,10 +365,10 @@ export function createSpjaldDocument(category: Category, level: CEFRLevel): Reac
             ...sub.options.map((option, i) =>
               React.createElement(
                 View,
-                { key: i, style: { ...styles.optionTag, borderColor, backgroundColor: lightBg } },
+                { key: i, style: { ...styles.vocabTag, borderColor, backgroundColor: lightBg } },
                 React.createElement(
                   Text,
-                  { style: { ...styles.optionText, color: category.color } },
+                  { style: { ...styles.vocabText, color: category.color } },
                   option
                 )
               )
@@ -340,7 +397,7 @@ export function createSpjaldDocument(category: Category, level: CEFRLevel): Reac
         ? sentenceFrame.frames.map((frame, index) =>
             React.createElement(
               View,
-              { key: index, style: { ...styles.frameBox, borderColor } },
+              { key: index, style: { ...styles.frameBox, borderColor }, wrap: false },
               React.createElement(
                 Text,
                 { style: { ...styles.frameText, color: category.color } },
@@ -356,7 +413,6 @@ export function createSpjaldDocument(category: Category, level: CEFRLevel): Reac
         React.createElement(Text, { style: styles.exampleText }, example)
       ),
       // No teacher note: students handle the printed card. The note is on the web page.
-
       React.createElement(Text, { style: styles.footer }, footerText)
     ),
     // Page 3: Question card
@@ -365,19 +421,19 @@ export function createSpjaldDocument(category: Category, level: CEFRLevel): Reac
       { size: 'A4', style: styles.page },
       React.createElement(
         View,
-        { style: { ...styles.frontHeader, backgroundColor: category.color, marginBottom: 12 } },
-        React.createElement(Text, { style: styles.frontHeaderText }, category.name.toUpperCase()),
+        { style: { ...styles.questionPageHeader, backgroundColor: category.color } },
+        React.createElement(
+          Text,
+          { style: styles.questionPageHeaderText },
+          category.name.toUpperCase()
+        ),
         React.createElement(
           View,
           { style: styles.levelBadge },
           React.createElement(Text, { style: styles.levelBadgeText }, level)
         )
       ),
-      React.createElement(
-        Text,
-        { style: { ...styles.sentenceTitle, marginBottom: 10 } },
-        'Spurningaspjald'
-      ),
+      React.createElement(Text, { style: styles.questionPageTitle }, 'Spurningaspjald'),
       ...mainQuestions
         .map((q, i) => createQuestionBlock(q, level, category.color, i))
         .filter(Boolean),

@@ -498,11 +498,17 @@ wording, item by item below. The words it introduced have not been looked up in 
 
 **PDF and preview**
 
-- [ ] **10 of the 18 PDFs run onto a fourth page**: A2 and B1 in every category but Manneskja. The
-      question card overflows, and the second row of context boxes splits, with their coloured
-      headers at the foot of page 3 and their words on page 4. Make each page fit, keep a box from
-      splitting across a page break, and add a test that every PDF is three pages.
-- [ ] **The vocabulary page fills half of A4 at 10 pt.** Larger type for laminated cards.
+- [x] **10 of the 18 PDFs ran onto a fourth page**: A2 and B1 in every category but Manneskja,
+      with the question card's second row of context boxes split from their words. Fixed
+      2026-10-10 in `server/src/lib/islenskubraut-pdf.tsx`: each question's label sits beside it
+      rather than under it, context answers wrap as a line instead of one per line, the question
+      page's header is smaller, and no question, context box, word group or frame is split across
+      a page break (`wrap: false`). `islenskubraut-pdf.test.ts` holds all 18 to three pages; it
+      fails on exactly those 10 against the old renderer. Also fixed while there: react-pdf
+      hyphenated words at line ends (`sér-` / `fræðingar`), which a learner reads as two words.
+      It now never breaks a word.
+- [x] **The vocabulary page filled half of A4 at 10 pt.** Its words are 12 pt now, in larger chips,
+      and Klæðnaður's seven word groups still fit one page. 13 pt did not.
 - [ ] **Pre-render the 18 PDFs at build time** and serve them as static files. Each depends only
       on category and level. It removes the backend from the download (the failures behind PRs
       #87–#89), lets the button become a plain link, and lets CI run the three-page test.
