@@ -4,6 +4,7 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 
 import { App } from '../App';
+import { PAGES } from '../components/Sheet';
 import { categories, getCategoryById } from '../data';
 import { Home } from '../pages/Home';
 
@@ -321,40 +322,35 @@ describe('SpjaldPage level and tabs', () => {
     expect(levelButton('A1').getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('exposes the three views as tabs controlling one panel', () => {
+  it("exposes the printed pages as tabs in the PDF's order, opening on page 1", () => {
     renderPage('/spjald/dyr');
     const tabs = screen.getAllByRole('tab');
-    expect(tabs.map((t) => t.textContent)).toEqual([
-      'Spurningaspjald',
-      'Orðaforði',
-      'Setningarammar',
-    ]);
+    expect(tabs.map((t) => t.textContent)).toEqual([...PAGES]);
     expect(tabs.map((t) => t.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false']);
     // Only the selected tab is in the Tab order; the arrow keys reach the others.
     expect(tabs.map((t) => t.tabIndex)).toEqual([0, -1, -1]);
     const panel = screen.getByRole('tabpanel');
     expect(panel.getAttribute('aria-labelledby')).toBe(tabs[0].id);
     expect(tabs[0].getAttribute('aria-controls')).toBe(panel.id);
+    expect(panel.textContent).toContain('Bls. 1 af 3 · Orðaforði');
   });
 
   it('moves between tabs with the arrow keys, Home and End', () => {
     renderPage('/spjald/dyr');
     const tab = (name: string) => screen.getByRole('tab', { name });
-    tab('Spurningaspjald').focus();
+    tab('Orðaforði').focus();
+    fireEvent.keyDown(tab('Orðaforði'), { key: 'ArrowRight' });
+    expect(tab('Setningarammar').getAttribute('aria-selected')).toBe('true');
+    expect(document.activeElement).toBe(tab('Setningarammar'));
+    fireEvent.keyDown(tab('Setningarammar'), { key: 'End' });
+    expect(tab('Spurningaspjald').getAttribute('aria-selected')).toBe('true');
     fireEvent.keyDown(tab('Spurningaspjald'), { key: 'ArrowRight' });
     expect(tab('Orðaforði').getAttribute('aria-selected')).toBe('true');
-    expect(document.activeElement).toBe(tab('Orðaforði'));
-    fireEvent.keyDown(tab('Orðaforði'), { key: 'End' });
-    expect(tab('Setningarammar').getAttribute('aria-selected')).toBe('true');
-    fireEvent.keyDown(tab('Setningarammar'), { key: 'ArrowRight' });
+    fireEvent.keyDown(tab('Orðaforði'), { key: 'ArrowLeft' });
     expect(tab('Spurningaspjald').getAttribute('aria-selected')).toBe('true');
-    fireEvent.keyDown(tab('Spurningaspjald'), { key: 'ArrowLeft' });
-    expect(tab('Setningarammar').getAttribute('aria-selected')).toBe('true');
-    fireEvent.keyDown(tab('Setningarammar'), { key: 'Home' });
-    expect(tab('Spurningaspjald').getAttribute('aria-selected')).toBe('true');
-    expect(screen.getByRole('tabpanel').getAttribute('aria-labelledby')).toBe(
-      tab('Spurningaspjald').id
-    );
+    fireEvent.keyDown(tab('Spurningaspjald'), { key: 'Home' });
+    expect(tab('Orðaforði').getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tabpanel').getAttribute('aria-labelledby')).toBe(tab('Orðaforði').id);
   });
 });
 

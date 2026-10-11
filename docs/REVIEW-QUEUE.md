@@ -533,8 +533,18 @@ joins the list of probably-right compounds below.
         Then, on https://kvenno.app/islenskubraut/, download one card and check it opens.
   - [ ] **Remove `GET /api/islenskubraut/pdf`** once that deploy is live. Nothing in the app
         calls it now; it stays for one deploy so a page left open across it still downloads.
-- [ ] **The preview does not match the PDF.** Different page order, and the preview's fixed-ratio
-      boxes scroll inside themselves instead of showing where the page overflows.
+- [x] **The preview does not match the PDF.** Done 2026-10-11 (PR for this branch). The tabs
+      follow the PDF's pages, `Orðaforði`, `Setningarammar`, `Spurningaspjald`, and the page
+      opens on page 1, where it used to open on the question card, the PDF's last page. Each
+      sheet is drawn by one `Sheet` frame with the PDF's header and footer, captioned
+      `Bls. 1 af 3`, and is A4 at least: content grows the sheet instead of scrolling inside
+      it. The question card puts each label beside its question and runs context answers on one
+      line, as the PDF does; emoji, which the PDF cannot print, are gone from inside the sheets.
+      `preview-matches-pdf.test.tsx` renders all 18 cards both ways and requires every string
+      each PDF page prints to appear on its web sheet in the same order; it fails on 18 of 18
+      against the old question card.
+  - **Siggi's to confirm:** opening on page 1 rather than on the question card. The order is
+    one line in `SpjaldPage.tsx`, and the PDF's order could change instead.
 
 **Accessibility and UX (`apps/islenskubraut/`)**
 

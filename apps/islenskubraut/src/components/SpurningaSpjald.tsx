@@ -1,3 +1,4 @@
+import { Sheet } from './Sheet';
 import { Category, Level, GuidingQuestion } from '../data/types';
 
 interface SpurningaSpjaldProps {
@@ -5,84 +6,52 @@ interface SpurningaSpjaldProps {
   level: Level;
 }
 
+/** Page 3 of the printed card, laid out as the PDF lays it out. */
 export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
   // Which questions are coloured context boxes is declared in the YAML (`context:`).
   const mainQuestions = category.guidingQuestions.filter((q) => !q.context);
   const contextQuestions = category.guidingQuestions.filter((q) => q.context);
 
   return (
-    <div>
-      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-        Spurningaspjald
-      </h3>
-      <div
-        className="bg-white rounded-2xl shadow-lg overflow-hidden border-2"
-        style={{ borderColor: category.color }}
-      >
-        {/* Header */}
-        <div className="px-6 py-4 text-white" style={{ backgroundColor: category.color }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-3xl">{category.icon}</span>
-              <h2 className="font-heading text-2xl font-bold uppercase tracking-wide">
-                {category.name}
-              </h2>
-            </div>
-            <span
-              className="bg-white px-3 py-1 rounded-full text-sm font-bold"
-              style={{ color: category.color }}
-            >
-              {level}
-            </span>
-          </div>
-        </div>
+    <Sheet category={category} level={level} page="Spurningaspjald" testId="spjald-spurningar">
+      <p className="text-base font-bold text-gray-800 text-center mb-3">Spurningaspjald</p>
 
-        {/* Main questions */}
-        <div className="p-4 space-y-3">
-          {mainQuestions.map((question, index) => (
-            <QuestionBlock
-              key={index}
-              question={question}
-              level={level}
-              categoryColor={category.color}
-            />
-          ))}
-
-          {/* Divider */}
-          {contextQuestions.length > 0 && (
-            <div className="flex items-center gap-3 py-2">
-              <div className="flex-1 border-t border-gray-300" />
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Notagildi og samhengi
-              </span>
-              <div className="flex-1 border-t border-gray-300" />
-            </div>
-          )}
-
-          {/* Context questions */}
-          {contextQuestions.length > 0 && (
-            <div className="grid grid-cols-2 gap-3">
-              {contextQuestions.map(
-                (question, index) =>
-                  question.context && (
-                    <ContextCard
-                      key={index}
-                      question={question}
-                      level={level}
-                      color={question.context.color}
-                    />
-                  )
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="px-4 py-2 text-center border-t border-gray-100">
-          <p className="text-xs text-gray-500">Íslenskubraut — Kvennaskólinn í Reykjavík</p>
-        </div>
+      <div className="space-y-2">
+        {mainQuestions.map((question, index) => (
+          <QuestionBlock
+            key={index}
+            question={question}
+            level={level}
+            categoryColor={category.color}
+          />
+        ))}
       </div>
-    </div>
+
+      {contextQuestions.length > 0 && (
+        <>
+          <div className="flex items-center gap-3 py-2">
+            <div className="flex-1 border-t border-gray-300" />
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Notagildi og samhengi
+            </span>
+            <div className="flex-1 border-t border-gray-300" />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {contextQuestions.map(
+              (question, index) =>
+                question.context && (
+                  <ContextCard
+                    key={index}
+                    question={question}
+                    level={level}
+                    color={question.context.color}
+                  />
+                )
+            )}
+          </div>
+        </>
+      )}
+    </Sheet>
   );
 }
 
@@ -100,11 +69,10 @@ function QuestionBlock({
 
   return (
     <div className="rounded-xl border border-gray-200 overflow-hidden">
-      <div className="px-3 py-2 bg-gray-50">
+      {/* The label sits beside the question, as on the printed card. */}
+      <div className="px-3 py-1.5 bg-gray-50 flex items-baseline justify-between gap-2">
         <p className="text-sm font-semibold text-gray-800">{question.question}</p>
-        <p className="text-xs text-gray-500">
-          {question.icon} {question.label}
-        </p>
+        <p className="text-xs text-gray-500 shrink-0">{question.label}</p>
       </div>
       <div className="px-3 py-2 flex flex-wrap gap-1.5">
         {answers.options.map((option, index) => (
@@ -139,18 +107,18 @@ function ContextCard({
 
   return (
     <div className="rounded-xl overflow-hidden" style={{ backgroundColor: color + '15' }}>
-      <div className="px-3 py-2 text-white" style={{ backgroundColor: color }}>
-        <p className="text-xs font-bold">
-          {question.icon} {question.question}
-        </p>
+      <div className="px-3 py-1.5 text-white" style={{ backgroundColor: color }}>
+        <p className="text-xs font-bold">{question.question}</p>
       </div>
-      <div className="px-3 py-2 space-y-1">
+      {/* One wrapping line with separators, as on the printed card: each answer is kept
+          whole, so a line breaks between answers, never inside one. */}
+      <p className="px-3 py-1.5 text-xs font-bold leading-relaxed" style={{ color }}>
         {answers.options.map((option, index) => (
-          <p key={index} className="text-xs font-medium" style={{ color }}>
-            {option}
-          </p>
+          <span key={index} className="inline-block mr-1">
+            {index < answers.options.length - 1 ? `${option} ·` : option}
+          </span>
         ))}
-      </div>
+      </p>
     </div>
   );
 }

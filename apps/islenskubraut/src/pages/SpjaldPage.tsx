@@ -6,6 +6,7 @@ import { Container } from '@kvenno/shared/components';
 
 import { DownloadButton } from '../components/DownloadButton';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
+import type { PageTitle } from '../components/Sheet';
 import { SpjaldPreview } from '../components/SpjaldPreview';
 import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
@@ -13,10 +14,11 @@ import { Level } from '../data/types';
 
 type ViewTab = 'spurningaspjald' | 'ordafordi' | 'setningarammar';
 
-const TABS: { id: ViewTab; label: string }[] = [
-  { id: 'spurningaspjald', label: 'Spurningaspjald' },
+// The printed card's page order (`PAGES` in Sheet.tsx), so the preview reads as the PDF does.
+const TABS: { id: ViewTab; label: PageTitle }[] = [
   { id: 'ordafordi', label: 'Orðaforði' },
   { id: 'setningarammar', label: 'Setningarammar' },
+  { id: 'spurningaspjald', label: 'Spurningaspjald' },
 ];
 
 /** The level lives in the URL (`?stig=B1`), so a card can be bookmarked and shared. */
@@ -30,7 +32,7 @@ export function SpjaldPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const level = parseLevel(searchParams.get('stig'));
   const setLevel = (next: Level) => setSearchParams({ stig: next }, { replace: true });
-  const [activeTab, setActiveTab] = useState<ViewTab>('spurningaspjald');
+  const [activeTab, setActiveTab] = useState<ViewTab>(TABS[0].id);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Arrow keys, Home and End move between tabs, as in the WAI-ARIA tabs pattern.
@@ -175,11 +177,8 @@ export function SpjaldPage() {
         className="max-w-lg mx-auto"
       >
         {activeTab === 'spurningaspjald' && <SpurningaSpjald category={category} level={level} />}
-        {activeTab === 'ordafordi' && (
-          <SpjaldPreview category={category} level={level} view="front" />
-        )}
-        {activeTab === 'setningarammar' && (
-          <SpjaldPreview category={category} level={level} view="back" />
+        {activeTab !== 'spurningaspjald' && (
+          <SpjaldPreview category={category} level={level} view={activeTab} />
         )}
       </div>
     </Container>
