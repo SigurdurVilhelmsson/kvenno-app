@@ -490,8 +490,14 @@ pnpm islenskubraut:build --check   # exit 1 if either is stale (CI-friendly)
   hand-edited, plain YAML a teacher can read without knowing TypeScript. Each also carries one
   worked example (`examples`) and one teacher note (`teacherNotes`) per level; until Oct 2026 those
   were hard-coded twice, in `SpjaldPreview.tsx` and the PDF renderer. The note is shown on the web
-  page only, never printed on the card students handle
+  page only, never printed on the card students handle. Each question declares its role: a
+  main question has a `label` (`Útlit`), a coloured context box has `context: hvar|hvenaer|hver|notagildi`,
+  never both; until Oct 2026 both renderers inferred it from the question's emoji. The four
+  colours are `CONTEXT_COLORS` in `scripts/islenskubraut/load.mjs`
 - `apps/islenskubraut/src/data/categories/*.ts` — **generated; never edit by hand**
+- `apps/islenskubraut/src/data/types.ts` and `server/src/types/islenskubraut.ts` — **generated,
+  identical; never edit by hand**. `renderTypes()` in `scripts/islenskubraut/render.mjs` is the
+  one definition; the server used to keep its own copy, with `CEFRLevel` for `Level`
 - `server/src/lib/islenskubraut-data.ts` — **generated; never edit by hand**. The Express server
   renders the teaching-card PDFs and must not import the Vite/React app, which is why a second copy
   exists at all

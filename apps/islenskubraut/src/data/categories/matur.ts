@@ -115,6 +115,7 @@ export const matur: Category = {
     {
       question: 'Hvers konar matur er þetta?',
       icon: '📚',
+      label: 'Flokkar',
       answers: [
         {
           level: 'A1',
@@ -153,6 +154,7 @@ export const matur: Category = {
     {
       question: 'Hvernig lítur það út?',
       icon: '👁️',
+      label: 'Útlit',
       answers: [
         {
           level: 'A1',
@@ -183,6 +185,7 @@ export const matur: Category = {
     {
       question: 'Hvernig bragðast það?',
       icon: '👅',
+      label: 'Bragð',
       answers: [
         {
           level: 'A1',
@@ -214,6 +217,7 @@ export const matur: Category = {
     {
       question: 'Hvernig finnst það við snertingu?',
       icon: '✋',
+      label: 'Áferð',
       answers: [
         {
           level: 'A1',
@@ -258,6 +262,7 @@ export const matur: Category = {
     {
       question: 'Hvernig lyktar af því?',
       icon: '👃',
+      label: 'Lykt',
       answers: [
         {
           level: 'A1',
@@ -287,6 +292,7 @@ export const matur: Category = {
     {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
+      label: 'Lögun',
       answers: [
         {
           level: 'A1',
@@ -327,6 +333,10 @@ export const matur: Category = {
     {
       question: 'Til hvers er það notað?',
       icon: '🎯',
+      context: {
+        kind: 'notagildi',
+        color: '#1D4ED8',
+      },
       answers: [
         {
           level: 'A1',
@@ -352,6 +362,10 @@ export const matur: Category = {
     {
       question: 'Hver notar þetta?',
       icon: '👤',
+      context: {
+        kind: 'hver',
+        color: '#C2410C',
+      },
       answers: [
         {
           level: 'A1',
@@ -378,6 +392,10 @@ export const matur: Category = {
     {
       question: 'Hvar er hægt að finna þetta?',
       icon: '📍',
+      context: {
+        kind: 'hvar',
+        color: '#B91C1C',
+      },
       answers: [
         {
           level: 'A1',
@@ -404,6 +422,10 @@ export const matur: Category = {
     {
       question: 'Hvenær er þetta notað?',
       icon: '🕐',
+      context: {
+        kind: 'hvenaer',
+        color: '#107837',
+      },
       answers: [
         {
           level: 'A1',

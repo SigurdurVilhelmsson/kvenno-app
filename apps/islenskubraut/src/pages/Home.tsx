@@ -42,8 +42,9 @@ export function Home() {
         </div>
       </div>
 
-      {/* Category grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 gap-6">
+      {/* Category grid. Rows are added as needed and share one height, so a seventh
+          category starts a new row instead of overflowing a fixed three-by-two grid. */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:auto-rows-fr gap-6">
         {categories.map((category) => (
           <CategoryCard key={category.id} category={category} />
         ))}

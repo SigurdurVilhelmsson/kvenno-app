@@ -104,53 +104,16 @@ export interface ProcessDocumentResponse {
 }
 
 // ---------------------------------------------------------------------------
-// Íslenskubraut data types
+// Íslenskubraut data types — generated, identical to the app's copy
 // ---------------------------------------------------------------------------
 
-/** A sub-category within a teaching card category */
-export interface SubCategory {
-  name: string;
-  options: string[];
-}
-
-/** Valid CEFR levels for sentence frames */
-export type CEFRLevel = 'A1' | 'A2' | 'B1';
-
-/** A set of sentence frames for a specific CEFR level */
-export interface SentenceFrame {
-  level: CEFRLevel;
-  frames: string[];
-}
-
-/** One string per level: a worked example, or a note for the teacher */
-export interface LevelText {
-  level: CEFRLevel;
-  text: string;
-}
-
-/** An answer option set for a guiding question at a specific level */
-export interface GuidingQuestionAnswer {
-  level: CEFRLevel;
-  options: string[];
-}
-
-/** A guiding question with level-specific answer options */
-export interface GuidingQuestion {
-  question: string;
-  icon: string;
-  answers: GuidingQuestionAnswer[];
-}
-
-/** A complete teaching card category */
-export interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  color: string;
-  subCategories: SubCategory[];
-  sentenceFrames: SentenceFrame[];
-  examples: LevelText[];
-  teacherNotes: LevelText[];
-  guidingQuestions: GuidingQuestion[];
-}
+export type {
+  Category,
+  ContextKind,
+  GuidingQuestion,
+  GuidingQuestionAnswer,
+  Level,
+  LevelText,
+  SentenceFrame,
+  SubCategory,
+} from './islenskubraut.js';

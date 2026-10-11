@@ -90,6 +90,7 @@ guidingQuestions:
   - id: q1
     question: Hvers konar farartæki er þetta?
     icon: 📚
+    label: Flokkar
     answers:
       A1:
         - bíll
@@ -121,6 +122,7 @@ guidingQuestions:
   - id: q2
     question: Hvernig lítur það út?
     icon: 👁️
+    label: Útlit
     answers:
       A1:
         - stórt
@@ -151,6 +153,7 @@ guidingQuestions:
   - id: q3
     question: Hvaða hljóð gefur það frá sér?
     icon: 🔊
+    label: Hljóð
     answers:
       A1:
         - hátt
@@ -174,6 +177,7 @@ guidingQuestions:
   - id: q4
     question: Úr hverju er það gert?
     icon: 🧱
+    label: Efniviður
     answers:
       A1:
         - úr málmi
@@ -197,6 +201,7 @@ guidingQuestions:
   - id: q5
     question: Hvaða lögun hefur það?
     icon: 🔷
+    label: Lögun
     answers:
       A1:
         - kringlótt
@@ -228,6 +233,7 @@ guidingQuestions:
   - id: q6
     question: Til hvers er það notað?
     icon: 🎯
+    context: notagildi
     answers:
       A1:
         - til að ferðast
@@ -248,6 +254,7 @@ guidingQuestions:
   - id: q7
     question: Hver notar þetta?
     icon: 👤
+    context: hver
     answers:
       A1:
         - allir
@@ -273,6 +280,7 @@ guidingQuestions:
   - id: q8
     question: Hvar er hægt að nota/finna þetta?
     icon: 📍
+    context: hvar
     answers:
       A1:
         - á götunni
@@ -295,6 +303,7 @@ guidingQuestions:
   - id: q9
     question: Hvenær er þetta notað?
     icon: 🕐
+    context: hvenaer
     answers:
       A1:
         - á morgnana

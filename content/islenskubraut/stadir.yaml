@@ -77,6 +77,7 @@ guidingQuestions:
   - id: q1
     question: Hvers konar staður er þetta?
     icon: 📚
+    label: Flokkar
     answers:
       A1:
         - hús
@@ -110,6 +111,7 @@ guidingQuestions:
   - id: q2
     question: Hvernig lítur þetta út?
     icon: 👁️
+    label: Útlit
     answers:
       A1:
         - stórt
@@ -139,6 +141,7 @@ guidingQuestions:
   - id: q3
     question: Hvernig lyktar þar?
     icon: 👃
+    label: Lykt
     answers:
       A1:
         - gott
@@ -165,6 +168,7 @@ guidingQuestions:
   - id: q4
     question: Úr hverju er það gert?
     icon: 🧱
+    label: Efniviður
     answers:
       A1:
         - úr tré
@@ -188,6 +192,7 @@ guidingQuestions:
   - id: q5
     question: Hvaða lögun hefur það?
     icon: 🔷
+    label: Lögun
     answers:
       A1:
         - kringlótt
@@ -219,6 +224,7 @@ guidingQuestions:
   - id: q6
     question: Til hvers er þetta notað?
     icon: 🎯
+    context: notagildi
     answers:
       A1:
         - til að búa
@@ -241,6 +247,7 @@ guidingQuestions:
   - id: q7
     question: Hver notar þetta?
     icon: 👤
+    context: hver
     answers:
       A1:
         - allir
@@ -267,6 +274,7 @@ guidingQuestions:
   - id: q8
     question: Hvar er þetta?
     icon: 📍
+    context: hvar
     answers:
       A1:
         - í bænum
@@ -289,6 +297,7 @@ guidingQuestions:
   - id: q9
     question: Hvenær er þetta notað?
     icon: 🕐
+    context: hvenaer
     answers:
       A1:
         - á morgnana

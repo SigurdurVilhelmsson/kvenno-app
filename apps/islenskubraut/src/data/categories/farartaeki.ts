@@ -114,6 +114,7 @@ export const farartaeki: Category = {
     {
       question: 'Hvers konar farartæki er þetta?',
       icon: '📚',
+      label: 'Flokkar',
       answers: [
         {
           level: 'A1',
@@ -144,6 +145,7 @@ export const farartaeki: Category = {
     {
       question: 'Hvernig lítur það út?',
       icon: '👁️',
+      label: 'Útlit',
       answers: [
         {
           level: 'A1',
@@ -174,6 +176,7 @@ export const farartaeki: Category = {
     {
       question: 'Hvaða hljóð gefur það frá sér?',
       icon: '🔊',
+      label: 'Hljóð',
       answers: [
         {
           level: 'A1',
@@ -192,6 +195,7 @@ export const farartaeki: Category = {
     {
       question: 'Úr hverju er það gert?',
       icon: '🧱',
+      label: 'Efniviður',
       answers: [
         {
           level: 'A1',
@@ -219,6 +223,7 @@ export const farartaeki: Category = {
     {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
+      label: 'Lögun',
       answers: [
         {
           level: 'A1',
@@ -259,6 +264,10 @@ export const farartaeki: Category = {
     {
       question: 'Til hvers er það notað?',
       icon: '🎯',
+      context: {
+        kind: 'notagildi',
+        color: '#1D4ED8',
+      },
       answers: [
         {
           level: 'A1',
@@ -284,6 +293,10 @@ export const farartaeki: Category = {
     {
       question: 'Hver notar þetta?',
       icon: '👤',
+      context: {
+        kind: 'hver',
+        color: '#C2410C',
+      },
       answers: [
         {
           level: 'A1',
@@ -312,6 +325,10 @@ export const farartaeki: Category = {
     {
       question: 'Hvar er hægt að nota/finna þetta?',
       icon: '📍',
+      context: {
+        kind: 'hvar',
+        color: '#B91C1C',
+      },
       answers: [
         {
           level: 'A1',
@@ -338,6 +355,10 @@ export const farartaeki: Category = {
     {
       question: 'Hvenær er þetta notað?',
       icon: '🕐',
+      context: {
+        kind: 'hvenaer',
+        color: '#107837',
+      },
       answers: [
         {
           level: 'A1',

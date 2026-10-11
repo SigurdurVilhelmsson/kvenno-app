@@ -5,7 +5,7 @@
 //
 // Edit the YAML, not this file. A test fails if this file drifts from it.
 
-import type { Category } from '../types/index.js';
+import type { Category } from '../types/islenskubraut.js';
 
 export const categories: Category[] = [
   {
@@ -118,6 +118,7 @@ export const categories: Category[] = [
       {
         question: 'Hvers konar dýr er þetta?',
         icon: '📚',
+        label: 'Flokkar',
         answers: [
           {
             level: 'A1',
@@ -146,6 +147,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lítur það út?',
         icon: '👁️',
+        label: 'Útlit',
         answers: [
           {
             level: 'A1',
@@ -185,6 +187,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig finnst það við snertingu?',
         icon: '✋',
+        label: 'Áferð',
         answers: [
           {
             level: 'A1',
@@ -216,6 +219,7 @@ export const categories: Category[] = [
       {
         question: 'Hvaða hljóð gefur það frá sér?',
         icon: '🔊',
+        label: 'Hljóð',
         answers: [
           {
             level: 'A1',
@@ -244,6 +248,7 @@ export const categories: Category[] = [
       {
         question: 'Hvaða lögun hefur það?',
         icon: '🔷',
+        label: 'Lögun',
         answers: [
           {
             level: 'A1',
@@ -284,6 +289,10 @@ export const categories: Category[] = [
       {
         question: 'Til hvers er það notað?',
         icon: '🎯',
+        context: {
+          kind: 'notagildi',
+          color: '#1D4ED8',
+        },
         answers: [
           {
             level: 'A1',
@@ -318,6 +327,10 @@ export const categories: Category[] = [
       {
         question: 'Hver notar þetta?',
         icon: '👤',
+        context: {
+          kind: 'hver',
+          color: '#C2410C',
+        },
         answers: [
           {
             level: 'A1',
@@ -345,6 +358,10 @@ export const categories: Category[] = [
       {
         question: 'Hvar er hægt að finna þetta?',
         icon: '📍',
+        context: {
+          kind: 'hvar',
+          color: '#B91C1C',
+        },
         answers: [
           {
             level: 'A1',
@@ -372,6 +389,10 @@ export const categories: Category[] = [
       {
         question: 'Hvenær sést þetta?',
         icon: '🕐',
+        context: {
+          kind: 'hvenaer',
+          color: '#107837',
+        },
         answers: [
           {
             level: 'A1',
@@ -517,6 +538,7 @@ export const categories: Category[] = [
       {
         question: 'Hvers konar matur er þetta?',
         icon: '📚',
+        label: 'Flokkar',
         answers: [
           {
             level: 'A1',
@@ -555,6 +577,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lítur það út?',
         icon: '👁️',
+        label: 'Útlit',
         answers: [
           {
             level: 'A1',
@@ -594,6 +617,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig bragðast það?',
         icon: '👅',
+        label: 'Bragð',
         answers: [
           {
             level: 'A1',
@@ -625,6 +649,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig finnst það við snertingu?',
         icon: '✋',
+        label: 'Áferð',
         answers: [
           {
             level: 'A1',
@@ -669,6 +694,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lyktar af því?',
         icon: '👃',
+        label: 'Lykt',
         answers: [
           {
             level: 'A1',
@@ -698,6 +724,7 @@ export const categories: Category[] = [
       {
         question: 'Hvaða lögun hefur það?',
         icon: '🔷',
+        label: 'Lögun',
         answers: [
           {
             level: 'A1',
@@ -738,6 +765,10 @@ export const categories: Category[] = [
       {
         question: 'Til hvers er það notað?',
         icon: '🎯',
+        context: {
+          kind: 'notagildi',
+          color: '#1D4ED8',
+        },
         answers: [
           {
             level: 'A1',
@@ -763,6 +794,10 @@ export const categories: Category[] = [
       {
         question: 'Hver notar þetta?',
         icon: '👤',
+        context: {
+          kind: 'hver',
+          color: '#C2410C',
+        },
         answers: [
           {
             level: 'A1',
@@ -789,6 +824,10 @@ export const categories: Category[] = [
       {
         question: 'Hvar er hægt að finna þetta?',
         icon: '📍',
+        context: {
+          kind: 'hvar',
+          color: '#B91C1C',
+        },
         answers: [
           {
             level: 'A1',
@@ -815,6 +854,10 @@ export const categories: Category[] = [
       {
         question: 'Hvenær er þetta notað?',
         icon: '🕐',
+        context: {
+          kind: 'hvenaer',
+          color: '#107837',
+        },
         answers: [
           {
             level: 'A1',
@@ -962,6 +1005,7 @@ export const categories: Category[] = [
       {
         question: 'Hvers konar farartæki er þetta?',
         icon: '📚',
+        label: 'Flokkar',
         answers: [
           {
             level: 'A1',
@@ -1001,6 +1045,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lítur það út?',
         icon: '👁️',
+        label: 'Útlit',
         answers: [
           {
             level: 'A1',
@@ -1031,6 +1076,7 @@ export const categories: Category[] = [
       {
         question: 'Hvaða hljóð gefur það frá sér?',
         icon: '🔊',
+        label: 'Hljóð',
         answers: [
           {
             level: 'A1',
@@ -1049,6 +1095,7 @@ export const categories: Category[] = [
       {
         question: 'Úr hverju er það gert?',
         icon: '🧱',
+        label: 'Efniviður',
         answers: [
           {
             level: 'A1',
@@ -1076,6 +1123,7 @@ export const categories: Category[] = [
       {
         question: 'Hvaða lögun hefur það?',
         icon: '🔷',
+        label: 'Lögun',
         answers: [
           {
             level: 'A1',
@@ -1116,6 +1164,10 @@ export const categories: Category[] = [
       {
         question: 'Til hvers er það notað?',
         icon: '🎯',
+        context: {
+          kind: 'notagildi',
+          color: '#1D4ED8',
+        },
         answers: [
           {
             level: 'A1',
@@ -1141,6 +1193,10 @@ export const categories: Category[] = [
       {
         question: 'Hver notar þetta?',
         icon: '👤',
+        context: {
+          kind: 'hver',
+          color: '#C2410C',
+        },
         answers: [
           {
             level: 'A1',
@@ -1169,6 +1225,10 @@ export const categories: Category[] = [
       {
         question: 'Hvar er hægt að nota/finna þetta?',
         icon: '📍',
+        context: {
+          kind: 'hvar',
+          color: '#B91C1C',
+        },
         answers: [
           {
             level: 'A1',
@@ -1195,6 +1255,10 @@ export const categories: Category[] = [
       {
         question: 'Hvenær er þetta notað?',
         icon: '🕐',
+        context: {
+          kind: 'hvenaer',
+          color: '#107837',
+        },
         answers: [
           {
             level: 'A1',
@@ -1345,6 +1409,7 @@ export const categories: Category[] = [
       {
         question: 'Hvers konar manneskja er þetta?',
         icon: '📚',
+        label: 'Flokkar',
         answers: [
           {
             level: 'A1',
@@ -1380,6 +1445,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lítur hún/hann út?',
         icon: '👁️',
+        label: 'Útlit',
         answers: [
           {
             level: 'A1',
@@ -1417,6 +1483,10 @@ export const categories: Category[] = [
       {
         question: 'Hvað gerir hún/hann?',
         icon: '🎯',
+        context: {
+          kind: 'notagildi',
+          color: '#1D4ED8',
+        },
         answers: [
           {
             level: 'A1',
@@ -1444,6 +1514,10 @@ export const categories: Category[] = [
       {
         question: 'Hvar er hægt að finna þessa manneskju?',
         icon: '📍',
+        context: {
+          kind: 'hvar',
+          color: '#B91C1C',
+        },
         answers: [
           {
             level: 'A1',
@@ -1471,6 +1545,10 @@ export const categories: Category[] = [
       {
         question: 'Hvenær er hún/hann virk/virkur?',
         icon: '🕐',
+        context: {
+          kind: 'hvenaer',
+          color: '#107837',
+        },
         answers: [
           {
             level: 'A1',
@@ -1610,6 +1688,7 @@ export const categories: Category[] = [
       {
         question: 'Hvers konar staður er þetta?',
         icon: '📚',
+        label: 'Flokkar',
         answers: [
           {
             level: 'A1',
@@ -1652,6 +1731,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lítur þetta út?',
         icon: '👁️',
+        label: 'Útlit',
         answers: [
           {
             level: 'A1',
@@ -1681,6 +1761,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lyktar þar?',
         icon: '👃',
+        label: 'Lykt',
         answers: [
           {
             level: 'A1',
@@ -1710,6 +1791,7 @@ export const categories: Category[] = [
       {
         question: 'Úr hverju er það gert?',
         icon: '🧱',
+        label: 'Efniviður',
         answers: [
           {
             level: 'A1',
@@ -1737,6 +1819,7 @@ export const categories: Category[] = [
       {
         question: 'Hvaða lögun hefur það?',
         icon: '🔷',
+        label: 'Lögun',
         answers: [
           {
             level: 'A1',
@@ -1777,6 +1860,10 @@ export const categories: Category[] = [
       {
         question: 'Til hvers er þetta notað?',
         icon: '🎯',
+        context: {
+          kind: 'notagildi',
+          color: '#1D4ED8',
+        },
         answers: [
           {
             level: 'A1',
@@ -1809,6 +1896,10 @@ export const categories: Category[] = [
       {
         question: 'Hver notar þetta?',
         icon: '👤',
+        context: {
+          kind: 'hver',
+          color: '#C2410C',
+        },
         answers: [
           {
             level: 'A1',
@@ -1838,6 +1929,10 @@ export const categories: Category[] = [
       {
         question: 'Hvar er þetta?',
         icon: '📍',
+        context: {
+          kind: 'hvar',
+          color: '#B91C1C',
+        },
         answers: [
           {
             level: 'A1',
@@ -1864,6 +1959,10 @@ export const categories: Category[] = [
       {
         question: 'Hvenær er þetta notað?',
         icon: '🕐',
+        context: {
+          kind: 'hvenaer',
+          color: '#107837',
+        },
         answers: [
           {
             level: 'A1',
@@ -2032,6 +2131,7 @@ export const categories: Category[] = [
       {
         question: 'Hvers konar klæðnaður er þetta?',
         icon: '📚',
+        label: 'Flokkar',
         answers: [
           {
             level: 'A1',
@@ -2074,6 +2174,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig lítur það út?',
         icon: '👁️',
+        label: 'Útlit',
         answers: [
           {
             level: 'A1',
@@ -2116,6 +2217,7 @@ export const categories: Category[] = [
       {
         question: 'Hvernig finnst það við snertingu?',
         icon: '✋',
+        label: 'Áferð',
         answers: [
           {
             level: 'A1',
@@ -2160,6 +2262,7 @@ export const categories: Category[] = [
       {
         question: 'Úr hverju er það gert?',
         icon: '🧱',
+        label: 'Efniviður',
         answers: [
           {
             level: 'A1',
@@ -2199,6 +2302,7 @@ export const categories: Category[] = [
       {
         question: 'Hvaða lögun hefur það?',
         icon: '🔷',
+        label: 'Lögun',
         answers: [
           {
             level: 'A1',
@@ -2239,6 +2343,10 @@ export const categories: Category[] = [
       {
         question: 'Til hvers er það notað?',
         icon: '🎯',
+        context: {
+          kind: 'notagildi',
+          color: '#1D4ED8',
+        },
         answers: [
           {
             level: 'A1',
@@ -2269,6 +2377,10 @@ export const categories: Category[] = [
       {
         question: 'Hver notar þetta?',
         icon: '👤',
+        context: {
+          kind: 'hver',
+          color: '#C2410C',
+        },
         answers: [
           {
             level: 'A1',
@@ -2297,6 +2409,10 @@ export const categories: Category[] = [
       {
         question: 'Hvar er hægt að nota þetta?',
         icon: '📍',
+        context: {
+          kind: 'hvar',
+          color: '#B91C1C',
+        },
         answers: [
           {
             level: 'A1',
@@ -2323,6 +2439,10 @@ export const categories: Category[] = [
       {
         question: 'Hvenær er þetta notað?',
         icon: '🕐',
+        context: {
+          kind: 'hvenaer',
+          color: '#107837',
+        },
         answers: [
           {
             level: 'A1',

@@ -196,6 +196,7 @@ guidingQuestions:
   - id: q1
     question: Er þetta próf?
     icon: ❓
+    label: Próf
     answers: {}
 `
     );
@@ -217,6 +218,7 @@ guidingQuestions:
   - id: q1
     question: Er þetta próf?
     icon: ❓
+    label: Próf
     answers:
       A1: []
 `
@@ -258,6 +260,7 @@ guidingQuestions:
   - id: q1
     question: Hvað er þetta?
     icon: ❓
+    label: Próf
     answers:
       A1:
         - svar eitt
@@ -291,10 +294,60 @@ guidingQuestions:
         {
           question: 'Hvað er þetta?',
           icon: '❓',
+          label: 'Próf',
           answers: [{ level: 'A1', options: ['svar eitt', 'svar tvö'] }],
         },
       ],
     });
+  });
+});
+
+describe('question labels and context boxes', () => {
+  const withQuestion = (fields: string) => `id: prufa
+name: Prufa
+description: Lýsing.
+color: "#123456"
+icon: 🧪
+${PER_LEVEL}guidingQuestions:
+  - id: q1
+    question: Hvar er þetta?
+    icon: ❓
+${fields}    answers:
+      A1:
+        - heima
+`;
+
+  it('gives a context question its kind and colour, and no label', () => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', withQuestion('    context: hvar\n'));
+    const [q] = loadCategory('prufa', target).guidingQuestions;
+    expect(q.context).toEqual({ kind: 'hvar', color: '#B91C1C' });
+    expect(q).not.toHaveProperty('label');
+  });
+
+  it('throws on a question with neither a label nor a context kind', () => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', withQuestion(''));
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.q1 needs exactly one of label/);
+  });
+
+  it('throws on a question with both', () => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', withQuestion('    label: Hvar?\n    context: hvar\n'));
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.q1 needs exactly one of label/);
+  });
+
+  it('throws on a context kind that has no colour', () => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', withQuestion('    context: hvernig\n'));
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.q1\.context is "hvernig"/);
+  });
+
+  it('checks a label like any other text', () => {
+    const target = makeDir();
+    // A soft hyphen mid-word, built from an escape (see the header).
+    write(target, 'prufa.yaml', withQuestion('    label: Út\u00ADlit\n'));
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.q1\.label contains/);
   });
 });
 

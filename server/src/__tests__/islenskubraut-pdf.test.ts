@@ -80,15 +80,44 @@ describe('Íslenskubraut teaching-card PDF', () => {
   }
 });
 
-/** Every string a document element tree would print, in order. */
+/**
+ * Every string a document element tree would print, in order. The renderer's own components
+ * (QuestionBlock, ContextCard, …) are called, as React would; react-pdf's primitives are
+ * strings and are walked into.
+ */
 function printedText(node: ReactNode): string[] {
   if (typeof node === 'string' || typeof node === 'number') return [String(node)];
   if (Array.isArray(node)) return node.flatMap(printedText);
   if (node && typeof node === 'object' && 'props' in node) {
-    return printedText((node as ReactElement<{ children?: ReactNode }>).props.children);
+    const element = node as ReactElement<{ children?: ReactNode }>;
+    if (typeof element.type === 'function') {
+      return printedText((element.type as (props: unknown) => ReactNode)(element.props));
+    }
+    return printedText(element.props.children);
   }
   return [];
 }
+
+describe('questions on the printed card', () => {
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`prints every ${category.id} ${level} question, with its label if it has one`, () => {
+        const text = printedText(createSpjaldDocument(category, level as 'A1' | 'A2' | 'B1'));
+        for (const q of category.guidingQuestions) {
+          if (!q.answers.some((a) => a.level === level)) continue;
+          expect(text).toContain(q.question);
+          if (q.label) expect(text).toContain(q.label);
+        }
+        // The context boxes sit under their own heading, after every main question.
+        const heading = text.indexOf('Notagildi og samhengi');
+        const contextQuestions = category.guidingQuestions.filter((q) => q.context);
+        for (const q of contextQuestions) expect(text.indexOf(q.question)).toBeGreaterThan(heading);
+        for (const q of category.guidingQuestions.filter((x) => !x.context))
+          expect(text.indexOf(q.question)).toBeLessThan(heading);
+      });
+    }
+  }
+});
 
 describe('examples and teacher notes on the printed card', () => {
   for (const category of categories) {

@@ -117,6 +117,7 @@ export const manneskja: Category = {
     {
       question: 'Hvers konar manneskja er þetta?',
       icon: '📚',
+      label: 'Flokkar',
       answers: [
         {
           level: 'A1',
@@ -152,6 +153,7 @@ export const manneskja: Category = {
     {
       question: 'Hvernig lítur hún/hann út?',
       icon: '👁️',
+      label: 'Útlit',
       answers: [
         {
           level: 'A1',
@@ -189,6 +191,10 @@ export const manneskja: Category = {
     {
       question: 'Hvað gerir hún/hann?',
       icon: '🎯',
+      context: {
+        kind: 'notagildi',
+        color: '#1D4ED8',
+      },
       answers: [
         {
           level: 'A1',
@@ -216,6 +222,10 @@ export const manneskja: Category = {
     {
       question: 'Hvar er hægt að finna þessa manneskju?',
       icon: '📍',
+      context: {
+        kind: 'hvar',
+        color: '#B91C1C',
+      },
       answers: [
         {
           level: 'A1',
@@ -243,6 +253,10 @@ export const manneskja: Category = {
     {
       question: 'Hvenær er hún/hann virk/virkur?',
       icon: '🕐',
+      context: {
+        kind: 'hvenaer',
+        color: '#107837',
+      },
       answers: [
         {
           level: 'A1',

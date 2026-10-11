@@ -108,16 +108,23 @@ describe('fromRows', () => {
     expect(() => fromRows('manneskja', rows, category)).toThrow(/manneskja\.q1/);
   });
 
-  it('keeps each question with its own icon when an earlier question is deleted', () => {
+  it('keeps each question with its own icon, label and context when an earlier one is deleted', () => {
+    const hvar = { kind: 'hvar', color: '#B91C1C' };
     const twoQ = {
       ...category,
       guidingQuestions: [
-        { question: 'Q1', icon: '1️⃣', answers: [{ level: 'A1', options: ['a'] }] },
-        { question: 'Q2', icon: '2️⃣', answers: [{ level: 'A1', options: ['b'] }] },
+        { question: 'Q1', icon: '1️⃣', label: 'Útlit', answers: [{ level: 'A1', options: ['a'] }] },
+        { question: 'Q2', icon: '2️⃣', context: hvar, answers: [{ level: 'A1', options: ['b'] }] },
       ],
     };
+    const both = fromRows('manneskja', toRows(twoQ), twoQ).guidingQuestions;
+    expect(both[0]).toMatchObject({ icon: '1️⃣', label: 'Útlit' });
+    expect(both[0]).not.toHaveProperty('context');
+
     const rows = toRows(twoQ).filter((r) => !r.lykill.startsWith('manneskja.q1'));
-    expect(fromRows('manneskja', rows, twoQ).guidingQuestions[0].icon).toBe('2️⃣');
+    const [q] = fromRows('manneskja', rows, twoQ).guidingQuestions;
+    expect(q).toMatchObject({ icon: '2️⃣', context: hvar });
+    expect(q).not.toHaveProperty('label');
   });
 
   const twoSub = {

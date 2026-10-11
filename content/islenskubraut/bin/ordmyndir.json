@@ -302,6 +302,29 @@
         }
       ]
     },
+    "beint": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "beina",
+          "guid": "1a540f849c64aa51e131cb4f72d8e04d",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "beinn",
+          "guid": "e7c4e600aa2d7b3bf7c5cb5d9d7c1765",
+          "ofl": "lo",
+          "kyn": ""
+        },
+        {
+          "ord": "beint",
+          "guid": "36a1d0b1b60c46236d5519df847bd27d",
+          "ofl": "ao",
+          "kyn": ""
+        }
+      ]
+    },
     "beiskt": {
       "found": true,
       "lemmas": [
@@ -311,6 +334,23 @@
           "ofl": "lo",
           "kyn": "",
           "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
+    "bendir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "benda",
+          "guid": "ed2632d65de26fb6eef3d3de54f86de9",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "bendir",
+          "guid": "17cd8be12329548bb2a6d722627aa592",
+          "ofl": "no",
+          "kyn": "kk"
         }
       ]
     },
@@ -378,6 +418,52 @@
         }
       ]
     },
+    "blá": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "blá",
+          "guid": "313ee1d7e0df3fd55e61e65f8f539af6",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "blár",
+          "guid": "31dc39020a2f5c6f0eab32860ce9846d",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
+    "bláar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "blá",
+          "guid": "313ee1d7e0df3fd55e61e65f8f539af6",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "blár",
+          "guid": "31dc39020a2f5c6f0eab32860ce9846d",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
+    "bláir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "blár",
+          "guid": "31dc39020a2f5c6f0eab32860ce9846d",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFFT"]
+        }
+      ]
+    },
     "blár": {
       "found": true,
       "lemmas": [
@@ -404,6 +490,52 @@
           "ofl": "lo",
           "kyn": "",
           "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
+    "bleik": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "bleikja",
+          "guid": "69b3e2118f5503a581c3e854ae6e58f6",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "bleikur",
+          "guid": "472025748462916539c76cc6dc938cc1",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
+    "bleikar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "bleikur",
+          "guid": "472025748462916539c76cc6dc938cc1",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFFT", "FSB-KVK-ÞFFT"]
+        }
+      ]
+    },
+    "bleikir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "bleikja",
+          "guid": "69b3e2118f5503a581c3e854ae6e58f6",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "bleikur",
+          "guid": "472025748462916539c76cc6dc938cc1",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -439,6 +571,23 @@
           "ofl": "lo",
           "kyn": "",
           "tags": ["FSB-KK-NFET"]
+        }
+      ]
+    },
+    "bogið": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "boga",
+          "guid": "b79956ee62334038cfb1dba230d25cf5",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "boginn",
+          "guid": "87afcb742272fe53daf8d79090b9b001",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -486,6 +635,18 @@
           "ofl": "so",
           "kyn": "",
           "tags": ["GM-SAGNB", "LHÞT-SB-HK-NFET", "LHÞT-SB-HK-ÞFET"]
+        }
+      ]
+    },
+    "borðaður": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "borða",
+          "guid": "84c4e41c81f62ec79a0d3a313f1ac774",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["LHÞT-SB-KK-NFET"]
         }
       ]
     },
@@ -606,6 +767,69 @@
           "ofl": "no",
           "kyn": "hk",
           "tags": ["NFET", "ÞFET", "NFFT", "ÞFFT"]
+        }
+      ]
+    },
+    "brún": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "brún",
+          "guid": "df727bac34c1a514b5d479324692cff5",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "brúnn",
+          "guid": "903ef920ef490ac59814e5f2b93725d4",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
+    "brúnar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "brún",
+          "guid": "df727bac34c1a514b5d479324692cff5",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "brúna",
+          "guid": "1c564baf553f9108579615a31d60b99b",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "brúnn",
+          "guid": "903ef920ef490ac59814e5f2b93725d4",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
+    "brúnir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "brún",
+          "guid": "df727bac34c1a514b5d479324692cff5",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "brúna",
+          "guid": "1c564baf553f9108579615a31d60b99b",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "brúnn",
+          "guid": "903ef920ef490ac59814e5f2b93725d4",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -827,6 +1051,23 @@
         }
       ]
     },
+    "bætir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "bæta",
+          "guid": "bb0c030bc779bbf6144f9eb47ec25ff1",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "bætir",
+          "guid": "7c6622e87f5fe8b7c5b6d6679fa4d551",
+          "ofl": "no",
+          "kyn": "kk"
+        }
+      ]
+    },
     "börn": {
       "found": true,
       "lemmas": [
@@ -986,6 +1227,23 @@
         }
       ]
     },
+    "eða": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "eð",
+          "guid": "a758b064472426fc9a15b01d23b3e2e6",
+          "ofl": "no",
+          "kyn": "hk"
+        },
+        {
+          "ord": "eða",
+          "guid": "1f491eb5e908b53b0c9db1798732faca",
+          "ofl": "st",
+          "kyn": ""
+        }
+      ]
+    },
     "efni": {
       "found": true,
       "lemmas": [
@@ -1077,6 +1335,64 @@
         }
       ]
     },
+    "eftir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "eftir",
+          "guid": "acd07b4e2891d58bb7e996c190d6e430",
+          "ofl": "ao",
+          "kyn": ""
+        },
+        {
+          "ord": "eftir",
+          "guid": "2b7fd1057f6547faedb78d9dff91e6a8",
+          "ofl": "st",
+          "kyn": ""
+        },
+        {
+          "ord": "eftir",
+          "guid": "5aef0aab31b11c9fec5f4768a1bffd0f",
+          "ofl": "fs",
+          "kyn": ""
+        }
+      ]
+    },
+    "eigin": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "eigin",
+          "guid": "2541adf25f43120020f412e94e877f8b",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": [
+            "FSB-KK-NFET",
+            "FSB-KK-ÞFET",
+            "FSB-KK-ÞGFET",
+            "FSB-KK-EFET",
+            "FSB-KK-NFFT",
+            "FSB-KK-ÞFFT",
+            "FSB-KK-ÞGFFT",
+            "FSB-KK-EFFT",
+            "FSB-KVK-NFET",
+            "FSB-KVK-ÞFET",
+            "FSB-KVK-ÞGFET",
+            "FSB-KVK-EFET",
+            "FSB-KVK-NFFT",
+            "FSB-KVK-ÞFFT",
+            "FSB-KVK-ÞGFFT",
+            "FSB-KVK-EFFT",
+            "FSB-HK-ÞGFET",
+            "FSB-HK-EFET",
+            "FSB-HK-NFFT",
+            "FSB-HK-ÞFFT",
+            "FSB-HK-ÞGFFT",
+            "FSB-HK-EFFT"
+          ]
+        }
+      ]
+    },
     "eiginleikar": {
       "found": true,
       "lemmas": [
@@ -1086,6 +1402,23 @@
           "ofl": "no",
           "kyn": "kk",
           "tags": ["NFFT"]
+        }
+      ]
+    },
+    "einfaldar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "einfalda",
+          "guid": "e5e37d802d9d229d4ed7ee4afae1fb25",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "einfaldur",
+          "guid": "97ce805c06fa86d255073c820e8ae082",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -1429,6 +1762,18 @@
         }
       ]
     },
+    "ferkantað": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "ferkantaður",
+          "guid": "1637638021f6569ac91c8961534284a3",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
     "fernt": {
       "found": true,
       "lemmas": [
@@ -1504,6 +1849,29 @@
         {
           "ord": "Finnur",
           "guid": "0a35144e1c3fe9603c5d2519c779f8ff",
+          "ofl": "no",
+          "kyn": "kk"
+        }
+      ]
+    },
+    "fiski": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "fiska",
+          "guid": "7449be21b9316d0cd1d1661240850bec",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "fiski",
+          "guid": "75511be54c494288ee73405cf79ee126",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "fiskur",
+          "guid": "e02f7d176324e7619686f9b112bf2170",
           "ofl": "no",
           "kyn": "kk"
         }
@@ -1612,6 +1980,18 @@
           "guid": "6efc1b8dae3a9c2ed1417650bd20f7b6",
           "ofl": "so",
           "kyn": ""
+        }
+      ]
+    },
+    "fleirtölu": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "fleirtala",
+          "guid": "42fa5652fa76dd23146462b00847aaef",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["ÞFET", "ÞGFET", "EFET"]
         }
       ]
     },
@@ -1733,6 +2113,18 @@
         }
       ]
     },
+    "fornafnið": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "fornafn",
+          "guid": "df16b74b825ea9889c92a27957c6e1e8",
+          "ofl": "no",
+          "kyn": "hk",
+          "tags": ["NFETgr", "ÞFETgr"]
+        }
+      ]
+    },
     "fólk": {
       "found": true,
       "lemmas": [
@@ -1849,6 +2241,18 @@
         }
       ]
     },
+    "frægur": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "frægur",
+          "guid": "a2b169478eb0c634f2e0bc8962066561",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFET"]
+        }
+      ]
+    },
     "fugl": {
       "found": true,
       "lemmas": [
@@ -1858,6 +2262,18 @@
           "ofl": "no",
           "kyn": "kk",
           "tags": ["NFET", "ÞFET"]
+        }
+      ]
+    },
+    "fullorðin": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "fullorðinn",
+          "guid": "43577203a6566d1b4e0678a57a40c402",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
         }
       ]
     },
@@ -2160,6 +2576,18 @@
         }
       ]
     },
+    "góður": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "góður",
+          "guid": "93509ec671a9ef643cb397c02d57a50f",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFET"]
+        }
+      ]
+    },
     "grasæta": {
       "found": true,
       "lemmas": [
@@ -2172,6 +2600,18 @@
         }
       ]
     },
+    "grátt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "grár",
+          "guid": "583bac8e32768dc61e28549483165375",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
     "gróft": {
       "found": true,
       "lemmas": [
@@ -2181,6 +2621,65 @@
           "ofl": "lo",
           "kyn": "",
           "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
+    "grunn": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "grunn",
+          "guid": "baac56ab466f424a0bdc42940b3a95e3",
+          "ofl": "no",
+          "kyn": "hk"
+        },
+        {
+          "ord": "grunnur",
+          "guid": "aea6970660cda5c816cd7cf1774c6153",
+          "ofl": "no",
+          "kyn": "kk"
+        },
+        {
+          "ord": "grunnur",
+          "guid": "b567dca2745ad3aa3b069dd27374bc70",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
+    "græn": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "grænn",
+          "guid": "822554fe7c405d599bd0268af19d3f14",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
+        }
+      ]
+    },
+    "grænar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "grænn",
+          "guid": "822554fe7c405d599bd0268af19d3f14",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFFT", "FSB-KVK-ÞFFT"]
+        }
+      ]
+    },
+    "grænir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "grænn",
+          "guid": "822554fe7c405d599bd0268af19d3f14",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFFT"]
         }
       ]
     },
@@ -2217,6 +2716,42 @@
           "ofl": "lo",
           "kyn": "",
           "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
+    "gul": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "gulur",
+          "guid": "91b371b0819a596df98a81273ac10c9e",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
+        }
+      ]
+    },
+    "gular": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "gulur",
+          "guid": "91b371b0819a596df98a81273ac10c9e",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFFT", "FSB-KVK-ÞFFT"]
+        }
+      ]
+    },
+    "gulir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "gulur",
+          "guid": "91b371b0819a596df98a81273ac10c9e",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFFT"]
         }
       ]
     },
@@ -2537,6 +3072,29 @@
         }
       ]
     },
+    "heila": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "heila",
+          "guid": "4320f47183e45b909f4dd9e2f3f8f253",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "heili",
+          "guid": "85da53e74cb4f012e975740f2ce2ea04",
+          "ofl": "no",
+          "kyn": "kk"
+        },
+        {
+          "ord": "heill",
+          "guid": "a26cbde9b11cf3d027ad24108a296c50",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
     "heima": {
       "found": true,
       "lemmas": [
@@ -2611,6 +3169,18 @@
         }
       ]
     },
+    "henni": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hún",
+          "guid": "2bd13a59c0d7084db1287b7f67884bda",
+          "ofl": "pfn",
+          "kyn": "",
+          "tags": ["ÞGFET"]
+        }
+      ]
+    },
     "hentar": {
       "found": true,
       "lemmas": [
@@ -2642,6 +3212,18 @@
           "guid": "dcf3e795d82371cbd1f5636afc24020c",
           "ofl": "so",
           "kyn": ""
+        }
+      ]
+    },
+    "hjálpið": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hjálpa",
+          "guid": "dcf3e795d82371cbd1f5636afc24020c",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-FH-NT-2P-FT", "GM-VH-NT-2P-FT", "GM-BH-FT"]
         }
       ]
     },
@@ -2807,6 +3389,18 @@
         }
       ]
     },
+    "hollt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hollur",
+          "guid": "e1b9725123b58f7bb2376fa578a664f8",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
     "horn": {
       "found": true,
       "lemmas": [
@@ -2816,6 +3410,18 @@
           "ofl": "no",
           "kyn": "hk",
           "tags": ["NFET", "ÞFET", "NFFT", "ÞFFT"]
+        }
+      ]
+    },
+    "hraðskreitt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hraðskreiður",
+          "guid": "4dea99ccb83dd2d5314ae2b738564ea4",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
         }
       ]
     },
@@ -2855,6 +3461,23 @@
         }
       ]
     },
+    "hreyfing": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hreyfing",
+          "guid": "b03a92fde39962708126aa0db98517d6",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "hreyfingur",
+          "guid": "fcd760d2ce2efde8c21202c4075ae7ad",
+          "ofl": "no",
+          "kyn": "kk"
+        }
+      ]
+    },
     "hringir": {
       "found": true,
       "lemmas": [
@@ -2875,6 +3498,18 @@
           "guid": "736db7a102da0a3d564e0201b028b2a0",
           "ofl": "no",
           "kyn": "kk"
+        }
+      ]
+    },
+    "hugmyndum": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hugmynd",
+          "guid": "77aaacd10c741eaeddf0adfec01d0b44",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["ÞGFFT"]
         }
       ]
     },
@@ -2985,6 +3620,18 @@
         }
       ]
     },
+    "hval": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hvalur",
+          "guid": "5a2e9e02950d1a89863973f7c2b7f287",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["ÞFET", "ÞGFET"]
+        }
+      ]
+    },
     "hvar": {
       "found": true,
       "lemmas": [
@@ -3067,6 +3714,18 @@
         }
       ]
     },
+    "hvetjið": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hvetja",
+          "guid": "fada42799c9583c1168aa3defe1299c0",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-FH-NT-2P-FT", "GM-VH-NT-2P-FT", "GM-BH-FT"]
+        }
+      ]
+    },
     "hvílast": {
       "found": true,
       "lemmas": [
@@ -3076,6 +3735,57 @@
           "ofl": "so",
           "kyn": "",
           "tags": ["MM-NH", "MM-FH-NT-3P-FT"]
+        }
+      ]
+    },
+    "hvít": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hvítur",
+          "guid": "b6b013d4116e7ea449808e200b9ce564",
+          "ofl": "lo",
+          "kyn": ""
+        },
+        {
+          "ord": "hvítur",
+          "guid": "bd9658c1af460222138603c3b126293d",
+          "ofl": "no",
+          "kyn": "kk"
+        }
+      ]
+    },
+    "hvítar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hvíta",
+          "guid": "907d8250a205d2967abe0b35782314bd",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "hvítur",
+          "guid": "b6b013d4116e7ea449808e200b9ce564",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
+    "hvítir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hvíta",
+          "guid": "907d8250a205d2967abe0b35782314bd",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "hvítur",
+          "guid": "b6b013d4116e7ea449808e200b9ce564",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -3123,6 +3833,67 @@
           "ofl": "so",
           "kyn": "",
           "tags": ["GM-FH-NT-2P-ET", "GM-FH-NT-3P-ET", "GM-VH-NT-2P-ET"]
+        }
+      ]
+    },
+    "hægfara": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hægfara",
+          "guid": "ce864246caf7903fc90576d31ad6037f",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": [
+            "FSB-KK-NFET",
+            "FSB-KK-ÞFET",
+            "FSB-KK-ÞGFET",
+            "FSB-KK-EFET",
+            "FSB-KK-NFFT",
+            "FSB-KK-ÞFFT",
+            "FSB-KK-ÞGFFT",
+            "FSB-KK-EFFT",
+            "FSB-KVK-NFET",
+            "FSB-KVK-ÞFET",
+            "FSB-KVK-ÞGFET",
+            "FSB-KVK-EFET",
+            "FSB-KVK-NFFT",
+            "FSB-KVK-ÞFFT",
+            "FSB-KVK-ÞGFFT",
+            "FSB-KVK-EFFT",
+            "FSB-HK-NFET",
+            "FSB-HK-ÞFET",
+            "FSB-HK-ÞGFET",
+            "FSB-HK-EFET",
+            "FSB-HK-NFFT",
+            "FSB-HK-ÞFFT",
+            "FSB-HK-ÞGFFT",
+            "FSB-HK-EFFT",
+            "FVB-KK-NFET",
+            "FVB-KK-ÞFET",
+            "FVB-KK-ÞGFET",
+            "FVB-KK-EFET",
+            "FVB-KK-NFFT",
+            "FVB-KK-ÞFFT",
+            "FVB-KK-ÞGFFT",
+            "FVB-KK-EFFT",
+            "FVB-KVK-NFET",
+            "FVB-KVK-ÞFET",
+            "FVB-KVK-ÞGFET",
+            "FVB-KVK-EFET",
+            "FVB-KVK-NFFT",
+            "FVB-KVK-ÞFFT",
+            "FVB-KVK-ÞGFFT",
+            "FVB-KVK-EFFT",
+            "FVB-HK-NFET",
+            "FVB-HK-ÞFET",
+            "FVB-HK-ÞGFET",
+            "FVB-HK-EFET",
+            "FVB-HK-NFFT",
+            "FVB-HK-ÞFFT",
+            "FVB-HK-ÞGFFT",
+            "FVB-HK-EFFT"
+          ]
         }
       ]
     },
@@ -3182,6 +3953,18 @@
           "ofl": "no",
           "kyn": "kvk",
           "tags": ["ÞGFETgr"]
+        }
+      ]
+    },
+    "höfrungur": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "höfrungur",
+          "guid": "9e464531a4701af8e628051cc1985d22",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["NFET"]
         }
       ]
     },
@@ -3270,6 +4053,18 @@
           "ofl": "no",
           "kyn": "kvk",
           "tags": ["NFET", "ÞFET", "ÞGFET"]
+        }
+      ]
+    },
+    "ílangt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "ílangur",
+          "guid": "0de0741fc98e5ee2ed82db7f21f491f5",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
         }
       ]
     },
@@ -3402,6 +4197,28 @@
           "ofl": "no",
           "kyn": "kk",
           "tags": ["NFET"]
+        }
+      ]
+    },
+    "kennir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "kenna",
+          "guid": "1048d876d5545dca83712d92a623d401",
+          "ofl": "so",
+          "kyn": "",
+          "tags": [
+            "GM-FH-NT-2P-ET",
+            "GM-FH-NT-3P-ET",
+            "GM-VH-NT-2P-ET",
+            "OP-EF-GM-FH-NT-1P-ET",
+            "OP-EF-GM-FH-NT-1P-FT",
+            "OP-EF-GM-FH-NT-2P-ET",
+            "OP-EF-GM-FH-NT-2P-FT",
+            "OP-EF-GM-FH-NT-3P-ET",
+            "OP-EF-GM-FH-NT-3P-FT"
+          ]
         }
       ]
     },
@@ -3550,6 +4367,18 @@
         }
       ]
     },
+    "kona": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "kona",
+          "guid": "5b0498176c78c1061335106e5016a7fd",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["NFET"]
+        }
+      ]
+    },
     "konar": {
       "found": true,
       "lemmas": [
@@ -3615,6 +4444,79 @@
         }
       ]
     },
+    "kulda": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "kuldi",
+          "guid": "bac1a626593d4b251f86d346db568b9c",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["ÞFET", "ÞGFET", "EFET", "ÞFFT", "EFFT"]
+        }
+      ]
+    },
+    "kúlulaga": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "kúlulaga",
+          "guid": "e152b655c5a9ca8e490075bf49830b84",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": [
+            "FSB-KK-NFET",
+            "FSB-KK-ÞFET",
+            "FSB-KK-ÞGFET",
+            "FSB-KK-EFET",
+            "FSB-KK-NFFT",
+            "FSB-KK-ÞFFT",
+            "FSB-KK-ÞGFFT",
+            "FSB-KK-EFFT",
+            "FSB-KVK-NFET",
+            "FSB-KVK-ÞFET",
+            "FSB-KVK-ÞGFET",
+            "FSB-KVK-EFET",
+            "FSB-KVK-NFFT",
+            "FSB-KVK-ÞFFT",
+            "FSB-KVK-ÞGFFT",
+            "FSB-KVK-EFFT",
+            "FSB-HK-NFET",
+            "FSB-HK-ÞFET",
+            "FSB-HK-ÞGFET",
+            "FSB-HK-EFET",
+            "FSB-HK-NFFT",
+            "FSB-HK-ÞFFT",
+            "FSB-HK-ÞGFFT",
+            "FSB-HK-EFFT",
+            "FVB-KK-NFET",
+            "FVB-KK-ÞFET",
+            "FVB-KK-ÞGFET",
+            "FVB-KK-EFET",
+            "FVB-KK-NFFT",
+            "FVB-KK-ÞFFT",
+            "FVB-KK-ÞGFFT",
+            "FVB-KK-EFFT",
+            "FVB-KVK-NFET",
+            "FVB-KVK-ÞFET",
+            "FVB-KVK-ÞGFET",
+            "FVB-KVK-EFET",
+            "FVB-KVK-NFFT",
+            "FVB-KVK-ÞFFT",
+            "FVB-KVK-ÞGFFT",
+            "FVB-KVK-EFFT",
+            "FVB-HK-NFET",
+            "FVB-HK-ÞFET",
+            "FVB-HK-ÞGFET",
+            "FVB-HK-EFET",
+            "FVB-HK-NFFT",
+            "FVB-HK-ÞFFT",
+            "FVB-HK-ÞGFFT",
+            "FVB-HK-EFFT"
+          ]
+        }
+      ]
+    },
     "kvöldin": {
       "found": true,
       "lemmas": [
@@ -3639,6 +4541,18 @@
         }
       ]
     },
+    "kyni": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "kyn",
+          "guid": "94113a8e56c5c1c70e0bc5b36b4bc16b",
+          "ofl": "no",
+          "kyn": "hk",
+          "tags": ["ÞGFET"]
+        }
+      ]
+    },
     "landi": {
       "found": true,
       "lemmas": [
@@ -3659,6 +4573,29 @@
           "guid": "fd9796bb8240647ef48b8ad182b1ff3a",
           "ofl": "no",
           "kyn": "kk"
+        }
+      ]
+    },
+    "langar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "langa",
+          "guid": "41547076b9dd2265bb678e88fdeb7e64",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "langur",
+          "guid": "26cc51017a023dd2d948b7c93f2174df",
+          "ofl": "no",
+          "kyn": "kk"
+        },
+        {
+          "ord": "langur",
+          "guid": "056d4dbc491ddd9dfb6c4c253870fe74",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -3748,6 +4685,23 @@
         }
       ]
     },
+    "látinn": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "láta",
+          "guid": "5ad35ee850468416de6b60ab977b5431",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "látinn",
+          "guid": "a96b9cb750f76bc16be59fba35ecf1c2",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
     "leðri": {
       "found": true,
       "lemmas": [
@@ -3757,6 +4711,35 @@
           "ofl": "no",
           "kyn": "hk",
           "tags": ["ÞGFET"]
+        }
+      ]
+    },
+    "leiðir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "leið",
+          "guid": "77f5c651354eb229cb65382b56c3a260",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "leiða",
+          "guid": "6ada24d7ce03d8d990651d014a0787f2",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "leiðir",
+          "guid": "7d5a91c908cefd7031cf859fe1520f7d",
+          "ofl": "no",
+          "kyn": "kk"
+        },
+        {
+          "ord": "leiður",
+          "guid": "d10f103dd8fbb271d435040772989cbf",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -3913,6 +4896,18 @@
         }
       ]
     },
+    "list": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "list",
+          "guid": "e26229e80df551afa073328119da0e84",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["NFET", "ÞFET", "ÞGFET"]
+        }
+      ]
+    },
     "listamaður": {
       "found": true,
       "lemmas": [
@@ -3966,6 +4961,18 @@
         }
       ]
     },
+    "litríkt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "litríkur",
+          "guid": "ae1eed24229103a3222451f74af73f8d",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
     "litur": {
       "found": true,
       "lemmas": [
@@ -3980,6 +4987,18 @@
           "guid": "b79427a9f1bb0633a3dd0c7e8836aef8",
           "ofl": "no",
           "kyn": "kk"
+        }
+      ]
+    },
+    "líða": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "líða",
+          "guid": "355a6de095788fe1f251e18862106574",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-NH", "GM-FH-NT-3P-FT"]
         }
       ]
     },
@@ -4086,6 +5105,18 @@
           "guid": "5d032af5e6222d9b78041a86c2485c33",
           "ofl": "lo",
           "kyn": ""
+        }
+      ]
+    },
+    "lítil": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "lítill",
+          "guid": "5d032af5e6222d9b78041a86c2485c33",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
         }
       ]
     },
@@ -4358,6 +5389,25 @@
         }
       ]
     },
+    "marga": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "margur",
+          "guid": "4dd9fe623bb29b36fc0ac4063532e86e",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": [
+            "FSB-KK-ÞFFT",
+            "FSB-KVK-ÞFET",
+            "FVB-HK-NFET",
+            "FVB-HK-ÞFET",
+            "FVB-HK-ÞGFET",
+            "FVB-HK-EFET"
+          ]
+        }
+      ]
+    },
     "margir": {
       "found": true,
       "lemmas": [
@@ -4524,6 +5574,23 @@
         }
       ]
     },
+    "mismunandi": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "mismunandi",
+          "guid": "35d1c427883865835d8c78bed8782256",
+          "ofl": "ao",
+          "kyn": ""
+        },
+        {
+          "ord": "mismunandi",
+          "guid": "b35c4ed7c71d5d9fcd3943b0d5ac41a6",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
     "mjálmar": {
       "found": true,
       "lemmas": [
@@ -4605,6 +5672,35 @@
           "ofl": "no",
           "kyn": "hk",
           "tags": ["NFET", "ÞFET", "NFFT", "ÞFFT"]
+        }
+      ]
+    },
+    "myndar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "mynd",
+          "guid": "1da83bf09d21fc7b59c452e936389016",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "mynda",
+          "guid": "0d1b618652249349a6173d1cd526a1f3",
+          "ofl": "so",
+          "kyn": ""
+        }
+      ]
+    },
+    "myndarleg": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "myndarlegur",
+          "guid": "b34622efc79a5581371365f2e6a6fd01",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
         }
       ]
     },
@@ -4691,6 +5787,30 @@
             "MST-HK-ÞGFFT",
             "MST-HK-EFFT"
           ]
+        }
+      ]
+    },
+    "nemandann": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "nemandi",
+          "guid": "14d1d9bbea3916a902198e0634edb75d",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["ÞFETgr"]
+        }
+      ]
+    },
+    "nemandanum": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "nemandi",
+          "guid": "14d1d9bbea3916a902198e0634edb75d",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["ÞGFETgr"]
         }
       ]
     },
@@ -4851,6 +5971,18 @@
         }
       ]
     },
+    "oddhvasst": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "oddhvass",
+          "guid": "69c1a4454998b8fdc47b6fcbaefa63f1",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
+        }
+      ]
+    },
     "oft": {
       "found": true,
       "lemmas": [
@@ -4892,6 +6024,18 @@
         }
       ]
     },
+    "orð": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "orð",
+          "guid": "690d178d19819bed38bd870cf3953c68",
+          "ofl": "no",
+          "kyn": "hk",
+          "tags": ["NFET", "ÞFET", "NFFT", "ÞFFT"]
+        }
+      ]
+    },
     "orðaforði": {
       "found": true,
       "lemmas": [
@@ -4901,6 +6045,18 @@
           "ofl": "no",
           "kyn": "kk",
           "tags": ["NFET"]
+        }
+      ]
+    },
+    "orðsins": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "orð",
+          "guid": "690d178d19819bed38bd870cf3953c68",
+          "ofl": "no",
+          "kyn": "hk",
+          "tags": ["EFETgr"]
         }
       ]
     },
@@ -5040,6 +6196,42 @@
         }
       ]
     },
+    "rauð": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "rauður",
+          "guid": "796fb80ee05b5a2a0a2c2e0cc6268121",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
+        }
+      ]
+    },
+    "rauðar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "rauður",
+          "guid": "796fb80ee05b5a2a0a2c2e0cc6268121",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFFT", "FSB-KVK-ÞFFT"]
+        }
+      ]
+    },
+    "rauðir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "rauður",
+          "guid": "796fb80ee05b5a2a0a2c2e0cc6268121",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFFT"]
+        }
+      ]
+    },
     "rauður": {
       "found": true,
       "lemmas": [
@@ -5078,6 +6270,41 @@
           "ofl": "no",
           "kyn": "hk",
           "tags": ["NFET", "ÞFET", "NFFT", "ÞFFT"]
+        }
+      ]
+    },
+    "rétt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "rétt",
+          "guid": "a7ee785c0e62325d33295ec1cba8e7d5",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "rétt",
+          "guid": "7a65f0dc425f544878b0f10f38a91de0",
+          "ofl": "ao",
+          "kyn": ""
+        },
+        {
+          "ord": "rétta",
+          "guid": "09c1ec40aa4d469c6d4440a3825376e9",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "réttur",
+          "guid": "519e923ff9aed7e7e7856adb537895c1",
+          "ofl": "no",
+          "kyn": "kk"
+        },
+        {
+          "ord": "réttur",
+          "guid": "33f6e06288444f9987f1cbc3bde14ff9",
+          "ofl": "lo",
+          "kyn": ""
         }
       ]
     },
@@ -5131,6 +6358,18 @@
         }
       ]
     },
+    "rökstuðnings": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "rökstuðningur",
+          "guid": "1982550da0eb38151051c1b30d4d744d",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["EFET"]
+        }
+      ]
+    },
     "safn": {
       "found": true,
       "lemmas": [
@@ -5160,6 +6399,35 @@
         }
       ]
     },
+    "saman": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "saman",
+          "guid": "d20056b579f6c6d64585820e097cb651",
+          "ofl": "ao",
+          "kyn": ""
+        },
+        {
+          "ord": "samur",
+          "guid": "9cbd5a3b4fd552ff84f5ceaf4993a90b",
+          "ofl": "fn",
+          "kyn": ""
+        }
+      ]
+    },
+    "samanburðar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "samanburður",
+          "guid": "2930ee4c670c24fce561f837a2587253",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["EFET"]
+        }
+      ]
+    },
     "sefur": {
       "found": true,
       "lemmas": [
@@ -5169,6 +6437,18 @@
           "ofl": "so",
           "kyn": "",
           "tags": ["GM-FH-NT-2P-ET", "GM-FH-NT-3P-ET"]
+        }
+      ]
+    },
+    "segja": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "segja",
+          "guid": "f33cfecf09a62aca03eabb0bdb26b917",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-NH", "GM-FH-NT-3P-FT"]
         }
       ]
     },
@@ -5186,6 +6466,33 @@
           "guid": "a4e36a36a707d8a1104c40054c302913",
           "ofl": "so",
           "kyn": ""
+        }
+      ]
+    },
+    "setningar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "setning",
+          "guid": "646e6c12b2b8e63b869f8b439c40cc8b",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["EFET", "NFFT", "ÞFFT"]
+        }
+      ]
+    },
+    "setningaramma": {
+      "found": false
+    },
+    "setningu": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "setning",
+          "guid": "646e6c12b2b8e63b869f8b439c40cc8b",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["ÞFET", "ÞGFET"]
         }
       ]
     },
@@ -5250,6 +6557,18 @@
           "ofl": "lo",
           "kyn": "",
           "tags": ["FSB-KVK-NFFT", "FSB-KVK-ÞFFT"]
+        }
+      ]
+    },
+    "sérstök": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "sérstakur",
+          "guid": "9177833ec28c11b2a5b357ee85fee52d",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
         }
       ]
     },
@@ -5438,6 +6757,18 @@
         }
       ]
     },
+    "skapar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "skapa",
+          "guid": "eac5df569ca1af7015ecb14f90eeb49d",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-FH-NT-2P-ET", "GM-FH-NT-3P-ET"]
+        }
+      ]
+    },
     "skálduð": {
       "found": true,
       "lemmas": [
@@ -5500,6 +6831,18 @@
           "ofl": "no",
           "kyn": "hk",
           "tags": ["NFET", "ÞFET", "NFFT", "ÞFFT"]
+        }
+      ]
+    },
+    "skoða": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "skoða",
+          "guid": "c1b17d407f63d63f87fe8c7f621ef970",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-NH", "GM-FH-NT-1P-ET", "GM-FH-NT-3P-FT", "GM-BH-ST"]
         }
       ]
     },
@@ -5604,6 +6947,18 @@
         }
       ]
     },
+    "sköllóttur": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "sköllóttur",
+          "guid": "4deefa9d0c83e4a13a23c55a3cd4d691",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFET"]
+        }
+      ]
+    },
     "sleði": {
       "found": true,
       "lemmas": [
@@ -5671,6 +7026,18 @@
           "ofl": "no",
           "kyn": "kvk",
           "tags": ["ÞFET", "ÞGFET"]
+        }
+      ]
+    },
+    "snjallt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "snjall",
+          "guid": "48540c8594187da6c92e7a716b61d67f",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-HK-NFET", "FSB-HK-ÞFET"]
         }
       ]
     },
@@ -5754,6 +7121,18 @@
           "ofl": "so",
           "kyn": "",
           "tags": ["GM-FH-NT-2P-ET", "GM-FH-NT-3P-ET"]
+        }
+      ]
+    },
+    "spjaldinu": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "spjald",
+          "guid": "c93ba54af8766cb3097a7b422b60d9f6",
+          "ofl": "no",
+          "kyn": "hk",
+          "tags": ["ÞGFETgr"]
         }
       ]
     },
@@ -6045,6 +7424,23 @@
         }
       ]
     },
+    "stjórnar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "stjórn",
+          "guid": "79e9fdbfab20ef049e34cd4b3ddf631c",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "stjórna",
+          "guid": "0ca5e5787915af171a3705d4adb1507b",
+          "ofl": "so",
+          "kyn": ""
+        }
+      ]
+    },
     "stjórnmálamaður": {
       "found": true,
       "lemmas": [
@@ -6230,6 +7626,30 @@
         }
       ]
     },
+    "svartar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "svartur",
+          "guid": "cdea3bfdb358092fcd4dfa49413dfc03",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFFT", "FSB-KVK-ÞFFT"]
+        }
+      ]
+    },
+    "svartir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "svartur",
+          "guid": "cdea3bfdb358092fcd4dfa49413dfc03",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KK-NFFT"]
+        }
+      ]
+    },
     "svartur": {
       "found": true,
       "lemmas": [
@@ -6290,6 +7710,41 @@
           "ord": "svíða",
           "guid": "9caf4218447450862d470c44ac7fd4a3",
           "ofl": "so",
+          "kyn": ""
+        }
+      ]
+    },
+    "svört": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "svartur",
+          "guid": "cdea3bfdb358092fcd4dfa49413dfc03",
+          "ofl": "lo",
+          "kyn": "",
+          "tags": ["FSB-KVK-NFET", "FSB-HK-NFFT", "FSB-HK-ÞFFT"]
+        }
+      ]
+    },
+    "synda": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "synd",
+          "guid": "34ab882900babf7735e77c0a81e62be1",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "synda",
+          "guid": "4a2489197deb1427624ede1adc51306a",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "syndur",
+          "guid": "30383c521aae5b39f65d8313cde383b8",
+          "ofl": "lo",
           "kyn": ""
         }
       ]
@@ -6394,6 +7849,23 @@
         }
       ]
     },
+    "sætur": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "sæta",
+          "guid": "906e75dbad1c39f0425799569b51a64f",
+          "ofl": "no",
+          "kyn": "kvk"
+        },
+        {
+          "ord": "sætur",
+          "guid": "6f648651fb76e7f8477118a11ed0ed4a",
+          "ofl": "lo",
+          "kyn": ""
+        }
+      ]
+    },
     "sögulegt": {
       "found": true,
       "lemmas": [
@@ -6454,6 +7926,18 @@
         }
       ]
     },
+    "tengir": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "tengja",
+          "guid": "50ae5b7c4ef0874fa8c9925c823b96b3",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-FH-NT-2P-ET", "GM-FH-NT-3P-ET", "GM-VH-NT-2P-ET"]
+        }
+      ]
+    },
     "til": {
       "found": true,
       "lemmas": [
@@ -6507,6 +7991,18 @@
         }
       ]
     },
+    "tónlist": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "tónlist",
+          "guid": "d4ef10e70dd4a402fd78b564b1cbde28",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["NFET", "ÞFET", "ÞGFET"]
+        }
+      ]
+    },
     "trefill": {
       "found": true,
       "lemmas": [
@@ -6552,6 +8048,18 @@
           "ofl": "to",
           "kyn": "",
           "tags": ["KK-ÞFFT"]
+        }
+      ]
+    },
+    "tvær": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "tveir",
+          "guid": "26075fa7fefbcb62939d668632567454",
+          "ofl": "to",
+          "kyn": "",
+          "tags": ["KVK-NFFT", "KVK-ÞFFT"]
         }
       ]
     },
@@ -6605,6 +8113,18 @@
           "ofl": "no",
           "kyn": "kk",
           "tags": ["NFET"]
+        }
+      ]
+    },
+    "undirflokkunum": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "undirflokkur",
+          "guid": "d8119c61de458036139790856697b980",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["ÞGFFTgr"]
         }
       ]
     },
@@ -6828,6 +8348,18 @@
           "guid": "6a8d80e30266935094fe9fe1cbc01101",
           "ofl": "so",
           "kyn": ""
+        }
+      ]
+    },
+    "velja": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "velja",
+          "guid": "6a8d80e30266935094fe9fe1cbc01101",
+          "ofl": "so",
+          "kyn": "",
+          "tags": ["GM-NH", "GM-FH-NT-3P-FT"]
         }
       ]
     },
@@ -7264,6 +8796,18 @@
     },
     "þríhyrningslaga": {
       "found": false
+    },
+    "þrjár": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "þrír",
+          "guid": "0ebb9b197e8d7bfc0cc6b66abdf51a5b",
+          "ofl": "to",
+          "kyn": "",
+          "tags": ["KVK-NFFT", "KVK-ÞFFT"]
+        }
+      ]
     },
     "þungt": {
       "found": true,

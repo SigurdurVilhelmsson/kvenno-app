@@ -94,6 +94,7 @@ guidingQuestions:
   - id: q1
     question: Hvers konar matur er þetta?
     icon: 📚
+    label: Flokkar
     answers:
       A1:
         - ávöxtur
@@ -123,6 +124,7 @@ guidingQuestions:
   - id: q2
     question: Hvernig lítur það út?
     icon: 👁️
+    label: Útlit
     answers:
       A1:
         - rautt
@@ -153,6 +155,7 @@ guidingQuestions:
   - id: q3
     question: Hvernig bragðast það?
     icon: 👅
+    label: Bragð
     answers:
       A1:
         - sætt
@@ -184,6 +187,7 @@ guidingQuestions:
   - id: q4
     question: Hvernig finnst það við snertingu?
     icon: ✋
+    label: Áferð
     answers:
       A1:
         - mjúkt
@@ -219,6 +223,7 @@ guidingQuestions:
   - id: q5
     question: Hvernig lyktar af því?
     icon: 👃
+    label: Lykt
     answers:
       A1:
         - gott
@@ -245,6 +250,7 @@ guidingQuestions:
   - id: q6
     question: Hvaða lögun hefur það?
     icon: 🔷
+    label: Lögun
     answers:
       A1:
         - kringlótt
@@ -276,6 +282,7 @@ guidingQuestions:
   - id: q7
     question: Til hvers er það notað?
     icon: 🎯
+    context: notagildi
     answers:
       A1:
         - til að borða
@@ -295,6 +302,7 @@ guidingQuestions:
   - id: q8
     question: Hver notar þetta?
     icon: 👤
+    context: hver
     answers:
       A1:
         - allir
@@ -317,6 +325,7 @@ guidingQuestions:
   - id: q9
     question: Hvar er hægt að finna þetta?
     icon: 📍
+    context: hvar
     answers:
       A1:
         - heima
@@ -339,6 +348,7 @@ guidingQuestions:
   - id: q10
     question: Hvenær er þetta notað?
     icon: 🕐
+    context: hvenaer
     answers:
       A1:
         - á morgnana

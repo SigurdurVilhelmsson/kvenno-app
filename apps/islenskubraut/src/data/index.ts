@@ -21,9 +21,10 @@ export function getCategoryById(id: string): Category | undefined {
 
 export type {
   Category,
+  ContextKind,
+  GuidingQuestion,
   Level,
   LevelText,
   SubCategory,
   SentenceFrame,
-  GuidingQuestion,
 } from './types';

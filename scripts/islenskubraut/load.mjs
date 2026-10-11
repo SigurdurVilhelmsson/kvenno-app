@@ -10,6 +10,19 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export const CONTENT_DIR = resolve(ROOT, 'content/islenskubraut');
 export const LEVELS = ['A1', 'A2', 'B1'];
 
+/**
+ * The four "Notagildi og samhengi" questions, which print as coloured boxes below a card's
+ * main questions, and their colours. A question opts in with `context: <kind>` in the YAML;
+ * until Oct 2026 both renderers decided it from the question's emoji, each from its own list.
+ * Each colour carries white text and its own tinted answers at 4.5:1 or better (WCAG AA).
+ */
+export const CONTEXT_COLORS = {
+  hvar: '#B91C1C',
+  hvenaer: '#107837',
+  hver: '#C2410C',
+  notagildi: '#1D4ED8',
+};
+
 /** Category order as the SPA presents it. Not alphabetical — this is the taught order. */
 export const CATEGORY_ORDER = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur'];
 
@@ -48,6 +61,20 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
   const guidingQuestions = (doc.guidingQuestions ?? []).map((q) => {
     checkString(q.question, `${id}.${q.id}.question`);
     checkString(q.icon, `${id}.${q.id}.icon`);
+    // A main question carries a label printed under it ("Útlit"); a context question carries
+    // its kind instead, and has no label because its box shows only the question.
+    assert(
+      (q.label === undefined) !== (q.context === undefined),
+      `${id}.${q.id} needs exactly one of label (a main question) or context (a coloured box)`
+    );
+    if (q.context !== undefined) {
+      assert(
+        Object.hasOwn(CONTEXT_COLORS, q.context),
+        `${id}.${q.id}.context is "${q.context}", not one of ${Object.keys(CONTEXT_COLORS).join(', ')}`
+      );
+    } else {
+      checkString(q.label, `${id}.${q.id}.label`);
+    }
     const answers = LEVELS.filter((l) => q.answers?.[l]).map((level) => {
       const options = q.answers[level];
       assert(Array.isArray(options) && options.length > 0, `${id}.${q.id}.${level} is empty`);
@@ -55,7 +82,11 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
       return { level, options };
     });
     assert(answers.length > 0, `${id}.${q.id} has no answers at any level`);
-    return { question: q.question, icon: q.icon, answers };
+    const kind =
+      q.context === undefined
+        ? { label: q.label }
+        : { context: { kind: q.context, color: CONTEXT_COLORS[q.context] } };
+    return { question: q.question, icon: q.icon, ...kind, answers };
   });
 
   // One worked example and one teacher note per level, printed with the sentence frames.
