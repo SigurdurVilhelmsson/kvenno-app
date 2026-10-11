@@ -153,7 +153,35 @@ export function toYamlShape(category) {
       ...(q.context ? { context: q.context.kind } : { label: q.label }),
       answers: Object.fromEntries(q.answers.map((a) => [a.level, a.options])),
     })),
+    ...(category.builder ? { builder: builderYamlShape(category.builder) } : {}),
   };
+}
+
+/** The sentence builder's tags as the YAML writes them: the inverse of `loadBuilder`. */
+function builderYamlShape(builder) {
+  return Object.fromEntries(
+    builder.map(({ level, subject, frames, lemmas }) => [
+      level,
+      {
+        subject:
+          subject.kind === 'person'
+            ? { person: true }
+            : subject.kind === 'word'
+              ? { word: subject.word }
+              : { words: subject.words, ...(subject.plural ? { plural: subject.plural } : {}) },
+        frames: frames.map((f) => ({
+          frame: f.frame,
+          ...(f.agree.length > 0
+            ? { agree: Object.fromEntries(f.agree.map((a) => [a.word, a.role])) }
+            : {}),
+          ...(f.blank?.subject ? { blank: 'subject' } : {}),
+          ...(f.blank?.words ? { words: f.blank.words } : {}),
+          ...(f.blank?.form && f.blank.form !== 'as-is' ? { form: f.blank.form } : {}),
+        })),
+        ...(lemmas ? { lemmas } : {}),
+      },
+    ])
+  );
 }
 
 /**

@@ -419,4 +419,79 @@ export const dyr: Category = {
       ],
     },
   ],
+  builder: [
+    {
+      level: 'A1',
+      subject: {
+        kind: 'word',
+        word: 'dýr',
+      },
+      frames: [
+        {
+          frame: 'Þetta er dýr.',
+          agree: [],
+          blank: null,
+        },
+        {
+          frame: 'Það er ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+          ],
+          blank: {
+            words: 'Stærð',
+            options: ['lítið', 'meðalstórt', 'stórt', 'mjög stórt'],
+            form: 'agree',
+          },
+        },
+        {
+          frame: 'Það hefur ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+          ],
+          blank: {
+            words: 'Hvernig lítur það út?',
+            options: ['feldur', 'fjaðrir', 'hreistur', 'hali'],
+            form: 'ÞF',
+          },
+        },
+        {
+          frame: 'Það hljómar ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+          ],
+          blank: {
+            words: 'Hvaða hljóð gefur það frá sér?',
+            options: ['hátt', 'lágt', 'þögult'],
+            form: 'as-is',
+          },
+        },
+        {
+          frame: 'Maður notar það ___.',
+          agree: [
+            {
+              word: 'það',
+              role: 'ÞF',
+            },
+          ],
+          blank: {
+            words: 'Til hvers er það notað?',
+            options: ['til að gæta', 'til að klappa', 'til að borða'],
+            form: 'as-is',
+          },
+        },
+      ],
+      lemmas: {
+        hali: 'hali',
+      },
+    },
+  ],
 };

@@ -408,4 +408,69 @@ export const stadir: Category = {
       ],
     },
   ],
+  builder: [
+    {
+      level: 'A1',
+      subject: {
+        kind: 'words',
+        words: 'Hvers konar staður er þetta?',
+        options: ['hús', 'skóli', 'búð', 'sundlaug'],
+      },
+      frames: [
+        {
+          frame: 'Þetta er ___.',
+          agree: [
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            subject: true,
+          },
+        },
+        {
+          frame: 'Maður ___ þar.',
+          agree: [],
+          blank: {
+            words: 'Hvað gerir maður þar',
+            options: ['borðar', 'verslar', 'syndir', 'lærir', 'vinnur', 'sefur', 'leikur sér'],
+            form: 'as-is',
+          },
+        },
+        {
+          frame: 'Það er ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            words: 'Hvernig lítur þetta út?',
+            options: ['stórt', 'lítið', 'hátt', 'lágt'],
+            form: 'agree',
+          },
+        },
+        {
+          frame: 'Maður notar það ___.',
+          agree: [
+            {
+              word: 'það',
+              role: 'ÞF',
+            },
+          ],
+          blank: {
+            words: 'Til hvers er þetta notað?',
+            options: ['til að búa', 'til að læra', 'til að versla'],
+            form: 'as-is',
+          },
+        },
+      ],
+    },
+  ],
 };

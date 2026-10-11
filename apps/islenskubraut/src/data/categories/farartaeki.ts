@@ -398,4 +398,88 @@ export const farartaeki: Category = {
       ],
     },
   ],
+  builder: [
+    {
+      level: 'A1',
+      subject: {
+        kind: 'words',
+        words: 'Hvers konar farartæki er þetta?',
+        options: ['bíll', 'rúta', 'hjól', 'flugvél', 'skip'],
+      },
+      frames: [
+        {
+          frame: 'Þetta er ___.',
+          agree: [
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            subject: true,
+          },
+        },
+        {
+          frame: 'Það fer ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+          ],
+          blank: {
+            words: 'Hvar er hægt að nota/finna þetta?',
+            options: ['á götunni', 'á sjónum', 'í loftinu'],
+            form: 'as-is',
+          },
+        },
+        {
+          frame: 'Það er ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            words: 'Hvernig lítur það út?',
+            options: ['stórt', 'lítið', 'með hjólum', 'án hjóla'],
+            form: 'agree',
+          },
+        },
+        {
+          frame: 'Það hljómar ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+          ],
+          blank: {
+            words: 'Hvaða hljóð gefur það frá sér?',
+            options: ['hátt', 'lágt', 'þögult'],
+            form: 'as-is',
+          },
+        },
+        {
+          frame: 'Maður notar það ___.',
+          agree: [
+            {
+              word: 'það',
+              role: 'ÞF',
+            },
+          ],
+          blank: {
+            words: 'Til hvers er það notað?',
+            options: ['til að ferðast', 'til að flytja', 'til að leika sér'],
+            form: 'as-is',
+          },
+        },
+      ],
+    },
+  ],
 };

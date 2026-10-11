@@ -286,7 +286,8 @@ person, now 5 (D3). These two need a ruling.
 - [ ] **Show gender and the needed form on the cards.** The original ask: a frame like
       `Það hefur ___.` needs `feld`, `hala`, `gogg`, while the chips say `feldur`, `hali`,
       `goggur`. BÍN supplies the gender and the forms; it cannot say which case each frame's
-      blank takes. That tagging is a teaching call, per frame.
+      blank takes. That tagging is a teaching call, per frame. **Drafted for A1 on 2026-10-11 for
+      the sentence builder; confirm it under C9.**
   - When the cards show BÍN forms, the SPA card and the printed PDF must name the source in
     BÍN's wording (see `content/islenskubraut/bin/README.md`). The data is CC BY-SA 4.0, so
     also decide whether the card content that carries it is published under that licence too.
@@ -316,6 +317,42 @@ tagging.
     level check, `scripts/islenskubraut/load.mjs`, the spreadsheet export and the PDF's
     teacher notes). Move the level list into the content first, so changing levels later
     needs no code edit.
+
+### C9. Sentence builder tags, A1 (2026-10-11)
+
+The sentence builder (D3, Features) needs to know, for each card frame, which words fill the blank
+and in what form, and which words in the frame follow the subject. Claude drafted these for all six
+categories at A1, under `builder:` at the end of each `content/islenskubraut/*.yaml`. **Nothing
+reaches students until they are confirmed.** `pnpm islenskubraut:smidur` prints every sentence the
+tags produce, once the inflection tables are fetched (`pnpm islenskubraut:bin --fetch`).
+
+How the tags read: the subject (picked by the student from a list, or fixed, as `dýr` is) has a
+gender and number from BÍN. `NF` and `ÞF` mark a pronoun that follows it (`Það er` → `Hann er`,
+`notar það` → `notar hann`), `sögn` marks `er`, which becomes `eru` for a plural subject. A blank
+is filled as written, made to `agree` (an adjective: `sætt` → `sætur`), or put in the `ÞF` (a noun
+after `hefur`: `feldur` → `feld`).
+
+- [ ] **Confirm the tags, category by category.** In brief:
+  - `dyr`: fixed subject `dýr`. `Það er ___.` agrees with Stærð; `Það hefur ___.` puts the
+    appearance nouns in ÞF; sounds and uses as written.
+  - `matur`, `farartaeki`, `stadir`, `klaednadur`: the student picks the subject from
+    "Hvers konar … er þetta?" and `Þetta er ___.` names it. `Það er ___.` agrees with the
+    appearance or taste answers; the rest as written.
+  - `manneskja`: the student picks `hún` or `hann`, since a person's pronoun follows the person,
+    not the noun (`kennari` can be `hún`). `Þetta er ___.` takes the job as written.
+- [ ] **Should the builder change the card's `Það` at all?** The cards print `Það er ___.` and
+      `Maður notar það ___.`; for a masculine or feminine subject the builder writes `Hann er
+    stór.` and `Maður notar hann …`. That is correct Icelandic, but it means an A1 learner meets
+      the gendered pronouns here before C8's A1.2 step would teach them. The other choice is to
+      keep `Það` and agree only the adjective, which is wrong for a gendered noun (`Það er stór`).
+- [ ] **Two readings chosen by Claude.** BÍN reads `hali` as three words (`hal`, `hali`,
+      `halur`) and `sætt` as two (`sær`, `sætur`); the builder refuses to guess, so the YAML
+      names `hali` and `sætur` under `lemmas`. Confirm both.
+- [ ] **`skór` is read as plural** (`Þetta eru skór.`), since BÍN gives the same form for one
+      and many. Listed under `plural:` in `klaednadur.yaml`.
+- [ ] **Chips that are phrases are left as written** apart from their adjectives:
+      `með hjólum` stays `með hjólum` in `Hann er með hjólum.` Check the printed list reads
+      right with every subject.
 
 ## D. Work that needs no ruling
 
@@ -603,7 +640,13 @@ Both fixed 2026-10-10 (PR for this branch).
 **Features (larger, each its own PR)**
 
 - [ ] **Sentence builder for students**: pick a frame, tap words, get the correctly inflected
-      sentence. Needs C7's gender and case data.
+      sentence. A1 only, a page of its own per category. In two PRs:
+  - [x] Data and engine (2026-10-11): the drafted tags in the YAML (C9), BÍN's inflection
+        tables in `content/islenskubraut/bin/beygingar.json` (fetched by
+        `pnpm islenskubraut:bin --fetch`), the grammar in `scripts/islenskubraut/smidur.mjs`, and
+        `pnpm islenskubraut:smidur` to print every sentence for review.
+  - [ ] The student page, `/islenskubraut/smidur/:flokkur`, with BÍN's attribution. Waits on C9
+        and on the inflection tables being fetched and committed.
 - [ ] **Picture support**: a printable picture set per category, and pictograms on the A1 chips.
       Check any pictogram set's licence first.
 - [ ] **A teacher sheet per category** with activities (guessing games, pair work), replacing the

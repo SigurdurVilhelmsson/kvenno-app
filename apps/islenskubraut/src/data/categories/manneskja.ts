@@ -296,4 +296,62 @@ export const manneskja: Category = {
       ],
     },
   ],
+  builder: [
+    {
+      level: 'A1',
+      subject: {
+        kind: 'person',
+      },
+      frames: [
+        {
+          frame: 'Þetta er ___.',
+          agree: [],
+          blank: {
+            words: 'Starf/hlutverk',
+            options: [
+              'leikari',
+              'íþróttamaður',
+              'söngvari',
+              'stjórnmálamaður',
+              'nemandi',
+              'kennari',
+              'læknir',
+              'lögreglumaður',
+              'kokkur',
+              'listamaður',
+            ],
+            form: 'as-is',
+          },
+        },
+        {
+          frame: 'Hún/Hann er ___.',
+          agree: [
+            {
+              word: 'Hún/Hann',
+              role: 'NF',
+            },
+          ],
+          blank: {
+            words: 'Hvernig lítur hún/hann út?',
+            options: ['há/hár', 'lág/lágur', 'ung/ungur', 'gömul/gamall'],
+            form: 'agree',
+          },
+        },
+        {
+          frame: 'Hún/Hann ___.',
+          agree: [
+            {
+              word: 'Hún/Hann',
+              role: 'NF',
+            },
+          ],
+          blank: {
+            words: 'Hvað gerir hún/hann?',
+            options: ['vinnur', 'lærir', 'leikur sér'],
+            form: 'as-is',
+          },
+        },
+      ],
+    },
+  ],
 };

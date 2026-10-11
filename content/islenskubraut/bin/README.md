@@ -5,12 +5,16 @@
 
 - `ordmyndir.json` holds BÍN's answers, written by `pnpm islenskubraut:bin --fetch`. Do not
   edit it by hand.
+- `beygingar.json` holds the whole inflection table of each word the sentence builder inflects
+  or reads a gender from (`scripts/islenskubraut/smidur.mjs`), fetched by its BÍN GUID by the
+  same `--fetch`. Do not edit it by hand either. `pnpm islenskubraut:smidur` prints every
+  sentence the builder makes from it.
 - `ekki-i-bin.yaml` lists correct words that BÍN-kjarninn does not carry, each with the
   reason someone checked it. People edit this one.
 
-## Licence of `ordmyndir.json`
+## Licence of `ordmyndir.json` and `beygingar.json`
 
-The rest of this repository is MIT. **`ordmyndir.json` is not.** It is data from BÍN-kjarninn,
+The rest of this repository is MIT. **`ordmyndir.json` and `beygingar.json` are not.** It is data from BÍN-kjarninn,
 released under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). BÍN's terms of
 use (https://bin.arnastofnun.is/) say that anyone may use it and publish data from it free of
 charge, on two conditions:
@@ -20,6 +24,6 @@ charge, on two conditions:
 - **Name its origin**, in this wording: Gögnin eru úr Beygingarlýsingu íslensks nútímamáls
   (BÍN) og eru í eigu Stofnunar Árna Magnússonar í íslenskum fræðum.
 
-The file carries that statement and the licence in its own `_heimild` and `_leyfi` fields, so
+Each file carries that statement and the licence in its own `_heimild` and `_leyfi` fields, so
 they travel with it. Any page or PDF that shows students forms taken from it must carry the
 same attribution.

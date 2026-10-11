@@ -327,3 +327,24 @@ guidingQuestions:
         - daglega
         - sjaldan
         - oft
+builder:
+  A1:
+    subject:
+      words: Hvers konar staður er þetta?
+    frames:
+      - frame: Þetta er ___.
+        agree:
+          er: sögn
+        blank: subject
+      - frame: Maður ___ þar.
+        words: Hvað gerir maður þar
+      - frame: Það er ___.
+        agree:
+          Það: NF
+          er: sögn
+        words: Hvernig lítur þetta út?
+        form: agree
+      - frame: Maður notar það ___.
+        agree:
+          það: ÞF
+        words: Til hvers er þetta notað?

@@ -486,4 +486,61 @@ export const klaednadur: Category = {
       ],
     },
   ],
+  builder: [
+    {
+      level: 'A1',
+      subject: {
+        kind: 'words',
+        words: 'Hvers konar klæðnaður er þetta?',
+        options: ['bolur', 'buxur', 'jakki', 'skór'],
+        plural: ['skór'],
+      },
+      frames: [
+        {
+          frame: 'Þetta er ___.',
+          agree: [
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            subject: true,
+          },
+        },
+        {
+          frame: 'Það er ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            words: 'Hvernig lítur það út?',
+            options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt'],
+            form: 'agree',
+          },
+        },
+        {
+          frame: 'Maður notar það ___.',
+          agree: [
+            {
+              word: 'það',
+              role: 'ÞF',
+            },
+          ],
+          blank: {
+            words: 'Hvar er hægt að nota þetta?',
+            options: ['inni', 'úti', 'í skólanum'],
+            form: 'as-is',
+          },
+        },
+      ],
+    },
+  ],
 };

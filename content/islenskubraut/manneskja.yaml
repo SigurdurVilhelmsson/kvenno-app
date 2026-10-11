@@ -226,3 +226,19 @@ guidingQuestions:
         - daglega
         - sjaldan
         - oft
+builder:
+  A1:
+    subject:
+      person: true
+    frames:
+      - frame: Þetta er ___.
+        words: Starf/hlutverk
+      - frame: Hún/Hann er ___.
+        agree:
+          Hún/Hann: NF
+        words: Hvernig lítur hún/hann út?
+        form: agree
+      - frame: Hún/Hann ___.
+        agree:
+          Hún/Hann: NF
+        words: Hvað gerir hún/hann?
