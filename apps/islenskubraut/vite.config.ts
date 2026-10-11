@@ -13,14 +13,8 @@ export default defineConfig({
       '@shared': path.resolve(__dirname, '../../packages/shared'),
     },
   },
-  // The download button calls /api/islenskubraut/pdf on its own origin, which nginx
-  // proxies in production. Without this the dev server answers it with a 404.
-  // Run the backend beside it: `pnpm --filter kvenno-server dev`.
-  server: {
-    proxy: {
-      '/api': 'http://localhost:8000',
-    },
-  },
+  // The cards are static files in public/spjold/, rendered by the `spjold` script before
+  // `dev` and `build`, so the app needs no backend at all.
   build: {
     outDir: '../../dist/islenskubraut',
     emptyOutDir: false,

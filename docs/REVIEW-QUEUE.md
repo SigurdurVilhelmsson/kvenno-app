@@ -519,9 +519,20 @@ joins the list of probably-right compounds below.
       It now never breaks a word.
 - [x] **The vocabulary page filled half of A4 at 10 pt.** Its words are 12 pt now, in larger chips,
       and Klæðnaður's seven word groups still fit one page. 13 pt did not.
-- [ ] **Pre-render the 18 PDFs at build time** and serve them as static files. Each depends only
-      on category and level. It removes the backend from the download (the failures behind PRs
-      #87–#89), lets the button become a plain link, and lets CI run the three-page test.
+- [x] **Pre-render the 18 PDFs at build time.** Done 2026-10-11 (PR for this branch).
+      `server/src/scripts/render-spjold.ts` (`pnpm islenskubraut:spjold`) writes every card to
+      `apps/islenskubraut/public/spjold/`, gitignored, before the app's `dev` and `build`, so
+      they ship as `dist/islenskubraut/spjold/spjald-<flokkur>-<stig>.pdf`. The build fails on a
+      card that is not three pages. The button is a plain link with `download`; the app no
+      longer calls the backend, and its dev proxy is gone. An e2e test downloads a card through
+      the link and fetches all 18, with a missing one answering 404.
+  - [ ] **After the deploy that carries it, install `server/nginx-site.conf`** (`deploy.sh`
+        does not): it adds `location ^~ /islenskubraut/spjold/`, which revalidates the cards
+        rather than caching them and answers a missing one with 404 instead of the app's
+        `index.html`. The download works without it, through the `/islenskubraut/` location.
+        Then, on https://kvenno.app/islenskubraut/, download one card and check it opens.
+  - [ ] **Remove `GET /api/islenskubraut/pdf`** once that deploy is live. Nothing in the app
+        calls it now; it stays for one deploy so a page left open across it still downloads.
 - [ ] **The preview does not match the PDF.** Different page order, and the preview's fixed-ratio
       boxes scroll inside themselves instead of showing where the page overflows.
 
@@ -554,6 +565,7 @@ All five fixed 2026-10-10 (PR for this branch).
       lab-reports and the games (D1).
 - [x] **Download errors use `alert()`.** The error now shows below the button in a live region,
       and the file is saved as `spjald-dyr-A1.pdf`, the name the server gives it.
+      Since 2026-10-11 the button is a link to a static file, so there is no request to fail.
 
 **Code**
 

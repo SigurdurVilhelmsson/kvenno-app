@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { Level } from '../data/types';
 
 interface DownloadButtonProps {
@@ -8,90 +6,38 @@ interface DownloadButtonProps {
   color: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+/**
+ * Where a card's PDF is served. The build renders all 18 into `public/spjold/` (the `spjold`
+ * script in `server/src/scripts/render-spjold.ts`, which names them the same way), so this is a
+ * plain link: no backend, no loading state, nothing to fail at download time.
+ */
+function spjaldHref(categoryId: string, level: Level): string {
+  return `${import.meta.env.BASE_URL}spjold/spjald-${categoryId}-${level}.pdf`;
+}
 
 export function DownloadButton({ categoryId, level, color }: DownloadButtonProps) {
-  const [loading, setLoading] = useState(false);
-  const [failed, setFailed] = useState(false);
-
-  const handleDownload = async () => {
-    setLoading(true);
-    setFailed(false);
-    try {
-      const response = await fetch(
-        `${API_URL}/api/islenskubraut/pdf?flokkur=${categoryId}&stig=${level}`
-      );
-      if (!response.ok) {
-        throw new Error('PDF download failed');
-      }
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      // The name the server gives the file too (`Content-Disposition`).
-      a.download = `spjald-${categoryId}-${level}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-      setFailed(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div>
-      <button
-        onClick={handleDownload}
-        disabled={loading}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{ backgroundColor: color }}
+    <a
+      href={spjaldHref(categoryId, level)}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg"
+      style={{ backgroundColor: color }}
+    >
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
       >
-        {loading ? (
-          <>
-            <svg
-              className="animate-spin h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-            <span>Bý til PDF...</span>
-          </>
-        ) : (
-          <>
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <span>Hlaða niður PDF</span>
-          </>
-        )}
-      </button>
-      {/* Shown beside the button, not in a dialog, and announced when it appears. */}
-      <p role="alert" className="mt-2 text-sm text-red-700">
-        {failed ? 'Villa kom upp við niðurhal. Reyndu aftur.' : ''}
-      </p>
-    </div>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+      <span>Hlaða niður PDF</span>
+    </a>
   );
 }

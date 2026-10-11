@@ -38,6 +38,7 @@ const MIME = {
   '.webp': 'image/webp',
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
+  '.pdf': 'application/pdf',
   '.ttf': 'font/ttf',
   '.txt': 'text/plain; charset=utf-8',
   '.webmanifest': 'application/manifest+json',
@@ -76,7 +77,16 @@ function tryServeFile(filePath, res) {
   return false;
 }
 
+// Static files with no SPA behind them (mirroring their own nginx location): a missing one is
+// a 404, never the app's index.html, which a browser would save under a .pdf name.
+const NO_FALLBACK = ['/islenskubraut/spjold/'];
+
 function fallbackIndex(urlPath, res) {
+  if (NO_FALLBACK.some((prefix) => urlPath.startsWith(prefix))) {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Not Found');
+    return;
+  }
   for (const { prefix, indexPath } of SPA_FALLBACKS) {
     if (urlPath.startsWith(prefix)) {
       const file = join(distDir, indexPath);

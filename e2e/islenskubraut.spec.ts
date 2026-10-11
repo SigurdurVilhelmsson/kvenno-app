@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { test, expect } from '@playwright/test';
 
 test.describe('Islenskubraut — Category grid', () => {
@@ -140,5 +142,42 @@ test.describe('Islenskubraut — fonts', () => {
       [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family)
     );
     expect(loaded).toEqual(expect.arrayContaining(['DM Sans', 'Plus Jakarta Sans']));
+  });
+});
+
+test.describe('Islenskubraut — card download', () => {
+  test('downloads the card for the chosen level as a three-page PDF, with no backend', async ({
+    page,
+  }) => {
+    // The cards are rendered at build time; nothing may reach for the old /api route.
+    const apiCalls: string[] = [];
+    page.on('request', (r) => {
+      if (new URL(r.url()).pathname.startsWith('/api/')) apiCalls.push(r.url());
+    });
+    await page.goto('/islenskubraut/spjald/klaednadur?stig=B1');
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByRole('link', { name: 'Hlaða niður PDF' }).click(),
+    ]);
+    expect(download.suggestedFilename()).toBe('spjald-klaednadur-B1.pdf');
+
+    const path = await download.path();
+    const pdf = readFileSync(path!);
+    expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-');
+    expect(pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g)).toHaveLength(3);
+    expect(apiCalls).toEqual([]);
+  });
+
+  test('every card the app can link to exists', async ({ request }) => {
+    for (const id of ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur']) {
+      for (const level of ['A1', 'A2', 'B1']) {
+        const res = await request.get(`/islenskubraut/spjold/spjald-${id}-${level}.pdf`);
+        expect(res.status(), `${id} ${level}`).toBe(200);
+        expect(res.headers()['content-type']).toBe('application/pdf');
+      }
+    }
+    // A card that does not exist is a 404, not the app's index.html under a .pdf name.
+    expect((await request.get('/islenskubraut/spjold/spjald-dyr-C2.pdf')).status()).toBe(404);
   });
 });

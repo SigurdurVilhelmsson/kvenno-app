@@ -390,6 +390,22 @@ export function createSpjaldDocument(category: Category, level: Level): ReactEle
   );
 }
 
+/** The three levels every category is printed at. */
+export const LEVELS: readonly Level[] = ['A1', 'A2', 'B1'];
+
+/**
+ * The file a card is saved as. The build writes each card under this name and the app links
+ * to it (`DownloadButton.tsx` builds the same name), so a download keeps it.
+ */
+export function spjaldFileName(categoryId: string, level: Level): string {
+  return `spjald-${categoryId}-${level}.pdf`;
+}
+
+/** Pages in a rendered PDF: each page object, not the `/Pages` tree that holds them. */
+export function pdfPageCount(pdf: Buffer): number {
+  return pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g)?.length ?? 0;
+}
+
 /**
  * Generate a PDF buffer for a teaching card.
  * @param category - The category data

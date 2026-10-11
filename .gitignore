@@ -3,6 +3,8 @@ node_modules/
 
 # Build output
 dist/
+# Íslenskubraut cards, rendered by `pnpm islenskubraut:spjold` on every build and dev start
+apps/islenskubraut/public/spjold/
 coverage/
 
 # Environment files

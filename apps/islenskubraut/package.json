@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "pnpm run spjold && vite",
+    "build": "pnpm run spjold && tsc && vite build",
+    "spjold": "pnpm --filter kvenno-server spjold",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"
