@@ -109,7 +109,8 @@ function rejectUnusable(categoryId, rows) {
 
 /**
  * Rebuild a category from rows. `base` supplies the fields the sheet does not
- * carry (id, name, icon, color, and each question's icon, label and context kind), which are structural
+ * carry (id, name, icon, color, each question's icon, label and context kind, and the sentence
+ * builder's tags), which are structural
  * rather than reviewable prose. Always the real category loaded from YAML in
  * production — never inferred, since a fabricated fallback would hardcode one
  * category's identity into a module that must handle all six.

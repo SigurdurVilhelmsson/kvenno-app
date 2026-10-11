@@ -429,6 +429,81 @@ export const categories: Category[] = [
         ],
       },
     ],
+    builder: [
+      {
+        level: 'A1',
+        subject: {
+          kind: 'word',
+          word: 'dýr',
+        },
+        frames: [
+          {
+            frame: 'Þetta er dýr.',
+            agree: [],
+            blank: null,
+          },
+          {
+            frame: 'Það er ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+            ],
+            blank: {
+              words: 'Stærð',
+              options: ['lítið', 'meðalstórt', 'stórt', 'mjög stórt'],
+              form: 'agree',
+            },
+          },
+          {
+            frame: 'Það hefur ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+            ],
+            blank: {
+              words: 'Hvernig lítur það út?',
+              options: ['feldur', 'fjaðrir', 'hreistur', 'hali'],
+              form: 'ÞF',
+            },
+          },
+          {
+            frame: 'Það hljómar ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+            ],
+            blank: {
+              words: 'Hvaða hljóð gefur það frá sér?',
+              options: ['hátt', 'lágt', 'þögult'],
+              form: 'as-is',
+            },
+          },
+          {
+            frame: 'Maður notar það ___.',
+            agree: [
+              {
+                word: 'það',
+                role: 'ÞF',
+              },
+            ],
+            blank: {
+              words: 'Til hvers er það notað?',
+              options: ['til að gæta', 'til að klappa', 'til að borða'],
+              form: 'as-is',
+            },
+          },
+        ],
+        lemmas: {
+          hali: 'hali',
+        },
+      },
+    ],
   },
   {
     id: 'matur',
@@ -897,6 +972,79 @@ export const categories: Category[] = [
         ],
       },
     ],
+    builder: [
+      {
+        level: 'A1',
+        subject: {
+          kind: 'words',
+          words: 'Hvers konar matur er þetta?',
+          options: ['ávöxtur', 'grænmeti', 'kjöt', 'drykkur'],
+        },
+        frames: [
+          {
+            frame: 'Þetta er ___.',
+            agree: [
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              subject: true,
+            },
+          },
+          {
+            frame: 'Það er ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              words: 'Hvernig bragðast það?',
+              options: ['sætt', 'salt', 'súrt', 'beiskt'],
+              form: 'agree',
+            },
+          },
+          {
+            frame: 'Maður borðar það ___.',
+            agree: [
+              {
+                word: 'það',
+                role: 'ÞF',
+              },
+            ],
+            blank: {
+              words: 'Hvenær er þetta notað?',
+              options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+              form: 'as-is',
+            },
+          },
+          {
+            frame: 'Maður notar það ___.',
+            agree: [
+              {
+                word: 'það',
+                role: 'ÞF',
+              },
+            ],
+            blank: {
+              words: 'Til hvers er það notað?',
+              options: ['til að borða', 'til að drekka'],
+              form: 'as-is',
+            },
+          },
+        ],
+        lemmas: {
+          sætt: 'sætur',
+        },
+      },
+    ],
   },
   {
     id: 'farartaeki',
@@ -1298,6 +1446,90 @@ export const categories: Category[] = [
         ],
       },
     ],
+    builder: [
+      {
+        level: 'A1',
+        subject: {
+          kind: 'words',
+          words: 'Hvers konar farartæki er þetta?',
+          options: ['bíll', 'rúta', 'hjól', 'flugvél', 'skip'],
+        },
+        frames: [
+          {
+            frame: 'Þetta er ___.',
+            agree: [
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              subject: true,
+            },
+          },
+          {
+            frame: 'Það fer ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+            ],
+            blank: {
+              words: 'Hvar er hægt að nota/finna þetta?',
+              options: ['á götunni', 'á sjónum', 'í loftinu'],
+              form: 'as-is',
+            },
+          },
+          {
+            frame: 'Það er ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              words: 'Hvernig lítur það út?',
+              options: ['stórt', 'lítið', 'með hjólum', 'án hjóla'],
+              form: 'agree',
+            },
+          },
+          {
+            frame: 'Það hljómar ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+            ],
+            blank: {
+              words: 'Hvaða hljóð gefur það frá sér?',
+              options: ['hátt', 'lágt', 'þögult'],
+              form: 'as-is',
+            },
+          },
+          {
+            frame: 'Maður notar það ___.',
+            agree: [
+              {
+                word: 'það',
+                role: 'ÞF',
+              },
+            ],
+            blank: {
+              words: 'Til hvers er það notað?',
+              options: ['til að ferðast', 'til að flytja', 'til að leika sér'],
+              form: 'as-is',
+            },
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'manneskja',
@@ -1584,6 +1816,64 @@ export const categories: Category[] = [
               'sjaldan',
               'oft',
             ],
+          },
+        ],
+      },
+    ],
+    builder: [
+      {
+        level: 'A1',
+        subject: {
+          kind: 'person',
+        },
+        frames: [
+          {
+            frame: 'Þetta er ___.',
+            agree: [],
+            blank: {
+              words: 'Starf/hlutverk',
+              options: [
+                'leikari',
+                'íþróttamaður',
+                'söngvari',
+                'stjórnmálamaður',
+                'nemandi',
+                'kennari',
+                'læknir',
+                'lögreglumaður',
+                'kokkur',
+                'listamaður',
+              ],
+              form: 'as-is',
+            },
+          },
+          {
+            frame: 'Hún/Hann er ___.',
+            agree: [
+              {
+                word: 'Hún/Hann',
+                role: 'NF',
+              },
+            ],
+            blank: {
+              words: 'Hvernig lítur hún/hann út?',
+              options: ['há/hár', 'lág/lágur', 'ung/ungur', 'gömul/gamall'],
+              form: 'agree',
+            },
+          },
+          {
+            frame: 'Hún/Hann ___.',
+            agree: [
+              {
+                word: 'Hún/Hann',
+                role: 'NF',
+              },
+            ],
+            blank: {
+              words: 'Hvað gerir hún/hann?',
+              options: ['vinnur', 'lærir', 'leikur sér'],
+              form: 'as-is',
+            },
           },
         ],
       },
@@ -1998,6 +2288,71 @@ export const categories: Category[] = [
               'sjaldan',
               'oft',
             ],
+          },
+        ],
+      },
+    ],
+    builder: [
+      {
+        level: 'A1',
+        subject: {
+          kind: 'words',
+          words: 'Hvers konar staður er þetta?',
+          options: ['hús', 'skóli', 'búð', 'sundlaug'],
+        },
+        frames: [
+          {
+            frame: 'Þetta er ___.',
+            agree: [
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              subject: true,
+            },
+          },
+          {
+            frame: 'Maður ___ þar.',
+            agree: [],
+            blank: {
+              words: 'Hvað gerir maður þar',
+              options: ['borðar', 'verslar', 'syndir', 'lærir', 'vinnur', 'sefur', 'leikur sér'],
+              form: 'as-is',
+            },
+          },
+          {
+            frame: 'Það er ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              words: 'Hvernig lítur þetta út?',
+              options: ['stórt', 'lítið', 'hátt', 'lágt'],
+              form: 'agree',
+            },
+          },
+          {
+            frame: 'Maður notar það ___.',
+            agree: [
+              {
+                word: 'það',
+                role: 'ÞF',
+              },
+            ],
+            blank: {
+              words: 'Til hvers er þetta notað?',
+              options: ['til að búa', 'til að læra', 'til að versla'],
+              form: 'as-is',
+            },
           },
         ],
       },
@@ -2478,6 +2833,63 @@ export const categories: Category[] = [
               'sjaldan',
               'oft',
             ],
+          },
+        ],
+      },
+    ],
+    builder: [
+      {
+        level: 'A1',
+        subject: {
+          kind: 'words',
+          words: 'Hvers konar klæðnaður er þetta?',
+          options: ['bolur', 'buxur', 'jakki', 'skór'],
+          plural: ['skór'],
+        },
+        frames: [
+          {
+            frame: 'Þetta er ___.',
+            agree: [
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              subject: true,
+            },
+          },
+          {
+            frame: 'Það er ___.',
+            agree: [
+              {
+                word: 'Það',
+                role: 'NF',
+              },
+              {
+                word: 'er',
+                role: 'sögn',
+              },
+            ],
+            blank: {
+              words: 'Hvernig lítur það út?',
+              options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt'],
+              form: 'agree',
+            },
+          },
+          {
+            frame: 'Maður notar það ___.',
+            agree: [
+              {
+                word: 'það',
+                role: 'ÞF',
+              },
+            ],
+            blank: {
+              words: 'Hvar er hægt að nota þetta?',
+              options: ['inni', 'úti', 'í skólanum'],
+              form: 'as-is',
+            },
           },
         ],
       },

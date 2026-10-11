@@ -6,9 +6,12 @@ import {
   classify,
   collectWords,
   fetchForm,
+  fetchParadigm,
   formatNotFound,
   formsToFetch,
+  paradigmDocument,
   parseBinResponse,
+  parseParadigmResponse,
   validateAccepted,
 } from '../bin.mjs';
 import { loadCategories } from '../load.mjs';
@@ -168,6 +171,60 @@ describe('fetchForm', () => {
 
   it('throws on a body that is not JSON', async () => {
     await expect(fetchForm('hestur', respond(200, '<html>'))).rejects.toThrow(/JSON/);
+  });
+});
+
+describe('inflection tables', () => {
+  const FELDUR = [
+    {
+      guid: 'g-feldur',
+      ord: 'feldur',
+      ofl: 'no',
+      kyn: 'kk',
+      bmyndir: [
+        { g: 'NFET', b: 'feldur', extra: 1 },
+        { g: 'ÞFET', b: 'feld' },
+      ],
+    },
+  ];
+  const respond = (status: number, body: string) =>
+    vi.fn().mockResolvedValue({ status, text: () => Promise.resolve(body) });
+
+  it('keeps the word, its class and gender, and each form with its tag', () => {
+    expect(parseParadigmResponse('g-feldur', 200, FELDUR)).toEqual({
+      ord: 'feldur',
+      guid: 'g-feldur',
+      ofl: 'no',
+      kyn: 'kk',
+      bmyndir: [
+        { g: 'NFET', b: 'feldur' },
+        { g: 'ÞFET', b: 'feld' },
+      ],
+    });
+  });
+
+  it('throws rather than storing another word, a word with no forms, or an error', () => {
+    expect(() => parseParadigmResponse('g-annad', 200, FELDUR)).toThrow(/unexpected/);
+    expect(() =>
+      parseParadigmResponse('g-feldur', 200, [{ ...FELDUR[0], bmyndir: undefined }])
+    ).toThrow(/unexpected/);
+    expect(() => parseParadigmResponse('g-feldur', 200, { 0: '' })).toThrow(/unexpected/);
+    expect(() => parseParadigmResponse('g-feldur', 500, null)).toThrow(/500/);
+  });
+
+  it('asks the ord endpoint by GUID, and throws on a body that is not JSON', async () => {
+    const fetchImpl = respond(200, JSON.stringify(FELDUR));
+    await fetchParadigm('g-feldur', fetchImpl);
+    expect(fetchImpl.mock.calls[0][0]).toBe('https://bin.arnastofnun.is/api/ord/g-feldur');
+    await expect(fetchParadigm('g-feldur', respond(200, '<html>'))).rejects.toThrow(/JSON/);
+  });
+
+  it('saves the tables sorted, with the source and licence BÍN requires', () => {
+    const doc = paradigmDocument({ b: { ord: 'b' }, a: { ord: 'a' } });
+    expect(Object.keys(doc)).toEqual(['_heimild', '_leyfi', 'beygingar']);
+    expect(doc._heimild).toMatch(/Beygingarlýsing/);
+    expect(doc._leyfi).toMatch(/CC BY-SA 4\.0/);
+    expect(Object.keys(doc.beygingar)).toEqual(['a', 'b']);
   });
 });
 

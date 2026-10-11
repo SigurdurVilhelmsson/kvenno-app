@@ -62,7 +62,9 @@ pnpm islenskubraut:build  # Regenerate the Íslenskubraut TS from content/islens
                           #   — add --check to fail instead of rewrite (CI)
 pnpm islenskubraut:export # Write an .xlsx of the content for a reviewer (--out <file>)
 pnpm islenskubraut:import # Read a reviewed .xlsx back into the YAML (--dry-run, --force)
-pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to look up new ones)
+pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to look up new ones,
+                          #   and the sentence builder's inflection tables)
+pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags make, for review
 pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs into apps/islenskubraut/public/spjold/
                           #   (runs before the app's dev and build; fails on a card that is not 3 pages)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
@@ -583,6 +585,19 @@ catch a real word in the wrong place**: `mjallar` and `súðar` passed as geniti
 changing the data and require naming it as from Beygingarlýsing íslensks nútímamáls, owned by
 Stofnun Árna Magnússonar í íslenskum fræðum. The file carries that in `_heimild`/`_leyfi`, and
 `content/islenskubraut/bin/README.md` has the wording any page or PDF showing the forms must use.
+
+**Sentence builder, data and engine (2026-10-11; the student page is a second PR).** Each YAML
+carries a `builder: { A1: … }` section: the subject (a word list the student picks from, a fixed
+`word`, or `person: true` for hún/hann), and per card frame which words follow the subject
+(`agree`: `NF`/`ÞF` pronoun, `sögn` for `er`/`eru`) and how the blank is filled (`as-is`,
+`agree` for an adjective, `ÞF` for a noun). `loadBuilder` in `load.mjs` refuses a frame the card
+does not print, so editing a frame breaks the build rather than the builder. The tags were
+**drafted by Claude and await confirmation** (`docs/REVIEW-QUEUE.md` C9). The forms come from BÍN,
+never from rules: `pnpm islenskubraut:bin --fetch` also saves each needed word's whole inflection
+table in `content/islenskubraut/bin/beygingar.json` (same CC BY-SA terms as `ordmyndir.json`),
+and `scripts/islenskubraut/smidur.mjs` reads them. **It never guesses:** a word BÍN reads as two
+words of the needed class (`sætt`: `sær` or `sætur`) must be named under `lemmas`, and a missing
+form is an error. `pnpm islenskubraut:smidur` prints every sentence the tags make, for review.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

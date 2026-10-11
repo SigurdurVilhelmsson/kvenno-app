@@ -367,3 +367,24 @@ guidingQuestions:
         - daglega
         - sjaldan
         - oft
+builder:
+  A1:
+    subject:
+      words: Hvers konar klæðnaður er þetta?
+      plural:
+        - skór
+    frames:
+      - frame: Þetta er ___.
+        agree:
+          er: sögn
+        blank: subject
+      - frame: Það er ___.
+        agree:
+          Það: NF
+          er: sögn
+        words: Hvernig lítur það út?
+        form: agree
+      - frame: Maður notar það ___.
+        agree:
+          það: ÞF
+        words: Hvar er hægt að nota þetta?

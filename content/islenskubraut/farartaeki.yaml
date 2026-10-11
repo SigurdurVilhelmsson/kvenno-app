@@ -333,3 +333,30 @@ guidingQuestions:
         - daglega
         - sjaldan
         - oft
+builder:
+  A1:
+    subject:
+      words: Hvers konar farartæki er þetta?
+    frames:
+      - frame: Þetta er ___.
+        agree:
+          er: sögn
+        blank: subject
+      - frame: Það fer ___.
+        agree:
+          Það: NF
+        words: Hvar er hægt að nota/finna þetta?
+      - frame: Það er ___.
+        agree:
+          Það: NF
+          er: sögn
+        words: Hvernig lítur það út?
+        form: agree
+      - frame: Það hljómar ___.
+        agree:
+          Það: NF
+        words: Hvaða hljóð gefur það frá sér?
+      - frame: Maður notar það ___.
+        agree:
+          það: ÞF
+        words: Til hvers er það notað?

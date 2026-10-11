@@ -465,4 +465,77 @@ export const matur: Category = {
       ],
     },
   ],
+  builder: [
+    {
+      level: 'A1',
+      subject: {
+        kind: 'words',
+        words: 'Hvers konar matur er þetta?',
+        options: ['ávöxtur', 'grænmeti', 'kjöt', 'drykkur'],
+      },
+      frames: [
+        {
+          frame: 'Þetta er ___.',
+          agree: [
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            subject: true,
+          },
+        },
+        {
+          frame: 'Það er ___.',
+          agree: [
+            {
+              word: 'Það',
+              role: 'NF',
+            },
+            {
+              word: 'er',
+              role: 'sögn',
+            },
+          ],
+          blank: {
+            words: 'Hvernig bragðast það?',
+            options: ['sætt', 'salt', 'súrt', 'beiskt'],
+            form: 'agree',
+          },
+        },
+        {
+          frame: 'Maður borðar það ___.',
+          agree: [
+            {
+              word: 'það',
+              role: 'ÞF',
+            },
+          ],
+          blank: {
+            words: 'Hvenær er þetta notað?',
+            options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+            form: 'as-is',
+          },
+        },
+        {
+          frame: 'Maður notar það ___.',
+          agree: [
+            {
+              word: 'það',
+              role: 'ÞF',
+            },
+          ],
+          blank: {
+            words: 'Til hvers er það notað?',
+            options: ['til að borða', 'til að drekka'],
+            form: 'as-is',
+          },
+        },
+      ],
+      lemmas: {
+        sætt: 'sætur',
+      },
+    },
+  ],
 };

@@ -381,6 +381,188 @@ icon: 🧪
   });
 });
 
+describe('sentence builder tags', () => {
+  const card = `id: prufa
+name: Prufa
+description: Lýsing.
+color: "#123456"
+icon: 🧪
+${PER_LEVEL}subCategories:
+  - id: s1
+    name: Tegund
+    options:
+      - ávöxtur
+      - skór
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er ___.
+      - Það er ___.
+      - Það hefur ___ og ___.
+guidingQuestions:
+  - id: q1
+    question: Hvernig er það?
+    icon: ❓
+    label: Útlit
+    answers:
+      A1:
+        - sætt
+        - stórt
+`;
+  const load = (builder: string) => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', `${card}builder:\n  A1:\n${builder}`);
+    return loadCategory('prufa', target);
+  };
+  const subject = `    subject:
+      words: Tegund
+      plural: [skór]
+`;
+
+  it('resolves a word list from a question or a vocabulary group, at the same level', () => {
+    const result = load(`${subject}    frames:
+      - frame: Þetta er ___.
+        agree:
+          er: sögn
+        blank: subject
+      - frame: Það er ___.
+        agree:
+          Það: NF
+          er: sögn
+        words: Hvernig er það?
+        form: agree
+    lemmas:
+      sætt: sætur
+`);
+    expect(result.builder).toEqual([
+      {
+        level: 'A1',
+        subject: { kind: 'words', words: 'Tegund', options: ['ávöxtur', 'skór'], plural: ['skór'] },
+        frames: [
+          {
+            frame: 'Þetta er ___.',
+            agree: [{ word: 'er', role: 'sögn' }],
+            blank: { subject: true },
+          },
+          {
+            frame: 'Það er ___.',
+            agree: [
+              { word: 'Það', role: 'NF' },
+              { word: 'er', role: 'sögn' },
+            ],
+            blank: { words: 'Hvernig er það?', options: ['sætt', 'stórt'], form: 'agree' },
+          },
+        ],
+        lemmas: { sætt: 'sætur' },
+      },
+    ]);
+  });
+
+  it('leaves a category with no builder without one', () => {
+    const target = makeDir();
+    write(target, 'prufa.yaml', card);
+    expect(loadCategory('prufa', target)).not.toHaveProperty('builder');
+  });
+
+  it('throws on a frame the card does not print, so editing a frame breaks the build', () => {
+    expect(() => load(`${subject}    frames:\n      - frame: Þetta er ekki ___.\n`)).toThrow(
+      /"Þetta er ekki ___\." is not one of the card's A1 frames/
+    );
+  });
+
+  it('throws on a frame with two blanks', () => {
+    expect(() =>
+      load(`${subject}    frames:\n      - frame: Það hefur ___ og ___.\n        words: Tegund\n`)
+    ).toThrow(/at most one blank/);
+  });
+
+  it('throws on a word list that is neither a question nor a vocabulary group', () => {
+    expect(() =>
+      load(`${subject}    frames:\n      - frame: Það er ___.\n        words: Hvað er þetta?\n`)
+    ).toThrow(/"Hvað er þetta\?" is neither a question with A1 answers nor a vocabulary group/);
+  });
+
+  it('throws on an unknown agreement role or blank form', () => {
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Það er ___.
+        agree:
+          Það: ÞGF
+        words: Tegund
+`)
+    ).toThrow(/"ÞGF" is not one of NF, ÞF, sögn/);
+    expect(() =>
+      load(
+        `${subject}    frames:\n      - frame: Það er ___.\n        words: Tegund\n        form: ÞGF\n`
+      )
+    ).toThrow(/"ÞGF" is not one of as-is, agree, ÞF/);
+  });
+
+  it('throws on an agreeing word that is not in the frame', () => {
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Það er ___.
+        agree:
+          Hann: NF
+        words: Tegund
+`)
+    ).toThrow(/"Hann" is not a word in "Það er ___\."/);
+  });
+
+  it('throws on a plural that is not in the subject list', () => {
+    expect(() =>
+      load(`    subject:
+      words: Tegund
+      plural: [buxur]
+    frames:
+      - frame: Þetta er ___.
+        blank: subject
+`)
+    ).toThrow(/plural: "buxur" is not in its word list/);
+  });
+
+  it('keeps the subject blank to a subject word list, with no words of its own', () => {
+    expect(() =>
+      load(`    subject:
+      person: true
+    frames:
+      - frame: Þetta er ___.
+        blank: subject
+`)
+    ).toThrow(/blank: subject needs a subject word list/);
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+        words: Tegund
+`)
+    ).toThrow(/the subject blank takes no words or form/);
+  });
+
+  it('throws on a fixed subject word that no frame says', () => {
+    expect(() =>
+      load(`    subject:
+      word: hestur
+    frames:
+      - frame: Það er ___.
+        words: Tegund
+`)
+    ).toThrow(/"hestur" appears in none of its frames/);
+  });
+
+  it('holds a lemmas choice to the text checks', () => {
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+    lemmas:
+      sætt: ""
+`)
+    ).toThrow(/lemmas\.sætt must be a non-empty/);
+  });
+});
+
 describe('loadCategories validation', () => {
   it('throws when a file on disk is not listed in CATEGORY_ORDER', () => {
     const target = makeDir();

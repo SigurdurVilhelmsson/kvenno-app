@@ -43,6 +43,34 @@ export interface GuidingQuestion {
   answers: GuidingQuestionAnswer[];
 }
 
+/** Who or what a builder sentence is about: its gender and number decide the rest. */
+export type BuilderSubject =
+  | { kind: 'words'; words: string; options: string[]; plural?: string[] }
+  | { kind: 'word'; word: string }
+  | { kind: 'person' };
+
+/** How a word in a builder frame follows the subject. */
+export interface BuilderAgreement {
+  word: string;
+  role: 'NF' | 'ÞF' | 'sögn';
+}
+
+export interface BuilderFrame {
+  frame: string;
+  agree: BuilderAgreement[];
+  blank:
+    null | { subject: true } | { words: string; options: string[]; form: 'as-is' | 'agree' | 'ÞF' };
+}
+
+/** The sentence builder's tags for one level (REVIEW-QUEUE D3, C9). */
+export interface Builder {
+  level: Level;
+  subject: BuilderSubject;
+  frames: BuilderFrame[];
+  /** BÍN headwords for forms BÍN reads as two words of the needed class. */
+  lemmas?: Record<string, string>;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -54,4 +82,5 @@ export interface Category {
   examples: LevelText[];
   teacherNotes: LevelText[];
   guidingQuestions: GuidingQuestion[];
+  builder?: Builder[];
 }

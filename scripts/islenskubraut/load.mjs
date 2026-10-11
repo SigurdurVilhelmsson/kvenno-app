@@ -101,6 +101,8 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
   const examples = perLevel('examples');
   const teacherNotes = perLevel('teacherNotes');
 
+  const builder = loadBuilder(id, doc.builder, { subCategories, sentenceFrames, guidingQuestions });
+
   return {
     id: doc.id,
     name: doc.name,
@@ -112,7 +114,147 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
     examples,
     teacherNotes,
     guidingQuestions,
+    ...(builder.length > 0 ? { builder } : {}),
   };
+}
+
+/**
+ * How a word in a builder frame follows the sentence's subject: a pronoun in the nominative
+ * (`Það er` → `Hann er`) or the accusative (`notar það` → `notar hann`), or the verb `vera`
+ * (`er` → `eru` for a plural subject).
+ */
+export const AGREE_ROLES = ['NF', 'ÞF', 'sögn'];
+
+/**
+ * How a blank's word is put into the sentence: as written, made to agree with the subject (an
+ * adjective: `sætt` → `sætur` for a masculine subject), or put in the accusative (a noun after
+ * `hefur`: `feldur` → `feld`).
+ */
+export const BLANK_FORMS = ['as-is', 'agree', 'ÞF'];
+
+/**
+ * The sentence builder's tags (REVIEW-QUEUE D3, C9): for each card frame a student can build,
+ * which list of words fills its blank and in what form, and which words in the frame follow the
+ * subject. Drafted by Claude in Oct 2026 for a teacher to confirm; a teaching call, per frame.
+ *
+ * A word list is named by a question on the card (its answers at the same level) or by a
+ * vocabulary group. Every frame must be one of the card's frames at that level, so editing a
+ * frame or a question's wording breaks the build here, loudly, rather than the builder quietly.
+ */
+function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions }) {
+  if (raw === undefined) return [];
+  assert(raw && typeof raw === 'object' && !Array.isArray(raw), `${id}.builder must be a map`);
+  return Object.entries(raw).map(([level, spec]) => {
+    const where = `${id}.builder.${level}`;
+    assert(LEVELS.includes(level), `${where}: "${level}" is not a level`);
+    const cardFrames = sentenceFrames.filter((f) => f.level === level).flatMap((f) => f.frames);
+
+    const wordList = (name, at) => {
+      checkString(name, at);
+      const question = guidingQuestions.find((q) => q.question === name);
+      const options =
+        question?.answers.find((a) => a.level === level)?.options ??
+        subCategories.find((sc) => sc.name === name)?.options;
+      assert(
+        options,
+        `${at}: "${name}" is neither a question with ${level} answers nor a vocabulary group`
+      );
+      return options;
+    };
+
+    const subjectRaw = spec?.subject;
+    assert(subjectRaw && typeof subjectRaw === 'object', `${where}.subject is missing`);
+    let subject;
+    if (subjectRaw.person === true) {
+      subject = { kind: 'person' };
+    } else if (subjectRaw.word !== undefined) {
+      checkString(subjectRaw.word, `${where}.subject.word`);
+      subject = { kind: 'word', word: subjectRaw.word };
+    } else {
+      const options = wordList(subjectRaw.words, `${where}.subject.words`);
+      // A noun whose singular and plural look the same (`skór`) is read as singular unless
+      // listed here.
+      const plural = subjectRaw.plural ?? [];
+      assert(Array.isArray(plural), `${where}.subject.plural must be a list`);
+      for (const p of plural) {
+        assert(options.includes(p), `${where}.subject.plural: "${p}" is not in its word list`);
+      }
+      subject = {
+        kind: 'words',
+        words: subjectRaw.words,
+        options,
+        ...(plural.length > 0 ? { plural } : {}),
+      };
+    }
+
+    assert(Array.isArray(spec.frames) && spec.frames.length > 0, `${where}.frames is empty`);
+    const frames = spec.frames.map((f, i) => {
+      const at = `${where}.frames[${i}]`;
+      checkString(f.frame, `${at}.frame`);
+      assert(
+        cardFrames.includes(f.frame),
+        `${at}: "${f.frame}" is not one of the card's ${level} frames`
+      );
+      const blanks = f.frame.split('___').length - 1;
+      assert(blanks <= 1, `${at}: a builder frame has at most one blank`);
+
+      const agree = Object.entries(f.agree ?? {}).map(([word, role]) => {
+        assert(
+          AGREE_ROLES.includes(role),
+          `${at}.agree.${word}: "${role}" is not one of ${AGREE_ROLES.join(', ')}`
+        );
+        const tokens = f.frame.split(/[\s.,?!]+/);
+        assert(tokens.includes(word), `${at}.agree: "${word}" is not a word in "${f.frame}"`);
+        return { word, role };
+      });
+
+      if (blanks === 0) {
+        assert(
+          f.blank === undefined && f.words === undefined,
+          `${at}: "${f.frame}" has no blank to fill`
+        );
+        return { frame: f.frame, agree, blank: null };
+      }
+      if (f.blank === 'subject') {
+        assert(subject.kind === 'words', `${at}: blank: subject needs a subject word list`);
+        assert(
+          f.words === undefined && f.form === undefined,
+          `${at}: the subject blank takes no words or form`
+        );
+        return { frame: f.frame, agree, blank: { subject: true } };
+      }
+      assert(f.blank === undefined, `${at}.blank: only "subject" is allowed`);
+      const form = f.form ?? 'as-is';
+      assert(
+        BLANK_FORMS.includes(form),
+        `${at}.form: "${form}" is not one of ${BLANK_FORMS.join(', ')}`
+      );
+      return {
+        frame: f.frame,
+        agree,
+        blank: { words: f.words, options: wordList(f.words, `${at}.words`), form },
+      };
+    });
+
+    // A word BÍN reads as two words of the class the builder needs (`sætt`: `sær` or `sætur`)
+    // names the one meant, by its BÍN headword. The builder never picks one itself.
+    const lemmas = spec.lemmas ?? {};
+    assert(
+      lemmas && typeof lemmas === 'object' && !Array.isArray(lemmas),
+      `${where}.lemmas must be a map`
+    );
+    for (const [form, headword] of Object.entries(lemmas)) {
+      checkString(headword, `${where}.lemmas.${form}`);
+    }
+
+    if (subject.kind === 'word') {
+      assert(
+        frames.some((f) => f.frame.split(/[\s.,?!]+/).includes(subject.word)),
+        `${where}.subject.word: "${subject.word}" appears in none of its frames`
+      );
+    }
+    return { level, subject, frames, ...(Object.keys(lemmas).length > 0 ? { lemmas } : {}) };
+  });
 }
 
 /** All categories, in taught order. Throws if a file on disk is not in CATEGORY_ORDER. */

@@ -130,6 +130,55 @@ export function parseBinResponse(form, status, body) {
   return { found: true, lemmas };
 }
 
+/**
+ * The saved inflection tables (`bin/beygingar.json`): attribution and licence first, as for the
+ * saved lookups, then every table by its GUID. A table is stored exactly as BÍN sent it.
+ */
+export function paradigmDocument(paradigms) {
+  const beygingar = Object.fromEntries(
+    Object.keys(paradigms)
+      .sort()
+      .map((k) => [k, paradigms[k]])
+  );
+  return { _heimild: SOURCE, _leyfi: LICENSE, beygingar };
+}
+
+/**
+ * Turn the answer to `ord/<guid>` into a stored inflection table: the lemma, its word class
+ * and gender, and every form with its tag. BÍN answers a GUID with that one word, so anything
+ * else, or a word without its forms, throws rather than being stored.
+ */
+export function parseParadigmResponse(guid, status, body) {
+  if (status < 200 || status >= 300) throw new Error(`BÍN answered ${status} for ${guid}`);
+  const entry = Array.isArray(body) ? body[0] : body;
+  const forms = entry?.bmyndir ?? entry?.beygingarmyndir;
+  if (!entry || entry.guid !== guid || !Array.isArray(forms)) {
+    throw new Error(`unexpected BÍN answer for ${guid}: ${JSON.stringify(body).slice(0, 200)}`);
+  }
+  return {
+    ord: entry.ord,
+    guid: entry.guid,
+    ofl: entry.ofl ?? '',
+    kyn: entry.kyn ?? '',
+    bmyndir: forms.map((f) => ({ g: f.g, b: f.b })),
+  };
+}
+
+/** Fetch one word's whole inflection table by its GUID. `fetchImpl` is injectable for tests. */
+export async function fetchParadigm(guid, fetchImpl = fetch) {
+  const res = await fetchImpl(`${BIN_API}/ord/${encodeURIComponent(guid)}`, {
+    headers: { accept: 'application/json' },
+  });
+  const text = await res.text();
+  let body;
+  try {
+    body = JSON.parse(text);
+  } catch {
+    throw new Error(`BÍN did not send JSON for ${guid}: ${text.slice(0, 200)}`);
+  }
+  return parseParadigmResponse(guid, res.status, body);
+}
+
 /** Look up one inflected form. `fetchImpl` is injectable for tests. */
 export async function fetchForm(form, fetchImpl = fetch) {
   const url = `${BIN_API}/beygingarmynd/${encodeURIComponent(form)}`;

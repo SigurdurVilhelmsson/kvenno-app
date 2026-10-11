@@ -6,8 +6,9 @@
  *   pnpm islenskubraut:bin --fetch    # look up forms not yet saved, then check
  *   pnpm islenskubraut:bin --refresh  # look up every form again, then check
  *
- * Exits 1 when a word is neither known to BÍN nor listed in bin/ekki-i-bin.yaml, and 2 when
- * a word has never been looked up (run with --fetch).
+ * Exits 1 when a word is neither known to BÍN nor listed in bin/ekki-i-bin.yaml, or the sentence
+ * builder has a word it cannot place, and 2 when a word has never been looked up or an
+ * inflection table the builder needs has not been fetched (run with --fetch).
  */
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -20,15 +21,20 @@ import {
   classify,
   collectWords,
   fetchForm,
+  fetchParadigm,
   formatNotFound,
   formsToFetch,
+  paradigmDocument,
   validateAccepted,
 } from './bin.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
 import { prettify } from './render.mjs';
+import { paradigmsNeeded } from './smidur.mjs';
 
 const BIN_DIR = resolve(CONTENT_DIR, 'bin');
 const CACHE_FILE = resolve(BIN_DIR, 'ordmyndir.json');
+// The sentence builder's inflection tables (smidur.mjs), fetched by GUID for the words it inflects.
+const PARADIGM_FILE = resolve(BIN_DIR, 'beygingar.json');
 const ACCEPTED_FILE = resolve(BIN_DIR, 'ekki-i-bin.yaml');
 const DELAY_MS = Number(process.env.BIN_DELAY_MS ?? 150);
 
@@ -60,7 +66,20 @@ async function writeCache(cache) {
   );
 }
 
-const words = collectWords(loadCategories());
+function readParadigms() {
+  if (!existsSync(PARADIGM_FILE)) return {};
+  return JSON.parse(readFileSync(PARADIGM_FILE, 'utf8')).beygingar ?? {};
+}
+
+async function writeParadigms(paradigms) {
+  writeFileSync(
+    PARADIGM_FILE,
+    await prettify(JSON.stringify(paradigmDocument(paradigms), null, 2), PARADIGM_FILE)
+  );
+}
+
+const categories = loadCategories();
+const words = collectWords(categories);
 const accepted = validateAccepted(
   existsSync(ACCEPTED_FILE) ? parse(readFileSync(ACCEPTED_FILE, 'utf8')) : {}
 );
@@ -99,6 +118,25 @@ if (fetching) {
   console.log(
     `looked up ${fetched} form(s); saved ${CACHE_FILE.replace(`${CONTENT_DIR}/`, 'content/islenskubraut/')}`
   );
+
+  // Then the inflection tables the sentence builder needs, which depend on the lookups above.
+  const paradigms = refresh ? {} : readParadigms();
+  const missing = paradigmsNeeded(categories, cache).guids.filter((g) => !paradigms[g]);
+  let tables = 0;
+  try {
+    for (const guid of missing) {
+      paradigms[guid] = await fetchParadigm(guid);
+      tables += 1;
+      await new Promise((r) => setTimeout(r, DELAY_MS));
+    }
+  } catch (err) {
+    console.error(`\ninflection table lookup failed: ${err.message}`);
+    process.exitCode = 1;
+  } finally {
+    if (tables > 0 || refresh) await writeParadigms(paradigms);
+  }
+  if (process.exitCode) process.exit(process.exitCode);
+  console.log(`fetched ${tables} inflection table(s) for the sentence builder`);
 }
 
 const { found, notFound, uncached } = classify(words, cache, accepted);
@@ -121,11 +159,25 @@ if (notFound.length > 0) {
   console.log(formatNotFound(words, notFound));
 }
 
+// The sentence builder's needs: a word it cannot place, or a table not yet fetched.
+const builder = paradigmsNeeded(categories, cache);
+const tablesMissing = builder.guids.filter((g) => !readParadigms()[g]);
+if (builder.problems.length > 0) {
+  console.log(`\nSentence builder: ${builder.problems.length} word(s) need a person:`);
+  for (const p of builder.problems) console.log(`  ${p}`);
+}
+if (tablesMissing.length > 0) {
+  console.log(
+    `\nSentence builder: ${tablesMissing.length} of ${builder.guids.length} inflection table(s) not fetched yet.` +
+      '\nRun `pnpm islenskubraut:bin --fetch`.'
+  );
+}
+
 if (uncached.length > 0) {
   console.log(
     `\n${uncached.length} word(s) never looked up: ${uncached.slice(0, 10).join(', ')}${uncached.length > 10 ? ', …' : ''}` +
       '\nRun `pnpm islenskubraut:bin --fetch`.'
   );
-  process.exit(2);
 }
-process.exit(notFound.length > 0 ? 1 : 0);
+if (uncached.length > 0 || tablesMissing.length > 0) process.exit(2);
+process.exit(notFound.length > 0 || builder.problems.length > 0 ? 1 : 0);

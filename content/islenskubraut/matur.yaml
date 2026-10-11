@@ -378,3 +378,28 @@ guidingQuestions:
         - daglega
         - sjaldan
         - oft
+builder:
+  A1:
+    subject:
+      words: Hvers konar matur er þetta?
+    frames:
+      - frame: Þetta er ___.
+        agree:
+          er: sögn
+        blank: subject
+      - frame: Það er ___.
+        agree:
+          Það: NF
+          er: sögn
+        words: Hvernig bragðast það?
+        form: agree
+      - frame: Maður borðar það ___.
+        agree:
+          það: ÞF
+        words: Hvenær er þetta notað?
+      - frame: Maður notar það ___.
+        agree:
+          það: ÞF
+        words: Til hvers er það notað?
+    lemmas:
+      sætt: sætur
