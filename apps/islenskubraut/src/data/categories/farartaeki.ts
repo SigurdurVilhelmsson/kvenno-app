@@ -401,6 +401,7 @@ export const farartaeki: Category = {
   builder: [
     {
       level: 'A1',
+      confirmed: false,
       subject: {
         kind: 'words',
         words: 'Hvers konar farartæki er þetta?',

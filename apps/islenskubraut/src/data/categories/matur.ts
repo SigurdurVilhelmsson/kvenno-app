@@ -468,6 +468,7 @@ export const matur: Category = {
   builder: [
     {
       level: 'A1',
+      confirmed: false,
       subject: {
         kind: 'words',
         words: 'Hvers konar matur er þetta?',

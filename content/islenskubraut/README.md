@@ -101,6 +101,29 @@ form. The first run (2026-10-09) passed `mjallar` and `súðar` in the animal-so
 both are real forms — the genitives of `mjöll` (snow) and `súð` — where a cat `mjálmar` and a
 bee `suðar`. Read the words for sense as well.
 
+## The sentence builder
+
+Each file ends with a `builder:` section: for A1, what a student's sentence can be about and,
+for each frame on the card, which answers fill its blank and in what form. The page at
+`/islenskubraut/smidur/<flokkur>` builds every sentence from those tags and BÍN's inflection
+tables (`bin/beygingar.json`). To read every sentence it makes:
+
+    pnpm islenskubraut:smidur
+
+**The card page links to the builder only once a teacher has checked it.** After reading the
+sentences for a category, add `confirmed: true` under its level:
+
+```yaml
+builder:
+  A1:
+    confirmed: true
+    subject: …
+```
+
+Until then the page still works at its address, marked as a draft, so it can be tried out.
+Adding a word to a list the builder uses needs `pnpm islenskubraut:bin --fetch` before the build
+will pass, since the builder takes every form from BÍN and never guesses one.
+
 ## Why this exists
 
 Until August 2026 the content lived in TypeScript object literals, duplicated by hand between

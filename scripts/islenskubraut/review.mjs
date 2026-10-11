@@ -160,9 +160,10 @@ export function toYamlShape(category) {
 /** The sentence builder's tags as the YAML writes them: the inverse of `loadBuilder`. */
 function builderYamlShape(builder) {
   return Object.fromEntries(
-    builder.map(({ level, subject, frames, lemmas }) => [
+    builder.map(({ level, confirmed, subject, frames, lemmas }) => [
       level,
       {
+        ...(confirmed ? { confirmed: true } : {}),
         subject:
           subject.kind === 'person'
             ? { person: true }

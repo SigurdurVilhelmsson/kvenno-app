@@ -247,13 +247,24 @@ function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions 
       checkString(headword, `${where}.lemmas.${form}`);
     }
 
+    // A teacher's confirmation that the level's tags and sentences are right (REVIEW-QUEUE C9).
+    // Until it is set, the card page does not link to the builder.
+    const confirmed = spec.confirmed ?? false;
+    assert(typeof confirmed === 'boolean', `${where}.confirmed must be true or false`);
+
     if (subject.kind === 'word') {
       assert(
         frames.some((f) => f.frame.split(/[\s.,?!]+/).includes(subject.word)),
         `${where}.subject.word: "${subject.word}" appears in none of its frames`
       );
     }
-    return { level, subject, frames, ...(Object.keys(lemmas).length > 0 ? { lemmas } : {}) };
+    return {
+      level,
+      confirmed,
+      subject,
+      frames,
+      ...(Object.keys(lemmas).length > 0 ? { lemmas } : {}),
+    };
   });
 }
 

@@ -411,6 +411,7 @@ export const stadir: Category = {
   builder: [
     {
       level: 'A1',
+      confirmed: false,
       subject: {
         kind: 'words',
         words: 'Hvers konar staður er þetta?',

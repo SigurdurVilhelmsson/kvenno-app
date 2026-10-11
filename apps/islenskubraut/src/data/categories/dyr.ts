@@ -422,6 +422,7 @@ export const dyr: Category = {
   builder: [
     {
       level: 'A1',
+      confirmed: false,
       subject: {
         kind: 'word',
         word: 'dýr',

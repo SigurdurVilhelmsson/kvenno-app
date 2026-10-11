@@ -223,3 +223,59 @@ export function allSentences(category, lookups, paradigms) {
   }
   return out;
 }
+
+/**
+ * A built sentence as its words, each marked `changed` when it differs from the card as printed
+ * (`Það er sætt.` → `Hann er sætur.` marks `Hann` and `sætur`), so the page can show a student
+ * what the grammar did. A word the card writes with a slash (`Hún/Hann`, `há/hár`) is a choice
+ * the student made, not a change, and is never marked.
+ */
+export function markChanges(written, built) {
+  const before = written.split(' ');
+  const after = built.split(' ');
+  const comparable = before.length === after.length;
+  const bare = (w) => w.replace(/[.,?!]+$/, '').toLocaleLowerCase('is');
+  return after.map((word, i) => ({
+    word,
+    changed: comparable && !before[i].includes('/') && bare(before[i]) !== bare(word),
+  }));
+}
+
+/**
+ * Everything the student page shows for one category: per level, who or what the sentence can be
+ * about, and every frame with every sentence already built. Throws on the first sentence BÍN
+ * cannot complete, so a gap breaks the build instead of reaching a student.
+ */
+export function pageData(category, lookups, paradigms) {
+  return (category.builder ?? []).map((builder) => {
+    const subjects = subjectsOf(builder, lookups, paradigms);
+    const frames = builder.frames.map((frame) => {
+      const options = frame.blank && !frame.blank.subject ? frame.blank.options : null;
+      const sentences = subjects.map((subject) =>
+        (options ?? [null]).map((option) => {
+          const built = buildSentence(frame, subject, option, lookups, paradigms, builder.lemmas);
+          const fill = frame.blank?.subject ? subject.text : option;
+          return markChanges(fill === null ? frame.frame : frame.frame.replace('___', fill), built);
+        })
+      );
+      return {
+        frame: frame.frame,
+        question: frame.blank?.words ?? null,
+        options,
+        sentences,
+      };
+    });
+    return {
+      level: builder.level,
+      confirmed: builder.confirmed,
+      subjectQuestion: builder.subject.kind === 'words' ? builder.subject.words : null,
+      subjects: subjects.map(({ text, gender, number, person }) => ({
+        text,
+        gender,
+        number,
+        person: person ?? false,
+      })),
+      frames,
+    };
+  });
+}

@@ -343,7 +343,7 @@ after `hefur`: `feldur` → `feld`).
     not the noun (`kennari` can be `hún`). `Þetta er ___.` takes the job as written.
 - [ ] **Should the builder change the card's `Það` at all?** The cards print `Það er ___.` and
       `Maður notar það ___.`; for a masculine or feminine subject the builder writes `Hann er
-  stór.` and `Maður notar hann …`. That is correct Icelandic, but it means an A1 learner meets
+stór.` and `Maður notar hann …`. That is correct Icelandic, but it means an A1 learner meets
       the gendered pronouns here before C8's A1.2 step would teach them. The other choice is to
       keep `Það` and agree only the adjective, which is wrong for a gendered noun (`Það er stór`).
 - [ ] **Two readings chosen by Claude.** BÍN reads `hali` as three words (`hal`, `hali`,
@@ -361,6 +361,13 @@ morgnana.` about a `drykkur`. One drinks a drink. Either drop that frame from th
 þögult.` (a `rúta`) and `Hann hljómar þögult.` (a `bíll`) do not agree. Tagging that blank
     `agree` would make it `þögul`/`þögull` and also turn `hátt` into `hár`, which is wrong; the
     content needs the chip changed (`hljóðlega`?) or split from the two adverbs.
+- [ ] **The page's own Icelandic, drafted by Claude.** The title `Setningasmiður`, the prompts
+      `Veldu setningaramma` and `Um hvern er setningin?`, the draft note `Drög: kennari hefur ekki
+    enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstrikuðu orðin
+    breytast frá spjaldinu svo að þau passi við setninguna.` Try it at
+      `/islenskubraut/smidur/klaednadur` after the next deploy.
+- [ ] **To sign a category off**, add `confirmed: true` under `builder: A1:` in its YAML. The card
+      page then links to the builder (`content/islenskubraut/README.md`).
 - [ ] **Chips that are phrases are left as written** apart from their adjectives:
       `með hjólum` stays `með hjólum` in `Hann er með hjólum.` Check the printed list reads
       right with every subject.
@@ -658,7 +665,9 @@ Both fixed 2026-10-10 (PR for this branch).
         `pnpm islenskubraut:smidur` to print every sentence for review.
   - [x] The inflection tables, fetched and committed (2026-10-11). `smidur.test.ts` now builds
         every sentence from them, so a tag or word added without a `--fetch` fails CI.
-  - [ ] The student page, `/islenskubraut/smidur/:flokkur`, with BÍN's attribution. Waits on C9.
+  - [x] The student page, `/islenskubraut/smidur/:flokkur`, with BÍN's attribution (2026-10-11).
+        It shows "Drög" and the card page does not link to it until a level's YAML says
+        `confirmed: true`, which is C9's sign-off.
 - [ ] **Picture support**: a printable picture set per category, and pictograms on the A1 chips.
       Check any pictogram set's licence first.
 - [ ] **A teacher sheet per category** with activities (guessing games, pair work), replacing the
