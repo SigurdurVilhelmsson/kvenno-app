@@ -324,7 +324,8 @@ The sentence builder (D3, Features) needs to know, for each card frame, which wo
 and in what form, and which words in the frame follow the subject. Claude drafted these for all six
 categories at A1, under `builder:` at the end of each `content/islenskubraut/*.yaml`. **Nothing
 reaches students until they are confirmed.** `pnpm islenskubraut:smidur` prints every sentence the
-tags produce, once the inflection tables are fetched (`pnpm islenskubraut:bin --fetch`).
+tags produce. The inflection tables were fetched on 2026-10-11, and every sentence builds; the
+two defects below were found by reading them.
 
 How the tags read: the subject (picked by the student from a list, or fixed, as `dýr` is) has a
 gender and number from BÍN. `NF` and `ÞF` mark a pronoun that follows it (`Það er` → `Hann er`,
@@ -342,7 +343,7 @@ after `hefur`: `feldur` → `feld`).
     not the noun (`kennari` can be `hún`). `Þetta er ___.` takes the job as written.
 - [ ] **Should the builder change the card's `Það` at all?** The cards print `Það er ___.` and
       `Maður notar það ___.`; for a masculine or feminine subject the builder writes `Hann er
-    stór.` and `Maður notar hann …`. That is correct Icelandic, but it means an A1 learner meets
+  stór.` and `Maður notar hann …`. That is correct Icelandic, but it means an A1 learner meets
       the gendered pronouns here before C8's A1.2 step would teach them. The other choice is to
       keep `Það` and agree only the adjective, which is wrong for a gendered noun (`Það er stór`).
 - [ ] **Two readings chosen by Claude.** BÍN reads `hali` as three words (`hal`, `hali`,
@@ -350,6 +351,16 @@ after `hefur`: `feldur` → `feld`).
       names `hali` and `sætur` under `lemmas`. Confirm both.
 - [ ] **`skór` is read as plural** (`Þetta eru skór.`), since BÍN gives the same form for one
       and many. Listed under `plural:` in `klaednadur.yaml`.
+- [ ] **Two drafted tags read wrong once the sentences were printed (2026-10-11).** Fix the tag
+      or the content, your call:
+  - `matur`: `Maður borðar það ___.` takes every subject, so it prints `Maður borðar hann á
+morgnana.` about a `drykkur`. One drinks a drink. Either drop that frame from the builder,
+    or keep it and accept the pairing, as the printed card already does.
+  - `dyr`, `farartaeki`: `Það hljómar ___.` puts the sound chips in as written. `hátt` and `lágt`
+    work as adverbs for any subject, but `þögult` is the neuter adjective, so `Hún hljómar
+þögult.` (a `rúta`) and `Hann hljómar þögult.` (a `bíll`) do not agree. Tagging that blank
+    `agree` would make it `þögul`/`þögull` and also turn `hátt` into `hár`, which is wrong; the
+    content needs the chip changed (`hljóðlega`?) or split from the two adverbs.
 - [ ] **Chips that are phrases are left as written** apart from their adjectives:
       `með hjólum` stays `með hjólum` in `Hann er með hjólum.` Check the printed list reads
       right with every subject.
@@ -645,8 +656,9 @@ Both fixed 2026-10-10 (PR for this branch).
         tables in `content/islenskubraut/bin/beygingar.json` (fetched by
         `pnpm islenskubraut:bin --fetch`), the grammar in `scripts/islenskubraut/smidur.mjs`, and
         `pnpm islenskubraut:smidur` to print every sentence for review.
-  - [ ] The student page, `/islenskubraut/smidur/:flokkur`, with BÍN's attribution. Waits on C9
-        and on the inflection tables being fetched and committed.
+  - [x] The inflection tables, fetched and committed (2026-10-11). `smidur.test.ts` now builds
+        every sentence from them, so a tag or word added without a `--fetch` fails CI.
+  - [ ] The student page, `/islenskubraut/smidur/:flokkur`, with BÍN's attribution. Waits on C9.
 - [ ] **Picture support**: a printable picture set per category, and pictograms on the A1 chips.
       Check any pictogram set's licence first.
 - [ ] **A teacher sheet per category** with activities (guessing games, pair work), replacing the

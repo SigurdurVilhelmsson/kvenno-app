@@ -598,6 +598,8 @@ table in `content/islenskubraut/bin/beygingar.json` (same CC BY-SA terms as `ord
 and `scripts/islenskubraut/smidur.mjs` reads them. **It never guesses:** a word BÍN reads as two
 words of the needed class (`sætt`: `sær` or `sætur`) must be named under `lemmas`, and a missing
 form is an error. `pnpm islenskubraut:smidur` prints every sentence the tags make, for review.
+**The tables were fetched on 2026-10-11 and `smidur.test.ts` builds every sentence from them**, so
+adding a builder word or tag without running `--fetch` fails CI rather than shipping a gap.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

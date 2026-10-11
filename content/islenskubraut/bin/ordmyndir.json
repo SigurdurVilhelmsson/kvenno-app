@@ -1273,6 +1273,18 @@
         }
       ]
     },
+    "efniviður": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "efniviður",
+          "guid": "ded87f9e99a24625313c1b5933f88244",
+          "ofl": "no",
+          "kyn": "kk",
+          "tags": ["NFET"]
+        }
+      ]
+    },
     "efnum": {
       "found": true,
       "lemmas": [
@@ -2009,6 +2021,23 @@
           "guid": "e5b8599467a9c72de7c8752550d260f0",
           "ofl": "lo",
           "kyn": ""
+        }
+      ]
+    },
+    "flokkar": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "flokka",
+          "guid": "f82d68b94b5c0f904837ba1aee4aa9f9",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "flokkur",
+          "guid": "dc656b21153a350a9f6f8cccdff17806",
+          "ofl": "no",
+          "kyn": "kk"
         }
       ]
     },
@@ -5211,6 +5240,18 @@
           "ofl": "no",
           "kyn": "hk",
           "tags": ["ÞGFETgr"]
+        }
+      ]
+    },
+    "lykt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "lykt",
+          "guid": "af9d87bdc14d0989879076831adfdc9e",
+          "ofl": "no",
+          "kyn": "kvk",
+          "tags": ["NFET", "ÞFET", "ÞGFET"]
         }
       ]
     },
