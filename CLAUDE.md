@@ -66,6 +66,7 @@ pnpm islenskubraut:import # Read a reviewed .xlsx back into the YAML (--dry-run,
 pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to look up new ones,
                           #   and the sentence builder's inflection tables)
 pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags make, for review
+pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs into apps/islenskubraut/public/spjold/
                           #   (runs before the app's dev and build; fails on a card that is not 3 pages)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
@@ -608,6 +609,19 @@ complete), so the browser gets neither the engine nor the tables. Each word that
 card as printed is marked and underlined. **The card page links to it only for a level whose YAML
 says `confirmed: true`** — a teacher's sign-off (C9); until then the page works at its URL under a
 "Drög" note. The page carries BÍN's attribution, as its licence requires.
+
+**Pictograms on the A1 chips (2026-10-11), from ARASAAC — CC BY-NC-SA 4.0, not MIT.**
+`content/islenskubraut/myndir/myndir.yaml` gives every A1 chip (question answers and the sentence
+builder's words) an English search word, the chosen pictogram `id` and `approved`; `words` is
+shared and `categories` overrides a chip that means something else on one card (`hátt` is loud on
+Dýr, tall on Staðir). `pnpm islenskubraut:myndir --fetch` searches ARASAAC, fills `id` with the
+best match, keeps the rest in `frambod.json`, downloads to `apps/islenskubraut/public/myndir/` and
+writes the review sheet `islenskubraut-myndir-yfirlit.html`; ARASAAC is unreachable from a cloud
+session, so it runs locally. **Only `approved: true` pictures reach students**, through the
+generated `apps/islenskubraut/src/data/myndir.ts`, and every page showing one carries ARASAAC's
+credit. **The build fails** on a chip with no entry, an entry for no chip, or an approved picture
+with no file — adding an A1 chip means adding its entry. Workflow and licence:
+`content/islenskubraut/myndir/README.md`. Open items: `docs/REVIEW-QUEUE.md` C10.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

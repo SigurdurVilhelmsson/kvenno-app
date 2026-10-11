@@ -6,6 +6,7 @@ import { Container } from '@kvenno/shared/components';
 
 import { DownloadButton } from '../components/DownloadButton';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
+import { ArasaacCredit, hasPictures } from '../components/Pictogram';
 import type { PageTitle } from '../components/Sheet';
 import { SpjaldPreview } from '../components/SpjaldPreview';
 import { SpurningaSpjald } from '../components/SpurningaSpjald';
@@ -191,6 +192,9 @@ export function SpjaldPage() {
           <SpjaldPreview category={category} level={level} view={activeTab} />
         )}
       </div>
+      {activeTab === 'spurningaspjald' && level === 'A1' && hasPictures(category.id) && (
+        <ArasaacCredit className="max-w-lg mx-auto mt-4" />
+      )}
     </Container>
   );
 }

@@ -363,14 +363,33 @@ morgnana.` about a `drykkur`. One drinks a drink. Either drop that frame from th
     content needs the chip changed (`hljóðlega`?) or split from the two adverbs.
 - [ ] **The page's own Icelandic, drafted by Claude.** The title `Setningasmiður`, the prompts
       `Veldu setningaramma` and `Um hvern er setningin?`, the draft note `Drög: kennari hefur ekki
-    enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstrikuðu orðin
-    breytast frá spjaldinu svo að þau passi við setninguna.` Try it at
+  enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstrikuðu orðin
+  breytast frá spjaldinu svo að þau passi við setninguna.` Try it at
       `/islenskubraut/smidur/klaednadur` after the next deploy.
 - [ ] **To sign a category off**, add `confirmed: true` under `builder: A1:` in its YAML. The card
       page then links to the builder (`content/islenskubraut/README.md`).
 - [ ] **Chips that are phrases are left as written** apart from their adjectives:
       `með hjólum` stays `með hjólum` in `Hann er með hjólum.` Check the printed list reads
       right with every subject.
+
+### C10. Pictograms on the A1 chips (2026-10-11)
+
+ARASAAC was chosen on 2026-10-11 (CC BY-NC-SA 4.0), and the website's A1 chips first. Every chip a
+student sees at A1 has an entry in `content/islenskubraut/myndir/myndir.yaml` with an English
+search word Claude drafted; the workflow is `content/islenskubraut/myndir/README.md`.
+
+- [ ] **Fetch the pictures.** Run `pnpm islenskubraut:myndir --fetch` on a machine that can reach
+      ARASAAC (this session cannot). It chooses the best match for each chip and downloads it.
+- [ ] **Approve each pairing.** Open `islenskubraut-myndir-yfirlit.html`, check every picture
+      against its word, swap in a better number where one is shown, and set `approved: true`.
+      Nothing is shown to students before that. Abstract chips need the closest look:
+      `til að gæta`, `til að klappa`, `ekkert` (no smell), `án hjóla`, `til að líta vel út`, `gróft`.
+- [ ] **The licence on the cards.** The cards that carry ARASAAC pictures become CC BY-NC-SA:
+      free for the school, not for sale, shared on the same terms. Confirm that is acceptable for
+      the printed cards before the PDF PR adds the pictures there.
+- [ ] **The credit's Icelandic**, drafted by Claude from ARASAAC's English wording: `Myndtáknin
+    eru eign ríkisstjórnar Aragóníu og gerð af Sergio Palao fyrir ARASAAC (https://arasaac.org),
+    sem dreifir þeim með Creative Commons-leyfinu BY-NC-SA.` Also the review sheet's few lines.
 
 ## D. Work that needs no ruling
 
@@ -669,7 +688,13 @@ Both fixed 2026-10-10 (PR for this branch).
         It shows "Drög" and the card page does not link to it until a level's YAML says
         `confirmed: true`, which is C9's sign-off.
 - [ ] **Picture support**: a printable picture set per category, and pictograms on the A1 chips.
-      Check any pictogram set's licence first.
+      ARASAAC, chosen 2026-10-11 (C10).
+  - [x] The A1 chips on the website (2026-10-11): the question card's chips and the sentence
+        builder's, with ARASAAC's credit. `pnpm islenskubraut:myndir` fetches, checks and writes
+        the review sheet. No picture shows until it is fetched and approved (C10).
+  - [ ] The printed A1 cards, once the pairings are approved and C10's licence point is settled.
+  - [ ] A printable picture set per category (picture and word, for flashcards).
+  - [ ] The vocabulary page's chips (about 150 more words, mostly nouns).
 - [ ] **A teacher sheet per category** with activities (guessing games, pair work), replacing the
       note on the student card.
 - [ ] **Optional glosses in learners' languages.** Needs a decision on who writes and checks them.

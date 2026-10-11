@@ -14,6 +14,12 @@ const CATEGORIES = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaedn
 const TABS = ['Spurningaspjald', 'Orðaforði', 'Setningarammar'];
 
 async function expectNoViolations(page: Page, where: string) {
+  // A pressed chip fades its colour in (`transition-colors`). Measured mid-fade, white text sits
+  // on a half-coloured background and axe reports a contrast failure no reader ever sees, so
+  // wait for every running transition to end first.
+  await page.waitForFunction(() =>
+    document.getAnimations().every((a) => a.playState !== 'running')
+  );
   const { violations } = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
     .analyze();

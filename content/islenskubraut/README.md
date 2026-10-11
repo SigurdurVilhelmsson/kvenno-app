@@ -124,6 +124,12 @@ Until then the page still works at its address, marked as a draft, so it can be 
 Adding a word to a list the builder uses needs `pnpm islenskubraut:bin --fetch` before the build
 will pass, since the builder takes every form from BÍN and never guesses one.
 
+## Pictures on the A1 chips
+
+Every A1 chip can carry an ARASAAC pictogram, and every chip needs an entry in
+`myndir/myndir.yaml`, or the build fails. Pictures show only once a person has approved them.
+The workflow and the licence are in [`myndir/README.md`](myndir/README.md).
+
 ## Why this exists
 
 Until August 2026 the content lived in TypeScript object literals, duplicated by hand between

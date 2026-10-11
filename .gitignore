@@ -44,4 +44,6 @@ test-results/
 
 # Íslenskubraut review workbooks (pnpm islenskubraut:export)
 islenskubraut-yfirlestur-*.xlsx
+# Íslenskubraut pictogram review sheet (pnpm islenskubraut:myndir)
+islenskubraut-myndir-yfirlit.html
 .deploy-bundle/
