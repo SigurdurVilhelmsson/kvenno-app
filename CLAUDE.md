@@ -63,6 +63,8 @@ pnpm islenskubraut:build  # Regenerate the Íslenskubraut TS from content/islens
 pnpm islenskubraut:export # Write an .xlsx of the content for a reviewer (--out <file>)
 pnpm islenskubraut:import # Read a reviewed .xlsx back into the YAML (--dry-run, --force)
 pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to look up new ones)
+pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs into apps/islenskubraut/public/spjold/
+                          #   (runs before the app's dev and build; fails on a card that is not 3 pages)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages, and e2e/ (its own tsconfig)
@@ -198,7 +200,8 @@ dist/
 │   └── f-bekkir/index.html
 └── islenskubraut/
     ├── index.html                     # Íslenskubraut SPA
-    └── assets/
+    ├── assets/
+    └── spjold/spjald-*.pdf            # The 18 teaching cards, rendered at build time
 ```
 
 Plus `server/dist/` — the compiled Express backend, emitted outside `dist/` by `pnpm build`
@@ -211,7 +214,9 @@ Express backend at `server/` (port 8000):
 - `POST /api/process-document` — DOCX → PDF conversion (LibreOffice)
 - `POST /api/analyze` — Lab report analysis via Claude API
 - `POST /api/analyze-2ar` — 2nd year simplified checklist analysis
-- `GET /api/islenskubraut/pdf?flokkur={id}&stig={level}` — Generate teaching card PDF
+- `GET /api/islenskubraut/pdf?flokkur={id}&stig={level}` — Generate teaching card PDF. **Unused by
+  the app since 2026-10-11**: the build renders all 18 cards to static files and the button links
+  to them. Kept for one deploy; its removal is in `docs/REVIEW-QUEUE.md` D3
 - `GET /health` — Health check
 
 ## Game Design Philosophy (April 2026 restructure)

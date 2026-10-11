@@ -11,11 +11,14 @@
 
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
-import { createSpjaldDocument, generatePdf } from '../lib/islenskubraut-pdf.js';
+import {
+  LEVELS,
+  createSpjaldDocument,
+  generatePdf,
+  pdfPageCount as pageCount,
+} from '../lib/islenskubraut-pdf.js';
 import { categories } from '../lib/islenskubraut-data.js';
 import type { ReactElement, ReactNode } from 'react';
-
-const LEVELS = ['A1', 'A2', 'B1'];
 
 const realFetch = globalThis.fetch;
 const networkRequests: string[] = [];
@@ -35,11 +38,6 @@ beforeAll(() => {
 afterAll(() => {
   vi.unstubAllGlobals();
 });
-
-/** Pages in a rendered PDF: each page object, not the /Pages tree that holds them. */
-function pageCount(pdf: Buffer): number {
-  return pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g)?.length ?? 0;
-}
 
 /** The PostScript names of the fonts a PDF embeds or references. */
 function baseFonts(pdf: Buffer): Set<string> {
@@ -102,7 +100,7 @@ describe('questions on the printed card', () => {
   for (const category of categories) {
     for (const level of LEVELS) {
       it(`prints every ${category.id} ${level} question, with its label if it has one`, () => {
-        const text = printedText(createSpjaldDocument(category, level as 'A1' | 'A2' | 'B1'));
+        const text = printedText(createSpjaldDocument(category, level));
         for (const q of category.guidingQuestions) {
           if (!q.answers.some((a) => a.level === level)) continue;
           expect(text).toContain(q.question);
@@ -123,7 +121,7 @@ describe('examples and teacher notes on the printed card', () => {
   for (const category of categories) {
     for (const level of LEVELS) {
       it(`prints ${category.id} ${level}'s example from the content, and no teacher note`, () => {
-        const text = printedText(createSpjaldDocument(category, level as 'A1' | 'A2' | 'B1'));
+        const text = printedText(createSpjaldDocument(category, level));
         const example = category.examples.find((e) => e.level === level)?.text;
         const note = category.teacherNotes.find((n) => n.level === level)?.text;
 

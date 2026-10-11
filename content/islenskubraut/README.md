@@ -24,6 +24,10 @@ That regenerates `apps/islenskubraut/src/data/categories/*.ts`,
 both copies share (`apps/islenskubraut/src/data/types.ts`, `server/src/types/islenskubraut.ts`).
 **Never edit those files** — they are output, and CI fails if they do not match the YAML.
 
+The printed cards are rendered from the same data on every build, into
+`dist/islenskubraut/spjold/`. To look at them after an edit, run `pnpm islenskubraut:spjold` and
+open `apps/islenskubraut/public/spjold/`. It refuses a card that runs onto a fourth page.
+
 Adding a whole new category needs one more edit: `CATEGORY_ORDER` in
 `scripts/islenskubraut/load.mjs` (the taught order, deliberately not alphabetical). Omitting it is
 caught by the test suite, but as a deep-equality failure that does not say "you forgot to

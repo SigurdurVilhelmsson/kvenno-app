@@ -13,7 +13,7 @@ import { unlink, readFile, rename } from 'fs/promises';
 import path from 'path';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { generatePdf } from './lib/islenskubraut-pdf.js';
+import { generatePdf, spjaldFileName } from './lib/islenskubraut-pdf.js';
 import { categoryIds, getCategoryById } from './lib/islenskubraut-data.js';
 import type {
   AnalyzeRequestBody,
@@ -21,6 +21,7 @@ import type {
   PdfQueryParams,
   AnthropicResponse,
   HealthResponse,
+  Level,
   ErrorResponse,
   PandocResult,
   ProcessDocumentResponse,
@@ -734,7 +735,10 @@ app.get(
       const pdfBuffer = await generatePdf(category, stig);
 
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="spjald-${flokkur}-${stig}.pdf"`);
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${spjaldFileName(flokkur, stig as Level)}"`
+      );
       res.send(pdfBuffer);
     } catch (error: unknown) {
       console.error('[Islenskubraut PDF] Error:', error);
