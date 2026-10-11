@@ -65,6 +65,8 @@ export interface BuilderFrame {
 /** The sentence builder's tags for one level (REVIEW-QUEUE D3, C9). */
 export interface Builder {
   level: Level;
+  /** A teacher has checked this level's sentences; until then the card page does not link it. */
+  confirmed: boolean;
   subject: BuilderSubject;
   frames: BuilderFrame[];
   /** BÍN headwords for forms BÍN reads as two words of the needed class. */

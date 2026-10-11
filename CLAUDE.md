@@ -41,6 +41,7 @@ kvenno-app/
 /efnafraedi/{year}/lab-reports/        # Lab reports SPA (2-ar, 3-ar)
 /islenskubraut/                        # Íslenskubraut SPA (category grid)
 /islenskubraut/spjald/:flokkur         # Teaching card detail page
+/islenskubraut/smidur/:flokkur         # Sentence builder (A1), linked from the card once confirmed
 /auth/callback                         # MSAL redirect target — serves the 2-ar lab-reports build
 ```
 
@@ -600,6 +601,13 @@ words of the needed class (`sætt`: `sær` or `sætur`) must be named under `lem
 form is an error. `pnpm islenskubraut:smidur` prints every sentence the tags make, for review.
 **The tables were fetched on 2026-10-11 and `smidur.test.ts` builds every sentence from them**, so
 adding a builder word or tag without running `--fetch` fails CI rather than shipping a gap.
+**The student page is `/islenskubraut/smidur/:flokkur` (`SmidurPage.tsx`, lazy-loaded).**
+`pnpm islenskubraut:build` builds every sentence into `apps/islenskubraut/src/data/smidur.ts`
+(generated, **CC BY-SA** since its forms are BÍN's, and the build fails on any sentence BÍN cannot
+complete), so the browser gets neither the engine nor the tables. Each word that differs from the
+card as printed is marked and underlined. **The card page links to it only for a level whose YAML
+says `confirmed: true`** — a teacher's sign-off (C9); until then the page works at its URL under a
+"Drög" note. The page carries BÍN's attribution, as its licence requires.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

@@ -432,6 +432,7 @@ export const categories: Category[] = [
     builder: [
       {
         level: 'A1',
+        confirmed: false,
         subject: {
           kind: 'word',
           word: 'dýr',
@@ -975,6 +976,7 @@ export const categories: Category[] = [
     builder: [
       {
         level: 'A1',
+        confirmed: false,
         subject: {
           kind: 'words',
           words: 'Hvers konar matur er þetta?',
@@ -1449,6 +1451,7 @@ export const categories: Category[] = [
     builder: [
       {
         level: 'A1',
+        confirmed: false,
         subject: {
           kind: 'words',
           words: 'Hvers konar farartæki er þetta?',
@@ -1823,6 +1826,7 @@ export const categories: Category[] = [
     builder: [
       {
         level: 'A1',
+        confirmed: false,
         subject: {
           kind: 'person',
         },
@@ -2295,6 +2299,7 @@ export const categories: Category[] = [
     builder: [
       {
         level: 'A1',
+        confirmed: false,
         subject: {
           kind: 'words',
           words: 'Hvers konar staður er þetta?',
@@ -2840,6 +2845,7 @@ export const categories: Category[] = [
     builder: [
       {
         level: 'A1',
+        confirmed: false,
         subject: {
           kind: 'words',
           words: 'Hvers konar klæðnaður er þetta?',

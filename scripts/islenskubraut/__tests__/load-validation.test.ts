@@ -438,6 +438,7 @@ guidingQuestions:
     expect(result.builder).toEqual([
       {
         level: 'A1',
+        confirmed: false,
         subject: { kind: 'words', words: 'Tegund', options: ['ávöxtur', 'skór'], plural: ['skór'] },
         frames: [
           {
@@ -457,6 +458,14 @@ guidingQuestions:
         lemmas: { sætt: 'sætur' },
       },
     ]);
+  });
+
+  it('reads a teacher confirmation, and refuses one that is not true or false', () => {
+    const frames = `    frames:\n      - frame: Þetta er ___.\n        blank: subject\n`;
+    expect(load(`    confirmed: true\n${subject}${frames}`).builder?.[0].confirmed).toBe(true);
+    expect(() => load(`    confirmed: já\n${subject}${frames}`)).toThrow(
+      /confirmed must be true or false/
+    );
   });
 
   it('leaves a category with no builder without one', () => {

@@ -127,9 +127,19 @@ export function SpjaldPage() {
         />
       </div>
 
-      {/* Download button */}
-      <div className="mb-10">
+      {/* Download button, and the sentence builder once a teacher has confirmed it (C9) */}
+      <div className="mb-10 flex flex-wrap items-center gap-4">
         <DownloadButton categoryId={category.id} level={level} color={category.color} />
+        {/* Read off the category's tags, not the sentences, which load only with their page. */}
+        {category.builder?.some((b) => b.level === level && b.confirmed) && (
+          <Link
+            to={`/smidur/${category.id}`}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+            style={{ borderColor: category.color }}
+          >
+            Setningasmiður
+          </Link>
+        )}
       </div>
 
       {/* Tab navigation */}

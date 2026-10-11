@@ -1,9 +1,16 @@
+import { lazy, Suspense } from 'react';
+
 import { Routes, Route } from 'react-router-dom';
 
 import { Header, Footer, BottomNav } from '@kvenno/shared/components';
 
 import { Home } from './pages/Home';
 import { SpjaldPage } from './pages/SpjaldPage';
+
+// Its sentences are a large generated module, so they load only when the page is opened.
+const SmidurPage = lazy(() =>
+  import('./pages/SmidurPage').then((m) => ({ default: m.SmidurPage }))
+);
 
 export function App() {
   return (
@@ -14,6 +21,14 @@ export function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/spjald/:flokkur" element={<SpjaldPage />} />
+          <Route
+            path="/smidur/:flokkur"
+            element={
+              <Suspense fallback={<p className="py-16 text-center text-warm-600">Sæki…</p>}>
+                <SmidurPage />
+              </Suspense>
+            }
+          />
         </Routes>
       </main>
 

@@ -299,6 +299,7 @@ export const manneskja: Category = {
   builder: [
     {
       level: 'A1',
+      confirmed: false,
       subject: {
         kind: 'person',
       },

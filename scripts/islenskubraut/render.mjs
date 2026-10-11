@@ -82,6 +82,8 @@ export interface BuilderFrame {
 /** The sentence builder's tags for one level (REVIEW-QUEUE D3, C9). */
 export interface Builder {
   level: Level;
+  /** A teacher has checked this level's sentences; until then the card page does not link it. */
+  confirmed: boolean;
   subject: BuilderSubject;
   frames: BuilderFrame[];
   /** BÍN headwords for forms BÍN reads as two words of the needed class. */
@@ -167,6 +169,61 @@ export const categoryIds: string[] = categories.map((c) => c.id);
 
 export function getCategoryById(id: string): Category | undefined {
   return categories.find((c) => c.id === id);
+}
+`;
+}
+
+/**
+ * The sentence builder's page data: every sentence already built, so the page needs neither the
+ * engine nor BÍN's tables. Its word forms come from BÍN, so the file carries BÍN's terms.
+ */
+export function renderSmidur(entries) {
+  return `${WARNING}
+//
+// The word forms in the sentences below come from BÍN and are released under CC BY-SA 4.0
+// (https://creativecommons.org/licenses/by-sa/4.0/). Gögnin eru úr Beygingarlýsingu íslensks
+// nútímamáls (BÍN) og eru í eigu Stofnunar Árna Magnússonar í íslenskum fræðum.
+
+import type { Level } from './types';
+
+/** One word of a built sentence; \`changed\` when it differs from the card as printed. */
+export interface SmidurWord {
+  word: string;
+  changed: boolean;
+}
+
+/** Who or what the sentence is about, with the gender and number BÍN gives it. */
+export interface SmidurSubject {
+  text: string;
+  gender: 'kk' | 'kvk' | 'hk';
+  number: 'ET' | 'FT';
+  person: boolean;
+}
+
+export interface SmidurFrame {
+  frame: string;
+  /** The card question whose answers fill the blank; null when the blank takes the subject. */
+  question: string | null;
+  /** The answers as the card prints them; null when there is nothing to pick. */
+  options: string[] | null;
+  /** \`sentences[subject][option]\`, with a single option slot when \`options\` is null. */
+  sentences: SmidurWord[][][];
+}
+
+export interface SmidurLevel {
+  level: Level;
+  /** A teacher has checked these sentences (REVIEW-QUEUE C9); until then the card page does not link here. */
+  confirmed: boolean;
+  /** The card question the subject is picked from; null for a fixed subject or a person. */
+  subjectQuestion: string | null;
+  subjects: SmidurSubject[];
+  frames: SmidurFrame[];
+}
+
+export const smidur: Record<string, SmidurLevel[]> = ${literal(Object.fromEntries(entries))};
+
+export function getSmidur(categoryId: string, level: Level): SmidurLevel | undefined {
+  return smidur[categoryId]?.find((s) => s.level === level);
 }
 `;
 }

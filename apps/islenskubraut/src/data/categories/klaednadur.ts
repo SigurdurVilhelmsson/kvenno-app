@@ -489,6 +489,7 @@ export const klaednadur: Category = {
   builder: [
     {
       level: 'A1',
+      confirmed: false,
       subject: {
         kind: 'words',
         words: 'Hvers konar klæðnaður er þetta?',
