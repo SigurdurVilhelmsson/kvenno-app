@@ -1,5 +1,9 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
+import { loadCategories } from '../load.mjs';
 import { allSentences, buildSentence, paradigmsNeeded, subjectsOf } from '../smidur.mjs';
 
 // Small tables shaped as BÍN sends them (`ord/<guid>`), holding only the forms these tests read.
@@ -211,5 +215,45 @@ describe('paradigmsNeeded and allSentences', () => {
       'Það hefur feld.',
       'Það hefur fjaðrir.',
     ]);
+  });
+});
+
+// The saved BÍN files against the real content. A tag or a word added without
+// `pnpm islenskubraut:bin --fetch` fails here, naming the sentence BÍN cannot complete.
+describe('the content, with the saved BÍN files', () => {
+  const bin = (file: string) =>
+    JSON.parse(
+      readFileSync(resolve(__dirname, '../../../content/islenskubraut/bin', file), 'utf8')
+    );
+  const saved = bin('ordmyndir.json').ordmyndir;
+  const tables = bin('beygingar.json').beygingar;
+  const categories = loadCategories();
+
+  it('has every inflection table the builder needs', () => {
+    const { guids, problems } = paradigmsNeeded(categories, saved);
+    expect(problems).toEqual([]);
+    expect(guids.filter((g: string) => !tables[g])).toEqual([]);
+  });
+
+  it('builds every sentence, with no problem left for a person', () => {
+    const problems = categories.flatMap((c) =>
+      allSentences(c, saved, tables)
+        .filter((s) => s.problem)
+        .map((s) => `${c.id} ${s.subject ?? ''} "${s.frame ?? ''}" ${s.option ?? ''}: ${s.problem}`)
+    );
+    expect(problems).toEqual([]);
+  });
+
+  it('agrees a plural subject and puts a noun in the accusative from the real tables', () => {
+    const say = (id: string) =>
+      allSentences(
+        categories.find((c) => c.id === id),
+        saved,
+        tables
+      ).map((s) => s.sentence);
+    expect(say('klaednadur')).toEqual(
+      expect.arrayContaining(['Þær eru rauðar.', 'Þeir eru rauðir.', 'Maður notar þá úti.'])
+    );
+    expect(say('dyr')).toEqual(expect.arrayContaining(['Það hefur hala.', 'Það hefur feld.']));
   });
 });

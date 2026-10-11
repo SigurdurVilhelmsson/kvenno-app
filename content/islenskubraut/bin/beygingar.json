@@ -1,0 +1,8990 @@
+{
+  "_heimild": "Gögnin eru úr Beygingarlýsingu íslensks nútímamáls (BÍN-kjarnanum) og eru í eigu Stofnunar Árna Magnússonar í íslenskum fræðum. https://bin.arnastofnun.is/",
+  "_leyfi": "CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/",
+  "beygingar": {
+    "00c505b3bbab822f2240c394586dccbe": {
+      "ord": "rúta",
+      "guid": "00c505b3bbab822f2240c394586dccbe",
+      "ofl": "no",
+      "kyn": "kvk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "rúta"
+        },
+        {
+          "g": "NFETgr",
+          "b": "rútan"
+        },
+        {
+          "g": "ÞFET",
+          "b": "rútu"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "rútuna"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "rútu"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "rútunni"
+        },
+        {
+          "g": "EFET",
+          "b": "rútu"
+        },
+        {
+          "g": "EFETgr",
+          "b": "rútunnar"
+        },
+        {
+          "g": "NFFT",
+          "b": "rútur"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "rúturnar"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "rútur"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "rúturnar"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "rútum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "rútunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "rúta"
+        },
+        {
+          "g": "EFFT2",
+          "b": "rútna"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "rútanna"
+        },
+        {
+          "g": "EFFTgr2",
+          "b": "rútnanna"
+        }
+      ]
+    },
+    "0203e12b2a84bfef999a73f9cf79c699": {
+      "ord": "hreistur",
+      "guid": "0203e12b2a84bfef999a73f9cf79c699",
+      "ofl": "no",
+      "kyn": "hk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "hreistur"
+        },
+        {
+          "g": "NFETgr",
+          "b": "hreistrið"
+        },
+        {
+          "g": "ÞFET",
+          "b": "hreistur"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "hreistrið"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "hreistri"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "hreistrinu"
+        },
+        {
+          "g": "EFET",
+          "b": "hreisturs"
+        },
+        {
+          "g": "EFETgr",
+          "b": "hreistursins"
+        }
+      ]
+    },
+    "239a1d272af5f0f4789b8dfab26851da": {
+      "ord": "lágur",
+      "guid": "239a1d272af5f0f4789b8dfab26851da",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "lágur"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "lágan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "lágum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "lágs"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "lágir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "lága"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "lágum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "lágra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "lág"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "lága"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "lágri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "lágrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "lágar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "lágar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "lágum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "lágra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "lágt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "lágt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "lágu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "lágs"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "lág"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "lág"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "lágum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "lágra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "lági"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "lága"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "lágu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "lægra"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "lægra"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "lægra"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "lægra"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "lægri"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "lægstur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "lægstan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "lægstum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "lægsts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "lægstir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "lægsta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "lægstum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "lægstra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "lægst"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "lægstri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "lægstrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "lægstar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "lægstar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "lægstum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "lægstra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "lægst"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "lægst"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "lægstu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "lægsts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "lægst"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "lægst"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "lægstum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "lægstra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "lægsti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "lægsta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "lægstu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "lægstu"
+        }
+      ]
+    },
+    "2d5d7511069a086c904c889aefa584c7": {
+      "ord": "bíll",
+      "guid": "2d5d7511069a086c904c889aefa584c7",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "bíll"
+        },
+        {
+          "g": "NFETgr",
+          "b": "bíllinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "bíl"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "bílinn"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "bíl"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "bílnum"
+        },
+        {
+          "g": "EFET",
+          "b": "bíls"
+        },
+        {
+          "g": "EFETgr",
+          "b": "bílsins"
+        },
+        {
+          "g": "NFFT",
+          "b": "bílar"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "bílarnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "bíla"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "bílana"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "bílum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "bílunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "bíla"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "bílanna"
+        }
+      ]
+    },
+    "2f60e52a200fba469d7810e992f0e31d": {
+      "ord": "skip",
+      "guid": "2f60e52a200fba469d7810e992f0e31d",
+      "ofl": "no",
+      "kyn": "hk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "skip"
+        },
+        {
+          "g": "NFETgr",
+          "b": "skipið"
+        },
+        {
+          "g": "ÞFET",
+          "b": "skip"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "skipið"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "skipi"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "skipinu"
+        },
+        {
+          "g": "EFET",
+          "b": "skips"
+        },
+        {
+          "g": "EFETgr",
+          "b": "skipsins"
+        },
+        {
+          "g": "NFFT",
+          "b": "skip"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "skipin"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "skip"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "skipin"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "skipum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "skipunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "skipa"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "skipanna"
+        }
+      ]
+    },
+    "31dc39020a2f5c6f0eab32860ce9846d": {
+      "ord": "blár",
+      "guid": "31dc39020a2f5c6f0eab32860ce9846d",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "blár"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "bláan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "bláum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "blás"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "bláir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "bláa"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "bláum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "blárra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "blá"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "blárri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "blárrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "bláar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "bláar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "bláum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "blárra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "blátt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "blátt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "bláu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "blás"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "blá"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "blá"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "bláum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "blárra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "blái"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "bláa"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "bláu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "blárra"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "blárra"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "blárra"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "blárra"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "blárri"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "bláastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "bláastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "bláustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "bláasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "bláastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "bláasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "bláustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "bláastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "bláust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "bláastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "bláastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "bláastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "bláastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "bláustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "bláastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "bláast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "bláast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "bláustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "bláasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "bláust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "bláust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "bláustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "bláastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "bláasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "bláasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "bláustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "bláustu"
+        }
+      ]
+    },
+    "361cb0444fdfb677b55eb169587208ec": {
+      "ord": "drykkur",
+      "guid": "361cb0444fdfb677b55eb169587208ec",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "drykkur"
+        },
+        {
+          "g": "NFETgr",
+          "b": "drykkurinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "drykk"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "drykkinn"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "drykk"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "drykknum"
+        },
+        {
+          "g": "EFET",
+          "b": "drykkjar"
+        },
+        {
+          "g": "EFETgr",
+          "b": "drykkjarins"
+        },
+        {
+          "g": "NFFT",
+          "b": "drykkir"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "drykkirnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "drykki"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "drykkina"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "drykkjum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "drykkjunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "drykkja"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "drykkjanna"
+        }
+      ]
+    },
+    "3623645fc25424392ccfe92c59e5eda4": {
+      "ord": "ávöxtur",
+      "guid": "3623645fc25424392ccfe92c59e5eda4",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "ávöxtur"
+        },
+        {
+          "g": "NFETgr",
+          "b": "ávöxturinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "ávöxt"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "ávöxtinn"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "ávexti"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "ávextinum"
+        },
+        {
+          "g": "EFET",
+          "b": "ávaxtar"
+        },
+        {
+          "g": "EFETgr",
+          "b": "ávaxtarins"
+        },
+        {
+          "g": "NFFT",
+          "b": "ávextir"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "ávextirnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "ávexti"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "ávextina"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "ávöxtum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "ávöxtunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "ávaxta"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "ávaxtanna"
+        }
+      ]
+    },
+    "4140f16e57d591f7c54a1a531c68e341": {
+      "ord": "skór",
+      "guid": "4140f16e57d591f7c54a1a531c68e341",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "skór"
+        },
+        {
+          "g": "NFETgr",
+          "b": "skórinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "skó"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "skóinn"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "skó"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "skónum"
+        },
+        {
+          "g": "EFET",
+          "b": "skós"
+        },
+        {
+          "g": "EFETgr",
+          "b": "skósins"
+        },
+        {
+          "g": "NFFT",
+          "b": "skór"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "skórnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "skó"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "skóna"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "skóm"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "skónum"
+        },
+        {
+          "g": "EFFT",
+          "b": "skóa"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "skónna"
+        }
+      ]
+    },
+    "46801601d00e333a878e3711f6a4c14f": {
+      "ord": "buxur",
+      "guid": "46801601d00e333a878e3711f6a4c14f",
+      "ofl": "no",
+      "kyn": "kvk",
+      "bmyndir": [
+        {
+          "g": "NFFT",
+          "b": "buxur"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "buxurnar"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "buxur"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "buxurnar"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "buxum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "buxunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "buxna"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "buxnanna"
+        }
+      ]
+    },
+    "54e0c7f3d07165957e0bf2b5599ef6ec": {
+      "ord": "sundlaug",
+      "guid": "54e0c7f3d07165957e0bf2b5599ef6ec",
+      "ofl": "no",
+      "kyn": "kvk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "sundlaug"
+        },
+        {
+          "g": "NFETgr",
+          "b": "sundlaugin"
+        },
+        {
+          "g": "ÞFET",
+          "b": "sundlaug"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "sundlaugina"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "sundlaug"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "sundlauginni"
+        },
+        {
+          "g": "EFET",
+          "b": "sundlaugar"
+        },
+        {
+          "g": "EFETgr",
+          "b": "sundlaugarinnar"
+        },
+        {
+          "g": "NFFT",
+          "b": "sundlaugar"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "sundlaugarnar"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "sundlaugar"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "sundlaugarnar"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "sundlaugum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "sundlaugunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "sundlauga"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "sundlauganna"
+        }
+      ]
+    },
+    "5cbb66c54ccb1292ac69d8defa33551d": {
+      "ord": "stór",
+      "guid": "5cbb66c54ccb1292ac69d8defa33551d",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "stór"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "stóran"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "stórum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "stórs"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "stórir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "stóra"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "stórum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "stórra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "stór"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "stórri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "stórrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "stórar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "stórar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "stórum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "stórra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "stórt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "stórt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "stóru"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "stórs"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "stór"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "stór"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "stórum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "stórra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "stóri"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "stóra"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "stóru"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "stærra"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "stærra"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "stærra"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "stærra"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "stærri"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "stærstur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "stærstan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "stærstum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "stærsts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "stærstir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "stærsta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "stærstum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "stærstra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "stærst"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "stærstri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "stærstrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "stærstar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "stærstar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "stærstum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "stærstra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "stærst"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "stærst"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "stærstu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "stærsts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "stærst"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "stærst"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "stærstum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "stærstra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "stærsti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "stærsta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "stærstu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "stærstu"
+        }
+      ]
+    },
+    "5d032af5e6222d9b78041a86c2485c33": {
+      "ord": "lítill",
+      "guid": "5d032af5e6222d9b78041a86c2485c33",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "lítill"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "lítinn"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "litlum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "lítils"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "litlir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "litla"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "litlum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "lítilla"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "lítil"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "litla"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "lítilli"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "lítillar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "litlar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "litlar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "litlum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "lítilla"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "lítið"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "lítið"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "litlu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "lítils"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "lítil"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "lítil"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "litlum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "lítilla"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "litli"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "litla"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "litlu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "minna"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "minna"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "minna"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "minna"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "minni"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "minni"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "minnstur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "minnstan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "minnstum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "minnsts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "minnstir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "minnsta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "minnstum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "minnstra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "minnst"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "minnstri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "minnstrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "minnstar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "minnstar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "minnstum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "minnstra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "minnst"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "minnst"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "minnstu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "minnsts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "minnst"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "minnst"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "minnstum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "minnstra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "minnsti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "minnsta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "minnstu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "minnstu"
+        }
+      ]
+    },
+    "5f6bd3fe8fe0794b8f5ff531ee4a8217": {
+      "ord": "hali",
+      "guid": "5f6bd3fe8fe0794b8f5ff531ee4a8217",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "hali"
+        },
+        {
+          "g": "NFETgr",
+          "b": "halinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "hala"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "halann"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "hala"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "halanum"
+        },
+        {
+          "g": "EFET",
+          "b": "hala"
+        },
+        {
+          "g": "EFETgr",
+          "b": "halans"
+        },
+        {
+          "g": "NFFT",
+          "b": "halar"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "halarnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "hala"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "halana"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "hölum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "hölunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "hala"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "halanna"
+        }
+      ]
+    },
+    "665ccc1fb8f6f8caae0db698e24071b9": {
+      "ord": "gamall",
+      "guid": "665ccc1fb8f6f8caae0db698e24071b9",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "gamall"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "gamlan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "gömlum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "gamals"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "gamlir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "gamla"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "gömlum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "gamalla"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "gömul"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "gamalli"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "gamallar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "gamlar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "gamlar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "gömlum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "gamalla"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "gamalt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "gamalt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "gömlu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "gamals"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "gömul"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "gömul"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "gömlum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "gamalla"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "gamli"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "gamla"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "gömlu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "eldra"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "eldra"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "eldra"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "eldra"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "eldri"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "elstur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "elstan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "elstum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "elsts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "elstir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "elsta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "elstum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "elstra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "elst"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "elsta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "elstri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "elstrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "elstar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "elstar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "elstum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "elstra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "elst"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "elst"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "elstu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "elsts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "elst"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "elst"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "elstum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "elstra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "elsti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "elsta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "elstu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "elstu"
+        }
+      ]
+    },
+    "6b69c8803d740eb3b7efed0c16862a84": {
+      "ord": "dýr",
+      "guid": "6b69c8803d740eb3b7efed0c16862a84",
+      "ofl": "no",
+      "kyn": "hk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "dýr"
+        },
+        {
+          "g": "NFETgr",
+          "b": "dýrið"
+        },
+        {
+          "g": "ÞFET",
+          "b": "dýr"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "dýrið"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "dýri"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "dýrinu"
+        },
+        {
+          "g": "EFET",
+          "b": "dýrs"
+        },
+        {
+          "g": "EFETgr",
+          "b": "dýrsins"
+        },
+        {
+          "g": "NFFT",
+          "b": "dýr"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "dýrin"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "dýr"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "dýrin"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "dýrum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "dýrunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "dýra"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "dýranna"
+        }
+      ]
+    },
+    "6f648651fb76e7f8477118a11ed0ed4a": {
+      "ord": "sætur",
+      "guid": "6f648651fb76e7f8477118a11ed0ed4a",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "sætur"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "sætan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "sætum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "sæts"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "sætir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "sæta"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "sætum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "sætra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "sæt"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "sætri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "sætrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "sætar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "sætar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "sætum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "sætra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "sætt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "sætt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "sætu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "sæts"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "sæt"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "sæt"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "sætum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "sætra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "sæti"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "sæta"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "sætu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "sætara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "sætara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "sætara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "sætara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "sætari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "sætastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "sætastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "sætustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "sætasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "sætastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "sætasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "sætustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "sætastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "sætust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "sætastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "sætastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "sætastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "sætastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "sætustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "sætastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "sætast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "sætast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "sætustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "sætasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "sætust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "sætust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "sætustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "sætastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "sætasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "sætasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "sætustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "sætustu"
+        }
+      ]
+    },
+    "759286e5511c7e6208336a92f256ebf8": {
+      "ord": "jakki",
+      "guid": "759286e5511c7e6208336a92f256ebf8",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "jakki"
+        },
+        {
+          "g": "NFETgr",
+          "b": "jakkinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "jakka"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "jakkann"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "jakka"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "jakkanum"
+        },
+        {
+          "g": "EFET",
+          "b": "jakka"
+        },
+        {
+          "g": "EFETgr",
+          "b": "jakkans"
+        },
+        {
+          "g": "NFFT",
+          "b": "jakkar"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "jakkarnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "jakka"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "jakkana"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "jökkum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "jökkunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "jakka"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "jakkanna"
+        }
+      ]
+    },
+    "796fb80ee05b5a2a0a2c2e0cc6268121": {
+      "ord": "rauður",
+      "guid": "796fb80ee05b5a2a0a2c2e0cc6268121",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "rauður"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "rauðan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "rauðum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "rauðs"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "rauðir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "rauða"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "rauðum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "rauðra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "rauð"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "rauðri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "rauðrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "rauðar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "rauðar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "rauðum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "rauðra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "rautt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "rautt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "rauðu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "rauðs"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "rauð"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "rauð"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "rauðum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "rauðra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "rauði"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "rauða"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "rauðu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "rauðara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "rauðara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "rauðara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "rauðara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "rauðari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "rauðastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "rauðastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "rauðustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "rauðasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "rauðastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "rauðasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "rauðustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "rauðastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "rauðust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "rauðastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "rauðastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "rauðastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "rauðastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "rauðustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "rauðastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "rauðast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "rauðast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "rauðustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "rauðasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "rauðust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "rauðust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "rauðustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "rauðastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "rauðasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "rauðasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "rauðustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "rauðustu"
+        }
+      ]
+    },
+    "7ead7e711b826dcb15ce8aff1238b2d7": {
+      "ord": "fjöður",
+      "guid": "7ead7e711b826dcb15ce8aff1238b2d7",
+      "ofl": "no",
+      "kyn": "kvk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "fjöður"
+        },
+        {
+          "g": "NFETgr",
+          "b": "fjöðrin"
+        },
+        {
+          "g": "ÞFET",
+          "b": "fjöður"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "fjöðrina"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "fjöður"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "fjöðrinni"
+        },
+        {
+          "g": "EFET",
+          "b": "fjaðrar"
+        },
+        {
+          "g": "EFETgr",
+          "b": "fjaðrarinnar"
+        },
+        {
+          "g": "NFFT",
+          "b": "fjaðrir"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "fjaðrirnar"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "fjaðrir"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "fjaðrirnar"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "fjöðrum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "fjöðrunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "fjaðra"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "fjaðranna"
+        }
+      ]
+    },
+    "822554fe7c405d599bd0268af19d3f14": {
+      "ord": "grænn",
+      "guid": "822554fe7c405d599bd0268af19d3f14",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "grænn"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "grænan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "grænum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "græns"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "grænir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "græna"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "grænum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "grænna"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "græn"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "græna"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "grænni"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "grænnar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "grænar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "grænar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "grænum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "grænna"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "grænt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "grænt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "grænu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "græns"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "græn"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "græn"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "grænum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "grænna"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "græni"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "græna"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "grænu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "grænna"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "grænna"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "grænna"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "grænna"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "grænni"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "grænastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "grænastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "grænustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "grænasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "grænastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "grænasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "grænustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "grænastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "grænust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "grænastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "grænastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "grænastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "grænastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "grænustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "grænastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "grænast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "grænast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "grænustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "grænasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "grænust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "grænust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "grænustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "grænastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "grænasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "grænasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "grænustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "grænustu"
+        }
+      ]
+    },
+    "901782b13e501e63240b61d27dff1fd3": {
+      "ord": "hús",
+      "guid": "901782b13e501e63240b61d27dff1fd3",
+      "ofl": "no",
+      "kyn": "hk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "hús"
+        },
+        {
+          "g": "NFETgr",
+          "b": "húsið"
+        },
+        {
+          "g": "ÞFET",
+          "b": "hús"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "húsið"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "húsi"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "húsinu"
+        },
+        {
+          "g": "EFET",
+          "b": "húss"
+        },
+        {
+          "g": "EFETgr",
+          "b": "hússins"
+        },
+        {
+          "g": "NFFT",
+          "b": "hús"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "húsin"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "hús"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "húsin"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "húsum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "húsunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "húsa"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "húsanna"
+        }
+      ]
+    },
+    "92c7449ecc1b839183c5d589637b99a6": {
+      "ord": "hár",
+      "guid": "92c7449ecc1b839183c5d589637b99a6",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "hár"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "háan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "háum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "hás"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "háir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "háa"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "háum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "hárra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "há"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "háa"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "hárri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "hárrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "háar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "háar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "háum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "hárra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "hátt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "hátt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "háu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "hás"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "há"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "há"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "háum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "hárra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "hái"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "háa"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "háu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "háu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "hærra"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "hærra"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "hærra"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "hærra"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "hærri"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "hæstur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "hæstan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "hæstum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "hæsts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "hæstir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "hæsta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "hæstum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "hæstra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "hæst"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "hæstri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "hæstrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "hæstar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "hæstar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "hæstum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "hæstra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "hæst"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "hæst"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "hæstu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "hæsts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "hæst"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "hæst"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "hæstum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "hæstra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "hæsti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "hæsta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "hæstu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "hæstu"
+        }
+      ]
+    },
+    "9655bd8a4d0837fef3e4e5e0ee4ab82d": {
+      "ord": "meðalstór",
+      "guid": "9655bd8a4d0837fef3e4e5e0ee4ab82d",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "meðalstór"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "meðalstóran"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "meðalstórum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "meðalstórs"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "meðalstórir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "meðalstórum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "meðalstórra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "meðalstór"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "meðalstórri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "meðalstórrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "meðalstórar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "meðalstórar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "meðalstórum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "meðalstórra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "meðalstórt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "meðalstórt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "meðalstórs"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "meðalstór"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "meðalstór"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "meðalstórum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "meðalstórra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "meðalstóri"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "meðalstóra"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "meðalstóru"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "meðalstóru"
+        }
+      ]
+    },
+    "970595c1ee8ee4ed435e9c03d1cc9497": {
+      "ord": "beiskur",
+      "guid": "970595c1ee8ee4ed435e9c03d1cc9497",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "beiskur"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "beiskan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "beiskum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "beisks"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "beiskir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "beiska"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "beiskum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "beiskra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "beisk"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "beiskri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "beiskrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "beiskar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "beiskar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "beiskum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "beiskra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "beiskt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "beiskt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "beisku"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "beisks"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "beisk"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "beisk"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "beiskum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "beiskra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "beiski"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "beiska"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "beisku"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "beiskara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "beiskara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "beiskara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "beiskara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "beiskari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "beiskastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "beiskastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "beiskustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "beiskasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "beiskastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "beiskasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "beiskustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "beiskastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "beiskust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "beiskastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "beiskastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "beiskastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "beiskastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "beiskustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "beiskastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "beiskast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "beiskast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "beiskustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "beiskasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "beiskust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "beiskust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "beiskustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "beiskastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "beiskasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "beiskasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "beiskustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "beiskustu"
+        }
+      ]
+    },
+    "9dbcc5592732adc9763d188eb457b8d1": {
+      "ord": "grænmeti",
+      "guid": "9dbcc5592732adc9763d188eb457b8d1",
+      "ofl": "no",
+      "kyn": "hk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "grænmeti"
+        },
+        {
+          "g": "NFETgr",
+          "b": "grænmetið"
+        },
+        {
+          "g": "ÞFET",
+          "b": "grænmeti"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "grænmetið"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "grænmeti"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "grænmetinu"
+        },
+        {
+          "g": "EFET",
+          "b": "grænmetis"
+        },
+        {
+          "g": "EFETgr",
+          "b": "grænmetisins"
+        }
+      ]
+    },
+    "a0111408557ede4ad0eed438d291839c": {
+      "ord": "feldur",
+      "guid": "a0111408557ede4ad0eed438d291839c",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "feldur"
+        },
+        {
+          "g": "NFETgr",
+          "b": "feldurinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "feld"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "feldinn"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "feldi"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "feldinum"
+        },
+        {
+          "g": "EFET",
+          "b": "feldar"
+        },
+        {
+          "g": "EFETgr",
+          "b": "feldarins"
+        },
+        {
+          "g": "NFFT",
+          "b": "feldir"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "feldirnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "feldi"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "feldina"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "feldum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "feldunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "felda"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "feldanna"
+        }
+      ]
+    },
+    "a26c2ab5ed64671ca9010ee667271846": {
+      "ord": "saltur",
+      "guid": "a26c2ab5ed64671ca9010ee667271846",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "saltur"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "saltan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "söltum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "salts"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "saltir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "salta"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "söltum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "saltra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "sölt"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "salta"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "saltri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "saltrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "saltar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "saltar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "söltum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "saltra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "salt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "salt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "söltu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "salts"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "sölt"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "sölt"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "söltum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "saltra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "salti"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "salta"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "söltu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "saltara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "saltara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "saltara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "saltara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "saltari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "saltastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "saltastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "söltustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "saltasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "saltastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "saltasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "söltustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "saltastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "söltust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "saltastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "saltastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "saltastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "saltastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "söltustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "saltastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "saltast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "saltast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "söltustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "saltasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "söltust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "söltust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "söltustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "saltastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "saltasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "saltasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "söltustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "söltustu"
+        }
+      ]
+    },
+    "a56b183176b9c77667623ec39ec6f805": {
+      "ord": "skóli",
+      "guid": "a56b183176b9c77667623ec39ec6f805",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "skóli"
+        },
+        {
+          "g": "NFETgr",
+          "b": "skólinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "skóla"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "skólann"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "skóla"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "skólanum"
+        },
+        {
+          "g": "EFET",
+          "b": "skóla"
+        },
+        {
+          "g": "EFETgr",
+          "b": "skólans"
+        },
+        {
+          "g": "NFFT",
+          "b": "skólar"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "skólarnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "skóla"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "skólana"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "skólum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "skólunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "skóla"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "skólanna"
+        }
+      ]
+    },
+    "b6b013d4116e7ea449808e200b9ce564": {
+      "ord": "hvítur",
+      "guid": "b6b013d4116e7ea449808e200b9ce564",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "hvítur"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "hvítan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "hvítum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "hvíts"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "hvítir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "hvíta"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "hvítum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "hvítra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "hvít"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "hvítri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "hvítrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "hvítar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "hvítar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "hvítum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "hvítra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "hvítt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "hvítt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "hvítu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "hvíts"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "hvít"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "hvít"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "hvítum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "hvítra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "hvíti"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "hvíta"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "hvítu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "hvítara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "hvítara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "hvítara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "hvítara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "hvítari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "hvítastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "hvítastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "hvítustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "hvítasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "hvítastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "hvítasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "hvítustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "hvítastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "hvítust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "hvítastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "hvítastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "hvítastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "hvítastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "hvítustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "hvítastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "hvítast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "hvítast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "hvítustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "hvítasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "hvítust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "hvítust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "hvítustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "hvítastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "hvítasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "hvítasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "hvítustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "hvítustu"
+        }
+      ]
+    },
+    "c43eb696f2968656efa837a7ff74a8c8": {
+      "ord": "ungur",
+      "guid": "c43eb696f2968656efa837a7ff74a8c8",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "ungur"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "ungan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "ungum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "ungs"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "ungir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "unga"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "ungum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "ungra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "ung"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "unga"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "ungri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "ungrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "ungar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "ungar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "ungum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "ungra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "ungt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "ungt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "ungu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "ungs"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "ung"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "ung"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "ungum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "ungra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "ungi"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "unga"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "ungu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "yngra"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "yngra"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "yngra"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "yngra"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "yngri"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "yngstur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "yngstan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "yngstum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "yngsts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "yngstir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "yngsta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "yngstum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "yngstra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "yngst"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "yngstri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "yngstrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "yngstar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "yngstar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "yngstum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "yngstra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "yngst"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "yngst"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "yngstu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "yngsts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "yngst"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "yngst"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "yngstum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "yngstra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "yngsti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "yngsta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "yngstu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "yngstu"
+        }
+      ]
+    },
+    "c58cd55341ce02c760cf9b4a7edb57ac": {
+      "ord": "búð",
+      "guid": "c58cd55341ce02c760cf9b4a7edb57ac",
+      "ofl": "no",
+      "kyn": "kvk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "búð"
+        },
+        {
+          "g": "NFETgr",
+          "b": "búðin"
+        },
+        {
+          "g": "ÞFET",
+          "b": "búð"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "búðina"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "búð"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "búðinni"
+        },
+        {
+          "g": "EFET",
+          "b": "búðar"
+        },
+        {
+          "g": "EFETgr",
+          "b": "búðarinnar"
+        },
+        {
+          "g": "NFFT",
+          "b": "búðir"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "búðirnar"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "búðir"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "búðirnar"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "búðum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "búðunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "búða"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "búðanna"
+        }
+      ]
+    },
+    "cdea3bfdb358092fcd4dfa49413dfc03": {
+      "ord": "svartur",
+      "guid": "cdea3bfdb358092fcd4dfa49413dfc03",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "svartur"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "svartan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "svörtum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "svarts"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "svartir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "svarta"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "svörtum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "svartra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "svört"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "svartri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "svartrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "svartar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "svartar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "svörtum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "svartra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "svart"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "svart"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "svörtu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "svarts"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "svört"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "svört"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "svörtum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "svartra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "svarti"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "svarta"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "svörtu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "svartara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "svartara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "svartara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "svartara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "svartari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "svartastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "svartastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "svörtustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "svartasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "svartastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "svartasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "svörtustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "svartastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "svörtust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "svartastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "svartastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "svartastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "svartastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "svörtustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "svartastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "svartast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "svartast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "svörtustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "svartasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "svörtust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "svörtust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "svörtustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "svartastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "svartasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "svartasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "svörtustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "svörtustu"
+        }
+      ]
+    },
+    "dd41b461a0289bcb2692f50d8889f68a": {
+      "ord": "hjól",
+      "guid": "dd41b461a0289bcb2692f50d8889f68a",
+      "ofl": "no",
+      "kyn": "hk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "hjól"
+        },
+        {
+          "g": "NFETgr",
+          "b": "hjólið"
+        },
+        {
+          "g": "ÞFET",
+          "b": "hjól"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "hjólið"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "hjóli"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "hjólinu"
+        },
+        {
+          "g": "EFET",
+          "b": "hjóls"
+        },
+        {
+          "g": "EFETgr",
+          "b": "hjólsins"
+        },
+        {
+          "g": "NFFT",
+          "b": "hjól"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "hjólin"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "hjól"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "hjólin"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "hjólum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "hjólunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "hjóla"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "hjólanna"
+        }
+      ]
+    },
+    "ebe2e2807138734f26ea9984faf8bf13": {
+      "ord": "kjöt",
+      "guid": "ebe2e2807138734f26ea9984faf8bf13",
+      "ofl": "no",
+      "kyn": "hk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "kjöt"
+        },
+        {
+          "g": "NFETgr",
+          "b": "kjötið"
+        },
+        {
+          "g": "ÞFET",
+          "b": "kjöt"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "kjötið"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "kjöti"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "kjötinu"
+        },
+        {
+          "g": "EFET",
+          "b": "kjöts"
+        },
+        {
+          "g": "EFETgr",
+          "b": "kjötsins"
+        }
+      ]
+    },
+    "ecb2f66d4bd6c33711df87ce7e1eea83": {
+      "ord": "súr",
+      "guid": "ecb2f66d4bd6c33711df87ce7e1eea83",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "súr"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "súran"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "súrum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "súrs"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "súrir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "súra"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "súrum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "súrra"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "súr"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "súra"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "súrri"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "súrrar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "súrar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "súrar"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "súrum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "súrra"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "súrt"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "súrt"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "súru"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "súrs"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "súr"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "súr"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "súrum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "súrra"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "súri"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "súra"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "súru"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "súru"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "súrara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "súrara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "súrara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "súrara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "súrari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "súrastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "súrastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "súrustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "súrasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "súrastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "súrasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "súrustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "súrastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "súrust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "súrastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "súrastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "súrastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "súrastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "súrustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "súrastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "súrast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "súrast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "súrustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "súrasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "súrust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "súrust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "súrustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "súrastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "súrasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "súrasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "súrustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "súrustu"
+        }
+      ]
+    },
+    "f1d5fbf634db6f8c04c3756c25716564": {
+      "ord": "flugvél",
+      "guid": "f1d5fbf634db6f8c04c3756c25716564",
+      "ofl": "no",
+      "kyn": "kvk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "flugvél"
+        },
+        {
+          "g": "NFETgr",
+          "b": "flugvélin"
+        },
+        {
+          "g": "ÞFET",
+          "b": "flugvél"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "flugvélina"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "flugvél"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "flugvélinni"
+        },
+        {
+          "g": "EFET",
+          "b": "flugvélar"
+        },
+        {
+          "g": "EFETgr",
+          "b": "flugvélarinnar"
+        },
+        {
+          "g": "NFFT",
+          "b": "flugvélar"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "flugvélarnar"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "flugvélar"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "flugvélarnar"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "flugvélum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "flugvélunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "flugvéla"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "flugvélanna"
+        }
+      ]
+    },
+    "fabb42488421c64b8ac2f6166bdf2664": {
+      "ord": "bolur",
+      "guid": "fabb42488421c64b8ac2f6166bdf2664",
+      "ofl": "no",
+      "kyn": "kk",
+      "bmyndir": [
+        {
+          "g": "NFET",
+          "b": "bolur"
+        },
+        {
+          "g": "NFETgr",
+          "b": "bolurinn"
+        },
+        {
+          "g": "ÞFET",
+          "b": "bol"
+        },
+        {
+          "g": "ÞFETgr",
+          "b": "bolinn"
+        },
+        {
+          "g": "ÞGFET",
+          "b": "bol"
+        },
+        {
+          "g": "ÞGFETgr",
+          "b": "bolnum"
+        },
+        {
+          "g": "EFET",
+          "b": "bols"
+        },
+        {
+          "g": "EFETgr",
+          "b": "bolsins"
+        },
+        {
+          "g": "NFFT",
+          "b": "bolir"
+        },
+        {
+          "g": "NFFTgr",
+          "b": "bolirnir"
+        },
+        {
+          "g": "ÞFFT",
+          "b": "boli"
+        },
+        {
+          "g": "ÞFFTgr",
+          "b": "bolina"
+        },
+        {
+          "g": "ÞGFFT",
+          "b": "bolum"
+        },
+        {
+          "g": "ÞGFFTgr",
+          "b": "bolunum"
+        },
+        {
+          "g": "EFFT",
+          "b": "bola"
+        },
+        {
+          "g": "EFFTgr",
+          "b": "bolanna"
+        }
+      ]
+    }
+  }
+}
