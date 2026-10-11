@@ -1,3 +1,4 @@
+import { Pictogram, pictureFor } from './Pictogram';
 import { Sheet } from './Sheet';
 import { Category, Level, GuidingQuestion } from '../data/types';
 
@@ -22,6 +23,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
             key={index}
             question={question}
             level={level}
+            categoryId={category.id}
             categoryColor={category.color}
           />
         ))}
@@ -44,6 +46,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
                     key={index}
                     question={question}
                     level={level}
+                    categoryId={category.id}
                     color={question.context.color}
                   />
                 )
@@ -55,13 +58,20 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
   );
 }
 
+/** The approved A1 pictogram for a chip; other levels show words alone (REVIEW-QUEUE C10). */
+function pictureAt(level: Level, categoryId: string, option: string) {
+  return level === 'A1' ? pictureFor(categoryId, option) : undefined;
+}
+
 function QuestionBlock({
   question,
   level,
+  categoryId,
   categoryColor,
 }: {
   question: GuidingQuestion;
   level: Level;
+  categoryId: string;
   categoryColor: string;
 }) {
   const answers = question.answers.find((a) => a.level === level);
@@ -75,19 +85,25 @@ function QuestionBlock({
         <p className="text-xs text-gray-500 shrink-0">{question.label}</p>
       </div>
       <div className="px-3 py-2 flex flex-wrap gap-1.5">
-        {answers.options.map((option, index) => (
-          <span
-            key={index}
-            className="inline-block px-2 py-0.5 rounded-md text-xs font-medium border"
-            style={{
-              borderColor: categoryColor + '40',
-              color: categoryColor,
-              backgroundColor: categoryColor + '08',
-            }}
-          >
-            {option}
-          </span>
-        ))}
+        {answers.options.map((option, index) => {
+          const picture = pictureAt(level, categoryId, option);
+          return (
+            <span
+              key={index}
+              className={`px-2 py-0.5 rounded-md text-xs font-medium border ${
+                picture === undefined ? 'inline-block' : 'inline-flex flex-col items-center gap-0.5'
+              }`}
+              style={{
+                borderColor: categoryColor + '40',
+                color: categoryColor,
+                backgroundColor: categoryColor + '08',
+              }}
+            >
+              {picture !== undefined && <Pictogram id={picture} size={40} />}
+              {option}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
@@ -96,10 +112,12 @@ function QuestionBlock({
 function ContextCard({
   question,
   level,
+  categoryId,
   color,
 }: {
   question: GuidingQuestion;
   level: Level;
+  categoryId: string;
   color: string;
 }) {
   const answers = question.answers.find((a) => a.level === level);
@@ -113,11 +131,15 @@ function ContextCard({
       {/* One wrapping line with separators, as on the printed card: each answer is kept
           whole, so a line breaks between answers, never inside one. */}
       <p className="px-3 py-1.5 text-xs font-bold leading-relaxed" style={{ color }}>
-        {answers.options.map((option, index) => (
-          <span key={index} className="inline-block mr-1">
-            {index < answers.options.length - 1 ? `${option} ·` : option}
-          </span>
-        ))}
+        {answers.options.map((option, index) => {
+          const picture = pictureAt(level, categoryId, option);
+          return (
+            <span key={index} className="inline-flex items-center gap-1 mr-1 align-middle">
+              {picture !== undefined && <Pictogram id={picture} size={24} />}
+              {index < answers.options.length - 1 ? `${option} ·` : option}
+            </span>
+          );
+        })}
       </p>
     </div>
   );

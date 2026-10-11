@@ -24,6 +24,7 @@
     "islenskubraut:bin": "node scripts/islenskubraut/bin-check.mjs",
     "islenskubraut:spjold": "pnpm --filter kvenno-server spjold",
     "islenskubraut:smidur": "node scripts/islenskubraut/smidur-check.mjs",
+    "islenskubraut:myndir": "node scripts/islenskubraut/myndir-check.mjs",
     "type-check": "pnpm --recursive run type-check && tsc --noEmit -p e2e",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

@@ -1,5 +1,7 @@
 import { format, resolveConfig } from 'prettier';
 
+import { CREDIT } from './myndir.mjs';
+
 const WARNING = `// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
 //
 // Source:     content/islenskubraut/
@@ -225,6 +227,23 @@ export const smidur: Record<string, SmidurLevel[]> = ${literal(Object.fromEntrie
 export function getSmidur(categoryId: string, level: Level): SmidurLevel | undefined {
   return smidur[categoryId]?.find((s) => s.level === level);
 }
+`;
+}
+
+/**
+ * The approved pictograms for the A1 chips, per category and chip, as ARASAAC numbers. The
+ * pictures themselves are in `apps/islenskubraut/public/myndir/<id>.png`.
+ */
+export function renderMyndir(pictures) {
+  return `${WARNING}
+//
+// Source of the pictures: ARASAAC (https://arasaac.org), CC BY-NC-SA 4.0. ${'`CREDIT`'} in
+// scripts/islenskubraut/myndir.mjs is the wording any page showing them must carry.
+
+/** \`myndir[categoryId][chip]\` is the ARASAAC number of an approved picture for that chip. */
+export const myndir: Record<string, Record<string, number>> = ${literal(pictures)};
+
+export const ARASAAC_CREDIT = ${JSON.stringify(CREDIT)};
 `;
 }
 

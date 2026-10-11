@@ -1,0 +1,167 @@
+# Pictograms for the A1 answer chips (REVIEW-QUEUE D3, C10). Every chip a student sees on an A1
+# card has an entry here. See README.md beside this file for the workflow and ARASAAC's licence.
+#
+#   search:   the English word ARASAAC is searched for. Drafted by Claude; change it if the
+#             pictures it finds are wrong, then delete `id` and run `pnpm islenskubraut:myndir --fetch`.
+#   id:       the ARASAAC pictogram chosen. `--fetch` fills it with the best match; replace it
+#             with another number from the review sheet if a better one is there.
+#   approved: true once a person has looked at the picture beside the word and agreed. Only an
+#             approved picture is shown to students.
+#
+# `words` holds one entry per chip, whatever card it is on. `categories` overrides it for a
+# card where the same chip means something else: on Staðir, `hátt` is a tall building, not a
+# loud sound.
+
+words:
+  # Dýr
+  gæludýr: { search: pet }
+  villt dýr: { search: wild animal }
+  húsdýr: { search: farm animal }
+  feldur: { search: fur }
+  fjaðrir: { search: feather }
+  hreistur: { search: fish scales }
+  hali: { search: tail }
+  til að gæta: { search: guard }
+  til að klappa: { search: stroke }
+  á bæ: { search: farm }
+
+  # Hljóð (Dýr, Farartæki)
+  hátt: { search: loud }
+  lágt: { search: quiet }
+  þögult: { search: silent }
+
+  # Áferð og form
+  mjúkt: { search: soft }
+  hart: { search: hard }
+  slétt: { search: smooth }
+  gróft: { search: rough }
+  kringlótt: { search: round }
+  ferkantað: { search: square }
+  ílangt: { search: long }
+  flatt: { search: flat }
+
+  # Stærð
+  lítið: { search: small }
+  meðalstórt: { search: medium }
+  stórt: { search: big }
+  mjög stórt: { search: huge }
+
+  # Litir
+  rautt: { search: red }
+  grænt: { search: green }
+  gult: { search: yellow }
+  hvítt: { search: white }
+  blátt: { search: blue }
+  svart: { search: black }
+
+  # Matur og drykkur
+  ávöxtur: { search: fruit }
+  grænmeti: { search: vegetables }
+  kjöt: { search: meat }
+  drykkur: { search: drink }
+  sætt: { search: sweet }
+  salt: { search: salty }
+  súrt: { search: sour }
+  beiskt: { search: bitter }
+  til að borða: { search: eat }
+  til að drekka: { search: drink }
+  í búð: { search: shop }
+  á veitingastað: { search: restaurant }
+
+  # Lykt (Matur, Staðir)
+  gott: { search: good smell }
+  vont: { search: bad smell }
+  ekkert: { search: no smell }
+
+  # Farartæki
+  bíll: { search: car }
+  rúta: { search: bus }
+  hjól: { search: bicycle }
+  flugvél: { search: airplane }
+  skip: { search: ship }
+  með hjólum: { search: wheel }
+  án hjóla: { search: without wheels }
+  til að ferðast: { search: travel }
+  til að flytja: { search: transport }
+  á götunni: { search: street }
+  á sjónum: { search: sea }
+  í loftinu: { search: sky }
+
+  # Efni
+  úr málmi: { search: metal }
+  úr plasti: { search: plastic }
+  úr tré: { search: wood }
+  úr steini: { search: stone }
+  úr ull: { search: wool }
+  úr bómull: { search: cotton }
+  úr leðri: { search: leather }
+
+  # Manneskja
+  barn: { search: child }
+  fullorðin/fullorðinn: { search: adult }
+  gamall/gömul: { search: old }
+  gömul/gamall: { search: old }
+  há/hár: { search: tall }
+  lág/lágur: { search: short }
+  ung/ungur: { search: young }
+  vinnur: { search: work }
+  lærir: { search: study }
+  leikur sér: { search: play }
+  í vinnunni: { search: workplace }
+  í skólanum: { search: school }
+  # Starf/hlutverk (the sentence builder's Manneskja list)
+  leikari: { search: actor }
+  íþróttamaður: { search: athlete }
+  söngvari: { search: singer }
+  stjórnmálamaður: { search: politician }
+  nemandi: { search: student }
+  kennari: { search: teacher }
+  læknir: { search: doctor }
+  lögreglumaður: { search: police officer }
+  kokkur: { search: cook }
+  listamaður: { search: artist }
+
+  # Staðir og byggingar
+  hús: { search: house }
+  skóli: { search: school }
+  búð: { search: shop }
+  sundlaug: { search: swimming pool }
+  til að búa: { search: live }
+  til að læra: { search: learn }
+  til að versla: { search: go shopping }
+  # Hvað gerir maður þar (the sentence builder's Staðir list)
+  borðar: { search: eat }
+  verslar: { search: go shopping }
+  syndir: { search: swim }
+  sefur: { search: sleep }
+  í bænum: { search: town }
+  úti á landi: { search: countryside }
+  við sjóinn: { search: seaside }
+
+  # Föt og klæðnaður
+  bolur: { search: t-shirt }
+  buxur: { search: trousers }
+  jakki: { search: jacket }
+  skór: { search: shoes }
+  til að hlýja sér: { search: warm }
+  til að verja sig: { search: protect }
+  til að líta vel út: { search: elegant }
+
+  # Hver, hvar og hvenær (every card)
+  allir: { search: everybody }
+  börn: { search: children }
+  fullorðnir: { search: adults }
+  til að leika sér: { search: play }
+  heima: { search: home }
+  úti: { search: outside }
+  inni: { search: inside }
+  á morgnana: { search: morning }
+  á daginn: { search: day }
+  á kvöldin: { search: evening }
+  alltaf: { search: always }
+
+categories:
+  stadir:
+    # On Staðir these describe a building's height, not a sound.
+    hátt: { search: tall }
+    lágt: { search: low }

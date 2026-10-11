@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
+import { ArasaacCredit, Pictogram, hasPictures, pictureFor } from '../components/Pictogram';
 import { getCategoryById } from '../data';
 import { getSmidur, type SmidurSubject } from '../data/smidur';
 
@@ -97,6 +98,7 @@ export function SmidurPage() {
             <Choices
               labelledBy="smidur-um"
               items={data.subjects.map((s) => s.text)}
+              pictures={data.subjects.map((s) => pictureFor(category.id, s.text))}
               selected={subjectIndex}
               onSelect={setSubjectIndex}
               color={category.color}
@@ -125,6 +127,7 @@ export function SmidurPage() {
             <Choices
               labelledBy="smidur-ord"
               items={frame.options}
+              pictures={frame.options.map((o) => pictureFor(category.id, o))}
               selected={optionIndex}
               onSelect={setOptionIndex}
               color={category.color}
@@ -185,6 +188,7 @@ export function SmidurPage() {
           CC BY-SA 4.0
         </a>
       </p>
+      {hasPictures(category.id) && <ArasaacCredit className="mt-2 max-w-2xl" />}
     </Container>
   );
 }
@@ -204,12 +208,15 @@ function Step({ id, title, children }: { id: string; title: string; children: Re
 function Choices({
   labelledBy,
   items,
+  pictures,
   selected,
   onSelect,
   color,
 }: {
   labelledBy: string;
   items: string[];
+  /** An approved pictogram per item, where there is one. */
+  pictures?: (number | undefined)[];
   selected: number | null;
   onSelect: (index: number) => void;
   color: string;
@@ -218,17 +225,23 @@ function Choices({
     <div role="group" aria-labelledby={labelledBy} className="flex flex-wrap gap-2">
       {items.map((item, index) => {
         const pressed = index === selected;
+        const picture = pictures?.[index];
         return (
           <button
             key={item}
             type="button"
             aria-pressed={pressed}
             onClick={() => onSelect(index)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors pointer-coarse:min-h-11 ${
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors pointer-coarse:min-h-11 ${
               pressed ? 'text-white shadow-md' : 'bg-warm-100 text-warm-800 hover:bg-warm-200'
             }`}
             style={pressed ? { backgroundColor: color } : undefined}
           >
+            {picture !== undefined && (
+              <span className="rounded-md bg-white p-0.5">
+                <Pictogram id={picture} size={36} />
+              </span>
+            )}
             {item}
           </button>
         );
