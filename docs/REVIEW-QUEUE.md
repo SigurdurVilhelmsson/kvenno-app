@@ -363,9 +363,11 @@ morgnana.` about a `drykkur`. One drinks a drink. Either drop that frame from th
     content needs the chip changed (`hljóðlega`?) or split from the two adverbs.
 - [ ] **The page's own Icelandic, drafted by Claude.** The title `Setningasmiður`, the prompts
       `Veldu setningaramma` and `Um hvern er setningin?`, the draft note `Drög: kennari hefur ekki
-  enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstrikuðu orðin
-  breytast frá spjaldinu svo að þau passi við setninguna.` Try it at
-      `/islenskubraut/smidur/klaednadur` after the next deploy.
+enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstrikuðu orðin
+breytast frá spjaldinu svo að þau passi við setninguna.` Try it at
+      `/islenskubraut/smidur/klaednadur` after the next deploy. The teachers' list at
+      `/islenskubraut/smidur` (2026-10-16, linked from nowhere) adds three more: its intro, `Opna
+  setningasmið`, and the statuses `drög, ekki birt nemendum` / `staðfest, birt á spjaldinu`.
 - [ ] **To sign a category off**, add `confirmed: true` under `builder: A1:` in its YAML. The card
       page then links to the builder (`content/islenskubraut/README.md`).
 - [ ] **Chips that are phrases are left as written** apart from their adjectives:
@@ -388,8 +390,8 @@ search word Claude drafted; the workflow is `content/islenskubraut/myndir/README
       free for the school, not for sale, shared on the same terms. Confirm that is acceptable for
       the printed cards before the PDF PR adds the pictures there.
 - [ ] **The credit's Icelandic**, drafted by Claude from ARASAAC's English wording: `Myndtáknin
-    eru eign ríkisstjórnar Aragóníu og gerð af Sergio Palao fyrir ARASAAC (https://arasaac.org),
-    sem dreifir þeim með Creative Commons-leyfinu BY-NC-SA.` Also the review sheet's few lines.
+eru eign ríkisstjórnar Aragóníu og gerð af Sergio Palao fyrir ARASAAC (https://arasaac.org),
+sem dreifir þeim með Creative Commons-leyfinu BY-NC-SA.` Also the review sheet's few lines.
 
 ## D. Work that needs no ruling
 
