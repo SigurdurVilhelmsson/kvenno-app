@@ -9,7 +9,7 @@ import { parse } from 'yaml';
 import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
 import { readGlossur } from './glossur.mjs';
-import { clipsForApp, readHljod, textsToVoice } from './hljod.mjs';
+import { clipsForApp, clipsForReview, readHeard, readHljod, textsToVoice } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
@@ -19,6 +19,7 @@ import {
   renderGiskaleikurApp,
   renderGlossur,
   renderHljod,
+  renderHlustun,
   renderTextiApp,
   renderTextiServer,
   renderGiskaleikurServer,
@@ -61,6 +62,8 @@ const SPA_GLOSSUR = resolve(ROOT, 'apps/islenskubraut/src/data/glossur.ts');
 const HLJOD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hljod.yaml');
 const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
 const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
+const HEARD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hlustun.json');
+const SPA_HLUSTUN = resolve(ROOT, 'apps/islenskubraut/src/data/hlustun.ts');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -168,7 +171,11 @@ const glossur = readdirSync(GLOSSUR_DIR)
 // The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
 // drafts. An approved clip with no file breaks the build; a text with no clip has no button.
 const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
-const clips = clipsForApp(textsToVoice(categories), hljod, (f) => existsSync(resolve(CLIP_DIR, f)));
+const voiced = textsToVoice(categories);
+const hasClip = (f) => existsSync(resolve(CLIP_DIR, f));
+const clips = clipsForApp(voiced, hljod, hasClip);
+const heard = existsSync(HEARD_FILE) ? readHeard(JSON.parse(readFileSync(HEARD_FILE, 'utf8'))) : {};
+const review = clipsForReview(voiced, hljod, hasClip, heard);
 
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
@@ -184,6 +191,7 @@ const outputs = [
   [SERVER_TEXTI, renderTextiServer(texts)],
   [SPA_TEXTI, renderTextiApp(texts)],
   [SPA_HLJOD, renderHljod(clips, hljod.voice)],
+  [SPA_HLUSTUN, renderHlustun(review)],
   [SERVER_EGGET, renderEggetServer(egget)],
   [SPA_GLOSSUR, renderGlossur(glossur)],
   [SPA_EGGET, renderEggetApp(egget)],

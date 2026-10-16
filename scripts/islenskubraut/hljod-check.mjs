@@ -16,7 +16,7 @@ import { resolve } from 'node:path';
 
 import { parseDocument } from 'yaml';
 
-import { clipName, compare, readHljod, spoken, textsToVoice } from './hljod.mjs';
+import { clipName, compare, placeLabel, readHljod, spoken, textsToVoice } from './hljod.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
 
 const ROOT = resolve(CONTENT_DIR, '../..');
@@ -24,7 +24,7 @@ const MANIFEST = resolve(CONTENT_DIR, 'hljod/hljod.yaml');
 const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
 const JOBS_FILE = resolve(ROOT, 'hljod-verk.json');
 // Written by hljod/hlustun.py, when it has been run: what a speech recogniser heard in each clip.
-const HEARD_FILE = resolve(ROOT, 'hljod-hlustun.json');
+const HEARD_FILE = resolve(CONTENT_DIR, 'hljod/hlustun.json');
 const SHEET_FILE = resolve(ROOT, 'islenskubraut-hljod-yfirlit.html');
 
 const hasFile = (name) => existsSync(resolve(CLIP_DIR, name));
@@ -76,7 +76,7 @@ const rows = ordered.map(([text, places]) => {
   const h = heard[text];
   const check = h ? `${escape(h.heard)} (${Math.round(h.score * 100)} %)` : '';
   return `<tr><td>${escape(text)}</td><td>${audio}</td><td>${check}</td><td>${state}</td><td>${escape(
-    places[0]
+    placeLabel(places[0])
   )}${places.length > 1 ? ` (+${places.length - 1})` : ''}</td></tr>`;
 });
 writeFileSync(

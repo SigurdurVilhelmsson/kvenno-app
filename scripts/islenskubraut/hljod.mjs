@@ -21,26 +21,32 @@ function assert(condition, message) {
 /**
  * Every text on the cards a student can listen to, with where it appears: the chips at every
  * level, the vocabulary page's words, the frames and the worked examples. A Map from the text
- * exactly as printed to a list of places, in content order.
+ * exactly as printed to a list of places `{ category, level, where }`, in content order. `level`
+ * is null for the vocabulary page, which is the same at every level.
  */
 export function textsToVoice(categories) {
   const texts = new Map();
-  const add = (text, place) => {
+  const add = (text, category, level, where) => {
     if (!texts.has(text)) texts.set(text, []);
-    texts.get(text).push(place);
+    texts.get(text).push({ category, level, where });
   };
   for (const c of categories) {
-    for (const s of c.subCategories) for (const o of s.options) add(o, `${c.id}: ${s.name}`);
+    for (const s of c.subCategories) for (const o of s.options) add(o, c.id, null, s.name);
     for (const q of c.guidingQuestions) {
       for (const level of LEVELS) {
         const options = q.answers.find((a) => a.level === level)?.options ?? [];
-        for (const o of options) add(o, `${c.id} ${level}: ${q.question}`);
+        for (const o of options) add(o, c.id, level, q.question);
       }
     }
-    for (const f of c.sentenceFrames) for (const x of f.frames) add(x, `${c.id} ${f.level}: rammi`);
-    for (const e of c.examples) add(e.text, `${c.id} ${e.level}: dæmi`);
+    for (const f of c.sentenceFrames) for (const x of f.frames) add(x, c.id, f.level, 'rammi');
+    for (const e of c.examples) add(e.text, c.id, e.level, 'dæmi');
   }
   return texts;
+}
+
+/** A place as one line: `dyr A1: Hvernig lítur það út?`. */
+export function placeLabel({ category, level, where }) {
+  return `${category}${level ? ` ${level}` : ''}: ${where}`;
 }
 
 /** The clip's file name: a hash of the text, so editing a text needs a new clip. */
@@ -104,6 +110,43 @@ export function clipsForApp(texts, manifest, hasFile) {
       continue;
     }
     out[text] = { file, approved };
+  }
+  return out;
+}
+
+/**
+ * `hlustun.json`, what a speech recogniser heard in each clip (`hljod/hlustun.py`): per text,
+ * `{ heard, score }`, the score the share of letters that differ (0 is a match). Optional; a clip
+ * with no entry was simply not checked.
+ */
+export function readHeard(raw) {
+  assert(raw && typeof raw === 'object' && !Array.isArray(raw), 'hlustun.json must be a map');
+  for (const [text, entry] of Object.entries(raw)) {
+    assert(
+      entry && typeof entry.heard === 'string' && typeof entry.score === 'number',
+      `hlustun.json: "${text}" needs heard and score`
+    );
+  }
+  return raw;
+}
+
+/**
+ * The listening page's data: every clip on the cards that has a file, with where it appears,
+ * whether it is approved, and what the recogniser heard. In content order.
+ */
+export function clipsForReview(texts, manifest, hasFile, heard = {}) {
+  const out = [];
+  for (const [text, places] of texts) {
+    const file = clipName(text);
+    if (!manifest.clips.has(text) || !hasFile(file)) continue;
+    const h = heard[text];
+    out.push({
+      text,
+      file,
+      approved: manifest.clips.get(text),
+      places,
+      ...(h ? { heard: h.heard, score: h.score } : {}),
+    });
   }
   return out;
 }

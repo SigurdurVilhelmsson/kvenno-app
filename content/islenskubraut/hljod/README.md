@@ -27,14 +27,28 @@ page credits the voice, as its licence requires.
 
 ## Listening
 
+**Teachers listen on the site**, at `/islenskubraut/yfirferd/hljod` (nothing links to it but the
+review page, `/islenskubraut/yfirferd`). Every recording plays there, drafts included, with `Rétt`
+and `Rangt` beside it and a box for what is wrong. The page keeps the marks in the teacher's
+browser until they press `Sækja skrá` and send the file back. Then:
+
+    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json           # read what they say
+    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --apply   # approve the right ones
+    pnpm islenskubraut:build
+
+`--apply` writes `true` beside every recording someone marked right and nobody marked wrong, and
+nothing else. One marked both ways is listed for a person to settle, and so is every note.
+
+To listen without the site:
+
     pnpm islenskubraut:hljod
 
 This writes `islenskubraut-hljod-yfirlit.html` in the repository root: every text with its
 recording, sorted so the doubtful ones come first. Open it in a browser, listen, and write `true`
 in `hljod.yaml` beside each one that is right. Then run `pnpm islenskubraut:build`.
 
-The page is sorted by a speech recogniser's reading, where one has been run (see below). It
-transcribed each recording back, and the page shows what it heard. A high score means the
+Both pages are sorted by a speech recogniser's reading, from `hlustun.json` here (see below). It
+transcribed each recording back, and the pages show what it heard. A high score means the
 recogniser heard something else. That is not proof the recording is wrong, but listen to those
 first. On 2026-10-16 the median score was 0, and eight of 524 scored over 20 %:
 
@@ -77,10 +91,13 @@ It also needs `ffmpeg` for the MP3s. The versions are pinned because the tools a
 The voice downloads itself from Hugging Face on the first run. The first 431 recordings took under five
 minutes on a laptop-class CPU.
 
-To sort the review page by the recogniser's reading, run this in the same environment:
+To sort the review pages by the recogniser's reading, run this in the same environment:
 
     pip install "transformers<4.50"
-    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json > hljod-hlustun.json
+    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json > content/islenskubraut/hljod/hlustun.json
+    pnpm format && pnpm islenskubraut:build
+
+`hlustun.json` is committed, since the listening page on the site reads it through the build.
 
 It uses Reykjavík University's wav2vec2 recogniser (`wav2vec2-large-xlsr-53-icelandic-ep30-967h`,
 CC BY 4.0). It is a first pass for a person, not a replacement for one.

@@ -1,13 +1,14 @@
 """Listen back to every clip with an Icelandic speech recogniser, as a first check before a person.
 
-    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json > hljod-hlustun.json
+    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json > content/islenskubraut/hljod/hlustun.json
 
 For each job whose clip exists, transcribes the clip and compares it with what the voice was told
 to say: the share of its letters that differ from the closest stretch of what was heard (0 is a
 perfect match). Only the closest stretch counts, because the recogniser often hears a word that is
 not there before a single word (`og hart` for `hart`). A high rate does not prove the clip is
 wrong, nor a low one that it is right: it orders the review so a person hears the doubtful
-ones first. `pnpm islenskubraut:hljod` shows the rate beside each clip on the review page.
+ones first. The listening page (`/islenskubraut/yfirferd/hljod`) and `pnpm islenskubraut:hljod`
+show what was heard beside each clip and put the doubtful ones first.
 
 The recogniser is wav2vec2-large-xlsr-53-icelandic-ep30-967h (Reykjavík University's Language and
 Voice Lab, CC BY 4.0).

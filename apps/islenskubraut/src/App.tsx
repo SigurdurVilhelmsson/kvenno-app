@@ -12,6 +12,13 @@ import { SpjaldPage } from './pages/SpjaldPage';
 const SmidurPage = lazy(() =>
   import('./pages/SmidurPage').then((m) => ({ default: m.SmidurPage }))
 );
+// The teachers' review pages, which carry every recording's data; a student never loads them.
+const Yfirferd = lazy(() => import('./pages/Yfirferd').then((m) => ({ default: m.Yfirferd })));
+const YfirferdHljod = lazy(() =>
+  import('./pages/YfirferdHljod').then((m) => ({ default: m.YfirferdHljod }))
+);
+
+const loading = <p className="py-16 text-center text-warm-600">Sæki…</p>;
 
 export function App() {
   return (
@@ -27,8 +34,25 @@ export function App() {
           <Route
             path="/smidur/:flokkur"
             element={
-              <Suspense fallback={<p className="py-16 text-center text-warm-600">Sæki…</p>}>
+              <Suspense fallback={loading}>
                 <SmidurPage />
+              </Suspense>
+            }
+          />
+          {/* Everything awaiting a teacher, and every recording. Deliberately linked from nowhere. */}
+          <Route
+            path="/yfirferd"
+            element={
+              <Suspense fallback={loading}>
+                <Yfirferd />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/yfirferd/hljod"
+            element={
+              <Suspense fallback={loading}>
+                <YfirferdHljod />
               </Suspense>
             }
           />

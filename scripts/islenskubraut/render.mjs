@@ -479,6 +479,39 @@ export const glossur: Glossur[] = ${literal(glossur)};
 }
 
 /**
+ * The listening page's data (\`/islenskubraut/yfirferd/hljod\`): every clip with where it appears,
+ * whether it is approved, and what a speech recogniser heard in it. Only the teachers' review
+ * pages import it, and they load on their own, so the card pages never carry it.
+ */
+export function renderHlustun(clips) {
+  return `${WARNING}
+//
+// What the recogniser heard comes from content/islenskubraut/hljod/hlustun.json (hljod/hlustun.py).
+
+import type { Level } from './types';
+
+/** Where a text is on the cards; \`level\` is null on the vocabulary page, the same at every level. */
+export interface HlustunPlace {
+  category: string;
+  level: Level | null;
+  where: string;
+}
+
+export interface HlustunClip {
+  text: string;
+  file: string;
+  approved: boolean;
+  places: HlustunPlace[];
+  /** What the recogniser heard, and how much it differs from the text (0 is a match). */
+  heard?: string;
+  score?: number;
+}
+
+export const hlustun: HlustunClip[] = ${literal(clips)};
+`;
+}
+
+/**
  * Format with the repo's prettier config.
  *
  * lint-staged runs `prettier --write` on commit, so unformatted output would be

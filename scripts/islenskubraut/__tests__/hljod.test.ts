@@ -4,7 +4,17 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
-import { clipName, clipsForApp, compare, readHljod, spoken, textsToVoice } from '../hljod.mjs';
+import {
+  clipName,
+  clipsForApp,
+  clipsForReview,
+  compare,
+  placeLabel,
+  readHeard,
+  readHljod,
+  spoken,
+  textsToVoice,
+} from '../hljod.mjs';
 import { loadCategories } from '../load.mjs';
 
 const ROOT = resolve(__dirname, '../../..');
@@ -37,9 +47,13 @@ describe('what has a recording', () => {
       'Þetta er dýr.',
     ]);
     expect(texts.get('feldur')).toEqual([
-      'dyr A1: Hvernig lítur það út?',
-      'dyr A2: Hvernig lítur það út?',
+      { category: 'dyr', level: 'A1', where: 'Hvernig lítur það út?' },
+      { category: 'dyr', level: 'A2', where: 'Hvernig lítur það út?' },
     ]);
+    // The vocabulary page is the same at every level, so its words carry none.
+    expect(texts.get('gæludýr')).toEqual([{ category: 'dyr', level: null, where: 'Flokkar' }]);
+    expect(placeLabel(texts.get('feldur')![0])).toBe('dyr A1: Hvernig lítur það út?');
+    expect(placeLabel(texts.get('gæludýr')![0])).toBe('dyr: Flokkar');
   });
 
   it('names a clip by its text, so an edited text needs a new one', () => {
@@ -93,6 +107,40 @@ describe('the manifest', () => {
     expect(() => readHljod({ voice: 'Rödd', clips: { feldur: 'já' } })).toThrow(/true or false/);
     expect(() => readHljod({ clips: {} })).toThrow(/voice/);
     expect(() => readHljod({ voice: 'Rödd', rodd: 1 })).toThrow(/unknown keys: rodd/);
+  });
+});
+
+describe('the listening page’s data', () => {
+  const texts = textsToVoice([card]);
+  const manifest = readHljod({
+    voice: 'Rödd',
+    clips: { feldur: true, hali: false, gæludýr: false },
+  });
+  const hasFile = (f: string) => f !== clipName('gæludýr');
+
+  it('lists each clip with a file, its places, and what the recogniser heard', () => {
+    const heard = readHeard({ hali: { heard: 'hala', score: 0.25 } });
+    expect(clipsForReview(texts, manifest, hasFile, heard)).toEqual([
+      {
+        text: 'feldur',
+        file: clipName('feldur'),
+        approved: true,
+        places: texts.get('feldur'),
+      },
+      {
+        text: 'hali',
+        file: clipName('hali'),
+        approved: false,
+        places: texts.get('hali'),
+        heard: 'hala',
+        score: 0.25,
+      },
+    ]);
+  });
+
+  it('refuses a recogniser entry without what it heard and a score', () => {
+    expect(() => readHeard({ hali: { heard: 'hala' } })).toThrow(/needs heard and score/);
+    expect(() => readHeard([])).toThrow(/must be a map/);
   });
 });
 

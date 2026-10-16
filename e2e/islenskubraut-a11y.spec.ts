@@ -154,3 +154,48 @@ test('the sentence builder does not scroll sideways at 360 px', async ({ page })
     expect(overflow, id).toBeLessThanOrEqual(0);
   }
 });
+
+// The teachers' review pages, linked from nowhere on the site. Checked with a note written and a
+// recording marked wrong, so the note box and the "Hvað er rangt?" field are checked too, and
+// at a phone's width, since a teacher may review on one.
+test('the review page has no WCAG AA violations and keeps a note over a reload', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto('/islenskubraut/yfirferd');
+  await expect(page.getByRole('heading', { level: 1, name: 'Yfirferð' })).toBeVisible();
+  const dyr = page.getByRole('region', { name: /Dýr/ });
+  await dyr.locator('summary').first().click();
+  await page.getByLabel('Athugasemd um Spjaldið, Dýr').fill('A1: prófun.');
+  await expectNoViolations(page, 'yfirferð');
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+  await page.reload();
+  await expect(page.getByLabel('Athugasemd um Spjaldið, Dýr')).toHaveValue('A1: prófun.');
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Sækja skrá' }).click();
+  expect((await download).suggestedFilename()).toMatch(
+    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}\.json$/
+  );
+});
+
+test('the listening page has no WCAG AA violations', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto('/islenskubraut/yfirferd/hljod?flokkur=dyr');
+  await expect(page.getByRole('heading', { level: 1, name: 'Hlustun' })).toBeVisible();
+  const first = page.getByRole('list', { name: 'Upptökur' }).getByRole('listitem').first();
+  await first.getByRole('button', { name: 'Rangt' }).click();
+  await expect(first.getByLabel(/^Hvað er rangt\?/)).toBeVisible();
+  await expectNoViolations(page, 'hlustun');
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+  const played = page.waitForRequest((r) =>
+    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3$/.test(r.url())
+  );
+  await first.getByRole('button', { name: /^Hlusta: / }).click();
+  expect((await (await played).response())?.status()).toBe(200);
+});
