@@ -705,6 +705,16 @@ grading. Nothing is stored. The BÍN check reads the statements. The card page l
 only once confirmed, or under `?drog`. Drafted by Claude (C16); the research's "A1 · 1. stig" card
 labels wait on a ruling there.
 
+**Visible grammar on the sentence builder (2026-10-16).** `buildWords` in `smidur.mjs` builds a
+sentence word by word, and each word the grammar decides carries `why`: a pronoun or `er` following
+the subject, an adjective agreeing with it, or a noun in the accusative after the frame's verb. An
+inflected word also carries its BÍN `lemma` and the `choices` it could have been. `buildSentence` is
+that joined, and its output is unchanged. `smidur.ts` gains each level's `tables` (`wordTable`).
+`Malfraedi.tsx` turns these into a line of reason per underlined word, "Allar myndir orðsins" and an
+"Æfing" drill with no score. **A multi-word chip is split into words** (`á morgnana`), because
+`markChanges` compares the sentence with the card word by word, and one token for the chip unmarked
+every change after it. Wording is C17; it goes live with the builder (C9).
+
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the
 Leiðbeiningar tab — is placeholder wording drafted by Claude and never reviewed. It is marked

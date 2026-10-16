@@ -52,9 +52,13 @@ for (const id of CATEGORIES) {
     await page.goto(`/islenskubraut/smidur/${id}`);
     const frames = page.getByRole('group', { name: 'Veldu setningaramma' }).getByRole('button');
     await frames.last().click();
-    const words = page.getByRole('group').last().getByRole('button');
-    await words.first().click();
+    // The words for the blank, when the frame has one; the drill below has buttons of its own.
+    const words = page.locator('[aria-labelledby="smidur-ord"]').getByRole('button');
+    if ((await words.count()) > 0) await words.first().click();
     await expect(page.getByTestId('smidur-setning')).toBeVisible();
+    // The drill too, after a wrong pick, so its feedback is checked as well.
+    const drill = page.getByRole('group', { name: 'Myndir orðsins' }).getByRole('button');
+    if ((await drill.count()) > 0) await drill.first().click();
     await expectNoViolations(page, `smiður ${id}`);
   });
 }

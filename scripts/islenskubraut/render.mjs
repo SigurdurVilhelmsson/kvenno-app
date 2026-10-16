@@ -188,10 +188,33 @@ export function renderSmidur(entries) {
 
 import type { Level } from './types';
 
+/**
+ * Why a word differs from the card: a pronoun or \`er\` that follows the subject, an adjective that
+ * agrees with it, or a noun in the accusative after the frame's \`verb\`.
+ */
+export type SmidurWhy =
+  | { kind: 'fornafn'; case: 'NF' | 'ÞF'; from: string; to: string }
+  | { kind: 'sögn'; from: string; to: string }
+  | { kind: 'samræmi'; from: string; to: string }
+  | { kind: 'þolfall'; from: string; to: string; verb: string };
+
 /** One word of a built sentence; \`changed\` when it differs from the card as printed. */
 export interface SmidurWord {
   word: string;
   changed: boolean;
+  /** Why it changed, when the grammar changed it. */
+  why?: SmidurWhy;
+  /** The BÍN word an inflected word is a form of, a key of \`SmidurLevel.tables\`. */
+  lemma?: string;
+  /** The forms it could have been in its place, the right one among them, for a drill. */
+  choices?: string[];
+}
+
+/** A word's forms from BÍN, for "Allar myndir orðsins". */
+export interface SmidurTable {
+  ord: string;
+  columns: string[];
+  rows: { case: 'NF' | 'ÞF' | 'ÞGF' | 'EF'; forms: string[] }[];
 }
 
 /** Who or what the sentence is about, with the gender and number BÍN gives it. */
@@ -220,6 +243,8 @@ export interface SmidurLevel {
   subjectQuestion: string | null;
   subjects: SmidurSubject[];
   frames: SmidurFrame[];
+  /** Every inflected word's table, by its BÍN id. */
+  tables: Record<string, SmidurTable>;
 }
 
 export const smidur: Record<string, SmidurLevel[]> = ${literal(Object.fromEntries(entries))};

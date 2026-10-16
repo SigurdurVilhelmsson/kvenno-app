@@ -518,6 +518,36 @@ Listinn er til að fylgjast með framförum, ekki til einkunnar.`
       the levels are named.
 - [ ] **Set `confirmed: true`** in each category's file once it is right.
 
+### C17. Visible grammar on the sentence builder (2026-10-16)
+
+Item 7 of the research, built on the sentence builder page (`/islenskubraut/smidur/<flokkur>`), so
+it reaches students exactly when the builder does: once C9 confirms a category's tags. Three
+parts, all read off the builder's tags and BÍN's tables:
+
+- **Why each underlined word changed.** One line per word, from five templates in
+  `apps/islenskubraut/src/components/Malfraedi.tsx` (`reason`):
+  - `„það“ verður „hann“ af því að „ávöxtur“ er karlkyns og í eintölu.`
+  - `„það“ verður „hún“: fornafnið fylgir manneskjunni.`
+  - `„er“ verður „eru“ af því að „skór“ er í fleirtölu.`
+  - `„sætt“ verður „sætur“: lýsingarorðið fylgir „ávöxtur“ (karlkyn, eintala).`
+  - `„feldur“ verður „feld“: á eftir „hefur“ kemur þolfall.`
+- **Allar myndir orðsins:** under an inflected word, its BÍN table:
+  - a noun's four cases in each number
+  - an adjective's four cases in each gender, singular
+
+  What differs from the base form is in bold, and the form in the sentence is ringed.
+
+- **Æfing:** a sentence with an inflected word left out and its forms to pick from. A wrong pick
+  says `Ekki alveg. Reyndu aftur.`, a right one `Rétt.` and the reason. There is no score, and
+  nothing is saved.
+
+- [ ] **Read the five templates.** Is `þolfall` the word to use with A1 students, or should the
+      line say less? Should the reason name the case of the pronoun too?
+- [ ] **Try the drill** on two or three categories. It asks about every inflected word in the
+      level's sentences, in order. Is that the right length, or should it stop after ten?
+- [ ] **Not built:** a gender colour on every card, the research's optional fourth part. It would
+      change the printed cards, so it waits for C8.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -863,3 +893,5 @@ Both fixed 2026-10-10 (PR for this branch).
         recordings await a listener (C15); the QR codes wait for them.
   - [x] Item 6, can-do strips and a class checklist per card and level (2026-10-16). The
         statements await review, and the level labels a ruling (C16).
+  - [x] Item 7, reasons, word tables and a drill on the sentence builder (2026-10-16). They go
+        live with the builder (C9); the wording is C17.

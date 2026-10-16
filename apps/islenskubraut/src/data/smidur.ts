@@ -11,10 +11,33 @@
 
 import type { Level } from './types';
 
+/**
+ * Why a word differs from the card: a pronoun or `er` that follows the subject, an adjective that
+ * agrees with it, or a noun in the accusative after the frame's `verb`.
+ */
+export type SmidurWhy =
+  | { kind: 'fornafn'; case: 'NF' | 'ÞF'; from: string; to: string }
+  | { kind: 'sögn'; from: string; to: string }
+  | { kind: 'samræmi'; from: string; to: string }
+  | { kind: 'þolfall'; from: string; to: string; verb: string };
+
 /** One word of a built sentence; `changed` when it differs from the card as printed. */
 export interface SmidurWord {
   word: string;
   changed: boolean;
+  /** Why it changed, when the grammar changed it. */
+  why?: SmidurWhy;
+  /** The BÍN word an inflected word is a form of, a key of `SmidurLevel.tables`. */
+  lemma?: string;
+  /** The forms it could have been in its place, the right one among them, for a drill. */
+  choices?: string[];
+}
+
+/** A word's forms from BÍN, for "Allar myndir orðsins". */
+export interface SmidurTable {
+  ord: string;
+  columns: string[];
+  rows: { case: 'NF' | 'ÞF' | 'ÞGF' | 'EF'; forms: string[] }[];
 }
 
 /** Who or what the sentence is about, with the gender and number BÍN gives it. */
@@ -43,6 +66,8 @@ export interface SmidurLevel {
   subjectQuestion: string | null;
   subjects: SmidurSubject[];
   frames: SmidurFrame[];
+  /** Every inflected word's table, by its BÍN id. */
+  tables: Record<string, SmidurTable>;
 }
 
 export const smidur: Record<string, SmidurLevel[]> = {
@@ -170,6 +195,14 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'feld.',
                   changed: true,
+                  why: {
+                    kind: 'þolfall',
+                    from: 'feldur',
+                    to: 'feld',
+                    verb: 'hefur',
+                  },
+                  lemma: 'a0111408557ede4ad0eed438d291839c',
+                  choices: ['feldur', 'feld', 'feldi', 'feldar'],
                 },
               ],
               [
@@ -212,6 +245,14 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hala.',
                   changed: true,
+                  why: {
+                    kind: 'þolfall',
+                    from: 'hali',
+                    to: 'hala',
+                    verb: 'hefur',
+                  },
+                  lemma: '5f6bd3fe8fe0794b8f5ff531ee4a8217',
+                  choices: ['hali', 'hala'],
                 },
               ],
             ],
@@ -356,6 +397,52 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
       ],
+      tables: {
+        '5f6bd3fe8fe0794b8f5ff531ee4a8217': {
+          ord: 'hali',
+          columns: ['eintala', 'fleirtala'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['hali', 'halar'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['hala', 'hala'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['hala', 'hölum'],
+            },
+            {
+              case: 'EF',
+              forms: ['hala', 'hala'],
+            },
+          ],
+        },
+        a0111408557ede4ad0eed438d291839c: {
+          ord: 'feldur',
+          columns: ['eintala', 'fleirtala'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['feldur', 'feldir'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['feld', 'feldi'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['feldi', 'feldum'],
+            },
+            {
+              case: 'EF',
+              forms: ['feldar', 'felda'],
+            },
+          ],
+        },
+      },
     },
   ],
   matur: [
@@ -471,6 +558,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -479,12 +572,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'sætur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'sætt',
+                    to: 'sætur',
+                  },
+                  lemma: '6f648651fb76e7f8477118a11ed0ed4a',
+                  choices: ['sætur', 'sæt', 'sætt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -493,12 +599,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'saltur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'salt',
+                    to: 'saltur',
+                  },
+                  lemma: 'a26c2ab5ed64671ca9010ee667271846',
+                  choices: ['saltur', 'sölt', 'salt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -507,12 +626,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'súr.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'súrt',
+                    to: 'súr',
+                  },
+                  lemma: 'ecb2f66d4bd6c33711df87ce7e1eea83',
+                  choices: ['súr', 'súrt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -521,6 +653,13 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'beiskur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'beiskt',
+                    to: 'beiskur',
+                  },
+                  lemma: '970595c1ee8ee4ed435e9c03d1cc9497',
+                  choices: ['beiskur', 'beisk', 'beiskt'],
                 },
               ],
             ],
@@ -645,6 +784,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -653,12 +798,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'sætur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'sætt',
+                    to: 'sætur',
+                  },
+                  lemma: '6f648651fb76e7f8477118a11ed0ed4a',
+                  choices: ['sætur', 'sæt', 'sætt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -667,12 +825,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'saltur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'salt',
+                    to: 'saltur',
+                  },
+                  lemma: 'a26c2ab5ed64671ca9010ee667271846',
+                  choices: ['saltur', 'sölt', 'salt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -681,12 +852,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'súr.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'súrt',
+                    to: 'súr',
+                  },
+                  lemma: 'ecb2f66d4bd6c33711df87ce7e1eea83',
+                  choices: ['súr', 'súrt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -695,6 +879,13 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'beiskur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'beiskt',
+                    to: 'beiskur',
+                  },
+                  lemma: '970595c1ee8ee4ed435e9c03d1cc9497',
+                  choices: ['beiskur', 'beisk', 'beiskt'],
                 },
               ],
             ],
@@ -718,6 +909,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'á',
@@ -740,6 +937,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'á',
@@ -762,6 +965,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'á',
@@ -784,6 +993,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'alltaf.',
@@ -976,6 +1191,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'á',
@@ -998,6 +1219,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'á',
@@ -1020,6 +1247,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'á',
@@ -1042,6 +1275,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'alltaf.',
@@ -1069,6 +1308,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -1095,6 +1340,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -1231,6 +1482,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -1257,6 +1514,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -1275,6 +1538,96 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
       ],
+      tables: {
+        '6f648651fb76e7f8477118a11ed0ed4a': {
+          ord: 'sætur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['sætur', 'sæt', 'sætt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['sætan', 'sæta', 'sætt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['sætum', 'sætri', 'sætu'],
+            },
+            {
+              case: 'EF',
+              forms: ['sæts', 'sætrar', 'sæts'],
+            },
+          ],
+        },
+        '970595c1ee8ee4ed435e9c03d1cc9497': {
+          ord: 'beiskur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['beiskur', 'beisk', 'beiskt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['beiskan', 'beiska', 'beiskt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['beiskum', 'beiskri', 'beisku'],
+            },
+            {
+              case: 'EF',
+              forms: ['beisks', 'beiskrar', 'beisks'],
+            },
+          ],
+        },
+        a26c2ab5ed64671ca9010ee667271846: {
+          ord: 'saltur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['saltur', 'sölt', 'salt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['saltan', 'salta', 'salt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['söltum', 'saltri', 'söltu'],
+            },
+            {
+              case: 'EF',
+              forms: ['salts', 'saltrar', 'salts'],
+            },
+          ],
+        },
+        ecb2f66d4bd6c33711df87ce7e1eea83: {
+          ord: 'súr',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['súr', 'súr', 'súrt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['súran', 'súra', 'súrt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['súrum', 'súrri', 'súru'],
+            },
+            {
+              case: 'EF',
+              forms: ['súrs', 'súrrar', 'súrs'],
+            },
+          ],
+        },
+      },
     },
   ],
   farartaeki: [
@@ -1412,6 +1765,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1430,6 +1789,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1448,6 +1813,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1468,6 +1839,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1486,6 +1863,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1504,6 +1887,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1580,6 +1969,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1598,6 +1993,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1616,6 +2017,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'fer',
@@ -1699,6 +2106,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -1707,12 +2120,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'stór.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'stórt',
+                    to: 'stór',
+                  },
+                  lemma: '5cbb66c54ccb1292ac69d8defa33551d',
+                  choices: ['stór', 'stórt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -1721,12 +2147,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lítill.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lítið',
+                    to: 'lítill',
+                  },
+                  lemma: '5d032af5e6222d9b78041a86c2485c33',
+                  choices: ['lítill', 'lítil', 'lítið'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -1745,6 +2184,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -1765,6 +2210,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -1773,12 +2224,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'stór.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'stórt',
+                    to: 'stór',
+                  },
+                  lemma: '5cbb66c54ccb1292ac69d8defa33551d',
+                  choices: ['stór', 'stórt'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -1787,12 +2251,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lítil.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lítið',
+                    to: 'lítil',
+                  },
+                  lemma: '5d032af5e6222d9b78041a86c2485c33',
+                  choices: ['lítill', 'lítil', 'lítið'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -1811,6 +2288,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -1897,6 +2380,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -1905,12 +2394,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'stór.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'stórt',
+                    to: 'stór',
+                  },
+                  lemma: '5cbb66c54ccb1292ac69d8defa33551d',
+                  choices: ['stór', 'stórt'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -1919,12 +2421,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lítil.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lítið',
+                    to: 'lítil',
+                  },
+                  lemma: '5d032af5e6222d9b78041a86c2485c33',
+                  choices: ['lítill', 'lítil', 'lítið'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -1943,6 +2458,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -2036,6 +2557,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2050,6 +2577,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2064,6 +2597,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2080,6 +2619,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2094,6 +2639,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2108,6 +2659,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2168,6 +2725,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2182,6 +2745,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2196,6 +2765,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'hljómar',
@@ -2271,6 +2846,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -2297,6 +2878,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -2323,6 +2910,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -2355,6 +2948,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -2381,6 +2980,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -2407,6 +3012,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -2523,6 +3134,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -2549,6 +3166,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -2575,6 +3198,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -2681,6 +3310,52 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
       ],
+      tables: {
+        '5cbb66c54ccb1292ac69d8defa33551d': {
+          ord: 'stór',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['stór', 'stór', 'stórt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['stóran', 'stóra', 'stórt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['stórum', 'stórri', 'stóru'],
+            },
+            {
+              case: 'EF',
+              forms: ['stórs', 'stórrar', 'stórs'],
+            },
+          ],
+        },
+        '5d032af5e6222d9b78041a86c2485c33': {
+          ord: 'lítill',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['lítill', 'lítil', 'lítið'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['lítinn', 'litla', 'lítið'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['litlum', 'lítilli', 'litlu'],
+            },
+            {
+              case: 'EF',
+              forms: ['lítils', 'lítillar', 'lítils'],
+            },
+          ],
+        },
+      },
     },
   ],
   manneskja: [
@@ -3208,6 +3883,7 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
       ],
+      tables: {},
     },
   ],
   stadir: [
@@ -3804,6 +4480,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -3812,12 +4494,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'stór.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'stórt',
+                    to: 'stór',
+                  },
+                  lemma: '5cbb66c54ccb1292ac69d8defa33551d',
+                  choices: ['stór', 'stórt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -3826,12 +4521,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lítill.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lítið',
+                    to: 'lítill',
+                  },
+                  lemma: '5d032af5e6222d9b78041a86c2485c33',
+                  choices: ['lítill', 'lítil', 'lítið'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -3840,12 +4548,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hár.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hátt',
+                    to: 'hár',
+                  },
+                  lemma: '92c7449ecc1b839183c5d589637b99a6',
+                  choices: ['hár', 'há', 'hátt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -3854,6 +4575,13 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lágur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lágt',
+                    to: 'lágur',
+                  },
+                  lemma: '239a1d272af5f0f4789b8dfab26851da',
+                  choices: ['lágur', 'lág', 'lágt'],
                 },
               ],
             ],
@@ -3862,6 +4590,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3870,12 +4604,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'stór.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'stórt',
+                    to: 'stór',
+                  },
+                  lemma: '5cbb66c54ccb1292ac69d8defa33551d',
+                  choices: ['stór', 'stórt'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3884,12 +4631,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lítil.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lítið',
+                    to: 'lítil',
+                  },
+                  lemma: '5d032af5e6222d9b78041a86c2485c33',
+                  choices: ['lítill', 'lítil', 'lítið'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3898,12 +4658,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'há.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hátt',
+                    to: 'há',
+                  },
+                  lemma: '92c7449ecc1b839183c5d589637b99a6',
+                  choices: ['hár', 'há', 'hátt'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3912,6 +4685,13 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lág.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lágt',
+                    to: 'lág',
+                  },
+                  lemma: '239a1d272af5f0f4789b8dfab26851da',
+                  choices: ['lágur', 'lág', 'lágt'],
                 },
               ],
             ],
@@ -3920,6 +4700,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3928,12 +4714,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'stór.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'stórt',
+                    to: 'stór',
+                  },
+                  lemma: '5cbb66c54ccb1292ac69d8defa33551d',
+                  choices: ['stór', 'stórt'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3942,12 +4741,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lítil.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lítið',
+                    to: 'lítil',
+                  },
+                  lemma: '5d032af5e6222d9b78041a86c2485c33',
+                  choices: ['lítill', 'lítil', 'lítið'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3956,12 +4768,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'há.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hátt',
+                    to: 'há',
+                  },
+                  lemma: '92c7449ecc1b839183c5d589637b99a6',
+                  choices: ['hár', 'há', 'hátt'],
                 },
               ],
               [
                 {
                   word: 'Hún',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
                 },
                 {
                   word: 'er',
@@ -3970,6 +4795,13 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'lág.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'lágt',
+                    to: 'lág',
+                  },
+                  lemma: '239a1d272af5f0f4789b8dfab26851da',
+                  choices: ['lágur', 'lág', 'lágt'],
                 },
               ],
             ],
@@ -4073,6 +4905,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -4099,6 +4937,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -4125,6 +4969,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'til',
@@ -4153,6 +5003,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -4179,6 +5035,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -4205,6 +5067,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -4233,6 +5101,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -4259,6 +5133,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -4285,6 +5165,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hana',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
                 },
                 {
                   word: 'til',
@@ -4303,6 +5189,96 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
       ],
+      tables: {
+        '239a1d272af5f0f4789b8dfab26851da': {
+          ord: 'lágur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['lágur', 'lág', 'lágt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['lágan', 'lága', 'lágt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['lágum', 'lágri', 'lágu'],
+            },
+            {
+              case: 'EF',
+              forms: ['lágs', 'lágrar', 'lágs'],
+            },
+          ],
+        },
+        '5cbb66c54ccb1292ac69d8defa33551d': {
+          ord: 'stór',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['stór', 'stór', 'stórt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['stóran', 'stóra', 'stórt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['stórum', 'stórri', 'stóru'],
+            },
+            {
+              case: 'EF',
+              forms: ['stórs', 'stórrar', 'stórs'],
+            },
+          ],
+        },
+        '5d032af5e6222d9b78041a86c2485c33': {
+          ord: 'lítill',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['lítill', 'lítil', 'lítið'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['lítinn', 'litla', 'lítið'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['litlum', 'lítilli', 'litlu'],
+            },
+            {
+              case: 'EF',
+              forms: ['lítils', 'lítillar', 'lítils'],
+            },
+          ],
+        },
+        '92c7449ecc1b839183c5d589637b99a6': {
+          ord: 'hár',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['hár', 'há', 'hátt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['háan', 'háa', 'hátt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['háum', 'hárri', 'háu'],
+            },
+            {
+              case: 'EF',
+              forms: ['hás', 'hárrar', 'hás'],
+            },
+          ],
+        },
+      },
     },
   ],
   klaednadur: [
@@ -4367,6 +5343,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'buxur.',
@@ -4399,6 +5380,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'skór.',
@@ -4418,6 +5404,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4426,12 +5418,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'rauður.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauður',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauður', 'rauð', 'rautt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4440,12 +5445,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'blár.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'blár',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['blár', 'blá', 'blátt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4454,12 +5472,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'grænn.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'grænn',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænn', 'græn', 'grænt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4468,12 +5499,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'svartur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svartur',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartur', 'svört', 'svart'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4482,6 +5526,13 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hvítur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvítur',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítur', 'hvít', 'hvítt'],
                 },
               ],
             ],
@@ -4490,70 +5541,160 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'rauðar.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauðar',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauðir', 'rauðar', 'rauð'],
                 },
               ],
               [
                 {
                   word: 'Þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'bláar.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'bláar',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['bláir', 'bláar', 'blá'],
                 },
               ],
               [
                 {
                   word: 'Þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'grænar.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'grænar',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænir', 'grænar', 'græn'],
                 },
               ],
               [
                 {
                   word: 'Þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'svartar.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svartar',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartir', 'svartar', 'svört'],
                 },
               ],
               [
                 {
                   word: 'Þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'hvítar.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvítar',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítir', 'hvítar', 'hvít'],
                 },
               ],
             ],
@@ -4562,6 +5703,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4570,12 +5717,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'rauður.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauður',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauður', 'rauð', 'rautt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4584,12 +5744,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'blár.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'blár',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['blár', 'blá', 'blátt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4598,12 +5771,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'grænn.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'grænn',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænn', 'græn', 'grænt'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4612,12 +5798,25 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'svartur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svartur',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartur', 'svört', 'svart'],
                 },
               ],
               [
                 {
                   word: 'Hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'er',
@@ -4626,6 +5825,13 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hvítur.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvítur',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítur', 'hvít', 'hvítt'],
                 },
               ],
             ],
@@ -4634,70 +5840,160 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'Þeir',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'rauðir.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauðir',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauðir', 'rauðar', 'rauð'],
                 },
               ],
               [
                 {
                   word: 'Þeir',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'bláir.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'bláir',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['bláir', 'bláar', 'blá'],
                 },
               ],
               [
                 {
                   word: 'Þeir',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'grænir.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'grænir',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænir', 'grænar', 'græn'],
                 },
               ],
               [
                 {
                   word: 'Þeir',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'svartir.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svartir',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartir', 'svartar', 'svört'],
                 },
               ],
               [
                 {
                   word: 'Þeir',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
                 },
                 {
                   word: 'eru',
                   changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
                 },
                 {
                   word: 'hvítir.',
                   changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvítir',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítir', 'hvítar', 'hvít'],
                 },
               ],
             ],
@@ -4721,6 +6017,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'inni.',
@@ -4739,6 +6041,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'úti.',
@@ -4757,6 +6065,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'í',
@@ -4781,6 +6095,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'inni.',
@@ -4799,6 +6119,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'úti.',
@@ -4817,6 +6143,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'þær',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þær',
+                  },
                 },
                 {
                   word: 'í',
@@ -4841,6 +6173,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'inni.',
@@ -4859,6 +6197,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'úti.',
@@ -4877,6 +6221,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'hann',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
                 },
                 {
                   word: 'í',
@@ -4901,6 +6251,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'þá',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þá',
+                  },
                 },
                 {
                   word: 'inni.',
@@ -4919,6 +6275,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'þá',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þá',
+                  },
                 },
                 {
                   word: 'úti.',
@@ -4937,6 +6299,12 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 {
                   word: 'þá',
                   changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þá',
+                  },
                 },
                 {
                   word: 'í',
@@ -4951,6 +6319,118 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
       ],
+      tables: {
+        '31dc39020a2f5c6f0eab32860ce9846d': {
+          ord: 'blár',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['blár', 'blá', 'blátt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['bláan', 'bláa', 'blátt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['bláum', 'blárri', 'bláu'],
+            },
+            {
+              case: 'EF',
+              forms: ['blás', 'blárrar', 'blás'],
+            },
+          ],
+        },
+        '796fb80ee05b5a2a0a2c2e0cc6268121': {
+          ord: 'rauður',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['rauður', 'rauð', 'rautt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['rauðan', 'rauða', 'rautt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['rauðum', 'rauðri', 'rauðu'],
+            },
+            {
+              case: 'EF',
+              forms: ['rauðs', 'rauðrar', 'rauðs'],
+            },
+          ],
+        },
+        '822554fe7c405d599bd0268af19d3f14': {
+          ord: 'grænn',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['grænn', 'græn', 'grænt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['grænan', 'græna', 'grænt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['grænum', 'grænni', 'grænu'],
+            },
+            {
+              case: 'EF',
+              forms: ['græns', 'grænnar', 'græns'],
+            },
+          ],
+        },
+        b6b013d4116e7ea449808e200b9ce564: {
+          ord: 'hvítur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['hvítur', 'hvít', 'hvítt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['hvítan', 'hvíta', 'hvítt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['hvítum', 'hvítri', 'hvítu'],
+            },
+            {
+              case: 'EF',
+              forms: ['hvíts', 'hvítrar', 'hvíts'],
+            },
+          ],
+        },
+        cdea3bfdb358092fcd4dfa49413dfc03: {
+          ord: 'svartur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['svartur', 'svört', 'svart'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['svartan', 'svarta', 'svart'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['svörtum', 'svartri', 'svörtu'],
+            },
+            {
+              case: 'EF',
+              forms: ['svarts', 'svartrar', 'svarts'],
+            },
+          ],
+        },
+      },
     },
   ],
 };

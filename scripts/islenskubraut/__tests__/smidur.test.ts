@@ -4,7 +4,15 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { loadCategories } from '../load.mjs';
-import { allSentences, buildSentence, paradigmsNeeded, subjectsOf } from '../smidur.mjs';
+import {
+  allSentences,
+  buildSentence,
+  buildWords,
+  markChanges,
+  paradigmsNeeded,
+  subjectsOf,
+  wordTable,
+} from '../smidur.mjs';
 
 // Small tables shaped as BÍN sends them (`ord/<guid>`), holding only the forms these tests read.
 const table = (guid: string, ord: string, ofl: string, kyn: string, forms: [string, string][]) => ({
@@ -255,5 +263,110 @@ describe('the content, with the saved BÍN files', () => {
       expect.arrayContaining(['Þær eru rauðar.', 'Þeir eru rauðir.', 'Maður notar þá úti.'])
     );
     expect(say('dyr')).toEqual(expect.arrayContaining(['Það hefur hala.', 'Það hefur feld.']));
+  });
+});
+
+// Visible grammar (item 7): each word the grammar decides says why, and an inflected one names its
+// BÍN word and the forms it could have been, for the page's reasons, tables and drill.
+describe('why a word changed', () => {
+  const avoxtur = { text: 'ávöxtur', gender: 'kk', number: 'ET' };
+  const buxur = { text: 'buxur', gender: 'kvk', number: 'FT' };
+  const dyr = { text: 'dýr', gender: 'hk', number: 'ET' };
+  const chosen = { sætt: 'sætur' };
+
+  it('gives the pronoun, the verb and an agreeing adjective their reasons', () => {
+    const f = frame('Það er ___.', { Það: 'NF', er: 'sögn' }, words(['sætt'], 'agree'));
+    const built = buildWords(f, buxur, 'sætt', lookups, paradigms, chosen);
+    expect(built.map((w) => w.word)).toEqual(['Þær', 'eru', 'sætar.']);
+    expect(built[0].why).toEqual({ kind: 'fornafn', case: 'NF', from: 'það', to: 'þær' });
+    expect(built[1].why).toEqual({ kind: 'sögn', from: 'er', to: 'eru' });
+    expect(built[2]).toMatchObject({
+      why: { kind: 'samræmi', from: 'sætt', to: 'sætar' },
+      lemma: 'saetur',
+    });
+  });
+
+  it('names the verb a noun in the accusative follows, and its four cases to choose from', () => {
+    const f = frame('Það hefur ___.', { Það: 'NF' }, words(['feldur'], 'ÞF'));
+    const [, , feld] = buildWords(f, dyr, 'feldur', lookups, paradigms);
+    expect(feld).toEqual({
+      word: 'feld.',
+      why: { kind: 'þolfall', from: 'feldur', to: 'feld', verb: 'hefur' },
+      lemma: 'feldur',
+      choices: ['feldur', 'feld'],
+    });
+  });
+
+  it('offers an adjective in each gender of the subject’s number', () => {
+    const f = frame('Það er ___.', { Það: 'NF' }, words(['sætt'], 'agree'));
+    const [, , saetur] = buildWords(f, avoxtur, 'sætt', lookups, paradigms, chosen);
+    expect(saetur.choices).toEqual(['sætur', 'sæt', 'sætt']);
+  });
+
+  it('keeps a reason only on a word that differs from the card', () => {
+    const f = frame('Það er ___.', { Það: 'NF', er: 'sögn' }, words(['sætt'], 'agree'));
+    const kjot = { text: 'kjöt', gender: 'hk', number: 'ET' };
+    const marked = markChanges(
+      'Það er sætt.',
+      buildWords(f, kjot, 'sætt', lookups, paradigms, chosen)
+    );
+    expect(marked).toEqual([
+      { word: 'Það', changed: false },
+      { word: 'er', changed: false },
+      { word: 'sætt.', changed: false },
+    ]);
+    const changed = markChanges(
+      'Það er sætt.',
+      buildWords(f, avoxtur, 'sætt', lookups, paradigms, chosen)
+    );
+    expect(changed.map((w) => w.changed)).toEqual([true, false, true]);
+    expect(changed[2]).toHaveProperty('choices');
+  });
+
+  it('splits a chip of several words, so the sentence still lines up with the card', () => {
+    const f = frame('Maður notar það ___.', { það: 'ÞF' }, words(['á morgnana']));
+    const marked = markChanges(
+      'Maður notar það á morgnana.',
+      buildWords(f, avoxtur, 'á morgnana', lookups, paradigms)
+    );
+    expect(marked.map((w) => [w.word, w.changed])).toEqual([
+      ['Maður', false],
+      ['notar', false],
+      ['hann', true],
+      ['á', false],
+      ['morgnana.', false],
+    ]);
+  });
+});
+
+describe('a word’s table', () => {
+  it('lays a noun out by case and number, every form BÍN gives in its cell', () => {
+    const hali = table('hali', 'hali', 'no', 'kk', [
+      ['NFET', 'hali'],
+      ['ÞFET', 'hala'],
+      ['ÞGFET', 'hala'],
+      ['EFET', 'hala'],
+      ['NFFT', 'halar'],
+      ['ÞFFT', 'hala'],
+      ['ÞGFFT', 'hölum'],
+      ['EFFT', 'hala'],
+      ['NFETgr', 'halinn'],
+    ]);
+    expect(wordTable(hali)).toEqual({
+      ord: 'hali',
+      columns: ['eintala', 'fleirtala'],
+      rows: [
+        { case: 'NF', forms: ['hali', 'halar'] },
+        { case: 'ÞF', forms: ['hala', 'hala'] },
+        { case: 'ÞGF', forms: ['hala', 'hölum'] },
+        { case: 'EF', forms: ['hala', 'hala'] },
+      ],
+    });
+  });
+
+  it('lays an adjective out by case and gender, singular', () => {
+    const t = wordTable(paradigms.saetur);
+    expect(t.columns).toEqual(['karlkyn', 'kvenkyn', 'hvorugkyn']);
+    expect(t.rows[0]).toEqual({ case: 'NF', forms: ['sætur', 'sæt', 'sætt'] });
   });
 });
