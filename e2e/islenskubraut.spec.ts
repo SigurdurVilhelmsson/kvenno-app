@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import { test, expect } from '@playwright/test';
 
@@ -169,15 +170,31 @@ test.describe('Islenskubraut — card download', () => {
     expect(apiCalls).toEqual([]);
   });
 
-  test('every card the app can link to exists', async ({ request }) => {
-    for (const id of ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur']) {
+  test('every card and sheet the app can link to exists', async ({ request }) => {
+    const ids = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur', 'skolinn'];
+    const kinds = ['spjald', 'ordalisti', 'giskaleikur', 'texti', 'egget'];
+    for (const id of ids) {
       for (const level of ['A1', 'A2', 'B1']) {
-        const res = await request.get(`/islenskubraut/spjold/spjald-${id}-${level}.pdf`);
-        expect(res.status(), `${id} ${level}`).toBe(200);
-        expect(res.headers()['content-type']).toBe('application/pdf');
+        for (const kind of kinds) {
+          const res = await request.get(`/islenskubraut/spjold/${kind}-${id}-${level}.pdf`);
+          expect(res.status(), `${kind} ${id} ${level}`).toBe(200);
+          expect(res.headers()['content-type']).toBe('application/pdf');
+        }
       }
     }
     // A card that does not exist is a 404, not the app's index.html under a .pdf name.
     expect((await request.get('/islenskubraut/spjold/spjald-dyr-C2.pdf')).status()).toBe(404);
+  });
+
+  // The recordings sit beside the app as files, as nginx serves them (server/nginx-site.conf):
+  // a missing one is a 404, not the app's index.html handed to an audio player.
+  test('a recording is served as audio, and a missing one is a 404', async ({ request }) => {
+    const dir = fileURLToPath(new URL('../dist/islenskubraut/hljod', import.meta.url));
+    const file = readdirSync(dir).find((f) => f.endsWith('.mp3'));
+    expect(file).toBeTruthy();
+    const res = await request.get(`/islenskubraut/hljod/${file}`);
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toBe('audio/mpeg');
+    expect((await request.get('/islenskubraut/hljod/0000000000000000.mp3')).status()).toBe(404);
   });
 });
