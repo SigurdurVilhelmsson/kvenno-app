@@ -248,6 +248,32 @@ export const ARASAAC_CREDIT = ${JSON.stringify(CREDIT)};
 }
 
 /**
+ * The links out from each card page (Fleiri úrræði). Drafts are included, marked
+ * `approved: false`, so the card page can show them under `?drog`; it shows only approved ones
+ * otherwise.
+ */
+export function renderTenglar(tenglar) {
+  return `${WARNING}
+
+import type { Level } from './types';
+
+export interface Tengill {
+  id: string;
+  name: string;
+  description: string;
+  audience: 'nemendur' | 'kennarar';
+  levels: Level[];
+  /** The link's address on each category's card; a category missing here gets no link. */
+  urls: Record<string, string>;
+  /** A person has opened the link and agreed with its wording. */
+  approved: boolean;
+}
+
+export const tenglar: Tengill[] = ${literal(tenglar)};
+`;
+}
+
+/**
  * Format with the repo's prettier config.
  *
  * lint-staged runs `prettier --write` on commit, so unformatted output would be

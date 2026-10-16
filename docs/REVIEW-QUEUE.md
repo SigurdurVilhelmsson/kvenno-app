@@ -393,6 +393,27 @@ search word Claude drafted; the workflow is `content/islenskubraut/myndir/README
 eru eign ríkisstjórnar Aragóníu og gerð af Sergio Palao fyrir ARASAAC (https://arasaac.org),
 sem dreifir þeim með Creative Commons-leyfinu BY-NC-SA.` Also the review sheet's few lines.
 
+### C11. Links out from the card pages, "Fleiri úrræði" (2026-10-16)
+
+Each card page can show links to resources elsewhere: Bildetema's Icelandic edition (one theme per
+card), the Icelandic–Polish dictionary, Icelandic Online, IceFlash 4K, Málið, ISLEX, MMS's
+Orðasjóður and Hvítar lygar, and MEMM's materials list. They are in
+`content/islenskubraut/tenglar/tenglar.yaml`. Every address answered on 2026-10-16. Claude drafted
+the names and descriptions.
+
+- [ ] **Open each link with `?drog` on a card page** (e.g. `/islenskubraut/spjald/dyr?drog`), and
+      set `approved: true` on the ones to keep. Nothing shows without `?drog` until then. Points to
+      look at:
+  - **Staðir.** Bildetema has no theme for places in town, so Staðir links to
+    "Hús og heimili" (house types and rooms).
+  - **IceFlash 4K.** Its hi.is project pages now return 404, so it links to HÍ's English set-up
+    PDF.
+  - **Orðasjóður and Hvítar lygar.** Both are listed for teachers, not students.
+- [ ] **The panel's own Icelandic**: `Fleiri úrræði`, `Fyrir nemendur`, `Fyrir kennara`, and the
+      draft note.
+- [ ] **Run `pnpm islenskubraut:tenglar --online` once a term**, from a machine that can reach the
+      sites. A link that has moved fails it.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -707,4 +728,4 @@ Both fixed 2026-10-10 (PR for this branch).
       "Skólinn" category. The two items above (the teacher sheet and the glosses) are its items 3
       and 8. Its thirteen open checks are listed there. Two of them need Siggi: - asking Tiro or Almannarómur where the Icelandic TTS service went (it answered 404 on
       2026-10-16) - asking MEMM to list Íslenskubraut on its Námsefni page
-  - [ ] Item 1, a links panel per card and level, was started 2026-10-16.
+  - [x] Item 1, a links panel per card and level (2026-10-16). Its links await approval (C11).

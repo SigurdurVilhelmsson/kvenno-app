@@ -68,6 +68,7 @@ pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to lo
                           #   and the sentence builder's inflection tables)
 pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags make, for review
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
+pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs into apps/islenskubraut/public/spjold/
                           #   (runs before the app's dev and build; fails on a card that is not 3 pages)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
@@ -625,6 +626,15 @@ generated `apps/islenskubraut/src/data/myndir.ts`, and every page showing one ca
 credit. **The build fails** on a chip with no entry, an entry for no chip, or an approved picture
 with no file — adding an A1 chip means adding its entry. Workflow and licence:
 `content/islenskubraut/myndir/README.md`. Open items: `docs/REVIEW-QUEUE.md` C10.
+
+**Links out from the card pages, "Fleiri úrræði" (2026-10-16).**
+`content/islenskubraut/tenglar/tenglar.yaml` lists resources elsewhere per level and audience
+(nemendur, kennarar), with one address for every card or one per category. Examples are Bildetema's
+Icelandic edition, one theme per card, the Icelandic–Polish dictionary and MEMM's materials list.
+`pnpm islenskubraut:build` validates it into `apps/islenskubraut/src/data/tenglar.ts`.
+`FleiriUrraedi.tsx` shows **only `approved: true` links**, and `?drog` on a card page shows the
+drafts too. `pnpm islenskubraut:tenglar --online` checks every address still answers. It is
+not part of the build, so a site being down does not block a deploy. Open items: C11.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the
