@@ -548,6 +548,25 @@ parts, all read off the builder's tags and BÍN's tables:
 - [ ] **Not built:** a gender colour on every card, the research's optional fourth part. It would
       change the printed cards, so it waits for C8.
 
+### C18. Students' own languages, "Á þínu máli" (2026-10-16)
+
+A picker on the card page puts a student's own language beside each word on the question card,
+with a link to look the word up. One file per language in `content/islenskubraut/glossur/`. **Only
+an approved language is offered**; `?drog` shows drafts. Workflow:
+`content/islenskubraut/glossur/README.md`.
+
+- [ ] **Polish: glosses, the dictionary, or both?** `pl.yaml` glosses all 103 A1 chips, **drafted
+      by machine translation (Claude)**, and links each chip to Árnastofnun's Icelandic–Polish
+      dictionary (`polska.arnastofnun.is/pl/leit/<word>`, which finds `feld` under `feldur`).
+  - **With a Polish speaker:** they read the glosses, then set `approved: true` and `approvedBy`.
+  - **Without one:** delete `words` and `categories` and approve the dictionary link alone. Its
+    entries are written by Árnastofnun's editors.
+- [ ] **Which other languages, and who checks them?** The research's cost is 1–2 hours of a
+      speaker's time per language for the A1 chips. Arabic and Farsi are written right to left,
+      which the page already handles.
+- [ ] **The Icelandic, drafted by Claude:** the picker's label `Á þínu máli`, its first option
+      `Bara íslenska`, and the link name `Orðabók: <orð>` that screen readers say.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -895,3 +914,5 @@ Both fixed 2026-10-10 (PR for this branch).
         statements await review, and the level labels a ruling (C16).
   - [x] Item 7, reasons, word tables and a drill on the sentence builder (2026-10-16). They go
         live with the builder (C9); the wording is C17.
+  - [x] Item 8, a student's own language beside the chips (2026-10-16). Polish is drafted with a
+        dictionary link; who checks it is C18.

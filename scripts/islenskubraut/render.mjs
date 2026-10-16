@@ -440,6 +440,33 @@ export const egget: Record<string, { confirmed: boolean }> = ${literal(flags)};
 }
 
 /**
+ * The students' own languages beside the chips. Drafts are included, marked \`approved: false\`, so
+ * the card page shows them under \`?drog\`; it offers only approved languages otherwise.
+ */
+export function renderGlossur(glossur) {
+  return `${WARNING}
+
+/** One language: its glosses per card and chip, and a dictionary that looks a word up by URL. */
+export interface Glossur {
+  /** The language's code, for the \`lang\` attribute: \`pl\`, \`uk\`, \`ar\`. */
+  code: string;
+  /** The language's name in itself: \`Polski\`. */
+  name: string;
+  dir: 'ltr' | 'rtl';
+  /** A speaker has read every word; until then only \`?drog\` shows it. */
+  approved: boolean;
+  approvedBy: string | null;
+  /** An address with \`{word}\` where the Icelandic word goes. */
+  dictionary: string | null;
+  /** \`words[categoryId][chip]\`: the gloss of a chip on that card. */
+  words: Record<string, Record<string, string>>;
+}
+
+export const glossur: Glossur[] = ${literal(glossur)};
+`;
+}
+
+/**
  * Format with the repo's prettier config.
  *
  * lint-staged runs `prettier --write` on commit, so unformatted output would be

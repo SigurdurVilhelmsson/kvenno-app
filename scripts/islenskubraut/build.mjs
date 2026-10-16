@@ -8,6 +8,7 @@ import { parse } from 'yaml';
 
 import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
+import { readGlossur } from './glossur.mjs';
 import { clipsForApp, readHljod, textsToVoice } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
@@ -16,6 +17,7 @@ import {
   renderEggetApp,
   renderEggetServer,
   renderGiskaleikurApp,
+  renderGlossur,
   renderHljod,
   renderTextiApp,
   renderTextiServer,
@@ -54,6 +56,8 @@ const SPA_TEXTI = resolve(ROOT, 'apps/islenskubraut/src/data/texti.ts');
 const EGGET_DIR = resolve(ROOT, 'content/islenskubraut/egget');
 const SERVER_EGGET = resolve(ROOT, 'server/src/lib/islenskubraut-egget.ts');
 const SPA_EGGET = resolve(ROOT, 'apps/islenskubraut/src/data/egget.ts');
+const GLOSSUR_DIR = resolve(ROOT, 'content/islenskubraut/glossur');
+const SPA_GLOSSUR = resolve(ROOT, 'apps/islenskubraut/src/data/glossur.ts');
 const HLJOD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hljod.yaml');
 const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
 const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
@@ -148,6 +152,19 @@ const egget = Object.fromEntries(
     })
 );
 
+// "Á þínu máli": a file per language. Drafts are included for `?drog`; an approved language that
+// misses an A1 chip breaks the build.
+const glossur = readdirSync(GLOSSUR_DIR)
+  .filter((f) => f.endsWith('.yaml'))
+  .sort()
+  .map((f) =>
+    readGlossur(
+      parse(readFileSync(resolve(GLOSSUR_DIR, f), 'utf8')),
+      f.replace(/\.yaml$/, ''),
+      categories
+    )
+  );
+
 // The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
 // drafts. An approved clip with no file breaks the build; a text with no clip has no button.
 const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
@@ -168,6 +185,7 @@ const outputs = [
   [SPA_TEXTI, renderTextiApp(texts)],
   [SPA_HLJOD, renderHljod(clips, hljod.voice)],
   [SERVER_EGGET, renderEggetServer(egget)],
+  [SPA_GLOSSUR, renderGlossur(glossur)],
   [SPA_EGGET, renderEggetApp(egget)],
 ];
 

@@ -715,6 +715,15 @@ that joined, and its output is unchanged. `smidur.ts` gains each level's `tables
 `markChanges` compares the sentence with the card word by word, and one token for the chip unmarked
 every change after it. Wording is C17; it goes live with the builder (C9).
 
+**Students' own languages, "Á þínu máli" (2026-10-16).** `content/islenskubraut/glossur/<code>.yaml`
+is one language: glosses per chip, per-card `categories` overrides for a chip that means something
+else on one card (`hátt`), `dir` for right-to-left, and an optional `dictionary` address with
+`{word}`. `scripts/islenskubraut/glossur.mjs` refuses a gloss for a chip no card prints, and **an
+approved language must name `approvedBy` and gloss every A1 chip**, unless it is a dictionary alone.
+The card page's picker (`Mal.tsx`) offers approved languages only, drafts under `?drog`, and
+remembers the choice in `localStorage`. `pl.yaml` is machine-drafted, with Árnastofnun's
+Icelandic–Polish dictionary linked per word (C18).
+
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the
 Leiðbeiningar tab — is placeholder wording drafted by Claude and never reviewed. It is marked

@@ -95,6 +95,20 @@ test('the card page with its draft recordings has no WCAG AA violations', async 
   expect(response?.status()).toBe(200);
 });
 
+// The students' own language beside the chips, a draft until a speaker approves it (C18).
+test('the card page with a draft language has no WCAG AA violations', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto('/islenskubraut/spjald/klaednadur?drog');
+  await page.getByRole('combobox', { name: 'Á þínu máli' }).selectOption('pl');
+  await page.getByRole('tab', { name: 'Spurningaspjald' }).click();
+  await expect(page.getByRole('link', { name: 'Orðabók: bolur' })).toBeVisible();
+  await expectNoViolations(page, 'pólska klaednadur');
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
 // The teachers' list of every builder, drafts included. Linked from nowhere on the site.
 test('the list of sentence builders has no WCAG AA violations', async ({ page }) => {
   await page.goto('/islenskubraut/smidur');

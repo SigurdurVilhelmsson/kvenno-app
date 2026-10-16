@@ -14,6 +14,7 @@ import {
 import { FleiriUrraedi } from '../components/FleiriUrraedi';
 import { DrogContext, HljodCredit, useAnyClip } from '../components/Hlusta';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
+import { MalContext, MalPicker, useMal } from '../components/Mal';
 import { ArasaacCredit, hasPictures } from '../components/Pictogram';
 import type { PageTitle } from '../components/Sheet';
 import { SpjaldPreview } from '../components/SpjaldPreview';
@@ -53,6 +54,7 @@ export function SpjaldPage() {
       { replace: true }
     );
   const drafts = searchParams.has('drog');
+  const [mal, setMal] = useMal(drafts);
   const [activeTab, setActiveTab] = useState<ViewTab>(TABS[0].id);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -146,6 +148,9 @@ export function SpjaldPage() {
           color={category.color}
           labelledBy="erfidleikastig"
         />
+        <div className="mt-4">
+          <MalPicker drafts={drafts} value={mal} onChange={setMal} />
+        </div>
       </div>
 
       {/* The card and its word list; the guessing game (C13), the talk-to-write sheet (C14), the
@@ -221,11 +226,15 @@ export function SpjaldPage() {
       >
         {/* Recordings play when approved, and as drafts under ?drog (REVIEW-QUEUE C15). */}
         <DrogContext.Provider value={drafts}>
-          {activeTab === 'spurningaspjald' && <SpurningaSpjald category={category} level={level} />}
-          {activeTab !== 'spurningaspjald' && (
-            <SpjaldPreview category={category} level={level} view={activeTab} />
-          )}
-          <CardAudioCredit category={category} level={level} />
+          <MalContext.Provider value={mal}>
+            {activeTab === 'spurningaspjald' && (
+              <SpurningaSpjald category={category} level={level} />
+            )}
+            {activeTab !== 'spurningaspjald' && (
+              <SpjaldPreview category={category} level={level} view={activeTab} />
+            )}
+            <CardAudioCredit category={category} level={level} />
+          </MalContext.Provider>
         </DrogContext.Provider>
       </div>
       {activeTab === 'spurningaspjald' && level === 'A1' && hasPictures(category.id) && (
