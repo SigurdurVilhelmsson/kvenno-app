@@ -106,7 +106,9 @@ bee `suðar`. Read the words for sense as well.
 Each file ends with a `builder:` section: for A1, what a student's sentence can be about and,
 for each frame on the card, which answers fill its blank and in what form. The page at
 `/islenskubraut/smidur/<flokkur>` builds every sentence from those tags and BÍN's inflection
-tables (`bin/beygingar.json`). To read every sentence it makes:
+tables (`bin/beygingar.json`). `/islenskubraut/smidur` lists all six, drafts included, so you can
+try each one before signing it off; no page on the site links to that list. To read every sentence
+it makes:
 
     pnpm islenskubraut:smidur
 

@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Header, Footer, BottomNav } from '@kvenno/shared/components';
 
 import { Home } from './pages/Home';
+import { SmidurListi } from './pages/SmidurListi';
 import { SpjaldPage } from './pages/SpjaldPage';
 
 // Its sentences are a large generated module, so they load only when the page is opened.
@@ -21,6 +22,8 @@ export function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/spjald/:flokkur" element={<SpjaldPage />} />
+          {/* Every builder, drafts included, for a teacher. Deliberately linked from nowhere. */}
+          <Route path="/smidur" element={<SmidurListi />} />
           <Route
             path="/smidur/:flokkur"
             element={

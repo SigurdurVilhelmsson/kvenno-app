@@ -59,6 +59,14 @@ for (const id of CATEGORIES) {
   });
 }
 
+// The teachers' list of every builder, drafts included. Linked from nowhere on the site.
+test('the list of sentence builders has no WCAG AA violations', async ({ page }) => {
+  await page.goto('/islenskubraut/smidur');
+  await expect(page.getByRole('heading', { level: 1, name: 'Setningasmiðir' })).toBeVisible();
+  await expect(page.getByRole('listitem')).toHaveCount(CATEGORIES.length);
+  await expectNoViolations(page, 'smiðalisti');
+});
+
 test('the sentence builder does not scroll sideways at 360 px', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   for (const id of CATEGORIES) {

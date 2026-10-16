@@ -42,6 +42,7 @@ kvenno-app/
 /islenskubraut/                        # Íslenskubraut SPA (category grid)
 /islenskubraut/spjald/:flokkur         # Teaching card detail page
 /islenskubraut/smidur/:flokkur         # Sentence builder (A1), linked from the card once confirmed
+/islenskubraut/smidur                  # Every builder, drafts included, for teachers — linked from nowhere
 /auth/callback                         # MSAL redirect target — serves the 2-ar lab-reports build
 ```
 
@@ -608,7 +609,9 @@ adding a builder word or tag without running `--fetch` fails CI rather than ship
 complete), so the browser gets neither the engine nor the tables. Each word that differs from the
 card as printed is marked and underlined. **The card page links to it only for a level whose YAML
 says `confirmed: true`** — a teacher's sign-off (C9); until then the page works at its URL under a
-"Drög" note. The page carries BÍN's attribution, as its licence requires.
+"Drög" note. The page carries BÍN's attribution, as its licence requires. **`/islenskubraut/smidur`
+(`SmidurListi.tsx`) lists all six builders, drafts included, for a teacher reviewing them**; nothing
+on the site links to it, and `SmidurListi.test.tsx` fails if anything does.
 
 **Pictograms on the A1 chips (2026-10-11), from ARASAAC — CC BY-NC-SA 4.0, not MIT.**
 `content/islenskubraut/myndir/myndir.yaml` gives every A1 chip (question answers and the sentence
