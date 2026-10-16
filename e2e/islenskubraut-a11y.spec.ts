@@ -59,12 +59,33 @@ for (const id of CATEGORIES) {
   });
 }
 
+// The links out, drafts included, which is the only way they show until approved (C11).
+test('the card page with its draft links has no WCAG AA violations', async ({ page }) => {
+  await page.goto('/islenskubraut/spjald/dyr?drog');
+  await expect(page.getByRole('region', { name: 'Fleiri úrræði' })).toBeVisible();
+  await expectNoViolations(page, 'tenglar dyr');
+});
+
 // The teachers' list of every builder, drafts included. Linked from nowhere on the site.
 test('the list of sentence builders has no WCAG AA violations', async ({ page }) => {
   await page.goto('/islenskubraut/smidur');
   await expect(page.getByRole('heading', { level: 1, name: 'Setningasmiðir' })).toBeVisible();
   await expect(page.getByRole('listitem')).toHaveCount(CATEGORIES.length);
   await expectNoViolations(page, 'smiðalisti');
+});
+
+// The tabs (Orðaforði, Setningarammar, Spurningaspjald) ran 32 px past a 360 px screen until
+// 2026-10-16, on every card, so every card and its draft links are checked.
+test('the card pages do not scroll sideways at 360 px', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  for (const id of CATEGORIES) {
+    await page.goto(`/islenskubraut/spjald/${id}?drog`);
+    await expect(page.locator('h1')).toBeVisible();
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+    );
+    expect(overflow, id).toBeLessThanOrEqual(0);
+  }
 });
 
 test('the sentence builder does not scroll sideways at 360 px', async ({ page }) => {

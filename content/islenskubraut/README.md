@@ -132,6 +132,13 @@ Every A1 chip can carry an ARASAAC pictogram, and every chip needs an entry in
 `myndir/myndir.yaml`, or the build fails. Pictures show only once a person has approved them.
 The workflow and the licence are in [`myndir/README.md`](myndir/README.md).
 
+## Links out from the card pages
+
+Each card page ends with "Fleiri úrræði", a list of resources elsewhere: picture dictionaries,
+dictionaries, courses and teaching materials. They are in `tenglar/tenglar.yaml`, and a link
+shows only once you have approved it. To review the drafts, add `?drog` to a card page's address.
+How to add and approve a link is in [`tenglar/README.md`](tenglar/README.md).
+
 ## Why this exists
 
 Until August 2026 the content lived in TypeScript object literals, duplicated by hand between

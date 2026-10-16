@@ -367,7 +367,7 @@ enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstri
 breytast frá spjaldinu svo að þau passi við setninguna.` Try it at
       `/islenskubraut/smidur/klaednadur` after the next deploy. The teachers' list at
       `/islenskubraut/smidur` (2026-10-16, linked from nowhere) adds three more: its intro, `Opna
-  setningasmið`, and the statuses `drög, ekki birt nemendum` / `staðfest, birt á spjaldinu`.
+setningasmið`, and the statuses `drög, ekki birt nemendum` / `staðfest, birt á spjaldinu`.
 - [ ] **To sign a category off**, add `confirmed: true` under `builder: A1:` in its YAML. The card
       page then links to the builder (`content/islenskubraut/README.md`).
 - [ ] **Chips that are phrases are left as written** apart from their adjectives:
@@ -392,6 +392,44 @@ search word Claude drafted; the workflow is `content/islenskubraut/myndir/README
 - [ ] **The credit's Icelandic**, drafted by Claude from ARASAAC's English wording: `Myndtáknin
 eru eign ríkisstjórnar Aragóníu og gerð af Sergio Palao fyrir ARASAAC (https://arasaac.org),
 sem dreifir þeim með Creative Commons-leyfinu BY-NC-SA.` Also the review sheet's few lines.
+
+### C11. Links out from the card pages, "Fleiri úrræði" (2026-10-16)
+
+Each card page can show links to resources elsewhere: Bildetema's Icelandic edition (one theme per
+card), the Icelandic–Polish dictionary, Icelandic Online, IceFlash 4K, Málið, ISLEX, MMS's
+Orðasjóður and Hvítar lygar, and MEMM's materials list. They are in
+`content/islenskubraut/tenglar/tenglar.yaml`. Every address answered on 2026-10-16. Claude drafted
+the names and descriptions.
+
+- [ ] **Open each link with `?drog` on a card page** (e.g. `/islenskubraut/spjald/dyr?drog`), and
+      set `approved: true` on the ones to keep. Nothing shows without `?drog` until then. Points to
+      look at:
+  - **Staðir.** Bildetema has no theme for places in town, so Staðir links to
+    "Hús og heimili" (house types and rooms).
+  - **IceFlash 4K.** Its hi.is project pages now return 404, so it links to HÍ's English set-up
+    PDF.
+  - **Orðasjóður and Hvítar lygar.** Both are listed for teachers, not students.
+- [ ] **The panel's own Icelandic**: `Fleiri úrræði`, `Fyrir nemendur`, `Fyrir kennara`, and the
+      draft note.
+- [ ] **Run `pnpm islenskubraut:tenglar --online` once a term**, from a machine that can reach the
+      sites. A link that has moved fails it.
+
+### C12. Word lists, "Orðalisti" (2026-10-16)
+
+One printable page per card and level: the words new at that level, a line for the student's own
+language, and four review boxes. A2 and B1 list only the answers the level below does not print.
+
+- [ ] **Read one list per category** from a card page's "Orðalisti (PDF)" link. Is "new at this
+      level" the right choice, or should A2 and B1 repeat the level below?
+- [ ] **The Icelandic, drafted by Claude:**
+  - the title `Orðalisti`
+  - the column headings `Orð` and `Á mínu tungumáli`
+  - the review headings `1.`, `3.`, `7.` and `14.`
+  - the instruction `Orðin á spjaldinu.` / `Ný orð á spjaldinu á stigi A2.` `Skrifaðu hvert orð á
+þínu tungumáli. Rifjaðu orðin upp eftir 1, 3, 7 og 14 daga og merktu við í hvert sinn.`
+  - the button `Orðalisti (PDF)`
+- [ ] **The A1 pictograms go on the lists** once C10 has approved them and settled the licence for
+      print, as for the printed cards.
 
 ## D. Work that needs no ruling
 
@@ -584,6 +622,15 @@ joins the list of probably-right compounds below.
 
 **PDF and preview**
 
+- [ ] **`Efniviður` prints as `fniviður`** on nine cards: Farartæki, Staðir and Klæðnaður at every
+      level, in the label beside `Úr hverju er það gert?`. Found 2026-10-16 by comparing every
+      string on every card with the text react-pdf writes; this is the only one.
+  - It does not reproduce in a small document, and moving the fonts from WOFF to TTF does not
+    change it, so the cause is react-pdf's text layout, not the content.
+  - The same week a bold `syndir` on the new word lists lost its `s`. Bold `y` is also written
+    wrongly into the text layer (`lyktar`, `flytja`) while printing correctly. The word lists
+    avoid both by using regular weight.
+  - A fix for the cards is still to find: a different label style, or a react-pdf upgrade.
 - [x] **10 of the 18 PDFs ran onto a fourth page**: A2 and B1 in every category but Manneskja,
       with the question card's second row of context boxes split from their words. Fixed
       2026-10-10 in `server/src/lib/islenskubraut-pdf.tsx`: each question's label sits beside it
@@ -700,3 +747,12 @@ Both fixed 2026-10-10 (PR for this branch).
 - [ ] **A teacher sheet per category** with activities (guessing games, pair work), replacing the
       note on the student card.
 - [ ] **Optional glosses in learners' languages.** Needs a decision on who writes and checks them.
+- [ ] **The 2026-10-16 research on next additions**, in
+      [`docs/research/islenskubraut-additions/`](research/islenskubraut-additions/README.md).
+      It ranks nine additions by value per teacher hour: links out, word sheets, information-gap
+      cards, talk-to-write sheets, audio, can-do strips, visible grammar, L1 glosses, and a
+      "Skólinn" category. The two items above (the teacher sheet and the glosses) are its items 3
+      and 8. Its thirteen open checks are listed there. Two of them need Siggi: - asking Tiro or Almannarómur where the Icelandic TTS service went (it answered 404 on
+      2026-10-16) - asking MEMM to list Íslenskubraut on its Námsefni page
+  - [x] Item 1, a links panel per card and level (2026-10-16). Its links await approval (C11).
+  - [x] Item 2, a word list per card and level (2026-10-16). Its wording awaits review (C12).

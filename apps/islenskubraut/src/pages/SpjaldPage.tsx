@@ -4,7 +4,8 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
-import { DownloadButton } from '../components/DownloadButton';
+import { DownloadButton, WordListButton } from '../components/DownloadButton';
+import { FleiriUrraedi } from '../components/FleiriUrraedi';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
 import { ArasaacCredit, hasPictures } from '../components/Pictogram';
 import type { PageTitle } from '../components/Sheet';
@@ -32,7 +33,16 @@ export function SpjaldPage() {
   const category = getCategoryById(flokkur || '');
   const [searchParams, setSearchParams] = useSearchParams();
   const level = parseLevel(searchParams.get('stig'));
-  const setLevel = (next: Level) => setSearchParams({ stig: next }, { replace: true });
+  // Keeps any other parameter, such as `?drog`, which shows the links still awaiting approval.
+  const setLevel = (next: Level) =>
+    setSearchParams(
+      (params) => {
+        params.set('stig', next);
+        return params;
+      },
+      { replace: true }
+    );
+  const drafts = searchParams.has('drog');
   const [activeTab, setActiveTab] = useState<ViewTab>(TABS[0].id);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -128,9 +138,10 @@ export function SpjaldPage() {
         />
       </div>
 
-      {/* Download button, and the sentence builder once a teacher has confirmed it (C9) */}
+      {/* The card and its word list, and the sentence builder once a teacher has confirmed it (C9) */}
       <div className="mb-10 flex flex-wrap items-center gap-4">
         <DownloadButton categoryId={category.id} level={level} color={category.color} />
+        <WordListButton categoryId={category.id} level={level} color={category.color} />
         {/* Read off the category's tags, not the sentences, which load only with their page. */}
         {category.builder?.some((b) => b.level === level && b.confirmed) && (
           <Link
@@ -166,7 +177,7 @@ export function SpjaldPage() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActiveTab(tab.id)}
                 onKeyDown={(event) => onTabKeyDown(event, index)}
-                className={`flex-1 px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
+                className={`flex-1 min-w-0 px-3 py-2 text-sm font-semibold rounded-lg transition-all phone:px-1 phone:text-xs ${
                   selected
                     ? 'bg-surface-raised text-warm-900 shadow-xs'
                     : 'text-warm-600 hover:text-warm-800'
@@ -195,6 +206,13 @@ export function SpjaldPage() {
       {activeTab === 'spurningaspjald' && level === 'A1' && hasPictures(category.id) && (
         <ArasaacCredit className="max-w-lg mx-auto mt-4" />
       )}
+
+      <FleiriUrraedi
+        categoryId={category.id}
+        level={level}
+        drafts={drafts}
+        className="max-w-lg mx-auto mt-12"
+      />
     </Container>
   );
 }

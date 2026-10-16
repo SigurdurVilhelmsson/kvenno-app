@@ -393,6 +393,168 @@ export function createSpjaldDocument(category: Category, level: Level): ReactEle
 /** The three levels every category is printed at. */
 export const LEVELS: readonly Level[] = ['A1', 'A2', 'B1'];
 
+/** Every answer on the card at a level, as printed: the words a student meets there. */
+function answersAt(category: Category, level: Level): string[] {
+  return category.guidingQuestions.flatMap(
+    (q) => q.answers.find((a) => a.level === level)?.options ?? []
+  );
+}
+
+export interface WordGroup {
+  question: string;
+  words: string[];
+}
+
+/**
+ * The words new on the card at a level: its answers that the level below does not print, each
+ * once, under the first question that offers it. A2 and B1 repeat most of the level below, so a
+ * sheet of every answer would grow to ninety rows by B1. A student keeps each level's sheet.
+ */
+export function newWordsAt(category: Category, level: Level): WordGroup[] {
+  const below = LEVELS[LEVELS.indexOf(level) - 1];
+  // `gamall/gömul` and `gömul/gamall` are one word written two ways on different questions.
+  const key = (w: string) => w.split('/').sort().join('/');
+  const seen = new Set((below ? answersAt(category, below) : []).map(key));
+  return category.guidingQuestions
+    .map((q) => {
+      const words = (q.answers.find((a) => a.level === level)?.options ?? []).filter((w) => {
+        if (seen.has(key(w))) return false;
+        seen.add(key(w));
+        return true;
+      });
+      return { question: q.question, words };
+    })
+    .filter((g) => g.words.length > 0);
+}
+
+/** The days a word is reviewed on: spaced, not massed (docs/research/islenskubraut-additions/). */
+export const REVIEW_DAYS = [1, 3, 7, 14] as const;
+
+const listStyles = StyleSheet.create({
+  // The footer sits 20 pt from the bottom; the last row must stop above it.
+  page: { paddingTop: 24, paddingBottom: 36 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  headerText: { fontSize: 18, fontWeight: 'bold', color: '#FFFFFF' },
+  title: { fontSize: 16, fontWeight: 'bold', color: '#1F2937', marginBottom: 3 },
+  instructions: { fontSize: 9, color: '#374151', marginBottom: 8, lineHeight: 1.35 },
+  headRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    borderBottomWidth: 1.5,
+    paddingBottom: 3,
+    marginBottom: 2,
+  },
+  headText: { fontSize: 8, fontWeight: 'bold', color: '#374151' },
+  // Regular weight, as are the words: in bold, react-pdf writes `y` into the PDF's text layer
+  // wrongly, and dropped the `s` of `syndir` from the page outright.
+  group: { fontSize: 7.5, color: '#4B5563', marginTop: 2.5 },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    minHeight: 13.5,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#E5E7EB',
+  },
+  word: { width: '32%', fontSize: 10.5, lineHeight: 1.2, paddingBottom: 1.5 },
+  own: {
+    width: '42%',
+    marginRight: '4%',
+    marginBottom: 2.5,
+    borderBottomWidth: 0.75,
+    borderBottomColor: '#9CA3AF',
+    height: 10,
+  },
+  days: { width: '22%', flexDirection: 'row', justifyContent: 'space-between' },
+  dayHead: { width: 14, fontSize: 8, fontWeight: 'bold', color: '#374151', textAlign: 'center' },
+  box: { width: 10, height: 10, borderWidth: 0.75, borderColor: '#6B7280', margin: 2 },
+});
+
+/**
+ * Orðalisti: one A4 page per category and level, for a student to keep. Each word new at the
+ * level, a line to write it in their own language, and four boxes to tick when they review it.
+ * The own-language column gives part of what first-language glosses give, with no translations
+ * to source or check. No pictures yet: printing ARASAAC's waits on REVIEW-QUEUE C10.
+ */
+export function createOrdalistiDocument(category: Category, level: Level): ReactElement {
+  const groups = newWordsAt(category, level);
+  // A short list gets taller rows, so there is room to write; a long one still fits one page.
+  const lines = groups.reduce((n, g) => n + g.words.length + 0.75, 0);
+  const rowHeight = Math.min(24, Math.max(13.5, 600 / lines));
+  const footer = (
+    <Text style={styles.footer}>
+      {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — orðalisti`}
+    </Text>
+  );
+  return (
+    <Document>
+      <Page size="A4" style={{ ...styles.page, ...listStyles.page }}>
+        <View style={{ ...listStyles.header, backgroundColor: category.color }}>
+          <Text style={listStyles.headerText}>{category.name.toUpperCase()}</Text>
+          <LevelBadge level={level} color={category.color} />
+        </View>
+        <Text style={listStyles.title}>Orðalisti</Text>
+        <Text style={listStyles.instructions}>
+          {level === 'A1' ? 'Orðin á spjaldinu.' : `Ný orð á spjaldinu á stigi ${level}.`} Skrifaðu
+          hvert orð á þínu tungumáli. Rifjaðu orðin upp eftir 1, 3, 7 og 14 daga og merktu við í
+          hvert sinn.
+        </Text>
+        <View style={{ ...listStyles.headRow, borderBottomColor: category.color }}>
+          <Text style={{ ...listStyles.headText, width: '32%' }}>Orð</Text>
+          <Text style={{ ...listStyles.headText, width: '46%' }}>Á mínu tungumáli</Text>
+          <View style={listStyles.days}>
+            {REVIEW_DAYS.map((d) => (
+              <Text key={d} style={listStyles.dayHead}>
+                {`${d}.`}
+              </Text>
+            ))}
+          </View>
+        </View>
+        {groups.map((g) => (
+          <View key={g.question}>
+            <Text style={listStyles.group}>{g.question}</Text>
+            {g.words.map((w) => (
+              <View key={w} style={{ ...listStyles.row, minHeight: rowHeight }} wrap={false}>
+                <Text style={{ ...listStyles.word, color: category.color }}>{w}</Text>
+                <View style={listStyles.own} />
+                <View style={listStyles.days}>
+                  {REVIEW_DAYS.map((d) => (
+                    <View key={d} style={listStyles.box} />
+                  ))}
+                </View>
+              </View>
+            ))}
+          </View>
+        ))}
+        {footer}
+      </Page>
+    </Document>
+  );
+}
+
+/** The file a word list is saved as, beside the cards in `spjold/`. */
+export function ordalistiFileName(categoryId: string, level: Level): string {
+  return `ordalisti-${categoryId}-${level}.pdf`;
+}
+
+/** A word list's PDF bytes. */
+export async function generateOrdalistiPdf(category: Category, level: Level): Promise<Buffer> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pdfStream = await ReactPDF.renderToStream(createOrdalistiDocument(category, level) as any);
+  const chunks: Buffer[] = [];
+  for await (const chunk of pdfStream) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
+  }
+  return Buffer.concat(chunks);
+}
+
 /**
  * The file a card is saved as. The build writes each card under this name and the app links
  * to it (`DownloadButton.tsx` builds the same name), so a download keeps it.

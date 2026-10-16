@@ -1,0 +1,108 @@
+# Fleiri úrræði — links out from each card page to resources that already do what Íslenskubraut
+# should not rebuild (docs/research/islenskubraut-additions/, item 1). See README.md beside this
+# file for how to add, change and approve a link.
+#
+#   name, description: what the card page shows. Drafted by Claude, awaiting review.
+#   audience:          nemendur or kennarar; the panel shows them as two lists.
+#   levels:            the card levels the link appears on (A1, A2, B1).
+#   url:               one address for every card, or one per category (`dyr: …`). A category
+#                      with no address gets no link.
+#   approved:          true once a person has opened the link and agreed with the wording. Only
+#                      approved links show on the card page; `?drog` on its URL shows them all.
+#
+# Every address answered on 2026-10-16. `pnpm islenskubraut:tenglar --online` checks them again.
+
+links:
+  - id: bildetema
+    name: Bildetema – myndaorðabók
+    description: Orð flokksins með myndum og hljóði, á íslensku og mörgum öðrum tungumálum.
+    audience: nemendur
+    levels: [A1, A2]
+    url:
+      dyr: https://nybildetema.oslomet.no/is/#/isl/dyr
+      matur: https://nybildetema.oslomet.no/is/#/isl/matur-og-drykkur
+      farartaeki: https://nybildetema.oslomet.no/is/#/isl/farartaeki
+      manneskja: https://nybildetema.oslomet.no/is/#/isl/manneskjur-og-likami
+      # The nearest theme to Staðir og byggingar: house types and rooms. Bildetema has no theme
+      # for places in town.
+      stadir: https://nybildetema.oslomet.no/is/#/isl/hus-og-heimili
+      klaednadur: https://nybildetema.oslomet.no/is/#/isl/fatnaður
+    approved: false
+
+  - id: leikur-ad-ordum
+    name: Leikur að íslenskum orðum
+    description: Algeng orð með mynd, ritun og framburði, á vef og í appi.
+    audience: nemendur
+    levels: [A1]
+    url: https://vefir.mms.is/lao_is/
+    approved: false
+
+  - id: polsk-ordabok
+    name: Íslensk-pólsk orðabók
+    description: Orðabók Árnastofnunar með framburði og tengingu við beygingar í BÍN.
+    audience: nemendur
+    levels: [A1, A2, B1]
+    url: https://polska.arnastofnun.is/
+    approved: false
+
+  - id: icelandic-online
+    name: Icelandic Online
+    description: Ókeypis sjálfsnám í íslensku á netinu, frá byrjendastigi og upp úr.
+    audience: nemendur
+    levels: [A1, A2, B1]
+    url: https://icelandiconline.com/
+    approved: false
+
+  - id: iceflash
+    name: IceFlash 4K
+    description: >-
+      Fjögur þúsund algengustu orðin á minnisspjöldum í Anki, með ensku, pólsku, kínversku eða
+      úkraínsku. Leiðbeiningarnar eru á ensku.
+    audience: nemendur
+    levels: [A2, B1]
+    url: https://www.hi.is/sites/default/files/ovr/iceflash_4k_instructions_en.pdf
+    approved: false
+
+  - id: malid
+    name: Málið.is
+    description: Orðabækur, beygingar og stafsetning á einum stað, frá Árnastofnun.
+    audience: nemendur
+    levels: [A2, B1]
+    url: https://malid.is/
+    approved: false
+
+  - id: islex
+    name: ISLEX-orðabókin
+    description: Veforðabók frá íslensku yfir á Norðurlandamálin.
+    audience: nemendur
+    levels: [B1]
+    url: https://islex.arnastofnun.is/
+    approved: false
+
+  - id: ordasjodur
+    name: Orðasjóður
+    description: Myndaspjöld og verkefnablöð með grunnorðaforða í 28 þemum, frá MMS.
+    audience: kennarar
+    levels: [A1]
+    url: https://mms.is/namsefni/adventure-island-english-wordsordasjodur
+    approved: false
+
+  - id: hvitar-lygar
+    name: Hvítar lygar
+    description: >-
+      Kennsluleiðbeiningar og verkefni frá MMS með sjónvarpsþáttum RÚV um fimm menntaskólanema,
+      fyrir stig A2 og B1.
+    audience: kennarar
+    levels: [A2, B1]
+    url: https://vefir.mms.is/flettibaekur/namsefni/hvitar_lygar_klb/
+    approved: false
+
+  - id: memm-namsefni
+    name: Námsefni á vef MEMM
+    description: >-
+      Yfirlit MMS yfir námsefni í íslensku sem öðru tungumáli í framhaldsskóla, raðað eftir
+      stigum Evrópska tungumálarammans.
+    audience: kennarar
+    levels: [A1, A2, B1]
+    url: https://memm.mms.is/menntun/namsefni/
+    approved: false

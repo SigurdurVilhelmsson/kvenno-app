@@ -15,9 +15,11 @@ import {
   renderSmidur,
   renderSpaCategory,
   renderSpaIndex,
+  renderTenglar,
   renderTypes,
 } from './render.mjs';
 import { pageData } from './smidur.mjs';
+import { readTenglar } from './tenglar.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
@@ -30,14 +32,15 @@ const BIN_DIR = resolve(ROOT, 'content/islenskubraut/bin');
 const SPA_MYNDIR = resolve(ROOT, 'apps/islenskubraut/src/data/myndir.ts');
 const MYNDIR_FILE = resolve(ROOT, 'content/islenskubraut/myndir/myndir.yaml');
 const PICTURE_DIR = resolve(ROOT, 'apps/islenskubraut/public/myndir');
+const TENGLAR_FILE = resolve(ROOT, 'content/islenskubraut/tenglar/tenglar.yaml');
+const SPA_TENGLAR = resolve(ROOT, 'apps/islenskubraut/src/data/tenglar.ts');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
 
 // The sentence builder's sentences, built from the saved BÍN files. A sentence BÍN cannot
 // complete throws here, naming it, so the build fails instead of shipping a gap.
-const binFile = (name, key) =>
-  JSON.parse(readFileSync(resolve(BIN_DIR, name), 'utf8'))[key];
+const binFile = (name, key) => JSON.parse(readFileSync(resolve(BIN_DIR, name), 'utf8'))[key];
 const lookups = binFile('ordmyndir.json', 'ordmyndir');
 const paradigms = binFile('beygingar.json', 'beygingar');
 const smidur = categories
@@ -68,6 +71,13 @@ if (coverage.missing.length || coverage.stale.length || noFile.length) {
   );
 }
 
+// The links out from each card page. A bad address, an unknown category or flattened text
+// breaks the build; whether each address still answers is `pnpm islenskubraut:tenglar --online`.
+const tenglar = readTenglar(
+  parse(readFileSync(TENGLAR_FILE, 'utf8')),
+  categories.map((c) => c.id)
+);
+
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
   [SPA_INDEX, renderSpaIndex(categories)],
@@ -76,6 +86,7 @@ const outputs = [
   [SERVER_TYPES, renderTypes()],
   [SPA_SMIDUR, renderSmidur(smidur)],
   [SPA_MYNDIR, renderMyndir(approvedPictures(myndir, categories))],
+  [SPA_TENGLAR, renderTenglar(tenglar)],
 ];
 
 let stale = 0;
