@@ -1,0 +1,18 @@
+# Ég get… — what a student can do with the Föt og klæðnaður card, per level. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the statements are right.
+confirmed: false
+A1:
+  - Ég get sagt hvaða flík þetta er.
+  - Ég get sagt hvernig flíkin er á litinn.
+  - Ég get sagt hvort maður notar flíkina inni eða úti.
+  - 'Ég get spurt: „Hvernig lítur það út?“'
+A2:
+  - Ég get lýst lit flíkur, efni hennar og hvernig hún er við snertingu.
+  - Ég get sagt hvenær maður klæðist flíkinni.
+  - Ég get sagt hver notar flíkina.
+  - Ég get spurt félaga minn um föt og skilið svarið.
+B1:
+  - Ég get ráðlagt öðrum hvernig best er að klæða sig í kulda og bleytu.
+  - Ég get borið saman tvær flíkur.
+  - Ég get sagt hvaða föt mér finnst þægileg og hvers vegna.
+  - Ég get skrifað stutta lýsingu á flík.

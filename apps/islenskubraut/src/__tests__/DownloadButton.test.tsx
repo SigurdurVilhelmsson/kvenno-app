@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   DownloadButton,
+  EggetButton,
   GameButton,
   TextiButton,
   WordListButton,
@@ -37,6 +38,13 @@ describe('DownloadButton', () => {
     render(<TextiButton categoryId="klaednadur" level="B1" color="#A6500C" />);
     const link = screen.getByRole('link', { name: 'Frá tali til texta (PDF)' });
     expect(link.getAttribute('href')).toBe('/spjold/texti-klaednadur-B1.pdf');
+    expect(link.hasAttribute('download')).toBe(true);
+  });
+
+  it('links to the level’s can-do sheet, rendered beside the cards', () => {
+    render(<EggetButton categoryId="klaednadur" level="B1" color="#A6500C" />);
+    const link = screen.getByRole('link', { name: 'Ég get… (PDF)' });
+    expect(link.getAttribute('href')).toBe('/spjold/egget-klaednadur-B1.pdf');
     expect(link.hasAttribute('download')).toBe(true);
   });
 });

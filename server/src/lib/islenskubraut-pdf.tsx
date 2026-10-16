@@ -850,6 +850,164 @@ export async function generateTextiPdf(
   return renderPdf(createTextiDocument(category, level, sheet));
 }
 
+const canStyles = StyleSheet.create({
+  title: { fontSize: 15, color: '#1F2937', marginBottom: 2 },
+  instructions: { fontSize: 8.5, color: '#4B5563', marginBottom: 6, lineHeight: 1.3 },
+  strip: {
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#9CA3AF',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 8,
+  },
+  stripHead: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 },
+  stripTitle: { fontSize: 10 },
+  name: { fontSize: 8, color: '#4B5563' },
+  row: { flexDirection: 'row', alignItems: 'center', minHeight: 20 },
+  statement: { flex: 1, fontSize: 9.5, color: '#1F2937', lineHeight: 1.3, paddingRight: 6 },
+  rating: { width: 46, alignItems: 'center' },
+  ratingHead: { width: 46, fontSize: 7, color: '#4B5563', textAlign: 'center' },
+  box: { width: 11, height: 11, borderWidth: 0.75, borderColor: '#6B7280' },
+  legend: { fontSize: 9, color: '#1F2937', lineHeight: 1.4 },
+  table: { marginTop: 8, borderTopWidth: 0.75, borderLeftWidth: 0.75, borderColor: '#9CA3AF' },
+  tr: { flexDirection: 'row' },
+  td: {
+    borderRightWidth: 0.75,
+    borderBottomWidth: 0.75,
+    borderColor: '#9CA3AF',
+    height: 22,
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  th: { fontSize: 8, color: '#374151' },
+});
+
+/** The three self-ratings on a student's strip, from not yet to on my own. */
+export const RATINGS = ['ekki enn', 'með hjálp', 'sjálf/ur'] as const;
+/** Rows on the class checklist, one per student. */
+export const CHECKLIST_ROWS = 22;
+
+/**
+ * "Ég get…": the can-do statements for a card at a level (docs/research/islenskubraut-additions/,
+ * item 6). Page 1 is four strips to cut apart, one per student, each statement with the three
+ * self-ratings. Page 2 is the teacher's class checklist with the same statements, ticked while a
+ * student talks about the card. Neither is a grade, and the checklist says so.
+ */
+export function createEggetDocument(
+  category: Category,
+  level: Level,
+  statements: string[]
+): ReactElement {
+  const header = (
+    <View style={{ ...listStyles.header, backgroundColor: category.color }}>
+      <Text style={listStyles.headerText}>{category.name.toUpperCase()}</Text>
+      <LevelBadge level={level} color={category.color} />
+    </View>
+  );
+  const footer = (
+    <Text style={styles.footer}>
+      {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — Ég get…`}
+    </Text>
+  );
+  const page = { ...styles.page, ...listStyles.page };
+  const strip = (n: number) => (
+    <View key={n} style={canStyles.strip} wrap={false}>
+      <View style={canStyles.stripHead}>
+        <Text style={{ ...canStyles.stripTitle, color: category.color }}>
+          {`Ég get… · ${category.name} · ${level}`}
+        </Text>
+        <Text style={canStyles.name}>Nafn: ______________________</Text>
+      </View>
+      <View style={canStyles.row}>
+        <Text style={canStyles.statement}> </Text>
+        {RATINGS.map((r) => (
+          <Text key={r} style={canStyles.ratingHead}>
+            {r}
+          </Text>
+        ))}
+      </View>
+      {statements.map((st) => (
+        <View key={st} style={canStyles.row}>
+          <Text style={canStyles.statement}>{st}</Text>
+          {RATINGS.map((r) => (
+            <View key={r} style={canStyles.rating}>
+              <View style={canStyles.box} />
+            </View>
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+  const nameWidth = 130;
+  const cellWidth = (535 - nameWidth) / statements.length;
+
+  return (
+    <Document>
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={canStyles.title}>Ég get…</Text>
+        <Text style={canStyles.instructions}>
+          Klippið blaðið í fjóra miða, einn fyrir hvern nemanda. Lestu hverja setningu og merktu við
+          það sem passar núna. Þetta er ekki próf.
+        </Text>
+        {[1, 2, 3, 4].map(strip)}
+        {footer}
+      </Page>
+
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={canStyles.title}>Ég get… Gátlisti kennara</Text>
+        <Text style={canStyles.instructions}>
+          Hlustaðu á nemanda tala um spjaldið og skrifaðu H (með hjálp) eða S (sjálf/ur) í reitinn.
+          Listinn er til að fylgjast með framförum, ekki til einkunnar.
+        </Text>
+        {statements.map((st, i) => (
+          <Text key={st} style={canStyles.legend}>
+            {`${i + 1}. ${st}`}
+          </Text>
+        ))}
+        <View style={canStyles.table}>
+          <View style={canStyles.tr} fixed>
+            <View style={{ ...canStyles.td, width: nameWidth }}>
+              <Text style={canStyles.th}>Nafn</Text>
+            </View>
+            {statements.map((st, i) => (
+              <View key={st} style={{ ...canStyles.td, width: cellWidth, alignItems: 'center' }}>
+                <Text style={canStyles.th}>{`${i + 1}.`}</Text>
+              </View>
+            ))}
+          </View>
+          {Array.from({ length: CHECKLIST_ROWS }, (_, r) => (
+            <View key={r} style={canStyles.tr}>
+              <View style={{ ...canStyles.td, width: nameWidth }} />
+              {statements.map((st) => (
+                <View key={st} style={{ ...canStyles.td, width: cellWidth }} />
+              ))}
+            </View>
+          ))}
+        </View>
+        {footer}
+      </Page>
+    </Document>
+  );
+}
+
+/** The file the can-do strips are saved as, beside the cards in `spjold/`. */
+export function eggetFileName(categoryId: string, level: Level): string {
+  return `egget-${categoryId}-${level}.pdf`;
+}
+
+/** The can-do strips' PDF bytes. */
+export async function generateEggetPdf(
+  category: Category,
+  level: Level,
+  statements: string[]
+): Promise<Buffer> {
+  return renderPdf(createEggetDocument(category, level, statements));
+}
+
 /** The file a word list is saved as, beside the cards in `spjold/`. */
 export function ordalistiFileName(categoryId: string, level: Level): string {
   return `ordalisti-${categoryId}-${level}.pdf`;

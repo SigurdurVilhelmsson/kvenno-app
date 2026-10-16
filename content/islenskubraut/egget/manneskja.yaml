@@ -1,0 +1,19 @@
+# Ég get… — what a student can do with the Manneskja card, per level. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the statements are right.
+confirmed: false
+# About jobs and well-known people, not family, as the card is.
+A1:
+  - Ég get sagt hvað manneskjan gerir.
+  - Ég get sagt hvort manneskjan er ung eða gömul.
+  - Ég get sagt hvar manneskjan er.
+  - Ég get notað hún og hann rétt.
+A2:
+  - Ég get lýst útliti manneskju.
+  - Ég get sagt hvar manneskjan vinnur og hvað hún gerir.
+  - Ég get sagt hvenær manneskjan vinnur.
+  - Ég get spurt um starf og skilið svarið.
+B1:
+  - Ég get lýst starfi í nokkrum setningum.
+  - Ég get giskað á starf og sagt hvers vegna.
+  - Ég get sagt frá frægri manneskju.
+  - Ég get sagt hvaða starf mér finnst áhugavert og hvers vegna.

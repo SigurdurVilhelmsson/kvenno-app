@@ -6,6 +6,7 @@ import { Container } from '@kvenno/shared/components';
 
 import {
   DownloadButton,
+  EggetButton,
   GameButton,
   TextiButton,
   WordListButton,
@@ -18,6 +19,7 @@ import type { PageTitle } from '../components/Sheet';
 import { SpjaldPreview } from '../components/SpjaldPreview';
 import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
+import { egget } from '../data/egget';
 import { giskaleikur } from '../data/giskaleikur';
 import { texti } from '../data/texti';
 import { Category, Level } from '../data/types';
@@ -146,8 +148,9 @@ export function SpjaldPage() {
         />
       </div>
 
-      {/* The card and its word list; the guessing game (C13), the talk-to-write sheet (C14) and the
-          sentence builder (C9) once a teacher has confirmed them, the first two also under ?drog */}
+      {/* The card and its word list; the guessing game (C13), the talk-to-write sheet (C14), the
+          can-do sheet (C16) and the sentence builder (C9) once a teacher has confirmed them, all but
+          the builder also under ?drog */}
       <div className="mb-10 flex flex-wrap items-center gap-4">
         <DownloadButton categoryId={category.id} level={level} color={category.color} />
         <WordListButton categoryId={category.id} level={level} color={category.color} />
@@ -156,6 +159,9 @@ export function SpjaldPage() {
         )}
         {texti[category.id] && (texti[category.id].confirmed || drafts) && (
           <TextiButton categoryId={category.id} level={level} color={category.color} />
+        )}
+        {egget[category.id] && (egget[category.id].confirmed || drafts) && (
+          <EggetButton categoryId={category.id} level={level} color={category.color} />
         )}
         {/* Read off the category's tags, not the sentences, which load only with their page. */}
         {category.builder?.some((b) => b.level === level && b.confirmed) && (

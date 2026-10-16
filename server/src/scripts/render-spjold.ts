@@ -18,7 +18,8 @@
  * column for the student's own language and four review boxes. It must fit on one page.
  *
  * And, for each category with one, the guessing game (`giskaleikur-*.pdf`): the cards to cut out
- * and the questioner's sheet, one page each. And its talk-to-write sheet (`texti-*.pdf`), one page.
+ * and the questioner's sheet, one page each. And its talk-to-write sheet (`texti-*.pdf`), one page,
+ * and its can-do strips with the teacher's checklist (`egget-*.pdf`), one page each.
  */
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -26,9 +27,12 @@ import { fileURLToPath } from 'node:url';
 
 import { categories } from '../lib/islenskubraut-data.js';
 import { giskaleikur } from '../lib/islenskubraut-giskaleikur.js';
+import { egget } from '../lib/islenskubraut-egget.js';
 import { texti } from '../lib/islenskubraut-texti.js';
 import {
   LEVELS,
+  eggetFileName,
+  generateEggetPdf,
   generateGiskaleikurPdf,
   generateOrdalistiPdf,
   generateTextiPdf,
@@ -81,15 +85,24 @@ for (const category of categories) {
       if (textPages !== 1) wrong.push(`${textFile}: ${textPages} pages, not 1`);
       writeFileSync(resolve(outDir, textFile), textPdf);
     }
+
+    const can = egget[category.id];
+    if (can) {
+      const canFile = eggetFileName(category.id, level);
+      const canPdf = await generateEggetPdf(category, level, can.levels[level]);
+      const canPages = pdfPageCount(canPdf);
+      if (canPages !== 2) wrong.push(`${canFile}: ${canPages} pages, not 2`);
+      writeFileSync(resolve(outDir, canFile), canPdf);
+    }
   }
 }
 
 if (wrong.length > 0) {
   console.error(
-    `Íslenskubraut: every card must print on three pages, every word list and talk-to-write\n  sheet on one, and every guessing game on two.\n  ${wrong.join('\n  ')}`
+    `Íslenskubraut: every card must print on three pages, every word list and talk-to-write\n  sheet on one, and every guessing game and can-do sheet on two.\n  ${wrong.join('\n  ')}`
   );
   process.exit(1);
 }
 console.log(
-  `Íslenskubraut: ${categories.length * LEVELS.length} cards, word lists, guessing games and talk-to-write sheets written to ${outDir}`
+  `Íslenskubraut: ${categories.length * LEVELS.length} cards, word lists, guessing games, talk-to-write and can-do sheets written to ${outDir}`
 );

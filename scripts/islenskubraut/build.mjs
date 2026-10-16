@@ -6,12 +6,15 @@ import { fileURLToPath } from 'node:url';
 
 import { parse } from 'yaml';
 
+import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
 import { clipsForApp, readHljod, textsToVoice } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
+  renderEggetApp,
+  renderEggetServer,
   renderGiskaleikurApp,
   renderHljod,
   renderTextiApp,
@@ -48,6 +51,9 @@ const SPA_GISKA = resolve(ROOT, 'apps/islenskubraut/src/data/giskaleikur.ts');
 const TEXTI_DIR = resolve(ROOT, 'content/islenskubraut/texti');
 const SERVER_TEXTI = resolve(ROOT, 'server/src/lib/islenskubraut-texti.ts');
 const SPA_TEXTI = resolve(ROOT, 'apps/islenskubraut/src/data/texti.ts');
+const EGGET_DIR = resolve(ROOT, 'content/islenskubraut/egget');
+const SERVER_EGGET = resolve(ROOT, 'server/src/lib/islenskubraut-egget.ts');
+const SPA_EGGET = resolve(ROOT, 'apps/islenskubraut/src/data/egget.ts');
 const HLJOD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hljod.yaml');
 const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
 const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
@@ -127,6 +133,21 @@ const texts = allTexts(
   lookups
 );
 
+// "Ég get…": three or four statements per category and level, optional per category, in the
+// taught order of the categories rather than the folder's.
+const eggetFiles = readdirSync(EGGET_DIR).filter((f) => f.endsWith('.yaml'));
+const egget = Object.fromEntries(
+  categories
+    .map((c) => `${c.id}.yaml`)
+    .filter((f) => eggetFiles.includes(f))
+    .concat(eggetFiles.filter((f) => !categories.some((c) => `${c.id}.yaml` === f)))
+    .map((f) => {
+      const id = f.replace(/\.yaml$/, '');
+      if (!categories.some((c) => c.id === id)) throw new Error(`egget/${f}: no category ${id}`);
+      return [id, readEgget(parse(readFileSync(resolve(EGGET_DIR, f), 'utf8')), id)];
+    })
+);
+
 // The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
 // drafts. An approved clip with no file breaks the build; a text with no clip has no button.
 const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
@@ -146,6 +167,8 @@ const outputs = [
   [SERVER_TEXTI, renderTextiServer(texts)],
   [SPA_TEXTI, renderTextiApp(texts)],
   [SPA_HLJOD, renderHljod(clips, hljod.voice)],
+  [SERVER_EGGET, renderEggetServer(egget)],
+  [SPA_EGGET, renderEggetApp(egget)],
 ];
 
 let stale = 0;

@@ -92,3 +92,20 @@ export function TextiButton({ categoryId, level, color }: DownloadButtonProps) {
     </a>
   );
 }
+
+/**
+ * "Ég get…", the level's can-do sheet (`egget-*.pdf`): four strips for students to rate
+ * themselves on, and the teacher's class checklist with the same statements.
+ */
+export function EggetButton({ categoryId, level, color }: DownloadButtonProps) {
+  return (
+    <a
+      href={`${import.meta.env.BASE_URL}spjold/egget-${categoryId}-${level}.pdf`}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+      style={{ borderColor: color }}
+    >
+      Ég get… (PDF)
+    </a>
+  );
+}

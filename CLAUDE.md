@@ -70,10 +70,10 @@ pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags mak
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
-pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs, word lists, guessing games and talk-to-write
-                          #   sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev and
-                          #   build; fails on a card that is not 3 pages, a game that is not 2, or a word
-                          #   list or sheet that is not 1)
+pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs, word lists, guessing games, talk-to-write and
+                          #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
+                          #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
+                          #   not 2, or a word list or talk-to-write sheet that is not 1)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages, and e2e/ (its own tsconfig)
@@ -214,6 +214,7 @@ dist/
         spjold/ordalisti-*.pdf         # The 18 word lists beside them, one page each
         spjold/giskaleikur-*.pdf       # The 18 guessing games, two pages each
         spjold/texti-*.pdf             # The 18 talk-to-write sheets, one page each
+        spjold/egget-*.pdf             # The 18 can-do sheets: student strips, class checklist
     └── hljod/*.mp3                    # The 431 recordings, played only once approved
 ```
 
@@ -695,6 +696,14 @@ approved clip with no file.** A text with no clip simply has no button, so editi
 the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
 review page; the first run flagged seven of 431 (C15). Tiro's TTS service, which the research named,
 is gone. Workflow: `content/islenskubraut/hljod/README.md`.
+
+**Can-do statements, "Ég get…" (2026-10-16).** `content/islenskubraut/egget/<flokkur>.yaml` gives three
+or four statements per level, each starting `Ég get` (`scripts/islenskubraut/egget.mjs` refuses one
+that does not). `egget-<flokkur>-<stig>.pdf` has two pages: four strips for students to rate themselves
+(_ekki enn_, _með hjálp_, _sjálf/ur_) and the teacher's class checklist, which says it is not for
+grading. Nothing is stored. The BÍN check reads the statements. The card page links "Ég get… (PDF)"
+only once confirmed, or under `?drog`. Drafted by Claude (C16); the research's "A1 · 1. stig" card
+labels wait on a ruling there.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

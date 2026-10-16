@@ -1,0 +1,18 @@
+# Ég get… — what a student can do with the Staðir og byggingar card, per level. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the statements are right.
+confirmed: false
+A1:
+  - Ég get sagt hvaða staður þetta er.
+  - Ég get sagt hvað maður gerir þar.
+  - Ég get sagt hvort staðurinn er stór eða lítill.
+  - 'Ég get spurt: „Hvar er þetta?“'
+A2:
+  - Ég get lýst byggingu og sagt úr hverju hún er.
+  - Ég get sagt hvar staðurinn er.
+  - Ég get sagt hver fer þangað og til hvers.
+  - Ég get spurt félaga minn um stað og skilið svarið.
+B1:
+  - Ég get lýst stað í nokkrum setningum.
+  - Ég get borið saman tvo staði.
+  - Ég get sagt hvað mér finnst um staðinn og hvers vegna.
+  - Ég get skrifað stutta lýsingu á stað í bænum mínum.

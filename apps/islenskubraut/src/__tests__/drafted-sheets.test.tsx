@@ -5,13 +5,17 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { SpjaldPage } from '../pages/SpjaldPage';
 
-// The guessing game and the talk-to-write sheet are drafted, and a teacher confirms each one per
-// category. Here each has one confirmed category, one draft, and none for the rest.
+// The guessing game, the talk-to-write sheet and the can-do sheet are drafted, and a teacher
+// confirms each one per category. Here each has one confirmed category, one draft, and none for
+// the rest.
 vi.mock('../data/giskaleikur', () => ({
   giskaleikur: { dyr: { confirmed: true }, matur: { confirmed: false } },
 }));
 vi.mock('../data/texti', () => ({
   texti: { matur: { confirmed: true }, dyr: { confirmed: false } },
+}));
+vi.mock('../data/egget', () => ({
+  egget: { klaednadur: { confirmed: true }, manneskja: { confirmed: false } },
 }));
 vi.mock('@kvenno/shared/components', () => ({
   Container: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -29,6 +33,7 @@ const page = (path: string) =>
 const SHEETS = [
   { name: 'Hvað er þetta? (PDF)', file: 'giskaleikur', confirmed: 'dyr', draft: 'matur' },
   { name: 'Frá tali til texta (PDF)', file: 'texti', confirmed: 'matur', draft: 'dyr' },
+  { name: 'Ég get… (PDF)', file: 'egget', confirmed: 'klaednadur', draft: 'manneskja' },
 ];
 
 describe.each(SHEETS)('$file on the card page', ({ name, file, confirmed, draft }) => {

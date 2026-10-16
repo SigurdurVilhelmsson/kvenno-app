@@ -31,6 +31,7 @@ import {
 import { CONTENT_DIR, loadCategories } from './load.mjs';
 import { prettify } from './render.mjs';
 import { paradigmsNeeded } from './smidur.mjs';
+import { readEgget } from './egget.mjs';
 import { readTexti } from './texti.mjs';
 
 const BIN_DIR = resolve(CONTENT_DIR, 'bin');
@@ -83,6 +84,15 @@ async function writeParadigms(paradigms) {
 const categories = loadCategories();
 const words = collectWords(categories);
 // The talk-to-write sheets' model texts (texti.mjs): their gaps are found through these lookups.
+const EGGET_DIR = resolve(CONTENT_DIR, 'egget');
+for (const file of existsSync(EGGET_DIR) ? readdirSync(EGGET_DIR) : []) {
+  if (!file.endsWith('.yaml')) continue;
+  const id = file.replace(/\.yaml$/, '');
+  const egget = readEgget(parse(readFileSync(resolve(EGGET_DIR, file), 'utf8')), id);
+  for (const [level, list] of Object.entries(egget.levels)) {
+    for (const s of list) addWords(words, id, `ég get ${level}`, s);
+  }
+}
 const TEXTI_DIR = resolve(CONTENT_DIR, 'texti');
 for (const file of existsSync(TEXTI_DIR) ? readdirSync(TEXTI_DIR) : []) {
   if (!file.endsWith('.yaml')) continue;

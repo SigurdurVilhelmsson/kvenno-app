@@ -495,6 +495,29 @@ page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 - [ ] **The Icelandic, drafted by Claude:** the button label `Hlusta: <texti>` (read by screen
       readers), the credit line `Upptökur: <rödd>.` and the review page's instructions.
 
+### C16. Can-do statements, "Ég get…" (2026-10-16)
+
+Three or four statements per card and level, printed as four strips for students to rate
+themselves (_ekki enn_, _með hjálp_, _sjálf/ur_) and a class checklist for the teacher, in
+`egget-*.pdf`. The 72 statements are in `content/islenskubraut/egget/` and were **drafted by
+Claude** from each card's questions and frames. The card page does not link a sheet until its file
+says `confirmed: true`; add `?drog` to see the link anyway.
+
+- [ ] **Read each category's statements at all three levels.** Does each describe something the
+      card at that level really lets a student do? Should they follow MMS's hæfnirammi or the
+      ÍSAN1Í course outcomes more closely?
+- [ ] **The ratings and the checklist's instructions, drafted by Claude:**
+  - the ratings `ekki enn`, `með hjálp`, `sjálf/ur`
+  - `Klippið blaðið í fjóra miða, einn fyrir hvern nemanda. Lestu hverja setningu og merktu við
+það sem passar núna. Þetta er ekki próf.`
+  - `Hlustaðu á nemanda tala um spjaldið og skrifaðu H (með hjálp) eða S (sjálf/ur) í reitinn.
+Listinn er til að fylgjast með framförum, ekki til einkunnar.`
+  - the button `Ég get… (PDF)`
+- [ ] **Label every card "A1 · 1. stig" and so on**, matching MMS's framework, as the research
+      proposes? Not done: it changes the printed cards, and it belongs with C8's question of how
+      the levels are named.
+- [ ] **Set `confirmed: true`** in each category's file once it is right.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -838,3 +861,5 @@ Both fixed 2026-10-10 (PR for this branch).
         await review (C14).
   - [x] Item 5, a recording of every word, frame and example on the card page (2026-10-16). The
         recordings await a listener (C15); the QR codes wait for them.
+  - [x] Item 6, can-do strips and a class checklist per card and level (2026-10-16). The
+        statements await review, and the level labels a ruling (C16).

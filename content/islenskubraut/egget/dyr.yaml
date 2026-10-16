@@ -1,0 +1,18 @@
+# Ég get… — what a student can do with the Dýr card, per level. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the statements are right.
+confirmed: false
+A1:
+  - Ég get sagt hvaða dýr þetta er.
+  - Ég get sagt hvernig dýrið lítur út.
+  - Ég get sagt hvar dýrið býr.
+  - 'Ég get spurt: „Hvernig lítur það út?“'
+A2:
+  - Ég get lýst dýri með tveimur eða þremur orðum.
+  - Ég get sagt hvað dýrið étur og hvar það býr.
+  - Ég get sagt hvernig dýrið er við snertingu.
+  - Ég get spurt félaga minn um dýr og skilið svarið.
+B1:
+  - Ég get giskað á dýr og sagt hvers vegna.
+  - Ég get borið saman tvö dýr og sagt hvað er líkt og hvað ólíkt.
+  - Ég get útskýrt til hvers fólk notar dýrið.
+  - Ég get skrifað stutta lýsingu á dýri.

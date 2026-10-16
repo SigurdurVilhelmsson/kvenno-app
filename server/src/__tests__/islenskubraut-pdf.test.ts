@@ -17,9 +17,14 @@ import request from 'supertest';
 import {
   LEVELS,
   REVIEW_DAYS,
+  CHECKLIST_ROWS,
+  RATINGS,
+  createEggetDocument,
   createGiskaleikurDocument,
   createOrdalistiDocument,
   createSpjaldDocument,
+  eggetFileName,
+  generateEggetPdf,
   generateGiskaleikurPdf,
   generateOrdalistiPdf,
   generateTextiPdf,
@@ -34,6 +39,7 @@ import {
   renderPdf,
 } from '../lib/islenskubraut-pdf.js';
 import { categories } from '../lib/islenskubraut-data.js';
+import { egget } from '../lib/islenskubraut-egget.js';
 import { giskaleikur } from '../lib/islenskubraut-giskaleikur.js';
 import { texti } from '../lib/islenskubraut-texti.js';
 import type { ReactElement, ReactNode } from 'react';
@@ -305,6 +311,42 @@ describe('talk-to-write sheets', () => {
       it(`fits ${category.id} ${level}'s sheet on one page, in Noto Sans`, async () => {
         const pdf = await generateTextiPdf(category, level, texti[category.id].levels[level]);
         expect(pageCount(pdf)).toBe(1);
+        expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});
+
+// "Ég get…": four strips for students to rate themselves, then the teacher's class checklist.
+describe('can-do sheets', () => {
+  const dyr = categories.find((c) => c.id === 'dyr')!;
+
+  it('has statements for every category', () => {
+    expect(Object.keys(egget)).toEqual(categories.map((c) => c.id));
+  });
+
+  it('prints each statement on every strip and on the checklist, with the ratings', () => {
+    const statements = egget.dyr.levels.A2;
+    const text = printedText(createEggetDocument(dyr, 'A2', statements));
+    for (const st of statements) {
+      // Four strips and the checklist's numbered list.
+      expect(text.filter((t) => t === st)).toHaveLength(4);
+      expect(text).toContain(`${statements.indexOf(st) + 1}. ${st}`);
+    }
+    for (const r of RATINGS) expect(text.filter((t) => t === r)).toHaveLength(4);
+    expect(text.join(' ')).toContain('ekki til einkunnar');
+    expect(CHECKLIST_ROWS).toBeGreaterThanOrEqual(20);
+  });
+
+  it('is saved beside the cards under its own name', () => {
+    expect(eggetFileName('dyr', 'A1')).toBe('egget-dyr-A1.pdf');
+  });
+
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`fits ${category.id} ${level}'s sheet on two pages, in Noto Sans`, async () => {
+        const pdf = await generateEggetPdf(category, level, egget[category.id].levels[level]);
+        expect(pageCount(pdf)).toBe(2);
         expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
       });
     }

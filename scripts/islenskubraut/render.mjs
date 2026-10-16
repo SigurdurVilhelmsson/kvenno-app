@@ -385,6 +385,35 @@ export const hljod: Record<string, Hljod> = ${literal(clips)};
 `;
 }
 
+/** "Ég get…" for the server, which renders the strips and the class checklist to PDF. */
+export function renderEggetServer(egget) {
+  return `${WARNING}
+
+import type { Level } from '../types/islenskubraut.js';
+
+export interface Egget {
+  /** A teacher has read the statements; until then the card page does not link the PDF. */
+  confirmed: boolean;
+  /** Three or four statements per level, each starting \`Ég get\`. */
+  levels: Record<Level, string[]>;
+}
+
+export const egget: Record<string, Egget> = ${literal(egget)};
+`;
+}
+
+/** Which categories have can-do statements, and whether a teacher has confirmed them. */
+export function renderEggetApp(egget) {
+  const flags = Object.fromEntries(
+    Object.entries(egget).map(([id, e]) => [id, { confirmed: e.confirmed }])
+  );
+  return `${WARNING}
+
+/** \`egget[categoryId].confirmed\`: the card page links the strips' PDF only when true. */
+export const egget: Record<string, { confirmed: boolean }> = ${literal(flags)};
+`;
+}
+
 /**
  * Format with the repo's prettier config.
  *
