@@ -4,7 +4,7 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
-import { DownloadButton, WordListButton } from '../components/DownloadButton';
+import { DownloadButton, GameButton, WordListButton } from '../components/DownloadButton';
 import { FleiriUrraedi } from '../components/FleiriUrraedi';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
 import { ArasaacCredit, hasPictures } from '../components/Pictogram';
@@ -12,6 +12,7 @@ import type { PageTitle } from '../components/Sheet';
 import { SpjaldPreview } from '../components/SpjaldPreview';
 import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
+import { giskaleikur } from '../data/giskaleikur';
 import { Level } from '../data/types';
 
 type ViewTab = 'spurningaspjald' | 'ordafordi' | 'setningarammar';
@@ -138,10 +139,14 @@ export function SpjaldPage() {
         />
       </div>
 
-      {/* The card and its word list, and the sentence builder once a teacher has confirmed it (C9) */}
+      {/* The card and its word list; the guessing game (C13) and the sentence builder (C9) once a
+          teacher has confirmed them, the game also under ?drog */}
       <div className="mb-10 flex flex-wrap items-center gap-4">
         <DownloadButton categoryId={category.id} level={level} color={category.color} />
         <WordListButton categoryId={category.id} level={level} color={category.color} />
+        {giskaleikur[category.id] && (giskaleikur[category.id].confirmed || drafts) && (
+          <GameButton categoryId={category.id} level={level} color={category.color} />
+        )}
         {/* Read off the category's tags, not the sentences, which load only with their page. */}
         {category.builder?.some((b) => b.level === level && b.confirmed) && (
           <Link

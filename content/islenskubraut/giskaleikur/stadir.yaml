@@ -1,0 +1,89 @@
+# Hvað er þetta? — the guessing game for Staðir og byggingar. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the descriptions are right.
+# The places are the card's own words, so `Flokkar` is never listed: it would be the answer.
+confirmed: false
+items:
+  - name: hús
+    from: A1
+    answers:
+      Útlit: [lítið, lágt]
+      Efniviður: [úr tré, úr steini]
+      notagildi: [til að búa, til að hvílast]
+      hver: [allir]
+      hvar: [í bænum, úti á landi]
+      hvenaer: [alltaf]
+  - name: skóli
+    from: A1
+    answers:
+      Útlit: [stórt]
+      Lykt: [ekkert]
+      Efniviður: [úr steini]
+      notagildi: [til að læra]
+      hver: [börn, nemendur, kennarar]
+      hvar: [í bænum]
+      hvenaer: [á morgnana, á virkum dögum]
+  - name: búð
+    from: A1
+    answers:
+      Útlit: [lítið]
+      Lykt: [gott]
+      notagildi: [til að versla]
+      hver: [allir]
+      hvar: [í bænum]
+      hvenaer: [á daginn, daglega]
+  - name: sundlaug
+    from: A1
+    answers:
+      Útlit: [stórt, lágt]
+      Lykt: [vont, sterkt, stingandi]
+      Lögun: [ferkantað]
+      notagildi: [til að hvílast, til að stunda íþróttir]
+      hver: [allir]
+      hvar: [í bænum]
+      hvenaer: [á morgnana, um helgar]
+  - name: sjúkrahús
+    from: A2
+    answers:
+      Útlit: [stórt, hátt, nýtt]
+      Lykt: [sterkt]
+      Efniviður: [úr steini, úr gleri]
+      notagildi: [til að vinna]
+      hver: [læknar]
+      hvar: [í bænum]
+      hvenaer: [alltaf]
+  - name: kirkja
+    from: A2
+    answers:
+      Útlit: [hátt, gamalt, fallegt, sögulegt]
+      Efniviður: [úr steini, úr tré]
+      Lögun: [oddhvasst]
+      hver: [allir]
+      hvar: [í bænum, úti á landi]
+      hvenaer: [um helgar, á hátíðum]
+  - name: leikvöllur
+    from: A2
+    answers:
+      Útlit: [lítið, lágt]
+      Efniviður: [úr tré, úr plasti]
+      notagildi: [til að skemmta sér]
+      hver: [börn]
+      hvar: [í bænum, í úthverfi]
+      hvenaer: [á daginn, um helgar]
+  - name: veitingastaður
+    from: A2
+    answers:
+      Lykt: [gott, ilmandi]
+      notagildi: [til að vinna, til að skemmta sér]
+      hver: [allir]
+      hvar: [í bænum, í miðborginni]
+      hvenaer: [á kvöldin, um helgar]
+  - name: bókasafn
+    from: B1
+    answers:
+      Útlit: [stórt, nútímalegt]
+      Lykt: [ekkert]
+      Efniviður: [úr steini, úr gleri]
+      notagildi: [til að læra]
+      hver: [nemendur]
+      hvar: [í miðborginni]
+      hvenaer: [á virkum dögum]

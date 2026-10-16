@@ -58,3 +58,20 @@ export function WordListButton({ categoryId, level, color }: DownloadButtonProps
     </a>
   );
 }
+
+/**
+ * "Hvað er þetta?", the level's guessing game (`giskaleikur-*.pdf`): cut-out cards describing
+ * things in the card's own answer words, and a question sheet for the student who guesses.
+ */
+export function GameButton({ categoryId, level, color }: DownloadButtonProps) {
+  return (
+    <a
+      href={`${import.meta.env.BASE_URL}spjold/giskaleikur-${categoryId}-${level}.pdf`}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+      style={{ borderColor: color }}
+    >
+      Hvað er þetta? (PDF)
+    </a>
+  );
+}

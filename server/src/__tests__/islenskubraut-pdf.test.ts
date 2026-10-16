@@ -14,15 +14,19 @@ import request from 'supertest';
 import {
   LEVELS,
   REVIEW_DAYS,
+  createGiskaleikurDocument,
   createOrdalistiDocument,
   createSpjaldDocument,
+  generateGiskaleikurPdf,
   generateOrdalistiPdf,
+  giskaleikurFileName,
   generatePdf,
   newWordsAt,
   ordalistiFileName,
   pdfPageCount as pageCount,
 } from '../lib/islenskubraut-pdf.js';
 import { categories } from '../lib/islenskubraut-data.js';
+import { giskaleikur } from '../lib/islenskubraut-giskaleikur.js';
 import type { ReactElement, ReactNode } from 'react';
 
 const realFetch = globalThis.fetch;
@@ -202,6 +206,49 @@ describe('word lists', () => {
       it(`fits ${category.id} ${level}'s word list on one page, in Noto Sans`, async () => {
         const pdf = await generateOrdalistiPdf(category, level);
         expect(pageCount(pdf)).toBe(1);
+        expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});
+
+// "Hvað er þetta?": cut-out cards describing things in the card's own words, and a question sheet
+// for the student who guesses. Two pages, so it prints on one sheet, both sides.
+describe('guessing games', () => {
+  const dyr = categories.find((c) => c.id === 'dyr')!;
+
+  it('has a game for every category', () => {
+    expect(Object.keys(giskaleikur)).toEqual(categories.map((c) => c.id));
+  });
+
+  it('prints every thing, every question and every chip on the cards, and the frames', () => {
+    const items = giskaleikur.dyr.levels.A2;
+    const text = printedText(createGiskaleikurDocument(dyr, 'A2', items)).join('\n');
+    expect(text).toContain('Hvað er þetta?');
+    for (const item of items) {
+      expect(text).toContain(item.name);
+      for (const a of item.answers) {
+        expect(text).toContain(a.question);
+        for (const chip of a.chips) expect(text).toContain(chip);
+      }
+    }
+    const frames = dyr.sentenceFrames.find((f) => f.level === 'A2')!.frames;
+    for (const frame of frames) expect(text).toContain(frame);
+  });
+
+  it('is saved beside the cards under its own name', () => {
+    expect(giskaleikurFileName('dyr', 'B1')).toBe('giskaleikur-dyr-B1.pdf');
+  });
+
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`fits ${category.id} ${level}'s game on two pages, in Noto Sans`, async () => {
+        const pdf = await generateGiskaleikurPdf(
+          category,
+          level,
+          giskaleikur[category.id].levels[level]
+        );
+        expect(pageCount(pdf)).toBe(2);
         expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
       });
     }

@@ -69,9 +69,9 @@ pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to lo
 pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags make, for review
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
-pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs and 18 word lists into apps/islenskubraut/public/spjold/
-                          #   (runs before the app's dev and build; fails on a card that is not 3 pages,
-                          #   or a word list that is not 1)
+pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs, 18 word lists and 18 guessing games into
+                          #   apps/islenskubraut/public/spjold/ (runs before the app's dev and build; fails
+                          #   on a card that is not 3 pages, a word list that is not 1, or a game that is not 2)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages, and e2e/ (its own tsconfig)
@@ -210,6 +210,7 @@ dist/
     ├── assets/
     └── spjold/spjald-*.pdf            # The 18 teaching cards, rendered at build time
         spjold/ordalisti-*.pdf         # The 18 word lists beside them, one page each
+        spjold/giskaleikur-*.pdf       # The 18 guessing games, two pages each
 ```
 
 Plus `server/dist/` — the compiled Express backend, emitted outside `dist/` by `pnpm build`
@@ -647,6 +648,20 @@ The build fails on a list longer than one page. The card page links it as "Orða
 into the PDF's text layer and dropped the `s` of `syndir` from the page. A dropped first letter
 also shows on the printed cards: `Efniviður` prints as `fniviður` (`docs/REVIEW-QUEUE.md` D3).
 No pictures yet; printing ARASAAC's waits on C10. The wording is C12.
+
+**Guessing game, "Hvað er þetta?" (2026-10-16).** An information-gap game per card and level:
+`giskaleikur-<flokkur>-<stig>.pdf`, two A4 pages, cut-out cards that each name a thing in the card's
+own answer words, and a question sheet with the card's questions, the candidates to cross out and
+the level's frames. `content/islenskubraut/giskaleikur/<flokkur>.yaml` lists the things, the level
+each starts at and its chips per question. `scripts/islenskubraut/giskaleikur.mjs` checks each file
+against its card and resolves each level's game in **that level's words only**. **The build fails**
+on a chip the card does not print, a chip that is the answer, fewer than four things, a thing
+described by fewer than three questions, or two things described identically. The render fails on a
+game that is not two pages. The build generates `server/src/lib/islenskubraut-giskaleikur.ts` (the
+resolved games) and `apps/islenskubraut/src/data/giskaleikur.ts` (the `confirmed` flags). The card
+page links "Hvað er þetta? (PDF)" **only once a file says `confirmed: true`**, or under `?drog`. The
+items and the rules text were drafted by Claude (C13). Workflow:
+`content/islenskubraut/giskaleikur/README.md`.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

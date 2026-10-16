@@ -539,6 +539,157 @@ export function createOrdalistiDocument(category: Category, level: Level): React
   );
 }
 
+const gameStyles = StyleSheet.create({
+  title: { fontSize: 16, color: '#1F2937', marginBottom: 3 },
+  instructions: { fontSize: 9, color: '#374151', marginBottom: 8, lineHeight: 1.35 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  card: {
+    width: '48.5%',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#9CA3AF',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    marginBottom: 6,
+  },
+  name: { fontSize: 14, lineHeight: 1.2, marginBottom: 2 },
+  answer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline' },
+  question: { fontSize: 7, color: '#4B5563', lineHeight: 1.2 },
+  chips: { fontSize: 8.5, lineHeight: 1.2 },
+  heading: { fontSize: 10, color: '#1F2937', marginTop: 10, marginBottom: 4 },
+  line: { fontSize: 10, color: '#374151', lineHeight: 1.5 },
+  candidates: { flexDirection: 'row', flexWrap: 'wrap' },
+  candidate: { width: '33%', flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
+  box: { width: 11, height: 11, borderWidth: 0.75, borderColor: '#6B7280', marginRight: 6 },
+});
+
+export interface GameAnswer {
+  question: string;
+  chips: string[];
+}
+export interface GameItem {
+  name: string;
+  answers: GameAnswer[];
+}
+
+/**
+ * "Hvað er þetta?": the information-gap game for a card at a level (docs/research/
+ * islenskubraut-additions/, item 3). First the cards to cut out, one per thing, each describing
+ * it in the card's own words; partner A draws one. Last the sheet partner B keeps: the rules, the
+ * questions to ask, the things to cross off, and the card's frames for answering in a sentence.
+ * Every text is regular weight, as on the word lists (see `listStyles.group`).
+ */
+export function createGiskaleikurDocument(
+  category: Category,
+  level: Level,
+  items: GameItem[]
+): ReactElement {
+  const header = (
+    <View style={{ ...listStyles.header, backgroundColor: category.color }}>
+      <Text style={listStyles.headerText}>{category.name.toUpperCase()}</Text>
+      <LevelBadge level={level} color={category.color} />
+    </View>
+  );
+  const footer = (
+    <Text style={styles.footer}>
+      {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — Hvað er þetta?`}
+    </Text>
+  );
+  const asked = category.guidingQuestions
+    .map((q) => q.question)
+    .filter((q) => items.some((i) => i.answers.some((a) => a.question === q)));
+  const frames = category.sentenceFrames.find((f) => f.level === level)?.frames ?? [];
+  const page = { ...styles.page, ...listStyles.page };
+
+  return (
+    <Document>
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={gameStyles.title}>Hvað er þetta? Spjöld</Text>
+        <Text style={gameStyles.instructions}>
+          Klippið spjöldin út og leggið þau á hvolf. Nemandi A dregur eitt spjald og sýnir það
+          engum. Hin blaðsíðan er fyrir nemanda B.
+        </Text>
+        <View style={gameStyles.grid}>
+          {items.map((item) => (
+            <View key={item.name} style={gameStyles.card} wrap={false}>
+              <Text style={{ ...gameStyles.name, color: category.color }}>{item.name}</Text>
+              {item.answers.map((a) => (
+                <View key={a.question} style={gameStyles.answer}>
+                  <Text style={gameStyles.question}>{`${a.question} `}</Text>
+                  <Text style={{ ...gameStyles.chips, color: category.color }}>
+                    {a.chips.join(', ')}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ))}
+        </View>
+        {footer}
+      </Page>
+
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={gameStyles.title}>Hvað er þetta? Spurningablað</Text>
+        <Text style={gameStyles.instructions}>
+          Leikurinn er fyrir tvo. Nemandi A dregur spjald og segir ekki hvað er á því. Nemandi B
+          spyr spurninganna hér fyrir neðan, einnar í einu. A svarar í heilli setningu með orðunum á
+          spjaldinu. B strikar yfir það sem getur ekki verið rétt. Þegar B veit svarið spyr B: „Er
+          þetta …?“ Svo skiptið þið um hlutverk.
+        </Text>
+        <Text style={gameStyles.heading}>Spurningar</Text>
+        {asked.map((q) => (
+          <Text key={q} style={gameStyles.line}>
+            {`• ${q}`}
+          </Text>
+        ))}
+        <Text style={gameStyles.heading}>Hvað getur það verið?</Text>
+        <View style={gameStyles.candidates}>
+          {items.map((item) => (
+            <View key={item.name} style={gameStyles.candidate}>
+              <View style={gameStyles.box} />
+              <Text style={gameStyles.line}>{item.name}</Text>
+            </View>
+          ))}
+        </View>
+        {frames.length > 0 && (
+          <>
+            <Text style={gameStyles.heading}>Svaraðu svona</Text>
+            {frames.map((f) => (
+              <Text key={f} style={gameStyles.line}>
+                {f}
+              </Text>
+            ))}
+          </>
+        )}
+        {footer}
+      </Page>
+    </Document>
+  );
+}
+
+/** The file a guessing game is saved as, beside the cards in `spjold/`. */
+export function giskaleikurFileName(categoryId: string, level: Level): string {
+  return `giskaleikur-${categoryId}-${level}.pdf`;
+}
+
+/** A guessing game's PDF bytes. */
+export async function generateGiskaleikurPdf(
+  category: Category,
+  level: Level,
+  items: GameItem[]
+): Promise<Buffer> {
+  const doc = createGiskaleikurDocument(category, level, items);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pdfStream = await ReactPDF.renderToStream(doc as any);
+  const chunks: Buffer[] = [];
+  for await (const chunk of pdfStream) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
+  }
+  return Buffer.concat(chunks);
+}
+
 /** The file a word list is saved as, beside the cards in `spjold/`. */
 export function ordalistiFileName(categoryId: string, level: Level): string {
   return `ordalisti-${categoryId}-${level}.pdf`;

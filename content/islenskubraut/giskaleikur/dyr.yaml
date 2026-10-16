@@ -1,0 +1,91 @@
+# Hvað er þetta? — the guessing game for Dýr. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the descriptions are right.
+confirmed: false
+items:
+  - name: hundur
+    from: A1
+    answers:
+      Flokkar: [gæludýr, spendýr]
+      Útlit: [feldur, hali, fjórir fætur, hleypur]
+      Áferð: [mjúkt, loðið]
+      Hljóð: [hátt, gelur]
+      notagildi: [til að gæta, til að klappa, til að leika sér]
+      hver: [allir]
+      hvar: [heima]
+      hvenaer: [alltaf, daglega]
+  - name: köttur
+    from: A1
+    answers:
+      Flokkar: [gæludýr, spendýr]
+      Útlit: [feldur, hali, fjórir fætur]
+      Áferð: [mjúkt, loðið]
+      Hljóð: [lágt, mjálmar, hvæsir]
+      notagildi: [til að klappa]
+      hver: [allir]
+      hvar: [heima]
+      hvenaer: [á kvöldin]
+  - name: hestur
+    from: A1
+    answers:
+      Flokkar: [húsdýr, spendýr]
+      Útlit: [feldur, hali, fjórir fætur, hleypur]
+      Áferð: [slétt, þungt]
+      Hljóð: [hátt]
+      notagildi: [til að klappa, til að vinna]
+      hver: [fullorðnir, bændur]
+      hvar: [á bæ, úti]
+      hvenaer: [á daginn]
+  - name: kind
+    from: A1
+    answers:
+      Flokkar: [húsdýr, spendýr]
+      Útlit: [feldur, fjórir fætur]
+      Áferð: [mjúkt, loðið]
+      Hljóð: [lágt]
+      notagildi: [til að borða]
+      hver: [bændur]
+      hvar: [á bæ, úti]
+      hvenaer: [á sumrin]
+  - name: hæna
+    from: A1
+    answers:
+      Flokkar: [húsdýr, fugl]
+      Útlit: [fjaðrir, goggur, tveir fætur]
+      Áferð: [mjúkt, létt]
+      Hljóð: [hátt]
+      notagildi: [til að borða]
+      hver: [bændur]
+      hvar: [á bæ]
+      hvenaer: [á morgnana]
+  - name: þorskur
+    from: A1
+    answers:
+      Flokkar: [villt dýr, fiskur]
+      Útlit: [hreistur, hali, syndir]
+      Áferð: [slétt, blautt, hált]
+      Hljóð: [þögult]
+      Lögun: [ílangt]
+      notagildi: [til að borða]
+      hver: [veiðimenn]
+      hvar: [í sjónum]
+      hvenaer: [alltaf]
+  - name: lundi
+    from: A1
+    answers:
+      Flokkar: [villt dýr, fugl]
+      Útlit: [fjaðrir, goggur, tveir fætur, flýgur, syndir]
+      Áferð: [mjúkt]
+      Hljóð: [lágt]
+      hver: [ferðamenn]
+      hvar: [úti, í náttúrunni]
+      hvenaer: [á sumrin]
+  - name: refur
+    from: A1
+    answers:
+      Flokkar: [villt dýr, spendýr]
+      Útlit: [feldur, hali, fjórir fætur, hleypur]
+      Áferð: [mjúkt, loðið]
+      Hljóð: [lágt]
+      hver: [veiðimenn]
+      hvar: [úti, í náttúrunni, á hálendinu]
+      hvenaer: [á kvöldin, sjaldan]

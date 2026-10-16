@@ -16,15 +16,21 @@
  *
  * Beside each card goes its word list (`ordalisti-*.pdf`), the words new at that level with a
  * column for the student's own language and four review boxes. It must fit on one page.
+ *
+ * And, for each category with one, the guessing game (`giskaleikur-*.pdf`): the cards to cut out
+ * and the questioner's sheet, one page each.
  */
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { categories } from '../lib/islenskubraut-data.js';
+import { giskaleikur } from '../lib/islenskubraut-giskaleikur.js';
 import {
   LEVELS,
+  generateGiskaleikurPdf,
   generateOrdalistiPdf,
+  giskaleikurFileName,
   generatePdf,
   ordalistiFileName,
   pdfPageCount,
@@ -54,15 +60,24 @@ for (const category of categories) {
     const listPages = pdfPageCount(list);
     if (listPages !== 1) wrong.push(`${listFile}: ${listPages} pages, not 1`);
     writeFileSync(resolve(outDir, listFile), list);
+
+    const game = giskaleikur[category.id];
+    if (game) {
+      const gameFile = giskaleikurFileName(category.id, level);
+      const gamePdf = await generateGiskaleikurPdf(category, level, game.levels[level]);
+      const gamePages = pdfPageCount(gamePdf);
+      if (gamePages !== 2) wrong.push(`${gameFile}: ${gamePages} pages, not 2`);
+      writeFileSync(resolve(outDir, gameFile), gamePdf);
+    }
   }
 }
 
 if (wrong.length > 0) {
   console.error(
-    `Íslenskubraut: every card must print on three pages, and every word list on one.\n  ${wrong.join('\n  ')}`
+    `Íslenskubraut: every card must print on three pages, and every word list on one,\n  and every guessing game on two.\n  ${wrong.join('\n  ')}`
   );
   process.exit(1);
 }
 console.log(
-  `Íslenskubraut: ${categories.length * LEVELS.length} cards and word lists written to ${outDir}`
+  `Íslenskubraut: ${categories.length * LEVELS.length} cards, word lists and guessing games written to ${outDir}`
 );

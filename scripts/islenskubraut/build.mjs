@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 /** YAML -> both TypeScript consumers, and their shared types. `--check` exits 1 if anything is stale. */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { parse } from 'yaml';
 
+import { allGames, readGiskaleikur } from './giskaleikur.mjs';
 import { loadCategories } from './load.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
+  renderGiskaleikurApp,
+  renderGiskaleikurServer,
   renderMyndir,
   renderServerModule,
   renderSmidur,
@@ -34,6 +37,9 @@ const MYNDIR_FILE = resolve(ROOT, 'content/islenskubraut/myndir/myndir.yaml');
 const PICTURE_DIR = resolve(ROOT, 'apps/islenskubraut/public/myndir');
 const TENGLAR_FILE = resolve(ROOT, 'content/islenskubraut/tenglar/tenglar.yaml');
 const SPA_TENGLAR = resolve(ROOT, 'apps/islenskubraut/src/data/tenglar.ts');
+const GISKA_DIR = resolve(ROOT, 'content/islenskubraut/giskaleikur');
+const SERVER_GISKA = resolve(ROOT, 'server/src/lib/islenskubraut-giskaleikur.ts');
+const SPA_GISKA = resolve(ROOT, 'apps/islenskubraut/src/data/giskaleikur.ts');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -78,6 +84,22 @@ const tenglar = readTenglar(
   categories.map((c) => c.id)
 );
 
+// "Hvað er þetta?": a file per category, optional. A thing described with a word the card does not
+// offer, or a level where two things read the same, breaks the build.
+const games = allGames(
+  Object.fromEntries(
+    readdirSync(GISKA_DIR)
+      .filter((f) => f.endsWith('.yaml'))
+      .map((f) => {
+        const id = f.replace(/\.yaml$/, '');
+        const category = categories.find((c) => c.id === id);
+        if (!category) throw new Error(`giskaleikur/${f}: no category ${id}`);
+        return [id, readGiskaleikur(parse(readFileSync(resolve(GISKA_DIR, f), 'utf8')), category)];
+      })
+  ),
+  categories
+);
+
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
   [SPA_INDEX, renderSpaIndex(categories)],
@@ -87,6 +109,8 @@ const outputs = [
   [SPA_SMIDUR, renderSmidur(smidur)],
   [SPA_MYNDIR, renderMyndir(approvedPictures(myndir, categories))],
   [SPA_TENGLAR, renderTenglar(tenglar)],
+  [SERVER_GISKA, renderGiskaleikurServer(games)],
+  [SPA_GISKA, renderGiskaleikurApp(games)],
 ];
 
 let stale = 0;

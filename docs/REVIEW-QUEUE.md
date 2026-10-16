@@ -431,6 +431,28 @@ language, and four review boxes. A2 and B1 list only the answers the level below
 - [ ] **The A1 pictograms go on the lists** once C10 has approved them and settled the licence for
       print, as for the printed cards.
 
+### C13. Guessing game, "Hvað er þetta?" (2026-10-16)
+
+Two printable pages per card and level: cut-out cards that each name a thing and say what the card
+says about it, and a question sheet for the student who guesses. The things and their descriptions
+are in `content/islenskubraut/giskaleikur/`, one file per category, and were **drafted by Claude**:
+eight or nine things per category. The card page does not link a game until its file says
+`confirmed: true`; add `?drog` to a card page's address to see the link anyway.
+
+- [ ] **Read each category's game at all three levels**, from a card page with `?drog`. Is each
+      description true, and are the things ones a student at that level knows? The A2 and B1 games
+      add things the A1 game does not have.
+- [ ] **The Icelandic, drafted by Claude:**
+  - the page titles `Hvað er þetta? Spjöld` and `Hvað er þetta? Spurningablað`
+  - the rules: `Leikurinn er fyrir tvo. Nemandi A dregur spjald og segir ekki hvað er á því.
+Nemandi B spyr spurninganna hér fyrir neðan, einnar í einu. A svarar í heilli setningu með
+orðunum á spjaldinu. B strikar yfir það sem getur ekki verið rétt. Þegar B veit svarið spyr B:
+„Er þetta …?“ Svo skiptið þið um hlutverk.`
+  - the headings `Spurningar`, `Hvað getur það verið?` and `Svaraðu svona`
+  - the button `Hvað er þetta? (PDF)`
+- [ ] **Set `confirmed: true`** in each category's file once it is right. That is what puts the
+      link on the card page.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -756,3 +778,5 @@ Both fixed 2026-10-10 (PR for this branch).
       2026-10-16) - asking MEMM to list Íslenskubraut on its Námsefni page
   - [x] Item 1, a links panel per card and level (2026-10-16). Its links await approval (C11).
   - [x] Item 2, a word list per card and level (2026-10-16). Its wording awaits review (C12).
+  - [x] Item 3, a guessing game per card and level (2026-10-16). Its items and wording await
+        review (C13).

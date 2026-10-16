@@ -42,6 +42,7 @@ vi.mock('../components/DownloadButton', () => ({
       Hlaða niður PDF ({categoryId}, {level})
     </button>
   ),
+  GameButton: () => <button>Hvað er þetta? (PDF)</button>,
   WordListButton: ({ categoryId, level }: { categoryId: string; level: string }) => (
     <button data-testid="word-list-button">
       Orðalisti ({categoryId}, {level})

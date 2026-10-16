@@ -274,6 +274,47 @@ export const tenglar: Tengill[] = ${literal(tenglar)};
 }
 
 /**
+ * "Hvað er þetta?" for the server, which renders it to PDF: every category's game at every level,
+ * already resolved, so the server only lays it out.
+ */
+export function renderGiskaleikurServer(games) {
+  return `${WARNING}
+
+import type { Level } from '../types/islenskubraut.js';
+
+export interface GiskaAnswer {
+  question: string;
+  chips: string[];
+}
+
+export interface GiskaItem {
+  name: string;
+  answers: GiskaAnswer[];
+}
+
+export interface Giskaleikur {
+  /** A teacher has checked the descriptions; until then the card page does not link the PDF. */
+  confirmed: boolean;
+  levels: Record<Level, GiskaItem[]>;
+}
+
+export const giskaleikur: Record<string, Giskaleikur> = ${literal(games)};
+`;
+}
+
+/** Which categories have a guessing game, and whether a teacher has confirmed it. */
+export function renderGiskaleikurApp(games) {
+  const flags = Object.fromEntries(
+    Object.entries(games).map(([id, g]) => [id, { confirmed: g.confirmed }])
+  );
+  return `${WARNING}
+
+/** \`giskaleikur[categoryId].confirmed\`: the card page links the game's PDF only when true. */
+export const giskaleikur: Record<string, { confirmed: boolean }> = ${literal(flags)};
+`;
+}
+
+/**
  * Format with the repo's prettier config.
  *
  * lint-staged runs `prettier --write` on commit, so unformatted output would be
