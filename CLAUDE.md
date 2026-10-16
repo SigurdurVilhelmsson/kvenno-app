@@ -69,9 +69,10 @@ pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to lo
 pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags make, for review
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
-pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs, 18 word lists and 18 guessing games into
-                          #   apps/islenskubraut/public/spjold/ (runs before the app's dev and build; fails
-                          #   on a card that is not 3 pages, a word list that is not 1, or a game that is not 2)
+pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs, word lists, guessing games and talk-to-write
+                          #   sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev and
+                          #   build; fails on a card that is not 3 pages, a game that is not 2, or a word
+                          #   list or sheet that is not 1)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages, and e2e/ (its own tsconfig)
@@ -211,6 +212,7 @@ dist/
     └── spjold/spjald-*.pdf            # The 18 teaching cards, rendered at build time
         spjold/ordalisti-*.pdf         # The 18 word lists beside them, one page each
         spjold/giskaleikur-*.pdf       # The 18 guessing games, two pages each
+        spjold/texti-*.pdf             # The 18 talk-to-write sheets, one page each
 ```
 
 Plus `server/dist/` — the compiled Express backend, emitted outside `dist/` by `pnpm build`
@@ -644,9 +646,12 @@ not part of the build, so a site being down does not block a deploy. Open items:
 level's answers that the level below does not print, so A2 and B1 stay about 30 words rather than 90. Each word has a line for the student's own language and four boxes for review on days 1, 3,
 7 and 14. `newWordsAt` and `createOrdalistiDocument` are in `server/src/lib/islenskubraut-pdf.tsx`.
 The build fails on a list longer than one page. The card page links it as "Orðalisti (PDF)".
-**Words and group headings are regular weight on purpose.** In bold, react-pdf put a wrong `y`
-into the PDF's text layer and dropped the `s` of `syndir` from the page. A dropped first letter
-also shows on the printed cards: `Efniviður` prints as `fniviður` (`docs/REVIEW-QUEUE.md` D3).
+**Every PDF is rendered through `renderPdf`, which reloads the fonts for each document.**
+react-pdf keeps one font object per file for the life of the process, and a document rendered
+after another dropped capitals from the page: the cards printed `fniviður` for `Efniviður`, and a
+word list lost the `s` of `syndir` (`docs/REVIEW-QUEUE.md` D3, fixed 2026-10-16). Each document
+alone was whole, which is why it would not reproduce. Do not call `ReactPDF.renderToStream`
+directly; a test counts the glyphs drawn after a card and fails without the reload.
 No pictures yet; printing ARASAAC's waits on C10. The wording is C12.
 
 **Guessing game, "Hvað er þetta?" (2026-10-16).** An information-gap game per card and level:
@@ -662,6 +667,19 @@ resolved games) and `apps/islenskubraut/src/data/giskaleikur.ts` (the `confirmed
 page links "Hvað er þetta? (PDF)" **only once a file says `confirmed: true`**, or under `?drog`. The
 items and the rules text were drafted by Claude (C13). Workflow:
 `content/islenskubraut/giskaleikur/README.md`.
+
+**Talk-to-write sheets, "Frá tali til texta" (2026-10-16).** One page per card and level,
+`texti-<flokkur>-<stig>.pdf`, in four steps: say it with the frames, read a model text with each
+stage named, fill a gapped copy from a box of words, write your own.
+`content/islenskubraut/texti/<flokkur>.yaml` holds a genre and named stages per level.
+**Nobody marks the gaps:** `scripts/islenskubraut/texti.mjs` takes out each word BÍN reads as a form of
+a noun, adjective or verb the card offers at that level (`hönskum` for `hanskar`), and each
+multi-word chip as printed, once each. That is why the BÍN check (`pnpm islenskubraut:bin`) now also
+reads the texts, and **the build fails on a text word never looked up**, so run `--fetch` after an
+edit. It also fails on fewer than four gaps or two stages. The texts were checked with Greynir and
+GreynirCorrect on 2026-10-16, run by hand and not part of the build. The card page links
+"Frá tali til texta (PDF)" only once confirmed, or under `?drog`. Drafted by Claude (C14). Workflow:
+`content/islenskubraut/texti/README.md`.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

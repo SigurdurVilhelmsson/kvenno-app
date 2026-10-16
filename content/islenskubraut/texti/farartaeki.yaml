@@ -1,0 +1,34 @@
+# Frá tali til texta — the model texts for Farartæki. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the texts are right.
+confirmed: false
+A1:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er rúta. Rútan er stór og með hjólum.
+    - name: Útlit
+      text: Hún er úr málmi og hljómar hátt.
+    - name: Notkun
+      text: Hún fer á götunni. Allir nota hana til að ferðast á morgnana.
+A2:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er skip sem fer á sjónum.
+    - name: Útlit
+      text: Það er langt og stórt og án hjóla. Það er úr málmi og vélin suðar lágt.
+    - name: Notkun
+      text: Sjómenn nota það til að vinna á veturna og á sumrin.
+B1:
+  genre: Útskýring
+  stages:
+    - name: Fyrirbærið
+      text: Þyrla er farartæki sem getur flogið án þess að hafa vængi eins og flugvél.
+    - name: Útskýring
+      text: >-
+        Ofan á þyrlunni eru langir spaðar sem snúast mjög hratt. Þegar spaðarnir snúast ýta þeir
+        lofti niður og þá lyftist þyrlan upp. Hún er úr málmi og gleri.
+    - name: Afleiðing
+      text: >-
+        Þess vegna getur þyrla lent á litlum stöðum þar sem flugvél kemst ekki. Flugmenn nota hana
+        til að bjarga fólki á hálendinu og á sjónum.

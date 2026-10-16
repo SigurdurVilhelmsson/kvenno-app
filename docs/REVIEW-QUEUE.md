@@ -453,6 +453,31 @@ orðunum á spjaldinu. B strikar yfir það sem getur ekki verið rétt. Þegar 
 - [ ] **Set `confirmed: true`** in each category's file once it is right. That is what puts the
       link on the card page.
 
+### C14. Talk-to-write sheets, "Frá tali til texta" (2026-10-16)
+
+One printable page per card and level: say it with the frames, read a short model text, fill the
+same text with the card's words taken out, then write your own. The 18 model texts are in
+`content/islenskubraut/texti/` and were **drafted by Claude**. Every sentence parses in Greynir,
+which checks grammar, not meaning. The card page does not link a sheet until its file says
+`confirmed: true`; add `?drog` to see the link anyway.
+
+- [ ] **Read all three levels of each category**, from a card page with `?drog`. Is each text
+      true, natural Icelandic, and at its level? A2 grows from the card's own example; B1 is a
+      school genre (Dýr a report, Matur a comparison, Farartæki an explanation, Manneskja a job
+      description, Staðir a description of a place, Klæðnaður advice).
+- [ ] **Look at the gaps on each sheet.** The build chooses them from BÍN and the card's words, so
+      a teacher may want a word added to or removed from the card, or the text reworded.
+- [ ] **The Icelandic, drafted by Claude:**
+  - the title `Frá tali til texta: <genre>` and the step headings `1. Segðu frá`, `2. Lestu`,
+    `3. Fylltu í`, `4. Skrifaðu`
+  - `Veldu eitthvað á spjaldinu og segðu félaga þínum frá því. Notaðu rammana.`
+  - `Lestu textann. Hver hluti hans segir eitthvað ákveðið og nafnið stendur við hann.`
+  - `Brjóttu blaðið svo að textinn hér fyrir ofan sjáist ekki. Fylltu í eyðurnar með orðunum í
+rammanum.`
+  - `Skrifaðu tvær til fimm setningar um eitthvað annað á spjaldinu. Notaðu rammana í 1. hluta.`
+  - the genre and stage names in each file, and the button `Frá tali til texta (PDF)`
+- [ ] **Set `confirmed: true`** in each category's file once it is right.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -644,15 +669,21 @@ joins the list of probably-right compounds below.
 
 **PDF and preview**
 
-- [ ] **`Efniviður` prints as `fniviður`** on nine cards: Farartæki, Staðir and Klæðnaður at every
+- [x] **`Efniviður` printed as `fniviður`** on nine cards: Farartæki, Staðir and Klæðnaður at every
       level, in the label beside `Úr hverju er það gert?`. Found 2026-10-16 by comparing every
-      string on every card with the text react-pdf writes; this is the only one.
-  - It does not reproduce in a small document, and moving the fonts from WOFF to TTF does not
-    change it, so the cause is react-pdf's text layout, not the content.
-  - The same week a bold `syndir` on the new word lists lost its `s`. Bold `y` is also written
-    wrongly into the text layer (`lyktar`, `flytja`) while printing correctly. The word lists
-    avoid both by using regular weight.
-  - A fix for the cards is still to find: a different label style, or a react-pdf upgrade.
+      string on every card with the text react-pdf writes. **Fixed 2026-10-16.**
+  - The cause was not the label, the content or the font format. It was rendering one PDF after
+    another in the same process. react-pdf keeps one font object per file, and a document set
+    after another could lose a capital from the page and the text layer. Rendered alone, every
+    card was whole, which is why the defect would not reproduce in a small document.
+  - The talk-to-write sheets showed it too (`Ullin` → `llin`). `renderPdf` in
+    `server/src/lib/islenskubraut-pdf.tsx` now reloads the fonts for each document, and every
+    PDF goes through it. A test draws `Ullin`, `Um`, `Efniviður` and `Uxi` after a card and
+    counts the glyphs; it fails without the reload.
+  - Every word of all 72 PDFs now matches its text layer (5,386 words, checked with `pdftotext`).
+    The bold `syndir` that lost its `s` and the bold `y` written wrongly into the text layer were
+    most likely the same defect: the bold card questions with `lyktar` now extract whole. The
+    word lists stay in regular weight, which costs nothing.
 - [x] **10 of the 18 PDFs ran onto a fourth page**: A2 and B1 in every category but Manneskja,
       with the question card's second row of context boxes split from their words. Fixed
       2026-10-10 in `server/src/lib/islenskubraut-pdf.tsx`: each question's label sits beside it
@@ -780,3 +811,5 @@ Both fixed 2026-10-10 (PR for this branch).
   - [x] Item 2, a word list per card and level (2026-10-16). Its wording awaits review (C12).
   - [x] Item 3, a guessing game per card and level (2026-10-16). Its items and wording await
         review (C13).
+  - [x] Item 4, a talk-to-write sheet per card and level (2026-10-16). Its texts and wording
+        await review (C14).

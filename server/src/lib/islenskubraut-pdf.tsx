@@ -5,7 +5,7 @@
 
 import { fileURLToPath } from 'node:url';
 import ReactPDF, { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import type { Category, GuidingQuestion, Level } from '../types/index.js';
 
 /**
@@ -35,6 +35,41 @@ Font.register({
     { src: fontPath('noto-sans-latin-700-normal.woff'), fontWeight: 'bold' },
   ],
 });
+
+/**
+ * Render a document to PDF bytes, every PDF in this file going through here.
+ *
+ * Each render gets freshly loaded fonts. react-pdf keeps one font object per registered file for
+ * the life of the process, and once it has set one document, a later document in the same
+ * process can lose a glyph: rendered after its card, a talk-to-write sheet printed `llin` for
+ * `Ullin`, on the page and in the text layer, and the cards' `Efniviður` printed as `fniviður`
+ * (REVIEW-QUEUE D3). Either document alone renders whole. `Font.reset()` cannot be used: it clears
+ * the data but keeps the finished load, so the font never reloads. Clearing both is what works.
+ *
+ * Renders run one at a time, so a reload never lands in the middle of another document.
+ */
+let renderQueue: Promise<unknown> = Promise.resolve();
+
+export function renderPdf(doc: ReactElement): Promise<Buffer> {
+  const run = renderQueue.then(async () => {
+    const family = Font.getRegisteredFonts().NotoSans as unknown as {
+      sources: { data: unknown; loadResultPromise: unknown }[];
+    };
+    for (const source of family.sources) {
+      source.data = null;
+      source.loadResultPromise = null;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const pdfStream = await ReactPDF.renderToStream(doc as any);
+    const chunks: Buffer[] = [];
+    for await (const chunk of pdfStream) {
+      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
+    }
+    return Buffer.concat(chunks);
+  });
+  renderQueue = run.catch(() => undefined);
+  return run;
+}
 
 const styles = StyleSheet.create({
   page: { fontFamily: 'NotoSans', padding: 30, backgroundColor: '#FFFFFF' },
@@ -680,14 +715,139 @@ export async function generateGiskaleikurPdf(
   level: Level,
   items: GameItem[]
 ): Promise<Buffer> {
-  const doc = createGiskaleikurDocument(category, level, items);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pdfStream = await ReactPDF.renderToStream(doc as any);
-  const chunks: Buffer[] = [];
-  for await (const chunk of pdfStream) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
-  }
-  return Buffer.concat(chunks);
+  return renderPdf(createGiskaleikurDocument(category, level, items));
+}
+
+const textStyles = StyleSheet.create({
+  title: { fontSize: 15, color: '#1F2937', marginBottom: 2 },
+  step: { fontSize: 11, marginTop: 9, marginBottom: 2 },
+  instructions: { fontSize: 8.5, color: '#4B5563', marginBottom: 4, lineHeight: 1.3 },
+  frame: { fontSize: 9.5, color: '#374151', lineHeight: 1.4 },
+  stage: { flexDirection: 'row', marginBottom: 3 },
+  stageName: { width: '20%', fontSize: 8, lineHeight: 1.5, paddingRight: 6 },
+  stageText: { width: '80%', fontSize: 10, color: '#1F2937', lineHeight: 1.5 },
+  bank: {
+    borderWidth: 0.75,
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginBottom: 5,
+    fontSize: 9.5,
+    lineHeight: 1.4,
+  },
+  writeLine: { borderBottomWidth: 0.5, borderBottomColor: '#9CA3AF', height: 20 },
+});
+
+/** One stage of a model text, run or gap: what `islenskubraut-texti.ts` stores. */
+export type TextPart = { text: string } | { gap: string };
+export interface TextSheet {
+  genre: string;
+  stages: { name: string; parts: TextPart[] }[];
+  bank: string[];
+}
+
+/** How many lines a student gets for their own text in step 4. */
+export const WRITE_LINES = 5;
+
+/**
+ * "Frá tali til texta": the talk-to-write sheet for a card at a level (docs/research/
+ * islenskubraut-additions/, item 4), one A4 page in four steps. Say it with the card's frames;
+ * read the model text, each stage named beside it; fill the same text with the card's words
+ * taken out, from a box of them; write your own. Regular weight throughout, as on the word lists.
+ */
+export function createTextiDocument(
+  category: Category,
+  level: Level,
+  sheet: TextSheet
+): ReactElement {
+  const frames = category.sentenceFrames.find((f) => f.level === level)?.frames ?? [];
+  const color = { color: category.color };
+  let gapNumber = 0;
+  const stage = (name: string, body: ReactNode) => (
+    <View key={name} style={textStyles.stage} wrap={false}>
+      <Text style={{ ...textStyles.stageName, ...color }}>{name}</Text>
+      <Text style={textStyles.stageText}>{body}</Text>
+    </View>
+  );
+
+  return (
+    <Document>
+      <Page size="A4" style={{ ...styles.page, ...listStyles.page }}>
+        <View style={{ ...listStyles.header, backgroundColor: category.color }}>
+          <Text style={listStyles.headerText}>{category.name.toUpperCase()}</Text>
+          <LevelBadge level={level} color={category.color} />
+        </View>
+        <Text style={textStyles.title}>{`Frá tali til texta: ${sheet.genre}`}</Text>
+
+        <Text style={{ ...textStyles.step, ...color }}>1. Segðu frá</Text>
+        <Text style={textStyles.instructions}>
+          Veldu eitthvað á spjaldinu og segðu félaga þínum frá því. Notaðu rammana.
+        </Text>
+        {frames.map((f) => (
+          <Text key={f} style={textStyles.frame}>
+            {f}
+          </Text>
+        ))}
+
+        <Text style={{ ...textStyles.step, ...color }}>2. Lestu</Text>
+        <Text style={textStyles.instructions}>
+          Lestu textann. Hver hluti hans segir eitthvað ákveðið og nafnið stendur við hann.
+        </Text>
+        {sheet.stages.map((s) =>
+          stage(
+            s.name,
+            s.parts.map((p) => ('gap' in p ? p.gap : p.text))
+          )
+        )}
+
+        <Text style={{ ...textStyles.step, ...color }}>3. Fylltu í</Text>
+        <Text style={textStyles.instructions}>
+          Brjóttu blaðið svo að textinn hér fyrir ofan sjáist ekki. Fylltu í eyðurnar með orðunum í
+          rammanum.
+        </Text>
+        <Text style={{ ...textStyles.bank, borderColor: category.color }}>
+          {/* A non-breaking space inside each entry, so `villt dýr` never splits across lines. */}
+          {sheet.bank.map((w) => w.replace(/ /g, '\u00a0')).join('   ·   ')}
+        </Text>
+        {sheet.stages.map((s) =>
+          stage(
+            s.name,
+            s.parts.map((p) => {
+              if (!('gap' in p)) return p.text;
+              gapNumber += 1;
+              return `(${gapNumber}) ____________`;
+            })
+          )
+        )}
+
+        <Text style={{ ...textStyles.step, ...color }}>4. Skrifaðu</Text>
+        <Text style={textStyles.instructions}>
+          Skrifaðu tvær til fimm setningar um eitthvað annað á spjaldinu. Notaðu rammana í 1. hluta.
+        </Text>
+        {Array.from({ length: WRITE_LINES }, (_, i) => (
+          <View key={i} style={textStyles.writeLine} />
+        ))}
+
+        <Text style={styles.footer}>
+          {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — Frá tali til texta`}
+        </Text>
+      </Page>
+    </Document>
+  );
+}
+
+/** The file a talk-to-write sheet is saved as, beside the cards in `spjold/`. */
+export function textiFileName(categoryId: string, level: Level): string {
+  return `texti-${categoryId}-${level}.pdf`;
+}
+
+/** A talk-to-write sheet's PDF bytes. */
+export async function generateTextiPdf(
+  category: Category,
+  level: Level,
+  sheet: TextSheet
+): Promise<Buffer> {
+  return renderPdf(createTextiDocument(category, level, sheet));
 }
 
 /** The file a word list is saved as, beside the cards in `spjold/`. */
@@ -697,13 +857,7 @@ export function ordalistiFileName(categoryId: string, level: Level): string {
 
 /** A word list's PDF bytes. */
 export async function generateOrdalistiPdf(category: Category, level: Level): Promise<Buffer> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pdfStream = await ReactPDF.renderToStream(createOrdalistiDocument(category, level) as any);
-  const chunks: Buffer[] = [];
-  for await (const chunk of pdfStream) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
-  }
-  return Buffer.concat(chunks);
+  return renderPdf(createOrdalistiDocument(category, level));
 }
 
 /**
@@ -726,12 +880,5 @@ export function pdfPageCount(pdf: Buffer): number {
  * @returns A Buffer containing the PDF bytes
  */
 export async function generatePdf(category: Category, level: string): Promise<Buffer> {
-  const doc = createSpjaldDocument(category, level as Level);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pdfStream = await ReactPDF.renderToStream(doc as any);
-  const chunks: Buffer[] = [];
-  for await (const chunk of pdfStream) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
-  }
-  return Buffer.concat(chunks);
+  return renderPdf(createSpjaldDocument(category, level as Level));
 }

@@ -1,0 +1,35 @@
+# Frá tali til texta — the model texts for Manneskja. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the texts are right.
+# About jobs, not family, so the task does not invite a student to talk about their own.
+confirmed: false
+A1:
+  genre: Lýsing
+  stages:
+    - name: Hver er það?
+      text: Þetta er kennari. Hún er ung og há.
+    - name: Hvað gerir hún?
+      text: Hún vinnur í skólanum á daginn. Á kvöldin lærir hún heima.
+A2:
+  genre: Lýsing
+  stages:
+    - name: Hver er það?
+      text: Þetta er læknir. Hann er fullorðinn og með gleraugu.
+    - name: Hvað gerir hann?
+      text: Hann vinnur á sjúkrahúsi og læknar fólk.
+    - name: Hvenær?
+      text: Hann er oft í vinnunni á kvöldin og um helgar.
+B1:
+  genre: Starfslýsing
+  stages:
+    - name: Starfið
+      text: >-
+        Leikari er manneskja sem leikur í leikritum og kvikmyndum. Sumir leikarar eru frægir en
+        flestir eru það ekki.
+    - name: Vinnan
+      text: >-
+        Leikarar vinna oft á kvöldin og um helgar vegna þess að þá koma flestir áhorfendur. Þeir
+        leika á sviði eða í sjónvarpi.
+    - name: Hæfni
+      text: Góður leikari þarf að muna langan texta og geta sungið, dansað og skapað persónur.
+    - name: Mat
+      text: Mér finnst þetta skemmtilegt starf vegna þess að það er aldrei eins.

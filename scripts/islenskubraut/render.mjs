@@ -315,6 +315,56 @@ export const giskaleikur: Record<string, { confirmed: boolean }> = ${literal(fla
 }
 
 /**
+ * "Frá tali til texta" for the server, which renders it to PDF: each category's model text at
+ * every level, already split into plain text and gaps from the card's words.
+ */
+export function renderTextiServer(texts) {
+  return `${WARNING}
+//
+// The gaps were found with BÍN's lookups (content/islenskubraut/bin/ordmyndir.json, CC BY-SA 4.0).
+
+import type { Level } from '../types/islenskubraut.js';
+
+/** A run of the model text, or a gap where the card's word was. */
+export type TextiPart = { text: string } | { gap: string };
+
+export interface TextiStage {
+  /** The stage's name, printed beside it: \`Flokkun\`, \`Lýsing\`, … */
+  name: string;
+  parts: TextiPart[];
+}
+
+export interface TextiLevel {
+  /** The kind of text: \`Lýsing\`, \`Skýrsla\`, \`Samanburður\`, … */
+  genre: string;
+  stages: TextiStage[];
+  /** Every gap's word, in lower case and alphabetical order. */
+  bank: string[];
+}
+
+export interface Texti {
+  /** A teacher has read the texts; until then the card page does not link the PDF. */
+  confirmed: boolean;
+  levels: Record<Level, TextiLevel>;
+}
+
+export const texti: Record<string, Texti> = ${literal(texts)};
+`;
+}
+
+/** Which categories have a sheet, and whether a teacher has confirmed it. */
+export function renderTextiApp(texts) {
+  const flags = Object.fromEntries(
+    Object.entries(texts).map(([id, t]) => [id, { confirmed: t.confirmed }])
+  );
+  return `${WARNING}
+
+/** \`texti[categoryId].confirmed\`: the card page links the sheet's PDF only when true. */
+export const texti: Record<string, { confirmed: boolean }> = ${literal(flags)};
+`;
+}
+
+/**
  * Format with the repo's prettier config.
  *
  * lint-staged runs `prettier --write` on commit, so unformatted output would be

@@ -12,6 +12,8 @@ import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndi
 import {
   prettify,
   renderGiskaleikurApp,
+  renderTextiApp,
+  renderTextiServer,
   renderGiskaleikurServer,
   renderMyndir,
   renderServerModule,
@@ -23,6 +25,7 @@ import {
 } from './render.mjs';
 import { pageData } from './smidur.mjs';
 import { readTenglar } from './tenglar.mjs';
+import { allTexts, readTexti } from './texti.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
@@ -40,6 +43,9 @@ const SPA_TENGLAR = resolve(ROOT, 'apps/islenskubraut/src/data/tenglar.ts');
 const GISKA_DIR = resolve(ROOT, 'content/islenskubraut/giskaleikur');
 const SERVER_GISKA = resolve(ROOT, 'server/src/lib/islenskubraut-giskaleikur.ts');
 const SPA_GISKA = resolve(ROOT, 'apps/islenskubraut/src/data/giskaleikur.ts');
+const TEXTI_DIR = resolve(ROOT, 'content/islenskubraut/texti');
+const SERVER_TEXTI = resolve(ROOT, 'server/src/lib/islenskubraut-texti.ts');
+const SPA_TEXTI = resolve(ROOT, 'apps/islenskubraut/src/data/texti.ts');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -100,6 +106,22 @@ const games = allGames(
   categories
 );
 
+// "Frá tali til texta": a model text per category and level, optional. Its gaps come from the
+// saved BÍN lookups, so a word never looked up, or a text with too few card words, breaks the build.
+const texts = allTexts(
+  Object.fromEntries(
+    readdirSync(TEXTI_DIR)
+      .filter((f) => f.endsWith('.yaml'))
+      .map((f) => {
+        const id = f.replace(/\.yaml$/, '');
+        if (!categories.some((c) => c.id === id)) throw new Error(`texti/${f}: no category ${id}`);
+        return [id, readTexti(parse(readFileSync(resolve(TEXTI_DIR, f), 'utf8')), id)];
+      })
+  ),
+  categories,
+  lookups
+);
+
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
   [SPA_INDEX, renderSpaIndex(categories)],
@@ -111,6 +133,8 @@ const outputs = [
   [SPA_TENGLAR, renderTenglar(tenglar)],
   [SERVER_GISKA, renderGiskaleikurServer(games)],
   [SPA_GISKA, renderGiskaleikurApp(games)],
+  [SERVER_TEXTI, renderTextiServer(texts)],
+  [SPA_TEXTI, renderTextiApp(texts)],
 ];
 
 let stale = 0;

@@ -11,12 +11,13 @@
  * inflection table the builder needs has not been fetched (run with --fetch).
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { parse } from 'yaml';
 
 import {
+  addWords,
   cacheDocument,
   classify,
   collectWords,
@@ -30,6 +31,7 @@ import {
 import { CONTENT_DIR, loadCategories } from './load.mjs';
 import { prettify } from './render.mjs';
 import { paradigmsNeeded } from './smidur.mjs';
+import { readTexti } from './texti.mjs';
 
 const BIN_DIR = resolve(CONTENT_DIR, 'bin');
 const CACHE_FILE = resolve(BIN_DIR, 'ordmyndir.json');
@@ -80,6 +82,16 @@ async function writeParadigms(paradigms) {
 
 const categories = loadCategories();
 const words = collectWords(categories);
+// The talk-to-write sheets' model texts (texti.mjs): their gaps are found through these lookups.
+const TEXTI_DIR = resolve(CONTENT_DIR, 'texti');
+for (const file of existsSync(TEXTI_DIR) ? readdirSync(TEXTI_DIR) : []) {
+  if (!file.endsWith('.yaml')) continue;
+  const id = file.replace(/\.yaml$/, '');
+  const texti = readTexti(parse(readFileSync(resolve(TEXTI_DIR, file), 'utf8')), id);
+  for (const [level, t] of Object.entries(texti.levels)) {
+    for (const stage of t.stages) addWords(words, id, `texti ${level}`, stage.text);
+  }
+}
 const accepted = validateAccepted(
   existsSync(ACCEPTED_FILE) ? parse(readFileSync(ACCEPTED_FILE, 'utf8')) : {}
 );

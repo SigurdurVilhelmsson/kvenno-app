@@ -1,0 +1,38 @@
+# Frá tali til texta — the model texts for Matur og drykkur. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the texts are right.
+confirmed: false
+A1:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er epli. Epli er ávöxtur.
+    - name: Útlit og bragð
+      text: Það er rautt eða grænt. Það er sætt og hart.
+    - name: Hvar og hvenær?
+      text: Maður borðar það á morgnana eða á daginn. Maður kaupir það í búð.
+A2:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er gulrót. Gulrót er grænmeti sem er appelsínugult.
+    - name: Útlit og bragð
+      text: Hún er ílöng og hörð. Hún bragðast sætt og ferskt.
+    - name: Notkun
+      text: >-
+        Maður borðar hana hráa eða eldaða. Kokkar nota hana til að elda með. Hún fæst í búð allt
+        árið.
+B1:
+  genre: Samanburður
+  stages:
+    - name: Kynning
+      text: Skyr og jógúrt eru bæði mjólkurvörur.
+    - name: Líkt
+      text: Bæði eru hvít, mjúk og köld. Þau eru oft borðuð á morgnana eða sem millimál.
+    - name: Ólíkt
+      text: >-
+        Skyr er íslenskt og þykkara en jógúrt. Það er milt á bragðið en jógúrt er oft súrari og
+        sætari.
+    - name: Niðurstaða
+      text: >-
+        Mér finnst skyr betra vegna þess að það er hollt og bragðmikið. Ferðamenn smakka það oft á
+        Íslandi.

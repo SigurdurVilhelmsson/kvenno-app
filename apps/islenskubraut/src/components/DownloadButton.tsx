@@ -75,3 +75,20 @@ export function GameButton({ categoryId, level, color }: DownloadButtonProps) {
     </a>
   );
 }
+
+/**
+ * "Frá tali til texta", the level's talk-to-write sheet (`texti-*.pdf`): the card's frames, a model
+ * text with its stages named, the same text with the card's words taken out, and lines to write on.
+ */
+export function TextiButton({ categoryId, level, color }: DownloadButtonProps) {
+  return (
+    <a
+      href={`${import.meta.env.BASE_URL}spjold/texti-${categoryId}-${level}.pdf`}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+      style={{ borderColor: color }}
+    >
+      Frá tali til texta (PDF)
+    </a>
+  );
+}
