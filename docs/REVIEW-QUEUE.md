@@ -367,7 +367,7 @@ enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstri
 breytast frá spjaldinu svo að þau passi við setninguna.` Try it at
       `/islenskubraut/smidur/klaednadur` after the next deploy. The teachers' list at
       `/islenskubraut/smidur` (2026-10-16, linked from nowhere) adds three more: its intro, `Opna
-  setningasmið`, and the statuses `drög, ekki birt nemendum` / `staðfest, birt á spjaldinu`.
+setningasmið`, and the statuses `drög, ekki birt nemendum` / `staðfest, birt á spjaldinu`.
 - [ ] **To sign a category off**, add `confirmed: true` under `builder: A1:` in its YAML. The card
       page then links to the builder (`content/islenskubraut/README.md`).
 - [ ] **Chips that are phrases are left as written** apart from their adjectives:
@@ -700,3 +700,11 @@ Both fixed 2026-10-10 (PR for this branch).
 - [ ] **A teacher sheet per category** with activities (guessing games, pair work), replacing the
       note on the student card.
 - [ ] **Optional glosses in learners' languages.** Needs a decision on who writes and checks them.
+- [ ] **The 2026-10-16 research on next additions**, in
+      [`docs/research/islenskubraut-additions/`](research/islenskubraut-additions/README.md).
+      It ranks nine additions by value per teacher hour: links out, word sheets, information-gap
+      cards, talk-to-write sheets, audio, can-do strips, visible grammar, L1 glosses, and a
+      "Skólinn" category. The two items above (the teacher sheet and the glosses) are its items 3
+      and 8. Its thirteen open checks are listed there. Two of them need Siggi: - asking Tiro or Almannarómur where the Icelandic TTS service went (it answered 404 on
+      2026-10-16) - asking MEMM to list Íslenskubraut on its Námsefni page
+  - [ ] Item 1, a links panel per card and level, was started 2026-10-16.
