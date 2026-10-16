@@ -11,6 +11,7 @@ import {
   WordListButton,
 } from '../components/DownloadButton';
 import { FleiriUrraedi } from '../components/FleiriUrraedi';
+import { DrogContext, HljodCredit, useAnyClip } from '../components/Hlusta';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
 import { ArasaacCredit, hasPictures } from '../components/Pictogram';
 import type { PageTitle } from '../components/Sheet';
@@ -19,7 +20,7 @@ import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
 import { giskaleikur } from '../data/giskaleikur';
 import { texti } from '../data/texti';
-import { Level } from '../data/types';
+import { Category, Level } from '../data/types';
 
 type ViewTab = 'spurningaspjald' | 'ordafordi' | 'setningarammar';
 
@@ -212,10 +213,14 @@ export function SpjaldPage() {
         tabIndex={0}
         className="max-w-lg mx-auto"
       >
-        {activeTab === 'spurningaspjald' && <SpurningaSpjald category={category} level={level} />}
-        {activeTab !== 'spurningaspjald' && (
-          <SpjaldPreview category={category} level={level} view={activeTab} />
-        )}
+        {/* Recordings play when approved, and as drafts under ?drog (REVIEW-QUEUE C15). */}
+        <DrogContext.Provider value={drafts}>
+          {activeTab === 'spurningaspjald' && <SpurningaSpjald category={category} level={level} />}
+          {activeTab !== 'spurningaspjald' && (
+            <SpjaldPreview category={category} level={level} view={activeTab} />
+          )}
+          <CardAudioCredit category={category} level={level} />
+        </DrogContext.Provider>
       </div>
       {activeTab === 'spurningaspjald' && level === 'A1' && hasPictures(category.id) && (
         <ArasaacCredit className="max-w-lg mx-auto mt-4" />
@@ -229,4 +234,17 @@ export function SpjaldPage() {
       />
     </Container>
   );
+}
+
+/** The voice's credit, under the card whenever any of its texts has a recording that plays. */
+function CardAudioCredit({ category, level }: { category: Category; level: Level }) {
+  const texts = [
+    ...category.subCategories.flatMap((s) => s.options),
+    ...category.guidingQuestions.flatMap(
+      (q) => q.answers.find((a) => a.level === level)?.options ?? []
+    ),
+    ...(category.sentenceFrames.find((f) => f.level === level)?.frames ?? []),
+    ...category.examples.filter((e) => e.level === level).map((e) => e.text),
+  ];
+  return useAnyClip(texts) ? <HljodCredit className="mt-4" /> : null;
 }

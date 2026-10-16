@@ -26,6 +26,7 @@
     "islenskubraut:smidur": "node scripts/islenskubraut/smidur-check.mjs",
     "islenskubraut:myndir": "node scripts/islenskubraut/myndir-check.mjs",
     "islenskubraut:tenglar": "node scripts/islenskubraut/tenglar-check.mjs",
+    "islenskubraut:hljod": "node scripts/islenskubraut/hljod-check.mjs",
     "type-check": "pnpm --recursive run type-check && tsc --noEmit -p e2e",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

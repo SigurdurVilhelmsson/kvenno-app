@@ -62,13 +62,15 @@ export function BottomNav({ activeTab, className = '' }: BottomNavProps) {
                 href={item.href}
                 className={[
                   'flex flex-col items-center justify-center gap-0.5 min-w-[64px] min-h-[44px] px-3 py-1.5 rounded-lg transition-colors no-underline',
+                  // -700, not the brand orange: 12 px text needs 4.5:1, and the brand orange
+                  // on orange-50 is 2.9:1 (found by axe at 360 px, 2026-10-16).
                   isActive
-                    ? 'text-kvenno-orange bg-kvenno-orange-50'
+                    ? 'text-kvenno-orange-700 bg-kvenno-orange-50'
                     : 'text-warm-500 hover:text-warm-600',
                 ].join(' ')}
                 aria-current={isActive ? 'page' : undefined}
               >
-                <Icon size={22} className={isActive ? 'text-kvenno-orange' : undefined} />
+                <Icon size={22} />
                 <span className="text-xs font-medium leading-tight">{item.label}</span>
               </a>
             );

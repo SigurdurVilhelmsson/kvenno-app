@@ -478,12 +478,34 @@ rammanum.`
   - the genre and stage names in each file, and the button `Frá tali til texta (PDF)`
 - [ ] **Set `confirmed: true`** in each category's file once it is right.
 
+### C15. Recordings on the cards, "Hlustaðu" (2026-10-16)
+
+A play button beside every word, frame and worked example on the card page: 431 recordings,
+synthesised with Reykjavík University's Talrómur C voice (CC BY 4.0). **None plays for students
+until a person marks it `true`** in `content/islenskubraut/hljod/hljod.yaml`; add `?drog` to a card
+page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
+
+- [ ] **Listen to the recordings** from the review page `pnpm islenskubraut:hljod` writes, and mark
+      each right one `true`. The page puts first the seven that a speech recogniser heard as
+      something else: `les`, `gogg`, `goggur`, `úr ull`, `feld`, `húfa`, `oddhvasst`. The
+      research estimated 3–5 hours for all of them.
+- [ ] **Is a synthetic voice acceptable for the cards at all?** If not, the same files can be
+      recorded by a person under the same names, and the play buttons stay as they are.
+- [ ] **The QR codes on the printed cards** wait until some recordings are approved.
+- [ ] **The Icelandic, drafted by Claude:** the button label `Hlusta: <texti>` (read by screen
+      readers), the credit line `Upptökur: <rödd>.` and the review page's instructions.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
 
 From the vertical-scroll design's §7 and the mobile-pass decisions' last section.
 
+- [x] **The phone bottom bar's active item failed contrast**: brand orange on orange-50 is 2.9:1,
+      under the 4.5:1 that 12 px text needs. Found 2026-10-16 by the first axe check run at 360 px
+      (the Íslenskubraut recordings' e2e test); every earlier axe check ran at desktop width,
+      where the bar is hidden. Fixed in `packages/shared/components/BottomNav.tsx` with
+      `kvenno-orange-700`, as the games' orange text already uses. Only phones see the change.
 - [x] **buffer Stig 1** shows a live 'Fullkomið!' pill on the pH readout that can contradict a
       'Rangt' verdict. Already fixed 2026-09-23, found 2026-10-02: the pill reads the grader's own
       `isCorrect`, and `level1-flow.test.tsx` holds it.
@@ -805,11 +827,14 @@ Both fixed 2026-10-10 (PR for this branch).
       It ranks nine additions by value per teacher hour: links out, word sheets, information-gap
       cards, talk-to-write sheets, audio, can-do strips, visible grammar, L1 glosses, and a
       "Skólinn" category. The two items above (the teacher sheet and the glosses) are its items 3
-      and 8. Its thirteen open checks are listed there. Two of them need Siggi: - asking Tiro or Almannarómur where the Icelandic TTS service went (it answered 404 on
-      2026-10-16) - asking MEMM to list Íslenskubraut on its Námsefni page
+      and 8. Its thirteen open checks are listed there. Two of them needed Siggi: asking Tiro or Almannarómur where the Icelandic TTS service went
+      (no longer needed: the voices used in item 5 are open, 2026-10-16) and asking MEMM to list
+      Íslenskubraut on its Námsefni page
   - [x] Item 1, a links panel per card and level (2026-10-16). Its links await approval (C11).
   - [x] Item 2, a word list per card and level (2026-10-16). Its wording awaits review (C12).
   - [x] Item 3, a guessing game per card and level (2026-10-16). Its items and wording await
         review (C13).
   - [x] Item 4, a talk-to-write sheet per card and level (2026-10-16). Its texts and wording
         await review (C14).
+  - [x] Item 5, a recording of every word, frame and example on the card page (2026-10-16). The
+        recordings await a listener (C15); the QR codes wait for them.

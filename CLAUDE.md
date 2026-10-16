@@ -69,6 +69,7 @@ pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to lo
 pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags make, for review
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
+pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
 pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs, word lists, guessing games and talk-to-write
                           #   sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev and
                           #   build; fails on a card that is not 3 pages, a game that is not 2, or a word
@@ -213,6 +214,7 @@ dist/
         spjold/ordalisti-*.pdf         # The 18 word lists beside them, one page each
         spjold/giskaleikur-*.pdf       # The 18 guessing games, two pages each
         spjold/texti-*.pdf             # The 18 talk-to-write sheets, one page each
+    └── hljod/*.mp3                    # The 431 recordings, played only once approved
 ```
 
 Plus `server/dist/` — the compiled Express backend, emitted outside `dist/` by `pnpm build`
@@ -680,6 +682,19 @@ edit. It also fails on fewer than four gaps or two stages. The texts were checke
 GreynirCorrect on 2026-10-16, run by hand and not part of the build. The card page links
 "Frá tali til texta (PDF)" only once confirmed, or under `?drog`. Drafted by Claude (C14). Workflow:
 `content/islenskubraut/texti/README.md`.
+
+**Recordings, "Hlustaðu" (2026-10-16).** Every word, frame and worked example on the card page has a
+play button once its recording is approved. There are 431 MP3s in `apps/islenskubraut/public/hljod/`,
+each named by a hash of its text (`clipName` in `scripts/islenskubraut/hljod.mjs`), so an edited text
+needs a new one. They are **synthesised**: Reykjavík University's Talrómur C voice (CC BY 4.0) with
+ice-g2p for pronunciation, by `scripts/islenskubraut/hljod/talgerving.py`. That is a Python 3.10
+setup on a teacher's machine, never in CI. `content/islenskubraut/hljod/hljod.yaml` lists each clip
+`true`/`false`; **only `true` plays for students**, `?drog` plays the rest (`DrogContext` in
+`Hlusta.tsx`), and the card page credits the voice whenever a clip plays. **The build fails only on an
+approved clip with no file.** A text with no clip simply has no button, so editing a card never needs
+the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
+review page; the first run flagged seven of 431 (C15). Tiro's TTS service, which the research named,
+is gone. Workflow: `content/islenskubraut/hljod/README.md`.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

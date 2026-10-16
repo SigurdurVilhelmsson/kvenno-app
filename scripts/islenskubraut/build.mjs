@@ -7,11 +7,13 @@ import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
+import { clipsForApp, readHljod, textsToVoice } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
   renderGiskaleikurApp,
+  renderHljod,
   renderTextiApp,
   renderTextiServer,
   renderGiskaleikurServer,
@@ -46,6 +48,9 @@ const SPA_GISKA = resolve(ROOT, 'apps/islenskubraut/src/data/giskaleikur.ts');
 const TEXTI_DIR = resolve(ROOT, 'content/islenskubraut/texti');
 const SERVER_TEXTI = resolve(ROOT, 'server/src/lib/islenskubraut-texti.ts');
 const SPA_TEXTI = resolve(ROOT, 'apps/islenskubraut/src/data/texti.ts');
+const HLJOD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hljod.yaml');
+const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
+const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -122,6 +127,11 @@ const texts = allTexts(
   lookups
 );
 
+// The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
+// drafts. An approved clip with no file breaks the build; a text with no clip has no button.
+const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
+const clips = clipsForApp(textsToVoice(categories), hljod, (f) => existsSync(resolve(CLIP_DIR, f)));
+
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
   [SPA_INDEX, renderSpaIndex(categories)],
@@ -135,6 +145,7 @@ const outputs = [
   [SPA_GISKA, renderGiskaleikurApp(games)],
   [SERVER_TEXTI, renderTextiServer(texts)],
   [SPA_TEXTI, renderTextiApp(texts)],
+  [SPA_HLJOD, renderHljod(clips, hljod.voice)],
 ];
 
 let stale = 0;

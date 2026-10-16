@@ -365,6 +365,27 @@ export const texti: Record<string, { confirmed: boolean }> = ${literal(flags)};
 }
 
 /**
+ * The recordings the card page can play, by the text as printed. Drafts are included, marked
+ * `approved: false`, so the page plays them under `?drog`; it plays only approved ones otherwise.
+ */
+export function renderHljod(clips, voice) {
+  return `${WARNING}
+
+/** A recording of a text on the card, in \`public/hljod/\`. */
+export interface Hljod {
+  file: string;
+  /** A person has listened to it and agrees. */
+  approved: boolean;
+}
+
+/** The voice the clips were made with, credited wherever they play. */
+export const HLJOD_VOICE = ${JSON.stringify(voice.trim())};
+
+export const hljod: Record<string, Hljod> = ${literal(clips)};
+`;
+}
+
+/**
  * Format with the repo's prettier config.
  *
  * lint-staged runs `prettier --write` on commit, so unformatted output would be

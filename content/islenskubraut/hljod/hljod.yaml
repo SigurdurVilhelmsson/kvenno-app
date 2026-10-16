@@ -1,0 +1,439 @@
+# Hlustaðu — every recording on the cards, and whether a person has listened to it.
+# See README.md beside this file. `pnpm islenskubraut:hljod --record` lists new clips here as
+# false; write true once you have listened and the clip says the text as it should be said.
+# Only clips marked true play for students.
+voice: >-
+  Talrómur, rödd C (Háskólinn í Reykjavík, Language and Voice Lab), FastSpeech2,
+  CC BY 4.0; raddkóðari Talrómur 1+2 Style MelGAN, Apache 2.0
+clips:
+  gæludýr: false
+  villt dýr: false
+  húsdýr (búfénaður): false
+  spendýr: false
+  fugl: false
+  fiskur: false
+  skriðdýr: false
+  froskdýr: false
+  skordýr: false
+  á landi: false
+  í vatni: false
+  í lofti: false
+  á landi og í vatni: false
+  feld: false
+  fjaðrir: false
+  hreistur: false
+  hala: false
+  gogg: false
+  horn: false
+  fjóra fætur: false
+  tvo fætur: false
+  flýgur: false
+  syndir: false
+  hleypur: false
+  lítið: false
+  meðalstórt: false
+  stórt: false
+  mjög stórt: false
+  plöntur (grasæta): false
+  kjöt (kjötæta): false
+  bæði (alæta): false
+  húsdýr: false
+  feldur: false
+  hali: false
+  goggur: false
+  fjórir fætur: false
+  tveir fætur: false
+  mjúkt: false
+  hart: false
+  slétt: false
+  gróft: false
+  þungt: false
+  létt: false
+  blautt: false
+  þurrt: false
+  loðið: false
+  hált: false
+  stinnt: false
+  sveigjanlegt: false
+  hátt: false
+  lágt: false
+  þögult: false
+  gelur: false
+  mjálmar: false
+  öskrar: false
+  suðar: false
+  hringir: false
+  hvæsir: false
+  kringlótt: false
+  ferkantað: false
+  ílangt: false
+  flatt: false
+  kúlulaga: false
+  oddhvasst: false
+  bogið: false
+  beint: false
+  sporöskjulaga: false
+  þríhyrningslaga: false
+  sívalningslaga: false
+  óreglulegt: false
+  til að gæta: false
+  til að klappa: false
+  til að borða: false
+  til að hjálpa: false
+  til að vinna: false
+  til að leika sér: false
+  til að verja: false
+  til að rannsaka: false
+  allir: false
+  börn: false
+  fullorðnir: false
+  bændur: false
+  dýralæknar: false
+  veiðimenn: false
+  sérfræðingar: false
+  ferðamenn: false
+  heima: false
+  úti: false
+  á bæ: false
+  í dýragarðinum: false
+  í náttúrunni: false
+  í sjónum: false
+  á hálendinu: false
+  í skóginum: false
+  á morgnana: false
+  á daginn: false
+  á kvöldin: false
+  alltaf: false
+  á veturna: false
+  á sumrin: false
+  um helgar: false
+  í sérstökum tilvikum: false
+  daglega: false
+  sjaldan: false
+  oft: false
+  Þetta er dýr.: false
+  Það er ___.: false
+  Það hefur ___.: false
+  Það hljómar ___.: false
+  Maður notar það ___.: false
+  Þetta er ___ sem býr ___.: false
+  Það hefur ___ og ___.: false
+  Það étur ___.: false
+  Það finnst ___ við snertingu.: false
+  Maður finnur það ___.: false
+  Ég held að þetta sé ___ vegna þess að ___.: false
+  Þetta dýr er ___ og ___.: false
+  Það er líkt ___ en ólíkt ___.: false
+  Það er ___ að snerta vegna þess að ___.: false
+  ___ nota það oftast ___.: false
+  Þetta er dýr. Það er stórt. Það hefur feld.: false
+  Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.: false
+  Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.: false
+  ávöxtur: false
+  grænmeti: false
+  kjöt: false
+  mjólkurvara: false
+  sælgæti: false
+  brauð/korn: false
+  drykkur: false
+  sætt: false
+  salt: false
+  súrt: false
+  beiskt: false
+  kryddað/sterkt: false
+  fljótandi: false
+  hrátt: false
+  soðið: false
+  steikt: false
+  bakað: false
+  heitt: false
+  kalt: false
+  frosið: false
+  í eldhúsinu: false
+  í ísskápnum: false
+  í búðinni: false
+  á veitingastað: false
+  í morgunmat: false
+  í hádegismat: false
+  í kvöldmat: false
+  sem millimál: false
+  alltaf/hvenær sem er: false
+  krydd: false
+  sósa: false
+  rautt: false
+  grænt: false
+  gult: false
+  hvítt: false
+  brúnt: false
+  appelsínugult: false
+  langt: false
+  kryddað: false
+  sterkt: false
+  milt: false
+  ferskt: false
+  bragðmikið: false
+  bragðlaust: false
+  mjög sætt: false
+  náttúrulega sætt: false
+  gott: false
+  vont: false
+  ekkert: false
+  ilmandi: false
+  stingandi: false
+  til að drekka: false
+  til að elda með: false
+  til að baka með: false
+  til að næra sig: false
+  til að njóta: false
+  kokkar: false
+  bakarar: false
+  í búð: false
+  í skólanum: false
+  á markaði: false
+  í garðinum: false
+  á virkum dögum: false
+  á hátíðum: false
+  Þetta er ___.: false
+  Maður borðar það ___.: false
+  Þetta er ___ sem er ___.: false
+  Maður borðar/drekkur það ___.: false
+  Það er gert úr ___.: false
+  Þetta er ___ sem bragðast ___.: false
+  Það er oft borðað/drukkið ___.: false
+  Mér finnst ___.: false
+  Það er gert úr ___ sem er ___.: false
+  Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.: false
+  Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.: false
+  Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.: false
+  bíll: false
+  rúta: false
+  hjól/reiðhjól: false
+  mótorhjól: false
+  lest: false
+  flugvél: false
+  skip/bátur: false
+  sleði: false
+  hlaupahjól: false
+  á sjó/vatni: false
+  á snjó: false
+  risastórt: false
+  hjól: false
+  ekki hjól: false
+  með vél: false
+  án vélar: false
+  hraðskreitt: false
+  hægfara: false
+  allt árið: false
+  í sérstökum tilfellum: false
+  einn: false
+  fáir: false
+  margir: false
+  skip: false
+  sportvagn: false
+  þyrla: false
+  með hjólum: false
+  án hjóla: false
+  stutt: false
+  straumlínulaga: false
+  litríkt: false
+  úr málmi: false
+  úr plasti: false
+  úr tré: false
+  úr steini: false
+  úr gleri: false
+  úr endurunnu efni: false
+  úr náttúrulegum efnum: false
+  úr gerviefnum: false
+  til að ferðast: false
+  til að flytja: false
+  til að keppa: false
+  til að bjarga: false
+  bílstjórar: false
+  flugmenn: false
+  sjómenn: false
+  iðnaðarmenn: false
+  á götunni: false
+  á sjónum: false
+  í loftinu: false
+  á þjóðveginum: false
+  á flugvellinum: false
+  í höfninni: false
+  á lestarbraut: false
+  Það fer ___.: false
+  Þetta er ___ sem fer ___.: false
+  Það hefur ___ og er ___.: false
+  Það er gert ___.: false
+  Þetta farartæki er ___ sem er notað ___.: false
+  Það getur flutt ___ og fer ___.: false
+  Það er gert ___ sem er ___.: false
+  Þetta er bíll. Hann fer á landi. Hann er stór.: false
+  Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.: false
+  Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.: false
+  á lífi: false
+  látin/látinn: false
+  skálduð persóna: false
+  fræg/frægur: false
+  ekki fræg/frægur: false
+  leikari: false
+  íþróttamaður: false
+  söngvari: false
+  stjórnmálamaður: false
+  nemandi: false
+  kennari: false
+  læknir: false
+  lögreglumaður: false
+  kokkur: false
+  listamaður: false
+  barn: false
+  unglingur: false
+  fullorðin/fullorðinn: false
+  öldruð/aldraður: false
+  há/hár: false
+  lág/lágur: false
+  ung/ungur: false
+  gömul/gamall: false
+  með sítt hár: false
+  með stutt hár: false
+  sköllótt/sköllóttur: false
+  með gleraugu: false
+  án gleraugna: false
+  með skegg: false
+  án skeggs: false
+  vinnur: false
+  lærir: false
+  syngur: false
+  spilar: false
+  ferðast: false
+  eldar: false
+  les: false
+  teiknar: false
+  gamall/gömul: false
+  leikur sér: false
+  læknar: false
+  kennir: false
+  stjórnar: false
+  skapar: false
+  í vinnunni: false
+  á sjúkrahúsi: false
+  á leikvelli: false
+  á sviði: false
+  í sjónvarpi: false
+  á ferðalagi: false
+  Hún/Hann er ___.: false
+  Hún/Hann ___.: false
+  Hún/Hann er ___ og ___.: false
+  Hún/Hann vinnur sem ___.: false
+  Hún/Hann er oft ___.: false
+  Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.: false
+  Hún/Hann er oft ___ vegna þess að ___.: false
+  Þetta er kennari. Hún er ung. Hún les.: false
+  Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.: false
+  Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.: false
+  hús: false
+  íbúð: false
+  skóli: false
+  sjúkrahús: false
+  búð/verslun: false
+  veitingastaður: false
+  safn: false
+  kirkja: false
+  sundlaug: false
+  leikvöllur: false
+  í bænum/borginni: false
+  í úthverfi: false
+  á landi/sveitinni: false
+  við sjóinn: false
+  í fjöllunum: false
+  lítill/lítil/lítið: false
+  meðalstór/meðalstórt: false
+  stór/stórt: false
+  borðar: false
+  verslar: false
+  sefur: false
+  búð: false
+  bókasafn: false
+  íþróttahús: false
+  gamalt: false
+  nýtt: false
+  fallegt: false
+  ljótt: false
+  nútímalegt: false
+  sögulegt: false
+  til að búa: false
+  til að læra: false
+  til að versla: false
+  til að hvílast: false
+  til að stunda íþróttir: false
+  til að skemmta sér: false
+  nemendur: false
+  kennarar: false
+  listamenn: false
+  í bænum: false
+  úti á landi: false
+  í miðborginni: false
+  Maður ___ þar.: false
+  Maður fer þangað ___.: false
+  Þetta er ___ sem er staðsett ___.: false
+  Fólk fer þangað ___ og ___.: false
+  Mér finnst þetta ___ vegna þess að ___.: false
+  Þetta er skóli. Maður lærir þar.: false
+  Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.: false
+  Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.: false
+  bolur/stuttermabolur: false
+  peysa: false
+  skyrta: false
+  buxur: false
+  pils: false
+  jakki: false
+  úlpa: false
+  sokkar: false
+  skór: false
+  húfa: false
+  hanskar: false
+  trefill: false
+  rauður/rauð/rautt: false
+  blár/blá/blátt: false
+  grænn/græn/grænt: false
+  gulur/gul/gult: false
+  svartur/svört/svart: false
+  hvítur/hvít/hvítt: false
+  bleikur/bleik/bleikt: false
+  brúnn/brún/brúnt: false
+  rauðir/rauðar: false
+  bláir/bláar: false
+  grænir/grænar: false
+  gulir/gular: false
+  svartir/svartar: false
+  hvítir/hvítar: false
+  bleikir/bleikar: false
+  brúnir/brúnar: false
+  úr ull: false
+  úr bómull: false
+  úr leðri: false
+  þegar rignir: false
+  við sérstök tilefni: false
+  á höfðinu: false
+  á efri hluta líkamans: false
+  á neðri hluta líkamans: false
+  á fótunum: false
+  á höndunum: false
+  bolur: false
+  blátt: false
+  svart: false
+  bleikt: false
+  mynstur: false
+  einlitt: false
+  til að hlýja sér: false
+  til að verja sig: false
+  til að líta vel út: false
+  til að líða vel: false
+  íþróttamenn: false
+  inni: false
+  í íþróttum: false
+  á hátíð: false
+  Maður klæðist því ___.: false
+  Þetta er ___ sem er ___. Maður notar það ___.: false
+  Það er ___ og hentar vel ___.: false
+  Þetta er úlpa. Hún er blá.: false
+  Þetta er peysa sem er rauð. Maður klæðist henni á veturna.: false
+  Þetta er jakki sem er úr leðri. Maður notar hann á veturna. Hann er svartur og hentar vel í kulda.: false

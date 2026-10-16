@@ -1,3 +1,4 @@
+import { Hlusta } from './Hlusta';
 import { Sheet } from './Sheet';
 import { Category, Level } from '../data/types';
 
@@ -33,6 +34,7 @@ export function SpjaldPreview({ category, level, view }: SpjaldPreviewProps) {
                     }}
                   >
                     {option}
+                    <Hlusta text={option} color={category.color} />
                   </span>
                 ))}
               </div>
@@ -61,7 +63,7 @@ export function SpjaldPreview({ category, level, view }: SpjaldPreviewProps) {
                   style={{ borderColor: category.color + '60' }}
                 >
                   <p className="text-lg font-semibold" style={{ color: category.color }}>
-                    {frame}
+                    {frame} <Hlusta text={frame} color={category.color} />
                   </p>
                 </div>
               ))}
@@ -70,7 +72,9 @@ export function SpjaldPreview({ category, level, view }: SpjaldPreviewProps) {
 
           <div className="mt-6 p-4 bg-gray-50 rounded-xl">
             <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Dæmi</p>
-            <p className="text-gray-700">{example}</p>
+            <p className="text-gray-700">
+              {example} {example && <Hlusta text={example} color={category.color} />}
+            </p>
           </div>
         </div>
       </Sheet>

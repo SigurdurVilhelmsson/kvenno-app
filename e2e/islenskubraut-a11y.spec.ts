@@ -66,6 +66,31 @@ test('the card page with its draft links has no WCAG AA violations', async ({ pa
   await expectNoViolations(page, 'tenglar dyr');
 });
 
+// The recordings, drafts included, which is the only way they play until approved (C15): every
+// tab of a card, at a phone's width, with a play button on its words and the clip served.
+test('the card page with its draft recordings has no WCAG AA violations', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto('/islenskubraut/spjald/klaednadur?drog');
+  for (const tab of ['Orðaforði', 'Setningarammar', 'Spurningaspjald']) {
+    await page.getByRole('tab', { name: tab }).click();
+    await expect(page.getByRole('button', { name: /^Hlusta: / }).first()).toBeVisible();
+    await expectNoViolations(page, `hljóð klaednadur ${tab}`);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+    );
+    expect(overflow, tab).toBeLessThanOrEqual(0);
+  }
+  const played = page.waitForRequest((r) =>
+    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3$/.test(r.url())
+  );
+  await page
+    .getByRole('button', { name: /^Hlusta: / })
+    .first()
+    .click();
+  const response = await (await played).response();
+  expect(response?.status()).toBe(200);
+});
+
 // The teachers' list of every builder, drafts included. Linked from nowhere on the site.
 test('the list of sentence builders has no WCAG AA violations', async ({ page }) => {
   await page.goto('/islenskubraut/smidur');
