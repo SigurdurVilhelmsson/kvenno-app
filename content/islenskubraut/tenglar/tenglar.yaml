@@ -27,6 +27,7 @@ links:
       # for places in town.
       stadir: https://nybildetema.oslomet.no/is/#/isl/hus-og-heimili
       klaednadur: https://nybildetema.oslomet.no/is/#/isl/fatnaður
+      skolinn: https://nybildetema.oslomet.no/is/#/isl/skoli
     approved: false
 
   - id: leikur-ad-ordum

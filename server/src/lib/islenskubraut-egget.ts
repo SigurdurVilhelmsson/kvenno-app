@@ -153,4 +153,27 @@ export const egget: Record<string, Egget> = {
       ],
     },
   },
+  skolinn: {
+    confirmed: false,
+    levels: {
+      A1: [
+        'Ég get sagt hvað hlutirnir í skólatöskunni heita.',
+        'Ég get skilið einföld fyrirmæli eins og „lestu“ og „skrifaðu“.',
+        'Ég get sagt hvar ég er í skólanum.',
+        'Ég get sagt í hvaða fagi ég er.',
+      ],
+      A2: [
+        'Ég get sagt hvað við lærum í hverju fagi.',
+        'Ég get skilið fyrirmælin í verkefni.',
+        'Ég get beðið um hjálp þegar ég skil ekki.',
+        'Ég get sagt hvað ég þarf að hafa með mér í tíma.',
+      ],
+      B1: [
+        'Ég get sagt frá því sem við lærðum í tímanum.',
+        'Ég get útskýrt hvers vegna eitthvað skiptir máli.',
+        'Ég get rökstutt skoðun mína.',
+        'Ég get notað námsorð eins og „áhrif“ og „breyting“.',
+      ],
+    },
+  },
 };

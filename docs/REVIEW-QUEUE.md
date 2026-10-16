@@ -480,14 +480,15 @@ rammanum.`
 
 ### C15. Recordings on the cards, "Hlustaðu" (2026-10-16)
 
-A play button beside every word, frame and worked example on the card page: 431 recordings,
+A play button beside every word, frame and worked example on the card page: 524 recordings,
 synthesised with Reykjavík University's Talrómur C voice (CC BY 4.0). **None plays for students
 until a person marks it `true`** in `content/islenskubraut/hljod/hljod.yaml`; add `?drog` to a card
 page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 
 - [ ] **Listen to the recordings** from the review page `pnpm islenskubraut:hljod` writes, and mark
-      each right one `true`. The page puts first the seven that a speech recogniser heard as
-      something else: `les`, `gogg`, `goggur`, `úr ull`, `feld`, `húfa`, `oddhvasst`. The
+      each right one `true`. The page puts first the eight that a speech recogniser heard as
+      something else: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`, `húfa`,
+      `oddhvasst`. The
       research estimated 3–5 hours for all of them.
 - [ ] **Is a synthetic voice acceptable for the cards at all?** If not, the same files can be
       recorded by a person under the same names, and the play buttons stay as they are.
@@ -566,6 +567,32 @@ an approved language is offered**; `?drog` shows drafts. Workflow:
       which the page already handles.
 - [ ] **The Icelandic, drafted by Claude:** the picker's label `Á þínu máli`, its first option
       `Bara íslenska`, and the link name `Orðabók: <orð>` that screen readers say.
+
+### C19. Skólinn, a seventh category (2026-10-16)
+
+`content/islenskubraut/skolinn.yaml` is the language of school, drafted by Claude: things in the
+school bag, subjects, instructions, where, who and when.
+
+- **A1** names things and follows simple instructions (`lestu`, `skrifaðu`).
+- **A2** adds task verbs (`lýstu`, `berðu saman`, `útskýrðu`) and asking for help.
+- **B1** frames follow WIDA's four key uses (recount, explain, argue, discuss). A B1-only
+  "Námsorð" question holds the twelve most frequent nouns, verbs and adjectives of LÍNO-2
+  (CC BY 4.0), in MÍNO order: `hluti`, `áhrif`, `breyting`, `mikilvægur`, `einstaklingur`,
+  `starf`, `auka`, `meðferð`, `heimild`, `greina`, `tengja`, `hugmynd`.
+
+**The category is a draft (`draft: true`)**: the home page leaves it out, its card works at
+`/islenskubraut/spjald/skolinn`, and `/islenskubraut/?drog` shows it in the grid. Its guessing
+game, talk-to-write text, can-do statements, pictogram search words, recordings and Polish glosses
+are drafts too, under C13–C18.
+
+- [ ] **Read the card at all three levels.** Are these the right things, places and subjects for
+      Kvennaskólinn? Is the list of instructions the one teachers actually use?
+- [ ] **Námsorð:** keep the top twelve by frequency, or pick twelve from LÍNO-2 by hand? Words
+      like `meðferð` and `heimild` are frequent across subjects but not obvious at B1. The
+      research suggested 30–50; twelve fit the printed card.
+- [ ] **BÍN does not know** `námsorð`, `verkefnablað` and `LÍNO` (in the B1 teacher note).
+      Accept them in `content/islenskubraut/bin/ekki-i-bin.yaml` with a reason, or reword.
+- [ ] **When it is right,** delete `draft: true` from `skolinn.yaml`, and the card joins the grid.
 
 ## D. Work that needs no ruling
 
@@ -916,3 +943,5 @@ Both fixed 2026-10-10 (PR for this branch).
         live with the builder (C9); the wording is C17.
   - [x] Item 8, a student's own language beside the chips (2026-10-16). Polish is drafted with a
         dictionary link; who checks it is C18.
+  - [x] Item 9, the Skólinn category (2026-10-16), a draft kept off the home page until it is
+        read (C19).

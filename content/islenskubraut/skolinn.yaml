@@ -1,0 +1,301 @@
+id: skolinn
+name: Skólinn
+icon: 🏫
+description: Orðaforði um skólann — hluti, staði, fög og fyrirmæli
+color: "#1D4ED8"
+draft: true
+subCategories:
+  - id: s1
+    name: Hlutir
+    options:
+      - bók
+      - penni
+      - blýantur
+      - tölva
+      - stílabók
+      - strokleður
+      - reglustika
+      - reiknivél
+      - taska
+  - id: s2
+    name: Staðir
+    options:
+      - skólastofa
+      - bókasafn
+      - matsalur
+      - íþróttasalur
+      - gangur
+      - skrifstofa
+  - id: s3
+    name: Fólk
+    options:
+      - kennari
+      - nemandi
+      - skólastjóri
+      - námsráðgjafi
+      - bekkjarfélagi
+  - id: s4
+    name: Fög
+    options:
+      - íslenska
+      - stærðfræði
+      - enska
+      - saga
+      - náttúrufræði
+      - íþróttir
+  - id: s5
+    name: Fyrirmæli
+    options:
+      - lestu
+      - skrifaðu
+      - hlustaðu
+      - svaraðu
+      - merktu við
+      - lýstu
+      - berðu saman
+      - útskýrðu
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er ___.
+      - Ég er ___.
+      - Við ___ í tímanum.
+      - "Kennarinn segir: ___!"
+  - id: f2
+    level: A2
+    frames:
+      - Í ___ lærum við að ___.
+      - Ég þarf ___ til að ___.
+      - Kennarinn biður okkur að ___.
+      - Ég skil ekki ___. Getur þú hjálpað mér?
+  - id: f3
+    level: B1
+    frames:
+      - Í dag lærðum við um ___.
+      - ___ skiptir máli vegna þess að ___.
+      - Ég er sammála/ósammála af því að ___.
+      - Hvað finnst þér um ___?
+examples:
+  A1: Þetta er bók. Ég er í skólastofunni. Við lesum í tímanum.
+  A2: Í stærðfræði lærum við að reikna. Ég þarf reiknivél til að reikna. Kennarinn biður okkur að svara.
+  B1: Í dag lærðum við um breytingar á loftslagi. Þær skipta máli vegna þess að þær hafa áhrif á alla. Hvað finnst þér um það?
+teacherNotes:
+  A1: Nemandi bendir á hluti og staði í skólanum og nefnir þá. Æfið fyrirmælin í raun, til dæmis með því að biðja nemandann að lesa eða skrifa.
+  A2: Nemandi segir hvað gert er í hverju fagi og skilur algeng fyrirmæli. Hvetjið nemandann til að biðja um hjálp með setningunni „Ég skil ekki …“.
+  B1: Rammarnir fylgja fjórum leiðum til að nota tungumálið í námi, að segja frá, útskýra, rökstyðja og ræða. Námsorðin koma úr LÍNO-2 og eru notuð í öllum fögum.
+guidingQuestions:
+  - id: q1
+    question: Hvað er í skólatöskunni?
+    icon: 🎒
+    label: Hlutir
+    answers:
+      A1:
+        - bók
+        - penni
+        - blýantur
+        - tölva
+      A2:
+        - bók
+        - penni
+        - blýantur
+        - tölva
+        - stílabók
+        - strokleður
+        - reglustika
+        - reiknivél
+      B1:
+        - bók
+        - penni
+        - blýantur
+        - tölva
+        - stílabók
+        - strokleður
+        - reglustika
+        - reiknivél
+        - kennslubók
+        - verkefnablað
+  - id: q2
+    question: Hvaða fag er þetta?
+    icon: 📚
+    label: Fög
+    answers:
+      A1:
+        - íslenska
+        - stærðfræði
+        - enska
+        - íþróttir
+      A2:
+        - íslenska
+        - stærðfræði
+        - enska
+        - íþróttir
+        - saga
+        - náttúrufræði
+        - listir
+        - danska
+      B1:
+        - íslenska
+        - stærðfræði
+        - enska
+        - íþróttir
+        - saga
+        - náttúrufræði
+        - listir
+        - danska
+        - félagsfræði
+        - efnafræði
+  - id: q3
+    question: Hvað á ég að gera?
+    icon: ✏️
+    label: Fyrirmæli
+    answers:
+      A1:
+        - lestu
+        - skrifaðu
+        - hlustaðu
+        - svaraðu
+      A2:
+        - lestu
+        - skrifaðu
+        - hlustaðu
+        - svaraðu
+        - merktu við
+        - lýstu
+        - berðu saman
+        - útskýrðu
+      B1:
+        - lestu
+        - skrifaðu
+        - hlustaðu
+        - svaraðu
+        - merktu við
+        - lýstu
+        - berðu saman
+        - útskýrðu
+        - rökstyddu
+        - dragðu saman
+        - greindu
+  - id: q4
+    question: Hvaða námsorð notum við?
+    icon: 🔤
+    label: Námsorð
+    answers:
+      B1:
+        - hluti
+        - áhrif
+        - breyting
+        - mikilvægur
+        - einstaklingur
+        - starf
+        - auka
+        - meðferð
+        - heimild
+        - greina
+        - tengja
+        - hugmynd
+  - id: q5
+    question: Hvað gerum við í tímanum?
+    icon: 🎯
+    context: notagildi
+    answers:
+      A1:
+        - lesum
+        - skrifum
+        - hlustum
+        - tölum
+        - reiknum
+      A2:
+        - lesum
+        - skrifum
+        - hlustum
+        - tölum
+        - reiknum
+        - svörum
+        - spyrjum
+        - vinnum saman
+      B1:
+        - lesum
+        - skrifum
+        - hlustum
+        - tölum
+        - reiknum
+        - svörum
+        - spyrjum
+        - vinnum saman
+        - ræðum
+        - kynnum
+  - id: q6
+    question: Hver hjálpar?
+    icon: 👥
+    context: hver
+    answers:
+      A1:
+        - kennari
+        - nemandi
+        - vinur
+      A2:
+        - kennari
+        - nemandi
+        - vinur
+        - skólastjóri
+        - námsráðgjafi
+        - bekkjarfélagi
+      B1:
+        - kennari
+        - nemandi
+        - vinur
+        - skólastjóri
+        - námsráðgjafi
+        - bekkjarfélagi
+        - umsjónarkennari
+        - túlkur
+  - id: q7
+    question: Hvar í skólanum?
+    icon: 📍
+    context: hvar
+    answers:
+      A1:
+        - í skólastofunni
+        - á bókasafninu
+        - í íþróttasalnum
+      A2:
+        - í skólastofunni
+        - á bókasafninu
+        - í íþróttasalnum
+        - í matsalnum
+        - á ganginum
+        - á skrifstofunni
+      B1:
+        - í skólastofunni
+        - á bókasafninu
+        - í íþróttasalnum
+        - í matsalnum
+        - á ganginum
+        - á skrifstofunni
+        - hjá námsráðgjafa
+  - id: q8
+    question: Hvenær?
+    icon: 🕐
+    context: hvenaer
+    answers:
+      A1:
+        - á morgnana
+        - í frímínútum
+        - eftir skóla
+      A2:
+        - á morgnana
+        - í frímínútum
+        - eftir skóla
+        - í hádeginu
+        - á mánudögum
+        - í prófinu
+      B1:
+        - á morgnana
+        - í frímínútum
+        - eftir skóla
+        - í hádeginu
+        - á mánudögum
+        - í prófinu
+        - fyrir próf
+        - í lok annar

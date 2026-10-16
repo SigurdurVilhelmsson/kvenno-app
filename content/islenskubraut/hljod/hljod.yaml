@@ -437,3 +437,96 @@ clips:
   Þetta er úlpa. Hún er blá.: false
   Þetta er peysa sem er rauð. Maður klæðist henni á veturna.: false
   Þetta er jakki sem er úr leðri. Maður notar hann á veturna. Hann er svartur og hentar vel í kulda.: false
+  bók: false
+  penni: false
+  blýantur: false
+  tölva: false
+  stílabók: false
+  strokleður: false
+  reglustika: false
+  reiknivél: false
+  taska: false
+  skólastofa: false
+  matsalur: false
+  íþróttasalur: false
+  gangur: false
+  skrifstofa: false
+  skólastjóri: false
+  námsráðgjafi: false
+  bekkjarfélagi: false
+  íslenska: false
+  stærðfræði: false
+  enska: false
+  saga: false
+  náttúrufræði: false
+  íþróttir: false
+  lestu: false
+  skrifaðu: false
+  hlustaðu: false
+  svaraðu: false
+  merktu við: false
+  lýstu: false
+  berðu saman: false
+  útskýrðu: false
+  kennslubók: false
+  verkefnablað: false
+  listir: false
+  danska: false
+  félagsfræði: false
+  efnafræði: false
+  rökstyddu: false
+  dragðu saman: false
+  greindu: false
+  hluti: false
+  áhrif: false
+  breyting: false
+  mikilvægur: false
+  einstaklingur: false
+  starf: false
+  auka: false
+  meðferð: false
+  heimild: false
+  greina: false
+  tengja: false
+  hugmynd: false
+  lesum: false
+  skrifum: false
+  hlustum: false
+  tölum: false
+  reiknum: false
+  svörum: false
+  spyrjum: false
+  vinnum saman: false
+  ræðum: false
+  kynnum: false
+  vinur: false
+  umsjónarkennari: false
+  túlkur: false
+  í skólastofunni: false
+  á bókasafninu: false
+  í íþróttasalnum: false
+  í matsalnum: false
+  á ganginum: false
+  á skrifstofunni: false
+  hjá námsráðgjafa: false
+  í frímínútum: false
+  eftir skóla: false
+  í hádeginu: false
+  á mánudögum: false
+  í prófinu: false
+  fyrir próf: false
+  í lok annar: false
+  Ég er ___.: false
+  Við ___ í tímanum.: false
+  "Kennarinn segir: ___!": false
+  Í ___ lærum við að ___.: false
+  Ég þarf ___ til að ___.: false
+  Kennarinn biður okkur að ___.: false
+  Ég skil ekki ___. Getur þú hjálpað mér?: false
+  Í dag lærðum við um ___.: false
+  ___ skiptir máli vegna þess að ___.: false
+  Ég er sammála/ósammála af því að ___.: false
+  Hvað finnst þér um ___?: false
+  Þetta er bók. Ég er í skólastofunni. Við lesum í tímanum.: false
+  Í stærðfræði lærum við að reikna. Ég þarf reiknivél til að reikna. Kennarinn biður okkur að svara.: false
+  Í dag lærðum við um breytingar á loftslagi. Þær skipta máli vegna þess að þær hafa áhrif á alla. Hvað finnst þér um það?: false

@@ -79,6 +79,8 @@ export interface Category {
   icon: string;
   description: string;
   color: string;
+  /** A teacher has not read the card yet; the home page leaves it out, except under `?drog`. */
+  draft?: boolean;
   subCategories: SubCategory[];
   sentenceFrames: SentenceFrame[];
   examples: LevelText[];

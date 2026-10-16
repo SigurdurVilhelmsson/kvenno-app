@@ -25,4 +25,7 @@ export const giskaleikur: Record<string, { confirmed: boolean }> = {
   klaednadur: {
     confirmed: false,
   },
+  skolinn: {
+    confirmed: false,
+  },
 };

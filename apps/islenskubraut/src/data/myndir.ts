@@ -16,6 +16,7 @@ export const myndir: Record<string, Record<string, number>> = {
   manneskja: {},
   stadir: {},
   klaednadur: {},
+  skolinn: {},
 };
 
 export const ARASAAC_CREDIT =

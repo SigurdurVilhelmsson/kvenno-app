@@ -11,6 +11,8 @@ import { test, expect, type Page } from '@playwright/test';
  */
 
 const CATEGORIES = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur'];
+// Every card page, the draft Skólinn included (REVIEW-QUEUE C19). It has no sentence builder.
+const CARDS = [...CATEGORIES, 'skolinn'];
 const TABS = ['Spurningaspjald', 'Orðaforði', 'Setningarammar'];
 
 async function expectNoViolations(page: Page, where: string) {
@@ -35,7 +37,7 @@ test('the home page has no WCAG AA violations', async ({ page }) => {
   await expectNoViolations(page, 'heim');
 });
 
-for (const id of CATEGORIES) {
+for (const id of CARDS) {
   test(`every tab of ${id} has no WCAG AA violations`, async ({ page }) => {
     await page.goto(`/islenskubraut/spjald/${id}`);
     for (const tab of TABS) {
@@ -109,6 +111,16 @@ test('the card page with a draft language has no WCAG AA violations', async ({ p
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
+// A draft category is left off the home page, and shown there under ?drog (C19).
+test('the home page leaves out a draft category except under ?drog', async ({ page }) => {
+  await page.goto('/islenskubraut/');
+  await expect(page.getByRole('link', { name: /Dýr/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Skólinn/ })).toHaveCount(0);
+  await page.goto('/islenskubraut/?drog');
+  await expect(page.getByRole('link', { name: /Skólinn/ })).toBeVisible();
+  await expectNoViolations(page, 'heimasíða með drögum');
+});
+
 // The teachers' list of every builder, drafts included. Linked from nowhere on the site.
 test('the list of sentence builders has no WCAG AA violations', async ({ page }) => {
   await page.goto('/islenskubraut/smidur');
@@ -121,7 +133,7 @@ test('the list of sentence builders has no WCAG AA violations', async ({ page })
 // 2026-10-16, on every card, so every card and its draft links are checked.
 test('the card pages do not scroll sideways at 360 px', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
-  for (const id of CATEGORIES) {
+  for (const id of CARDS) {
     await page.goto(`/islenskubraut/spjald/${id}?drog`);
     await expect(page.locator('h1')).toBeVisible();
     const overflow = await page.evaluate(

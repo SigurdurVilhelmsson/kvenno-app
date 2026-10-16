@@ -160,6 +160,31 @@ words:
   á kvöldin: { search: evening }
   alltaf: { search: always }
 
+  # Skólinn (draft category, REVIEW-QUEUE C19)
+  bók: { search: book }
+  penni: { search: pen }
+  blýantur: { search: pencil }
+  tölva: { search: computer }
+  íslenska: { search: Icelandic language }
+  stærðfræði: { search: mathematics }
+  enska: { search: English language }
+  íþróttir: { search: physical education }
+  lestu: { search: read }
+  skrifaðu: { search: write }
+  hlustaðu: { search: listen }
+  svaraðu: { search: answer }
+  lesum: { search: read }
+  skrifum: { search: write }
+  hlustum: { search: listen }
+  tölum: { search: talk }
+  reiknum: { search: calculate }
+  vinur: { search: friend }
+  í skólastofunni: { search: classroom }
+  á bókasafninu: { search: library }
+  í íþróttasalnum: { search: gym }
+  í frímínútum: { search: break time }
+  eftir skóla: { search: after school }
+
 categories:
   stadir:
     # On Staðir these describe a building's height, not a sound.

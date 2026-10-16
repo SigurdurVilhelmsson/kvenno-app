@@ -8,7 +8,7 @@ describe('generated modules', () => {
     expect(serverCategories).toEqual(spaCategories);
   });
 
-  it('still ship all six categories in taught order', () => {
+  it('still ship all seven categories in taught order, Skólinn last and a draft', () => {
     expect(spaCategories.map((c) => c.id)).toEqual([
       'dyr',
       'matur',
@@ -16,7 +16,9 @@ describe('generated modules', () => {
       'manneskja',
       'stadir',
       'klaednadur',
+      'skolinn',
     ]);
+    expect(spaCategories.filter((c) => c.draft).map((c) => c.id)).toEqual(['skolinn']);
   });
 
   it('carry the corrected strings from the August fix', () => {

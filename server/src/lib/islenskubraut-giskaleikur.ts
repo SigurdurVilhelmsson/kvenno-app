@@ -4403,4 +4403,444 @@ export const giskaleikur: Record<string, Giskaleikur> = {
       ],
     },
   },
+  skolinn: {
+    confirmed: false,
+    levels: {
+      A1: [
+        {
+          name: 'íslenska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'penni'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'skrifum', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni', 'á bókasafninu'],
+            },
+          ],
+        },
+        {
+          name: 'stærðfræði',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['blýantur', 'tölva'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['reiknum', 'skrifum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'enska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'tölva'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'hlustum', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'íþróttir',
+          answers: [
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['hlustum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari', 'vinur'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í íþróttasalnum'],
+            },
+          ],
+        },
+      ],
+      A2: [
+        {
+          name: 'íslenska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'penni', 'stílabók'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'skrifum', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni', 'á bókasafninu'],
+            },
+          ],
+        },
+        {
+          name: 'stærðfræði',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['blýantur', 'tölva', 'reiknivél', 'reglustika'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['reiknum', 'skrifum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'enska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'tölva'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'hlustum', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'íþróttir',
+          answers: [
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['hlustum', 'vinnum saman'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari', 'vinur'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í íþróttasalnum'],
+            },
+          ],
+        },
+        {
+          name: 'saga',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'skrifum', 'spyrjum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['á bókasafninu'],
+            },
+          ],
+        },
+        {
+          name: 'náttúrufræði',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['tölva'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'spyrjum', 'vinnum saman'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'listir',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['blýantur', 'penni'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['vinnum saman', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari', 'vinur'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'danska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'stílabók'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'hlustum', 'svörum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+      ],
+      B1: [
+        {
+          name: 'íslenska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'penni', 'stílabók'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'skrifum', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni', 'á bókasafninu'],
+            },
+          ],
+        },
+        {
+          name: 'stærðfræði',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['blýantur', 'tölva', 'reiknivél', 'reglustika'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['reiknum', 'skrifum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'enska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'tölva'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'hlustum', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'íþróttir',
+          answers: [
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['hlustum', 'vinnum saman'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari', 'vinur'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í íþróttasalnum'],
+            },
+          ],
+        },
+        {
+          name: 'saga',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'kennslubók'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'skrifum', 'spyrjum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['á bókasafninu'],
+            },
+          ],
+        },
+        {
+          name: 'náttúrufræði',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['tölva', 'verkefnablað'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'spyrjum', 'vinnum saman'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'listir',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['blýantur', 'penni'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['vinnum saman', 'tölum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari', 'vinur'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'danska',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['bók', 'stílabók'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['lesum', 'hlustum', 'svörum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+        {
+          name: 'félagsfræði',
+          answers: [
+            {
+              question: 'Hvað er í skólatöskunni?',
+              chips: ['kennslubók', 'tölva'],
+            },
+            {
+              question: 'Hvað gerum við í tímanum?',
+              chips: ['ræðum', 'lesum', 'kynnum'],
+            },
+            {
+              question: 'Hver hjálpar?',
+              chips: ['kennari'],
+            },
+            {
+              question: 'Hvar í skólanum?',
+              chips: ['í skólastofunni'],
+            },
+          ],
+        },
+      ],
+    },
+  },
 };

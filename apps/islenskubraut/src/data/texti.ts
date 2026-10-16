@@ -25,4 +25,7 @@ export const texti: Record<string, { confirmed: boolean }> = {
   klaednadur: {
     confirmed: false,
   },
+  skolinn: {
+    confirmed: false,
+  },
 };

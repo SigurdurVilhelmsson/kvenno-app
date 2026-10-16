@@ -132,6 +132,14 @@ export function SpjaldPage() {
           <h1 className="font-heading text-2xl font-bold">{category.name}</h1>
         </div>
         <p className="text-warm-600">{category.description}</p>
+        {category.draft && (
+          <p
+            role="note"
+            className="mt-4 rounded-xl border border-warm-300 bg-warm-100 px-4 py-3 text-sm text-warm-800"
+          >
+            Drög: kennari hefur ekki enn farið yfir þetta spjald.
+          </p>
+        )}
       </div>
 
       {/* Level selector */}

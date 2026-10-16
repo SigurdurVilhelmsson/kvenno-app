@@ -1731,4 +1731,295 @@ export const texti: Record<string, Texti> = {
       },
     },
   },
+  skolinn: {
+    confirmed: false,
+    levels: {
+      A1: {
+        genre: 'Lýsing',
+        stages: [
+          {
+            name: 'Hvar er ég?',
+            parts: [
+              {
+                text: 'Þetta er skólinn minn. Ég er ',
+              },
+              {
+                gap: 'í skólastofunni',
+              },
+              {
+                text: '.',
+              },
+            ],
+          },
+          {
+            name: 'Hlutir',
+            parts: [
+              {
+                text: 'Ég er með ',
+              },
+              {
+                gap: 'bók',
+              },
+              {
+                text: ', ',
+              },
+              {
+                gap: 'penna',
+              },
+              {
+                text: ' og ',
+              },
+              {
+                gap: 'blýant',
+              },
+              {
+                text: '.',
+              },
+            ],
+          },
+          {
+            name: 'Í tímanum',
+            parts: [
+              {
+                text: 'Við ',
+              },
+              {
+                gap: 'lesum',
+              },
+              {
+                text: ' og ',
+              },
+              {
+                gap: 'skrifum',
+              },
+              {
+                text: ' ',
+              },
+              {
+                gap: 'á morgnana',
+              },
+              {
+                text: '. ',
+              },
+              {
+                gap: 'Kennarinn',
+              },
+              {
+                text: ' hjálpar okkur.',
+              },
+            ],
+          },
+        ],
+        bank: [
+          'á morgnana',
+          'blýant',
+          'bók',
+          'í skólastofunni',
+          'kennarinn',
+          'lesum',
+          'penna',
+          'skrifum',
+        ],
+      },
+      A2: {
+        genre: 'Lýsing',
+        stages: [
+          {
+            name: 'Dagurinn',
+            parts: [
+              {
+                text: 'Skólinn byrjar ',
+              },
+              {
+                gap: 'á morgnana',
+              },
+              {
+                text: '. Fyrsti tíminn er ',
+              },
+              {
+                gap: 'stærðfræði',
+              },
+              {
+                text: '.',
+              },
+            ],
+          },
+          {
+            name: 'Í tímanum',
+            parts: [
+              {
+                text: 'Í stærðfræði ',
+              },
+              {
+                gap: 'reiknum',
+              },
+              {
+                text: ' við og ',
+              },
+              {
+                gap: 'vinnum saman',
+              },
+              {
+                text: '. Ég þarf ',
+              },
+              {
+                gap: 'reiknivél',
+              },
+              {
+                text: ' og ',
+              },
+              {
+                gap: 'reglustiku',
+              },
+              {
+                text: '.',
+              },
+            ],
+          },
+          {
+            name: 'Í frímínútum',
+            parts: [
+              {
+                gap: 'Í frímínútum',
+              },
+              {
+                text: ' ',
+              },
+              {
+                gap: 'tölum',
+              },
+              {
+                text: ' við saman ',
+              },
+              {
+                gap: 'á ganginum',
+              },
+              {
+                text: '. ',
+              },
+              {
+                gap: 'Eftir skóla',
+              },
+              {
+                text: ' fer ég á bókasafnið.',
+              },
+            ],
+          },
+        ],
+        bank: [
+          'á ganginum',
+          'á morgnana',
+          'eftir skóla',
+          'í frímínútum',
+          'reglustiku',
+          'reiknivél',
+          'reiknum',
+          'stærðfræði',
+          'tölum',
+          'vinnum saman',
+        ],
+      },
+      B1: {
+        genre: 'Frásögn',
+        stages: [
+          {
+            name: 'Inngangur',
+            parts: [
+              {
+                text: 'Í dag lærðum við um ',
+              },
+              {
+                gap: 'breytingar',
+              },
+              {
+                text: ' á loftslagi í ',
+              },
+              {
+                gap: 'náttúrufræði',
+              },
+              {
+                text: '.',
+              },
+            ],
+          },
+          {
+            name: 'Atburðir',
+            parts: [
+              {
+                text: 'Fyrst ',
+              },
+              {
+                gap: 'lásum',
+              },
+              {
+                text: ' við texta í ',
+              },
+              {
+                gap: 'kennslubókinni',
+              },
+              {
+                text: ' og ',
+              },
+              {
+                gap: 'greindum',
+              },
+              {
+                text: ' helstu ',
+              },
+              {
+                gap: 'hugmyndir',
+              },
+              {
+                text: ' hans. Síðan unnum við saman í hópum og bárum saman ',
+              },
+              {
+                gap: 'heimildir',
+              },
+              {
+                text: '.',
+              },
+            ],
+          },
+          {
+            name: 'Niðurlag',
+            parts: [
+              {
+                text: 'Í lokin ',
+              },
+              {
+                gap: 'kynntum',
+              },
+              {
+                text: ' við niðurstöður okkar. Mér fannst verkefnið ',
+              },
+              {
+                gap: 'mikilvægt',
+              },
+              {
+                text: ' vegna þess að loftslagið hefur ',
+              },
+              {
+                gap: 'áhrif',
+              },
+              {
+                text: ' á alla.',
+              },
+            ],
+          },
+        ],
+        bank: [
+          'áhrif',
+          'breytingar',
+          'greindum',
+          'heimildir',
+          'hugmyndir',
+          'kennslubókinni',
+          'kynntum',
+          'lásum',
+          'mikilvægt',
+          'náttúrufræði',
+        ],
+      },
+    },
+  },
 };

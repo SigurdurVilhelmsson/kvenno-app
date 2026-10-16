@@ -36,11 +36,11 @@ in `hljod.yaml` beside each one that is right. Then run `pnpm islenskubraut:buil
 The page is sorted by a speech recogniser's reading, where one has been run (see below). It
 transcribed each recording back, and the page shows what it heard. A high score means the
 recogniser heard something else. That is not proof the recording is wrong, but listen to those
-first. On the first run (2026-10-16) the median score was 0, and seven of 431 scored over 20 %:
+first. On 2026-10-16 the median score was 0, and eight of 524 scored over 20 %:
 
 - `les` (heard `e`)
 - `gogg` and `goggur` (heard `gok` and `bokur`)
-- `úr ull` (heard `sú rull`)
+- `úr ull` (heard `sú rull`) and `reglustika` (heard `reglu slíka`)
 - `feld`, `húfa` and `oddhvasst`
 
 **If a recording is wrong,** delete its file from `apps/islenskubraut/public/hljod/` and make it
@@ -74,7 +74,7 @@ It also needs `ffmpeg` for the MP3s. The versions are pinned because the tools a
 - **`pip<24.1`:** fairseq's `omegaconf` has metadata that newer pips refuse.
 - **`scipy<1.13`:** the vocoder imports a function that SciPy 1.13 removed.
 
-The voice downloads itself from Hugging Face on the first run. All 431 recordings took under five
+The voice downloads itself from Hugging Face on the first run. The first 431 recordings took under five
 minutes on a laptop-class CPU.
 
 To sort the review page by the recogniser's reading, run this in the same environment:

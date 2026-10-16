@@ -1746,4 +1746,378 @@ export const hljod: Record<string, Hljod> = {
       file: '41f1f95f304b15dd.mp3',
       approved: false,
     },
+  bók: {
+    file: '0253c3d11a009b41.mp3',
+    approved: false,
+  },
+  penni: {
+    file: 'db44efcb22dded32.mp3',
+    approved: false,
+  },
+  blýantur: {
+    file: 'f3cef931c7be84b2.mp3',
+    approved: false,
+  },
+  tölva: {
+    file: '141742b5b991038b.mp3',
+    approved: false,
+  },
+  stílabók: {
+    file: '4e4c6a03fde0c355.mp3',
+    approved: false,
+  },
+  strokleður: {
+    file: 'bd6e38796420f6f7.mp3',
+    approved: false,
+  },
+  reglustika: {
+    file: '95bb7dd990d42c4b.mp3',
+    approved: false,
+  },
+  reiknivél: {
+    file: '1865a628e19d9a4b.mp3',
+    approved: false,
+  },
+  taska: {
+    file: '3151851e02cc9209.mp3',
+    approved: false,
+  },
+  skólastofa: {
+    file: '5b8d6254bb0382c8.mp3',
+    approved: false,
+  },
+  matsalur: {
+    file: '275a49b185bfb0d2.mp3',
+    approved: false,
+  },
+  íþróttasalur: {
+    file: 'b3fcb3060b5ea606.mp3',
+    approved: false,
+  },
+  gangur: {
+    file: '9449920947bb8235.mp3',
+    approved: false,
+  },
+  skrifstofa: {
+    file: '03a0f667c67d9106.mp3',
+    approved: false,
+  },
+  skólastjóri: {
+    file: '1829fbab12ce9bb6.mp3',
+    approved: false,
+  },
+  námsráðgjafi: {
+    file: '4d35f93220bffd64.mp3',
+    approved: false,
+  },
+  bekkjarfélagi: {
+    file: '3ff5f695a3e089a7.mp3',
+    approved: false,
+  },
+  íslenska: {
+    file: 'f2af59cd2f25aa54.mp3',
+    approved: false,
+  },
+  stærðfræði: {
+    file: 'e513fc399641a47c.mp3',
+    approved: false,
+  },
+  enska: {
+    file: '4d9826fd3e60a5b1.mp3',
+    approved: false,
+  },
+  saga: {
+    file: '936fccfc8fe9a540.mp3',
+    approved: false,
+  },
+  náttúrufræði: {
+    file: '57cb42d24d31d646.mp3',
+    approved: false,
+  },
+  íþróttir: {
+    file: '377e8822becba2cc.mp3',
+    approved: false,
+  },
+  lestu: {
+    file: 'f699a9df92872b86.mp3',
+    approved: false,
+  },
+  skrifaðu: {
+    file: '6df9ae9dbc8130d2.mp3',
+    approved: false,
+  },
+  hlustaðu: {
+    file: '0381a8ec6ddc1f31.mp3',
+    approved: false,
+  },
+  svaraðu: {
+    file: 'e5bf3bd13ff4f91c.mp3',
+    approved: false,
+  },
+  'merktu við': {
+    file: '97e5304b6bd0e568.mp3',
+    approved: false,
+  },
+  lýstu: {
+    file: 'c95a95e63bdcf837.mp3',
+    approved: false,
+  },
+  'berðu saman': {
+    file: 'bd1335a7af904b30.mp3',
+    approved: false,
+  },
+  útskýrðu: {
+    file: '906eb5888b9591d2.mp3',
+    approved: false,
+  },
+  kennslubók: {
+    file: 'e42640a936eb8f18.mp3',
+    approved: false,
+  },
+  verkefnablað: {
+    file: 'ef31b2f8a35b7d8a.mp3',
+    approved: false,
+  },
+  listir: {
+    file: '2fce83ea2cc06128.mp3',
+    approved: false,
+  },
+  danska: {
+    file: '4579b81fa84c7700.mp3',
+    approved: false,
+  },
+  félagsfræði: {
+    file: 'c60db1cc8401a13a.mp3',
+    approved: false,
+  },
+  efnafræði: {
+    file: '73f95e222aae710e.mp3',
+    approved: false,
+  },
+  rökstyddu: {
+    file: '7b3a27ce1d847c08.mp3',
+    approved: false,
+  },
+  'dragðu saman': {
+    file: 'd2d21cb4da5fb5d5.mp3',
+    approved: false,
+  },
+  greindu: {
+    file: '8d6652ed657b341e.mp3',
+    approved: false,
+  },
+  hluti: {
+    file: 'af784fa16e3a454f.mp3',
+    approved: false,
+  },
+  áhrif: {
+    file: '698b5537756c0797.mp3',
+    approved: false,
+  },
+  breyting: {
+    file: 'd0c60eb4ed7a99fb.mp3',
+    approved: false,
+  },
+  mikilvægur: {
+    file: '22c92e2966109438.mp3',
+    approved: false,
+  },
+  einstaklingur: {
+    file: 'fcffc6be2e87a72c.mp3',
+    approved: false,
+  },
+  starf: {
+    file: '88b971bd1bdc3571.mp3',
+    approved: false,
+  },
+  auka: {
+    file: 'b140b2416ae36d44.mp3',
+    approved: false,
+  },
+  meðferð: {
+    file: 'c7ac26f026526c3f.mp3',
+    approved: false,
+  },
+  heimild: {
+    file: '73ae2568d784ccb6.mp3',
+    approved: false,
+  },
+  greina: {
+    file: '2bfbaf1660b7f1ed.mp3',
+    approved: false,
+  },
+  tengja: {
+    file: 'a5364b65194238bf.mp3',
+    approved: false,
+  },
+  hugmynd: {
+    file: '5341f979870a093d.mp3',
+    approved: false,
+  },
+  lesum: {
+    file: '5701968d1fd98284.mp3',
+    approved: false,
+  },
+  skrifum: {
+    file: 'e8a04790250b1a0b.mp3',
+    approved: false,
+  },
+  hlustum: {
+    file: 'd27e879f6a5e2c81.mp3',
+    approved: false,
+  },
+  tölum: {
+    file: 'a46e949cb5cfeab2.mp3',
+    approved: false,
+  },
+  reiknum: {
+    file: '12292d33d468607e.mp3',
+    approved: false,
+  },
+  svörum: {
+    file: 'd779bf34a1674307.mp3',
+    approved: false,
+  },
+  spyrjum: {
+    file: '1a6cc2cc96de47f0.mp3',
+    approved: false,
+  },
+  'vinnum saman': {
+    file: 'ee45f1822ce4cf29.mp3',
+    approved: false,
+  },
+  ræðum: {
+    file: '03e11a619ba0b20e.mp3',
+    approved: false,
+  },
+  kynnum: {
+    file: '0782b1f5650824a9.mp3',
+    approved: false,
+  },
+  vinur: {
+    file: '8ce639fdb829defb.mp3',
+    approved: false,
+  },
+  umsjónarkennari: {
+    file: '1277f3027194613a.mp3',
+    approved: false,
+  },
+  túlkur: {
+    file: '1ed4ce5994abe49e.mp3',
+    approved: false,
+  },
+  'í skólastofunni': {
+    file: '349612218ed5a070.mp3',
+    approved: false,
+  },
+  'á bókasafninu': {
+    file: '2af2ce897ca7ee93.mp3',
+    approved: false,
+  },
+  'í íþróttasalnum': {
+    file: 'e97fb98464baa62e.mp3',
+    approved: false,
+  },
+  'í matsalnum': {
+    file: '92054d4a8adfb2ec.mp3',
+    approved: false,
+  },
+  'á ganginum': {
+    file: '8cdce37b7a35a152.mp3',
+    approved: false,
+  },
+  'á skrifstofunni': {
+    file: '59efd4cfc5cc387b.mp3',
+    approved: false,
+  },
+  'hjá námsráðgjafa': {
+    file: '0a8eeb180d8174ae.mp3',
+    approved: false,
+  },
+  'í frímínútum': {
+    file: '5643e1d70464868b.mp3',
+    approved: false,
+  },
+  'eftir skóla': {
+    file: '87cfced016b2d810.mp3',
+    approved: false,
+  },
+  'í hádeginu': {
+    file: '007496ded6c36588.mp3',
+    approved: false,
+  },
+  'á mánudögum': {
+    file: '30b91b2a0d857a8d.mp3',
+    approved: false,
+  },
+  'í prófinu': {
+    file: 'd5c3c93ffa4239da.mp3',
+    approved: false,
+  },
+  'fyrir próf': {
+    file: '6872cc1e9f0d5f1f.mp3',
+    approved: false,
+  },
+  'í lok annar': {
+    file: 'fca5a844e4f3f752.mp3',
+    approved: false,
+  },
+  'Ég er ___.': {
+    file: 'c5c84992c8d83eac.mp3',
+    approved: false,
+  },
+  'Við ___ í tímanum.': {
+    file: 'eb1ed98c2c301ebc.mp3',
+    approved: false,
+  },
+  'Kennarinn segir: ___!': {
+    file: 'cc9c879502d069a0.mp3',
+    approved: false,
+  },
+  'Í ___ lærum við að ___.': {
+    file: '20ce928a7393e6aa.mp3',
+    approved: false,
+  },
+  'Ég þarf ___ til að ___.': {
+    file: '92d334618a6ea644.mp3',
+    approved: false,
+  },
+  'Kennarinn biður okkur að ___.': {
+    file: '3e0a03d1b3f7266f.mp3',
+    approved: false,
+  },
+  'Ég skil ekki ___. Getur þú hjálpað mér?': {
+    file: '6ae11221a80e6af0.mp3',
+    approved: false,
+  },
+  'Í dag lærðum við um ___.': {
+    file: '6cc6c41a24b20fbb.mp3',
+    approved: false,
+  },
+  '___ skiptir máli vegna þess að ___.': {
+    file: 'f48ac25cd9907151.mp3',
+    approved: false,
+  },
+  'Ég er sammála/ósammála af því að ___.': {
+    file: '12f320b091d4888a.mp3',
+    approved: false,
+  },
+  'Hvað finnst þér um ___?': {
+    file: '0f4c53815ca42310.mp3',
+    approved: false,
+  },
+  'Þetta er bók. Ég er í skólastofunni. Við lesum í tímanum.': {
+    file: '16bd51157bb56809.mp3',
+    approved: false,
+  },
+  'Í stærðfræði lærum við að reikna. Ég þarf reiknivél til að reikna. Kennarinn biður okkur að svara.':
+    {
+      file: 'f09399a86c0162d5.mp3',
+      approved: false,
+    },
+  'Í dag lærðum við um breytingar á loftslagi. Þær skipta máli vegna þess að þær hafa áhrif á alla. Hvað finnst þér um það?':
+    {
+      file: '74f185e2260b737b.mp3',
+      approved: false,
+    },
 };

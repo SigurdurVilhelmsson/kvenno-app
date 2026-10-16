@@ -1,9 +1,16 @@
+import { useSearchParams } from 'react-router-dom';
+
 import { Container } from '@kvenno/shared/components';
 
 import { CategoryCard } from '../components/CategoryCard';
 import { categories } from '../data';
 
 export function Home() {
+  // A new category stays off the grid until a teacher has read it (`draft:` in its YAML); its
+  // page works at its address, and `?drog` shows it here.
+  const [searchParams] = useSearchParams();
+  const drafts = searchParams.has('drog');
+  const shown = categories.filter((c) => !c.draft || drafts);
   return (
     <Container className="py-10 sm:py-16">
       {/* Hero section */}
@@ -45,7 +52,7 @@ export function Home() {
       {/* Category grid. Rows are added as needed and share one height, so a seventh
           category starts a new row instead of overflowing a fixed three-by-two grid. */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 sm:auto-rows-fr gap-6">
-        {categories.map((category) => (
+        {shown.map((category) => (
           <CategoryCard key={category.id} category={category} />
         ))}
       </div>

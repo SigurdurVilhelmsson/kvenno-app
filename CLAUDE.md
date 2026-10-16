@@ -70,7 +70,7 @@ pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags mak
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
-pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs, word lists, guessing games, talk-to-write and
+pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
                           #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
                           #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
                           #   not 2, or a word list or talk-to-write sheet that is not 1)
@@ -210,12 +210,12 @@ dist/
 └── islenskubraut/
     ├── index.html                     # Íslenskubraut SPA
     ├── assets/
-    └── spjold/spjald-*.pdf            # The 18 teaching cards, rendered at build time
-        spjold/ordalisti-*.pdf         # The 18 word lists beside them, one page each
-        spjold/giskaleikur-*.pdf       # The 18 guessing games, two pages each
-        spjold/texti-*.pdf             # The 18 talk-to-write sheets, one page each
-        spjold/egget-*.pdf             # The 18 can-do sheets: student strips, class checklist
-    └── hljod/*.mp3                    # The 431 recordings, played only once approved
+    └── spjold/spjald-*.pdf            # The 21 teaching cards, rendered at build time
+        spjold/ordalisti-*.pdf         # The 21 word lists beside them, one page each
+        spjold/giskaleikur-*.pdf       # The 21 guessing games, two pages each
+        spjold/texti-*.pdf             # The 21 talk-to-write sheets, one page each
+        spjold/egget-*.pdf             # The 21 can-do sheets: student strips, class checklist
+    └── hljod/*.mp3                    # The 524 recordings, played only once approved
 ```
 
 Plus `server/dist/` — the compiled Express backend, emitted outside `dist/` by `pnpm build`
@@ -494,7 +494,7 @@ games were migrated; the design's Outcome section has the before→after per gam
 
 ### Íslenskubraut content
 
-**Edit `content/islenskubraut/*.yaml` only.** Those six files are the source of truth. Both
+**Edit `content/islenskubraut/*.yaml` only.** Those seven files are the source of truth. Both
 TypeScript copies are generated from them and must never be hand-edited. The editing workflow —
 directly, or by spreadsheet — is written up for a human in
 [`content/islenskubraut/README.md`](content/islenskubraut/README.md); what follows is the
@@ -547,7 +547,7 @@ forgot to register the new category."
   input: empty strings, invisible characters (soft hyphen, zero-width space, BOM and friends), and
   ASCII-flattened Icelandic
 - `scripts/islenskubraut/__tests__/generated-matches-yaml.test.ts` — the generated modules agree
-  with each other and still ship all six categories in taught order
+  with each other and still ship all seven categories in taught order
 - `apps/islenskubraut/src/data/__tests__/server-copy-in-sync.test.ts` — the two generated copies
   stay byte-identical in content and expose the same category ids
 
@@ -685,7 +685,7 @@ GreynirCorrect on 2026-10-16, run by hand and not part of the build. The card pa
 `content/islenskubraut/texti/README.md`.
 
 **Recordings, "Hlustaðu" (2026-10-16).** Every word, frame and worked example on the card page has a
-play button once its recording is approved. There are 431 MP3s in `apps/islenskubraut/public/hljod/`,
+play button once its recording is approved. There are 524 MP3s in `apps/islenskubraut/public/hljod/`,
 each named by a hash of its text (`clipName` in `scripts/islenskubraut/hljod.mjs`), so an edited text
 needs a new one. They are **synthesised**: Reykjavík University's Talrómur C voice (CC BY 4.0) with
 ice-g2p for pronunciation, by `scripts/islenskubraut/hljod/talgerving.py`. That is a Python 3.10
@@ -694,7 +694,7 @@ setup on a teacher's machine, never in CI. `content/islenskubraut/hljod/hljod.ya
 `Hlusta.tsx`), and the card page credits the voice whenever a clip plays. **The build fails only on an
 approved clip with no file.** A text with no clip simply has no button, so editing a card never needs
 the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
-review page; the first run flagged seven of 431 (C15). Tiro's TTS service, which the research named,
+review page; it flags eight of 524 (C15). Tiro's TTS service, which the research named,
 is gone. Workflow: `content/islenskubraut/hljod/README.md`.
 
 **Can-do statements, "Ég get…" (2026-10-16).** `content/islenskubraut/egget/<flokkur>.yaml` gives three
@@ -723,6 +723,19 @@ approved language must name `approvedBy` and gloss every A1 chip**, unless it is
 The card page's picker (`Mal.tsx`) offers approved languages only, drafts under `?drog`, and
 remembers the choice in `localStorage`. `pl.yaml` is machine-drafted, with Árnastofnun's
 Icelandic–Polish dictionary linked per word (C18).
+
+**Skólinn, the seventh category (2026-10-16), and draft categories.** `content/islenskubraut/skolinn.yaml`
+is the language of school: things in the bag, subjects, instructions (`lestu`, `berðu saman`,
+`rökstyddu`), where, who and when. Its B1 frames follow WIDA's four key uses (recount, explain,
+argue, discuss), and its B1-only question "Námsorð" holds the twelve most frequent nouns, verbs and
+adjectives of LÍNO-2, in MÍNO order. LÍNO-2 is Sigríður Ólafsdóttir and Auður Pálsdóttir's list,
+CC BY 4.0, `hdl.handle.net/20.500.12537/307`. **A category file may say `draft: true`:** the home
+grid leaves it out except under `?drog`, and its card page carries a "Drög" note. `review.mjs` keeps
+the key through a spreadsheet round trip. **A category file has no comment header**, since
+`import.test.ts` renders each byte for byte. Drafted by Claude (C19). **Adding a category now also
+means** entries in `myndir/myndir.yaml` for its A1 chips (the build fails without), and, because tests
+expect one per category, a file each in `giskaleikur/`, `texti/` and `egget/`, glosses in every
+glossary language (`pl.yaml`), and Bildetema's address in `tenglar/tenglar.yaml`.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

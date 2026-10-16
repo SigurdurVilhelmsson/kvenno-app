@@ -112,6 +112,31 @@ words:
   til að verja sig: żeby się chronić
   til að líta vel út: żeby dobrze wyglądać
   inni: w środku
+  bók: książka
+  penni: długopis
+  blýantur: ołówek
+  tölva: komputer
+  íslenska: język islandzki
+  stærðfræði: matematyka
+  enska: język angielski
+  íþróttir: wychowanie fizyczne
+  lestu: czytaj
+  skrifaðu: pisz
+  hlustaðu: słuchaj
+  svaraðu: odpowiedz
+  lesum: czytamy
+  skrifum: piszemy
+  hlustum: słuchamy
+  tölum: rozmawiamy
+  reiknum: liczymy
+  kennari: nauczyciel
+  nemandi: uczeń
+  vinur: przyjaciel
+  í skólastofunni: w klasie
+  á bókasafninu: w bibliotece
+  í íþróttasalnum: na sali gimnastycznej
+  í frímínútum: na przerwie
+  eftir skóla: po szkole
 # A chip that means something else on one card.
 categories:
   stadir:

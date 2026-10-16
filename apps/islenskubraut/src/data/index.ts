@@ -10,10 +10,19 @@ import { farartaeki } from './categories/farartaeki';
 import { klaednadur } from './categories/klaednadur';
 import { manneskja } from './categories/manneskja';
 import { matur } from './categories/matur';
+import { skolinn } from './categories/skolinn';
 import { stadir } from './categories/stadir';
 import { Category } from './types';
 
-export const categories: Category[] = [dyr, matur, farartaeki, manneskja, stadir, klaednadur];
+export const categories: Category[] = [
+  dyr,
+  matur,
+  farartaeki,
+  manneskja,
+  stadir,
+  klaednadur,
+  skolinn,
+];
 
 export function getCategoryById(id: string): Category | undefined {
   return categories.find((c) => c.id === id);

@@ -24,7 +24,15 @@ export const CONTEXT_COLORS = {
 };
 
 /** Category order as the SPA presents it. Not alphabetical — this is the taught order. */
-export const CATEGORY_ORDER = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur'];
+export const CATEGORY_ORDER = [
+  'dyr',
+  'matur',
+  'farartaeki',
+  'manneskja',
+  'stadir',
+  'klaednadur',
+  'skolinn',
+];
 
 function assert(condition, message) {
   if (!condition) throw new Error(`islenskubraut content: ${message}`);
@@ -43,6 +51,11 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
   assert(doc.id === id, `${id}.yaml declares id "${doc.id}"`);
   for (const field of ['name', 'description', 'color', 'icon'])
     checkString(doc[field], `${id}.${field}`);
+  // A new category is a draft until a teacher has read it: the home page leaves it out.
+  assert(
+    doc.draft === undefined || typeof doc.draft === 'boolean',
+    `${id}.draft must be true or false`
+  );
 
   const subCategories = (doc.subCategories ?? []).map((s) => {
     checkString(s.name, `${id}.${s.id}.name`);
@@ -109,6 +122,7 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
     icon: doc.icon,
     description: doc.description,
     color: doc.color,
+    ...(doc.draft ? { draft: true } : {}),
     subCategories,
     sentenceFrames,
     examples,
