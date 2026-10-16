@@ -10,19 +10,38 @@
  */
 
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
+import { inflateSync } from 'node:zlib';
+import { Document, Page, Text } from '@react-pdf/renderer';
+import { createElement } from 'react';
 import request from 'supertest';
 import {
   LEVELS,
   REVIEW_DAYS,
+  CHECKLIST_ROWS,
+  RATINGS,
+  createEggetDocument,
+  createGiskaleikurDocument,
   createOrdalistiDocument,
   createSpjaldDocument,
+  eggetFileName,
+  generateEggetPdf,
+  generateGiskaleikurPdf,
   generateOrdalistiPdf,
+  generateTextiPdf,
+  giskaleikurFileName,
+  createTextiDocument,
+  textiFileName,
+  WRITE_LINES,
   generatePdf,
   newWordsAt,
   ordalistiFileName,
   pdfPageCount as pageCount,
+  renderPdf,
 } from '../lib/islenskubraut-pdf.js';
 import { categories } from '../lib/islenskubraut-data.js';
+import { egget } from '../lib/islenskubraut-egget.js';
+import { giskaleikur } from '../lib/islenskubraut-giskaleikur.js';
+import { texti } from '../lib/islenskubraut-texti.js';
 import type { ReactElement, ReactNode } from 'react';
 
 const realFetch = globalThis.fetch;
@@ -205,5 +224,175 @@ describe('word lists', () => {
         expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
       });
     }
+  }
+});
+
+// "Hvað er þetta?": cut-out cards describing things in the card's own words, and a question sheet
+// for the student who guesses. Two pages, so it prints on one sheet, both sides.
+describe('guessing games', () => {
+  const dyr = categories.find((c) => c.id === 'dyr')!;
+
+  it('has a game for every category', () => {
+    expect(Object.keys(giskaleikur)).toEqual(categories.map((c) => c.id));
+  });
+
+  it('prints every thing, every question and every chip on the cards, and the frames', () => {
+    const items = giskaleikur.dyr.levels.A2;
+    const text = printedText(createGiskaleikurDocument(dyr, 'A2', items)).join('\n');
+    expect(text).toContain('Hvað er þetta?');
+    for (const item of items) {
+      expect(text).toContain(item.name);
+      for (const a of item.answers) {
+        expect(text).toContain(a.question);
+        for (const chip of a.chips) expect(text).toContain(chip);
+      }
+    }
+    const frames = dyr.sentenceFrames.find((f) => f.level === 'A2')!.frames;
+    for (const frame of frames) expect(text).toContain(frame);
+  });
+
+  it('is saved beside the cards under its own name', () => {
+    expect(giskaleikurFileName('dyr', 'B1')).toBe('giskaleikur-dyr-B1.pdf');
+  });
+
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`fits ${category.id} ${level}'s game on two pages, in Noto Sans`, async () => {
+        const pdf = await generateGiskaleikurPdf(
+          category,
+          level,
+          giskaleikur[category.id].levels[level]
+        );
+        expect(pageCount(pdf)).toBe(2);
+        expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});
+
+// "Frá tali til texta": say it with the frames, read the model text, fill its gaps, write your own.
+// One page.
+describe('talk-to-write sheets', () => {
+  const klaednadur = categories.find((c) => c.id === 'klaednadur')!;
+
+  it('has a sheet for every category', () => {
+    expect(Object.keys(texti)).toEqual(categories.map((c) => c.id));
+  });
+
+  it('prints the frames, the text twice, the stages, every word in the box, and the gaps', () => {
+    const sheet = texti.klaednadur.levels.B1;
+    const printed = printedText(createTextiDocument(klaednadur, 'B1', sheet));
+    const text = printed.join('\n');
+    for (const f of klaednadur.sentenceFrames.find((x) => x.level === 'B1')!.frames) {
+      expect(text).toContain(f);
+    }
+    const whole = sheet.stages.map((s) =>
+      s.parts.map((p) => ('gap' in p ? p.gap : p.text)).join('')
+    );
+    // A stage prints as several runs, so it is whole only with them run together.
+    for (const s of whole) expect(printed.join('')).toContain(s);
+    for (const s of sheet.stages) expect(text).toContain(s.name);
+    for (const w of sheet.bank) expect(text).toContain(w.replace(/ /g, '\u00a0'));
+    // Each gap once, numbered in order, and nothing of the gapped word left in its place.
+    expect(text.match(/\(\d+\) _+/g)).toHaveLength(sheet.bank.length);
+    expect(text).toContain(`(${sheet.bank.length}) ____`);
+  });
+
+  it('leaves the student room to write', () => {
+    expect(WRITE_LINES).toBeGreaterThanOrEqual(5);
+  });
+
+  it('is saved beside the cards under its own name', () => {
+    expect(textiFileName('dyr', 'B1')).toBe('texti-dyr-B1.pdf');
+  });
+
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`fits ${category.id} ${level}'s sheet on one page, in Noto Sans`, async () => {
+        const pdf = await generateTextiPdf(category, level, texti[category.id].levels[level]);
+        expect(pageCount(pdf)).toBe(1);
+        expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});
+
+// "Ég get…": four strips for students to rate themselves, then the teacher's class checklist.
+describe('can-do sheets', () => {
+  const dyr = categories.find((c) => c.id === 'dyr')!;
+
+  it('has statements for every category', () => {
+    expect(Object.keys(egget)).toEqual(categories.map((c) => c.id));
+  });
+
+  it('prints each statement on every strip and on the checklist, with the ratings', () => {
+    const statements = egget.dyr.levels.A2;
+    const text = printedText(createEggetDocument(dyr, 'A2', statements));
+    for (const st of statements) {
+      // Four strips and the checklist's numbered list.
+      expect(text.filter((t) => t === st)).toHaveLength(4);
+      expect(text).toContain(`${statements.indexOf(st) + 1}. ${st}`);
+    }
+    for (const r of RATINGS) expect(text.filter((t) => t === r)).toHaveLength(4);
+    expect(text.join(' ')).toContain('ekki til einkunnar');
+    expect(CHECKLIST_ROWS).toBeGreaterThanOrEqual(20);
+  });
+
+  it('is saved beside the cards under its own name', () => {
+    expect(eggetFileName('dyr', 'A1')).toBe('egget-dyr-A1.pdf');
+  });
+
+  for (const category of categories) {
+    for (const level of LEVELS) {
+      it(`fits ${category.id} ${level}'s sheet on two pages, in Noto Sans`, async () => {
+        const pdf = await generateEggetPdf(category, level, egget[category.id].levels[level]);
+        expect(pageCount(pdf)).toBe(2);
+        expect([...baseFonts(pdf)].filter((f) => !f.startsWith('NotoSans-'))).toEqual([]);
+      });
+    }
+  }
+});
+
+// react-pdf kept one font object per file for the life of the process, and a document set after
+// another could lose a glyph: `Ullin` printed as `llin`, and the cards' `Efniviður` as `fniviður`.
+// `renderPdf` reloads the fonts for each document. Words on a line each, so none wraps and every
+// letter is one glyph drawn; without the reload, a card rendered first costs one or two of them.
+describe('a document rendered after another', () => {
+  /** Glyphs the page content draws: every code in its `Tj` strings and `TJ` arrays. */
+  function drawnGlyphs(pdf: Buffer): number {
+    let n = 0;
+    for (const m of pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)) {
+      let data: string;
+      try {
+        data = inflateSync(Buffer.from(m[1], 'latin1')).toString('latin1');
+      } catch {
+        continue;
+      }
+      if (data.includes('begincmap')) continue;
+      for (const t of data.matchAll(/\[([^\]]*)\]\s*TJ|<([0-9a-f]*)>\s*Tj/gi)) {
+        for (const x of (t[1] ?? `<${t[2]}>`).matchAll(/<([0-9a-f]*)>/gi)) n += x[1].length / 4;
+      }
+    }
+    return n;
+  }
+
+  for (const id of ['dyr', 'farartaeki', 'stadir', 'klaednadur']) {
+    it(`draws every letter after the ${id} B1 card`, async () => {
+      const words = ['Ullin', 'Um', 'Efniviður', 'Uxi'];
+      const doc = createElement(
+        Document,
+        null,
+        createElement(
+          Page,
+          { size: 'A4', style: { fontFamily: 'NotoSans' } },
+          ...words.map((w) => createElement(Text, { key: w }, w))
+        )
+      );
+      await generatePdf(
+        categories.find((c) => c.id === id)!,
+        'B1'
+      );
+      expect(drawnGlyphs(await renderPdf(doc))).toBe(words.join('').length);
+    });
   }
 });

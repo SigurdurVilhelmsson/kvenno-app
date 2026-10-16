@@ -1,0 +1,66 @@
+# Hvað er þetta? — the guessing game for Skólinn: the school subjects. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the descriptions are right.
+confirmed: false
+items:
+  - name: íslenska
+    from: A1
+    answers:
+      Hlutir: [bók, penni, stílabók]
+      notagildi: [lesum, skrifum, tölum]
+      hvar: [í skólastofunni, á bókasafninu]
+      hver: [kennari]
+  - name: stærðfræði
+    from: A1
+    answers:
+      Hlutir: [blýantur, tölva, reiknivél, reglustika]
+      notagildi: [reiknum, skrifum]
+      hvar: [í skólastofunni]
+      hver: [kennari]
+  - name: enska
+    from: A1
+    answers:
+      Hlutir: [bók, tölva]
+      notagildi: [lesum, hlustum, tölum]
+      hvar: [í skólastofunni]
+      hver: [kennari]
+  - name: íþróttir
+    from: A1
+    answers:
+      notagildi: [hlustum, vinnum saman]
+      hvar: [í íþróttasalnum]
+      hver: [kennari, vinur]
+  - name: saga
+    from: A2
+    answers:
+      Hlutir: [bók, kennslubók]
+      notagildi: [lesum, skrifum, spyrjum]
+      hvar: [á bókasafninu]
+      hver: [kennari]
+  - name: náttúrufræði
+    from: A2
+    answers:
+      Hlutir: [tölva, verkefnablað]
+      notagildi: [lesum, spyrjum, vinnum saman]
+      hvar: [í skólastofunni]
+      hver: [kennari]
+  - name: listir
+    from: A2
+    answers:
+      Hlutir: [blýantur, penni]
+      notagildi: [vinnum saman, tölum]
+      hvar: [í skólastofunni]
+      hver: [kennari, vinur]
+  - name: danska
+    from: A2
+    answers:
+      Hlutir: [bók, stílabók]
+      notagildi: [lesum, hlustum, svörum]
+      hvar: [í skólastofunni]
+      hver: [kennari]
+  - name: félagsfræði
+    from: B1
+    answers:
+      Hlutir: [kennslubók, tölva]
+      notagildi: [ræðum, lesum, kynnum]
+      hvar: [í skólastofunni]
+      hver: [kennari]

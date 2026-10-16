@@ -4,15 +4,26 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
-import { DownloadButton, WordListButton } from '../components/DownloadButton';
+import {
+  DownloadButton,
+  EggetButton,
+  GameButton,
+  TextiButton,
+  WordListButton,
+} from '../components/DownloadButton';
 import { FleiriUrraedi } from '../components/FleiriUrraedi';
+import { DrogContext, HljodCredit, useAnyClip } from '../components/Hlusta';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
+import { MalContext, MalPicker, useMal } from '../components/Mal';
 import { ArasaacCredit, hasPictures } from '../components/Pictogram';
 import type { PageTitle } from '../components/Sheet';
 import { SpjaldPreview } from '../components/SpjaldPreview';
 import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
-import { Level } from '../data/types';
+import { egget } from '../data/egget';
+import { giskaleikur } from '../data/giskaleikur';
+import { texti } from '../data/texti';
+import { Category, Level } from '../data/types';
 
 type ViewTab = 'spurningaspjald' | 'ordafordi' | 'setningarammar';
 
@@ -43,6 +54,7 @@ export function SpjaldPage() {
       { replace: true }
     );
   const drafts = searchParams.has('drog');
+  const [mal, setMal] = useMal(drafts);
   const [activeTab, setActiveTab] = useState<ViewTab>(TABS[0].id);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -120,6 +132,14 @@ export function SpjaldPage() {
           <h1 className="font-heading text-2xl font-bold">{category.name}</h1>
         </div>
         <p className="text-warm-600">{category.description}</p>
+        {category.draft && (
+          <p
+            role="note"
+            className="mt-4 rounded-xl border border-warm-300 bg-warm-100 px-4 py-3 text-sm text-warm-800"
+          >
+            Drög: kennari hefur ekki enn farið yfir þetta spjald.
+          </p>
+        )}
       </div>
 
       {/* Level selector */}
@@ -136,12 +156,26 @@ export function SpjaldPage() {
           color={category.color}
           labelledBy="erfidleikastig"
         />
+        <div className="mt-4">
+          <MalPicker drafts={drafts} value={mal} onChange={setMal} />
+        </div>
       </div>
 
-      {/* The card and its word list, and the sentence builder once a teacher has confirmed it (C9) */}
+      {/* The card and its word list; the guessing game (C13), the talk-to-write sheet (C14), the
+          can-do sheet (C16) and the sentence builder (C9) once a teacher has confirmed them, all but
+          the builder also under ?drog */}
       <div className="mb-10 flex flex-wrap items-center gap-4">
         <DownloadButton categoryId={category.id} level={level} color={category.color} />
         <WordListButton categoryId={category.id} level={level} color={category.color} />
+        {giskaleikur[category.id] && (giskaleikur[category.id].confirmed || drafts) && (
+          <GameButton categoryId={category.id} level={level} color={category.color} />
+        )}
+        {texti[category.id] && (texti[category.id].confirmed || drafts) && (
+          <TextiButton categoryId={category.id} level={level} color={category.color} />
+        )}
+        {egget[category.id] && (egget[category.id].confirmed || drafts) && (
+          <EggetButton categoryId={category.id} level={level} color={category.color} />
+        )}
         {/* Read off the category's tags, not the sentences, which load only with their page. */}
         {category.builder?.some((b) => b.level === level && b.confirmed) && (
           <Link
@@ -198,10 +232,18 @@ export function SpjaldPage() {
         tabIndex={0}
         className="max-w-lg mx-auto"
       >
-        {activeTab === 'spurningaspjald' && <SpurningaSpjald category={category} level={level} />}
-        {activeTab !== 'spurningaspjald' && (
-          <SpjaldPreview category={category} level={level} view={activeTab} />
-        )}
+        {/* Recordings play when approved, and as drafts under ?drog (REVIEW-QUEUE C15). */}
+        <DrogContext.Provider value={drafts}>
+          <MalContext.Provider value={mal}>
+            {activeTab === 'spurningaspjald' && (
+              <SpurningaSpjald category={category} level={level} />
+            )}
+            {activeTab !== 'spurningaspjald' && (
+              <SpjaldPreview category={category} level={level} view={activeTab} />
+            )}
+            <CardAudioCredit category={category} level={level} />
+          </MalContext.Provider>
+        </DrogContext.Provider>
       </div>
       {activeTab === 'spurningaspjald' && level === 'A1' && hasPictures(category.id) && (
         <ArasaacCredit className="max-w-lg mx-auto mt-4" />
@@ -215,4 +257,17 @@ export function SpjaldPage() {
       />
     </Container>
   );
+}
+
+/** The voice's credit, under the card whenever any of its texts has a recording that plays. */
+function CardAudioCredit({ category, level }: { category: Category; level: Level }) {
+  const texts = [
+    ...category.subCategories.flatMap((s) => s.options),
+    ...category.guidingQuestions.flatMap(
+      (q) => q.answers.find((a) => a.level === level)?.options ?? []
+    ),
+    ...(category.sentenceFrames.find((f) => f.level === level)?.frames ?? []),
+    ...category.examples.filter((e) => e.level === level).map((e) => e.text),
+  ];
+  return useAnyClip(texts) ? <HljodCredit className="mt-4" /> : null;
 }

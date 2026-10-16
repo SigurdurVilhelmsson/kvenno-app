@@ -1,0 +1,98 @@
+# Hvað er þetta? — the guessing game for Farartæki. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the descriptions are right.
+# The things are the card's own words for vehicles, so `Flokkar` is never listed: it would be
+# the answer.
+confirmed: false
+items:
+  - name: bíll
+    from: A1
+    answers:
+      Útlit: [með hjólum]
+      Hljóð: [lágt]
+      Efniviður: [úr málmi, úr plasti]
+      notagildi: [til að ferðast]
+      hver: [fullorðnir, bílstjórar]
+      hvar: [á götunni, á þjóðveginum]
+      hvenaer: [alltaf, daglega]
+  - name: rúta
+    from: A1
+    answers:
+      Útlit: [stórt, með hjólum, langt]
+      Hljóð: [hátt]
+      Efniviður: [úr málmi]
+      Lögun: [ílangt]
+      notagildi: [til að ferðast]
+      hver: [allir, bílstjórar]
+      hvar: [á götunni]
+      hvenaer: [á morgnana, á virkum dögum]
+  - name: hjól
+    from: A1
+    answers:
+      Útlit: [lítið, með hjólum]
+      Hljóð: [þögult]
+      Efniviður: [úr málmi]
+      notagildi: [til að ferðast, til að leika sér]
+      hver: [allir, börn]
+      hvar: [á götunni]
+      hvenaer: [á sumrin]
+  - name: flugvél
+    from: A1
+    answers:
+      Útlit: [stórt, langt]
+      Hljóð: [hátt]
+      Efniviður: [úr málmi]
+      Lögun: [ílangt]
+      notagildi: [til að ferðast, til að flytja]
+      hver: [allir, flugmenn]
+      hvar: [í loftinu, á flugvellinum]
+  - name: skip
+    from: A1
+    answers:
+      Útlit: [stórt, án hjóla]
+      Hljóð: [lágt]
+      Efniviður: [úr málmi]
+      Lögun: [ílangt]
+      notagildi: [til að flytja, til að vinna]
+      hver: [sjómenn]
+      hvar: [á sjónum, í höfninni]
+  - name: mótorhjól
+    from: A2
+    answers:
+      Útlit: [lítið, með hjólum]
+      Hljóð: [hátt, öskrar]
+      Efniviður: [úr málmi]
+      notagildi: [til að ferðast, til að keppa]
+      hver: [fullorðnir]
+      hvar: [á götunni, á þjóðveginum]
+      hvenaer: [á sumrin, um helgar]
+  - name: lest
+    from: A2
+    answers:
+      Útlit: [stórt, langt, með hjólum]
+      Hljóð: [hátt]
+      Efniviður: [úr málmi]
+      Lögun: [ílangt]
+      notagildi: [til að ferðast, til að flytja]
+      hver: [allir]
+      hvar: [á lestarbraut]
+      hvenaer: [á virkum dögum]
+  - name: sleði
+    from: A2
+    answers:
+      Útlit: [lítið, án hjóla, lágt]
+      Hljóð: [þögult]
+      Efniviður: [úr tré, úr plasti]
+      Lögun: [flatt]
+      notagildi: [til að leika sér]
+      hver: [börn]
+      hvenaer: [á veturna]
+  - name: þyrla
+    from: B1
+    answers:
+      Útlit: [án hjóla]
+      Hljóð: [hátt, suðar]
+      Efniviður: [úr málmi]
+      notagildi: [til að bjarga, til að flytja]
+      hver: [flugmenn]
+      hvar: [í loftinu]
+      hvenaer: [í sérstökum tilvikum]

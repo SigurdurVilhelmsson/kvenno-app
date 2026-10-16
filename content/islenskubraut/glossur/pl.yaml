@@ -1,0 +1,144 @@
+# Á þínu máli — Polish beside the A1 chips. See README.md beside this file.
+# The glosses were drafted by Claude (machine translation) and have not been checked by a speaker.
+# Nothing here reaches students until a Polish speaker has read every word and `approved: true`
+# and `approvedBy` are set.
+name: Polski
+dir: ltr
+approved: false
+approvedBy: null
+# Árnastofnun's Icelandic–Polish dictionary, which finds an inflected form under its headword.
+dictionary: https://polska.arnastofnun.is/pl/leit/{word}
+words:
+  gæludýr: zwierzę domowe
+  villt dýr: dzikie zwierzę
+  húsdýr: zwierzę gospodarskie
+  feldur: futro
+  fjaðrir: pióra
+  hreistur: łuski
+  hali: ogon
+  mjúkt: miękkie
+  hart: twarde
+  slétt: gładkie
+  gróft: szorstkie
+  hátt: głośno
+  lágt: cicho
+  þögult: bezgłośne
+  kringlótt: okrągłe
+  ferkantað: kwadratowe
+  ílangt: podłużne
+  flatt: płaskie
+  til að gæta: do pilnowania
+  til að klappa: do głaskania
+  til að borða: do jedzenia
+  allir: wszyscy
+  börn: dzieci
+  fullorðnir: dorośli
+  heima: w domu
+  úti: na zewnątrz
+  á bæ: w gospodarstwie
+  á morgnana: rano
+  á daginn: w ciągu dnia
+  á kvöldin: wieczorem
+  alltaf: zawsze
+  ávöxtur: owoc
+  grænmeti: warzywa
+  kjöt: mięso
+  drykkur: napój
+  rautt: czerwone
+  grænt: zielone
+  gult: żółte
+  hvítt: białe
+  sætt: słodkie
+  salt: słone
+  súrt: kwaśne
+  beiskt: gorzkie
+  gott: dobrze
+  vont: brzydko
+  ekkert: nic
+  til að drekka: do picia
+  í búð: w sklepie
+  á veitingastað: w restauracji
+  bíll: samochód
+  rúta: autobus
+  hjól: rower
+  flugvél: samolot
+  skip: statek
+  stórt: duże
+  lítið: małe
+  með hjólum: na kołach
+  án hjóla: bez kół
+  úr málmi: z metalu
+  úr plasti: z plastiku
+  úr tré: z drewna
+  til að ferðast: do podróżowania
+  til að flytja: do przewożenia
+  til að leika sér: do zabawy
+  á götunni: na ulicy
+  á sjónum: na morzu
+  í loftinu: w powietrzu
+  barn: dziecko
+  fullorðin/fullorðinn: dorosła/dorosły
+  gamall/gömul: stary/stara
+  há/hár: wysoka/wysoki
+  lág/lágur: niska/niski
+  ung/ungur: młoda/młody
+  gömul/gamall: stara/stary
+  vinnur: pracuje
+  lærir: uczy się
+  leikur sér: bawi się
+  í vinnunni: w pracy
+  í skólanum: w szkole
+  hús: dom
+  skóli: szkoła
+  búð: sklep
+  sundlaug: basen
+  úr steini: z kamienia
+  til að búa: do mieszkania
+  til að læra: do nauki
+  til að versla: na zakupy
+  í bænum: w mieście
+  úti á landi: na wsi
+  við sjóinn: nad morzem
+  bolur: koszulka
+  buxur: spodnie
+  jakki: kurtka
+  skór: buty
+  blátt: niebieskie
+  svart: czarne
+  úr ull: z wełny
+  úr bómull: z bawełny
+  úr leðri: ze skóry
+  til að hlýja sér: żeby się ogrzać
+  til að verja sig: żeby się chronić
+  til að líta vel út: żeby dobrze wyglądać
+  inni: w środku
+  bók: książka
+  penni: długopis
+  blýantur: ołówek
+  tölva: komputer
+  íslenska: język islandzki
+  stærðfræði: matematyka
+  enska: język angielski
+  íþróttir: wychowanie fizyczne
+  lestu: czytaj
+  skrifaðu: pisz
+  hlustaðu: słuchaj
+  svaraðu: odpowiedz
+  lesum: czytamy
+  skrifum: piszemy
+  hlustum: słuchamy
+  tölum: rozmawiamy
+  reiknum: liczymy
+  kennari: nauczyciel
+  nemandi: uczeń
+  vinur: przyjaciel
+  í skólastofunni: w klasie
+  á bókasafninu: w bibliotece
+  í íþróttasalnum: na sali gimnastycznej
+  í frímínútum: na przerwie
+  eftir skóla: po szkole
+# A chip that means something else on one card.
+categories:
+  stadir:
+    hátt: wysokie
+    lágt: niskie

@@ -98,6 +98,8 @@ export interface Category {
   icon: string;
   description: string;
   color: string;
+  /** A teacher has not read the card yet; the home page leaves it out, except under \`?drog\`. */
+  draft?: boolean;
   subCategories: SubCategory[];
   sentenceFrames: SentenceFrame[];
   examples: LevelText[];
@@ -188,10 +190,33 @@ export function renderSmidur(entries) {
 
 import type { Level } from './types';
 
+/**
+ * Why a word differs from the card: a pronoun or \`er\` that follows the subject, an adjective that
+ * agrees with it, or a noun in the accusative after the frame's \`verb\`.
+ */
+export type SmidurWhy =
+  | { kind: 'fornafn'; case: 'NF' | 'ÞF'; from: string; to: string }
+  | { kind: 'sögn'; from: string; to: string }
+  | { kind: 'samræmi'; from: string; to: string }
+  | { kind: 'þolfall'; from: string; to: string; verb: string };
+
 /** One word of a built sentence; \`changed\` when it differs from the card as printed. */
 export interface SmidurWord {
   word: string;
   changed: boolean;
+  /** Why it changed, when the grammar changed it. */
+  why?: SmidurWhy;
+  /** The BÍN word an inflected word is a form of, a key of \`SmidurLevel.tables\`. */
+  lemma?: string;
+  /** The forms it could have been in its place, the right one among them, for a drill. */
+  choices?: string[];
+}
+
+/** A word's forms from BÍN, for "Allar myndir orðsins". */
+export interface SmidurTable {
+  ord: string;
+  columns: string[];
+  rows: { case: 'NF' | 'ÞF' | 'ÞGF' | 'EF'; forms: string[] }[];
 }
 
 /** Who or what the sentence is about, with the gender and number BÍN gives it. */
@@ -220,6 +245,8 @@ export interface SmidurLevel {
   subjectQuestion: string | null;
   subjects: SmidurSubject[];
   frames: SmidurFrame[];
+  /** Every inflected word's table, by its BÍN id. */
+  tables: Record<string, SmidurTable>;
 }
 
 export const smidur: Record<string, SmidurLevel[]> = ${literal(Object.fromEntries(entries))};
@@ -270,6 +297,174 @@ export interface Tengill {
 }
 
 export const tenglar: Tengill[] = ${literal(tenglar)};
+`;
+}
+
+/**
+ * "Hvað er þetta?" for the server, which renders it to PDF: every category's game at every level,
+ * already resolved, so the server only lays it out.
+ */
+export function renderGiskaleikurServer(games) {
+  return `${WARNING}
+
+import type { Level } from '../types/islenskubraut.js';
+
+export interface GiskaAnswer {
+  question: string;
+  chips: string[];
+}
+
+export interface GiskaItem {
+  name: string;
+  answers: GiskaAnswer[];
+}
+
+export interface Giskaleikur {
+  /** A teacher has checked the descriptions; until then the card page does not link the PDF. */
+  confirmed: boolean;
+  levels: Record<Level, GiskaItem[]>;
+}
+
+export const giskaleikur: Record<string, Giskaleikur> = ${literal(games)};
+`;
+}
+
+/** Which categories have a guessing game, and whether a teacher has confirmed it. */
+export function renderGiskaleikurApp(games) {
+  const flags = Object.fromEntries(
+    Object.entries(games).map(([id, g]) => [id, { confirmed: g.confirmed }])
+  );
+  return `${WARNING}
+
+/** \`giskaleikur[categoryId].confirmed\`: the card page links the game's PDF only when true. */
+export const giskaleikur: Record<string, { confirmed: boolean }> = ${literal(flags)};
+`;
+}
+
+/**
+ * "Frá tali til texta" for the server, which renders it to PDF: each category's model text at
+ * every level, already split into plain text and gaps from the card's words.
+ */
+export function renderTextiServer(texts) {
+  return `${WARNING}
+//
+// The gaps were found with BÍN's lookups (content/islenskubraut/bin/ordmyndir.json, CC BY-SA 4.0).
+
+import type { Level } from '../types/islenskubraut.js';
+
+/** A run of the model text, or a gap where the card's word was. */
+export type TextiPart = { text: string } | { gap: string };
+
+export interface TextiStage {
+  /** The stage's name, printed beside it: \`Flokkun\`, \`Lýsing\`, … */
+  name: string;
+  parts: TextiPart[];
+}
+
+export interface TextiLevel {
+  /** The kind of text: \`Lýsing\`, \`Skýrsla\`, \`Samanburður\`, … */
+  genre: string;
+  stages: TextiStage[];
+  /** Every gap's word, in lower case and alphabetical order. */
+  bank: string[];
+}
+
+export interface Texti {
+  /** A teacher has read the texts; until then the card page does not link the PDF. */
+  confirmed: boolean;
+  levels: Record<Level, TextiLevel>;
+}
+
+export const texti: Record<string, Texti> = ${literal(texts)};
+`;
+}
+
+/** Which categories have a sheet, and whether a teacher has confirmed it. */
+export function renderTextiApp(texts) {
+  const flags = Object.fromEntries(
+    Object.entries(texts).map(([id, t]) => [id, { confirmed: t.confirmed }])
+  );
+  return `${WARNING}
+
+/** \`texti[categoryId].confirmed\`: the card page links the sheet's PDF only when true. */
+export const texti: Record<string, { confirmed: boolean }> = ${literal(flags)};
+`;
+}
+
+/**
+ * The recordings the card page can play, by the text as printed. Drafts are included, marked
+ * `approved: false`, so the page plays them under `?drog`; it plays only approved ones otherwise.
+ */
+export function renderHljod(clips, voice) {
+  return `${WARNING}
+
+/** A recording of a text on the card, in \`public/hljod/\`. */
+export interface Hljod {
+  file: string;
+  /** A person has listened to it and agrees. */
+  approved: boolean;
+}
+
+/** The voice the clips were made with, credited wherever they play. */
+export const HLJOD_VOICE = ${JSON.stringify(voice.trim())};
+
+export const hljod: Record<string, Hljod> = ${literal(clips)};
+`;
+}
+
+/** "Ég get…" for the server, which renders the strips and the class checklist to PDF. */
+export function renderEggetServer(egget) {
+  return `${WARNING}
+
+import type { Level } from '../types/islenskubraut.js';
+
+export interface Egget {
+  /** A teacher has read the statements; until then the card page does not link the PDF. */
+  confirmed: boolean;
+  /** Three or four statements per level, each starting \`Ég get\`. */
+  levels: Record<Level, string[]>;
+}
+
+export const egget: Record<string, Egget> = ${literal(egget)};
+`;
+}
+
+/** Which categories have can-do statements, and whether a teacher has confirmed them. */
+export function renderEggetApp(egget) {
+  const flags = Object.fromEntries(
+    Object.entries(egget).map(([id, e]) => [id, { confirmed: e.confirmed }])
+  );
+  return `${WARNING}
+
+/** \`egget[categoryId].confirmed\`: the card page links the strips' PDF only when true. */
+export const egget: Record<string, { confirmed: boolean }> = ${literal(flags)};
+`;
+}
+
+/**
+ * The students' own languages beside the chips. Drafts are included, marked \`approved: false\`, so
+ * the card page shows them under \`?drog\`; it offers only approved languages otherwise.
+ */
+export function renderGlossur(glossur) {
+  return `${WARNING}
+
+/** One language: its glosses per card and chip, and a dictionary that looks a word up by URL. */
+export interface Glossur {
+  /** The language's code, for the \`lang\` attribute: \`pl\`, \`uk\`, \`ar\`. */
+  code: string;
+  /** The language's name in itself: \`Polski\`. */
+  name: string;
+  dir: 'ltr' | 'rtl';
+  /** A speaker has read every word; until then only \`?drog\` shows it. */
+  approved: boolean;
+  approvedBy: string | null;
+  /** An address with \`{word}\` where the Icelandic word goes. */
+  dictionary: string | null;
+  /** \`words[categoryId][chip]\`: the gloss of a chip on that card. */
+  words: Record<string, Record<string, string>>;
+}
+
+export const glossur: Glossur[] = ${literal(glossur)};
 `;
 }
 

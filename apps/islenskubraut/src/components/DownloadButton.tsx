@@ -58,3 +58,54 @@ export function WordListButton({ categoryId, level, color }: DownloadButtonProps
     </a>
   );
 }
+
+/**
+ * "Hvað er þetta?", the level's guessing game (`giskaleikur-*.pdf`): cut-out cards describing
+ * things in the card's own answer words, and a question sheet for the student who guesses.
+ */
+export function GameButton({ categoryId, level, color }: DownloadButtonProps) {
+  return (
+    <a
+      href={`${import.meta.env.BASE_URL}spjold/giskaleikur-${categoryId}-${level}.pdf`}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+      style={{ borderColor: color }}
+    >
+      Hvað er þetta? (PDF)
+    </a>
+  );
+}
+
+/**
+ * "Frá tali til texta", the level's talk-to-write sheet (`texti-*.pdf`): the card's frames, a model
+ * text with its stages named, the same text with the card's words taken out, and lines to write on.
+ */
+export function TextiButton({ categoryId, level, color }: DownloadButtonProps) {
+  return (
+    <a
+      href={`${import.meta.env.BASE_URL}spjold/texti-${categoryId}-${level}.pdf`}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+      style={{ borderColor: color }}
+    >
+      Frá tali til texta (PDF)
+    </a>
+  );
+}
+
+/**
+ * "Ég get…", the level's can-do sheet (`egget-*.pdf`): four strips for students to rate
+ * themselves on, and the teacher's class checklist with the same statements.
+ */
+export function EggetButton({ categoryId, level, color }: DownloadButtonProps) {
+  return (
+    <a
+      href={`${import.meta.env.BASE_URL}spjold/egget-${categoryId}-${level}.pdf`}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+      style={{ borderColor: color }}
+    >
+      Ég get… (PDF)
+    </a>
+  );
+}

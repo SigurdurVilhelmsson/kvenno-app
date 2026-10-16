@@ -1,3 +1,5 @@
+import { Hlusta } from './Hlusta';
+import { Glossa } from './Mal';
 import { Pictogram, pictureFor } from './Pictogram';
 import { Sheet } from './Sheet';
 import { Category, Level, GuidingQuestion } from '../data/types';
@@ -101,6 +103,8 @@ function QuestionBlock({
             >
               {picture !== undefined && <Pictogram id={picture} size={40} />}
               {option}
+              <Hlusta text={option} color={categoryColor} />
+              <Glossa categoryId={categoryId} text={option} />
             </span>
           );
         })}
@@ -136,7 +140,10 @@ function ContextCard({
           return (
             <span key={index} className="inline-flex items-center gap-1 mr-1 align-middle">
               {picture !== undefined && <Pictogram id={picture} size={24} />}
-              {index < answers.options.length - 1 ? `${option} ·` : option}
+              {option}
+              <Hlusta text={option} color={color} />
+              <Glossa categoryId={categoryId} text={option} />
+              {index < answers.options.length - 1 && ' ·'}
             </span>
           );
         })}

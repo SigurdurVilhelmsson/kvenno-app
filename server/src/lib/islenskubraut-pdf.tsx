@@ -5,7 +5,7 @@
 
 import { fileURLToPath } from 'node:url';
 import ReactPDF, { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import type { Category, GuidingQuestion, Level } from '../types/index.js';
 
 /**
@@ -35,6 +35,41 @@ Font.register({
     { src: fontPath('noto-sans-latin-700-normal.woff'), fontWeight: 'bold' },
   ],
 });
+
+/**
+ * Render a document to PDF bytes, every PDF in this file going through here.
+ *
+ * Each render gets freshly loaded fonts. react-pdf keeps one font object per registered file for
+ * the life of the process, and once it has set one document, a later document in the same
+ * process can lose a glyph: rendered after its card, a talk-to-write sheet printed `llin` for
+ * `Ullin`, on the page and in the text layer, and the cards' `Efniviður` printed as `fniviður`
+ * (REVIEW-QUEUE D3). Either document alone renders whole. `Font.reset()` cannot be used: it clears
+ * the data but keeps the finished load, so the font never reloads. Clearing both is what works.
+ *
+ * Renders run one at a time, so a reload never lands in the middle of another document.
+ */
+let renderQueue: Promise<unknown> = Promise.resolve();
+
+export function renderPdf(doc: ReactElement): Promise<Buffer> {
+  const run = renderQueue.then(async () => {
+    const family = Font.getRegisteredFonts().NotoSans as unknown as {
+      sources: { data: unknown; loadResultPromise: unknown }[];
+    };
+    for (const source of family.sources) {
+      source.data = null;
+      source.loadResultPromise = null;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const pdfStream = await ReactPDF.renderToStream(doc as any);
+    const chunks: Buffer[] = [];
+    for await (const chunk of pdfStream) {
+      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
+    }
+    return Buffer.concat(chunks);
+  });
+  renderQueue = run.catch(() => undefined);
+  return run;
+}
 
 const styles = StyleSheet.create({
   page: { fontFamily: 'NotoSans', padding: 30, backgroundColor: '#FFFFFF' },
@@ -539,6 +574,440 @@ export function createOrdalistiDocument(category: Category, level: Level): React
   );
 }
 
+const gameStyles = StyleSheet.create({
+  title: { fontSize: 16, color: '#1F2937', marginBottom: 3 },
+  instructions: { fontSize: 9, color: '#374151', marginBottom: 8, lineHeight: 1.35 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  card: {
+    width: '48.5%',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#9CA3AF',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    marginBottom: 6,
+  },
+  name: { fontSize: 14, lineHeight: 1.2, marginBottom: 2 },
+  answer: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline' },
+  question: { fontSize: 7, color: '#4B5563', lineHeight: 1.2 },
+  chips: { fontSize: 8.5, lineHeight: 1.2 },
+  heading: { fontSize: 10, color: '#1F2937', marginTop: 10, marginBottom: 4 },
+  line: { fontSize: 10, color: '#374151', lineHeight: 1.5 },
+  candidates: { flexDirection: 'row', flexWrap: 'wrap' },
+  candidate: { width: '33%', flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
+  box: { width: 11, height: 11, borderWidth: 0.75, borderColor: '#6B7280', marginRight: 6 },
+});
+
+export interface GameAnswer {
+  question: string;
+  chips: string[];
+}
+export interface GameItem {
+  name: string;
+  answers: GameAnswer[];
+}
+
+/**
+ * "Hvað er þetta?": the information-gap game for a card at a level (docs/research/
+ * islenskubraut-additions/, item 3). First the cards to cut out, one per thing, each describing
+ * it in the card's own words; partner A draws one. Last the sheet partner B keeps: the rules, the
+ * questions to ask, the things to cross off, and the card's frames for answering in a sentence.
+ * Every text is regular weight, as on the word lists (see `listStyles.group`).
+ */
+export function createGiskaleikurDocument(
+  category: Category,
+  level: Level,
+  items: GameItem[]
+): ReactElement {
+  const header = (
+    <View style={{ ...listStyles.header, backgroundColor: category.color }}>
+      <Text style={listStyles.headerText}>{category.name.toUpperCase()}</Text>
+      <LevelBadge level={level} color={category.color} />
+    </View>
+  );
+  const footer = (
+    <Text style={styles.footer}>
+      {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — Hvað er þetta?`}
+    </Text>
+  );
+  const asked = category.guidingQuestions
+    .map((q) => q.question)
+    .filter((q) => items.some((i) => i.answers.some((a) => a.question === q)));
+  const frames = category.sentenceFrames.find((f) => f.level === level)?.frames ?? [];
+  const page = { ...styles.page, ...listStyles.page };
+
+  return (
+    <Document>
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={gameStyles.title}>Hvað er þetta? Spjöld</Text>
+        <Text style={gameStyles.instructions}>
+          Klippið spjöldin út og leggið þau á hvolf. Nemandi A dregur eitt spjald og sýnir það
+          engum. Hin blaðsíðan er fyrir nemanda B.
+        </Text>
+        <View style={gameStyles.grid}>
+          {items.map((item) => (
+            <View key={item.name} style={gameStyles.card} wrap={false}>
+              <Text style={{ ...gameStyles.name, color: category.color }}>{item.name}</Text>
+              {item.answers.map((a) => (
+                <View key={a.question} style={gameStyles.answer}>
+                  <Text style={gameStyles.question}>{`${a.question} `}</Text>
+                  <Text style={{ ...gameStyles.chips, color: category.color }}>
+                    {a.chips.join(', ')}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ))}
+        </View>
+        {footer}
+      </Page>
+
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={gameStyles.title}>Hvað er þetta? Spurningablað</Text>
+        <Text style={gameStyles.instructions}>
+          Leikurinn er fyrir tvo. Nemandi A dregur spjald og segir ekki hvað er á því. Nemandi B
+          spyr spurninganna hér fyrir neðan, einnar í einu. A svarar í heilli setningu með orðunum á
+          spjaldinu. B strikar yfir það sem getur ekki verið rétt. Þegar B veit svarið spyr B: „Er
+          þetta …?“ Svo skiptið þið um hlutverk.
+        </Text>
+        <Text style={gameStyles.heading}>Spurningar</Text>
+        {asked.map((q) => (
+          <Text key={q} style={gameStyles.line}>
+            {`• ${q}`}
+          </Text>
+        ))}
+        <Text style={gameStyles.heading}>Hvað getur það verið?</Text>
+        <View style={gameStyles.candidates}>
+          {items.map((item) => (
+            <View key={item.name} style={gameStyles.candidate}>
+              <View style={gameStyles.box} />
+              <Text style={gameStyles.line}>{item.name}</Text>
+            </View>
+          ))}
+        </View>
+        {frames.length > 0 && (
+          <>
+            <Text style={gameStyles.heading}>Svaraðu svona</Text>
+            {frames.map((f) => (
+              <Text key={f} style={gameStyles.line}>
+                {f}
+              </Text>
+            ))}
+          </>
+        )}
+        {footer}
+      </Page>
+    </Document>
+  );
+}
+
+/** The file a guessing game is saved as, beside the cards in `spjold/`. */
+export function giskaleikurFileName(categoryId: string, level: Level): string {
+  return `giskaleikur-${categoryId}-${level}.pdf`;
+}
+
+/** A guessing game's PDF bytes. */
+export async function generateGiskaleikurPdf(
+  category: Category,
+  level: Level,
+  items: GameItem[]
+): Promise<Buffer> {
+  return renderPdf(createGiskaleikurDocument(category, level, items));
+}
+
+const textStyles = StyleSheet.create({
+  title: { fontSize: 15, color: '#1F2937', marginBottom: 2 },
+  step: { fontSize: 11, marginTop: 9, marginBottom: 2 },
+  instructions: { fontSize: 8.5, color: '#4B5563', marginBottom: 4, lineHeight: 1.3 },
+  frame: { fontSize: 9.5, color: '#374151', lineHeight: 1.4 },
+  stage: { flexDirection: 'row', marginBottom: 3 },
+  stageName: { width: '20%', fontSize: 8, lineHeight: 1.5, paddingRight: 6 },
+  stageText: { width: '80%', fontSize: 10, color: '#1F2937', lineHeight: 1.5 },
+  bank: {
+    borderWidth: 0.75,
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginBottom: 5,
+    fontSize: 9.5,
+    lineHeight: 1.4,
+  },
+  writeLine: { borderBottomWidth: 0.5, borderBottomColor: '#9CA3AF', height: 20 },
+});
+
+/** One stage of a model text, run or gap: what `islenskubraut-texti.ts` stores. */
+export type TextPart = { text: string } | { gap: string };
+export interface TextSheet {
+  genre: string;
+  stages: { name: string; parts: TextPart[] }[];
+  bank: string[];
+}
+
+/** How many lines a student gets for their own text in step 4. */
+export const WRITE_LINES = 5;
+
+/**
+ * "Frá tali til texta": the talk-to-write sheet for a card at a level (docs/research/
+ * islenskubraut-additions/, item 4), one A4 page in four steps. Say it with the card's frames;
+ * read the model text, each stage named beside it; fill the same text with the card's words
+ * taken out, from a box of them; write your own. Regular weight throughout, as on the word lists.
+ */
+export function createTextiDocument(
+  category: Category,
+  level: Level,
+  sheet: TextSheet
+): ReactElement {
+  const frames = category.sentenceFrames.find((f) => f.level === level)?.frames ?? [];
+  const color = { color: category.color };
+  let gapNumber = 0;
+  const stage = (name: string, body: ReactNode) => (
+    <View key={name} style={textStyles.stage} wrap={false}>
+      <Text style={{ ...textStyles.stageName, ...color }}>{name}</Text>
+      <Text style={textStyles.stageText}>{body}</Text>
+    </View>
+  );
+
+  return (
+    <Document>
+      <Page size="A4" style={{ ...styles.page, ...listStyles.page }}>
+        <View style={{ ...listStyles.header, backgroundColor: category.color }}>
+          <Text style={listStyles.headerText}>{category.name.toUpperCase()}</Text>
+          <LevelBadge level={level} color={category.color} />
+        </View>
+        <Text style={textStyles.title}>{`Frá tali til texta: ${sheet.genre}`}</Text>
+
+        <Text style={{ ...textStyles.step, ...color }}>1. Segðu frá</Text>
+        <Text style={textStyles.instructions}>
+          Veldu eitthvað á spjaldinu og segðu félaga þínum frá því. Notaðu rammana.
+        </Text>
+        {frames.map((f) => (
+          <Text key={f} style={textStyles.frame}>
+            {f}
+          </Text>
+        ))}
+
+        <Text style={{ ...textStyles.step, ...color }}>2. Lestu</Text>
+        <Text style={textStyles.instructions}>
+          Lestu textann. Hver hluti hans segir eitthvað ákveðið og nafnið stendur við hann.
+        </Text>
+        {sheet.stages.map((s) =>
+          stage(
+            s.name,
+            s.parts.map((p) => ('gap' in p ? p.gap : p.text))
+          )
+        )}
+
+        <Text style={{ ...textStyles.step, ...color }}>3. Fylltu í</Text>
+        <Text style={textStyles.instructions}>
+          Brjóttu blaðið svo að textinn hér fyrir ofan sjáist ekki. Fylltu í eyðurnar með orðunum í
+          rammanum.
+        </Text>
+        <Text style={{ ...textStyles.bank, borderColor: category.color }}>
+          {/* A non-breaking space inside each entry, so `villt dýr` never splits across lines. */}
+          {sheet.bank.map((w) => w.replace(/ /g, '\u00a0')).join('   ·   ')}
+        </Text>
+        {sheet.stages.map((s) =>
+          stage(
+            s.name,
+            s.parts.map((p) => {
+              if (!('gap' in p)) return p.text;
+              gapNumber += 1;
+              return `(${gapNumber}) ____________`;
+            })
+          )
+        )}
+
+        <Text style={{ ...textStyles.step, ...color }}>4. Skrifaðu</Text>
+        <Text style={textStyles.instructions}>
+          Skrifaðu tvær til fimm setningar um eitthvað annað á spjaldinu. Notaðu rammana í 1. hluta.
+        </Text>
+        {Array.from({ length: WRITE_LINES }, (_, i) => (
+          <View key={i} style={textStyles.writeLine} />
+        ))}
+
+        <Text style={styles.footer}>
+          {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — Frá tali til texta`}
+        </Text>
+      </Page>
+    </Document>
+  );
+}
+
+/** The file a talk-to-write sheet is saved as, beside the cards in `spjold/`. */
+export function textiFileName(categoryId: string, level: Level): string {
+  return `texti-${categoryId}-${level}.pdf`;
+}
+
+/** A talk-to-write sheet's PDF bytes. */
+export async function generateTextiPdf(
+  category: Category,
+  level: Level,
+  sheet: TextSheet
+): Promise<Buffer> {
+  return renderPdf(createTextiDocument(category, level, sheet));
+}
+
+const canStyles = StyleSheet.create({
+  title: { fontSize: 15, color: '#1F2937', marginBottom: 2 },
+  instructions: { fontSize: 8.5, color: '#4B5563', marginBottom: 6, lineHeight: 1.3 },
+  strip: {
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#9CA3AF',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 8,
+  },
+  stripHead: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 },
+  stripTitle: { fontSize: 10 },
+  name: { fontSize: 8, color: '#4B5563' },
+  row: { flexDirection: 'row', alignItems: 'center', minHeight: 20 },
+  statement: { flex: 1, fontSize: 9.5, color: '#1F2937', lineHeight: 1.3, paddingRight: 6 },
+  rating: { width: 46, alignItems: 'center' },
+  ratingHead: { width: 46, fontSize: 7, color: '#4B5563', textAlign: 'center' },
+  box: { width: 11, height: 11, borderWidth: 0.75, borderColor: '#6B7280' },
+  legend: { fontSize: 9, color: '#1F2937', lineHeight: 1.4 },
+  table: { marginTop: 8, borderTopWidth: 0.75, borderLeftWidth: 0.75, borderColor: '#9CA3AF' },
+  tr: { flexDirection: 'row' },
+  td: {
+    borderRightWidth: 0.75,
+    borderBottomWidth: 0.75,
+    borderColor: '#9CA3AF',
+    height: 22,
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  th: { fontSize: 8, color: '#374151' },
+});
+
+/** The three self-ratings on a student's strip, from not yet to on my own. */
+export const RATINGS = ['ekki enn', 'með hjálp', 'sjálf/ur'] as const;
+/** Rows on the class checklist, one per student. */
+export const CHECKLIST_ROWS = 22;
+
+/**
+ * "Ég get…": the can-do statements for a card at a level (docs/research/islenskubraut-additions/,
+ * item 6). Page 1 is four strips to cut apart, one per student, each statement with the three
+ * self-ratings. Page 2 is the teacher's class checklist with the same statements, ticked while a
+ * student talks about the card. Neither is a grade, and the checklist says so.
+ */
+export function createEggetDocument(
+  category: Category,
+  level: Level,
+  statements: string[]
+): ReactElement {
+  const header = (
+    <View style={{ ...listStyles.header, backgroundColor: category.color }}>
+      <Text style={listStyles.headerText}>{category.name.toUpperCase()}</Text>
+      <LevelBadge level={level} color={category.color} />
+    </View>
+  );
+  const footer = (
+    <Text style={styles.footer}>
+      {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — Ég get…`}
+    </Text>
+  );
+  const page = { ...styles.page, ...listStyles.page };
+  const strip = (n: number) => (
+    <View key={n} style={canStyles.strip} wrap={false}>
+      <View style={canStyles.stripHead}>
+        <Text style={{ ...canStyles.stripTitle, color: category.color }}>
+          {`Ég get… · ${category.name} · ${level}`}
+        </Text>
+        <Text style={canStyles.name}>Nafn: ______________________</Text>
+      </View>
+      <View style={canStyles.row}>
+        <Text style={canStyles.statement}> </Text>
+        {RATINGS.map((r) => (
+          <Text key={r} style={canStyles.ratingHead}>
+            {r}
+          </Text>
+        ))}
+      </View>
+      {statements.map((st) => (
+        <View key={st} style={canStyles.row}>
+          <Text style={canStyles.statement}>{st}</Text>
+          {RATINGS.map((r) => (
+            <View key={r} style={canStyles.rating}>
+              <View style={canStyles.box} />
+            </View>
+          ))}
+        </View>
+      ))}
+    </View>
+  );
+  const nameWidth = 130;
+  const cellWidth = (535 - nameWidth) / statements.length;
+
+  return (
+    <Document>
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={canStyles.title}>Ég get…</Text>
+        <Text style={canStyles.instructions}>
+          Klippið blaðið í fjóra miða, einn fyrir hvern nemanda. Lestu hverja setningu og merktu við
+          það sem passar núna. Þetta er ekki próf.
+        </Text>
+        {[1, 2, 3, 4].map(strip)}
+        {footer}
+      </Page>
+
+      <Page size="A4" style={page}>
+        {header}
+        <Text style={canStyles.title}>Ég get… Gátlisti kennara</Text>
+        <Text style={canStyles.instructions}>
+          Hlustaðu á nemanda tala um spjaldið og skrifaðu H (með hjálp) eða S (sjálf/ur) í reitinn.
+          Listinn er til að fylgjast með framförum, ekki til einkunnar.
+        </Text>
+        {statements.map((st, i) => (
+          <Text key={st} style={canStyles.legend}>
+            {`${i + 1}. ${st}`}
+          </Text>
+        ))}
+        <View style={canStyles.table}>
+          <View style={canStyles.tr} fixed>
+            <View style={{ ...canStyles.td, width: nameWidth }}>
+              <Text style={canStyles.th}>Nafn</Text>
+            </View>
+            {statements.map((st, i) => (
+              <View key={st} style={{ ...canStyles.td, width: cellWidth, alignItems: 'center' }}>
+                <Text style={canStyles.th}>{`${i + 1}.`}</Text>
+              </View>
+            ))}
+          </View>
+          {Array.from({ length: CHECKLIST_ROWS }, (_, r) => (
+            <View key={r} style={canStyles.tr}>
+              <View style={{ ...canStyles.td, width: nameWidth }} />
+              {statements.map((st) => (
+                <View key={st} style={{ ...canStyles.td, width: cellWidth }} />
+              ))}
+            </View>
+          ))}
+        </View>
+        {footer}
+      </Page>
+    </Document>
+  );
+}
+
+/** The file the can-do strips are saved as, beside the cards in `spjold/`. */
+export function eggetFileName(categoryId: string, level: Level): string {
+  return `egget-${categoryId}-${level}.pdf`;
+}
+
+/** The can-do strips' PDF bytes. */
+export async function generateEggetPdf(
+  category: Category,
+  level: Level,
+  statements: string[]
+): Promise<Buffer> {
+  return renderPdf(createEggetDocument(category, level, statements));
+}
+
 /** The file a word list is saved as, beside the cards in `spjold/`. */
 export function ordalistiFileName(categoryId: string, level: Level): string {
   return `ordalisti-${categoryId}-${level}.pdf`;
@@ -546,13 +1015,7 @@ export function ordalistiFileName(categoryId: string, level: Level): string {
 
 /** A word list's PDF bytes. */
 export async function generateOrdalistiPdf(category: Category, level: Level): Promise<Buffer> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pdfStream = await ReactPDF.renderToStream(createOrdalistiDocument(category, level) as any);
-  const chunks: Buffer[] = [];
-  for await (const chunk of pdfStream) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
-  }
-  return Buffer.concat(chunks);
+  return renderPdf(createOrdalistiDocument(category, level));
 }
 
 /**
@@ -575,12 +1038,5 @@ export function pdfPageCount(pdf: Buffer): number {
  * @returns A Buffer containing the PDF bytes
  */
 export async function generatePdf(category: Category, level: string): Promise<Buffer> {
-  const doc = createSpjaldDocument(category, level as Level);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pdfStream = await ReactPDF.renderToStream(doc as any);
-  const chunks: Buffer[] = [];
-  for await (const chunk of pdfStream) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
-  }
-  return Buffer.concat(chunks);
+  return renderPdf(createSpjaldDocument(category, level as Level));
 }

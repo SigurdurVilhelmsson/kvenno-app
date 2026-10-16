@@ -138,19 +138,47 @@ export function subjectsOf(builder, lookups, paradigms) {
   });
 }
 
-/** One word of a blank, put in the form the blank asks for. */
-function inflect(word, form, subject, lookups, paradigms, chosen) {
+const CASES = ['NF', 'ÞF', 'ÞGF', 'EF'];
+const GENDERS = ['KK', 'KVK', 'HK'];
+
+/** The distinct forms among `tags` in a table, in order: the alternatives a drill offers. */
+function formsOf(paradigm, tags) {
+  return [...new Set(tags.flatMap((t) => paradigm.bmyndir.filter((f) => f.g === t).map((f) => f.b)))];
+}
+
+/**
+ * One word of a blank, put in the form the blank asks for, with what a student needs to see why:
+ * the BÍN word it is a form of, and the forms it could have been in its place. A word of no
+ * class the blank inflects (`með` in `með hjólum`) comes back as written.
+ */
+function inflectWord(word, form, subject, lookups, paradigms, chosen) {
   if (form === 'agree') {
     const lemma = lemmaOf(word, 'lo', lookups, chosen);
-    if (!lemma) return word;
+    if (!lemma) return { word };
+    const paradigm = table(lemma.guid, paradigms);
     const tag = `FSB-${GENDER_TAG[subject.gender]}-NF${subject.number}`;
-    return formWithTag(table(lemma.guid, paradigms), tag);
+    return {
+      word: formWithTag(paradigm, tag),
+      lemma: lemma.guid,
+      choices: formsOf(
+        paradigm,
+        GENDERS.map((g) => `FSB-${g}-NF${subject.number}`)
+      ),
+    };
   }
   // ÞF: a noun in the nominative goes into the accusative of the same number.
   const lemma = lemmaOf(word, 'no', lookups, chosen);
-  if (!lemma) return word;
+  if (!lemma) return { word };
   const paradigm = table(lemma.guid, paradigms);
-  return formWithTag(paradigm, `ÞF${numberOf(word, paradigm, false)}`);
+  const number = numberOf(word, paradigm, false);
+  return {
+    word: formWithTag(paradigm, `ÞF${number}`),
+    lemma: lemma.guid,
+    choices: formsOf(
+      paradigm,
+      CASES.map((c) => `${c}${number}`)
+    ),
+  };
 }
 
 function capitalised(model, word) {
@@ -160,32 +188,54 @@ function capitalised(model, word) {
 }
 
 /**
- * The sentence a frame makes about `subject` with `option` in its blank. Throws, naming what is
- * missing, when BÍN has not supplied a form the sentence needs.
+ * The sentence a frame makes about `subject` with `option` in its blank, word by word. A word the
+ * grammar decides carries `why`: a pronoun or `er` that follows the subject, an adjective that
+ * agrees with it, or a noun in the accusative after the frame's verb (`verb`). An inflected word
+ * also names its BÍN word (`lemma`) and the forms it could have been (`choices`). Throws, naming
+ * what is missing, when BÍN has not supplied a form the sentence needs.
  */
-export function buildSentence(frame, subject, option, lookups, paradigms, chosen = {}) {
+export function buildWords(frame, subject, option, lookups, paradigms, chosen = {}) {
   const roles = new Map(frame.agree.map((a) => [a.word, a.role]));
-  let fill = null;
-  if (frame.blank?.subject) fill = subject.text;
-  else if (frame.blank) {
-    fill =
-      frame.blank.form === 'as-is'
-        ? option
-        : tokens(option)
-            .map((w) => inflect(w, frame.blank.form, subject, lookups, paradigms, chosen))
-            .join(' ');
-  }
-  return frame.frame
-    .split(' ')
-    .map((tok) => {
-      const [, core, punct] = tok.match(/^(.*?)([.,?!]*)$/);
-      if (core === '___') return fill + punct;
-      const role = roles.get(core);
-      if (!role) return tok;
-      const word =
-        role === 'sögn' ? VERA[subject.number] : PRONOUNS[role][subject.number][subject.gender];
-      return capitalised(core, word) + punct;
-    })
+  const parts = frame.frame.split(' ');
+  const out = [];
+  parts.forEach((tok, i) => {
+    const [, core, punct] = tok.match(/^(.*?)([.,?!]*)$/);
+    const end = (words) => {
+      words[words.length - 1].word += punct;
+      out.push(...words);
+    };
+    if (core === '___') {
+      // Word by word, as the sentence is compared with the card word by word.
+      const asWritten = (text) => text.split(' ').map((word) => ({ word }));
+      if (frame.blank?.subject) return end(asWritten(subject.text));
+      if (frame.blank.form === 'as-is') return end(asWritten(option));
+      const kind = frame.blank.form === 'agree' ? 'samræmi' : 'þolfall';
+      const verb = kind === 'þolfall' ? parts[i - 1]?.replace(/[.,?!]+$/, '') : undefined;
+      return end(
+        tokens(option).map((w) => {
+          const done = inflectWord(w, frame.blank.form, subject, lookups, paradigms, chosen);
+          if (!done.lemma) return done;
+          return { ...done, why: { kind, from: w, to: done.word, ...(verb ? { verb } : {}) } };
+        })
+      );
+    }
+    const role = roles.get(core);
+    if (!role) return out.push({ word: tok });
+    const word =
+      role === 'sögn' ? VERA[subject.number] : PRONOUNS[role][subject.number][subject.gender];
+    const why =
+      role === 'sögn'
+        ? { kind: 'sögn', from: core, to: word }
+        : { kind: 'fornafn', case: role, from: core.toLocaleLowerCase('is'), to: word };
+    end([{ word: capitalised(core, word), why }]);
+  });
+  return out;
+}
+
+/** The sentence a frame makes, as a string: `buildWords` joined. */
+export function buildSentence(frame, subject, option, lookups, paradigms, chosen = {}) {
+  return buildWords(frame, subject, option, lookups, paradigms, chosen)
+    .map((w) => w.word)
     .join(' ');
 }
 
@@ -228,17 +278,41 @@ export function allSentences(category, lookups, paradigms) {
  * A built sentence as its words, each marked `changed` when it differs from the card as printed
  * (`Það er sætt.` → `Hann er sætur.` marks `Hann` and `sætur`), so the page can show a student
  * what the grammar did. A word the card writes with a slash (`Hún/Hann`, `há/hár`) is a choice
- * the student made, not a change, and is never marked.
+ * the student made, not a change, and is never marked. A changed word keeps its reason, and an
+ * inflected one its BÍN word and alternatives; an unchanged word keeps neither.
  */
 export function markChanges(written, built) {
   const before = written.split(' ');
-  const after = built.split(' ');
-  const comparable = before.length === after.length;
+  const words = typeof built === 'string' ? built.split(' ').map((word) => ({ word })) : built;
+  const comparable = before.length === words.length;
   const bare = (w) => w.replace(/[.,?!]+$/, '').toLocaleLowerCase('is');
-  return after.map((word, i) => ({
-    word,
-    changed: comparable && !before[i].includes('/') && bare(before[i]) !== bare(word),
-  }));
+  return words.map(({ word, why, lemma, choices }, i) => {
+    const changed = comparable && !before[i].includes('/') && bare(before[i]) !== bare(word);
+    return changed && why
+      ? { word, changed, why, ...(lemma ? { lemma, choices } : {}) }
+      : { word, changed };
+  });
+}
+
+/**
+ * A word's BÍN table for "Allar myndir orðsins": a noun's four cases in each number, without the
+ * article; an adjective's four cases in each gender, singular, strong positive. Each cell lists
+ * every form BÍN gives.
+ */
+export function wordTable(paradigm) {
+  const cell = (tag) => formsOf(paradigm, [tag]).join(' / ');
+  if (paradigm.ofl === 'no') {
+    return {
+      ord: paradigm.ord,
+      columns: ['eintala', 'fleirtala'],
+      rows: CASES.map((c) => ({ case: c, forms: [cell(`${c}ET`), cell(`${c}FT`)] })),
+    };
+  }
+  return {
+    ord: paradigm.ord,
+    columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+    rows: CASES.map((c) => ({ case: c, forms: GENDERS.map((g) => cell(`FSB-${g}-${c}ET`)) })),
+  };
 }
 
 /**
@@ -253,7 +327,7 @@ export function pageData(category, lookups, paradigms) {
       const options = frame.blank && !frame.blank.subject ? frame.blank.options : null;
       const sentences = subjects.map((subject) =>
         (options ?? [null]).map((option) => {
-          const built = buildSentence(frame, subject, option, lookups, paradigms, builder.lemmas);
+          const built = buildWords(frame, subject, option, lookups, paradigms, builder.lemmas);
           const fill = frame.blank?.subject ? subject.text : option;
           return markChanges(fill === null ? frame.frame : frame.frame.replace('___', fill), built);
         })
@@ -265,6 +339,13 @@ export function pageData(category, lookups, paradigms) {
         sentences,
       };
     });
+    // "Allar myndir orðsins": the table of every word a sentence on this page inflects.
+    const guids = new Set(
+      frames.flatMap((f) => f.sentences.flat(2).flatMap((w) => (w.lemma ? [w.lemma] : [])))
+    );
+    const tables = Object.fromEntries(
+      [...guids].sort().map((g) => [g, wordTable(table(g, paradigms))])
+    );
     return {
       level: builder.level,
       confirmed: builder.confirmed,
@@ -276,6 +357,7 @@ export function pageData(category, lookups, paradigms) {
         person: person ?? false,
       })),
       frames,
+      tables,
     };
   });
 }

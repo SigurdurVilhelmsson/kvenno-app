@@ -42,6 +42,9 @@ vi.mock('../components/DownloadButton', () => ({
       Hlaða niður PDF ({categoryId}, {level})
     </button>
   ),
+  GameButton: () => <button>Hvað er þetta? (PDF)</button>,
+  TextiButton: () => <button>Frá tali til texta (PDF)</button>,
+  EggetButton: () => <button>Ég get… (PDF)</button>,
   WordListButton: ({ categoryId, level }: { categoryId: string; level: string }) => (
     <button data-testid="word-list-button">
       Orðalisti ({categoryId}, {level})
@@ -60,10 +63,22 @@ function renderWithRouter(ui: React.ReactElement, initialEntries: string[] = ['/
 // Home page tests
 // ---------------------------------------------------------------------------
 describe('Islenskubraut Home page', () => {
-  it('renders all 6 category cards', () => {
+  // The six published categories; Skólinn is a draft (REVIEW-QUEUE C19) and stays off the grid.
+  const published = categories.filter((c) => !c.draft);
+
+  it('renders the 6 published category cards, and no draft', () => {
     renderWithRouter(<Home />);
 
-    expect(categories).toHaveLength(6);
+    expect(published).toHaveLength(6);
+    for (const category of published) {
+      expect(screen.getByText(category.name)).toBeDefined();
+    }
+    expect(screen.queryByText('Skólinn')).toBeNull();
+  });
+
+  it('shows the draft categories too under ?drog', () => {
+    renderWithRouter(<Home />, ['/?drog']);
+
     for (const category of categories) {
       expect(screen.getByText(category.name)).toBeDefined();
     }
@@ -123,7 +138,7 @@ describe('Islenskubraut Home page', () => {
   it('renders category icons', () => {
     renderWithRouter(<Home />);
 
-    for (const category of categories) {
+    for (const category of published) {
       expect(screen.getByText(category.icon)).toBeDefined();
     }
   });
@@ -131,7 +146,7 @@ describe('Islenskubraut Home page', () => {
   it('category cards link to correct spjald paths', () => {
     renderWithRouter(<Home />);
 
-    for (const category of categories) {
+    for (const category of published) {
       const link = screen.getByText(category.name).closest('a');
       expect(link).toBeDefined();
       expect(link?.getAttribute('href')).toBe(`/spjald/${category.id}`);

@@ -69,9 +69,11 @@ pnpm islenskubraut:bin    # Check every content word against BÍN (--fetch to lo
 pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags make, for review
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
-pnpm islenskubraut:spjold # Render the 18 teaching-card PDFs and 18 word lists into apps/islenskubraut/public/spjold/
-                          #   (runs before the app's dev and build; fails on a card that is not 3 pages,
-                          #   or a word list that is not 1)
+pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
+pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
+                          #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
+                          #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
+                          #   not 2, or a word list or talk-to-write sheet that is not 1)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages, and e2e/ (its own tsconfig)
@@ -208,8 +210,12 @@ dist/
 └── islenskubraut/
     ├── index.html                     # Íslenskubraut SPA
     ├── assets/
-    └── spjold/spjald-*.pdf            # The 18 teaching cards, rendered at build time
-        spjold/ordalisti-*.pdf         # The 18 word lists beside them, one page each
+    └── spjold/spjald-*.pdf            # The 21 teaching cards, rendered at build time
+        spjold/ordalisti-*.pdf         # The 21 word lists beside them, one page each
+        spjold/giskaleikur-*.pdf       # The 21 guessing games, two pages each
+        spjold/texti-*.pdf             # The 21 talk-to-write sheets, one page each
+        spjold/egget-*.pdf             # The 21 can-do sheets: student strips, class checklist
+    └── hljod/*.mp3                    # The 524 recordings, played only once approved
 ```
 
 Plus `server/dist/` — the compiled Express backend, emitted outside `dist/` by `pnpm build`
@@ -488,7 +494,7 @@ games were migrated; the design's Outcome section has the before→after per gam
 
 ### Íslenskubraut content
 
-**Edit `content/islenskubraut/*.yaml` only.** Those six files are the source of truth. Both
+**Edit `content/islenskubraut/*.yaml` only.** Those seven files are the source of truth. Both
 TypeScript copies are generated from them and must never be hand-edited. The editing workflow —
 directly, or by spreadsheet — is written up for a human in
 [`content/islenskubraut/README.md`](content/islenskubraut/README.md); what follows is the
@@ -541,7 +547,7 @@ forgot to register the new category."
   input: empty strings, invisible characters (soft hyphen, zero-width space, BOM and friends), and
   ASCII-flattened Icelandic
 - `scripts/islenskubraut/__tests__/generated-matches-yaml.test.ts` — the generated modules agree
-  with each other and still ship all six categories in taught order
+  with each other and still ship all seven categories in taught order
 - `apps/islenskubraut/src/data/__tests__/server-copy-in-sync.test.ts` — the two generated copies
   stay byte-identical in content and expose the same category ids
 
@@ -643,10 +649,93 @@ not part of the build, so a site being down does not block a deploy. Open items:
 level's answers that the level below does not print, so A2 and B1 stay about 30 words rather than 90. Each word has a line for the student's own language and four boxes for review on days 1, 3,
 7 and 14. `newWordsAt` and `createOrdalistiDocument` are in `server/src/lib/islenskubraut-pdf.tsx`.
 The build fails on a list longer than one page. The card page links it as "Orðalisti (PDF)".
-**Words and group headings are regular weight on purpose.** In bold, react-pdf put a wrong `y`
-into the PDF's text layer and dropped the `s` of `syndir` from the page. A dropped first letter
-also shows on the printed cards: `Efniviður` prints as `fniviður` (`docs/REVIEW-QUEUE.md` D3).
+**Every PDF is rendered through `renderPdf`, which reloads the fonts for each document.**
+react-pdf keeps one font object per file for the life of the process, and a document rendered
+after another dropped capitals from the page: the cards printed `fniviður` for `Efniviður`, and a
+word list lost the `s` of `syndir` (`docs/REVIEW-QUEUE.md` D3, fixed 2026-10-16). Each document
+alone was whole, which is why it would not reproduce. Do not call `ReactPDF.renderToStream`
+directly; a test counts the glyphs drawn after a card and fails without the reload.
 No pictures yet; printing ARASAAC's waits on C10. The wording is C12.
+
+**Guessing game, "Hvað er þetta?" (2026-10-16).** An information-gap game per card and level:
+`giskaleikur-<flokkur>-<stig>.pdf`, two A4 pages, cut-out cards that each name a thing in the card's
+own answer words, and a question sheet with the card's questions, the candidates to cross out and
+the level's frames. `content/islenskubraut/giskaleikur/<flokkur>.yaml` lists the things, the level
+each starts at and its chips per question. `scripts/islenskubraut/giskaleikur.mjs` checks each file
+against its card and resolves each level's game in **that level's words only**. **The build fails**
+on a chip the card does not print, a chip that is the answer, fewer than four things, a thing
+described by fewer than three questions, or two things described identically. The render fails on a
+game that is not two pages. The build generates `server/src/lib/islenskubraut-giskaleikur.ts` (the
+resolved games) and `apps/islenskubraut/src/data/giskaleikur.ts` (the `confirmed` flags). The card
+page links "Hvað er þetta? (PDF)" **only once a file says `confirmed: true`**, or under `?drog`. The
+items and the rules text were drafted by Claude (C13). Workflow:
+`content/islenskubraut/giskaleikur/README.md`.
+
+**Talk-to-write sheets, "Frá tali til texta" (2026-10-16).** One page per card and level,
+`texti-<flokkur>-<stig>.pdf`, in four steps: say it with the frames, read a model text with each
+stage named, fill a gapped copy from a box of words, write your own.
+`content/islenskubraut/texti/<flokkur>.yaml` holds a genre and named stages per level.
+**Nobody marks the gaps:** `scripts/islenskubraut/texti.mjs` takes out each word BÍN reads as a form of
+a noun, adjective or verb the card offers at that level (`hönskum` for `hanskar`), and each
+multi-word chip as printed, once each. That is why the BÍN check (`pnpm islenskubraut:bin`) now also
+reads the texts, and **the build fails on a text word never looked up**, so run `--fetch` after an
+edit. It also fails on fewer than four gaps or two stages. The texts were checked with Greynir and
+GreynirCorrect on 2026-10-16, run by hand and not part of the build. The card page links
+"Frá tali til texta (PDF)" only once confirmed, or under `?drog`. Drafted by Claude (C14). Workflow:
+`content/islenskubraut/texti/README.md`.
+
+**Recordings, "Hlustaðu" (2026-10-16).** Every word, frame and worked example on the card page has a
+play button once its recording is approved. There are 524 MP3s in `apps/islenskubraut/public/hljod/`,
+each named by a hash of its text (`clipName` in `scripts/islenskubraut/hljod.mjs`), so an edited text
+needs a new one. They are **synthesised**: Reykjavík University's Talrómur C voice (CC BY 4.0) with
+ice-g2p for pronunciation, by `scripts/islenskubraut/hljod/talgerving.py`. That is a Python 3.10
+setup on a teacher's machine, never in CI. `content/islenskubraut/hljod/hljod.yaml` lists each clip
+`true`/`false`; **only `true` plays for students**, `?drog` plays the rest (`DrogContext` in
+`Hlusta.tsx`), and the card page credits the voice whenever a clip plays. **The build fails only on an
+approved clip with no file.** A text with no clip simply has no button, so editing a card never needs
+the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
+review page; it flags eight of 524 (C15). Tiro's TTS service, which the research named,
+is gone. Workflow: `content/islenskubraut/hljod/README.md`.
+
+**Can-do statements, "Ég get…" (2026-10-16).** `content/islenskubraut/egget/<flokkur>.yaml` gives three
+or four statements per level, each starting `Ég get` (`scripts/islenskubraut/egget.mjs` refuses one
+that does not). `egget-<flokkur>-<stig>.pdf` has two pages: four strips for students to rate themselves
+(_ekki enn_, _með hjálp_, _sjálf/ur_) and the teacher's class checklist, which says it is not for
+grading. Nothing is stored. The BÍN check reads the statements. The card page links "Ég get… (PDF)"
+only once confirmed, or under `?drog`. Drafted by Claude (C16); the research's "A1 · 1. stig" card
+labels wait on a ruling there.
+
+**Visible grammar on the sentence builder (2026-10-16).** `buildWords` in `smidur.mjs` builds a
+sentence word by word, and each word the grammar decides carries `why`: a pronoun or `er` following
+the subject, an adjective agreeing with it, or a noun in the accusative after the frame's verb. An
+inflected word also carries its BÍN `lemma` and the `choices` it could have been. `buildSentence` is
+that joined, and its output is unchanged. `smidur.ts` gains each level's `tables` (`wordTable`).
+`Malfraedi.tsx` turns these into a line of reason per underlined word, "Allar myndir orðsins" and an
+"Æfing" drill with no score. **A multi-word chip is split into words** (`á morgnana`), because
+`markChanges` compares the sentence with the card word by word, and one token for the chip unmarked
+every change after it. Wording is C17; it goes live with the builder (C9).
+
+**Students' own languages, "Á þínu máli" (2026-10-16).** `content/islenskubraut/glossur/<code>.yaml`
+is one language: glosses per chip, per-card `categories` overrides for a chip that means something
+else on one card (`hátt`), `dir` for right-to-left, and an optional `dictionary` address with
+`{word}`. `scripts/islenskubraut/glossur.mjs` refuses a gloss for a chip no card prints, and **an
+approved language must name `approvedBy` and gloss every A1 chip**, unless it is a dictionary alone.
+The card page's picker (`Mal.tsx`) offers approved languages only, drafts under `?drog`, and
+remembers the choice in `localStorage`. `pl.yaml` is machine-drafted, with Árnastofnun's
+Icelandic–Polish dictionary linked per word (C18).
+
+**Skólinn, the seventh category (2026-10-16), and draft categories.** `content/islenskubraut/skolinn.yaml`
+is the language of school: things in the bag, subjects, instructions (`lestu`, `berðu saman`,
+`rökstyddu`), where, who and when. Its B1 frames follow WIDA's four key uses (recount, explain,
+argue, discuss), and its B1-only question "Námsorð" holds the twelve most frequent nouns, verbs and
+adjectives of LÍNO-2, in MÍNO order. LÍNO-2 is Sigríður Ólafsdóttir and Auður Pálsdóttir's list,
+CC BY 4.0, `hdl.handle.net/20.500.12537/307`. **A category file may say `draft: true`:** the home
+grid leaves it out except under `?drog`, and its card page carries a "Drög" note. `review.mjs` keeps
+the key through a spreadsheet round trip. **A category file has no comment header**, since
+`import.test.ts` renders each byte for byte. Drafted by Claude (C19). **Adding a category now also
+means** entries in `myndir/myndir.yaml` for its A1 chips (the build fails without), and, because tests
+expect one per category, a file each in `giskaleikur/`, `texti/` and `egget/`, glosses in every
+glossary language (`pl.yaml`), and Bildetema's address in `tenglar/tenglar.yaml`.
 
 **UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the

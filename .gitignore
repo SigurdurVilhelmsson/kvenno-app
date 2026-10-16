@@ -46,4 +46,7 @@ test-results/
 islenskubraut-yfirlestur-*.xlsx
 # Íslenskubraut pictogram review sheet (pnpm islenskubraut:myndir)
 islenskubraut-myndir-yfirlit.html
+islenskubraut-hljod-yfirlit.html
+hljod-verk.json
+hljod-hlustun.json
 .deploy-bundle/

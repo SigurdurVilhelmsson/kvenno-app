@@ -2,7 +2,13 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { DownloadButton, WordListButton } from '../components/DownloadButton';
+import {
+  DownloadButton,
+  EggetButton,
+  GameButton,
+  TextiButton,
+  WordListButton,
+} from '../components/DownloadButton';
 
 describe('DownloadButton', () => {
   it('links to the card the build rendered, under the name the file is saved as', () => {
@@ -18,6 +24,27 @@ describe('DownloadButton', () => {
     const link = screen.getByRole('link', { name: 'Orðalisti (PDF)' });
     // The same script writes ordalisti-<flokkur>-<stig>.pdf beside each card.
     expect(link.getAttribute('href')).toBe('/spjold/ordalisti-klaednadur-B1.pdf');
+    expect(link.hasAttribute('download')).toBe(true);
+  });
+
+  it('links to the level’s guessing game, rendered beside the cards', () => {
+    render(<GameButton categoryId="klaednadur" level="B1" color="#A6500C" />);
+    const link = screen.getByRole('link', { name: 'Hvað er þetta? (PDF)' });
+    expect(link.getAttribute('href')).toBe('/spjold/giskaleikur-klaednadur-B1.pdf');
+    expect(link.hasAttribute('download')).toBe(true);
+  });
+
+  it('links to the level’s talk-to-write sheet, rendered beside the cards', () => {
+    render(<TextiButton categoryId="klaednadur" level="B1" color="#A6500C" />);
+    const link = screen.getByRole('link', { name: 'Frá tali til texta (PDF)' });
+    expect(link.getAttribute('href')).toBe('/spjold/texti-klaednadur-B1.pdf');
+    expect(link.hasAttribute('download')).toBe(true);
+  });
+
+  it('links to the level’s can-do sheet, rendered beside the cards', () => {
+    render(<EggetButton categoryId="klaednadur" level="B1" color="#A6500C" />);
+    const link = screen.getByRole('link', { name: 'Ég get… (PDF)' });
+    expect(link.getAttribute('href')).toBe('/spjold/egget-klaednadur-B1.pdf');
     expect(link.hasAttribute('download')).toBe(true);
   });
 });

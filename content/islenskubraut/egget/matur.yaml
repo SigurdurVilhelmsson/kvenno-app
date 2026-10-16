@@ -1,0 +1,18 @@
+# Ég get… — what a student can do with the Matur og drykkur card, per level. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the statements are right.
+confirmed: false
+A1:
+  - Ég get sagt hvaða matur þetta er.
+  - Ég get sagt hvernig maturinn er á litinn.
+  - Ég get sagt hvort maturinn er sætur, saltur eða súr.
+  - Ég get sagt hvenær maður borðar matinn.
+A2:
+  - Ég get lýst því hvernig matur lítur út og hvernig hann bragðast.
+  - Ég get sagt úr hverju maturinn er gerður.
+  - Ég get sagt hvar maður kaupir matinn.
+  - Ég get spurt félaga minn um mat og skilið svarið.
+B1:
+  - Ég get borið saman tvo rétti.
+  - Ég get sagt hvað mér finnst um mat og hvers vegna.
+  - Ég get útskýrt hvers vegna matur er hollur eða óhollur.
+  - Ég get skrifað stutta lýsingu á mat.

@@ -431,12 +431,180 @@ language, and four review boxes. A2 and B1 list only the answers the level below
 - [ ] **The A1 pictograms go on the lists** once C10 has approved them and settled the licence for
       print, as for the printed cards.
 
+### C13. Guessing game, "Hvað er þetta?" (2026-10-16)
+
+Two printable pages per card and level: cut-out cards that each name a thing and say what the card
+says about it, and a question sheet for the student who guesses. The things and their descriptions
+are in `content/islenskubraut/giskaleikur/`, one file per category, and were **drafted by Claude**:
+eight or nine things per category. The card page does not link a game until its file says
+`confirmed: true`; add `?drog` to a card page's address to see the link anyway.
+
+- [ ] **Read each category's game at all three levels**, from a card page with `?drog`. Is each
+      description true, and are the things ones a student at that level knows? The A2 and B1 games
+      add things the A1 game does not have.
+- [ ] **The Icelandic, drafted by Claude:**
+  - the page titles `Hvað er þetta? Spjöld` and `Hvað er þetta? Spurningablað`
+  - the rules: `Leikurinn er fyrir tvo. Nemandi A dregur spjald og segir ekki hvað er á því.
+Nemandi B spyr spurninganna hér fyrir neðan, einnar í einu. A svarar í heilli setningu með
+orðunum á spjaldinu. B strikar yfir það sem getur ekki verið rétt. Þegar B veit svarið spyr B:
+„Er þetta …?“ Svo skiptið þið um hlutverk.`
+  - the headings `Spurningar`, `Hvað getur það verið?` and `Svaraðu svona`
+  - the button `Hvað er þetta? (PDF)`
+- [ ] **Set `confirmed: true`** in each category's file once it is right. That is what puts the
+      link on the card page.
+
+### C14. Talk-to-write sheets, "Frá tali til texta" (2026-10-16)
+
+One printable page per card and level: say it with the frames, read a short model text, fill the
+same text with the card's words taken out, then write your own. The 18 model texts are in
+`content/islenskubraut/texti/` and were **drafted by Claude**. Every sentence parses in Greynir,
+which checks grammar, not meaning. The card page does not link a sheet until its file says
+`confirmed: true`; add `?drog` to see the link anyway.
+
+- [ ] **Read all three levels of each category**, from a card page with `?drog`. Is each text
+      true, natural Icelandic, and at its level? A2 grows from the card's own example; B1 is a
+      school genre (Dýr a report, Matur a comparison, Farartæki an explanation, Manneskja a job
+      description, Staðir a description of a place, Klæðnaður advice).
+- [ ] **Look at the gaps on each sheet.** The build chooses them from BÍN and the card's words, so
+      a teacher may want a word added to or removed from the card, or the text reworded.
+- [ ] **The Icelandic, drafted by Claude:**
+  - the title `Frá tali til texta: <genre>` and the step headings `1. Segðu frá`, `2. Lestu`,
+    `3. Fylltu í`, `4. Skrifaðu`
+  - `Veldu eitthvað á spjaldinu og segðu félaga þínum frá því. Notaðu rammana.`
+  - `Lestu textann. Hver hluti hans segir eitthvað ákveðið og nafnið stendur við hann.`
+  - `Brjóttu blaðið svo að textinn hér fyrir ofan sjáist ekki. Fylltu í eyðurnar með orðunum í
+rammanum.`
+  - `Skrifaðu tvær til fimm setningar um eitthvað annað á spjaldinu. Notaðu rammana í 1. hluta.`
+  - the genre and stage names in each file, and the button `Frá tali til texta (PDF)`
+- [ ] **Set `confirmed: true`** in each category's file once it is right.
+
+### C15. Recordings on the cards, "Hlustaðu" (2026-10-16)
+
+A play button beside every word, frame and worked example on the card page: 524 recordings,
+synthesised with Reykjavík University's Talrómur C voice (CC BY 4.0). **None plays for students
+until a person marks it `true`** in `content/islenskubraut/hljod/hljod.yaml`; add `?drog` to a card
+page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
+
+- [ ] **Listen to the recordings** from the review page `pnpm islenskubraut:hljod` writes, and mark
+      each right one `true`. The page puts first the eight that a speech recogniser heard as
+      something else: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`, `húfa`,
+      `oddhvasst`. The
+      research estimated 3–5 hours for all of them.
+- [ ] **Is a synthetic voice acceptable for the cards at all?** If not, the same files can be
+      recorded by a person under the same names, and the play buttons stay as they are.
+- [ ] **The QR codes on the printed cards** wait until some recordings are approved.
+- [ ] **The Icelandic, drafted by Claude:** the button label `Hlusta: <texti>` (read by screen
+      readers), the credit line `Upptökur: <rödd>.` and the review page's instructions.
+
+### C16. Can-do statements, "Ég get…" (2026-10-16)
+
+Three or four statements per card and level, printed as four strips for students to rate
+themselves (_ekki enn_, _með hjálp_, _sjálf/ur_) and a class checklist for the teacher, in
+`egget-*.pdf`. The 72 statements are in `content/islenskubraut/egget/` and were **drafted by
+Claude** from each card's questions and frames. The card page does not link a sheet until its file
+says `confirmed: true`; add `?drog` to see the link anyway.
+
+- [ ] **Read each category's statements at all three levels.** Does each describe something the
+      card at that level really lets a student do? Should they follow MMS's hæfnirammi or the
+      ÍSAN1Í course outcomes more closely?
+- [ ] **The ratings and the checklist's instructions, drafted by Claude:**
+  - the ratings `ekki enn`, `með hjálp`, `sjálf/ur`
+  - `Klippið blaðið í fjóra miða, einn fyrir hvern nemanda. Lestu hverja setningu og merktu við
+það sem passar núna. Þetta er ekki próf.`
+  - `Hlustaðu á nemanda tala um spjaldið og skrifaðu H (með hjálp) eða S (sjálf/ur) í reitinn.
+Listinn er til að fylgjast með framförum, ekki til einkunnar.`
+  - the button `Ég get… (PDF)`
+- [ ] **Label every card "A1 · 1. stig" and so on**, matching MMS's framework, as the research
+      proposes? Not done: it changes the printed cards, and it belongs with C8's question of how
+      the levels are named.
+- [ ] **Set `confirmed: true`** in each category's file once it is right.
+
+### C17. Visible grammar on the sentence builder (2026-10-16)
+
+Item 7 of the research, built on the sentence builder page (`/islenskubraut/smidur/<flokkur>`), so
+it reaches students exactly when the builder does: once C9 confirms a category's tags. Three
+parts, all read off the builder's tags and BÍN's tables:
+
+- **Why each underlined word changed.** One line per word, from five templates in
+  `apps/islenskubraut/src/components/Malfraedi.tsx` (`reason`):
+  - `„það“ verður „hann“ af því að „ávöxtur“ er karlkyns og í eintölu.`
+  - `„það“ verður „hún“: fornafnið fylgir manneskjunni.`
+  - `„er“ verður „eru“ af því að „skór“ er í fleirtölu.`
+  - `„sætt“ verður „sætur“: lýsingarorðið fylgir „ávöxtur“ (karlkyn, eintala).`
+  - `„feldur“ verður „feld“: á eftir „hefur“ kemur þolfall.`
+- **Allar myndir orðsins:** under an inflected word, its BÍN table:
+  - a noun's four cases in each number
+  - an adjective's four cases in each gender, singular
+
+  What differs from the base form is in bold, and the form in the sentence is ringed.
+
+- **Æfing:** a sentence with an inflected word left out and its forms to pick from. A wrong pick
+  says `Ekki alveg. Reyndu aftur.`, a right one `Rétt.` and the reason. There is no score, and
+  nothing is saved.
+
+- [ ] **Read the five templates.** Is `þolfall` the word to use with A1 students, or should the
+      line say less? Should the reason name the case of the pronoun too?
+- [ ] **Try the drill** on two or three categories. It asks about every inflected word in the
+      level's sentences, in order. Is that the right length, or should it stop after ten?
+- [ ] **Not built:** a gender colour on every card, the research's optional fourth part. It would
+      change the printed cards, so it waits for C8.
+
+### C18. Students' own languages, "Á þínu máli" (2026-10-16)
+
+A picker on the card page puts a student's own language beside each word on the question card,
+with a link to look the word up. One file per language in `content/islenskubraut/glossur/`. **Only
+an approved language is offered**; `?drog` shows drafts. Workflow:
+`content/islenskubraut/glossur/README.md`.
+
+- [ ] **Polish: glosses, the dictionary, or both?** `pl.yaml` glosses all 103 A1 chips, **drafted
+      by machine translation (Claude)**, and links each chip to Árnastofnun's Icelandic–Polish
+      dictionary (`polska.arnastofnun.is/pl/leit/<word>`, which finds `feld` under `feldur`).
+  - **With a Polish speaker:** they read the glosses, then set `approved: true` and `approvedBy`.
+  - **Without one:** delete `words` and `categories` and approve the dictionary link alone. Its
+    entries are written by Árnastofnun's editors.
+- [ ] **Which other languages, and who checks them?** The research's cost is 1–2 hours of a
+      speaker's time per language for the A1 chips. Arabic and Farsi are written right to left,
+      which the page already handles.
+- [ ] **The Icelandic, drafted by Claude:** the picker's label `Á þínu máli`, its first option
+      `Bara íslenska`, and the link name `Orðabók: <orð>` that screen readers say.
+
+### C19. Skólinn, a seventh category (2026-10-16)
+
+`content/islenskubraut/skolinn.yaml` is the language of school, drafted by Claude: things in the
+school bag, subjects, instructions, where, who and when.
+
+- **A1** names things and follows simple instructions (`lestu`, `skrifaðu`).
+- **A2** adds task verbs (`lýstu`, `berðu saman`, `útskýrðu`) and asking for help.
+- **B1** frames follow WIDA's four key uses (recount, explain, argue, discuss). A B1-only
+  "Námsorð" question holds the twelve most frequent nouns, verbs and adjectives of LÍNO-2
+  (CC BY 4.0), in MÍNO order: `hluti`, `áhrif`, `breyting`, `mikilvægur`, `einstaklingur`,
+  `starf`, `auka`, `meðferð`, `heimild`, `greina`, `tengja`, `hugmynd`.
+
+**The category is a draft (`draft: true`)**: the home page leaves it out, its card works at
+`/islenskubraut/spjald/skolinn`, and `/islenskubraut/?drog` shows it in the grid. Its guessing
+game, talk-to-write text, can-do statements, pictogram search words, recordings and Polish glosses
+are drafts too, under C13–C18.
+
+- [ ] **Read the card at all three levels.** Are these the right things, places and subjects for
+      Kvennaskólinn? Is the list of instructions the one teachers actually use?
+- [ ] **Námsorð:** keep the top twelve by frequency, or pick twelve from LÍNO-2 by hand? Words
+      like `meðferð` and `heimild` are frequent across subjects but not obvious at B1. The
+      research suggested 30–50; twelve fit the printed card.
+- [ ] **BÍN does not know** `námsorð`, `verkefnablað` and `LÍNO` (in the B1 teacher note).
+      Accept them in `content/islenskubraut/bin/ekki-i-bin.yaml` with a reason, or reword.
+- [ ] **When it is right,** delete `draft: true` from `skolinn.yaml`, and the card joins the grid.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
 
 From the vertical-scroll design's §7 and the mobile-pass decisions' last section.
 
+- [x] **The phone bottom bar's active item failed contrast**: brand orange on orange-50 is 2.9:1,
+      under the 4.5:1 that 12 px text needs. Found 2026-10-16 by the first axe check run at 360 px
+      (the Íslenskubraut recordings' e2e test); every earlier axe check ran at desktop width,
+      where the bar is hidden. Fixed in `packages/shared/components/BottomNav.tsx` with
+      `kvenno-orange-700`, as the games' orange text already uses. Only phones see the change.
 - [x] **buffer Stig 1** shows a live 'Fullkomið!' pill on the pH readout that can contradict a
       'Rangt' verdict. Already fixed 2026-09-23, found 2026-10-02: the pill reads the grader's own
       `isCorrect`, and `level1-flow.test.tsx` holds it.
@@ -622,15 +790,21 @@ joins the list of probably-right compounds below.
 
 **PDF and preview**
 
-- [ ] **`Efniviður` prints as `fniviður`** on nine cards: Farartæki, Staðir and Klæðnaður at every
+- [x] **`Efniviður` printed as `fniviður`** on nine cards: Farartæki, Staðir and Klæðnaður at every
       level, in the label beside `Úr hverju er það gert?`. Found 2026-10-16 by comparing every
-      string on every card with the text react-pdf writes; this is the only one.
-  - It does not reproduce in a small document, and moving the fonts from WOFF to TTF does not
-    change it, so the cause is react-pdf's text layout, not the content.
-  - The same week a bold `syndir` on the new word lists lost its `s`. Bold `y` is also written
-    wrongly into the text layer (`lyktar`, `flytja`) while printing correctly. The word lists
-    avoid both by using regular weight.
-  - A fix for the cards is still to find: a different label style, or a react-pdf upgrade.
+      string on every card with the text react-pdf writes. **Fixed 2026-10-16.**
+  - The cause was not the label, the content or the font format. It was rendering one PDF after
+    another in the same process. react-pdf keeps one font object per file, and a document set
+    after another could lose a capital from the page and the text layer. Rendered alone, every
+    card was whole, which is why the defect would not reproduce in a small document.
+  - The talk-to-write sheets showed it too (`Ullin` → `llin`). `renderPdf` in
+    `server/src/lib/islenskubraut-pdf.tsx` now reloads the fonts for each document, and every
+    PDF goes through it. A test draws `Ullin`, `Um`, `Efniviður` and `Uxi` after a card and
+    counts the glyphs; it fails without the reload.
+  - Every word of all 72 PDFs now matches its text layer (5,386 words, checked with `pdftotext`).
+    The bold `syndir` that lost its `s` and the bold `y` written wrongly into the text layer were
+    most likely the same defect: the bold card questions with `lyktar` now extract whole. The
+    word lists stay in regular weight, which costs nothing.
 - [x] **10 of the 18 PDFs ran onto a fourth page**: A2 and B1 in every category but Manneskja,
       with the question card's second row of context boxes split from their words. Fixed
       2026-10-10 in `server/src/lib/islenskubraut-pdf.tsx`: each question's label sits beside it
@@ -752,7 +926,22 @@ Both fixed 2026-10-10 (PR for this branch).
       It ranks nine additions by value per teacher hour: links out, word sheets, information-gap
       cards, talk-to-write sheets, audio, can-do strips, visible grammar, L1 glosses, and a
       "Skólinn" category. The two items above (the teacher sheet and the glosses) are its items 3
-      and 8. Its thirteen open checks are listed there. Two of them need Siggi: - asking Tiro or Almannarómur where the Icelandic TTS service went (it answered 404 on
-      2026-10-16) - asking MEMM to list Íslenskubraut on its Námsefni page
+      and 8. Its thirteen open checks are listed there. Two of them needed Siggi: asking Tiro or Almannarómur where the Icelandic TTS service went
+      (no longer needed: the voices used in item 5 are open, 2026-10-16) and asking MEMM to list
+      Íslenskubraut on its Námsefni page
   - [x] Item 1, a links panel per card and level (2026-10-16). Its links await approval (C11).
   - [x] Item 2, a word list per card and level (2026-10-16). Its wording awaits review (C12).
+  - [x] Item 3, a guessing game per card and level (2026-10-16). Its items and wording await
+        review (C13).
+  - [x] Item 4, a talk-to-write sheet per card and level (2026-10-16). Its texts and wording
+        await review (C14).
+  - [x] Item 5, a recording of every word, frame and example on the card page (2026-10-16). The
+        recordings await a listener (C15); the QR codes wait for them.
+  - [x] Item 6, can-do strips and a class checklist per card and level (2026-10-16). The
+        statements await review, and the level labels a ruling (C16).
+  - [x] Item 7, reasons, word tables and a drill on the sentence builder (2026-10-16). They go
+        live with the builder (C9); the wording is C17.
+  - [x] Item 8, a student's own language beside the chips (2026-10-16). Polish is drafted with a
+        dictionary link; who checks it is C18.
+  - [x] Item 9, the Skólinn category (2026-10-16), a draft kept off the home page until it is
+        read (C19).

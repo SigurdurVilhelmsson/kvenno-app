@@ -39,6 +39,9 @@ vi.mock('@kvenno/shared/components', () => ({
 vi.mock('../components/DownloadButton', () => ({
   DownloadButton: () => <button>Hala niður PDF</button>,
   WordListButton: () => <button>Orðalisti (PDF)</button>,
+  GameButton: () => <button>Hvað er þetta? (PDF)</button>,
+  TextiButton: () => <button>Frá tali til texta (PDF)</button>,
+  EggetButton: () => <button>Ég get… (PDF)</button>,
 }));
 vi.mock('../components/SpjaldPreview', () => ({
   SpjaldPreview: () => <div data-testid="spjald-preview">Preview</div>,

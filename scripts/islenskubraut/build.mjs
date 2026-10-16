@@ -1,15 +1,27 @@
 #!/usr/bin/env node
 /** YAML -> both TypeScript consumers, and their shared types. `--check` exits 1 if anything is stale. */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { parse } from 'yaml';
 
+import { readEgget } from './egget.mjs';
+import { allGames, readGiskaleikur } from './giskaleikur.mjs';
+import { readGlossur } from './glossur.mjs';
+import { clipsForApp, readHljod, textsToVoice } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
+  renderEggetApp,
+  renderEggetServer,
+  renderGiskaleikurApp,
+  renderGlossur,
+  renderHljod,
+  renderTextiApp,
+  renderTextiServer,
+  renderGiskaleikurServer,
   renderMyndir,
   renderServerModule,
   renderSmidur,
@@ -20,6 +32,7 @@ import {
 } from './render.mjs';
 import { pageData } from './smidur.mjs';
 import { readTenglar } from './tenglar.mjs';
+import { allTexts, readTexti } from './texti.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
@@ -34,6 +47,20 @@ const MYNDIR_FILE = resolve(ROOT, 'content/islenskubraut/myndir/myndir.yaml');
 const PICTURE_DIR = resolve(ROOT, 'apps/islenskubraut/public/myndir');
 const TENGLAR_FILE = resolve(ROOT, 'content/islenskubraut/tenglar/tenglar.yaml');
 const SPA_TENGLAR = resolve(ROOT, 'apps/islenskubraut/src/data/tenglar.ts');
+const GISKA_DIR = resolve(ROOT, 'content/islenskubraut/giskaleikur');
+const SERVER_GISKA = resolve(ROOT, 'server/src/lib/islenskubraut-giskaleikur.ts');
+const SPA_GISKA = resolve(ROOT, 'apps/islenskubraut/src/data/giskaleikur.ts');
+const TEXTI_DIR = resolve(ROOT, 'content/islenskubraut/texti');
+const SERVER_TEXTI = resolve(ROOT, 'server/src/lib/islenskubraut-texti.ts');
+const SPA_TEXTI = resolve(ROOT, 'apps/islenskubraut/src/data/texti.ts');
+const EGGET_DIR = resolve(ROOT, 'content/islenskubraut/egget');
+const SERVER_EGGET = resolve(ROOT, 'server/src/lib/islenskubraut-egget.ts');
+const SPA_EGGET = resolve(ROOT, 'apps/islenskubraut/src/data/egget.ts');
+const GLOSSUR_DIR = resolve(ROOT, 'content/islenskubraut/glossur');
+const SPA_GLOSSUR = resolve(ROOT, 'apps/islenskubraut/src/data/glossur.ts');
+const HLJOD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hljod.yaml');
+const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
+const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -78,6 +105,71 @@ const tenglar = readTenglar(
   categories.map((c) => c.id)
 );
 
+// "Hvað er þetta?": a file per category, optional. A thing described with a word the card does not
+// offer, or a level where two things read the same, breaks the build.
+const games = allGames(
+  Object.fromEntries(
+    readdirSync(GISKA_DIR)
+      .filter((f) => f.endsWith('.yaml'))
+      .map((f) => {
+        const id = f.replace(/\.yaml$/, '');
+        const category = categories.find((c) => c.id === id);
+        if (!category) throw new Error(`giskaleikur/${f}: no category ${id}`);
+        return [id, readGiskaleikur(parse(readFileSync(resolve(GISKA_DIR, f), 'utf8')), category)];
+      })
+  ),
+  categories
+);
+
+// "Frá tali til texta": a model text per category and level, optional. Its gaps come from the
+// saved BÍN lookups, so a word never looked up, or a text with too few card words, breaks the build.
+const texts = allTexts(
+  Object.fromEntries(
+    readdirSync(TEXTI_DIR)
+      .filter((f) => f.endsWith('.yaml'))
+      .map((f) => {
+        const id = f.replace(/\.yaml$/, '');
+        if (!categories.some((c) => c.id === id)) throw new Error(`texti/${f}: no category ${id}`);
+        return [id, readTexti(parse(readFileSync(resolve(TEXTI_DIR, f), 'utf8')), id)];
+      })
+  ),
+  categories,
+  lookups
+);
+
+// "Ég get…": three or four statements per category and level, optional per category, in the
+// taught order of the categories rather than the folder's.
+const eggetFiles = readdirSync(EGGET_DIR).filter((f) => f.endsWith('.yaml'));
+const egget = Object.fromEntries(
+  categories
+    .map((c) => `${c.id}.yaml`)
+    .filter((f) => eggetFiles.includes(f))
+    .concat(eggetFiles.filter((f) => !categories.some((c) => `${c.id}.yaml` === f)))
+    .map((f) => {
+      const id = f.replace(/\.yaml$/, '');
+      if (!categories.some((c) => c.id === id)) throw new Error(`egget/${f}: no category ${id}`);
+      return [id, readEgget(parse(readFileSync(resolve(EGGET_DIR, f), 'utf8')), id)];
+    })
+);
+
+// "Á þínu máli": a file per language. Drafts are included for `?drog`; an approved language that
+// misses an A1 chip breaks the build.
+const glossur = readdirSync(GLOSSUR_DIR)
+  .filter((f) => f.endsWith('.yaml'))
+  .sort()
+  .map((f) =>
+    readGlossur(
+      parse(readFileSync(resolve(GLOSSUR_DIR, f), 'utf8')),
+      f.replace(/\.yaml$/, ''),
+      categories
+    )
+  );
+
+// The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
+// drafts. An approved clip with no file breaks the build; a text with no clip has no button.
+const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
+const clips = clipsForApp(textsToVoice(categories), hljod, (f) => existsSync(resolve(CLIP_DIR, f)));
+
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
   [SPA_INDEX, renderSpaIndex(categories)],
@@ -87,6 +179,14 @@ const outputs = [
   [SPA_SMIDUR, renderSmidur(smidur)],
   [SPA_MYNDIR, renderMyndir(approvedPictures(myndir, categories))],
   [SPA_TENGLAR, renderTenglar(tenglar)],
+  [SERVER_GISKA, renderGiskaleikurServer(games)],
+  [SPA_GISKA, renderGiskaleikurApp(games)],
+  [SERVER_TEXTI, renderTextiServer(texts)],
+  [SPA_TEXTI, renderTextiApp(texts)],
+  [SPA_HLJOD, renderHljod(clips, hljod.voice)],
+  [SERVER_EGGET, renderEggetServer(egget)],
+  [SPA_GLOSSUR, renderGlossur(glossur)],
+  [SPA_EGGET, renderEggetApp(egget)],
 ];
 
 let stale = 0;

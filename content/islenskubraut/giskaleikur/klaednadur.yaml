@@ -1,0 +1,94 @@
+# Hvað er þetta? — the guessing game for Föt og klæðnaður. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the descriptions are right.
+# The clothes are the card's own words, so `Flokkar` is never listed: it would be the answer.
+# Each card describes one garment, so its colour is that garment's.
+confirmed: false
+items:
+  - name: bolur
+    from: A1
+    answers:
+      Útlit: [hvítt]
+      Áferð: [mjúkt, létt]
+      Efniviður: [úr bómull]
+      notagildi: [til að líta vel út]
+      hver: [allir]
+      hvar: [inni]
+      hvenaer: [á sumrin]
+  - name: buxur
+    from: A1
+    answers:
+      Útlit: [blátt]
+      Áferð: [gróft]
+      Efniviður: [úr bómull]
+      Lögun: [ílangt]
+      hver: [allir]
+      hvar: [í skólanum]
+      hvenaer: [alltaf]
+  - name: jakki
+    from: A1
+    answers:
+      Útlit: [svart]
+      Áferð: [slétt]
+      Efniviður: [úr leðri]
+      notagildi: [til að líta vel út, til að hlýja sér]
+      hver: [fullorðnir]
+      hvar: [úti]
+  - name: skór
+    from: A1
+    answers:
+      Útlit: [hvítt]
+      Áferð: [hart]
+      Efniviður: [úr leðri, úr plasti]
+      notagildi: [til að verja sig, til að stunda íþróttir]
+      hver: [allir, íþróttamenn]
+      hvar: [úti]
+      hvenaer: [alltaf]
+  - name: peysa
+    from: A2
+    answers:
+      Útlit: [rautt]
+      Áferð: [mjúkt, heitt]
+      Efniviður: [úr ull]
+      notagildi: [til að hlýja sér]
+      hver: [allir]
+      hvar: [inni, úti]
+      hvenaer: [á veturna]
+  - name: úlpa
+    from: A2
+    answers:
+      Útlit: [grænt, stórt]
+      Áferð: [heitt, þungt]
+      Efniviður: [úr gerviefnum]
+      notagildi: [til að hlýja sér, til að verja sig]
+      hvar: [úti]
+      hvenaer: [á veturna]
+  - name: húfa
+    from: A2
+    answers:
+      Útlit: [gult, lítið]
+      Áferð: [mjúkt, heitt]
+      Efniviður: [úr ull]
+      Lögun: [kringlótt]
+      notagildi: [til að hlýja sér]
+      hver: [börn]
+      hvar: [úti]
+      hvenaer: [á veturna]
+  - name: sokkar
+    from: A2
+    answers:
+      Útlit: [svart, lítið]
+      Áferð: [mjúkt]
+      Efniviður: [úr bómull]
+      hver: [allir]
+      hvar: [inni]
+      hvenaer: [alltaf, daglega]
+  - name: hanskar
+    from: B1
+    answers:
+      Útlit: [brúnt]
+      Áferð: [mjúkt]
+      Efniviður: [úr leðri]
+      notagildi: [til að hlýja sér, til að vinna]
+      hver: [iðnaðarmenn]
+      hvar: [úti]
+      hvenaer: [á veturna]

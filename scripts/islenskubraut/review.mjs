@@ -134,6 +134,7 @@ export function toYamlShape(category) {
     icon: category.icon,
     description: category.description,
     color: category.color,
+    ...(category.draft ? { draft: true } : {}),
     subCategories: category.subCategories.map((s, i) => ({
       id: `s${i + 1}`,
       name: s.name,

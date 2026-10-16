@@ -1,0 +1,37 @@
+# Frá tali til texta — the model texts for Föt og klæðnaður. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the texts are right.
+confirmed: false
+A1:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er jakki. Hann er svartur og úr leðri.
+    - name: Áferð
+      text: Hann er mjúkur og hlýr.
+    - name: Notkun
+      text: Maður notar hann úti til að hlýja sér.
+A2:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er úlpa sem er blá og stór.
+    - name: Áferð
+      text: Hún er létt og mjúk við snertingu.
+    - name: Notkun
+      text: >-
+        Nemendur og íþróttamenn klæðast henni úti á veturna. Maður notar hana til að hlýja sér.
+B1:
+  genre: Ráðlegging
+  stages:
+    - name: Vandinn
+      text: Á Íslandi er oft kalt, blautt og hvasst á veturna.
+    - name: Ráðin
+      text: >-
+        Best er að klæða sig í mörg lög. Fyrst ferðu í bol og peysu úr ull, svo í úlpu sem er létt
+        og vatnsheld.
+    - name: Rökin
+      text: Ullin heldur hita þó að hún blotni og úlpan ver þig gegn vindi og rigningu.
+    - name: Niðurlag
+      text: >-
+        Gleymdu ekki húfu, trefli og hönskum. Í réttum fötum geta allir notið þess að vera úti allt
+        árið.

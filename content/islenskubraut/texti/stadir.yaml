@@ -1,0 +1,36 @@
+# Frá tali til texta — the model texts for Staðir og byggingar. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the texts are right.
+confirmed: false
+A1:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er sundlaug. Hún er í bænum.
+    - name: Útlit
+      text: Hún er stór og úr steini.
+    - name: Notkun
+      text: Börn og fullorðnir fara þangað á morgnana og á kvöldin.
+A2:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er safn sem er í bænum.
+    - name: Útlit
+      text: Það er gamalt og fallegt og úr steini.
+    - name: Notkun
+      text: >-
+        Fólk fer þangað til að læra um söguna. Nemendur og kennarar koma oft á virkum dögum.
+B1:
+  genre: Lýsing á stað
+  stages:
+    - name: Staðurinn
+      text: Íþróttahúsið er stór bygging við hliðina á skólanum.
+    - name: Útlit
+      text: >-
+        Það er nútímalegt og hátt, úr steini og gleri. Gólfið er úr tré og veggirnir eru ljósir.
+    - name: Notkun
+      text: >-
+        Nemendur fara þangað til að stunda íþróttir á virkum dögum. Um helgar keppa lið þar og
+        fólk kemur til að horfa.
+    - name: Mat
+      text: Mér finnst íþróttahúsið skemmtilegt vegna þess að þar hitti ég vini mína.

@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
+import { Aefing, WhyList } from '../components/Malfraedi';
 import { ArasaacCredit, Pictogram, hasPictures, pictureFor } from '../components/Pictogram';
 import { getCategoryById } from '../data';
 import { getSmidur, type SmidurSubject } from '../data/smidur';
@@ -166,13 +167,18 @@ export function SmidurPage() {
               </p>
             )}
           </div>
-          {changed && (
-            <p className="mt-3 text-sm text-warm-600">
-              Undirstrikuðu orðin breytast frá spjaldinu svo að þau passi við setninguna.
-            </p>
+          {changed && words && (
+            <>
+              <p className="mt-3 text-sm text-warm-600">
+                Undirstrikuðu orðin breytast frá spjaldinu svo að þau passi við setninguna.
+              </p>
+              <WhyList words={words} subject={subject} tables={data.tables} />
+            </>
           )}
         </section>
       </div>
+
+      <Aefing data={data} color={category.color} />
 
       <p className="mt-12 max-w-2xl text-xs text-warm-600">
         Beygingarmyndirnar eru úr Beygingarlýsingu íslensks nútímamáls (BÍN) og eru í eigu Stofnunar

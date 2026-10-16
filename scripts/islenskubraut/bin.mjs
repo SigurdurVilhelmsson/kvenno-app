@@ -51,12 +51,7 @@ const WORD_RE = /\p{L}+/gu;
  */
 export function collectWords(categories) {
   const words = new Map();
-  const add = (category, place, text) => {
-    for (const [word] of text.matchAll(WORD_RE)) {
-      if (!words.has(word)) words.set(word, []);
-      words.get(word).push({ category, place, text });
-    }
-  };
+  const add = (category, place, text) => addWords(words, category, place, text);
 
   for (const c of categories) {
     add(c.id, 'heiti', c.name);
@@ -76,6 +71,14 @@ export function collectWords(categories) {
     }
   }
   return words;
+}
+
+/** Add every word of `text` to a map made by `collectWords`, for content kept outside the cards. */
+export function addWords(words, category, place, text) {
+  for (const [word] of text.matchAll(WORD_RE)) {
+    if (!words.has(word)) words.set(word, []);
+    words.get(word).push({ category, place, text });
+  }
 }
 
 /** Lower-case a word the Icelandic way. */

@@ -1,0 +1,36 @@
+# Frá tali til texta — the model texts for Dýr. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the texts are right.
+confirmed: false
+A1:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er hundur. Hundur er gæludýr.
+    - name: Útlit
+      text: Hann hefur feld og hala. Feldurinn er mjúkur.
+    - name: Hvar og hvenær?
+      text: Hundurinn býr heima. Hann fer út á morgnana og á kvöldin.
+A2:
+  genre: Lýsing
+  stages:
+    - name: Hvað er það?
+      text: Þetta er þorskur. Þorskur er fiskur sem býr í sjónum.
+    - name: Útlit
+      text: Hann hefur hreistur og hala. Hann finnst sléttur og blautur við snertingu.
+    - name: Hver og hvenær?
+      text: Veiðimenn veiða þorsk á veturna og á sumrin. Maður notar hann til að borða.
+B1:
+  genre: Skýrsla
+  stages:
+    - name: Flokkun
+      text: Lundi er fugl. Hann er villt dýr sem býr á Íslandi á sumrin.
+    - name: Lýsing
+      text: >-
+        Lundinn hefur svartar og hvítar fjaðrir og stóran, litríkan gogg. Hann hefur tvo fætur og
+        getur bæði flogið og synt.
+    - name: Lífshættir
+      text: Lundinn býr í holum við sjóinn og veiðir litla fiska. Hann er oft í sjónum á daginn.
+    - name: Niðurlag
+      text: >-
+        Ferðamenn koma til Íslands til að sjá lundann. Sérfræðingar rannsaka hvers vegna lundum
+        fækkar.

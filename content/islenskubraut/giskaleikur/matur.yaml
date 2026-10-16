@@ -1,0 +1,101 @@
+# Hvað er þetta? — the guessing game for Matur og drykkur. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the descriptions are right.
+confirmed: false
+items:
+  - name: epli
+    from: A1
+    answers:
+      Flokkar: [ávöxtur]
+      Útlit: [rautt, grænt]
+      Bragð: [sætt, súrt, ferskt]
+      Áferð: [hart, slétt]
+      Lykt: [gott, ferskt]
+      Lögun: [kringlótt, kúlulaga]
+      notagildi: [til að borða, til að baka með]
+      hver: [allir]
+      hvar: [í búð, heima]
+  - name: banani
+    from: A1
+    answers:
+      Flokkar: [ávöxtur]
+      Útlit: [gult]
+      Bragð: [sætt, milt]
+      Áferð: [mjúkt]
+      Lykt: [gott, sætt]
+      Lögun: [ílangt, bogið]
+      notagildi: [til að borða]
+      hver: [allir, börn]
+      hvar: [í búð, heima]
+      hvenaer: [á morgnana]
+  - name: sítróna
+    from: A1
+    answers:
+      Flokkar: [ávöxtur]
+      Útlit: [gult]
+      Bragð: [súrt]
+      Áferð: [hart, gróft]
+      Lykt: [ferskt]
+      Lögun: [sporöskjulaga]
+      notagildi: [til að elda með, til að baka með]
+      hver: [kokkar]
+      hvar: [í búð]
+  - name: gulrót
+    from: A1
+    answers:
+      Flokkar: [grænmeti]
+      Útlit: [appelsínugult]
+      Bragð: [sætt, ferskt]
+      Áferð: [hart]
+      Lykt: [ekkert]
+      Lögun: [ílangt, oddhvasst]
+      notagildi: [til að borða, til að elda með]
+      hver: [allir]
+      hvar: [í búð, í garðinum]
+  - name: tómatur
+    from: A1
+    answers:
+      Flokkar: [grænmeti]
+      Útlit: [rautt]
+      Bragð: [súrt, ferskt]
+      Áferð: [mjúkt, slétt]
+      Lögun: [kringlótt]
+      notagildi: [til að borða, til að elda með]
+      hver: [allir]
+      hvar: [í búð, í garðinum]
+  - name: mjólk
+    from: A1
+    answers:
+      Flokkar: [drykkur, mjólkurvara]
+      Útlit: [hvítt]
+      Bragð: [milt]
+      Áferð: [kalt, blautt]
+      Lykt: [ekkert]
+      notagildi: [til að drekka, til að baka með]
+      hver: [allir, börn]
+      hvar: [heima, í búð, í skólanum]
+      hvenaer: [á morgnana, daglega]
+  - name: kaffi
+    from: A1
+    answers:
+      Flokkar: [drykkur]
+      Útlit: [brúnt]
+      Bragð: [beiskt, sterkt]
+      Áferð: [heitt]
+      Lykt: [gott, sterkt, ilmandi]
+      notagildi: [til að drekka, til að njóta]
+      hver: [fullorðnir]
+      hvar: [heima, á veitingastað]
+      hvenaer: [á morgnana, daglega]
+  - name: ostur
+    from: A2
+    answers:
+      Flokkar: [mjólkurvara]
+      Útlit: [gult]
+      Bragð: [salt, milt]
+      Áferð: [mjúkt]
+      Lykt: [sterkt]
+      Lögun: [ferkantað]
+      notagildi: [til að borða]
+      hver: [allir]
+      hvar: [í búð]
+      hvenaer: [á morgnana]

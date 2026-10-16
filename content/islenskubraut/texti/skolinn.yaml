@@ -1,0 +1,34 @@
+# Frá tali til texta — the model texts for Skólinn. See README.md beside this file.
+# Drafted by Claude; a teacher sets `confirmed: true` once the texts are right.
+confirmed: false
+A1:
+  genre: Lýsing
+  stages:
+    - name: Hvar er ég?
+      text: Þetta er skólinn minn. Ég er í skólastofunni.
+    - name: Hlutir
+      text: Ég er með bók, penna og blýant.
+    - name: Í tímanum
+      text: Við lesum og skrifum á morgnana. Kennarinn hjálpar okkur.
+A2:
+  genre: Lýsing
+  stages:
+    - name: Dagurinn
+      text: Skólinn byrjar á morgnana. Fyrsti tíminn er stærðfræði.
+    - name: Í tímanum
+      text: Í stærðfræði reiknum við og vinnum saman. Ég þarf reiknivél og reglustiku.
+    - name: Í frímínútum
+      text: Í frímínútum tölum við saman á ganginum. Eftir skóla fer ég á bókasafnið.
+B1:
+  genre: Frásögn
+  stages:
+    - name: Inngangur
+      text: Í dag lærðum við um breytingar á loftslagi í náttúrufræði.
+    - name: Atburðir
+      text: >-
+        Fyrst lásum við texta í kennslubókinni og greindum helstu hugmyndir hans. Síðan unnum við
+        saman í hópum og bárum saman heimildir.
+    - name: Niðurlag
+      text: >-
+        Í lokin kynntum við niðurstöður okkar. Mér fannst verkefnið mikilvægt vegna þess að
+        loftslagið hefur áhrif á alla.
