@@ -41,3 +41,20 @@ export function DownloadButton({ categoryId, level, color }: DownloadButtonProps
     </a>
   );
 }
+
+/**
+ * The level's word list (`ordalisti-*.pdf`), rendered beside the cards at build time: the words
+ * new at that level, a column for the student's own language and four review boxes.
+ */
+export function WordListButton({ categoryId, level, color }: DownloadButtonProps) {
+  return (
+    <a
+      href={`${import.meta.env.BASE_URL}spjold/ordalisti-${categoryId}-${level}.pdf`}
+      download
+      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
+      style={{ borderColor: color }}
+    >
+      Orðalisti (PDF)
+    </a>
+  );
+}

@@ -4,7 +4,7 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
-import { DownloadButton } from '../components/DownloadButton';
+import { DownloadButton, WordListButton } from '../components/DownloadButton';
 import { FleiriUrraedi } from '../components/FleiriUrraedi';
 import { LEVELS, LevelSelector } from '../components/LevelSelector';
 import { ArasaacCredit, hasPictures } from '../components/Pictogram';
@@ -138,9 +138,10 @@ export function SpjaldPage() {
         />
       </div>
 
-      {/* Download button, and the sentence builder once a teacher has confirmed it (C9) */}
+      {/* The card and its word list, and the sentence builder once a teacher has confirmed it (C9) */}
       <div className="mb-10 flex flex-wrap items-center gap-4">
         <DownloadButton categoryId={category.id} level={level} color={category.color} />
+        <WordListButton categoryId={category.id} level={level} color={category.color} />
         {/* Read off the category's tags, not the sentences, which load only with their page. */}
         {category.builder?.some((b) => b.level === level && b.confirmed) && (
           <Link

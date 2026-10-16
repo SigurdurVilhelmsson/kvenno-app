@@ -414,6 +414,23 @@ the names and descriptions.
 - [ ] **Run `pnpm islenskubraut:tenglar --online` once a term**, from a machine that can reach the
       sites. A link that has moved fails it.
 
+### C12. Word lists, "Orðalisti" (2026-10-16)
+
+One printable page per card and level: the words new at that level, a line for the student's own
+language, and four review boxes. A2 and B1 list only the answers the level below does not print.
+
+- [ ] **Read one list per category** from a card page's "Orðalisti (PDF)" link. Is "new at this
+      level" the right choice, or should A2 and B1 repeat the level below?
+- [ ] **The Icelandic, drafted by Claude:**
+  - the title `Orðalisti`
+  - the column headings `Orð` and `Á mínu tungumáli`
+  - the review headings `1.`, `3.`, `7.` and `14.`
+  - the instruction `Orðin á spjaldinu.` / `Ný orð á spjaldinu á stigi A2.` `Skrifaðu hvert orð á
+þínu tungumáli. Rifjaðu orðin upp eftir 1, 3, 7 og 14 daga og merktu við í hvert sinn.`
+  - the button `Orðalisti (PDF)`
+- [ ] **The A1 pictograms go on the lists** once C10 has approved them and settled the licence for
+      print, as for the printed cards.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
@@ -605,6 +622,15 @@ joins the list of probably-right compounds below.
 
 **PDF and preview**
 
+- [ ] **`Efniviður` prints as `fniviður`** on nine cards: Farartæki, Staðir and Klæðnaður at every
+      level, in the label beside `Úr hverju er það gert?`. Found 2026-10-16 by comparing every
+      string on every card with the text react-pdf writes; this is the only one.
+  - It does not reproduce in a small document, and moving the fonts from WOFF to TTF does not
+    change it, so the cause is react-pdf's text layout, not the content.
+  - The same week a bold `syndir` on the new word lists lost its `s`. Bold `y` is also written
+    wrongly into the text layer (`lyktar`, `flytja`) while printing correctly. The word lists
+    avoid both by using regular weight.
+  - A fix for the cards is still to find: a different label style, or a react-pdf upgrade.
 - [x] **10 of the 18 PDFs ran onto a fourth page**: A2 and B1 in every category but Manneskja,
       with the question card's second row of context boxes split from their words. Fixed
       2026-10-10 in `server/src/lib/islenskubraut-pdf.tsx`: each question's label sits beside it
@@ -729,3 +755,4 @@ Both fixed 2026-10-10 (PR for this branch).
       and 8. Its thirteen open checks are listed there. Two of them need Siggi: - asking Tiro or Almannarómur where the Icelandic TTS service went (it answered 404 on
       2026-10-16) - asking MEMM to list Íslenskubraut on its Námsefni page
   - [x] Item 1, a links panel per card and level (2026-10-16). Its links await approval (C11).
+  - [x] Item 2, a word list per card and level (2026-10-16). Its wording awaits review (C12).

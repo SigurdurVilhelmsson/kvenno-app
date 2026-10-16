@@ -13,13 +13,23 @@
  * A card that does not print on exactly three pages fails the build: the printed card is
  * vocabulary, sentence frames and questions, one sheet each, and a fourth page splits a
  * question card from its answers.
+ *
+ * Beside each card goes its word list (`ordalisti-*.pdf`), the words new at that level with a
+ * column for the student's own language and four review boxes. It must fit on one page.
  */
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { categories } from '../lib/islenskubraut-data.js';
-import { LEVELS, generatePdf, pdfPageCount, spjaldFileName } from '../lib/islenskubraut-pdf.js';
+import {
+  LEVELS,
+  generateOrdalistiPdf,
+  generatePdf,
+  ordalistiFileName,
+  pdfPageCount,
+  spjaldFileName,
+} from '../lib/islenskubraut-pdf.js';
 
 const DEFAULT_OUT = fileURLToPath(
   new URL('../../../apps/islenskubraut/public/spjold', import.meta.url)
@@ -38,11 +48,21 @@ for (const category of categories) {
     const pages = pdfPageCount(pdf);
     if (pages !== 3) wrong.push(`${file}: ${pages} pages`);
     writeFileSync(resolve(outDir, file), pdf);
+
+    const listFile = ordalistiFileName(category.id, level);
+    const list = await generateOrdalistiPdf(category, level);
+    const listPages = pdfPageCount(list);
+    if (listPages !== 1) wrong.push(`${listFile}: ${listPages} pages, not 1`);
+    writeFileSync(resolve(outDir, listFile), list);
   }
 }
 
 if (wrong.length > 0) {
-  console.error(`Íslenskubraut: every card must print on three pages.\n  ${wrong.join('\n  ')}`);
+  console.error(
+    `Íslenskubraut: every card must print on three pages, and every word list on one.\n  ${wrong.join('\n  ')}`
+  );
   process.exit(1);
 }
-console.log(`Íslenskubraut: ${categories.length * LEVELS.length} cards written to ${outDir}`);
+console.log(
+  `Íslenskubraut: ${categories.length * LEVELS.length} cards and word lists written to ${outDir}`
+);

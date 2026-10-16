@@ -42,6 +42,11 @@ vi.mock('../components/DownloadButton', () => ({
       Hlaða niður PDF ({categoryId}, {level})
     </button>
   ),
+  WordListButton: ({ categoryId, level }: { categoryId: string; level: string }) => (
+    <button data-testid="word-list-button">
+      Orðalisti ({categoryId}, {level})
+    </button>
+  ),
 }));
 
 /**
