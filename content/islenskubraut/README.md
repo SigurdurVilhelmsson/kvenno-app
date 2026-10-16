@@ -123,6 +123,22 @@ builder:
 ```
 
 Until then the page still works at its address, marked as a draft, so it can be tried out.
+
+Two keys mend a frame that reads wrong with some words. `except` leaves a frame out for the
+subjects listed, so `Maður borðar það ___.` is not offered about a drink. `forms` fills one word
+of the blank differently from the rest, so `þögult` agrees with the subject while `hátt` and
+`lágt` stay as written:
+
+```yaml
+- frame: Maður borðar það ___.
+  except:
+    - drykkur
+- frame: Það hljómar ___.
+  words: Hvaða hljóð gefur það frá sér?
+  forms:
+    þögult: agree
+```
+
 Adding a word to a list the builder uses needs `pnpm islenskubraut:bin --fetch` before the build
 will pass, since the builder takes every form from BÍN and never guesses one.
 

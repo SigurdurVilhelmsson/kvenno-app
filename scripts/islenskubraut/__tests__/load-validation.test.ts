@@ -508,6 +508,46 @@ guidingQuestions:
     ).toThrow(/"ÞGF" is not one of as-is, agree, ÞF/);
   });
 
+  it('reads a frame that does not fit some subjects, and a word with its own form', () => {
+    const result = load(`${subject}    frames:
+      - frame: Það er ___.
+        words: Hvernig er það?
+        forms:
+          sætt: agree
+        except:
+          - skór
+`);
+    expect(result.builder?.[0].frames[0]).toEqual({
+      frame: 'Það er ___.',
+      agree: [],
+      blank: {
+        words: 'Hvernig er það?',
+        options: ['sætt', 'stórt'],
+        form: 'as-is',
+        forms: { sætt: 'agree' },
+      },
+      except: ['skór'],
+    });
+  });
+
+  it('refuses an exception or a word form the tags cannot honour', () => {
+    const frame = (extra: string) =>
+      load(
+        `${subject}    frames:\n      - frame: Það er ___.\n        words: Hvernig er það?\n${extra}`
+      );
+    expect(() => frame(`        except: [kjöt]\n`)).toThrow(/except: "kjöt" is not a subject/);
+    expect(() => frame(`        except: skór\n`)).toThrow(/except must be a list/);
+    expect(() => frame(`        forms:\n          blátt: agree\n`)).toThrow(
+      /forms: "blátt" is not in its word list/
+    );
+    expect(() => frame(`        forms:\n          sætt: ÞGF\n`)).toThrow(
+      /"ÞGF" is not one of as-is, agree, ÞF/
+    );
+    expect(() => frame(`        forms:\n          sætt: as-is\n`)).toThrow(
+      /already the blank's form/
+    );
+  });
+
   it('throws on an agreeing word that is not in the frame', () => {
     expect(() =>
       load(`${subject}    frames:

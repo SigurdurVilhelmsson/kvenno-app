@@ -78,7 +78,15 @@ export interface BuilderFrame {
   blank:
     | null
     | { subject: true }
-    | { words: string; options: string[]; form: 'as-is' | 'agree' | 'ÞF' };
+    | {
+        words: string;
+        options: string[];
+        form: 'as-is' | 'agree' | 'ÞF';
+        /** A word of the list that takes another form than the blank's. */
+        forms?: Record<string, 'as-is' | 'agree' | 'ÞF'>;
+      };
+  /** Subjects the frame does not fit, which the builder does not offer it with. */
+  except?: string[];
 }
 
 /** The sentence builder's tags for one level (REVIEW-QUEUE D3, C9). */
@@ -235,6 +243,8 @@ export interface SmidurFrame {
   options: string[] | null;
   /** \`sentences[subject][option]\`, with a single option slot when \`options\` is null. */
   sentences: SmidurWord[][][];
+  /** Subjects the frame does not fit; the page does not offer it with them, and their slot is empty. */
+  except?: string[];
 }
 
 export interface SmidurLevel {

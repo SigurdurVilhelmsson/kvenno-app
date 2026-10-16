@@ -47,6 +47,10 @@ export function SmidurPage() {
   }
 
   const subject = data.subjects[subjectIndex];
+  // The frames that fit this subject: one does not `borða` a `drykkur` (`except` in the tags).
+  const fitting = data.frames
+    .map((f, index) => ({ f, index }))
+    .filter(({ f }) => !f.except?.includes(subject.text));
   const frame = data.frames[frameIndex];
   const words =
     frame.options === null
@@ -58,6 +62,14 @@ export function SmidurPage() {
   const pickFrame = (index: number) => {
     setFrameIndex(index);
     setOptionIndex(null);
+  };
+  // A subject the chosen frame does not fit moves the choice to the first frame that does.
+  const pickSubject = (index: number) => {
+    setSubjectIndex(index);
+    if (data.frames[frameIndex].except?.includes(data.subjects[index].text)) {
+      const first = data.frames.findIndex((f) => !f.except?.includes(data.subjects[index].text));
+      pickFrame(first);
+    }
   };
 
   return (
@@ -101,7 +113,7 @@ export function SmidurPage() {
               items={data.subjects.map((s) => s.text)}
               pictures={data.subjects.map((s) => pictureFor(category.id, s.text))}
               selected={subjectIndex}
-              onSelect={setSubjectIndex}
+              onSelect={pickSubject}
               color={category.color}
             />
             {!subject.person && (
@@ -116,9 +128,9 @@ export function SmidurPage() {
         <Step id="smidur-rammi" title="Veldu setningaramma">
           <Choices
             labelledBy="smidur-rammi"
-            items={data.frames.map((f) => f.frame)}
-            selected={frameIndex}
-            onSelect={pickFrame}
+            items={fitting.map(({ f }) => f.frame)}
+            selected={fitting.findIndex(({ index }) => index === frameIndex)}
+            onSelect={(k) => pickFrame(fitting[k].index)}
             color={category.color}
           />
         </Step>

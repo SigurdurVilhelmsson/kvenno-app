@@ -64,6 +64,36 @@ describe('the sentence builder page', () => {
     expect(marked()).toEqual(['feld.']);
   });
 
+  // REVIEW-QUEUE C9: one does not `borða` a drink, so that frame is not offered for one.
+  it('offers only the frames that fit the subject, and moves off one that does not', () => {
+    renderAt('/smidur/matur');
+    const frames = () =>
+      within(screen.getByRole('group', { name: 'Veldu setningaramma' }))
+        .getAllByRole('button')
+        .map((b) => b.textContent);
+    choose('Hvers konar matur er þetta?', 'ávöxtur');
+    expect(frames()).toContain('Maður borðar það ___.');
+    choose('Veldu setningaramma', 'Maður borðar það ___.');
+    choose('Hvers konar matur er þetta?', 'drykkur');
+    expect(frames()).not.toContain('Maður borðar það ___.');
+    expect(
+      within(screen.getByRole('group', { name: 'Veldu setningaramma' }))
+        .getByRole('button', { name: 'Þetta er ___.' })
+        .getAttribute('aria-pressed')
+    ).toBe('true');
+    expect(sentence().textContent).toBe('Þetta er drykkur.');
+  });
+
+  it('agrees þögult with the vehicle while hátt stays as written', () => {
+    renderAt('/smidur/farartaeki');
+    choose('Hvers konar farartæki er þetta?', 'rúta');
+    choose('Veldu setningaramma', 'Það hljómar ___.');
+    choose('Hvaða hljóð gefur það frá sér?', 'þögult');
+    expect(sentence().textContent).toBe('Hún hljómar þögul.');
+    choose('Hvaða hljóð gefur það frá sér?', 'hátt');
+    expect(sentence().textContent).toBe('Hún hljómar hátt.');
+  });
+
   it('lets the student choose hún or hann for a person', () => {
     renderAt('/smidur/manneskja');
     choose('Um hvern er setningin?', 'hann');

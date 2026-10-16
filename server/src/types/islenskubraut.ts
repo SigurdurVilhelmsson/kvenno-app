@@ -59,7 +59,17 @@ export interface BuilderFrame {
   frame: string;
   agree: BuilderAgreement[];
   blank:
-    null | { subject: true } | { words: string; options: string[]; form: 'as-is' | 'agree' | 'ÞF' };
+    | null
+    | { subject: true }
+    | {
+        words: string;
+        options: string[];
+        form: 'as-is' | 'agree' | 'ÞF';
+        /** A word of the list that takes another form than the blank's. */
+        forms?: Record<string, 'as-is' | 'agree' | 'ÞF'>;
+      };
+  /** Subjects the frame does not fit, which the builder does not offer it with. */
+  except?: string[];
 }
 
 /** The sentence builder's tags for one level (REVIEW-QUEUE D3, C9). */

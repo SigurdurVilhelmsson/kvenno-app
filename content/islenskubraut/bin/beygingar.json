@@ -8314,6 +8314,922 @@
         }
       ]
     },
+    "e2cc91a3f2d6627b8760297a68af8a2a": {
+      "ord": "þögull",
+      "guid": "e2cc91a3f2d6627b8760297a68af8a2a",
+      "ofl": "lo",
+      "kyn": "",
+      "bmyndir": [
+        {
+          "g": "FSB-KK-NFET",
+          "b": "þögull"
+        },
+        {
+          "g": "FSB-KK-ÞFET",
+          "b": "þöglan"
+        },
+        {
+          "g": "FSB-KK-ÞFET2",
+          "b": "þögulan"
+        },
+        {
+          "g": "FSB-KK-ÞGFET",
+          "b": "þöglum"
+        },
+        {
+          "g": "FSB-KK-ÞGFET2",
+          "b": "þögulum"
+        },
+        {
+          "g": "FSB-KK-EFET",
+          "b": "þöguls"
+        },
+        {
+          "g": "FSB-KK-NFFT",
+          "b": "þöglir"
+        },
+        {
+          "g": "FSB-KK-NFFT2",
+          "b": "þögulir"
+        },
+        {
+          "g": "FSB-KK-ÞFFT",
+          "b": "þögla"
+        },
+        {
+          "g": "FSB-KK-ÞFFT2",
+          "b": "þögula"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT",
+          "b": "þöglum"
+        },
+        {
+          "g": "FSB-KK-ÞGFFT2",
+          "b": "þögulum"
+        },
+        {
+          "g": "FSB-KK-EFFT",
+          "b": "þögulla"
+        },
+        {
+          "g": "FSB-KVK-NFET",
+          "b": "þögul"
+        },
+        {
+          "g": "FSB-KVK-ÞFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FSB-KVK-ÞFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FSB-KVK-ÞGFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "FSB-KVK-EFET",
+          "b": "þögullar"
+        },
+        {
+          "g": "FSB-KVK-NFFT",
+          "b": "þöglar"
+        },
+        {
+          "g": "FSB-KVK-NFFT2",
+          "b": "þögular"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT",
+          "b": "þöglar"
+        },
+        {
+          "g": "FSB-KVK-ÞFFT2",
+          "b": "þögular"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT",
+          "b": "þöglum"
+        },
+        {
+          "g": "FSB-KVK-ÞGFFT2",
+          "b": "þögulum"
+        },
+        {
+          "g": "FSB-KVK-EFFT",
+          "b": "þögulla"
+        },
+        {
+          "g": "FSB-HK-NFET",
+          "b": "þögult"
+        },
+        {
+          "g": "FSB-HK-ÞFET",
+          "b": "þögult"
+        },
+        {
+          "g": "FSB-HK-ÞGFET",
+          "b": "þöglu"
+        },
+        {
+          "g": "FSB-HK-ÞGFET2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FSB-HK-EFET",
+          "b": "þöguls"
+        },
+        {
+          "g": "FSB-HK-NFFT",
+          "b": "þögul"
+        },
+        {
+          "g": "FSB-HK-ÞFFT",
+          "b": "þögul"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT",
+          "b": "þöglum"
+        },
+        {
+          "g": "FSB-HK-ÞGFFT2",
+          "b": "þögulum"
+        },
+        {
+          "g": "FSB-HK-EFFT",
+          "b": "þögulla"
+        },
+        {
+          "g": "FVB-KK-NFET",
+          "b": "þögli"
+        },
+        {
+          "g": "FVB-KK-NFET2",
+          "b": "þöguli"
+        },
+        {
+          "g": "FVB-KK-ÞFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-KK-ÞFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-KK-ÞGFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-KK-ÞGFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-KK-EFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-KK-EFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-KK-NFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KK-NFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KK-ÞFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KK-ÞGFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KK-EFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KK-EFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KVK-NFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-KVK-NFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-KVK-ÞFET",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KVK-ÞFET2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFET2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KVK-EFET",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KVK-EFET2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KVK-NFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KVK-NFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KVK-ÞFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KVK-ÞGFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-KVK-EFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-KVK-EFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-HK-NFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-HK-NFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-HK-ÞFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-HK-ÞFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-HK-ÞGFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-HK-ÞGFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-HK-EFET",
+          "b": "þögla"
+        },
+        {
+          "g": "FVB-HK-EFET2",
+          "b": "þögula"
+        },
+        {
+          "g": "FVB-HK-NFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-HK-NFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-HK-ÞFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-HK-ÞGFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "FVB-HK-EFFT",
+          "b": "þöglu"
+        },
+        {
+          "g": "FVB-HK-EFFT2",
+          "b": "þögulu"
+        },
+        {
+          "g": "MST-KK-NFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-NFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KK-ÞFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-ÞFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KK-ÞGFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-ÞGFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KK-EFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-EFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KK-NFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-NFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KK-ÞFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-ÞFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KK-ÞGFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-ÞGFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KK-EFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KK-EFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-NFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-NFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-ÞFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-ÞFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-ÞGFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-ÞGFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-EFET",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-EFET2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-NFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-NFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-ÞFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-ÞFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-ÞGFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-KVK-EFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-KVK-EFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-HK-NFET",
+          "b": "þögulla"
+        },
+        {
+          "g": "MST-HK-NFET2",
+          "b": "þöglara"
+        },
+        {
+          "g": "MST-HK-ÞFET",
+          "b": "þögulla"
+        },
+        {
+          "g": "MST-HK-ÞFET2",
+          "b": "þöglara"
+        },
+        {
+          "g": "MST-HK-ÞGFET",
+          "b": "þögulla"
+        },
+        {
+          "g": "MST-HK-ÞGFET2",
+          "b": "þöglara"
+        },
+        {
+          "g": "MST-HK-EFET",
+          "b": "þögulla"
+        },
+        {
+          "g": "MST-HK-EFET2",
+          "b": "þöglara"
+        },
+        {
+          "g": "MST-HK-NFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-HK-NFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-HK-ÞFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-HK-ÞFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-HK-ÞGFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-HK-ÞGFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "MST-HK-EFFT",
+          "b": "þögulli"
+        },
+        {
+          "g": "MST-HK-EFFT2",
+          "b": "þöglari"
+        },
+        {
+          "g": "ESB-KK-NFET",
+          "b": "þöglastur"
+        },
+        {
+          "g": "ESB-KK-NFET2",
+          "b": "þögulastur"
+        },
+        {
+          "g": "ESB-KK-ÞFET",
+          "b": "þöglastan"
+        },
+        {
+          "g": "ESB-KK-ÞFET2",
+          "b": "þögulastan"
+        },
+        {
+          "g": "ESB-KK-ÞGFET",
+          "b": "þöglustum"
+        },
+        {
+          "g": "ESB-KK-ÞGFET2",
+          "b": "þögulustum"
+        },
+        {
+          "g": "ESB-KK-EFET",
+          "b": "þöglasts"
+        },
+        {
+          "g": "ESB-KK-EFET2",
+          "b": "þögulasts"
+        },
+        {
+          "g": "ESB-KK-NFFT",
+          "b": "þöglastir"
+        },
+        {
+          "g": "ESB-KK-NFFT2",
+          "b": "þögulastir"
+        },
+        {
+          "g": "ESB-KK-ÞFFT",
+          "b": "þöglasta"
+        },
+        {
+          "g": "ESB-KK-ÞFFT2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT",
+          "b": "þöglustum"
+        },
+        {
+          "g": "ESB-KK-ÞGFFT2",
+          "b": "þögulustum"
+        },
+        {
+          "g": "ESB-KK-EFFT",
+          "b": "þöglastra"
+        },
+        {
+          "g": "ESB-KK-EFFT2",
+          "b": "þögulastra"
+        },
+        {
+          "g": "ESB-KVK-NFET",
+          "b": "þöglust"
+        },
+        {
+          "g": "ESB-KVK-NFET2",
+          "b": "þögulust"
+        },
+        {
+          "g": "ESB-KVK-ÞFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "ESB-KVK-ÞFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET",
+          "b": "þöglastri"
+        },
+        {
+          "g": "ESB-KVK-ÞGFET2",
+          "b": "þögulastri"
+        },
+        {
+          "g": "ESB-KVK-EFET",
+          "b": "þöglastrar"
+        },
+        {
+          "g": "ESB-KVK-EFET2",
+          "b": "þögulastrar"
+        },
+        {
+          "g": "ESB-KVK-NFFT",
+          "b": "þöglastar"
+        },
+        {
+          "g": "ESB-KVK-NFFT2",
+          "b": "þögulastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT",
+          "b": "þöglastar"
+        },
+        {
+          "g": "ESB-KVK-ÞFFT2",
+          "b": "þögulastar"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT",
+          "b": "þöglustum"
+        },
+        {
+          "g": "ESB-KVK-ÞGFFT2",
+          "b": "þögulustum"
+        },
+        {
+          "g": "ESB-KVK-EFFT",
+          "b": "þöglastra"
+        },
+        {
+          "g": "ESB-KVK-EFFT2",
+          "b": "þögulastra"
+        },
+        {
+          "g": "ESB-HK-NFET",
+          "b": "þöglast"
+        },
+        {
+          "g": "ESB-HK-NFET2",
+          "b": "þögulast"
+        },
+        {
+          "g": "ESB-HK-ÞFET",
+          "b": "þöglast"
+        },
+        {
+          "g": "ESB-HK-ÞFET2",
+          "b": "þögulast"
+        },
+        {
+          "g": "ESB-HK-ÞGFET",
+          "b": "þöglustu"
+        },
+        {
+          "g": "ESB-HK-ÞGFET2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "ESB-HK-EFET",
+          "b": "þöglasts"
+        },
+        {
+          "g": "ESB-HK-EFET2",
+          "b": "þögulasts"
+        },
+        {
+          "g": "ESB-HK-NFFT",
+          "b": "þöglust"
+        },
+        {
+          "g": "ESB-HK-NFFT2",
+          "b": "þögulust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT",
+          "b": "þöglust"
+        },
+        {
+          "g": "ESB-HK-ÞFFT2",
+          "b": "þögulust"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT",
+          "b": "þöglustum"
+        },
+        {
+          "g": "ESB-HK-ÞGFFT2",
+          "b": "þögulustum"
+        },
+        {
+          "g": "ESB-HK-EFFT",
+          "b": "þöglastra"
+        },
+        {
+          "g": "ESB-HK-EFFT2",
+          "b": "þögulastra"
+        },
+        {
+          "g": "EVB-KK-NFET",
+          "b": "þöglasti"
+        },
+        {
+          "g": "EVB-KK-NFET2",
+          "b": "þögulasti"
+        },
+        {
+          "g": "EVB-KK-ÞFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-KK-ÞFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-KK-ÞGFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-KK-EFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-KK-EFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-KK-NFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KK-NFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KK-ÞFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KK-ÞGFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KK-EFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KK-EFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KVK-NFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-KVK-NFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-KVK-ÞFET",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFET2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFET2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KVK-EFET",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KVK-EFET2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KVK-NFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KVK-ÞFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KVK-ÞGFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-KVK-EFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-HK-NFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-HK-NFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-HK-ÞFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-HK-ÞGFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-HK-EFET",
+          "b": "þöglasta"
+        },
+        {
+          "g": "EVB-HK-EFET2",
+          "b": "þögulasta"
+        },
+        {
+          "g": "EVB-HK-NFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-HK-NFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-HK-ÞFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-HK-ÞGFFT2",
+          "b": "þögulustu"
+        },
+        {
+          "g": "EVB-HK-EFFT",
+          "b": "þöglustu"
+        },
+        {
+          "g": "EVB-HK-EFFT2",
+          "b": "þögulustu"
+        }
+      ]
+    },
     "ebe2e2807138734f26ea9984faf8bf13": {
       "ord": "kjöt",
       "guid": "ebe2e2807138734f26ea9984faf8bf13",

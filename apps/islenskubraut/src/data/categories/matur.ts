@@ -518,6 +518,7 @@ export const matur: Category = {
             options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
             form: 'as-is',
           },
+          except: ['drykkur'],
         },
         {
           frame: 'Maður notar það ___.',

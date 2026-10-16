@@ -464,6 +464,9 @@ export const farartaeki: Category = {
             words: 'Hvaða hljóð gefur það frá sér?',
             options: ['hátt', 'lágt', 'þögult'],
             form: 'as-is',
+            forms: {
+              þögult: 'agree',
+            },
           },
         },
         {

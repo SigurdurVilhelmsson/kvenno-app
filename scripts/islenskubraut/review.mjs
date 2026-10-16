@@ -179,6 +179,8 @@ function builderYamlShape(builder) {
           ...(f.blank?.subject ? { blank: 'subject' } : {}),
           ...(f.blank?.words ? { words: f.blank.words } : {}),
           ...(f.blank?.form && f.blank.form !== 'as-is' ? { form: f.blank.form } : {}),
+          ...(f.blank?.forms ? { forms: f.blank.forms } : {}),
+          ...(f.except ? { except: f.except } : {}),
         })),
         ...(lemmas ? { lemmas } : {}),
       },
