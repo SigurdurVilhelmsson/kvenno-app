@@ -43,6 +43,8 @@ kvenno-app/
 /islenskubraut/spjald/:flokkur         # Teaching card detail page
 /islenskubraut/smidur/:flokkur         # Sentence builder (A1), linked from the card once confirmed
 /islenskubraut/smidur                  # Every builder, drafts included, for teachers — linked from nowhere
+/islenskubraut/yfirferd                # Teachers' review of every draft, with notes to send back — linked from nowhere
+/islenskubraut/yfirferd/hljod          # Every recording to mark right or wrong — linked only from the review page
 /auth/callback                         # MSAL redirect target — serves the 2-ar lab-reports build
 ```
 
@@ -70,6 +72,8 @@ pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags mak
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
+pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply approves the
+                          #   recordings marked right and never wrong)
 pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
                           #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
                           #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
@@ -694,8 +698,12 @@ setup on a teacher's machine, never in CI. `content/islenskubraut/hljod/hljod.ya
 `Hlusta.tsx`), and the card page credits the voice whenever a clip plays. **The build fails only on an
 approved clip with no file.** A text with no clip simply has no button, so editing a card never needs
 the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
-review page; it flags eight of 524 (C15). Tiro's TTS service, which the research named,
-is gone. Workflow: `content/islenskubraut/hljod/README.md`.
+review pages; it flags eight of 524 (C15). Its output, `content/islenskubraut/hljod/hlustun.json`, is
+committed, since the build turns it into `src/data/hlustun.ts` for the listening page. Tiro's TTS
+service, which the research named, is gone. Workflow: `content/islenskubraut/hljod/README.md`.
+**`server/nginx-site.conf` gives `/islenskubraut/hljod/` its own location** (2026-10-16): a missing
+clip is a 404, not the app's HTML with a 200, and a clip is never cached, since a remade one keeps
+its name. `deploy.sh` does not install it (REVIEW-QUEUE A).
 
 **Can-do statements, "Ég get…" (2026-10-16).** `content/islenskubraut/egget/<flokkur>.yaml` gives three
 or four statements per level, each starting `Ég get` (`scripts/islenskubraut/egget.mjs` refuses one
@@ -737,7 +745,25 @@ means** entries in `myndir/myndir.yaml` for its A1 chips (the build fails withou
 expect one per category, a file each in `giskaleikur/`, `texti/` and `egget/`, glosses in every
 glossary language (`pl.yaml`), and Bildetema's address in `tenglar/tenglar.yaml`.
 
-**UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
+**Teachers' review pages (2026-10-16).** `/islenskubraut/yfirferd` (`Yfirferd.tsx`) lists every
+card's items (card, word list, guessing game, talk-to-write, can-do, builder, recordings, links,
+glosses) with each one's state, links that open the drafts as students would see them and as they
+print, and a note box. `/islenskubraut/yfirferd/hljod` (`YfirferdHljod.tsx`) plays every recording
+with `Rétt`/`Rangt`, the recogniser's doubts first. **No server holds a review:** it is kept in the
+teacher's browser (`src/yfirferd/store.ts`, `localStorage`) until they download a file or copy
+text. `pnpm islenskubraut:yfirferd <files> [--apply]` (`scripts/islenskubraut/yfirferd.mjs`) prints
+the notes and approves in `hljod.yaml` every clip someone marked right and nobody marked wrong. The
+file's `format` is checked on both sides, and a test holds the two to the same string. Nothing on
+the site links to either page; `Yfirferd.test.tsx` fails if anything does. This is the first review
+cycle's route, rather than the workbook below, because the workbook carries only the card text and
+its instructions are unfinished. Wording is C20.
+
+**The builder has two keys for a frame that reads wrong with some words (2026-10-16):** `except`
+leaves a frame out for the subjects listed, and `forms` fills one word of the blank in a form other
+than the blank's. `loadBuilder` refuses an `except` on a fixed or person subject and a `forms`
+entry equal to the blank's own form. Both are C9's drafted fixes.
+
+**UNFINISHED, blocking any review by spreadsheet:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the
 Leiðbeiningar tab — is placeholder wording drafted by Claude and never reviewed. It is marked
 `PLACEHOLDER ICELANDIC` in `scripts/islenskubraut/export-xlsx.mjs`. **Do not send an export to a

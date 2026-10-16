@@ -32,6 +32,15 @@ needs no ruling, only time.
       returning browser can run the old bundle. See D for the lasting fix. **Moot from the deploy
       that carries PR #82**: the entry is hashed there, so new HTML names a file no browser has
       cached.
+- [ ] **Íslenskubraut recordings and review pages, after the deploy that carries them.** Before
+      sending colleagues to review (C20):
+  - Install `server/nginx-site.conf` as above. It gives `/islenskubraut/hljod/` its own location
+    (2026-10-16): without it a missing recording is answered with the app's HTML and a 200, and
+    a remade one can be served from a browser's cache.
+  - `curl -I https://kvenno.app/islenskubraut/hljod/<a file in apps/islenskubraut/public/hljod>`
+    should return 200 with `audio/mpeg`, and `…/hljod/0000000000000000.mp3` a 404.
+  - Open https://kvenno.app/islenskubraut/yfirferd on a phone and a laptop. Every PDF link should
+    open a PDF, and a recording on `/islenskubraut/yfirferd/hljod` should play.
 - [x] **Íslenskubraut PDF download** — done 2026-10-06 (PRs #87, #88): works on kvenno.app.
       The check: on https://kvenno.app/islenskubraut/, open any card and press
       `Hlaða niður PDF`. Expect a PDF in Noto Sans, not the alert
@@ -351,16 +360,21 @@ stór.` and `Maður notar hann …`. That is correct Icelandic, but it means an 
       names `hali` and `sætur` under `lemmas`. Confirm both.
 - [ ] **`skór` is read as plural** (`Þetta eru skór.`), since BÍN gives the same form for one
       and many. Listed under `plural:` in `klaednadur.yaml`.
-- [ ] **Two drafted tags read wrong once the sentences were printed (2026-10-11).** Fix the tag
-      or the content, your call:
-  - `matur`: `Maður borðar það ___.` takes every subject, so it prints `Maður borðar hann á
-morgnana.` about a `drykkur`. One drinks a drink. Either drop that frame from the builder,
-    or keep it and accept the pairing, as the printed card already does.
-  - `dyr`, `farartaeki`: `Það hljómar ___.` puts the sound chips in as written. `hátt` and `lágt`
-    work as adverbs for any subject, but `þögult` is the neuter adjective, so `Hún hljómar
-þögult.` (a `rúta`) and `Hann hljómar þögult.` (a `bíll`) do not agree. Tagging that blank
-    `agree` would make it `þögul`/`þögull` and also turn `hátt` into `hár`, which is wrong; the
-    content needs the chip changed (`hljóðlega`?) or split from the two adverbs.
+- [ ] **Two drafted tags read wrong once the sentences were printed (2026-10-11).** Drafted
+      fixes 2026-10-16, to confirm (the YAML keys are in `content/islenskubraut/README.md`):
+  - `matur`: the frame now has `except: [drykkur]`, so a drink is never offered
+    `Maður borðar hann …`. The printed card still has the frame, since it is about the food on
+    it.
+  - `farartaeki`: the blank has `forms: { þögult: agree }`, so it prints `Hann hljómar þögull.`
+    and `Hún hljómar þögul.`, with `hátt` and `lágt` as written. `dyr` needed nothing: its
+    subject `dýr` is neuter. If `þögull` is the wrong word after `hljómar`, change the chip.
+  - What was found:
+    - `matur`: `Maður borðar það ___.` takes every subject, so it printed
+      `Maður borðar hann á morgnana.` about a `drykkur`. One drinks a drink.
+    - `dyr`, `farartaeki`: `Það hljómar ___.` put the sound chips in as written. `hátt` and
+      `lágt` work as adverbs for any subject, but `þögult` is the neuter adjective, so
+      `Hún hljómar þögult.` (a `rúta`) and `Hann hljómar þögult.` (a `bíll`) did not agree. Tagging
+      the whole blank `agree` would also have turned `hátt` into `hár`.
 - [ ] **The page's own Icelandic, drafted by Claude.** The title `Setningasmiður`, the prompts
       `Veldu setningaramma` and `Um hvern er setningin?`, the draft note `Drög: kennari hefur ekki
 enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstrikuðu orðin
@@ -485,16 +499,17 @@ synthesised with Reykjavík University's Talrómur C voice (CC BY 4.0). **None p
 until a person marks it `true`** in `content/islenskubraut/hljod/hljod.yaml`; add `?drog` to a card
 page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 
-- [ ] **Listen to the recordings** from the review page `pnpm islenskubraut:hljod` writes, and mark
-      each right one `true`. The page puts first the eight that a speech recogniser heard as
-      something else: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`, `húfa`,
-      `oddhvasst`. The
-      research estimated 3–5 hours for all of them.
+- [ ] **Listen to the recordings** on `/islenskubraut/yfirferd/hljod` (2026-10-16), which marks
+      each one `Rétt` or `Rangt` and sends the marks back as a file;
+      `pnpm islenskubraut:yfirferd <files> --apply` then approves every one marked right and never
+      wrong (C20). The page puts first the eight that a speech recogniser heard as something
+      else: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`, `húfa`, `oddhvasst`. The
+      research estimated 3–5 hours for all of them, so the work can be split by card.
 - [ ] **Is a synthetic voice acceptable for the cards at all?** If not, the same files can be
       recorded by a person under the same names, and the play buttons stay as they are.
 - [ ] **The QR codes on the printed cards** wait until some recordings are approved.
 - [ ] **The Icelandic, drafted by Claude:** the button label `Hlusta: <texti>` (read by screen
-      readers), the credit line `Upptökur: <rödd>.` and the review page's instructions.
+      readers) and the credit line `Upptökur: <rödd>.`. The listening page's own text is C20's.
 
 ### C16. Can-do statements, "Ég get…" (2026-10-16)
 
@@ -591,8 +606,43 @@ are drafts too, under C13–C18.
       like `meðferð` and `heimild` are frequent across subjects but not obvious at B1. The
       research suggested 30–50; twelve fit the printed card.
 - [ ] **BÍN does not know** `námsorð`, `verkefnablað` and `LÍNO` (in the B1 teacher note).
-      Accept them in `content/islenskubraut/bin/ekki-i-bin.yaml` with a reason, or reword.
+      `verkefnablað` (a headword in Íslensk nútímamálsorðabók) and `LÍNO` (the list's name) were
+      accepted in `content/islenskubraut/bin/ekki-i-bin.yaml` on 2026-10-16. `námsorð` is in no
+      dictionary on Málið.is, nor is `námsorðaforði`; it is LÍNO's own word, so keep it or name
+      it otherwise (`orð sem eru notuð í öllum fögum`?).
 - [ ] **When it is right,** delete `draft: true` from `skolinn.yaml`, and the card joins the grid.
+
+### C20. The teachers' review pages (2026-10-16)
+
+`/islenskubraut/yfirferd` lists everything on Íslenskubraut that waits for a teacher, card by
+card. For each card it shows the card itself, the word list, the guessing game, the talk-to-write
+text, the can-do statements, the sentence builder, the recordings, the links and the glosses. Each
+has its state (`birt nemendum`, `staðfest` or `drög`), links that open it as a student sees it and
+as it prints, and a box for a note. `/islenskubraut/yfirferd/hljod` plays every recording with
+`Rétt` and `Rangt` beside it (C15). Nothing on the site links to either page, and
+`Yfirferd.test.tsx` fails if anything does.
+
+The notes stay in the teacher's own browser until they press `Sækja skrá`, which saves a file, or
+`Afrita sem texta`, which copies text for an email. No server holds them. A private window keeps
+nothing once the page is closed, and the page says so. `pnpm islenskubraut:yfirferd <files>`
+prints every note by item, with the verdicts on the recordings. `--apply` approves the recordings.
+
+This was chosen over the spreadsheet round trip for this first review, for two reasons. The
+workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
+workbook carries only the card text, not the PDFs, recordings, builder or links.
+
+- [ ] **The pages' Icelandic, drafted by Claude.** On the review page: the intro and its four
+      steps, each item's one-line hint, the three states, and the sending box
+      (`Senda yfirferðina`, `Sækja skrá`, `Afrita sem texta`, `Hreinsa allt` and the
+      confirmation, and what each says once pressed). On the listening page: the two
+      paragraphs and the filters. They are the only instructions a reviewer gets, so read them
+      as a colleague will.
+- [ ] **Who reviews what?** One teacher per card, or everyone everything? The listening page
+      filters by card, so a link like `/islenskubraut/yfirferd/hljod?flokkur=dyr` hands one
+      reviewer one card's recordings.
+- [ ] **The Polish glosses need a Polish speaker**, not an Icelandic teacher (C18). The page says
+      so on that row.
+- [ ] **Run the deploy check in A first**, so that every link on the page opens.
 
 ## D. Work that needs no ruling
 
@@ -745,8 +795,17 @@ joins the list of probably-right compounds below.
   - **Not in BÍN-kjarninn, probably right:** `lestarbraut`, `sportvagn`, `sívalningslaga`,
     `straumlínulaga` and `þríhyrningslaga` (the last is in `ordabok.md`'s chemistry terms), and
     since 2026-10-10 `setningaramma` (B1 teacher note in all six; the app's own tab is
-    `Setningarammar`). Each part is in BÍN. A person who has checked them lists them in `bin/ekki-i-bin.yaml` with a
-    reason; Íslensk nútímamálsorðabók was not reachable from the session to do it.
+    `Setningarammar`). Each part is in BÍN. A person who has checked them lists them in
+    `bin/ekki-i-bin.yaml` with a reason.
+  - **Checked on Málið.is, 2026-10-16:** `sívalningslaga`, `straumlínulaga` and
+    `þríhyrningslaga` are headwords in Íslensk nútímamálsorðabók and are now accepted. The rest
+    are not, and each needs a person:
+    - `á lestarbraut` (Farartæki): `lestabraut` is only in Blöndal, while `járnbraut` is in 18
+      sources. `á teinum` or `á járnbraut`?
+    - `sportvagn` (Farartæki): in no dictionary. `sporvagn` (a tram, 17 sources) or `sportbíll`
+      (16) was probably meant; they are different things.
+    - `setningaramma` (B1 teacher note in six categories): `setningarammi` is in no dictionary,
+      though the app's own tab says `Setningarammar`. Keep it, or accept it with a reason.
 - [x] **The shape question is not about shape.** Now shapes only, in all five categories: A1
       `kringlótt`, `ferkantað`, `ílangt`, `flatt`; A2 adds `kúlulaga`, `oddhvasst`, `bogið`,
       `beint`; B1 adds `sporöskjulaga`, `þríhyrningslaga`, `sívalningslaga`, `óreglulegt`. Size
