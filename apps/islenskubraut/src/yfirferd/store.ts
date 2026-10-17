@@ -4,8 +4,9 @@ import { categories } from '../data';
 
 /**
  * A teacher's review of the drafts, on the review page and its listening page: a note per item and
- * a verdict per recording. Kept in this browser until the teacher sends it as a file or pasted text; nothing
- * reaches a server. `pnpm islenskubraut:yfirferd <file>` reads the file back.
+ * a verdict per recording. Kept in this browser, sent as a file or pasted text, and kept after
+ * that until the teacher clears it; nothing reaches a server. `pnpm islenskubraut:yfirferd <file>`
+ * reads the file back.
  */
 
 /** Where the review is kept between visits, in this browser only. */
@@ -20,8 +21,16 @@ export interface Review {
   reviewer: string;
   /** A note per item, by `categoryId/itemId`. */
   notes: Record<string, string>;
-  /** A verdict per recording, by its text as printed. */
-  clips: Record<string, { verdict: Verdict; note?: string }>;
+  /**
+   * A verdict per recording, by its text as printed, with the version of the audio it was given
+   * to (`v`, a hash): a recording made again since is a different one, and needs a new verdict.
+   */
+  clips: Record<string, { verdict: Verdict; v: string; note?: string }>;
+}
+
+/** Whether a count takes the singular in Icelandic: 1, 21, 101, but not 11. */
+export function one(n: number): boolean {
+  return n % 10 === 1 && n % 100 !== 11;
 }
 
 /** The items a teacher reviews on each card, in the order the review page lists them. */
@@ -57,8 +66,12 @@ function load(): Review {
 }
 
 /**
- * The review, saved as it changes. If the browser keeps no storage (a private window, blocked
- * site data), it lasts until the page is left, and the page says so.
+ * The review, saved as it changes. If the browser refuses storage (blocked site data), it lasts
+ * until the page is left, and the page says so. A private window keeps it until the window is
+ * closed, which the page cannot detect, so it says that too.
+ *
+ * Another tab with the page open writes to the same storage, so a change there is read back here
+ * (the `storage` event); otherwise whichever tab wrote last would erase what the other wrote.
  */
 export function useReview(): {
   review: Review;
@@ -75,6 +88,14 @@ export function useReview(): {
       setSaved(false);
     }
   }, [review]);
+  useEffect(() => {
+    // Writing the same value back fires no event in the other tab, so this cannot ping-pong.
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) setReview(load());
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
   return { review, update: (change) => setReview((r) => change(r)), saved };
 }
 
@@ -99,21 +120,26 @@ export function counts(review: Review) {
   };
 }
 
-/** The file a teacher sends back, which `pnpm islenskubraut:yfirferd` reads. */
-export function reviewFile(review: Review, date: string) {
+/**
+ * The file a teacher sends back, which `pnpm islenskubraut:yfirferd` reads. `saved` is when it
+ * was made, so a reviewer's later file can replace an earlier one.
+ */
+export function reviewFile(review: Review, date: string, saved = date) {
   return {
     format: FORMAT,
     reviewer: review.reviewer.trim(),
     date,
+    saved,
     notes: written(review).map(([key, text]) => ({
       key,
       label: itemLabel(key),
       text: text.trim(),
     })),
-    clips: Object.entries(review.clips).map(([text, { verdict, note }]) => ({
+    clips: Object.entries(review.clips).map(([text, { verdict, v, note }]) => ({
       text,
       verdict,
-      ...(note?.trim() ? { note: note.trim() } : {}),
+      v,
+      ...(verdict === 'wrong' && note?.trim() ? { note: note.trim() } : {}),
     })),
   };
 }
@@ -126,14 +152,24 @@ export function reviewText(review: Review, date: string): string {
   const wrong = file.clips.filter((c) => c.verdict === 'wrong');
   const right = file.clips.filter((c) => c.verdict === 'right');
   if (file.clips.length > 0) {
-    lines.push('', `Upptökur: ${right.length} réttar, ${wrong.length} rangar`);
+    const r = right.length;
+    const w = wrong.length;
+    lines.push(
+      '',
+      `Upptökur: ${r} ${one(r) ? 'rétt' : 'réttar'}, ${w} ${one(w) ? 'röng' : 'rangar'}`
+    );
     for (const c of wrong) lines.push(`Röng: „${c.text}“${c.note ? ` — ${c.note}` : ''}`);
     if (right.length > 0) lines.push(`Réttar: ${right.map((c) => `„${c.text}“`).join(', ')}`);
   }
   return `${lines.join('\n')}\n`;
 }
 
+/** Now, as the file's `saved` stamp: 2026-10-17T10:00:00.000Z. */
+export function now(): string {
+  return new Date().toISOString();
+}
+
 /** Today's date as the file's name and heading use it: 2026-10-17. */
 export function today(): string {
-  return new Date().toISOString().slice(0, 10);
+  return now().slice(0, 10);
 }

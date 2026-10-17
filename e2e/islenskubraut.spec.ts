@@ -198,3 +198,32 @@ test.describe('Islenskubraut — card download', () => {
     expect((await request.get('/islenskubraut/hljod/0000000000000000.mp3')).status()).toBe(404);
   });
 });
+
+test.describe('Islenskubraut — the teachers’ review pages', () => {
+  // The review page is several screens long; a page opened from low down on it opens at its top.
+  test('a page opened from far down the review page opens at its top', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd');
+    const last = page.getByRole('link', { name: /^Hlusta\s*, Skólinn/ });
+    await last.scrollIntoViewIfNeeded();
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(1000);
+    await last.click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Hlustun' })).toBeVisible();
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  });
+
+  // A tab left open across a deploy asks for a chunk the deploy removed. It reloads once and
+  // gets the new one, rather than going blank.
+  test('a page whose chunk has gone since the tab opened reloads instead of going blank', async ({
+    page,
+  }) => {
+    await page.goto('/islenskubraut/yfirferd');
+    let refused = 0;
+    await page.route(/\/islenskubraut\/assets\/YfirferdHljod-[^/]+\.js$/, (route) => {
+      if (refused++ === 0) return route.fulfill({ status: 404, body: '' });
+      return route.continue();
+    });
+    await page.getByRole('link', { name: 'hlustunarsíðunni' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Hlustun' })).toBeVisible();
+    expect(refused).toBeGreaterThanOrEqual(2);
+  });
+});

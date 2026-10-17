@@ -3,8 +3,8 @@ import { createContext, useContext } from 'react';
 import { HLJOD_VOICE, hljod } from '../data/hljod';
 
 /**
- * Whether the card page was opened with `?drog`, so draft recordings play too. Provided by
- * `SpjaldPage`; anywhere else only approved recordings play.
+ * Whether draft recordings play too: on the card page opened with `?drog` (`SpjaldPage`), and on
+ * the teachers' listening page (`YfirferdHljod`). Anywhere else only approved recordings play.
  */
 export const DrogContext = createContext(false);
 

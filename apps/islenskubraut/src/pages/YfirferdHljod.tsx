@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Link, useSearchParams } from 'react-router-dom';
 
@@ -10,8 +10,10 @@ import { hlustun, type HlustunClip, type HlustunPlace } from '../data/hlustun';
 import { Sending } from '../yfirferd/Sending';
 import { useReview, type Review, type Verdict } from '../yfirferd/store';
 
-/** A recogniser score from which a clip is listed as doubtful: a fifth of its letters differ. */
+/** A recogniser score above which a clip is listed as doubtful: over a fifth of its letters differ. */
 export const DOUBT = 0.2;
+
+const doubtful = (c: HlustunClip) => (c.score ?? 0) > DOUBT;
 
 const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
 
@@ -20,6 +22,15 @@ function placeText(p: HlustunPlace): string {
     p.where === 'rammi' ? 'setningarammi' : p.where === 'dæmi' ? 'dæmi' : `„${p.where}“`;
   return `${nameOf(p.category)}${p.level ? ` ${p.level}` : ''}, ${where}`;
 }
+
+/** This teacher's verdict on the clip as it is now: one given to an earlier recording is not. */
+function current(review: Review, clip: HlustunClip) {
+  const mine = review.clips[clip.text];
+  return mine && mine.v === clip.v ? mine : undefined;
+}
+
+const markedTexts = (review: Review) =>
+  new Set(hlustun.filter((c) => current(review, c)).map((c) => c.text));
 
 /**
  * Every recording on the cards, for a teacher to hear and mark right or wrong (REVIEW-QUEUE C15).
@@ -30,8 +41,11 @@ export function YfirferdHljod() {
   const { review, update, saved } = useReview();
   const [params, setParams] = useSearchParams();
   const flokkur = params.get('flokkur') ?? '';
-  const doubtful = params.has('efi');
+  const onlyDoubtful = params.has('efi');
   const unmarked = params.has('ometnar');
+  // What was already marked when "not yet marked" was switched on. A row marked during the pass
+  // stays, with its note box, until the filter is switched again.
+  const [markedBefore, setMarkedBefore] = useState(() => markedTexts(review));
 
   const setParam = (key: string, value: string | null) =>
     setParams(
@@ -45,7 +59,7 @@ export function YfirferdHljod() {
 
   // The doubtful first, by how far the recogniser was off; the rest in the cards' order.
   const ordered = useMemo(() => {
-    const doubt = (c: HlustunClip) => ((c.score ?? 0) >= DOUBT ? (c.score ?? 0) : 0);
+    const doubt = (c: HlustunClip) => (doubtful(c) ? (c.score ?? 0) : 0);
     return hlustun
       .map((clip, i) => ({ clip, i }))
       .sort((a, b) => doubt(b.clip) - doubt(a.clip) || a.i - b.i)
@@ -54,17 +68,21 @@ export function YfirferdHljod() {
   const shown = ordered.filter(
     (c) =>
       (!flokkur || c.places.some((p) => p.category === flokkur)) &&
-      (!doubtful || (c.score ?? 0) >= DOUBT) &&
-      (!unmarked || !review.clips[c.text])
+      (!onlyDoubtful || doubtful(c)) &&
+      (!unmarked || !markedBefore.has(c.text))
   );
   const inScope = hlustun.filter((c) => !flokkur || c.places.some((p) => p.category === flokkur));
-  const marked = inScope.filter((c) => review.clips[c.text]).length;
+  const marked = inScope.filter((c) => current(review, c)).length;
 
-  const setVerdict = (text: string, verdict: Verdict | null) =>
+  const setVerdict = (clip: HlustunClip, verdict: Verdict | null) =>
     update((r) => {
       const clips = { ...r.clips };
-      if (verdict === null) delete clips[text];
-      else clips[text] = { ...clips[text], verdict };
+      const before = current(r, clip);
+      if (verdict === null) delete clips[clip.text];
+      // A note says what is wrong, so it goes when the clip is heard as right.
+      else if (verdict === 'right') clips[clip.text] = { verdict, v: clip.v };
+      else
+        clips[clip.text] = { verdict, v: clip.v, ...(before?.note ? { note: before.note } : {}) };
       return { ...r, clips };
     });
 
@@ -85,6 +103,10 @@ export function YfirferdHljod() {
           Hlustaðu á hverja og merktu hana „Rétt“ ef hún segir textann eins og á að segja hann. Ef
           ekki, merktu hana „Rangt“ og segðu hvað er að, til dæmis rangar áherslur eða rangt orð.
           Efst eru upptökur sem talgreinir heyrði sem eitthvað annað; þær eru ekki endilega rangar.
+        </p>
+        <p>
+          Talgervillinn les eyðu í ramma sem þögn, skástrik sem „eða“ og orð í sviga á eftir stuttri
+          þögn. Þar sem hann á að segja annað en stendur á spjaldinu er það skrifað undir textanum.
         </p>
       </div>
 
@@ -107,7 +129,7 @@ export function YfirferdHljod() {
         <label className="inline-flex items-center gap-2 text-sm text-warm-800 pointer-coarse:min-h-11">
           <input
             type="checkbox"
-            checked={doubtful}
+            checked={onlyDoubtful}
             onChange={(e) => setParam('efi', e.target.checked ? '' : null)}
           />
           Aðeins þær sem talgreinir efast um
@@ -116,7 +138,10 @@ export function YfirferdHljod() {
           <input
             type="checkbox"
             checked={unmarked}
-            onChange={(e) => setParam('ometnar', e.target.checked ? '' : null)}
+            onChange={(e) => {
+              if (e.target.checked) setMarkedBefore(markedTexts(review));
+              setParam('ometnar', e.target.checked ? '' : null);
+            }}
           />
           Aðeins þær sem ég hef ekki metið
         </label>
@@ -131,12 +156,13 @@ export function YfirferdHljod() {
             <ClipRow
               key={clip.text}
               clip={clip}
+              flokkur={flokkur}
               review={review}
               setVerdict={setVerdict}
               setNote={(note) =>
                 update((r) => ({
                   ...r,
-                  clips: { ...r.clips, [clip.text]: { verdict: 'wrong', note } },
+                  clips: { ...r.clips, [clip.text]: { verdict: 'wrong', v: clip.v, note } },
                 }))
               }
             />
@@ -154,24 +180,41 @@ export function YfirferdHljod() {
 
 function ClipRow({
   clip,
+  flokkur,
   review,
   setVerdict,
   setNote,
 }: {
   clip: HlustunClip;
+  flokkur: string;
   review: Review;
-  setVerdict: (text: string, verdict: Verdict | null) => void;
+  setVerdict: (clip: HlustunClip, verdict: Verdict | null) => void;
   setNote: (note: string) => void;
 }) {
-  const mine = review.clips[clip.text];
-  const doubt = (clip.score ?? 0) >= DOUBT;
+  const mine = current(review, clip);
+  const remade = review.clips[clip.text] !== undefined && mine === undefined;
+  // Where the clip is on the card being reviewed, when one is chosen.
+  const place = clip.places.find((p) => p.category === flokkur) ?? clip.places[0];
+  const noteRef = useRef<HTMLInputElement>(null);
+  const [focusNote, setFocusNote] = useState(false);
+  useEffect(() => {
+    if (focusNote && mine?.verdict === 'wrong') {
+      noteRef.current?.focus();
+      setFocusNote(false);
+    }
+  }, [focusNote, mine?.verdict]);
+
   const verdictButton = (verdict: Verdict, label: string) => {
     const pressed = mine?.verdict === verdict;
     return (
       <button
         type="button"
         aria-pressed={pressed}
-        onClick={() => setVerdict(clip.text, pressed ? null : verdict)}
+        onClick={() => {
+          setVerdict(clip, pressed ? null : verdict);
+          // After "Rangt", straight to saying what is wrong.
+          if (!pressed && verdict === 'wrong') setFocusNote(true);
+        }}
         className={`px-3 py-1 rounded-lg text-sm font-semibold border-2 pointer-coarse:min-h-11 ${
           pressed ? 'bg-warm-900 border-warm-900 text-white' : 'border-warm-300 text-warm-900'
         }`}
@@ -188,20 +231,34 @@ function ClipRow({
           {clip.text}
         </span>
         {clip.approved && <span className="text-sm text-warm-700">(samþykkt)</span>}
+        {clip.rejected && <span className="text-sm text-warm-700">(merkt röng)</span>}
         <span role="group" aria-label={`Mat: ${clip.text}`} className="ml-auto inline-flex gap-2">
           {verdictButton('right', 'Rétt')}
           {verdictButton('wrong', 'Rangt')}
         </span>
       </div>
+      {clip.say && (
+        <p className="mt-1 text-sm text-warm-800">
+          Talgervillinn segir: <span lang="is">„{clip.say}“</span>
+        </p>
+      )}
       <p className="mt-1 text-xs text-warm-700">
-        {placeText(clip.places[0])}
+        {placeText(place)}
         {clip.places.length > 1 ? ` og ${clip.places.length - 1} í viðbót` : ''}
       </p>
-      {doubt && <p className="mt-1 text-sm text-warm-800">Talgreinir heyrði: „{clip.heard}“</p>}
+      {doubtful(clip) && (
+        <p className="mt-1 text-sm text-warm-800">Talgreinir heyrði: „{clip.heard}“</p>
+      )}
+      {remade && (
+        <p className="mt-1 text-sm text-warm-800">
+          Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu aftur.
+        </p>
+      )}
       {mine?.verdict === 'wrong' && (
         <label className="mt-2 block text-sm text-warm-800">
           Hvað er rangt?<span className="sr-only"> „{clip.text}“</span>
           <input
+            ref={noteRef}
             type="text"
             value={mine.note ?? ''}
             onChange={(e) => setNote(e.target.value)}

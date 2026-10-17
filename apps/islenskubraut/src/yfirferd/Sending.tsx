@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { counts, reviewFile, reviewText, today, type Review } from './store';
+import { useArmedAfter } from '@kvenno/shared/utils/armed';
+
+import { counts, now, reviewFile, reviewText, type Review } from './store';
 
 /**
  * Sending the review back: the reviewer's name, what the review holds, and two ways to send it,
@@ -17,12 +19,20 @@ export function Sending({
 }) {
   const [status, setStatus] = useState('');
   const [clearing, setClearing] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  // The second press of a double click must not confirm what the first one asked.
+  const guard = useArmedAfter(400, clearing);
   const c = counts(review);
   const empty = c.notes + c.right + c.wrong === 0;
 
+  useEffect(() => {
+    if (clearing) cancelRef.current?.focus();
+  }, [clearing]);
+
   const download = () => {
-    const date = today();
-    const blob = new Blob([`${JSON.stringify(reviewFile(review, date), null, 2)}\n`], {
+    const stamp = now();
+    const date = stamp.slice(0, 10);
+    const blob = new Blob([`${JSON.stringify(reviewFile(review, date, stamp), null, 2)}\n`], {
       type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
@@ -32,13 +42,16 @@ export function Sending({
     document.body.append(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
-    setStatus('Skráin var sótt. Sendu hana til þess sem bað þig um yfirferðina.');
+    // Safari reads the file after the click has returned, so the address must outlive it.
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    setStatus(
+      'Skráin ætti nú að vera í niðurhalsmöppunni. Sendu hana til þess sem bað þig um yfirferðina. Ef hún kom ekki, notaðu „Afrita sem texta“.'
+    );
   };
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(reviewText(review, today()));
+      await navigator.clipboard.writeText(reviewText(review, now().slice(0, 10)));
       setStatus('Afritað. Límdu textann í tölvupóst.');
     } catch {
       setStatus('Vafrinn leyfði ekki afritun. Sæktu skrána í staðinn.');
@@ -71,7 +84,7 @@ export function Sending({
       </p>
       <p className="text-sm text-warm-700 mb-3">
         {saved
-          ? 'Yfirferðin geymist í þessum vafra þar til þú sendir hana.'
+          ? 'Yfirferðin geymist í þessum vafra, líka eftir að þú sendir hana, þar til þú hreinsar hana. Í huliðsglugga hverfur hún þegar glugganum er lokað. Ef aðrir nota þennan vafra, hreinsaðu hana þegar þú hefur sent hana.'
           : 'Vafrinn geymir ekki yfirferðina: sendu hana áður en þú lokar síðunni.'}
       </p>
       <div className="flex flex-wrap gap-2">
@@ -93,25 +106,39 @@ export function Sending({
         </button>
         {!clearing ? (
           <button
+            key="hreinsa"
             type="button"
             onClick={() => setClearing(true)}
-            disabled={empty}
+            disabled={empty && review.reviewer === ''}
             className="px-4 py-2 rounded-lg text-warm-700 underline hover:text-warm-900 disabled:opacity-50 pointer-coarse:min-h-11"
           >
             Hreinsa allt
           </button>
         ) : (
-          <button
-            type="button"
-            onClick={() => {
-              update((r) => ({ ...r, notes: {}, clips: {} }));
-              setClearing(false);
-              setStatus('Yfirferðin var hreinsuð.');
-            }}
-            className="px-4 py-2 rounded-lg font-semibold border-2 border-warm-900 text-warm-900 hover:bg-warm-100 pointer-coarse:min-h-11"
-          >
-            Já, eyða öllu sem ég hef skrifað
-          </button>
+          <>
+            {/* Where "Hreinsa allt" was, so a second click lands here and cancels. */}
+            <button
+              key="haetta"
+              ref={cancelRef}
+              type="button"
+              onClick={() => setClearing(false)}
+              className="px-4 py-2 rounded-lg font-semibold border-2 border-warm-900 text-warm-900 hover:bg-warm-100 pointer-coarse:min-h-11"
+            >
+              Hætta við
+            </button>
+            <button
+              key="eyda"
+              type="button"
+              onClick={guard(() => {
+                update(() => ({ reviewer: '', notes: {}, clips: {} }));
+                setClearing(false);
+                setStatus('Yfirferðin var hreinsuð.');
+              })}
+              className="px-4 py-2 rounded-lg font-semibold text-white bg-warm-900 hover:bg-warm-800 pointer-coarse:min-h-11"
+            >
+              Já, eyða öllu sem ég hef skrifað
+            </button>
+          </>
         )}
       </div>
       <p role="status" className="mt-3 text-sm text-warm-800 min-h-5">

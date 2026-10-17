@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ import { tenglar } from '../data/tenglar';
 import { texti } from '../data/texti';
 import type { Category, Level } from '../data/types';
 import { Sending } from '../yfirferd/Sending';
-import { ITEMS, useReview, type ItemId, type Review } from '../yfirferd/store';
+import { ITEMS, one, useReview, type ItemId, type Review } from '../yfirferd/store';
 
 const LEVELS: Level[] = ['A1', 'A2', 'B1'];
 
@@ -34,6 +34,8 @@ interface Row {
 const pdf = (kind: string, id: string, level: Level) =>
   `${import.meta.env.BASE_URL}spjold/${kind}-${id}-${level}.pdf`;
 const card = (id: string, level: Level) => `/spjald/${id}?stig=${level}&drog`;
+// The card at each level: links, glosses and chips differ from level to level.
+const cards = (id: string) => LEVELS.map((l) => ({ label: l, href: card(id, l), internal: true }));
 
 /** Every item of one card, with its state and where to open it. */
 function rows(category: Category): Row[] {
@@ -87,10 +89,11 @@ function rows(category: Category): Row[] {
     });
   }
   const clips = hlustun.filter((c) => c.places.some((p) => p.category === id));
+  const heard = clips.filter((c) => c.approved).length;
   out.push({
     item: 'hljod',
-    state: clips.length > 0 && clips.every((c) => c.approved) ? 'staðfest' : 'drög',
-    detail: `${clips.filter((c) => c.approved).length} af ${clips.length} samþykktar`,
+    state: clips.length > 0 && heard === clips.length ? 'staðfest' : 'drög',
+    detail: `${heard} af ${clips.length} ${one(heard) ? 'samþykkt' : 'samþykktar'}`,
     links: [{ label: 'Hlusta', href: `/yfirferd/hljod?flokkur=${id}`, internal: true }],
     hint: 'Hlustaðu á hverja upptöku og merktu hana rétta eða ranga.',
   });
@@ -100,9 +103,9 @@ function rows(category: Category): Row[] {
     out.push({
       item: 'tenglar',
       state: approved === links.length ? 'staðfest' : 'drög',
-      detail: `${approved} af ${links.length} samþykktir`,
-      links: [{ label: 'Neðst á spjaldinu', href: card(id, 'A1'), internal: true }],
-      hint: 'Opnaðu hvern tengil. Er lýsingin rétt og á hann heima á þessu spjaldi?',
+      detail: `${approved} af ${links.length} ${one(approved) ? 'samþykktur' : 'samþykktir'}`,
+      links: cards(id),
+      hint: 'Neðst á spjaldinu, á hverju stigi. Opnaðu hvern tengil. Er lýsingin rétt og á hann heima á þessu spjaldi og stigi?',
     });
   }
   if (glossur.length > 0) {
@@ -110,8 +113,8 @@ function rows(category: Category): Row[] {
       item: 'glossur',
       state: glossur.every((g) => g.approved) ? 'staðfest' : 'drög',
       detail: glossur.map((g) => `${g.name}${g.approved ? '' : ' (drög)'}`).join(', '),
-      links: [{ label: 'Á spjaldinu', href: card(id, 'A1'), internal: true }],
-      hint: 'Veldu málið undir „Á þínu máli“ og lestu orðin á spurningaspjaldinu. Þetta þarf að lesa sá sem talar málið.',
+      links: cards(id),
+      hint: 'Veldu málið undir „Á þínu máli“ og lestu orðin á spurningaspjaldinu, á hverju stigi. Þetta þarf að lesa sá sem talar málið.',
     });
   }
   return out;
@@ -135,9 +138,9 @@ export function Yfirferd() {
       <h1 className="font-heading text-2xl sm:text-3xl font-bold text-warm-900 mb-4">Yfirferð</h1>
       <div className="max-w-2xl space-y-3 text-warm-800 mb-8">
         <p>
-          Hér er allt á Íslenskubraut sem bíður þess að kennari fari yfir það. Ekkert sem merkt er
-          „drög“ birtist nemendum fyrr en búið er að staðfesta það. Engin síða á vefnum vísar
-          hingað.
+          Hér er allt á Íslenskubraut sem bíður þess að kennari fari yfir það. Ekkert af því birtist
+          nemendum fyrr en búið er að staðfesta það, nema hvað upptökur og tenglar birtast eitt og
+          eitt, um leið og hvert þeirra er samþykkt. Engin síða á vefnum vísar hingað.
         </p>
         <ol className="list-decimal pl-6 space-y-1">
           <li>
@@ -224,6 +227,9 @@ function ItemRow({
   const key = `${category.id}/${row.item}`;
   const note = review.notes[key] ?? '';
   const noteId = `athugasemd-${category.id}-${row.item}`;
+  // Open at first if a note is written; after that the teacher's own clicks decide, so emptying
+  // the box to rewrite it does not shut it under the cursor.
+  const [open, setOpen] = useState(() => note.trim() !== '');
   return (
     <li className="rounded-xl border border-warm-200 bg-surface-raised p-3 sm:p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
@@ -241,7 +247,7 @@ function ItemRow({
           </li>
         ))}
       </ul>
-      <details className="mt-2" open={note.trim() !== ''}>
+      <details className="mt-2" open={open} onToggle={(e) => setOpen(e.currentTarget.open)}>
         <summary className="cursor-pointer text-sm text-warm-800 underline pointer-coarse:py-2">
           Athugasemd{note.trim() ? ' (skrifuð)' : ''}
         </summary>
