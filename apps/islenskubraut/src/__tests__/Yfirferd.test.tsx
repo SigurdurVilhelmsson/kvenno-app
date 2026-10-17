@@ -66,10 +66,10 @@ vi.mock('../data/hlustun', () => ({
 vi.mock('../data/hljod', () => ({
   HLJOD_VOICE: 'Rödd C',
   hljod: {
-    feldur: { file: 'a.mp3', approved: true },
-    les: { file: 'b.mp3', approved: false },
-    bók: { file: 'c.mp3', approved: false },
-    'Hún/Hann er ___.': { file: 'd.mp3', approved: false },
+    feldur: { file: 'a.mp3', approved: true, v: 'va' },
+    les: { file: 'b.mp3', approved: false, v: 'vb' },
+    bók: { file: 'c.mp3', approved: false, v: 'vc' },
+    'Hún/Hann er ___.': { file: 'd.mp3', approved: false, v: 'vd' },
   },
 }));
 
@@ -134,9 +134,24 @@ describe('the review page', () => {
         { key: 'dyr/giskaleikur', label: 'Dýr — Hvað er þetta?', text: 'A2: lundi er ekki á bæ.' },
       ],
     });
-    expect(reviewText(stored, '2026-10-17')).toBe(
-      'Yfirferð á Íslenskubraut, 2026-10-17, Anna\n\nDýr — Hvað er þetta?\nA2: lundi er ekki á bæ.\n'
+    // The text a person reads, then the same review for the script, with the name to save it as.
+    const text = reviewText(stored, '2026-10-17');
+    expect(text).toMatch(
+      /^Yfirferð á Íslenskubraut, 2026-10-17, Anna\n\nDýr — Hvað er þetta\?\nA2: lundi er ekki á bæ\.\n\nHér fyrir neðan er sama yfirferð[^\n]*\nVistist sem yfirferd-islenskubraut-2026-10-17-[^\n]*\.txt\n-----YFIRFERÐ, EKKI BREYTA-----\n/
     );
+    // No line of the data an email might wrap.
+    const data = text.slice(
+      text.indexOf('BREYTA-----\n') + 12,
+      text.indexOf('-----YFIRFERÐ LÝKUR')
+    );
+    expect(
+      Math.max(
+        ...data
+          .trim()
+          .split('\n')
+          .map((l) => l.length)
+      )
+    ).toBeLessThanOrEqual(64);
   });
 
   it('keeps a note box open while its note is emptied to be rewritten', () => {
@@ -381,6 +396,37 @@ describe('the listening page', () => {
     expect(box).toHaveProperty('disabled', true);
     fireEvent.change(box, { target: { value: 'nýja upptakan' } });
     expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(before);
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('keeps a verdict another tab gave newer audio from being overwritten here unheard', async () => {
+    renderAt('/yfirferd/hljod');
+    const newer = JSON.stringify({
+      reviewer: '',
+      id: 'x',
+      notes: {},
+      clips: { les: { verdict: 'wrong', v: 'vNYTT', at: '2026-10-17T10:00:00.000Z', note: 'e' } },
+    });
+    act(() => {
+      window.localStorage.setItem('islenskubraut-yfirferd', newer);
+      window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
+    });
+    const rangt = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rangt',
+    });
+    // Not played here yet, so this page cannot tell whose audio is the server's.
+    expect(rangt).toHaveProperty('disabled', true);
+    fireEvent.click(rangt);
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(newer);
+    // Played, and the server holds what this page knows: then it may be judged again here.
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    const bytes = new Uint8Array([1, 2, 3]);
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(bytes));
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    expect(await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
     play.mockRestore();
     fetched.mockRestore();
   });

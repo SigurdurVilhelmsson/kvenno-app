@@ -706,8 +706,10 @@ sets its clip back to `false`, and **the build fails while the record is out of 
 (`stateProblems`), so an approval is always for the audio approved. `scripts/build-all.mjs` runs
 `build.mjs --check` before building the app, so `pnpm build` and `deploy.sh` refuse stale data too.
 **It also fails where `hljod.yaml` disagrees with the teachers' verdicts in `mat.json`** on the
-audio as it is now (below), which a hand edit or a clean git merge of two runs can leave, and on an
-approved clip with no file. A text with no
+audio as it is now (below), which a hand edit or a clean git merge of two runs can leave, **on any
+`true` the record does not back with an approval of the audio as it is now** (`unbacked` in
+`approvals`: a `true` carried in by a merge, across a remake or by hand cannot be told from a real
+one, so only a verdict approves), and on an approved clip with no file. A text with no
 clip simply has no button, so editing a card never needs the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
 review pages; it flags eight of 524 over 20 % (C15). It merges into
 `content/islenskubraut/hljod/hlustun.json`, which is committed, since the build turns it into
@@ -715,8 +717,10 @@ review pages; it flags eight of 524 over 20 % (C15). It merges into
 reading carries the hash it heard, and one of other audio is dropped. Tiro's TTS
 service, which the research named, is gone. Workflow: `content/islenskubraut/hljod/README.md`.
 **`server/nginx-site.conf` gives `/islenskubraut/hljod/` its own location** (2026-10-16): a missing
-clip is a 404, not the app's HTML with a 200, and a browser always revalidates a clip
-(`Cache-Control: no-cache`), since a remade one keeps its name. `deploy.sh` does not install it
+clip is a 404, not the app's HTML with a 200, and clips are sent `Cache-Control: no-cache`, since a
+remade one keeps its name. That is not enough: Firefox replays its own copy for a while after a
+reload whatever the header says, so every page asks for a clip at `?v=<version>`, the version
+`hljod.ts` carries for it (`clipsForApp`). `deploy.sh` does not install the config
 (REVIEW-QUEUE A).
 
 **Can-do statements, "Ég get…" (2026-10-16).** `content/islenskubraut/egget/<flokkur>.yaml` gives three
@@ -788,21 +792,27 @@ files approve what another had heard as wrong. **After a git merge or rebase tha
 run `--apply` with no files**: a conflict in any of the three is merged again from git's three
 versions (`mergeThreeWay` per recording for `hljod.yaml` and `stada.json`, a clash going to
 `false`; `unionLedgers` for the record, its rulers against the base so a removal stays), and every
-value is worked out again. Taking one side whole, as the first version did, lost one side's new
-recordings and approvals, revived a removed ruler, and could approve a remade recording unheard.
+value is worked out again; the rest of `hljod.yaml` is as git merged it, ours where it conflicted,
+and the report measures from this side, what students hear now. Taking one side whole, as the
+first version did, lost one side's new recordings and approvals, revived a removed ruler, and
+could approve a remade recording unheard; a person who takes one side by hand is now caught by the
+build's refusal of an approval the record does not back.
 A ruler's verdict (`--urskurdur`, a name among those one browser's files carry, and no other's)
 settles a recording, every verdict it overrules is printed, and **the record keeps who rules**, so
 a ruling outlasts the run that made it; of several rulings the latest decides. Per recording, a
 reviewer's latest verdict counts, by their browser's clock, and editing what is wrong gives it a new
 time. A page left open across a deploy that remade a recording would stamp the old version: the
-listening page asks for a clip at `?v=<version>` (Firefox otherwise replays the previous page's
-copy after a reload), hashes what that address holds (`versionOf` in `Hlusta.tsx`, the same hash
-as `clipVersion`), and takes no verdict or note on one that differs. The report lists, uncounted, a
-verdict on other audio given after the current one was judged. Without `--apply` the command says
+listening page hashes what a clip's address holds when it plays (`versionOf` in `Hlusta.tsx`, the
+same hash as `clipVersion`) and takes no verdict or note on one that differs, nor over a verdict
+this browser gave other audio until the clip has been played here (`blocked` in
+`YfirferdHljod.tsx`), so a stale tab cannot overwrite a newer one. The report lists, uncounted, a
+verdict on other audio given after the current one was judged, unless a later ruling decides it. Without `--apply` the command says
 which files `--apply` would write, `mat.json` included. A download's name carries its time and the
-start of the browser's id, so none share one, and the copied text (`Afrita sem texta`) carries
-the file's data between marker lines (`DATA_START` in `store.ts` and `yfirferd.mjs`), so a review
-sent by email is read as the file would be. The page writes the file's `format`, the script refuses any other, and a test
+start of the browser's id, so none share one, and the copied text (`Afrita sem texta`) always
+carries the file's data between marker lines (`DATA_START` in `store.ts` and `yfirferd.mjs`), as
+base64 in lines of 64, which an email's wrapping, `> ` quoting or non-breaking spaces leave
+readable, with a `Vistist sem` line naming the file to save it as. An email with several copies
+gives every one (`reviewData` returns a list). The page writes the file's `format`, the script refuses any other, and a test
 holds the two constants equal. No page a student can reach links to either
 page; they link to each other, and `Yfirferd.test.tsx` fails if any other file in the app quotes
 their routes. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in

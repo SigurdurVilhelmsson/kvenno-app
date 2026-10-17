@@ -8,12 +8,17 @@ import { HLJOD_VOICE, hljod } from '../data/hljod';
  */
 export const DrogContext = createContext(false);
 
-/** The recording of a text as printed, if it may play here: approved, or a draft under `?drog`. */
+/**
+ * The recording of a text as printed, if it may play here: approved, or a draft under `?drog`.
+ * Its address carries the version of its audio (`?v=`), so a browser fetches a recording made
+ * again rather than replaying the copy it kept (Firefox does, for a while after a reload, whatever
+ * the server's `Cache-Control` says).
+ */
 export function useClip(text: string): string | undefined {
   const drafts = useContext(DrogContext);
   const clip = hljod[text];
   if (!clip || !(clip.approved || drafts)) return undefined;
-  return `${import.meta.env.BASE_URL}hljod/${clip.file}`;
+  return `${import.meta.env.BASE_URL}hljod/${clip.file}${clip.v ? `?v=${clip.v}` : ''}`;
 }
 
 /** Whether any of these texts has a recording that may play here, for the credit line. */
@@ -56,28 +61,21 @@ export async function versionOf(src: string): Promise<string | undefined> {
 
 /**
  * A small play button for a text on the card. Renders nothing for a text with no recording,
- * so the card looks as printed until a person has approved one.
- *
- * On the listening page `version` is the audio the page was built with, put in the address so
- * the browser fetches the clip anew for a page that expects new audio (Firefox otherwise plays
- * the copy the previous page had, for a while after a reload). `onHeard` is told the version the
- * server has at that address, which a page left open since before a recording was made again
- * knows by an older one.
+ * so the card looks as printed until a person has approved one. `onHeard`, on the listening
+ * page, is told the version the server holds at the clip's address, which a page left open since
+ * before a recording was made again knows by an older one.
  */
 export function Hlusta({
   text,
   color,
-  version,
   onHeard,
 }: {
   text: string;
   color: string;
-  version?: string;
   onHeard?: (version: string) => void;
 }) {
-  const clip = useClip(text);
-  if (!clip) return null;
-  const src = version ? `${clip}?v=${version}` : clip;
+  const src = useClip(text);
+  if (!src) return null;
   return (
     <button
       type="button"

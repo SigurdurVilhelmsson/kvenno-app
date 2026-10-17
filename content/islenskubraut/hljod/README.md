@@ -22,7 +22,9 @@ Tiro's public speech service, which the research first named, had gone by 2026-1
       hali: false       # not listened to yet, or not settled
       les: rangt        # listened to, and wrong: make it again
 
-**A student hears only the ones marked `true`.** Add `?drog` to a card page's address, for example
+**A student hears only the ones marked `true`, and a recording is `true` only with an approval of
+its audio as it is now in `mat.json`** (below), given on the listening page. Add `?drog` to a card
+page's address, for example
 `/islenskubraut/spjald/dyr?drog`, to hear the rest, `rangt` ones included. Whenever any recording
 plays, the card page credits the voice, as its licence requires.
 
@@ -36,13 +38,16 @@ refuses to run until `--record` has seen every change, so a replaced recording c
 students unheard.
 
 **The build also refuses a value the teachers' verdicts do not give,** wherever `mat.json` (below)
-holds a verdict on the recording as it is now. A hand edit, or a git merge of two runs, could
-otherwise approve a recording a teacher heard as wrong. `pnpm islenskubraut:yfirferd --apply`, with
-no files, works every such value out again.
+holds a verdict on the recording as it is now, and **any `true` the record does not back**. A hand
+edit, a git merge of two runs, or one side of a conflict taken whole could otherwise approve a
+recording a teacher heard as wrong, or one made again since anybody heard it, and nothing in the
+files could tell that `true` from a real one. `pnpm islenskubraut:yfirferd --apply`, with no files,
+works every such value out again, and sets an approval nobody gave the audio back to `false`.
 
 **After editing `hljod.yaml` by hand, run `pnpm islenskubraut:hljod --record`** before building. A
-hand edit holds only for a recording nobody has given a verdict on as it is now; to overrule
-teachers, give a ruling (below).
+hand edit to `false` or `rangt` holds for a recording nobody has given a verdict on as it is now;
+an approval cannot be written by hand. To approve, or to overrule teachers, mark it on the
+listening page and give a ruling (below).
 
 ## Listening
 
@@ -52,9 +57,12 @@ teachers, give a ruling (below).
 and they type their name and press `Sækja skrá` and send the file back. Its name carries the date
 and time, theirs and the start of their browser's id, so no two downloads share one; keep every
 one, since a later file need not hold all an earlier did. A teacher who cannot send a file presses
-`Afrita sem texta` and pastes the text into an email: it carries the same data between two marker
-lines, so save the email's text as `yfirferd-islenskubraut-<name>.txt` and pass it like a file.
-Save them in the repository root, where they are gitignored (they carry teachers' names). Then:
+`Afrita sem texta` and pastes the text into an email. Below what they wrote it carries the same
+data, between two marker lines, in short lines of letters that an email's wrapping or quoting does
+not break, and the line `Vistist sem …` names the file to save it as. Save each email's text under
+that name, a file of its own, and pass it like a file; an email that holds several copies, a
+correction below the first say, gives every one. Save them in the repository root, where they are
+gitignored (they carry teachers' names). Then:
 
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*                # read what they say
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-* --apply        # write the verdicts
@@ -95,14 +103,17 @@ new id, since the next person to use it is someone else. So a teacher who review
 or clears the review and starts again, is two reviewers. That only matters if they change their
 mind: the earlier verdict still stands, and the recording is heard both ways until it is settled.
 
-A page left open since before a recording was made again would name the old audio. The listening
-page asks for each recording by the version it was built with (`?v=` in the address, so the
-browser fetches it afresh rather than playing a copy kept from before), fetches the same address
-to hash what the server holds there, and where that is not the version it knows it takes no
-verdict or note until the page is reloaded. Where the browser cannot check (an old browser, or no
-https), a verdict on other audio given after someone had judged the current one is listed in the
-report without counting. So is one given to audio since abandoned, by a revert say: the record
-cannot tell the two apart. Listen to that recording yourself, and rule.
+A page left open since before a recording was made again would name the old audio. Every page
+asks for a recording by the version of its audio (`?v=` in the address, so the browser fetches it
+afresh rather than replaying a copy kept from before, which Firefox does for a while after a
+reload). When a recording plays, the listening page also fetches that address and hashes what the
+server holds there; where that is not the version it knows, it takes no verdict or note until the
+page is reloaded. Where this browser holds a verdict on audio the page does not know, from another
+tab, the clip must be played here before it is judged again, so a stale tab cannot overwrite a
+newer verdict. Where the browser cannot check (an old browser, or no https), a verdict on other
+audio given after someone had judged the current one is listed in the report without counting.
+So is one given to audio since abandoned, by a revert say: the record cannot tell the two apart.
+Listen to that recording yourself, and rule; a ruling hides only such verdicts given before it.
 
 **To settle a recording heard both ways, or to overrule the teachers,** listen yourself on the
 same page, send yourself the file, and pass your name as a ruling:
@@ -116,7 +127,7 @@ ruling lasts on later runs without `--urskurdur`, and so do the ruler's later ve
 rulings on a recording the latest decides, so a ruler who changes their mind, on another browser or
 after `Hreinsa allt`, rules again: pass the new browser's file alone with `--urskurdur`, since a
 name the files of two browsers carry is refused, even when one of them already rules (the other
-could be a colleague of the same name). Only two rulings given at the same moment that disagree
+could be a colleague of the same name). Only rulings given at the same moment that disagree
 leave a recording `false`. The report ends with who rules, by the hash `mat.json` keeps; to stop
 someone ruling, delete their hash from `rulers` there and run `--apply`.
 
@@ -124,20 +135,23 @@ someone ruling, delete their hash from `rulers` there and run `--apply`.
 with no files. If git left a conflict in `mat.json`, `hljod.yaml` or `stada.json`, it merges each
 again from git's three versions of it, recording by recording: the record takes every verdict from
 both sides, a ruler one side removed stays removed, and a recording only one side changed takes
-that side. One both sides changed differently goes back to `false`, and the report lists it. Every
-value the record decides is then worked out again, and the build regenerates the app's data, a
-conflicted `hljod.ts` or `hlustun.ts` included. Then `git add` the files and commit, or
-`git rebase --continue`.
+that side. One both sides changed differently goes back to `false`, and the report counts it. The
+rest of `hljod.yaml` (the voice, comments) is as git merged it, ours where it conflicted. Every value
+the record decides is then worked out again, the report measuring changes from this side, which is
+what students hear now, and the build regenerates the app's data, a conflicted `hljod.ts` or
+`hlustun.ts` included. Then `git add` the files and commit, or `git rebase --continue`. Taking one
+side of a conflict whole instead is safe too: the build then refuses any approval the record does
+not back.
 
-To listen without the site:
+To listen without the deployed site, run `pnpm dev:islenskubraut` and open the listening page
+there: marking, sending yourself the file and applying it work as above. Or:
 
     pnpm islenskubraut:hljod
 
 This writes `islenskubraut-hljod-yfirlit.html` in the repository root: every text with its
-recording, sorted so the doubtful ones come first. Open it in a browser, listen, and write `true`
-or `rangt` in `hljod.yaml` beside each one. Then run `pnpm islenskubraut:hljod --record` and
-`pnpm islenskubraut:build`. This works only for a recording nobody has given a verdict on as it is
-now: for the others the build refuses the edit, and a ruling on the listening page is the way.
+recording, sorted so the doubtful ones come first. Open it in a browser to listen. A recording you
+hear as wrong can be written `rangt` in `hljod.yaml` (then `pnpm islenskubraut:hljod --record`),
+but an approval needs a verdict: give it on the listening page.
 
 Both pages are sorted by a speech recogniser's reading, from `hlustun.json` here (see below). It
 transcribed each recording back, and the pages show what it heard. A high score means the

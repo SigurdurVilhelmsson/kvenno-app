@@ -86,9 +86,9 @@ test('the card page with its draft recordings has no WCAG AA violations', async 
     );
     expect(overflow, tab).toBeLessThanOrEqual(0);
   }
-  // The card page asks for the clip by its name alone; only the listening page adds a version.
+  // Asked for by the version of its audio, so a browser plays a recording made again, not a copy.
   const played = page.waitForRequest((r) =>
-    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3$/.test(r.url())
+    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
   );
   await page
     .getByRole('button', { name: /^Hlusta: / })

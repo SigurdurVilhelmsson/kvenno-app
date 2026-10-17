@@ -16,6 +16,20 @@ export const DOUBT = 0.2;
 
 const doubtful = (c: HlustunClip) => (c.score ?? 0) > DOUBT;
 
+/** Whether this browser can hash the audio it plays, to tell a page left open since a remake. */
+const canCheck = () => globalThis.crypto?.subtle !== undefined;
+
+/**
+ * Whether a verdict or note given here would name audio other than the server's. Either the server
+ * has audio this page does not know (`heard`, once played), or this browser holds a verdict on
+ * audio this page does not know, from another tab, which may be newer: then the clip must be
+ * played here first, so the page knows its audio is the server's.
+ */
+function blocked(clip: HlustunClip, heard: string | undefined, stored: { v: string } | undefined) {
+  if (heard !== undefined) return heard !== clip.v;
+  return stored !== undefined && stored.v !== clip.v && canCheck();
+}
+
 const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
 
 function placeText(p: HlustunPlace): string {
@@ -91,7 +105,7 @@ export function YfirferdHljod() {
   const setVerdict = (clip: HlustunClip, verdict: Verdict | null) =>
     update((r) => {
       // A verdict on audio this page does not know would be filed under the old recording.
-      if (heard[clip.text] !== undefined && heard[clip.text] !== clip.v) return r;
+      if (blocked(clip, heard[clip.text], r.clips[clip.text])) return r;
       const clips = { ...r.clips };
       // What was written about this recording, kept through a verdict taken back by mistake.
       const stored = r.clips[clip.text];
@@ -195,7 +209,7 @@ export function YfirferdHljod() {
               setNote={(note) =>
                 update((r) =>
                   // Words on audio this page does not know would be filed under the old recording.
-                  heard[clip.text] !== undefined && heard[clip.text] !== clip.v
+                  blocked(clip, heard[clip.text], r.clips[clip.text])
                     ? r
                     : {
                         ...r,
@@ -246,6 +260,8 @@ function ClipRow({
   const mine = current(review, clip);
   // Made again since this page was opened: what played is not what a verdict here would name.
   const changed = heard !== undefined && heard !== clip.v;
+  // Or not yet known: a verdict stored on other audio, and the clip not played here yet.
+  const locked = blocked(clip, heard, review.clips[clip.text]);
   const stored = review.clips[clip.text];
   const remade = stored !== undefined && stored.verdict !== null && stored.v !== clip.v;
   // Where the clip is on the card being reviewed, when one is chosen.
@@ -265,7 +281,7 @@ function ClipRow({
       <button
         type="button"
         aria-pressed={pressed}
-        disabled={changed}
+        disabled={locked}
         onClick={() => {
           setVerdict(clip, pressed ? null : verdict);
           // After "Rangt", straight to saying what is wrong.
@@ -282,7 +298,7 @@ function ClipRow({
   return (
     <li className="rounded-xl border border-warm-200 bg-surface-raised p-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Hlusta text={clip.text} color="#1F2937" version={clip.v} onHeard={onHeard} />
+        <Hlusta text={clip.text} color="#1F2937" onHeard={onHeard} />
         <span lang="is" className="font-semibold text-warm-900">
           {clip.text}
         </span>
@@ -313,7 +329,8 @@ function ClipRow({
       )}
       {remade && (
         <p className="mt-1 text-sm text-warm-800">
-          Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu aftur.
+          Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu á hana áður en þú metur hana
+          aftur.
         </p>
       )}
       {mine?.verdict === 'wrong' && (
@@ -323,7 +340,7 @@ function ClipRow({
             ref={noteRef}
             type="text"
             value={mine.note ?? ''}
-            disabled={changed}
+            disabled={locked}
             onChange={(e) => setNote(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-warm-300 bg-surface-page px-3 py-2"
           />

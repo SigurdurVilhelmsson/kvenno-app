@@ -670,7 +670,15 @@ on old audio; that a note could still be written on a remade row; that a later d
 same browser replaced an earlier one; that the copied text could not be applied; and that the
 report miscounted. Conflicts are now merged recording by recording against the base, a clip is
 asked for by its version, downloads carry their time, the copied text carries the file's data,
-and a dry run says whether the files' verdicts are in the record yet.
+and a dry run says whether the files' verdicts are in the record yet. A seventh pass found that a
+`true` could still reach students unheard when a person took one side of a conflict whole, since
+nothing in the files tells a carried-over approval from a real one; that a stale tab could still
+overwrite a newer verdict before playing the clip; that the copied text broke under an email's
+line wrapping, carried no data for a review of the cards alone, and lost a second copy in the same
+email; and that a merge dropped the other side's voice credit and miscounted what it revoked. Now
+a recording plays only with an approval of its current audio in the record, every clip address
+carries its version, the copied text is base64 in short lines and always present, and a conflicted
+`hljod.yaml` starts from git's own merge.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
@@ -683,7 +691,7 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
       for a name, and `Dregið til baka`, `Metnar áður en …` and the line before the data in the
       copied text). On the listening page: the three paragraphs, the filters,
       `Talgervillinn segir: …`, `(merkt röng)`,
-      `Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu aftur.` and
+      `Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu á hana áður en þú metur hana aftur.` and
       `Þessi upptaka hefur verið gerð aftur síðan þú opnaðir síðuna. …`. The script's report is
       Icelandic too, and drafted the same way.
       They are the only instructions a reviewer gets, so read them as a colleague will.

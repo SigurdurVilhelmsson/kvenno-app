@@ -196,8 +196,11 @@ export function compare(texts, manifest, hasFile) {
   return { missing, stale, noFile };
 }
 
-/** The generated module's data: every clip on the cards that has a file, by its text. */
-export function clipsForApp(texts, manifest, hasFile) {
+/**
+ * The generated module's data: every clip on the cards that has a file, by its text, with its
+ * audio's version where `version` gives one, so a page asks for the clip by it (`?v=`).
+ */
+export function clipsForApp(texts, manifest, hasFile, version = () => undefined) {
   const out = {};
   for (const [text, approved] of manifest.clips) {
     if (!texts.has(text)) continue;
@@ -206,7 +209,8 @@ export function clipsForApp(texts, manifest, hasFile) {
       assert(!approved, `"${text}" is approved but ${file} is missing`);
       continue;
     }
-    out[text] = { file, approved };
+    const v = version(file);
+    out[text] = { file, approved, ...(v ? { v } : {}) };
   }
   return out;
 }

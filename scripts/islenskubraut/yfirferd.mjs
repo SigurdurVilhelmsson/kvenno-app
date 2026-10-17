@@ -18,35 +18,44 @@ export const FORMAT = 'islenskubraut-yfirferd/1';
 
 /**
  * Where a review copied as text (`Afrita sem texta`) carries the same data as the file, so the
- * script can read an email as it reads a file. The page writes them (`store.ts`), and a test holds
- * the two copies equal.
+ * script can read an email as it reads a file. Between the markers is the file's JSON as base64
+ * in short lines: an email may wrap long lines, quote them with `> ` or turn spaces into
+ * non-breaking ones, and none of that touches base64's letters. The page writes them
+ * (`store.ts`), and a test holds the two copies equal.
  */
 export const DATA_START = '-----YFIRFERÐ, EKKI BREYTA-----';
 export const DATA_END = '-----YFIRFERÐ LÝKUR-----';
 
 /**
- * The review in a file the page saved, or in the text it copied, pasted or saved from an email.
- * Returns the parsed data for `readReview`.
+ * The reviews in a file the page saved, or in the text it copied, pasted or saved from an email:
+ * a list, since an email thread can hold several copies. Returns the parsed data for `readReview`.
  */
 export function reviewData(raw, where = 'review') {
   try {
-    return JSON.parse(raw);
+    return [JSON.parse(raw)];
   } catch {
     // Not a file: text, with the data between the markers.
   }
-  const start = raw.indexOf(DATA_START);
-  const end = raw.indexOf(DATA_END, start);
+  // An email client may have turned the markers' spaces into non-breaking ones.
+  const text = raw.replace(/\u00a0/g, ' ');
+  const out = [];
+  for (let at = text.indexOf(DATA_START); at >= 0; at = text.indexOf(DATA_START, at + 1)) {
+    const end = text.indexOf(DATA_END, at);
+    assert(end > at, `${where}: a review's data has no end (${DATA_END}); ask for the file`);
+    const letters = text.slice(at + DATA_START.length, end).replace(/[^A-Za-z0-9+/=]/g, '');
+    try {
+      out.push(JSON.parse(Buffer.from(letters, 'base64').toString('utf8')));
+    } catch (e) {
+      throw new Error(
+        `yfirferd: ${where}: a review's data was changed on its way (${e.message}); ask for the file`
+      );
+    }
+  }
   assert(
-    start >= 0 && end > start,
+    out.length > 0,
     `${where} is neither a review file nor a review's text with its data (${DATA_START})`
   );
-  try {
-    return JSON.parse(raw.slice(start + DATA_START.length, end).replace(/\u00a0/g, ' '));
-  } catch (e) {
-    throw new Error(
-      `yfirferd: ${where}: the data in the text was changed on its way (${e.message}); ask for the file`
-    );
-  }
+  return out;
 }
 
 /** A verdict the reviewer took back by pressing the pressed button again. */
@@ -284,6 +293,10 @@ function valueFrom(verdicts) {
  * taken back is `false`: nobody vouches for it. A recording with verdicts only on other audio
  * keeps its value, which `syncState` already set back to `false` when the audio changed.
  *
+ * A recording `hljod.yaml` approves with no approval in the record of its audio as it is now goes
+ * back to `false` (`unbacked`): an approval carried in by a git merge, or across a remake, or
+ * written by hand, is not one anybody gave to what students would hear.
+ *
  * A ruler's verdict decides a recording whatever the others say, and every verdict it overrules
  * is listed. Of several rulers' verdicts the latest decides, so a ruler who changes their mind,
  * from another browser too, can rule again; two given at the same moment that disagree settle
@@ -292,7 +305,7 @@ function valueFrom(verdicts) {
  * `late` lists verdicts on other audio given after a verdict on the current audio. Most are from
  * a page left open since before the recording was made again; one on audio since replaced by a
  * revert is another. The record cannot tell which, so they do not count and are shown, unless a
- * ruling (whose ruler has listened) decides the recording.
+ * ruling given after them decides the recording.
  *
  * Returns `{ outcomes, unknown, unlisted }`. Each outcome is `{ text, from, to, verdicts,
  * ruling, overruled, late }`, the verdicts `[{ who, reviewer, verdict, at, note? }]`. `unknown`
@@ -332,8 +345,7 @@ export function approvals(ledger, manifest, { texts, version, names = new Map() 
     const ruling = verdicts
       .filter((v) => rulers.has(v.who))
       .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
-    const tied =
-      ruling.length > 1 && ruling[1].at === ruling[0].at && ruling[1].verdict !== ruling[0].verdict;
+    const tied = ruling.some((v) => v.at === ruling[0].at && v.verdict !== ruling[0].verdict);
     const ruled = ruling.length === 0 ? undefined : tied ? null : ruling[0];
     const to = ruled
       ? ruled.verdict === 'right'
@@ -361,7 +373,21 @@ export function approvals(ledger, manifest, { texts, version, names = new Map() 
       verdicts,
       ...(ruled ? { ruling: ruled } : {}),
       overruled: ruled ? verdicts.filter((v) => v.verdict !== ruled.verdict) : [],
-      late: ruled ? [] : late,
+      late: ruled ? late.filter((v) => v.at > ruled.at) : late,
+    });
+  }
+  // Approved in hljod.yaml with no approval of the audio as it is now: back to false.
+  for (const text of manifest.clips.keys()) {
+    if (manifest.clips.get(text) !== true || !texts.has(text)) continue;
+    if (outcomes.some((o) => o.text === text)) continue;
+    outcomes.push({
+      text,
+      from: true,
+      to: false,
+      verdicts: [],
+      overruled: [],
+      late: [],
+      unbacked: true,
     });
   }
   outcomes.sort((a, b) => a.text.localeCompare(b.text, 'is'));
@@ -401,17 +427,23 @@ export function report(people, result, rulers = [], extra = {}) {
           .join(', ')}`
   );
   const why = (o) =>
-    o.remade
-      ? 'upptakan er ný, eða ekki skráð hvaða upptaka var samþykkt'
-      : [
-          o.verdicts.length ? said(o.verdicts) : 'dregið til baka',
-          o.ruling ? `úrskurður ${o.ruling.reviewer}` : '',
-        ]
-          .filter(Boolean)
-          .join('; ');
+    o.unbacked
+      ? 'ekkert samþykki í mat.json á upptökunni eins og hún er'
+      : o.clash
+        ? 'breytt á báða vegu í samruna í git'
+        : o.remade
+          ? 'upptakan er ný, eða ekki skráð hvaða upptaka var samþykkt'
+          : [
+              o.verdicts.length ? said(o.verdicts) : 'dregið til baka',
+              o.ruling ? `úrskurður ${o.ruling.reviewer}` : '',
+            ]
+              .filter(Boolean)
+              .join('; ');
   const changes = [
     ...result.outcomes.filter((o) => o.from !== o.to),
-    ...reset.filter((r) => r.from !== false).map((r) => ({ ...r, to: false, remade: true })),
+    ...reset
+      .filter((r) => r.from !== false)
+      .map((r) => ({ ...r, to: false, ...(r.clash ? { clash: true } : { remade: true }) })),
   ].sort((a, b) => a.text.localeCompare(b.text, 'is'));
   const revoked = changes.filter((o) => o.from === true);
   if (revoked.length > 0) {

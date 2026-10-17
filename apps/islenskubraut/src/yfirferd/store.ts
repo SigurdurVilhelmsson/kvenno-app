@@ -255,17 +255,24 @@ export function reviewText(review: Review, date: string, saved = date): string {
       `Metnar áður en upptakan var gerð aftur, eða ekki lengur á spjöldunum: ${q(old)}`
     );
   }
-  // The verdicts as the file has them, which the script needs to tell recordings apart.
-  if (file.clips.length > 0) {
-    lines.push(
-      '',
-      'Hér fyrir neðan er sama yfirferð á formi sem forritið les. Ekki breyta neinu þar.',
-      DATA_START,
-      JSON.stringify(file, null, 1),
-      DATA_END
-    );
-  }
+  // The file itself, which the script reads, as base64 in short lines: an email may wrap long
+  // lines or quote them, and neither touches base64's letters.
+  lines.push(
+    '',
+    'Hér fyrir neðan er sama yfirferð á formi sem forritið les. Ekki breyta neinu þar.',
+    `Vistist sem ${fileName(review, saved).replace(/\.json$/, '.txt')}`,
+    DATA_START,
+    ...(base64(JSON.stringify(file)).match(/.{1,64}/g) ?? []),
+    DATA_END
+  );
   return `${lines.join('\n')}\n`;
+}
+
+/** Text as base64, by its UTF-8 bytes, as `Buffer.from(…, 'base64')` reads it back. */
+function base64(text: string): string {
+  let binary = '';
+  for (const byte of new TextEncoder().encode(text)) binary += String.fromCharCode(byte);
+  return btoa(binary);
 }
 
 /**

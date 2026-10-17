@@ -197,10 +197,10 @@ if (conflicted.length > 0) {
 const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
 const voiced = textsToVoice(categories);
 const hasClip = (f) => existsSync(resolve(CLIP_DIR, f));
-const clips = clipsForApp(voiced, hljod, hasClip);
 const heard = existsSync(HEARD_FILE) ? readHeard(JSON.parse(readFileSync(HEARD_FILE, 'utf8'))) : {};
 // Each clip's audio version, so a verdict given to a recording is not taken for a remade one.
 const version = (f) => clipVersion(readFileSync(resolve(CLIP_DIR, f)));
+const clips = clipsForApp(voiced, hljod, hasClip, version);
 // An approval is for the audio approved: a recording replaced since, or a value changed by hand
 // and not recorded, stops the build until `pnpm islenskubraut:hljod --record` has seen it.
 const state = existsSync(STATE_FILE) ? readState(JSON.parse(readFileSync(STATE_FILE, 'utf8'))) : {};
@@ -234,8 +234,13 @@ const drift = approvals(ledger, hljod, {
 }).outcomes.filter((o) => o.from !== o.to);
 if (drift.length > 0) {
   console.error('content/islenskubraut/hljod/hljod.yaml disagrees with the verdicts in mat.json:');
-  for (const o of drift.slice(0, 20))
-    console.error(`  "${o.text}": ${o.from}, the verdicts give ${o.to}`);
+  for (const o of drift.slice(0, 20)) {
+    console.error(
+      o.unbacked
+        ? `  "${o.text}": true, with no approval in mat.json of its audio as it is now`
+        : `  "${o.text}": ${o.from}, the verdicts give ${o.to}`
+    );
+  }
   if (drift.length > 20) console.error(`  … and ${drift.length - 20} more`);
   console.error(
     'Run: pnpm islenskubraut:yfirferd --apply   (no files needed). To overrule the verdicts, give a ruling.'

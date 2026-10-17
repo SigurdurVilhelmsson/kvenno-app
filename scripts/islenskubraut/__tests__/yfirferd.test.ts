@@ -73,7 +73,12 @@ const manifest = readHljod({
   },
 });
 const texts = new Map(['gæludýr', 'les', 'hali', 'feldur', 'fugl', 'horfin'].map((t) => [t, []]));
-const EMPTY = readLedger(undefined);
+// feldur is approved because Anna heard it as right before these tests begin: a recording plays
+// only with an approval of its audio in the record.
+const EARLIER = '2026-10-01T10:00:00Z';
+const EMPTY = mergeReviews(readLedger(undefined), [
+  readReview(file({ saved: EARLIER, notes: [], clips: [clip('feldur', 'right', EARLIER)] })),
+]).ledger;
 const merge = (ledger: ReturnType<typeof readLedger>, files: object[], rulers: string[] = []) =>
   mergeReviews(
     ledger,
@@ -85,8 +90,16 @@ const run = (files: object[], rulers: string[] = [], ledger = EMPTY) => {
   expect(merged.errors).toEqual([]);
   return approvals(merged.ledger, manifest, { texts, version, names: merged.names });
 };
+// Every recording the record decides, but feldur, approved before the tests, only once it moves.
+type Outcome = { text: string; from: unknown; to: unknown };
 const to = (r: ReturnType<typeof run>) =>
-  Object.fromEntries(r.outcomes.map((o: { text: string; to: unknown }) => [o.text, o.to]));
+  Object.fromEntries(
+    r.outcomes
+      .filter((o: Outcome) => o.text !== 'feldur' || o.from !== o.to)
+      .map((o: Outcome) => [o.text, o.to])
+  );
+const of = (r: ReturnType<typeof run>, text = 'les') =>
+  r.outcomes.find((o: { text: string }) => o.text === text);
 
 describe('a review file', () => {
   it('is the format the review page writes', () => {
@@ -102,14 +115,29 @@ describe('a review file', () => {
       clips: { les: { verdict: 'wrong' as const, v: 'v2', at: MON, note: 'e' } },
     };
     const file = reviewFile(review, '2026-10-19', MON);
-    const email = `Sæll Siggi,\n\n${reviewText(review, '2026-10-19', MON)}\nKveðja, Anna\n`;
-    expect(reviewData(email, 'anna.txt')).toEqual(file);
-    expect(reviewData(JSON.stringify(file))).toEqual(file);
-    // Only the notes, with no data, cannot be read as verdicts; nor can data changed on its way.
+    const text = reviewText(review, '2026-10-19', MON);
+    const email = `Sæll Siggi,\n\n${text}\nKveðja, Anna\n`;
+    expect(reviewData(email, 'anna.txt')).toEqual([file]);
+    expect(reviewData(JSON.stringify(file))).toEqual([file]);
+    // An email client may wrap it short, quote it, or put non-breaking spaces in it.
+    const mangled = email
+      .split('\n')
+      .flatMap((l) => (l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l]))
+      .map((l) => `> ${l}`.replace(/ /g, '\u00a0'))
+      .join('\r\n');
+    expect(reviewData(mangled, 'svar.txt')).toEqual([file]);
+    // Every copy in a thread is read, so a correction pasted below is not lost.
+    expect(reviewData(`${email}\nLeiðrétting:\n${email}`, 'thread.txt')).toEqual([file, file]);
+    // A review of the cards alone carries its data too.
+    const notesOnly = { ...review, clips: {} };
+    expect(reviewData(reviewText(notesOnly, '2026-10-19', MON))).toEqual([
+      reviewFile(notesOnly, '2026-10-19', MON),
+    ]);
+    // Text with no data, and data that lost some of itself, are refused.
     expect(() => reviewData('Röng: „les“', 'a.txt')).toThrow(/neither a review file nor/);
-    expect(() => reviewData(email.replace('"wrong"', '"wrong'), 'a.txt')).toThrow(
-      /changed on its way.*ask for the file/
-    );
+    const lines = text.split('\n');
+    const cut = lines.filter((_, i) => i !== lines.indexOf(SCRIPT_START) + 2).join('\n');
+    expect(() => reviewData(cut, 'a.txt')).toThrow(/changed on its way.*ask for the file/);
   });
 
   it('reads back as written, each verdict with its audio and when it was given', () => {
@@ -188,7 +216,7 @@ describe('what the record makes of the recordings', () => {
     const first = merge(EMPTY, files, ['siggi']);
     const r = approvals(first.ledger, manifest, { texts, version, names: first.names });
     expect(to(r)).toEqual({ les: true });
-    expect(r.outcomes[0].overruled.map((v: { reviewer: string }) => v.reviewer)).toEqual(['Jón']);
+    expect(of(r)!.overruled.map((v: { reviewer: string }) => v.reviewer)).toEqual(['Jón']);
     // A later run without --urskurdur still has the ruling.
     const next = run(
       [file({ reviewer: 'Gunna', id: 'gunna', notes: [], clips: [clip('hali', 'right', THU)] })],
@@ -232,9 +260,38 @@ describe('what the record makes of the recordings', () => {
     // syncState already set it back to false when the audio changed; an approval made since for
     // the new audio must not be undone by the old verdicts.
     const r = run([file({ clips: [{ text: 'feldur', verdict: 'wrong', v: 'gamalt', at: MON }] })]);
-    expect(r.outcomes).toEqual([]);
+    expect(to(r)).toEqual({});
     const deleted = run([file({ clips: [{ text: 'horfin', verdict: 'right', v: 'x', at: MON }] })]);
-    expect(deleted.outcomes).toEqual([]);
+    expect(to(deleted)).toEqual({});
+  });
+
+  it('takes back an approval nobody gave the recording as it is now', () => {
+    // feldur was made again since Anna approved it, and a merge or a hand edit kept `true`.
+    const remade = (t: string) => (t === 'feldur' ? 'v4b' : version(t));
+    const r = approvals(EMPTY, manifest, { texts, version: remade });
+    expect(to(r)).toEqual({ feldur: false });
+    expect(of(r, 'feldur')!.unbacked).toBe(true);
+    expect(report([], r)).toMatch(
+      /SAMÞYKKTAR[^\n]*\n  „feldur“[\s\S]*„feldur“: true → false — ekkert samþykki í mat.json/
+    );
+  });
+
+  it('counts rulings at one moment that disagree as a tie, in whatever order they are kept', () => {
+    const at = MON;
+    const entry = (verdict: string) => ({ v2: { verdict, at } });
+    const ledger = (order: string[]) =>
+      readLedger({
+        rulers: ['r1', 'r2', 'r3'],
+        verdicts: {
+          les: Object.fromEntries(order.map((r) => [r, entry(r === 'r3' ? 'wrong' : 'right')])),
+        },
+      });
+    for (const order of [
+      ['r1', 'r2', 'r3'],
+      ['r3', 'r1', 'r2'],
+    ]) {
+      expect(of(approvals(ledger(order), manifest, { texts, version }))!.to).toBe(false);
+    }
   });
 
   it('lists what the record holds for texts no longer on the cards', () => {
@@ -255,11 +312,11 @@ describe('the record over time', () => {
     ]);
     const on = (v: string) =>
       approvals(second.ledger, manifest, { texts, version: () => v, names: second.names });
-    expect(on('v2').outcomes[0].to).toBe(true);
+    expect(of(on('v2'))!.to).toBe(true);
     // Back to v1, by a revert: her "wrong" on exactly that audio is still there. Her "right" on
     // v2, given later, is shown as given to other audio, for a person to look at.
-    expect(on('v1').outcomes[0].to).toBe('rangt');
-    expect(on('v1').outcomes[0].late.map((v: { verdict: string }) => v.verdict)).toEqual(['right']);
+    expect(of(on('v1'))!.to).toBe('rangt');
+    expect(of(on('v1'))!.late.map((v: { verdict: string }) => v.verdict)).toEqual(['right']);
   });
 
   it('keeps the latest note on a recording, whichever file is applied last', () => {
@@ -287,7 +344,7 @@ describe('the record over time', () => {
     );
     const r = approvals(again.ledger, manifest, { texts, version, names: again.names });
     expect(to(r)).toEqual({ les: 'rangt' });
-    expect(r.outcomes[0].overruled.map((v: { verdict: string }) => v.verdict)).toEqual(['right']);
+    expect(of(r)!.overruled.map((v: { verdict: string }) => v.verdict)).toEqual(['right']);
     // Two rulings given at the same moment that disagree settle nothing.
     const tie = merge(
       EMPTY,
@@ -323,13 +380,13 @@ describe('the record over time', () => {
       }),
     ]);
     expect(to(r)).toEqual({ les: true });
-    expect(r.outcomes[0].late.map((v: { reviewer: string }) => v.reviewer)).toEqual(['Anna']);
+    expect(of(r)!.late.map((v: { reviewer: string }) => v.reviewer)).toEqual(['Anna']);
     // Given before anyone heard the new audio, it is just a verdict on the old one.
     const before = run([
       file({ clips: [{ text: 'les', verdict: 'wrong', v: 'gamalt', at: MON }] }),
       jon({ saved: TUE, clips: [clip('les', 'right', TUE)] }),
     ]);
-    expect(before.outcomes[0].late).toEqual([]);
+    expect(of(before)!.late).toEqual([]);
   });
 
   it('joins two sides of a git merge as applying both sides’ files would have', () => {
@@ -371,15 +428,24 @@ describe('the record over time', () => {
     expect(clashes).toEqual(['c']);
   });
 
-  it('does not ask a person to look at late verdicts on a recording a ruling decides', () => {
-    const r = run(
-      [
-        siggi({ clips: [clip('les', 'right', TUE)] }),
-        file({ saved: THU, clips: [{ text: 'les', verdict: 'wrong', v: 'gamalt', at: THU }] }),
-      ],
-      ['Siggi']
-    );
-    expect(r.outcomes[0].late).toEqual([]);
+  it('does not ask a person to look at late verdicts a later ruling has since decided', () => {
+    const stale = (at: string) =>
+      file({ saved: at, clips: [{ text: 'les', verdict: 'wrong', v: 'gamalt', at }] });
+    const ruled = (late: object) =>
+      run(
+        [
+          jon({ clips: [clip('les', 'right', MON)] }),
+          siggi({ clips: [clip('les', 'right', TUE)] }),
+          late,
+        ],
+        ['Siggi']
+      );
+    // Given before the ruling: the ruler has heard the recording since, and decided.
+    expect(of(ruled(stale(MON.replace('10:', '11:'))))!.late).toEqual([]);
+    // Given after it: the ruler has not heard what this teacher said, so it is shown.
+    expect(of(ruled(stale(THU)))!.late.map((v: { reviewer: string }) => v.reviewer)).toEqual([
+      'Anna',
+    ]);
   });
 
   it('keeps apart a text not on the cards and one hljod.yaml does not list yet', () => {
@@ -464,6 +530,15 @@ describe('the report', () => {
     );
     expect(text).toContain('skráð í stada.json eins og það stendur: „fugl“');
     expect(text).toContain('sett á false nema matið ráði: „les“');
+  });
+
+  it('counts a recording a merge clash takes from approved to false, and says why', () => {
+    const text = report([], { outcomes: [], unknown: [], unlisted: [] }, [], {
+      reset: [{ text: 'feldur', from: true, clash: true }],
+      clashes: ['feldur'],
+    });
+    expect(text).toMatch(/SAMÞYKKTAR SEM HÆTTA AÐ VERA ÞAÐ: 1\./);
+    expect(text).toContain('„feldur“: true → false — breytt á báða vegu í samruna í git');
   });
 
   it('shows a reviewer’s notes from their latest file, so a note deleted since is gone', () => {

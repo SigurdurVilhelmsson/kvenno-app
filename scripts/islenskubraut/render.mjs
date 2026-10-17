@@ -413,6 +413,11 @@ export interface Hljod {
   file: string;
   /** A person has listened to it and agrees. */
   approved: boolean;
+  /**
+   * The version of its audio, put in its address (\`?v=\`), so a browser fetches a recording made
+   * again rather than replaying a copy it kept of the old one.
+   */
+  v?: string;
 }
 
 /** The voice the clips were made with, credited wherever they play. */
