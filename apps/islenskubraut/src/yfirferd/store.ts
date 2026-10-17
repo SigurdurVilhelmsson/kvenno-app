@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { categories } from '../data';
 import { hlustun } from '../data/hlustun';
@@ -99,30 +99,37 @@ export function useReview(): {
 } {
   const [review, setReview] = useState<Review>(load);
   const [saved, setSaved] = useState(true);
-  // The review as storage last held it, by this tab's write or another's.
-  const stored = useRef<string | null>(null);
+  // The newest review this tab knows, its own changes and the other tab's, for the next change to
+  // build on. A change made here is written at once; one read from another tab is never written
+  // back, since by then that tab may have written again and the echo would undo its keystrokes.
+  const latest = useRef(review);
   useEffect(() => {
-    const raw = JSON.stringify(review);
-    if (raw === stored.current) return;
-    stored.current = raw;
     try {
-      window.localStorage.setItem(STORAGE_KEY, raw);
-      setSaved(true);
+      window.localStorage.setItem(`${STORAGE_KEY}-prufa`, '1');
+      window.localStorage.removeItem(`${STORAGE_KEY}-prufa`);
     } catch {
       setSaved(false);
     }
-  }, [review]);
-  useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key !== STORAGE_KEY) return;
-      const next = load();
-      stored.current = JSON.stringify(next);
-      setReview(next);
+      latest.current = load();
+      setReview(latest.current);
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
   }, []);
-  return { review, update: (change) => setReview((r) => change(r)), saved };
+  const update = useCallback((change: (r: Review) => Review) => {
+    const next = change(latest.current);
+    latest.current = next;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setSaved(true);
+    } catch {
+      setSaved(false);
+    }
+    setReview(next);
+  }, []);
+  return { review, update, saved };
 }
 
 /** An item's name with its card's: `Dýr — Hvað er þetta?`. */
@@ -138,18 +145,28 @@ const written = (review: Review) =>
 
 /** The verdicts on the recordings as they are now, and those that are not (`old`). */
 function sortClips(review: Review) {
-  const entries = Object.entries(review.clips).filter(([, c]) => c.verdict !== null);
+  const all = Object.entries(review.clips);
+  const entries = all.filter(([, c]) => c.verdict !== null);
   return {
     right: entries.filter(([t, c]) => isCurrent(t, c) && c.verdict === 'right'),
     wrong: entries.filter(([t, c]) => isCurrent(t, c) && c.verdict === 'wrong'),
     old: entries.filter(([t, c]) => !isCurrent(t, c)),
+    withdrawn: all.filter(([, c]) => c.verdict === null),
   };
 }
 
-/** How much the review holds, for the page's counts: verdicts on the recordings as they are now. */
+/**
+ * How much the review holds, for the page's counts: verdicts on the recordings as they are now,
+ * and verdicts taken back, which are worth sending on their own to withdraw one sent before.
+ */
 export function counts(review: Review) {
-  const { right, wrong } = sortClips(review);
-  return { notes: written(review).length, right: right.length, wrong: wrong.length };
+  const { right, wrong, withdrawn } = sortClips(review);
+  return {
+    notes: written(review).length,
+    right: right.length,
+    wrong: wrong.length,
+    withdrawn: withdrawn.length,
+  };
 }
 
 /**
@@ -187,7 +204,7 @@ export function reviewText(review: Review, date: string): string {
   const file = reviewFile(review, date);
   const lines = [`Yfirferð á Íslenskubraut, ${date}${file.reviewer ? `, ${file.reviewer}` : ''}`];
   for (const n of file.notes) lines.push('', n.label, n.text);
-  const { right, wrong, old } = sortClips(review);
+  const { right, wrong, old, withdrawn } = sortClips(review);
   const q = (entries: [string, ClipVerdict][]) => entries.map(([t]) => `„${t}“`).join(', ');
   if (right.length + wrong.length > 0) {
     const r = right.length;
@@ -202,6 +219,7 @@ export function reviewText(review: Review, date: string): string {
     }
     if (right.length > 0) lines.push(`Réttar: ${q(right)}`);
   }
+  if (withdrawn.length > 0) lines.push('', `Dregið til baka: ${q(withdrawn)}`);
   if (old.length > 0) {
     lines.push(
       '',
@@ -221,6 +239,9 @@ export function fileName(review: Review, stamp: string): string {
       .replace(/ð/g, 'd')
       .replace(/æ/g, 'ae')
       .replace(/ö/g, 'o')
+      .replace(/ø/g, 'o')
+      .replace(/ł/g, 'l')
+      .replace(/ß/g, 'ss')
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-')

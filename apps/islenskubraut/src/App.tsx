@@ -7,6 +7,7 @@ import { Header, Footer, BottomNav } from '@kvenno/shared/components';
 import { Home } from './pages/Home';
 import { SmidurListi } from './pages/SmidurListi';
 import { SpjaldPage } from './pages/SpjaldPage';
+import { forgetScroll } from './yfirferd/scroll';
 
 const RELOADED = 'islenskubraut-endurhlodid';
 
@@ -24,6 +25,8 @@ function lazyPage(load: () => Promise<ComponentType>) {
           const last = Number(window.sessionStorage.getItem(RELOADED) ?? 0);
           if (Date.now() - last > 30_000) {
             window.sessionStorage.setItem(RELOADED, String(Date.now()));
+            // The reload stands in for the link that was followed: open at the top, as it would.
+            forgetScroll();
             window.location.reload();
             return new Promise<never>(() => {});
           }
@@ -44,7 +47,8 @@ const YfirferdHljod = lazyPage(() => import('./pages/YfirferdHljod').then((m) =>
 /**
  * A page opened from another opens at its top, not at the scroll position of the long page it was
  * opened from. Only on a link (PUSH, REPLACE): a reload, a restored tab and back/forward are POP,
- * and there the browser puts the reader back where they were.
+ * and there the browser puts the reader back where they were (on the lazy review pages, which
+ * arrive too late for Chromium's attempt, `useKeepScroll` does).
  */
 function ScrollToTop() {
   const { pathname } = useLocation();

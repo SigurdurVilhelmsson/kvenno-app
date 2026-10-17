@@ -335,6 +335,77 @@ describe('the listening page', () => {
   });
 });
 
+describe('sending and keeping a review', () => {
+  const KEY = 'islenskubraut-yfirferd';
+  const at = '2026-10-17T10:00:00.000Z';
+
+  it('writes nothing when a page opens: only a change made in this tab is written', () => {
+    window.localStorage.setItem(KEY, JSON.stringify({ reviewer: 'Anna', notes: {}, clips: {} }));
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    renderAt('/yfirferd/hljod');
+    expect(setItem.mock.calls.filter(([k]) => k === KEY)).toEqual([]);
+    setItem.mockRestore();
+  });
+
+  it('asks for a name before sending, since the name ties a teacher’s files together', () => {
+    window.localStorage.setItem(
+      KEY,
+      JSON.stringify({ reviewer: '', notes: { 'dyr/spjald': 'x' }, clips: {} })
+    );
+    renderAt('/yfirferd');
+    const download = screen.getByRole('button', { name: 'Sækja skrá' });
+    expect(download).toHaveProperty('disabled', true);
+    expect(screen.getByText(/Skrifaðu nafnið þitt áður en þú sendir/)).toBeDefined();
+    fireEvent.change(screen.getByLabelText('Nafnið þitt'), { target: { value: 'Anna' } });
+    expect(download).toHaveProperty('disabled', false);
+  });
+
+  it('can send a review that only takes a verdict back, and says so in the text', () => {
+    const review = { reviewer: 'Anna', notes: {}, clips: { les: { verdict: null, v: 'vb', at } } };
+    window.localStorage.setItem(KEY, JSON.stringify(review));
+    renderAt('/yfirferd');
+    expect(screen.getByRole('button', { name: 'Sækja skrá' })).toHaveProperty('disabled', false);
+    expect(reviewText(review, '2026-10-17')).toContain('Dregið til baka: „les“');
+  });
+
+  it('keeps a recording marked again during the pass in view, with its note box', () => {
+    window.localStorage.setItem(
+      KEY,
+      JSON.stringify({
+        reviewer: '',
+        notes: {},
+        clips: { feldur: { verdict: 'right', v: 'va', at } },
+      })
+    );
+    renderAt('/yfirferd/hljod?ometnar');
+    act(() => {
+      window.localStorage.setItem(KEY, JSON.stringify({ reviewer: '', notes: {}, clips: {} }));
+      window.dispatchEvent(new StorageEvent('storage', { key: KEY }));
+    });
+    fireEvent.click(
+      within(screen.getByRole('group', { name: 'Mat: feldur' })).getByRole('button', {
+        name: 'Rangt',
+      })
+    );
+    expect(screen.getByLabelText('Hvað er rangt? „feldur“')).toBeDefined();
+  });
+
+  it('keeps what was written about a recording through a verdict taken back by mistake', () => {
+    renderAt('/yfirferd/hljod');
+    const rangt = () =>
+      within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+        name: 'Rangt',
+      });
+    fireEvent.click(rangt());
+    fireEvent.change(screen.getByLabelText('Hvað er rangt? „les“'), {
+      target: { value: 'óskýrt' },
+    });
+    fireEvent.click(rangt());
+    fireEvent.click(rangt());
+    expect(screen.getByLabelText('Hvað er rangt? „les“')).toHaveProperty('value', 'óskýrt');
+  });
+});
+
 // The review pages show drafts a teacher has not checked, so no page a student can reach may
 // link to them. Only the routes, and the two pages themselves, name the paths.
 describe('the review pages', () => {

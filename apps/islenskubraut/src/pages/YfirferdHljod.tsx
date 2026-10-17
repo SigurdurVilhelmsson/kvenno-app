@@ -7,6 +7,7 @@ import { Container } from '@kvenno/shared/components';
 import { DrogContext, HljodCredit, Hlusta } from '../components/Hlusta';
 import { categories } from '../data';
 import { hlustun, type HlustunClip, type HlustunPlace } from '../data/hlustun';
+import { useKeepScroll } from '../yfirferd/scroll';
 import { Sending } from '../yfirferd/Sending';
 import { isCurrent, now, useReview, type Review, type Verdict } from '../yfirferd/store';
 
@@ -29,8 +30,14 @@ function current(review: Review, clip: HlustunClip) {
   return isCurrent(clip.text, mine) ? mine : undefined;
 }
 
-const markedTexts = (review: Review) =>
-  new Set(hlustun.filter((c) => current(review, c)).map((c) => c.text));
+/** Each recording marked now, with when: a mark given or changed since is told by its time. */
+const marks = (review: Review) =>
+  new Map(
+    hlustun.flatMap((c) => {
+      const mine = current(review, c);
+      return mine ? [[c.text, mine.at] as const] : [];
+    })
+  );
 
 /**
  * Every recording on the cards, for a teacher to hear and mark right or wrong (REVIEW-QUEUE C15).
@@ -43,9 +50,11 @@ export function YfirferdHljod() {
   const flokkur = params.get('flokkur') ?? '';
   const onlyDoubtful = params.has('efi');
   const unmarked = params.has('ometnar');
-  // What was already marked when "not yet marked" was switched on. A row marked during the pass
-  // stays, with its note box, until the filter is switched again.
-  const [markedBefore, setMarkedBefore] = useState(() => markedTexts(review));
+  // What was already marked when "not yet marked" was switched on, and when. A row marked during
+  // the pass, or cleared and marked again, stays with its note box until the filter is switched
+  // again; a row cleared since, here or in another tab, comes back.
+  const [markedBefore, setMarkedBefore] = useState(() => marks(review));
+  useKeepScroll();
 
   const setParam = (key: string, value: string | null) =>
     setParams(
@@ -69,8 +78,9 @@ export function YfirferdHljod() {
     (c) =>
       (!flokkur || c.places.some((p) => p.category === flokkur)) &&
       (!onlyDoubtful || doubtful(c)) &&
-      // Hidden only while still marked: one cleared since, here or in another tab, comes back.
-      (!unmarked || !(markedBefore.has(c.text) && current(review, c)))
+      (!unmarked ||
+        markedBefore.get(c.text) === undefined ||
+        markedBefore.get(c.text) !== current(review, c)?.at)
   );
   const inScope = hlustun.filter((c) => !flokkur || c.places.some((p) => p.category === flokkur));
   const marked = inScope.filter((c) => current(review, c)).length;
@@ -78,10 +88,18 @@ export function YfirferdHljod() {
   const setVerdict = (clip: HlustunClip, verdict: Verdict | null) =>
     update((r) => {
       const clips = { ...r.clips };
-      const before = current(r, clip);
+      // What was written about this recording, kept through a verdict taken back by mistake.
+      const stored = r.clips[clip.text];
+      const before = stored?.v === clip.v ? stored : undefined;
       const at = now();
       // Taken back, it is kept as such, so a file sent later withdraws one sent earlier.
-      if (verdict === null) clips[clip.text] = { verdict: null, v: clip.v, at };
+      if (verdict === null)
+        clips[clip.text] = {
+          verdict: null,
+          v: clip.v,
+          at,
+          ...(before?.note ? { note: before.note } : {}),
+        };
       // A note says what is wrong, so it goes when the clip is heard as right.
       else if (verdict === 'right') clips[clip.text] = { verdict, v: clip.v, at };
       else
@@ -147,7 +165,7 @@ export function YfirferdHljod() {
             type="checkbox"
             checked={unmarked}
             onChange={(e) => {
-              if (e.target.checked) setMarkedBefore(markedTexts(review));
+              if (e.target.checked) setMarkedBefore(marks(review));
               setParam('ometnar', e.target.checked ? '' : null);
             }}
           />

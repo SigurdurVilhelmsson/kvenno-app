@@ -211,6 +211,20 @@ test.describe('Islenskubraut — the teachers’ review pages', () => {
     expect(await page.evaluate(() => window.scrollY)).toBe(0);
   });
 
+  // The listening page is tens of thousands of pixels long and loads on its own, after the
+  // browser's own attempt to restore the scroll; a reload must still keep the teacher's place.
+  test('a reload keeps the place on the long listening page', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd/hljod');
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 6000));
+    await page.waitForFunction(() =>
+      window.sessionStorage.getItem('islenskubraut-skrun:/islenskubraut/yfirferd/hljod')
+    );
+    await page.reload();
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(5900);
+  });
+
   // A tab left open across a deploy asks for a chunk the deploy removed. It reloads once and
   // gets the new one, rather than going blank.
   test('a page whose chunk has gone since the tab opened reloads instead of going blank', async ({

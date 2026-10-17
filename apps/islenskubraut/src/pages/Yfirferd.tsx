@@ -12,6 +12,7 @@ import { hlustun } from '../data/hlustun';
 import { tenglar } from '../data/tenglar';
 import { texti } from '../data/texti';
 import type { Category, Level } from '../data/types';
+import { useKeepScroll } from '../yfirferd/scroll';
 import { Sending } from '../yfirferd/Sending';
 import { ITEMS, one, useReview, type ItemId, type Review } from '../yfirferd/store';
 
@@ -133,6 +134,7 @@ const STATE_TEXT: Record<State, string> = {
  */
 export function Yfirferd() {
   const { review, update, saved } = useReview();
+  useKeepScroll();
 
   return (
     <Container className="py-8 sm:py-12">

@@ -174,10 +174,12 @@ test('the review page has no WCAG AA violations and keeps a note over a reload',
   expect(overflow).toBeLessThanOrEqual(0);
   await page.reload();
   await expect(page.getByLabel('Athugasemd um Spjaldið, Dýr')).toHaveValue('A1: prófun.');
+  // A name first: it is what ties a teacher's files together, and it names the file.
+  await page.getByLabel('Nafnið þitt').fill('Þóra Ösp');
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Sækja skrá' }).click();
   expect((await download).suggestedFilename()).toMatch(
-    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/
+    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}-thora-osp\.json$/
   );
 });
 

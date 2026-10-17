@@ -26,7 +26,10 @@ export function Sending({
   // The second press of a double click must not confirm what the first one asked.
   const guard = useArmedAfter(400, clearing);
   const c = counts(review);
-  const empty = c.notes + c.right + c.wrong === 0;
+  const nothing = c.notes + c.right + c.wrong + c.withdrawn === 0;
+  // The name is what ties a teacher's files together, so a later one replaces an earlier one.
+  const unnamed = review.reviewer.trim() === '';
+  const cannotSend = nothing || unnamed;
 
   // Focus follows the question: to Hætta við when it is asked, back to Hreinsa allt when it is
   // cancelled, and to the message once everything is cleared, never to the top of the page.
@@ -98,11 +101,18 @@ export function Sending({
           ? 'Yfirferðin geymist í þessum vafra, líka eftir að þú sendir hana, þar til þú hreinsar hana. Í huliðsglugga hverfur hún þegar glugganum er lokað. Ef aðrir nota þennan vafra, hreinsaðu hana þegar þú hefur sent hana.'
           : 'Vafrinn geymir ekki yfirferðina: sendu hana áður en þú lokar síðunni.'}
       </p>
+      {unnamed && !nothing && (
+        <p id="sending-nafn" className="text-sm text-warm-800 mb-3">
+          Skrifaðu nafnið þitt áður en þú sendir yfirferðina, svo að ljóst sé hvaða skrár eru frá
+          þér.
+        </p>
+      )}
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
           onClick={download}
-          disabled={empty}
+          disabled={cannotSend}
+          aria-describedby={unnamed && !nothing ? 'sending-nafn' : undefined}
           className="px-4 py-2 rounded-lg font-semibold text-white bg-warm-900 hover:bg-warm-800 disabled:opacity-50 pointer-coarse:min-h-11"
         >
           Sækja skrá
@@ -110,7 +120,8 @@ export function Sending({
         <button
           type="button"
           onClick={copy}
-          disabled={empty}
+          disabled={cannotSend}
+          aria-describedby={unnamed && !nothing ? 'sending-nafn' : undefined}
           className="px-4 py-2 rounded-lg font-semibold border-2 border-warm-900 text-warm-900 hover:bg-warm-100 disabled:opacity-50 pointer-coarse:min-h-11"
         >
           Afrita sem texta
@@ -121,7 +132,7 @@ export function Sending({
             ref={clearRef}
             type="button"
             onClick={() => setClearing(true)}
-            disabled={empty && review.reviewer === ''}
+            disabled={nothing && unnamed}
             className="px-4 py-2 rounded-lg text-warm-700 underline hover:text-warm-900 disabled:opacity-50 pointer-coarse:min-h-11"
           >
             Hreinsa allt
