@@ -502,8 +502,10 @@ page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 - [ ] **Listen to the recordings** on `/islenskubraut/yfirferd/hljod` (2026-10-16), which marks
       each one `Rétt` or `Rangt` and sends the marks back as a file (C20).
       `pnpm islenskubraut:yfirferd <files> --apply` then writes `true` for one someone heard as
-      right and nobody as wrong, and `rangt` for one heard as wrong, which no later file can
-      approve until it is made again. The page puts first the eight that a speech recogniser
+      right and nobody as wrong, and `rangt` for one someone heard as wrong and nobody as right,
+      or approved and heard as wrong since. A decision stands against every verdict given before
+      it, and a recording made again goes back to `false` (`content/islenskubraut/hljod/README.md`).
+      The page puts first the eight that a speech recogniser
       heard as something else, over 20 %: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`,
       `húfa`, `oddhvasst`. The research estimated 3–5 hours for all of them, so the work can be
       split by card.
@@ -621,23 +623,27 @@ card. For each card it shows the card itself, the word list, the guessing game, 
 text, the can-do statements, the sentence builder, the recordings, the links and the glosses. Each
 has its state (`birt nemendum`, `staðfest` or `drög`), links that open it as a student sees it and
 as it prints, and a box for a note. `/islenskubraut/yfirferd/hljod` plays every recording with
-`Rétt` and `Rangt` beside it (C15). No page a student can reach links to either; the review page
-links to the listening page, and `Yfirferd.test.tsx` fails if any other file names their paths.
+`Rétt` and `Rangt` beside it (C15). No page a student can reach links to either; they link to each
+other, and `Yfirferd.test.tsx` fails if any other file in the app quotes their routes.
 
 The notes stay in the teacher's own browser, also after they press `Sækja skrá`, which saves a
 file, or `Afrita sem texta`, which copies text for an email, until they clear them. No server holds
 them. Two tabs with the pages open keep each other up to date. A private window keeps them until it
 is closed; the page cannot tell, so it says that in any case, and it warns when the browser refuses
 storage outright. `pnpm islenskubraut:yfirferd <files>` prints every note by item, with the
-verdicts on the recordings, and `--apply` writes them (C15). A reviewer's later file replaces
-their earlier one.
+verdicts on the recordings, and `--apply` writes them (C15). Per recording, a reviewer's latest
+verdict counts; pressing the pressed button takes one back, and a mark merely missing from a later
+file, as after `Hreinsa allt`, still stands from an earlier one.
 
 An adversarial review of the pages on 2026-10-16 found and fixed: two tabs overwriting each other,
 a double click on `Hreinsa allt` erasing the review, the "not yet marked" filter hiding a row
 before its note could be written, links that opened only the A1 card for links and glosses that
 differ by level, a note box that closed when emptied, pages opening scrolled to the middle, a tab
 left open across a deploy going blank, and a recording marked wrong being approvable by a later
-run.
+run. A second review of those fixes the same night found and fixed: a recording replaced after it
+was approved still playing as approved, a conflict a person had settled being undone by the next
+run, a second tab's echo swallowing keystrokes, a reload losing the reader's place on every page,
+two teachers' files sharing one name, and a verdict taken back still counting.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the

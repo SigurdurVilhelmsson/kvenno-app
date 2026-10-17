@@ -43,7 +43,7 @@ kvenno-app/
 /islenskubraut/spjald/:flokkur         # Teaching card detail page
 /islenskubraut/smidur/:flokkur         # Sentence builder (A1), linked from the card once confirmed
 /islenskubraut/smidur                  # Every builder, drafts included, for teachers — linked from nowhere
-/islenskubraut/yfirferd                # Teachers' review of every draft, with notes to send back — linked from nowhere
+/islenskubraut/yfirferd                # Teachers' review of every draft, with notes to send back — no student page links here
 /islenskubraut/yfirferd/hljod          # Every recording to mark right or wrong — linked only from the review page
 /auth/callback                         # MSAL redirect target — serves the 2-ar lab-reports build
 ```
@@ -72,8 +72,8 @@ pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags mak
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
-pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply approves the
-                          #   recordings marked right and never wrong)
+pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply writes true or
+                          #   rangt in hljod.yaml from the verdicts: see hljod/README.md)
 pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
                           #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
                           #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
@@ -694,14 +694,18 @@ each named by a hash of its text (`clipName` in `scripts/islenskubraut/hljod.mjs
 needs a new one. They are **synthesised**: Reykjavík University's Talrómur C voice (CC BY 4.0) with
 ice-g2p for pronunciation, by `scripts/islenskubraut/hljod/talgerving.py`. That is a Python 3.10
 setup on a teacher's machine, never in CI. `content/islenskubraut/hljod/hljod.yaml` lists each clip
-`true`, `false` or `rangt` (heard as wrong: never approved from a review until it is made again and
-set back to `false`); **only `true` plays for students**, `?drog` plays the rest (`DrogContext` in
-`Hlusta.tsx`), and the card page credits the voice whenever a clip plays. **The build fails only on an
-approved clip with no file.** A text with no clip simply has no button, so editing a card never needs
-the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
+`true`, `false` or `rangt` (heard as wrong); **only `true` plays for students**, `?drog` plays the
+rest (`DrogContext` in `Hlusta.tsx`), and the card page credits the voice whenever a clip plays.
+**`stada.json` beside it is the tools' record** of each clip's audio version, value and when it was
+set (`syncState` in `hljod.mjs`), written by `pnpm islenskubraut:hljod --record` and
+`pnpm islenskubraut:yfirferd --apply`, never by hand. A replaced file sets its clip back to
+`false`, and **the build fails while the record is out of date** (`stateProblems`), so an approval
+is always for the audio approved; it also fails on an approved clip with no file. A text with no
+clip simply has no button, so editing a card never needs the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
 review pages; it flags eight of 524 over 20 % (C15). It merges into
 `content/islenskubraut/hljod/hlustun.json`, which is committed, since the build turns it into
-`src/data/hlustun.ts` for the listening page, with each clip's audio hash (`clipVersion`). Tiro's TTS
+`src/data/hlustun.ts` for the listening page, with each clip's audio hash (`clipVersion`); each
+reading carries the hash it heard, and one of other audio is dropped. Tiro's TTS
 service, which the research named, is gone. Workflow: `content/islenskubraut/hljod/README.md`.
 **`server/nginx-site.conf` gives `/islenskubraut/hljod/` its own location** (2026-10-16): a missing
 clip is a 404, not the app's HTML with a 200, and a browser always revalidates a clip
@@ -753,17 +757,21 @@ card's items (card, word list, guessing game, talk-to-write, can-do, builder, re
 glosses) with each one's state, links that open the drafts as students would see them and as they
 print, and a note box. `/islenskubraut/yfirferd/hljod` (`YfirferdHljod.tsx`) plays every recording
 with `Rétt`/`Rangt`, the recogniser's doubts first. **No server holds a review:** it is kept in the
-teacher's browser (`src/yfirferd/store.ts`, `localStorage`, read back when another tab writes it)
-until they clear it, and sent as a downloaded file or copied text. Each verdict carries the hash
-of the audio it was given to, so a remade clip needs a new one.
-`pnpm islenskubraut:yfirferd <files> [--apply]` (`scripts/islenskubraut/yfirferd.mjs`) prints the
-notes and writes `true` for a clip heard as right by someone and wrong by nobody, and `rangt` for
-one heard as wrong by someone and right by nobody, or approved and now heard as wrong. A
-reviewer's later file replaces their earlier one. The page writes the file's `format`, the script
-refuses any other, and a test holds the two constants equal. No page a student can reach links to
-either page; the review page links to the listening page, and `Yfirferd.test.tsx` fails if any
-other file names their paths. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in
-`App.tsx`), and a new page opens at its top. This is the first review cycle's route, rather than
+teacher's browser (`src/yfirferd/store.ts`, `localStorage`, read back when another tab writes it
+and never written back) until they clear it, and sent as a downloaded file or copied text. Each
+verdict carries the hash of the audio it was given to and when it was given, and a verdict taken
+back is kept as such. `pnpm islenskubraut:yfirferd <files> [--apply]`
+(`scripts/islenskubraut/yfirferd-check.mjs`; `yfirferd.mjs` is the pure half) prints the notes and
+writes `true` for a draft heard as right by someone and wrong by nobody, and `rangt` for a draft
+heard as wrong by someone and right by nobody, or an approved clip heard as wrong since it was
+approved. **A decision stands against every verdict given before it** (`stada.json`'s `at`), so a
+conflict a person settled stays settled. Per recording, a reviewer's latest verdict counts;
+reviewers match by name, ignoring case. The page writes the file's `format`, the script refuses
+any other, and a test holds the two constants equal. No page a student can reach links to either
+page; they link to each other, and `Yfirferd.test.tsx` fails if any other file in the app quotes
+their routes. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in
+`App.tsx`), and a page opened by a link opens at its top (a reload or back/forward keeps the
+browser's own scroll). This is the first review cycle's route, rather than
 the workbook below, because the workbook carries only the card text and its instructions are
 unfinished. Wording is C20.
 
