@@ -1,8 +1,9 @@
 """Listen back to every clip with an Icelandic speech recogniser, as a first check before a person.
 
-    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json > content/islenskubraut/hljod/hlustun.json
+    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json content/islenskubraut/hljod/hlustun.json
 
-For each job whose clip exists, transcribes the clip and compares it with what the voice was told
+It merges into the file named, keeping every reading of a clip it was not given. For each job
+whose clip exists, it transcribes the clip and compares it with what the voice was told
 to say: the share of its letters that differ from the closest stretch of what was heard (0 is a
 perfect match). Only the closest stretch counts, because the recogniser often hears a word that is
 not there before a single word (`og hart` for `hart`). A high rate does not prove the clip is
@@ -48,24 +49,40 @@ def load(path):
     return np.frombuffer(raw, dtype=np.float32)
 
 
-def main(jobs_file):
+def main(jobs_file, out_file):
+    """Transcribe the jobs' clips and merge them into `out_file`, keeping every other entry.
+
+    The job file lists only clips made since the last `--jobs`, so writing it alone would drop
+    every earlier reading. The file is written once, at the end, through a temporary file, so a
+    run that fails partway leaves it as it was.
+    """
     with open(jobs_file, encoding='utf-8') as f:
         jobs = json.load(f)
-    processor = Wav2Vec2Processor.from_pretrained(MODEL)
-    model = Wav2Vec2ForCTC.from_pretrained(MODEL).eval()
     out = {}
-    for job in jobs:
+    if os.path.exists(out_file):
+        with open(out_file, encoding='utf-8') as f:
+            out = json.load(f)
+    todo = [job for job in jobs if os.path.exists(os.path.join(CLIPS, job['file']))]
+    if todo:
+        processor = Wav2Vec2Processor.from_pretrained(MODEL)
+        model = Wav2Vec2ForCTC.from_pretrained(MODEL).eval()
+    for job in todo:
         path = os.path.join(CLIPS, job['file'])
-        if not os.path.exists(path):
-            continue
         inputs = processor(load(path), sampling_rate=16000, return_tensors='pt')
         with torch.no_grad():
             ids = model(inputs.input_values).logits.argmax(dim=-1)
         heard = letters(processor.batch_decode(ids)[0])
         said = letters(job['say'])
         out[job['text']] = {'heard': heard, 'score': round(distance(said, heard) / max(1, len(said)), 3)}
-    json.dump(out, sys.stdout, ensure_ascii=False, indent=2)
+    tmp = f'{out_file}.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        json.dump(out, f, ensure_ascii=False, indent=2)
+        f.write('\n')
+    os.replace(tmp, out_file)
+    print(f'{len(todo)} clip(s) transcribed, {len(out)} reading(s) in {out_file}', file=sys.stderr)
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    if len(sys.argv) != 3:
+        sys.exit('usage: python hlustun.py hljod-verk.json content/islenskubraut/hljod/hlustun.json')
+    main(sys.argv[1], sys.argv[2])

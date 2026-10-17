@@ -69,7 +69,13 @@ const ordered = [...texts.entries()].sort(
 );
 const rows = ordered.map(([text, places]) => {
   const file = clipName(text);
-  const state = !manifest.clips.has(text) ? 'vantar' : manifest.clips.get(text) ? 'samþykkt' : 'drög';
+  const state = !manifest.clips.has(text)
+    ? 'vantar'
+    : manifest.clips.get(text)
+      ? 'samþykkt'
+      : manifest.rejected.has(text)
+        ? 'rangt'
+        : 'drög';
   const audio = hasFile(file)
     ? `<audio controls preload="none" src="apps/islenskubraut/public/hljod/${file}"></audio>`
     : '—';
@@ -85,7 +91,7 @@ writeFileSync(
 <style>body{font:14px system-ui;margin:2em}td{padding:4px 8px;border-bottom:1px solid #ddd}</style>
 <h1>Hljóð á spjöldunum</h1>
 <p>Hlustaðu á hverja upptöku. Ef hún er rétt, skrifaðu <code>true</code> við textann í
-<code>content/islenskubraut/hljod/hljod.yaml</code>.</p>
+<code>content/islenskubraut/hljod/hljod.yaml</code>, og <code>rangt</code> ef hún er röng.</p>
 <p>„Talgreinir heyrði“ er það sem talgreinir skrifaði upp úr upptökunni og hve mikið það víkur frá
 textanum. Upptökurnar sem víkja mest eru efstar. Þær eru ekki endilega rangar, en hlustaðu fyrst á
 þær.</p>
@@ -100,8 +106,16 @@ console.log(
 );
 console.log(`review page: ${SHEET_FILE.replace(`${ROOT}/`, '')}`);
 if (stale.length > 0) {
-  console.log(`\n${stale.length} clip(s) for text no longer on the cards (remove from hljod.yaml):`);
+  console.log(
+    `\n${stale.length} clip(s) for text no longer on the cards (remove from hljod.yaml):`
+  );
   for (const t of stale) console.log(`  ${t}`);
+}
+if (manifest.rejected.size > 0) {
+  console.log(
+    `\n${manifest.rejected.size} clip(s) heard as wrong (rangt): make each again, then write false:`
+  );
+  for (const t of manifest.rejected) console.log(`  ${t} (${clipName(t)})`);
 }
 const brokenApproved = noFile.filter((t) => manifest.clips.get(t));
 if (brokenApproved.length > 0) {

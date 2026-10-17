@@ -19,9 +19,11 @@ Tiro's public speech service, which the research first named, had gone by 2026-1
 
     clips:
       feldur: true      # listened to, and right
-      hali: false       # not listened to yet, or wrong
+      hali: false       # not listened to yet, or not settled
+      les: rangt        # listened to, and wrong: make it again
 
-**A student hears only the ones marked `true`.** Add `?drog` to a card page's address, for
+**A student hears only the ones marked `true`.** A `rangt` one is never approved from a review
+file, however many teachers later hear it as right, until it has been made again (below). Add `?drog` to a card page's address, for
 example `/islenskubraut/spjald/dyr?drog`, to hear the rest. Whenever any recording plays, the card
 page credits the voice, as its licence requires.
 
@@ -30,14 +32,25 @@ page credits the voice, as its licence requires.
 **Teachers listen on the site**, at `/islenskubraut/yfirferd/hljod` (nothing links to it but the
 review page, `/islenskubraut/yfirferd`). Every recording plays there, drafts included, with `Rétt`
 and `Rangt` beside it and a box for what is wrong. The page keeps the marks in the teacher's
-browser until they press `Sækja skrá` and send the file back. Then:
+browser, and they press `Sækja skrá` and send the file back. Save the files in the repository
+root, where they are gitignored (they carry teachers' names), and keep every one. Then:
 
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json           # read what they say
-    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --apply   # approve the right ones
+    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --apply   # write the verdicts
     pnpm islenskubraut:build
 
-`--apply` writes `true` beside every recording someone marked right and nobody marked wrong, and
-nothing else. One marked both ways is listed for a person to settle, and so is every note.
+`--apply` changes `hljod.yaml` only:
+
+- `true` beside each recording someone heard as right and nobody as wrong;
+- `rangt` beside each one someone heard as wrong and nobody as right, so that a later run cannot
+  approve it on another teacher's word;
+- `rangt` beside an approved one that someone now hears as wrong, which the report lists first,
+  since students hear it until then.
+
+One heard both ways, and one marked `rangt` before but now heard as right, are listed for a
+person to settle, as is every note. A teacher's later file replaces what their earlier one said.
+Each verdict is tied to the audio it was given to, so after a recording is made again the old
+verdicts on it are reported and ignored, and the page asks the teacher to listen again.
 
 To listen without the site:
 
@@ -50,7 +63,8 @@ in `hljod.yaml` beside each one that is right. Then run `pnpm islenskubraut:buil
 Both pages are sorted by a speech recogniser's reading, from `hlustun.json` here (see below). It
 transcribed each recording back, and the pages show what it heard. A high score means the
 recogniser heard something else. That is not proof the recording is wrong, but listen to those
-first. On 2026-10-16 the median score was 0, and eight of 524 scored over 20 %:
+first. On 2026-10-16 the median score was 0, and eight of 524 scored over 20 %, which is where
+the listening page draws the line:
 
 - `les` (heard `e`)
 - `gogg` and `goggur` (heard `gok` and `bokur`)
@@ -58,8 +72,9 @@ first. On 2026-10-16 the median score was 0, and eight of 524 scored over 20 %:
 - `feld`, `húfa` and `oddhvasst`
 
 **If a recording is wrong,** delete its file from `apps/islenskubraut/public/hljod/` and make it
-again (below). A word the voice keeps saying wrongly can be spelt for the voice in the job file,
-or recorded by a person under the same file name.
+again (below), then change its `rangt` to `false` in `hljod.yaml` so it can be heard and approved
+afresh; `pnpm islenskubraut:hljod` lists every `rangt` one. A word the voice keeps saying wrongly
+can be spelt for the voice in the job file, or recorded by a person under the same file name.
 
 ## After the cards change
 
@@ -94,10 +109,12 @@ minutes on a laptop-class CPU.
 To sort the review pages by the recogniser's reading, run this in the same environment:
 
     pip install "transformers<4.50"
-    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json > content/islenskubraut/hljod/hlustun.json
-    pnpm format && pnpm islenskubraut:build
+    python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json content/islenskubraut/hljod/hlustun.json
+    pnpm islenskubraut:build
 
-`hlustun.json` is committed, since the listening page on the site reads it through the build.
+It merges the new readings into `hlustun.json`, keeping every earlier one, and writes the file
+only when it has finished. `hlustun.json` is committed, since the listening page on the site reads
+it through the build.
 
 It uses Reykjavík University's wav2vec2 recogniser (`wav2vec2-large-xlsr-53-icelandic-ep30-967h`,
 CC BY 4.0). It is a first pass for a person, not a replacement for one.

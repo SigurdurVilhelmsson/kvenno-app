@@ -500,8 +500,14 @@ export interface HlustunPlace {
 export interface HlustunClip {
   text: string;
   file: string;
+  /** A hash of the audio: a verdict given to another version is for a recording since remade. */
+  v: string;
   approved: boolean;
+  /** Heard as wrong (\`rangt\` in hljod.yaml): it does not play, and is not approved until remade. */
+  rejected?: true;
   places: HlustunPlace[];
+  /** What the voice was told to say, where it is not the text as printed (\`Hún eða Hann er …\`). */
+  say?: string;
   /** What the recogniser heard, and how much it differs from the text (0 is a match). */
   heard?: string;
   score?: number;

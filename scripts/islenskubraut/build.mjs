@@ -9,7 +9,14 @@ import { parse } from 'yaml';
 import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
 import { readGlossur } from './glossur.mjs';
-import { clipsForApp, clipsForReview, readHeard, readHljod, textsToVoice } from './hljod.mjs';
+import {
+  clipVersion,
+  clipsForApp,
+  clipsForReview,
+  readHeard,
+  readHljod,
+  textsToVoice,
+} from './hljod.mjs';
 import { loadCategories } from './load.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
@@ -175,7 +182,9 @@ const voiced = textsToVoice(categories);
 const hasClip = (f) => existsSync(resolve(CLIP_DIR, f));
 const clips = clipsForApp(voiced, hljod, hasClip);
 const heard = existsSync(HEARD_FILE) ? readHeard(JSON.parse(readFileSync(HEARD_FILE, 'utf8'))) : {};
-const review = clipsForReview(voiced, hljod, hasClip, heard);
+// Each clip's audio version, so a verdict given to a recording is not taken for a remade one.
+const version = (f) => clipVersion(readFileSync(resolve(CLIP_DIR, f)));
+const review = clipsForReview(voiced, hljod, hasClip, heard, version);
 
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),

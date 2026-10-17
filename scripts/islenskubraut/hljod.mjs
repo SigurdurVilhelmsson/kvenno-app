@@ -6,7 +6,8 @@
  * machine with the voice installed (see content/islenskubraut/hljod/README.md), into
  * `apps/islenskubraut/public/hljod/<name>.mp3`, named by a hash of the text so an edited text gets
  * a new clip. `content/islenskubraut/hljod/hljod.yaml` lists every clip and whether a person has
- * listened to it; **only approved clips play for students**.
+ * listened to it; **only approved clips play for students**, and one marked `rangt` is never
+ * approved until it is made again.
  *
  * Pure: `hljod-check.mjs` and `build.mjs` do the reading and writing.
  */
@@ -68,22 +69,41 @@ export function spoken(text) {
     .trim();
 }
 
+/** The value in `hljod.yaml` for a clip a teacher heard as wrong: it never plays, and
+ * `yfirferd-check.mjs --apply` never approves it. Make the clip again, then write `false`. */
+export const REJECTED = 'rangt';
+
 /**
  * `hljod.yaml`: the voice the clips were made with, and per text whether a person has listened
- * to it and agrees. Returns `{ voice, clips: Map(text → approved) }`.
+ * to it and agrees: `true`, `false` (not yet, or not settled) or `rangt`. Returns
+ * `{ voice, clips: Map(text → approved), rejected: Set(text) }`; a `rangt` clip is not approved.
  */
 export function readHljod(raw) {
   assert(raw && typeof raw === 'object', 'hljod.yaml must be a map');
   const { voice, clips = {}, ...rest } = raw;
   assert(Object.keys(rest).length === 0, `hljod.yaml has unknown keys: ${Object.keys(rest)}`);
   assert(typeof voice === 'string' && voice.trim() !== '', 'hljod.yaml must name its `voice`');
-  assert(clips && typeof clips === 'object', '`clips` must be a map of text → true or false');
+  assert(
+    clips && typeof clips === 'object',
+    '`clips` must be a map of text → true, false or rangt'
+  );
   const out = new Map();
-  for (const [text, approved] of Object.entries(clips)) {
-    assert(typeof approved === 'boolean', `"${text}": write true or false`);
-    out.set(text, approved);
+  const rejected = new Set();
+  for (const [text, value] of Object.entries(clips)) {
+    assert(
+      typeof value === 'boolean' || value === REJECTED,
+      `"${text}": write true, false or ${REJECTED}`
+    );
+    out.set(text, value === true);
+    if (value === REJECTED) rejected.add(text);
   }
-  return { voice, clips: out };
+  return { voice, clips: out, rejected };
+}
+
+/** A short hash of a clip's audio, so a verdict given to one recording is not taken for a
+ * remade one: the file keeps its name (a hash of the text) when it is made again. */
+export function clipVersion(bytes) {
+  return createHash('sha256').update(bytes).digest('hex').slice(0, 12);
 }
 
 /**
@@ -132,19 +152,25 @@ export function readHeard(raw) {
 
 /**
  * The listening page's data: every clip on the cards that has a file, with where it appears,
- * whether it is approved, and what the recogniser heard. In content order.
+ * whether it is approved or was heard as wrong, the audio's version (`version(file)`, see
+ * `clipVersion`), what the voice was told to say when that is not the text as printed, and what
+ * the recogniser heard. In content order.
  */
-export function clipsForReview(texts, manifest, hasFile, heard = {}) {
+export function clipsForReview(texts, manifest, hasFile, heard = {}, version = () => '') {
   const out = [];
   for (const [text, places] of texts) {
     const file = clipName(text);
     if (!manifest.clips.has(text) || !hasFile(file)) continue;
     const h = heard[text];
+    const say = spoken(text);
     out.push({
       text,
       file,
+      v: version(file),
       approved: manifest.clips.get(text),
+      ...(manifest.rejected?.has(text) ? { rejected: true } : {}),
       places,
+      ...(say !== text ? { say } : {}),
       ...(h ? { heard: h.heard, score: h.score } : {}),
     });
   }

@@ -6,6 +6,7 @@ import { parse } from 'yaml';
 
 import {
   clipName,
+  clipVersion,
   clipsForApp,
   clipsForReview,
   compare,
@@ -103,8 +104,20 @@ describe('the manifest', () => {
     );
   });
 
-  it('refuses a manifest that does not say true or false, or names no voice', () => {
-    expect(() => readHljod({ voice: 'Rödd', clips: { feldur: 'já' } })).toThrow(/true or false/);
+  it('reads `rangt` as heard and wrong: not approved, and kept apart from a draft', () => {
+    const m = readHljod({ voice: 'Rödd', clips: { feldur: 'rangt', hali: false } });
+    expect(m.clips.get('feldur')).toBe(false);
+    expect([...m.rejected]).toEqual(['feldur']);
+    expect(clipsForApp(texts, m, hasFile).feldur).toEqual({
+      file: clipName('feldur'),
+      approved: false,
+    });
+  });
+
+  it('refuses a manifest that does not say true, false or rangt, or names no voice', () => {
+    expect(() => readHljod({ voice: 'Rödd', clips: { feldur: 'já' } })).toThrow(
+      /true, false or rangt/
+    );
     expect(() => readHljod({ clips: {} })).toThrow(/voice/);
     expect(() => readHljod({ voice: 'Rödd', rodd: 1 })).toThrow(/unknown keys: rodd/);
   });
@@ -114,28 +127,46 @@ describe('the listening page’s data', () => {
   const texts = textsToVoice([card]);
   const manifest = readHljod({
     voice: 'Rödd',
-    clips: { feldur: true, hali: false, gæludýr: false },
+    clips: { feldur: true, hali: 'rangt', gæludýr: false, 'Það hefur ___.': false },
   });
   const hasFile = (f: string) => f !== clipName('gæludýr');
+  const version = (f: string) => `v-${f.slice(0, 4)}`;
 
-  it('lists each clip with a file, its places, and what the recogniser heard', () => {
+  it('lists each clip with a file, its places, its audio version, and what was heard', () => {
     const heard = readHeard({ hali: { heard: 'hala', score: 0.25 } });
-    expect(clipsForReview(texts, manifest, hasFile, heard)).toEqual([
+    expect(clipsForReview(texts, manifest, hasFile, heard, version)).toEqual([
       {
         text: 'feldur',
         file: clipName('feldur'),
+        v: version(clipName('feldur')),
         approved: true,
         places: texts.get('feldur'),
       },
       {
         text: 'hali',
         file: clipName('hali'),
+        v: version(clipName('hali')),
         approved: false,
+        rejected: true,
         places: texts.get('hali'),
         heard: 'hala',
         score: 0.25,
       },
+      // What the voice was told to say, where the text as printed is not it.
+      {
+        text: 'Það hefur ___.',
+        file: clipName('Það hefur ___.'),
+        v: version(clipName('Það hefur ___.')),
+        approved: false,
+        places: texts.get('Það hefur ___.'),
+        say: 'Það hefur ….',
+      },
     ]);
+  });
+
+  it('versions a clip by its audio, so a remade clip is told from the old one', () => {
+    expect(clipVersion(Buffer.from('a'))).toMatch(/^[0-9a-f]{12}$/);
+    expect(clipVersion(Buffer.from('a'))).not.toBe(clipVersion(Buffer.from('b')));
   });
 
   it('refuses a recogniser entry without what it heard and a score', () => {

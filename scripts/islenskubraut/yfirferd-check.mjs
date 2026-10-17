@@ -3,22 +3,28 @@
  * Read the review files teachers send back from `/islenskubraut/yfirferd`. See `yfirferd.mjs`.
  *
  *   pnpm islenskubraut:yfirferd <file.json> [more.json …]          # print every note and verdict
- *   pnpm islenskubraut:yfirferd <file.json> [more.json …] --apply  # also approve the recordings
- *                                                                  # marked right and never wrong
+ *   pnpm islenskubraut:yfirferd <file.json> [more.json …] --apply  # and write the verdicts
  *
- * `--apply` writes `true` beside those recordings in content/islenskubraut/hljod/hljod.yaml and
- * nothing else; notes are for a person to act on. Run `pnpm islenskubraut:build` after it.
+ * `--apply` writes to content/islenskubraut/hljod/hljod.yaml and nothing else: `true` beside each
+ * recording someone heard as right and nobody as wrong, and `rangt` beside each one someone heard
+ * as wrong and nobody as right, or that was approved and is now heard as wrong. A `rangt` clip is
+ * never approved by a later run; make it again, then write `false`. Notes are for a person to act
+ * on. Run `pnpm islenskubraut:build` after it.
+ *
+ * Pass every file received, old ones too: a reviewer's later file replaces their earlier one.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
 
 import { parseDocument } from 'yaml';
 
-import { readHljod } from './hljod.mjs';
-import { CONTENT_DIR } from './load.mjs';
+import { REJECTED, clipName, clipVersion, readHljod, textsToVoice } from './hljod.mjs';
+import { CONTENT_DIR, loadCategories } from './load.mjs';
 import { approvals, readReview, report } from './yfirferd.mjs';
 
+const ROOT = resolve(CONTENT_DIR, '../..');
 const MANIFEST = resolve(CONTENT_DIR, 'hljod/hljod.yaml');
+const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
 
 const args = process.argv.slice(2);
 const apply = args.includes('--apply');
@@ -30,15 +36,27 @@ if (files.length === 0) {
 
 const reviews = files.map((f) => readReview(JSON.parse(readFileSync(f, 'utf8')), basename(f)));
 const doc = parseDocument(readFileSync(MANIFEST, 'utf8'));
-const result = approvals(reviews, readHljod(doc.toJS()));
+const texts = textsToVoice(loadCategories());
+const version = (text) => {
+  const file = resolve(CLIP_DIR, clipName(text));
+  return existsSync(file) ? clipVersion(readFileSync(file)) : null;
+};
+const result = approvals(reviews, readHljod(doc.toJS()), { texts, version });
 process.stdout.write(report(reviews, result));
 
+const writes = [
+  ...result.approve.map((e) => [e.text, true]),
+  ...result.reject.map((e) => [e.text, REJECTED]),
+  ...result.revoke.map((e) => [e.text, REJECTED]),
+];
 if (apply) {
-  for (const text of result.approve) doc.setIn(['clips', text], true);
-  if (result.approve.length > 0) writeFileSync(MANIFEST, doc.toString());
+  for (const [text, value] of writes) doc.setIn(['clips', text], value);
+  if (writes.length > 0) writeFileSync(MANIFEST, doc.toString());
   console.log(
-    `\napproved ${result.approve.length} recording(s) in hljod.yaml. Run: pnpm islenskubraut:build`
+    `\nhljod.yaml: ${result.approve.length} approved, ${result.reject.length + result.revoke.length} marked ${REJECTED}. Run: pnpm islenskubraut:build`
   );
-} else if (result.approve.length > 0) {
-  console.log(`\n--apply would approve ${result.approve.length} recording(s).`);
+} else if (writes.length > 0) {
+  console.log(
+    `\n--apply would approve ${result.approve.length} and mark ${result.reject.length + result.revoke.length} ${REJECTED}.`
+  );
 }
