@@ -1,6 +1,6 @@
 import { lazy, Suspense, useLayoutEffect, type ComponentType } from 'react';
 
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 
 import { Header, Footer, BottomNav } from '@kvenno/shared/components';
 
@@ -41,11 +41,18 @@ const SmidurPage = lazyPage(() => import('./pages/SmidurPage').then((m) => m.Smi
 const Yfirferd = lazyPage(() => import('./pages/Yfirferd').then((m) => m.Yfirferd));
 const YfirferdHljod = lazyPage(() => import('./pages/YfirferdHljod').then((m) => m.YfirferdHljod));
 
-/** A new page opens at its top, not at the scroll position of the long page it was opened from. */
+/**
+ * A page opened from another opens at its top, not at the scroll position of the long page it was
+ * opened from. Only on a link (PUSH, REPLACE): a reload, a restored tab and back/forward are POP,
+ * and there the browser puts the reader back where they were.
+ */
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const type = useNavigationType();
   useLayoutEffect(() => {
-    window.scrollTo(0, 0);
+    if (type !== 'POP') window.scrollTo(0, 0);
+    // Only a new page moves it: the type alone changing is not a navigation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
   return null;
 }
@@ -72,7 +79,7 @@ export function App() {
               </Suspense>
             }
           />
-          {/* Everything awaiting a teacher, and every recording. Deliberately linked from nowhere. */}
+          {/* Everything awaiting a teacher, and every recording. No page a student sees links here. */}
           <Route
             path="/yfirferd"
             element={

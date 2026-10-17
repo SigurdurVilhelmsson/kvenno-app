@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useArmedAfter } from '@kvenno/shared/utils/armed';
 
-import { counts, now, reviewFile, reviewText, type Review } from './store';
+import { counts, fileName, now, reviewFile, reviewText, type Review } from './store';
 
 /**
  * Sending the review back: the reviewer's name, what the review holds, and two ways to send it,
@@ -20,32 +20,43 @@ export function Sending({
   const [status, setStatus] = useState('');
   const [clearing, setClearing] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const clearRef = useRef<HTMLButtonElement>(null);
+  const statusRef = useRef<HTMLParagraphElement>(null);
+  const wasClearing = useRef(false);
   // The second press of a double click must not confirm what the first one asked.
   const guard = useArmedAfter(400, clearing);
   const c = counts(review);
   const empty = c.notes + c.right + c.wrong === 0;
 
+  // Focus follows the question: to Hætta við when it is asked, back to Hreinsa allt when it is
+  // cancelled, and to the message once everything is cleared, never to the top of the page.
   useEffect(() => {
     if (clearing) cancelRef.current?.focus();
+    else if (wasClearing.current) {
+      if (clearRef.current && !clearRef.current.disabled) clearRef.current.focus();
+      else statusRef.current?.focus();
+    }
+    wasClearing.current = clearing;
   }, [clearing]);
 
   const download = () => {
     const stamp = now();
     const date = stamp.slice(0, 10);
+    const name = fileName(review, stamp);
     const blob = new Blob([`${JSON.stringify(reviewFile(review, date, stamp), null, 2)}\n`], {
       type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `yfirferd-islenskubraut-${date}.json`;
+    a.download = name;
     document.body.append(a);
     a.click();
     a.remove();
     // Safari reads the file after the click has returned, so the address must outlive it.
     window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
     setStatus(
-      'Skráin ætti nú að vera í niðurhalsmöppunni. Sendu hana til þess sem bað þig um yfirferðina. Ef hún kom ekki, notaðu „Afrita sem texta“.'
+      `Skráin ${name} ætti nú að vera í niðurhalsmöppunni. Sendu hana til þess sem bað þig um yfirferðina. Ef hún kom ekki, notaðu „Afrita sem texta“.`
     );
   };
 
@@ -107,6 +118,7 @@ export function Sending({
         {!clearing ? (
           <button
             key="hreinsa"
+            ref={clearRef}
             type="button"
             onClick={() => setClearing(true)}
             disabled={empty && review.reviewer === ''}
@@ -141,7 +153,7 @@ export function Sending({
           </>
         )}
       </div>
-      <p role="status" className="mt-3 text-sm text-warm-800 min-h-5">
+      <p ref={statusRef} tabIndex={-1} role="status" className="mt-3 text-sm text-warm-800 min-h-5">
         {status}
       </p>
     </section>

@@ -8,7 +8,7 @@ import { DrogContext, HljodCredit, Hlusta } from '../components/Hlusta';
 import { categories } from '../data';
 import { hlustun, type HlustunClip, type HlustunPlace } from '../data/hlustun';
 import { Sending } from '../yfirferd/Sending';
-import { useReview, type Review, type Verdict } from '../yfirferd/store';
+import { isCurrent, now, useReview, type Review, type Verdict } from '../yfirferd/store';
 
 /** A recogniser score above which a clip is listed as doubtful: over a fifth of its letters differ. */
 export const DOUBT = 0.2;
@@ -26,7 +26,7 @@ function placeText(p: HlustunPlace): string {
 /** This teacher's verdict on the clip as it is now: one given to an earlier recording is not. */
 function current(review: Review, clip: HlustunClip) {
   const mine = review.clips[clip.text];
-  return mine && mine.v === clip.v ? mine : undefined;
+  return isCurrent(clip.text, mine) ? mine : undefined;
 }
 
 const markedTexts = (review: Review) =>
@@ -35,7 +35,7 @@ const markedTexts = (review: Review) =>
 /**
  * Every recording on the cards, for a teacher to hear and mark right or wrong (REVIEW-QUEUE C15).
  * Drafts play here, as under `?drog`. The ones a speech recogniser heard as something else come
- * first. Nothing on the site links here but the review page.
+ * first. No page a student sees links here; the review page does.
  */
 export function YfirferdHljod() {
   const { review, update, saved } = useReview();
@@ -69,7 +69,8 @@ export function YfirferdHljod() {
     (c) =>
       (!flokkur || c.places.some((p) => p.category === flokkur)) &&
       (!onlyDoubtful || doubtful(c)) &&
-      (!unmarked || !markedBefore.has(c.text))
+      // Hidden only while still marked: one cleared since, here or in another tab, comes back.
+      (!unmarked || !(markedBefore.has(c.text) && current(review, c)))
   );
   const inScope = hlustun.filter((c) => !flokkur || c.places.some((p) => p.category === flokkur));
   const marked = inScope.filter((c) => current(review, c)).length;
@@ -78,11 +79,18 @@ export function YfirferdHljod() {
     update((r) => {
       const clips = { ...r.clips };
       const before = current(r, clip);
-      if (verdict === null) delete clips[clip.text];
+      const at = now();
+      // Taken back, it is kept as such, so a file sent later withdraws one sent earlier.
+      if (verdict === null) clips[clip.text] = { verdict: null, v: clip.v, at };
       // A note says what is wrong, so it goes when the clip is heard as right.
-      else if (verdict === 'right') clips[clip.text] = { verdict, v: clip.v };
+      else if (verdict === 'right') clips[clip.text] = { verdict, v: clip.v, at };
       else
-        clips[clip.text] = { verdict, v: clip.v, ...(before?.note ? { note: before.note } : {}) };
+        clips[clip.text] = {
+          verdict,
+          v: clip.v,
+          at,
+          ...(before?.note ? { note: before.note } : {}),
+        };
       return { ...r, clips };
     });
 
@@ -162,7 +170,15 @@ export function YfirferdHljod() {
               setNote={(note) =>
                 update((r) => ({
                   ...r,
-                  clips: { ...r.clips, [clip.text]: { verdict: 'wrong', v: clip.v, note } },
+                  clips: {
+                    ...r.clips,
+                    [clip.text]: {
+                      verdict: 'wrong',
+                      v: clip.v,
+                      at: r.clips[clip.text]?.at ?? now(),
+                      note,
+                    },
+                  },
                 }))
               }
             />
@@ -192,7 +208,8 @@ function ClipRow({
   setNote: (note: string) => void;
 }) {
   const mine = current(review, clip);
-  const remade = review.clips[clip.text] !== undefined && mine === undefined;
+  const stored = review.clips[clip.text];
+  const remade = stored !== undefined && stored.verdict !== null && stored.v !== clip.v;
   // Where the clip is on the card being reviewed, when one is chosen.
   const place = clip.places.find((p) => p.category === flokkur) ?? clip.places[0];
   const noteRef = useRef<HTMLInputElement>(null);

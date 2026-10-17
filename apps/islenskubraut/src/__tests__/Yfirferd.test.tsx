@@ -161,6 +161,8 @@ describe('the review page', () => {
     expect(document.activeElement?.textContent).toBe('Hætta við');
     fireEvent.click(screen.getByRole('button', { name: 'Hætta við' }));
     expect(stored().notes).toEqual({ 'dyr/spjald': 'x' });
+    // Focus goes back to where it was asked, not to the top of the page.
+    expect(document.activeElement?.textContent).toBe('Hreinsa allt');
     fireEvent.click(screen.getByRole('button', { name: 'Hreinsa allt' }));
     // A press straight after the first, as in a double click, is ignored.
     fireEvent.click(screen.getByRole('button', { name: 'Já, eyða öllu sem ég hef skrifað' }));
@@ -168,7 +170,29 @@ describe('the review page', () => {
     vi.advanceTimersByTime(500);
     fireEvent.click(screen.getByRole('button', { name: 'Já, eyða öllu sem ég hef skrifað' }));
     expect(stored()).toEqual({ reviewer: '', notes: {}, clips: {} });
+    expect(document.activeElement?.getAttribute('role')).toBe('status');
     vi.useRealTimers();
+  });
+
+  it('never writes back what it read from another tab, which may have moved on since', () => {
+    renderAt('/yfirferd');
+    const setItem = vi.spyOn(Storage.prototype, 'setItem');
+    act(() => {
+      window.localStorage.setItem(
+        'islenskubraut-yfirferd',
+        JSON.stringify({ reviewer: 'A', notes: {}, clips: {} })
+      );
+      window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
+      window.localStorage.setItem(
+        'islenskubraut-yfirferd',
+        JSON.stringify({ reviewer: 'AB', notes: {}, clips: {} })
+      );
+      window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
+    });
+    // Only the two writes the test made as "the other tab"; no echo from this one.
+    expect(setItem).toHaveBeenCalledTimes(2);
+    expect((screen.getByLabelText('Nafnið þitt') as HTMLInputElement).value).toBe('AB');
+    setItem.mockRestore();
   });
 
   it('reads back what another tab wrote, rather than overwriting it', () => {
@@ -242,22 +266,52 @@ describe('the listening page', () => {
     });
     fireEvent.click(mat('feldur').getByRole('button', { name: 'Rétt' }));
     const stored = () => JSON.parse(window.localStorage.getItem('islenskubraut-yfirferd')!).clips;
+    const at = expect.any(String);
     expect(stored()).toEqual({
-      les: { verdict: 'wrong', v: 'vb', note: 'heyrist sem „e“' },
-      feldur: { verdict: 'right', v: 'va' },
+      les: { verdict: 'wrong', v: 'vb', at, note: 'heyrist sem „e“' },
+      feldur: { verdict: 'right', v: 'va', at },
     });
     expect(mat('feldur').getByRole('button', { name: 'Rétt' }).getAttribute('aria-pressed')).toBe(
       'true'
     );
+    // A second press takes it back, and the file says so, so it withdraws one sent earlier.
     fireEvent.click(mat('feldur').getByRole('button', { name: 'Rétt' }));
-    expect(stored()).toEqual({ les: { verdict: 'wrong', v: 'vb', note: 'heyrist sem „e“' } });
-    const text = reviewText({ reviewer: '', notes: {}, clips: stored() }, '2026-10-17');
+    expect(stored().feldur).toEqual({ verdict: null, v: 'va', at });
+    const review = { reviewer: '', notes: {}, clips: stored() };
+    expect(reviewFile(review, '2026-10-17').clips).toContainEqual({
+      text: 'feldur',
+      verdict: 'withdrawn',
+      v: 'va',
+      at,
+    });
+    const text = reviewText(review, '2026-10-17');
     expect(text).toContain('Röng: „les“ — heyrist sem „e“');
     // One takes the singular.
     expect(text).toContain('Upptökur: 0 réttar, 1 röng');
     // Heard as right after all: what was wrong goes with the old verdict.
     fireEvent.click(mat('les').getByRole('button', { name: 'Rétt' }));
-    expect(stored()).toEqual({ les: { verdict: 'right', v: 'vb' } });
+    expect(stored().les).toEqual({ verdict: 'right', v: 'vb', at });
+  });
+
+  it('keeps a recording cleared since the filter went on out of the hidden ones', () => {
+    window.localStorage.setItem(
+      'islenskubraut-yfirferd',
+      JSON.stringify({
+        reviewer: '',
+        notes: {},
+        clips: { feldur: { verdict: 'right', v: 'va', at: '2026-10-17T10:00:00.000Z' } },
+      })
+    );
+    renderAt('/yfirferd/hljod?ometnar');
+    expect(rows()).toEqual(['les', 'bók', 'Hún/Hann er ___.']);
+    act(() => {
+      window.localStorage.setItem(
+        'islenskubraut-yfirferd',
+        JSON.stringify({ reviewer: '', notes: {}, clips: {} })
+      );
+      window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
+    });
+    expect(rows()).toEqual(['les', 'feldur', 'bók', 'Hún/Hann er ___.']);
   });
 
   it('asks again about a recording made again since it was marked', () => {
@@ -270,6 +324,14 @@ describe('the listening page', () => {
     expect(mat.getByRole('button', { name: 'Rétt' }).getAttribute('aria-pressed')).toBe('false');
     expect(screen.getByText(/Upptakan hefur verið gerð aftur/)).toBeDefined();
     expect(screen.getByText(/Þú hefur metið 0 af 4/)).toBeDefined();
+    // Not counted as a verdict, and named apart in the text sent, so it is not taken for current.
+    expect(screen.getByText(/Réttar upptökur: 0/)).toBeDefined();
+    const old = JSON.parse(window.localStorage.getItem('islenskubraut-yfirferd')!);
+    const text = reviewText(old, '2026-10-17');
+    expect(text).not.toContain('Réttar: „les“');
+    expect(text).toContain(
+      'Metnar áður en upptakan var gerð aftur, eða ekki lengur á spjöldunum: „les“'
+    );
   });
 });
 

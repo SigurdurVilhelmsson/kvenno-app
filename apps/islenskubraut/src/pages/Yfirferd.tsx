@@ -128,7 +128,8 @@ const STATE_TEXT: Record<State, string> = {
 
 /**
  * Everything on Íslenskubraut that waits for a teacher, card by card (REVIEW-QUEUE C13–C19): its
- * state, where to open it, and a note to send back. Nothing on the site links here.
+ * state, where to open it, and a note to send back. No page a student sees links here; the
+ * listening page links back.
  */
 export function Yfirferd() {
   const { review, update, saved } = useReview();
@@ -138,9 +139,11 @@ export function Yfirferd() {
       <h1 className="font-heading text-2xl sm:text-3xl font-bold text-warm-900 mb-4">Yfirferð</h1>
       <div className="max-w-2xl space-y-3 text-warm-800 mb-8">
         <p>
-          Hér er allt á Íslenskubraut sem bíður þess að kennari fari yfir það. Ekkert af því birtist
-          nemendum fyrr en búið er að staðfesta það, nema hvað upptökur og tenglar birtast eitt og
-          eitt, um leið og hvert þeirra er samþykkt. Engin síða á vefnum vísar hingað.
+          Hér er allt á Íslenskubraut sem bíður þess að kennari fari yfir það. Ekkert sem merkt er
+          „drög“ birtist nemendum fyrr en búið er að staðfesta það, nema hvað upptökur, tenglar og
+          tungumál undir „Á þínu máli“ birtast eitt og eitt, um leið og hvert þeirra er samþykkt.
+          Það sem merkt er „birt nemendum“ sjá nemendur nú þegar. Engin síða sem nemendur sjá vísar
+          hingað.
         </p>
         <ol className="list-decimal pl-6 space-y-1">
           <li>

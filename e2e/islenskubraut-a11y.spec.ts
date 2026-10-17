@@ -177,7 +177,7 @@ test('the review page has no WCAG AA violations and keeps a note over a reload',
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Sækja skrá' }).click();
   expect((await download).suggestedFilename()).toMatch(
-    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}\.json$/
+    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}-[a-z0-9-]+\.json$/
   );
 });
 
