@@ -5,8 +5,15 @@ import {
   DATA_END as SCRIPT_END,
   DATA_START as SCRIPT_START,
   FORMAT as SCRIPT_FORMAT,
+  UNKNOWN,
+  agreedBase,
   approvals,
+  CONFLICT,
+  INNER_CONFLICT,
+  mergeLedgers,
   mergeReviews,
+  missingEntries,
+  oursHunks,
   readLedger,
   mergeThreeWay,
   readReview,
@@ -169,10 +176,12 @@ describe('a review file', () => {
     );
   });
 
-  it('is from the browser that sent it, not from the name typed, and names no one', () => {
+  it('is from the browser that sent it and the name typed on it, and names no one', () => {
     const a = readReview(file());
     expect(reviewerOf(a)).toMatch(/^[0-9a-f]{12}$/);
-    expect(reviewerOf(readReview(file({ reviewer: 'Önnur' })))).toBe(reviewerOf(a));
+    expect(reviewerOf(readReview(file({ reviewer: ' anna ' })))).toBe(reviewerOf(a));
+    // Another name on the same browser is another teacher sharing it.
+    expect(reviewerOf(readReview(file({ reviewer: 'Önnur' })))).not.toBe(reviewerOf(a));
     expect(reviewerOf(readReview(file({ id: 'annar-vafri' })))).not.toBe(reviewerOf(a));
     const { ledger } = merge(EMPTY, [file()]);
     expect(JSON.stringify(ledger)).not.toMatch(/Anna|anna-vafri/);
@@ -356,17 +365,45 @@ describe('the record over time', () => {
     });
   });
 
-  it('takes a ruling by any name a browser’s files carry, and shows its latest', () => {
+  it('keeps two teachers on one browser apart, so neither’s verdicts replace the other’s', () => {
+    // Anna marks it wrong and sends; Gunna types her own name over Anna's and marks it right.
+    const anna = file({ id: 'skolatolva', clips: [clip('les', 'wrong', MON)] });
+    const gunna = file({
+      id: 'skolatolva',
+      reviewer: 'Gunna',
+      saved: TUE,
+      date: '2026-10-20',
+      clips: [clip('les', 'right', TUE)],
+    });
+    expect(to(run([anna, gunna]))).toMatchObject({ les: false });
+    expect(to(run([gunna], [], merge(EMPTY, [anna]).ledger))).toMatchObject({ les: false });
+    const both = merge(EMPTY, [anna, gunna]);
+    expect(both.people.map((p: { reviewer: string }) => p.reviewer)).toEqual(['Anna', 'Gunna']);
+    expect(both.shared).toEqual([['Anna', 'Gunna']]);
+    expect(report(both.people, run([anna, gunna]), [], { shared: both.shared })).toContain(
+      'Úr sama vafra undir fleiri en einu nafni: Anna, Gunna. Hvert nafn er talið sér.'
+    );
+    // A ruling is by one of them, not by the browser.
+    const ruled = merge(EMPTY, [anna, gunna], ['Gunna']);
+    expect(ruled.errors).toEqual([]);
+    expect(
+      approvals(ruled.ledger, manifest, { texts, version, names: ruled.names }).outcomes.find(
+        (o: { text: string }) => o.text === 'les'
+      )
+    ).toMatchObject({ to: true, overruled: [expect.objectContaining({ reviewer: 'Anna' })] });
+  });
+
+  it('takes a ruling by a name typed in any case, and shows a reviewer’s latest name', () => {
     const files = [
-      siggi({ reviewer: 'Sigi', clips: [clip('les', 'right', MON)] }),
+      siggi({ reviewer: 'siggi ', clips: [clip('les', 'right', MON)] }),
       siggi({ saved: TUE, date: '2026-10-20', clips: [] }),
     ];
-    for (const name of ['Siggi', 'Sigi']) expect(merge(EMPTY, files, [name]).errors).toEqual([]);
+    for (const name of ['Siggi', 'SIGGI']) expect(merge(EMPTY, files, [name]).errors).toEqual([]);
     expect(merge(EMPTY, files).people.map((p: { reviewer: string }) => p.reviewer)).toEqual([
       'Siggi',
     ]);
     // A name on two browsers' files, once or since, is not one person.
-    const two = merge(EMPTY, [...files, jon({ reviewer: 'Sigi' })], ['Sigi']);
+    const two = merge(EMPTY, [...files, jon({ reviewer: 'Siggi' })], ['Siggi']);
     expect(two.errors[0]).toMatch(/the files of 2 browsers carry that name/);
   });
 
@@ -426,6 +463,85 @@ describe('the record over time', () => {
     // a and nytt changed on our side only, b and d (removed) on theirs, c on both.
     expect(Object.fromEntries(merged)).toEqual({ a: true, b: true, nytt: false });
     expect(clashes).toEqual(['c']);
+  });
+
+  it('loses nothing either side holds when one side of the record was taken whole', () => {
+    const base = merge(EMPTY, []).ledger;
+    const ours = merge(readLedger(base), [jon({ clips: [clip('les', 'wrong', TUE)] })]).ledger;
+    const theirs = merge(readLedger(base), [file({ clips: [clip('les', 'right', MON)] })]).ledger;
+    for (const working of [ours, theirs, undefined]) {
+      const joined = mergeLedgers({ ours, theirs, base, working });
+      expect(missingEntries(joined, ours)).toEqual([]);
+      expect(missingEntries(joined, theirs)).toEqual([]);
+      expect(
+        approvals(joined, manifest, { texts, version }).outcomes.find(
+          (o: { text: string }) => o.text === 'les'
+        )
+      ).toMatchObject({ to: false });
+    }
+    // What a taken side lacks is what the build counts as lost.
+    expect(missingEntries(theirs, ours)).toEqual([
+      { text: 'les', who: reviewerOf(readReview(jon())), v: 'v2' },
+    ]);
+  });
+
+  it('keeps a ruler the merge removes out, whichever side was taken, and one added while resolving', () => {
+    const r = (rulers: string[]) => ({ rulers, verdicts: {} });
+    const sides = { ours: r([]), theirs: r(['R', 'D']), base: r(['R']) };
+    expect(mergeLedgers(sides).rulers).toEqual(['D']);
+    // The side that kept R, taken whole: R still goes.
+    expect(mergeLedgers({ ...sides, working: r(['R', 'D']) }).rulers).toEqual(['D']);
+    // A ruling given, or one removed, while resolving stays as it is.
+    expect(mergeLedgers({ ...sides, working: r(['D', 'N']) }).rulers).toEqual(['D', 'N']);
+    expect(mergeLedgers({ ...sides, working: r([]) }).rulers).toEqual([]);
+  });
+
+  it('keeps a ruler removed on one side out of a criss-cross merge too', () => {
+    // Two merge bases, both with Rosa ruling; ours removed her since, theirs added Dóra. git's own
+    // base is a merge of the two with markers in it, so the base is every ruler either held.
+    const bases = [{ rulers: ['rosa'] }, { rulers: ['rosa'] }];
+    const base = { rulers: [...new Set(bases.flatMap((b) => b.rulers))], verdicts: {} };
+    const ours = { rulers: [], verdicts: {} };
+    const theirs = { rulers: ['dora', 'rosa'], verdicts: {} };
+    expect(mergeLedgers({ ours, theirs, base }).rulers).toEqual(['dora']);
+    expect(INNER_CONFLICT.test('{\n<<<<<<<<< Temporary merge branch 1\n')).toBe(true);
+    expect(CONFLICT.test('{\n<<<<<<<<< Temporary merge branch 1\n')).toBe(false);
+  });
+
+  it('merges a recording only one side changed in a criss-cross history as that side has it', () => {
+    const m = (o: Record<string, unknown>) => new Map(Object.entries(o));
+    // The merge bases agree on a and b and disagree on c.
+    const base = agreedBase(
+      [m({ a: false, b: true, c: false }), m({ a: false, b: true, c: true })],
+      ['a', 'b', 'c']
+    );
+    expect(base.get('c')).toBe(UNKNOWN);
+    const { merged, clashes } = mergeThreeWay(
+      base,
+      m({ a: true, b: true, c: true }),
+      m({ a: false, b: false, c: false })
+    );
+    expect(Object.fromEntries(merged)).toEqual({ a: true, b: false });
+    expect(clashes).toEqual(['c']);
+    // With no base to read, only what both sides agree on is taken.
+    const none = agreedBase([], ['a', 'b']);
+    expect(
+      Object.fromEntries(mergeThreeWay(none, m({ a: true, b: 1 }), m({ a: true, b: 2 })).merged)
+    ).toEqual({
+      a: true,
+    });
+  });
+
+  it('takes this side of a conflict in hljod.yaml, with the line ends of any checkout', () => {
+    const lf =
+      'voice: R\nclips:\n<<<<<<< HEAD\n  a: true\n=======\n  a: rangt\n>>>>>>> other\n  b: false\n';
+    expect(oursHunks(lf)).toBe('voice: R\nclips:\n  a: true\n  b: false\n');
+    expect(oursHunks(lf.replace(/\n/g, '\r\n'))).toBe(oursHunks(lf));
+    expect(CONFLICT.test(lf.replace(/\n/g, '\r\n'))).toBe(true);
+    // As git writes it with merge.conflictStyle diff3, and at the end of a file with no newline.
+    const diff3 =
+      'clips:\n<<<<<<< ours\n  a: true\n||||||| base\n  a: false\n=======\n  a: rangt\n>>>>>>> theirs';
+    expect(oursHunks(diff3)).toBe('clips:\n  a: true\n');
   });
 
   it('does not ask a person to look at late verdicts a later ruling has since decided', () => {
@@ -539,6 +655,20 @@ describe('the report', () => {
     });
     expect(text).toMatch(/SAMÞYKKTAR SEM HÆTTA AÐ VERA ÞAÐ: 1\./);
     expect(text).toContain('„feldur“: true → false — breytt á báða vegu í samruna í git');
+  });
+
+  it('lists what a merge takes from the other side, from what this side has', () => {
+    const text = report([], { outcomes: [], unknown: [], unlisted: [] }, [], {
+      reset: [
+        { text: 'feldur', from: true, to: false, merged: true },
+        { text: 'fugl', from: false, to: 'rangt', merged: true },
+        { text: 'hali', from: false, to: false, merged: true },
+      ],
+    });
+    expect(text).toMatch(/SAMÞYKKTAR SEM HÆTTA AÐ VERA ÞAÐ: 1\.[^\n]*\n  „feldur“\n/);
+    expect(text).toContain('Breytingar sem --apply gerir: 2\n');
+    expect(text).toContain('„feldur“: true → false — tekið af hinni hlið samrunans');
+    expect(text).toContain('„fugl“: false → rangt — tekið af hinni hlið samrunans');
   });
 
   it('shows a reviewer’s notes from their latest file, so a note deleted since is gone', () => {

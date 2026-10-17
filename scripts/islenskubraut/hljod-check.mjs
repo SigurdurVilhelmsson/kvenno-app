@@ -10,9 +10,10 @@
  *                                       # bring stada.json up to date (see syncState)
  *
  * Every run writes `islenskubraut-hljod-yfirlit.html` (gitignored), the page a person listens
- * from. Exits 1 when an approved clip has no file or stada.json is out of date, and 2 when a text
- * on the cards has no clip yet, which is not an error for the build: that text simply has no play
- * button.
+ * from. Exits 1 when an approved clip has no file, stada.json is out of date or a clip is true
+ * with no teacher's approval of its audio in mat.json (the build refuses all three), and 2 when a
+ * text on the cards has no clip yet, which is not an error for the build: that text simply has no
+ * play button.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -32,6 +33,7 @@ import {
   textsToVoice,
 } from './hljod.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
+import { approvals, readLedger } from './yfirferd.mjs';
 
 const ROOT = resolve(CONTENT_DIR, '../..');
 const MANIFEST = resolve(CONTENT_DIR, 'hljod/hljod.yaml');
@@ -42,6 +44,8 @@ const HEARD_FILE = resolve(CONTENT_DIR, 'hljod/hlustun.json');
 const SHEET_FILE = resolve(ROOT, 'islenskubraut-hljod-yfirlit.html');
 // The tools' record of each clip's audio and decision; written here and by `--apply`, not by hand.
 const STATE_FILE = resolve(CONTENT_DIR, 'hljod/stada.json');
+// The teachers' verdicts (`yfirferd.mjs`): what a true in hljod.yaml must stand on.
+const LEDGER_FILE = resolve(CONTENT_DIR, 'hljod/mat.json');
 
 const hasFile = (name) => existsSync(resolve(CLIP_DIR, name));
 const versions = new Map();
@@ -136,8 +140,12 @@ writeFileSync(
   `<!doctype html><meta charset="utf-8"><title>Hljóð — yfirlit</title>
 <style>body{font:14px system-ui;margin:2em}td{padding:4px 8px;border-bottom:1px solid #ddd}</style>
 <h1>Hljóð á spjöldunum</h1>
-<p>Hlustaðu á hverja upptöku. Ef hún er rétt, skrifaðu <code>true</code> við textann í
-<code>content/islenskubraut/hljod/hljod.yaml</code>, og <code>rangt</code> ef hún er röng.</p>
+<p>Hlustaðu á hverja upptöku. Upptaka er samþykkt á hlustunarsíðunni,
+<code>/islenskubraut/yfirferd/hljod</code> („Rétt“), og síðan með
+<code>pnpm islenskubraut:yfirferd --apply</code>, aldrei með því að skrifa <code>true</code> í
+<code>hljod.yaml</code>: smíðin hafnar samþykki sem enginn hefur gefið. Ef upptaka er röng geturðu
+skrifað <code>rangt</code> við textann í <code>content/islenskubraut/hljod/hljod.yaml</code> og keyrt
+<code>pnpm islenskubraut:hljod --record</code>.</p>
 <p>„Talgreinir heyrði“ er það sem talgreinir skrifaði upp úr upptökunni og hve mikið það víkur frá
 textanum. Upptökurnar sem víkja mest eru efstar. Þær eru ekki endilega rangar, en hlustaðu fyrst á
 þær.</p>
@@ -146,7 +154,16 @@ ${rows.join('\n')}
 </table>\n`
 );
 
-const approved = [...manifest.clips.values()].filter(Boolean).length;
+// An approval is a teacher's verdict in mat.json on the audio as it is now; a true written in
+// hljod.yaml without one is refused by the build, so it is not counted as approved here.
+const unbacked = approvals(
+  readLedger(existsSync(LEDGER_FILE) ? JSON.parse(readFileSync(LEDGER_FILE, 'utf8')) : undefined),
+  manifest,
+  { texts, version }
+)
+  .outcomes.filter((o) => o.unbacked)
+  .map((o) => o.text);
+const approved = [...manifest.clips.values()].filter(Boolean).length - unbacked.length;
 console.log(
   `${texts.size} texts on the cards: ${texts.size - missing.length} with a clip listed, ${approved} approved, ${missing.length} without a clip`
 );
@@ -173,5 +190,11 @@ if (brokenApproved.length > 0) {
   console.error(`\n${brokenApproved.length} approved clip(s) with no file:`);
   for (const t of brokenApproved) console.error(`  ${t} (${clipName(t)})`);
 }
-if (brokenApproved.length > 0 || problems.length > 0) process.exit(1);
+if (unbacked.length > 0) {
+  console.error(
+    `\n${unbacked.length} clip(s) true in hljod.yaml with no approval in mat.json of their audio as it is now; the build refuses them. Approve on /islenskubraut/yfirferd/hljod and run pnpm islenskubraut:yfirferd --apply, or set them back to false:`
+  );
+  for (const t of unbacked) console.error(`  ${t}`);
+}
+if (brokenApproved.length > 0 || problems.length > 0 || unbacked.length > 0) process.exit(1);
 if (missing.length > 0) process.exit(2);

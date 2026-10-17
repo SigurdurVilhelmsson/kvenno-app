@@ -250,8 +250,12 @@ describe('the real manifest', () => {
   const texts = textsToVoice(loadCategories());
   const hasFile = (f: string) => existsSync(resolve(ROOT, 'apps/islenskubraut/public/hljod', f));
 
-  it('lists a clip with a file for every text on the cards, and nothing else', () => {
-    expect(compare(texts, manifest, hasFile)).toEqual({ missing: [], stale: [], noFile: [] });
+  // A text edited on a card has no clip until the voice says it again, which needs the Python
+  // setup on a teacher's machine (README.md): it just has no play button meanwhile, so neither
+  // that nor the old text's clip, now playing nowhere, fails here. A listed clip with no file
+  // does, since an approved one breaks the build.
+  it('gives every clip it lists a file', () => {
+    expect(compare(texts, manifest, hasFile).noFile).toEqual([]);
   });
 
   it('is recorded in stada.json, audio and value, so no approval is for audio since replaced', () => {

@@ -1,7 +1,8 @@
 # Hlustaðu — every recording on the cards, and whether a person has listened to it.
 # See README.md beside this file. `pnpm islenskubraut:hljod --record` lists new clips here as
-# false; write true once you have listened and the clip says the text as it should be said.
-# Only clips marked true play for students.
+# false. Only clips marked true play for students, and true comes only from a teacher's verdict on
+# the listening page, applied with `pnpm islenskubraut:yfirferd --apply`: the build refuses a true
+# written here by hand. Write rangt by hand if you like, then run --record.
 voice: >-
   Talrómur, rödd C (Háskólinn í Reykjavík, Language and Voice Lab), FastSpeech2,
   CC BY 4.0; raddkóðari Talrómur 1+2 Style MelGAN, Apache 2.0

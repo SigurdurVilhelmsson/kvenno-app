@@ -769,7 +769,8 @@ glosses) with each one's state, links that open the drafts as students would see
 print, and a note box. `/islenskubraut/yfirferd/hljod` (`YfirferdHljod.tsx`) plays every recording
 with `Rétt`/`Rangt`, the recogniser's doubts first. **No server holds a review:** it is kept in the
 teacher's browser (`src/yfirferd/store.ts`, `localStorage`, read back when another tab writes it
-and never written back: only a change made in that tab is written) until they clear it, and sent,
+and never written back: only a change made in that tab is written) until they clear it, though
+Safari on iOS drops it after seven days unvisited, which the page says, and sent,
 once the teacher has typed a name, as a downloaded file or copied text. Each verdict carries the
 hash of the audio it was given to and when it was given, and a verdict taken back is kept as such.
 `pnpm islenskubraut:yfirferd <files> [--urskurdur "Nafn"] [--apply]`
@@ -784,20 +785,25 @@ since they carry names, can be deleted once applied and their notes read. The re
 `verdicts[text][reviewer][audio version]`, so a verdict on one recording of a text survives one on
 the next, and is written through Prettier, so the commit hook leaves it alone. It names nobody: a
 reviewer is a hash of the random id the page gives each browser (`newId` in `store.ts`, reset by
-`Hreinsa allt`), so two teachers who type one name stay two, and a file without an id is refused.
+`Hreinsa allt`) and the name typed, so two teachers who type one name stay two, as do two sharing
+one browser, and a file without an id is refused.
 It keeps what was wrong with a recording, never the notes on the cards. The result does not depend
 on file order; an earlier design that compared verdict times with decision times lost a
 late-arriving "wrong" silently, and one that read only the files passed let a machine holding fewer
 files approve what another had heard as wrong. **After a git merge or rebase that touched them,
-run `--apply` with no files**: a conflict in any of the three is merged again from git's three
-versions (`mergeThreeWay` per recording for `hljod.yaml` and `stada.json`, a clash going to
-`false`; `unionLedgers` for the record, its rulers against the base so a removal stays), and every
-value is worked out again; the rest of `hljod.yaml` is as git merged it, ours where it conflicted,
-and the report measures from this side, what students hear now. Taking one side whole, as the
-first version did, lost one side's new recordings and approvals, revived a removed ruler, and
-could approve a remade recording unheard; a person who takes one side by hand is now caught by the
-build's refusal of an approval the record does not back.
-A ruler's verdict (`--urskurdur`, a name among those one browser's files carry, and no other's)
+run `--apply` with no files, before `git add`**: any of the three git holds unmerged, markers or
+none, is merged again from git's three versions (`mergeThreeWay` per recording for `hljod.yaml` and
+`stada.json`, a clash going to `false`; `mergeLedgers` for the record, its rulers against the base
+so a removal stays, the real merge bases standing in for a criss-cross one, `scripts/islenskubraut/git.mjs`),
+and every value is worked out again; the rest of `hljod.yaml` is as git merged it, ours where it
+conflicted, and the report lists every change from `HEAD`, what students hear now. Within a merge
+(open, or the merge commit `HEAD` is) `--apply` joins both parents' records even where nothing
+conflicts, and the build refuses a `mat.json` missing an entry either parent holds
+(`missingEntries`): one side of the record taken whole drops a teacher's "wrong" and still backs
+the approval left, which no other check can see. Taking one side whole, as the first version did,
+lost one side's new recordings and approvals, revived a removed ruler, and could approve a remade
+recording unheard.
+A ruler's verdict (`--urskurdur`, a name on one browser's files, in any case, and no other's)
 settles a recording, every verdict it overrules is printed, and **the record keeps who rules**, so
 a ruling outlasts the run that made it; of several rulings the latest decides. Per recording, a
 reviewer's latest verdict counts, by their browser's clock, and editing what is wrong gives it a new

@@ -8,6 +8,7 @@ import { parse } from 'yaml';
 
 import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
+import { fileAt, mergeSides } from './git.mjs';
 import { readGlossur } from './glossur.mjs';
 import {
   clipName,
@@ -44,7 +45,7 @@ import {
 import { pageData } from './smidur.mjs';
 import { readTenglar } from './tenglar.mjs';
 import { allTexts, readTexti } from './texti.mjs';
-import { approvals, readLedger } from './yfirferd.mjs';
+import { approvals, CONFLICT, missingEntries, readLedger } from './yfirferd.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
@@ -185,7 +186,7 @@ const glossur = readdirSync(GLOSSUR_DIR)
 // drafts. An approved clip with no file breaks the build; a text with no clip has no button.
 // A git merge can leave conflict markers in the recordings' files, which no parser reads.
 const conflicted = [HLJOD_FILE, STATE_FILE, LEDGER_FILE].filter(
-  (f) => existsSync(f) && /^(<{7}|={7}|>{7})( |$)/m.test(readFileSync(f, 'utf8'))
+  (f) => existsSync(f) && CONFLICT.test(readFileSync(f, 'utf8'))
 );
 if (conflicted.length > 0) {
   console.error(
@@ -227,6 +228,34 @@ try {
     'After a git merge with a conflict in it, run: pnpm islenskubraut:yfirferd --apply'
   );
   process.exit(1);
+}
+// A record only grows, so after a git merge (one in progress, or the merge commit HEAD is) it
+// holds every entry either side held. One side of it taken whole drops the other side's, a
+// teacher's "wrong" among them, and what is left still backs its approvals: nothing below could
+// tell. Where git cannot read the parents (a shallow clone), there is nothing to compare.
+const sides = mergeSides(ROOT);
+if (sides) {
+  const lost = [sides.ours, sides.theirs].flatMap((c) => {
+    const text = fileAt(ROOT, c, LEDGER_FILE);
+    try {
+      return missingEntries(ledger, readLedger(text === undefined ? undefined : JSON.parse(text)));
+    } catch {
+      return [];
+    }
+  });
+  if (lost.length > 0) {
+    const texts = [...new Set(lost.map((e) => e.text))];
+    console.error(
+      `content/islenskubraut/hljod/mat.json is missing ${lost.length} verdict(s) one side of the merge holds, on ${texts
+        .slice(0, 5)
+        .map((t) => `"${t}"`)
+        .join(', ')}${texts.length > 5 ? ' …' : ''}: one side of it was taken whole.`
+    );
+    console.error(
+      'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it joins both sides again.'
+    );
+    process.exit(1);
+  }
 }
 const drift = approvals(ledger, hljod, {
   texts: voiced,

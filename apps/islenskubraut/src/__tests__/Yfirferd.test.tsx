@@ -15,6 +15,10 @@ import { fileName, reviewFile, reviewText } from '../yfirferd/store';
 
 expect.extend(toHaveNoViolations);
 
+/** The audio this page knows for `les` (the mocks below), and bytes that hash to it. */
+const V_LES = '787c798e39a5';
+const LES_BYTES = new Uint8Array([4, 5, 6]);
+
 vi.mock('@kvenno/shared/components', () => ({
   Container: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
@@ -33,7 +37,8 @@ vi.mock('../data/hlustun', () => ({
     {
       text: 'les',
       file: 'b.mp3',
-      v: 'vb',
+      // The version of the bytes [4, 5, 6], so a test can serve the audio this page knows.
+      v: '787c798e39a5',
       approved: false,
       places: [
         { category: 'manneskja', level: null, where: 'Athafnir' },
@@ -67,7 +72,7 @@ vi.mock('../data/hljod', () => ({
   HLJOD_VOICE: 'Rödd C',
   hljod: {
     feldur: { file: 'a.mp3', approved: true, v: 'va' },
-    les: { file: 'b.mp3', approved: false, v: 'vb' },
+    les: { file: 'b.mp3', approved: false, v: '787c798e39a5' },
     bók: { file: 'c.mp3', approved: false, v: 'vc' },
     'Hún/Hann er ___.': { file: 'd.mp3', approved: false, v: 'vd' },
   },
@@ -291,7 +296,7 @@ describe('the listening page', () => {
     const stored = () => JSON.parse(window.localStorage.getItem('islenskubraut-yfirferd')!).clips;
     const at = expect.any(String);
     expect(stored()).toEqual({
-      les: { verdict: 'wrong', v: 'vb', at, note: 'heyrist sem „e“' },
+      les: { verdict: 'wrong', v: V_LES, at, note: 'heyrist sem „e“' },
       feldur: { verdict: 'right', v: 'va', at },
     });
     expect(mat('feldur').getByRole('button', { name: 'Rétt' }).getAttribute('aria-pressed')).toBe(
@@ -313,7 +318,7 @@ describe('the listening page', () => {
     expect(text).toContain('Upptökur: 0 réttar, 1 röng');
     // Heard as right after all: what was wrong goes with the old verdict.
     fireEvent.click(mat('les').getByRole('button', { name: 'Rétt' }));
-    expect(stored().les).toEqual({ verdict: 'right', v: 'vb', at });
+    expect(stored().les).toEqual({ verdict: 'right', v: V_LES, at });
   });
 
   it('gives a note its own time, so a file with it outweighs one sent before it was written', () => {
@@ -328,13 +333,13 @@ describe('the listening page', () => {
     vi.setSystemTime(new Date('2026-10-17T10:05:00Z'));
     fireEvent.change(screen.getByLabelText('Hvað er rangt? „les“'), { target: { value: 'e' } });
     const les = JSON.parse(window.localStorage.getItem('islenskubraut-yfirferd')!).clips.les;
-    expect(les).toEqual({ verdict: 'wrong', v: 'vb', at: '2026-10-17T10:05:00.000Z', note: 'e' });
+    expect(les).toEqual({ verdict: 'wrong', v: V_LES, at: '2026-10-17T10:05:00.000Z', note: 'e' });
     vi.useRealTimers();
   });
 
   it('takes no verdict on a recording made again since the page was opened', async () => {
     const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
-    // The server's file is not the one this page was built with ('vb').
+    // The server's file is not the one this page was built with (V_LES).
     const fetched = vi
       .spyOn(globalThis, 'fetch')
       .mockImplementation(async () => new Response(new Uint8Array([1, 2, 3])));
@@ -371,8 +376,8 @@ describe('the listening page', () => {
     renderAt('/yfirferd/hljod');
     fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
     await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
-    expect(played).toEqual([expect.stringMatching(/\/hljod\/b\.mp3\?v=vb$/)]);
-    expect(String(fetched.mock.calls[0][0])).toMatch(/\/hljod\/b\.mp3\?v=vb$/);
+    expect(played).toEqual([expect.stringMatching(/\/hljod\/b\.mp3\?v=787c798e39a5$/)]);
+    expect(String(fetched.mock.calls[0][0])).toMatch(/\/hljod\/b\.mp3\?v=787c798e39a5$/);
     play.mockRestore();
     fetched.mockRestore();
   });
@@ -382,7 +387,7 @@ describe('the listening page', () => {
     const before = JSON.stringify({
       reviewer: '',
       notes: {},
-      clips: { les: { verdict: 'wrong', v: 'vb', at } },
+      clips: { les: { verdict: 'wrong', v: V_LES, at } },
     });
     window.localStorage.setItem('islenskubraut-yfirferd', before);
     const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
@@ -421,12 +426,71 @@ describe('the listening page', () => {
     expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(newer);
     // Played, and the server holds what this page knows: then it may be judged again here.
     const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
-    const bytes = new Uint8Array([1, 2, 3]);
     const fetched = vi
       .spyOn(globalThis, 'fetch')
-      .mockImplementation(async () => new Response(bytes));
+      .mockImplementation(async () => new Response(LES_BYTES));
     fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await vi.waitFor(() => expect(rangt).toHaveProperty('disabled', false));
+    expect(screen.queryByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeNull();
+    fireEvent.click(rangt);
+    expect(
+      JSON.parse(window.localStorage.getItem('islenskubraut-yfirferd')!).clips.les
+    ).toMatchObject({ verdict: 'wrong', v: V_LES });
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('locks a row again when another tab judges other audio after it played here', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(LES_BYTES));
+    renderAt('/yfirferd/hljod');
+    const rett = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rétt',
+    });
+    // Played here while the server still held what this page knows.
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await vi.waitFor(() => expect(fetched).toHaveBeenCalled());
+    await vi.waitFor(() => expect(rett).toHaveProperty('disabled', false));
+    // Then the recording is made again, and a newer tab judges the new audio.
+    const later = new Date(Date.now() + 60_000).toISOString();
+    const newer = JSON.stringify({
+      reviewer: '',
+      id: 'x',
+      notes: {},
+      clips: { les: { verdict: 'wrong', v: 'vNYTT', at: later, note: 'segir „e“' } },
+    });
+    act(() => {
+      window.localStorage.setItem('islenskubraut-yfirferd', newer);
+      window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
+    });
+    expect(rett).toHaveProperty('disabled', true);
+    fireEvent.click(rett);
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(newer);
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('takes no verdict while it is still checking what a play brought', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    let serve: (r: Response) => void = () => {};
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(() => new Promise<Response>((done) => (serve = done)));
+    renderAt('/yfirferd/hljod');
+    const rett = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rétt',
+    });
+    expect(rett).toHaveProperty('disabled', false);
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    // The server may have sent other audio; until its hash is in, nothing is judged here.
+    expect(rett).toHaveProperty('disabled', true);
+    fireEvent.click(rett);
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBeNull();
+    await act(async () => serve(new Response(new Uint8Array([1, 2, 3]))));
     expect(await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
+    expect(rett).toHaveProperty('disabled', true);
     play.mockRestore();
     fetched.mockRestore();
   });
@@ -553,7 +617,7 @@ describe('sending and keeping a review', () => {
   });
 
   it('can send a review that only takes a verdict back, and says so in the text', () => {
-    const review = { reviewer: 'Anna', notes: {}, clips: { les: { verdict: null, v: 'vb', at } } };
+    const review = { reviewer: 'Anna', notes: {}, clips: { les: { verdict: null, v: V_LES, at } } };
     window.localStorage.setItem(KEY, JSON.stringify(review));
     renderAt('/yfirferd');
     expect(screen.getByRole('button', { name: 'Sækja skrá' })).toHaveProperty('disabled', false);

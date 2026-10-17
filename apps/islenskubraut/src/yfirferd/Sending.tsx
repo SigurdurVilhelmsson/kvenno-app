@@ -106,7 +106,7 @@ export function Sending({
       </p>
       <p className="text-sm text-warm-700 mb-3">
         {saved
-          ? 'Yfirferðin geymist í þessum vafra, líka eftir að þú sendir hana, þar til þú hreinsar hana. Í huliðsglugga hverfur hún þegar glugganum er lokað. Ef aðrir nota þennan vafra, hreinsaðu hana þegar þú hefur sent hana.'
+          ? 'Yfirferðin geymist í þessum vafra, líka eftir að þú sendir hana, þar til þú hreinsar hana. Í huliðsglugga hverfur hún þegar glugganum er lokað, og Safari á iPhone og iPad getur eytt henni ef þú opnar ekki síðuna í sjö daga: sendu það sem komið er áður en þú gerir hlé. Ef aðrir nota þennan vafra, hreinsaðu hana þegar þú hefur sent hana.'
           : 'Vafrinn geymir ekki yfirferðina: sendu hana áður en þú lokar síðunni.'}
       </p>
       {unnamed && !nothing && (

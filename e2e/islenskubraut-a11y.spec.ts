@@ -87,8 +87,11 @@ test('the card page with its draft recordings has no WCAG AA violations', async 
     expect(overflow, tab).toBeLessThanOrEqual(0);
   }
   // Asked for by the version of its audio, so a browser plays a recording made again, not a copy.
-  const played = page.waitForRequest((r) =>
-    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
+  // The player's own request (`media`), not the page's check of what the address holds.
+  const played = page.waitForRequest(
+    (r) =>
+      r.resourceType() === 'media' &&
+      /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
   );
   await page
     .getByRole('button', { name: /^Hlusta: / })
@@ -198,8 +201,11 @@ test('the listening page has no WCAG AA violations', async ({ page }) => {
   );
   expect(overflow).toBeLessThanOrEqual(0);
   // Asked for by the version the page was built with, so no copy of older audio is played.
-  const played = page.waitForRequest((r) =>
-    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
+  // The player's own request (`media`), not the page's check of what the address holds.
+  const played = page.waitForRequest(
+    (r) =>
+      r.resourceType() === 'media' &&
+      /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
   );
   await first.getByRole('button', { name: /^Hlusta: / }).click();
   expect((await (await played).response())?.status()).toBe(200);

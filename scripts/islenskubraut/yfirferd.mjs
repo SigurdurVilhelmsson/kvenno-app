@@ -108,17 +108,22 @@ export function readReview(raw, where = 'review') {
 
 /**
  * A name as an `--urskurdur` ruling is matched against the names in the files: ignoring case and
- * spaces at the ends. Files are told apart by their browser's id (`reviewerOf`), never by name.
+ * spaces at the ends. Files are told apart by their browser's id and that name (`reviewerOf`).
  */
 export const reviewerKey = (name) => name.trim().toLocaleLowerCase('is');
 
 /**
- * Who a file is from, as the record keeps it: a hash of the sending browser's random id, which
- * cannot be traced back to a name. Two teachers who type the same name are still two; a teacher
- * on two browsers is two reviewers, whose verdicts are weighed side by side.
+ * Who a file is from, as the record keeps it: a hash of the sending browser's random id and the
+ * name typed on it, which cannot be traced back to either. Two teachers who type the same name are
+ * still two, and so are two who share one browser, each under her own name: neither's verdicts
+ * replace the other's. A teacher on two browsers, or who types her name another way, is two
+ * reviewers, whose verdicts are weighed side by side.
  */
 export function reviewerOf(review) {
-  return createHash('sha256').update(`id:${review.id}`, 'utf8').digest('hex').slice(0, 12);
+  return createHash('sha256')
+    .update(`id:${review.id}\nnafn:${reviewerKey(review.reviewer)}`, 'utf8')
+    .digest('hex')
+    .slice(0, 12);
 }
 
 /**
@@ -159,9 +164,10 @@ const sortedBy = (entries) =>
  * from a later file stands; clearing the review on the page withdraws nothing already sent.
  * `rulers` are names whose verdicts rule (`--urskurdur`): each must be among the names one
  * browser's files carry, and no other's, and is kept in the record, so a ruling lasts. Returns
- * `{ ledger, names, people, errors }`: `names` maps each reviewer hash in the files to the name
- * on their latest file, `people` lists each reviewer once with that name, the dates of their files
- * and the notes their latest file carries.
+ * `{ ledger, names, people, shared, errors }`: `names` maps each reviewer hash in the files to the
+ * name on their latest file, `people` lists each reviewer once with that name, the dates of their
+ * files and the notes their latest file carries, and `shared` the names of each browser whose
+ * files carry more than one.
  */
 export function mergeReviews(ledger, reviews, rulers = []) {
   const verdicts = {};
@@ -171,6 +177,7 @@ export function mergeReviews(ledger, reviews, rulers = []) {
   }
   const names = new Map();
   const people = new Map();
+  const browsers = new Map();
   const ordered = reviews
     .map((r, i) => ({ r, i }))
     .sort((a, b) => a.r.saved.localeCompare(b.r.saved) || a.i - b.i)
@@ -178,6 +185,8 @@ export function mergeReviews(ledger, reviews, rulers = []) {
   for (const r of ordered) {
     const who = reviewerOf(r);
     names.set(who, r.reviewer);
+    if (!browsers.has(r.id)) browsers.set(r.id, new Map());
+    browsers.get(r.id).set(reviewerKey(r.reviewer), r.reviewer);
     if (!people.has(who)) {
       people.set(who, { who, reviewer: r.reviewer, keys: new Set(), dates: [], notes: new Map() });
     }
@@ -220,15 +229,21 @@ export function mergeReviews(ledger, reviews, rulers = []) {
       ])
     ),
   };
-  return { ledger: out, names, people: [...people.values()], errors };
+  // One browser that sent files under two names: two people sharing it, or one who retyped hers.
+  const shared = [...browsers.values()].filter((m) => m.size > 1).map((m) => [...m.values()]);
+  return { ledger: out, names, people: [...people.values()], shared, errors };
 }
 
 const CLASH = Symbol('clash');
 
+/** A base value nobody can name: the merge bases of a criss-cross history disagree on it. */
+export const UNKNOWN = Symbol('unknown');
+
 /**
  * One map merged three ways, key by key, as git merges lines: a key only one side changed since
  * the base takes that side, and one both changed alike takes it. One both changed differently is
- * a clash, left out of `merged` and listed. `same` compares two values; `undefined` is absent.
+ * a clash, left out of `merged` and listed, and so is one whose base is `UNKNOWN` unless both
+ * sides agree. `same` compares two values; `undefined` is absent.
  */
 export function mergeThreeWay(base, ours, theirs, same = (a, b) => a === b) {
   const merged = new Map();
@@ -237,7 +252,7 @@ export function mergeThreeWay(base, ours, theirs, same = (a, b) => a === b) {
     const b = base.get(k);
     const o = ours.get(k);
     const t = theirs.get(k);
-    const value = same(o, t) ? o : same(o, b) ? t : same(t, b) ? o : CLASH;
+    const value = same(o, t) ? o : b === UNKNOWN ? CLASH : same(o, b) ? t : same(t, b) ? o : CLASH;
     if (value === CLASH) clashes.push(k);
     else if (value !== undefined) merged.set(k, value);
   }
@@ -275,6 +290,75 @@ export function unionLedgers(a, b, base = { rulers: [], verdicts: {} }) {
   };
 }
 
+/**
+ * The base of a three-way merge where git's own (`:1:`) is no use: in a criss-cross history it is
+ * a merge of several bases, with conflict markers of its own. Here each key the real merge bases
+ * (`maps`) all give alike has that value, and one they disagree on is `UNKNOWN`, so only a change
+ * both sides agree on is taken. With no base to read, every key is `UNKNOWN`.
+ */
+export function agreedBase(maps, keys, same = (a, b) => a === b) {
+  const out = new Map();
+  for (const k of keys) {
+    if (maps.length === 0) out.set(k, UNKNOWN);
+    else if (maps.every((m) => same(m.get(k), maps[0].get(k)))) {
+      if (maps[0].get(k) !== undefined) out.set(k, maps[0].get(k));
+    } else out.set(k, UNKNOWN);
+  }
+  return out;
+}
+
+/**
+ * The record after a git merge, however its conflict was left: every verdict on either side, and
+ * in the working file (`working`, where it can be read: one side taken whole, or a merge already
+ * run), the later where two hold one for the same recording, reviewer and audio. So a side taken
+ * whole loses nothing. A ruler the merge removes (one in `base` that a side has removed) goes;
+ * otherwise the rulers are the working file's, so one added or removed while resolving stays as it
+ * is, and with no working file both sides' (`unionLedgers`). For a criss-cross history, `base`
+ * holds every ruler any merge base held.
+ */
+export function mergeLedgers({ ours, theirs, base = { rulers: [], verdicts: {} }, working }) {
+  const sides = unionLedgers(ours, theirs, base);
+  if (!working) return sides;
+  const removed = new Set(
+    base.rulers.filter((r) => !(ours.rulers.includes(r) && theirs.rulers.includes(r)))
+  );
+  return {
+    rulers: [...new Set(working.rulers)].filter((r) => !removed.has(r)).sort(),
+    verdicts: unionLedgers(sides, working).verdicts,
+  };
+}
+
+/** The entries (recording, reviewer, audio) `other` holds and `ledger` does not. A record only
+ * grows, so after a merge none of either side's should be missing. */
+export function missingEntries(ledger, other) {
+  const out = [];
+  for (const [text, byWho] of Object.entries(other.verdicts)) {
+    for (const [who, byV] of Object.entries(byWho)) {
+      for (const v of Object.keys(byV)) {
+        if (!ledger.verdicts[text]?.[who]?.[v]) out.push({ text, who, v });
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * A file git left conflicted, each conflicted hunk taken from this side ("ours"), so what git
+ * merged cleanly (in `hljod.yaml`, the voice and the comments) is kept. Its line ends are made
+ * `\n` first: git writes the markers with the checkout's own, `\r\n` on Windows.
+ */
+export const oursHunks = (raw) =>
+  raw
+    .replace(/\r\n/g, '\n')
+    .replace(
+      /^<{7}[^\n]*\n([\s\S]*?)(?:^\|{7}[^\n]*\n[\s\S]*?)?^={7}\n[\s\S]*?^>{7}[^\n]*(?:\n|$(?![\s\S]))/gm,
+      '$1'
+    );
+
+/** Conflict markers as git writes them, and as a criss-cross merge base holds them (longer). */
+export const CONFLICT = /^(<{7}|={7}|>{7})( |\r?$)/m;
+export const INNER_CONFLICT = /^(<{7,}|={7,}|>{7,})( |\r?$)/m;
+
 /** The value the verdicts on a recording give it: right only is `true`, wrong only `rangt`. */
 function valueFrom(verdicts) {
   const right = verdicts.some((v) => v.verdict === 'right');
@@ -290,8 +374,9 @@ function valueFrom(verdicts) {
  * Every recording with a verdict on its current audio gets the value all those verdicts give it
  * together: heard as right and never as wrong is `true`, as wrong and never as right `rangt`, and
  * anything else `false`, whatever it was before. One whose verdicts on its current audio were all
- * taken back is `false`: nobody vouches for it. A recording with verdicts only on other audio
- * keeps its value, which `syncState` already set back to `false` when the audio changed.
+ * taken back is `false`: nobody vouches for it. A recording with verdicts only on other audio, or
+ * none, keeps a `false` or `rangt` (`syncState` already set it back to `false` when the audio
+ * changed); a `true` goes back to `false`, below.
  *
  * A recording `hljod.yaml` approves with no approval in the record of its audio as it is now goes
  * back to `false` (`unbacked`): an approval carried in by a git merge, or across a remake, or
@@ -411,13 +496,16 @@ const shown = (value) => (value === true ? 'true' : value === false ? 'false' : 
  * ruling overrules, every verdict on other audio that came late, every recording heard as wrong
  * with what was said about it, the notes by item from the files given, and who rules.
  *
- * `extra` is what the command does beside the verdicts: `reset`, `[{ text, from }]`, the
- * recordings set back to `false` because their audio changed or nothing recorded which audio was
- * approved; `stamped`, values written in hljod.yaml by hand that stada.json now records; and
- * `clashes`, recordings both sides of a git merge changed differently, set to `false`.
+ * `extra` is what the command does beside the verdicts: `reset`, `[{ text, from, to?, clash?,
+ * merged? }]`, the recordings whose value changes with no verdict deciding it (to `false` unless
+ * `to` says otherwise): their audio changed or nothing recorded which audio was approved, both
+ * sides of a git merge changed them differently (`clash`), or the merge took the other side's
+ * value (`merged`); `stamped`, values written in hljod.yaml by hand that stada.json now records;
+ * `clashes`, recordings both sides of a git merge changed differently, set to `false`; and
+ * `shared`, the names of each browser whose files carry more than one.
  */
 export function report(people, result, rulers = [], extra = {}) {
-  const { reset = [], stamped = [], clashes = [] } = extra;
+  const { reset = [], stamped = [], clashes = [], shared = [] } = extra;
   const lines = [];
   lines.push(
     people.length === 0
@@ -426,24 +514,33 @@ export function report(people, result, rulers = [], extra = {}) {
           .map((p) => `${p.reviewer}${p.dates.length ? ` (${p.dates.join(', ')})` : ''}`)
           .join(', ')}`
   );
+  for (const names of shared) {
+    lines.push(
+      `Úr sama vafra undir fleiri en einu nafni: ${names.join(', ')}. Hvert nafn er talið sér. Ef vafrinn var ekki hreinsaður á milli, ber síðari skráin líka mat hins fyrra.`
+    );
+  }
   const why = (o) =>
     o.unbacked
       ? 'ekkert samþykki í mat.json á upptökunni eins og hún er'
       : o.clash
         ? 'breytt á báða vegu í samruna í git'
-        : o.remade
-          ? 'upptakan er ný, eða ekki skráð hvaða upptaka var samþykkt'
-          : [
-              o.verdicts.length ? said(o.verdicts) : 'dregið til baka',
-              o.ruling ? `úrskurður ${o.ruling.reviewer}` : '',
-            ]
-              .filter(Boolean)
-              .join('; ');
+        : o.merged
+          ? 'tekið af hinni hlið samrunans'
+          : o.remade
+            ? 'upptakan er ný, eða ekki skráð hvaða upptaka var samþykkt'
+            : [
+                o.verdicts.length ? said(o.verdicts) : 'dregið til baka',
+                o.ruling ? `úrskurður ${o.ruling.reviewer}` : '',
+              ]
+                .filter(Boolean)
+                .join('; ');
   const changes = [
     ...result.outcomes.filter((o) => o.from !== o.to),
+    // Set without a verdict: by a remake (`remade`, the default), a clash in a merge (`clash`) or
+    // taken from the other side of one (`merged`). Going to false, unless `to` says otherwise.
     ...reset
-      .filter((r) => r.from !== false)
-      .map((r) => ({ ...r, to: false, ...(r.clash ? { clash: true } : { remade: true }) })),
+      .map((r) => ({ to: false, ...r, ...(r.clash || r.merged ? {} : { remade: true }) }))
+      .filter((r) => r.from !== r.to),
   ].sort((a, b) => a.text.localeCompare(b.text, 'is'));
   const revoked = changes.filter((o) => o.from === true);
   if (revoked.length > 0) {

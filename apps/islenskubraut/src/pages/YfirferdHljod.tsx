@@ -20,14 +20,31 @@ const doubtful = (c: HlustunClip) => (c.score ?? 0) > DOUBT;
 const canCheck = () => globalThis.crypto?.subtle !== undefined;
 
 /**
- * Whether a verdict or note given here would name audio other than the server's. Either the server
- * has audio this page does not know (`heard`, once played), or this browser holds a verdict on
- * audio this page does not know, from another tab, which may be newer: then the clip must be
- * played here first, so the page knows its audio is the server's.
+ * What playing a clip here showed: the audio the server holds at its address and when that was
+ * learnt, or `null` while it is being checked.
  */
-function blocked(clip: HlustunClip, heard: string | undefined, stored: { v: string } | undefined) {
-  if (heard !== undefined) return heard !== clip.v;
-  return stored !== undefined && stored.v !== clip.v && canCheck();
+type Heard = { v: string; at: string } | null;
+
+/**
+ * Whether a verdict or note given here would name audio other than the server's. Either a play's
+ * check is not back yet (`heard` null), or the server has audio this page does not know, or this
+ * browser holds a verdict on audio this page does not know, from another tab, given since the clip
+ * last played here (or before it ever did): the server may have changed, so the clip must be played
+ * here again first. Both times are this browser's, so comparing them is sound.
+ */
+function blocked(
+  clip: HlustunClip,
+  heard: Heard | undefined,
+  stored: { v: string; at: string } | undefined
+) {
+  if (heard === null) return true;
+  if (heard !== undefined && heard.v !== clip.v) return true;
+  return (
+    stored !== undefined &&
+    stored.v !== clip.v &&
+    canCheck() &&
+    (heard === undefined || stored.at > heard.at)
+  );
 }
 
 const nameOf = (id: string) => categories.find((c) => c.id === id)?.name ?? id;
@@ -68,9 +85,9 @@ export function YfirferdHljod() {
   // the pass, or cleared and marked again, stays with its note box until the filter is switched
   // again; a row cleared since, here or in another tab, comes back.
   const [markedBefore, setMarkedBefore] = useState(() => marks(review));
-  // The audio each recording played as here, where it differs from what this page was built with:
-  // a recording made again since the page was opened.
-  const [heard, setHeard] = useState<Record<string, string>>({});
+  // The audio each recording played as here, and when: one that differs from what this page was
+  // built with was made again since the page was opened.
+  const [heard, setHeard] = useState<Record<string, Heard>>({});
   useKeepScroll();
 
   const setParam = (key: string, value: string | null) =>
@@ -204,7 +221,16 @@ export function YfirferdHljod() {
               flokkur={flokkur}
               review={review}
               heard={heard[clip.text]}
-              onHeard={(v) => setHeard((h) => (h[clip.text] === v ? h : { ...h, [clip.text]: v }))}
+              onHeard={(v) =>
+                setHeard((h) => {
+                  // The browser could not tell: as if it had not played here.
+                  if (v === undefined) {
+                    const { [clip.text]: _gone, ...rest } = h;
+                    return rest;
+                  }
+                  return { ...h, [clip.text]: v === null ? null : { v, at: now() } };
+                })
+              }
               setVerdict={setVerdict}
               setNote={(note) =>
                 update((r) =>
@@ -252,14 +278,14 @@ function ClipRow({
   clip: HlustunClip;
   flokkur: string;
   review: Review;
-  heard: string | undefined;
-  onHeard: (version: string) => void;
+  heard: Heard | undefined;
+  onHeard: (version: string | null | undefined) => void;
   setVerdict: (clip: HlustunClip, verdict: Verdict | null) => void;
   setNote: (note: string) => void;
 }) {
   const mine = current(review, clip);
   // Made again since this page was opened: what played is not what a verdict here would name.
-  const changed = heard !== undefined && heard !== clip.v;
+  const changed = heard != null && heard.v !== clip.v;
   // Or not yet known: a verdict stored on other audio, and the clip not played here yet.
   const locked = blocked(clip, heard, review.clips[clip.text]);
   const stored = review.clips[clip.text];

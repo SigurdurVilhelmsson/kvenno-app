@@ -20,10 +20,11 @@
  * runs `pnpm islenskubraut:build`, which turns them into the app's data. Commit everything git
  * then shows changed; after that the review files can be deleted, once their notes have been read.
  * Without `--apply` it says what it would write, `mat.json` included, so a file whose verdicts are
- * not yet in the record is not deleted by mistake. After a git merge, run it with no files: it
- * resolves a conflict in any of the three, and works every value out again.
+ * not yet in the record is not deleted by mistake. After a git merge, run it with no files, before
+ * `git add`: it merges again any of the three that git holds unmerged, joins both sides' records
+ * within a merge even where one was taken whole, and works every value out again.
  */
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,17 +40,22 @@ import {
   textsToVoice,
   valueOf,
 } from './hljod.mjs';
+import { fileAt, mergeBases, mergeSides, unmerged } from './git.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
 import { prettify } from './render.mjs';
 import {
+  agreedBase,
   approvals,
+  CONFLICT,
+  INNER_CONFLICT,
+  mergeLedgers,
   mergeReviews,
   mergeThreeWay,
+  oursHunks,
   readLedger,
   readReview,
   report,
   reviewData,
-  unionLedgers,
 } from './yfirferd.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -91,107 +97,167 @@ try {
   process.exit(1);
 }
 
-// After a git merge that left conflict markers in these files, each is merged again from git's
-// three versions of it: the record joins both sides (`unionLedgers`), and hljod.yaml and
-// stada.json are merged recording by recording (`mergeThreeWay`). A recording both sides changed
-// differently goes back to false, unless the verdicts decide it.
-const CONFLICT = /^(<{7}|={7}|>{7})( |$)/m;
+// After a git merge that left a conflict in these files, each is merged again from git's three
+// versions of it: the record joins both sides (`mergeLedgers`), and hljod.yaml and stada.json are
+// merged recording by recording (`mergeThreeWay`). A recording both sides changed differently
+// goes back to false, unless the verdicts decide it. A file counts as conflicted while git's index
+// holds it unmerged, markers or none, so a side taken whole (`git checkout --theirs`) is merged
+// again too, until `git add`.
 const conflicted = [];
-function stage(file, n) {
-  let text;
-  try {
-    text = execFileSync('git', ['show', `:${n}:${relative(ROOT, file)}`], {
-      cwd: ROOT,
-      encoding: 'utf8',
-      maxBuffer: 1 << 30,
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
-  } catch (e) {
-    const missing = /is in the index, but not at stage|does not exist|not in the index/.test(
-      String(e.stderr ?? '')
-    );
-    if (n === 1 && missing) return undefined; // added on both sides: no base
-    console.error(
-      missing
-        ? `${relative(ROOT, file)} has conflict markers outside a merge. Resolve it first.`
-        : `git show :${n}:${relative(ROOT, file)} failed: ${e.message}`
-    );
-    process.exit(1);
-  }
-  // A criss-cross merge's base is itself a merge, and can hold conflict markers: no usable base.
-  if (n === 1 && /^(<{7,}|={7,}|>{7,})( |$)/m.test(text)) return undefined;
-  return text;
-}
-/** The file as found, and git's three versions of it if it has conflict markers. */
-function read(file) {
-  const raw = existsSync(file) ? readFileSync(file, 'utf8') : undefined;
-  if (raw === undefined || !CONFLICT.test(raw)) return { raw };
-  conflicted.push(relative(ROOT, file));
-  return { raw, base: stage(file, 1), ours: stage(file, 2), theirs: stage(file, 3) };
-}
-const json = (text, empty) => (text === undefined ? empty : JSON.parse(text));
-
-const ledgerIn = read(LEDGER_FILE);
-const ledger =
-  ledgerIn.ours !== undefined
-    ? unionLedgers(
-        readLedger(json(ledgerIn.ours)),
-        readLedger(json(ledgerIn.theirs)),
-        readLedger(json(ledgerIn.base))
-      )
-    : readLedger(json(ledgerIn.raw));
-const merged = mergeReviews(ledger, reviews, rulers);
-if (merged.errors.length > 0) {
-  for (const e of merged.errors) console.error(e);
+const sides = mergeSides(ROOT);
+const CROSSED = Symbol('crossed');
+const rel = (file) => relative(ROOT, file);
+function fail(message) {
+  console.error(message);
   process.exit(1);
 }
+/** git's version `n` of a file (1 base, 2 ours, 3 theirs): undefined where that side has none. */
+function stage(file, n) {
+  const text = fileAt(ROOT, `:${n}`, file);
+  // A criss-cross merge's base is itself a merge, and can hold conflict markers of its own.
+  return n === 1 && text !== undefined && INNER_CONFLICT.test(text) ? CROSSED : text;
+}
+/** The file as found and, if git holds it unmerged, git's versions of it. */
+function read(file) {
+  const raw = existsSync(file) ? readFileSync(file, 'utf8') : undefined;
+  const marked = raw !== undefined && CONFLICT.test(raw);
+  if (!unmerged(ROOT, file)) {
+    if (marked) fail(`${rel(file)} has conflict markers outside a merge. Resolve it first.`);
+    return { raw };
+  }
+  conflicted.push(rel(file));
+  const base = stage(file, 1);
+  return {
+    raw,
+    // The working file, where it can stand for itself: a side taken whole, or a merge already run.
+    working: marked ? undefined : raw,
+    base,
+    ours: stage(file, 2) ?? '',
+    theirs: stage(file, 3) ?? '',
+    // For a criss-cross base, the file at each real merge base (undefined where it has none).
+    ...(base === CROSSED && sides?.inProgress
+      ? { bases: mergeBases(ROOT, sides.ours, sides.theirs).map((c) => fileAt(ROOT, c, file)) }
+      : {}),
+  };
+}
+/** A file read for what it says; one that cannot be read stops the run, naming it. */
+function parsed(name, fn) {
+  try {
+    return fn();
+  } catch (e) {
+    return fail(`${name}: ${e.message}`);
+  }
+}
+const json = (text, empty) => (text === undefined || text === '' ? empty : JSON.parse(text));
+const ledgerOf = (text) => readLedger(json(text));
+
+// The record. Within a merge (one in progress, or the merge commit HEAD is) both parents' records
+// are joined with the working file's even where git merged it cleanly, or a side was taken whole
+// and added: a record only grows, so nothing either side holds can be lost.
+const ledgerIn = read(LEDGER_FILE);
+const ledger = parsed('mat.json', () => {
+  const sidesOf = () => {
+    if (ledgerIn.ours !== undefined) {
+      const ours = ledgerOf(ledgerIn.ours);
+      const theirs = ledgerOf(ledgerIn.theirs);
+      let base;
+      if (ledgerIn.base !== CROSSED) base = ledgerOf(ledgerIn.base);
+      else if (ledgerIn.bases) {
+        base = {
+          rulers: [...new Set(ledgerIn.bases.flatMap((t) => ledgerOf(t).rulers))],
+          verdicts: {},
+        };
+      } else {
+        // No merge base to read: keep only the rulers both sides hold, and say which went.
+        base = { rulers: [...new Set([...ours.rulers, ...theirs.rulers])], verdicts: {} };
+        const dropped = base.rulers.filter(
+          (r) => !(ours.rulers.includes(r) && theirs.rulers.includes(r))
+        );
+        if (dropped.length > 0) {
+          console.log(
+            `No merge base of mat.json to read; rulers held by one side only are dropped: ${dropped.join(', ')}. Restore one with --urskurdur.\n`
+          );
+        }
+      }
+      return { ours, theirs, base };
+    }
+    if (!sides) return undefined;
+    const at = (c) => ledgerOf(fileAt(ROOT, c, LEDGER_FILE));
+    const bases = mergeBases(ROOT, sides.ours, sides.theirs);
+    return {
+      ours: at(sides.ours),
+      theirs: at(sides.theirs),
+      base: { rulers: [...new Set(bases.flatMap((c) => at(c).rulers))], verdicts: {} },
+    };
+  };
+  const both = sidesOf();
+  let working;
+  try {
+    working =
+      ledgerIn.working === undefined && ledgerIn.ours !== undefined
+        ? undefined
+        : ledgerOf(ledgerIn.working ?? ledgerIn.raw);
+  } catch (e) {
+    // Within a conflict, a working file that cannot be read is left to git's versions of it.
+    if (ledgerIn.ours === undefined) throw e;
+  }
+  return both ? mergeLedgers({ ...both, working }) : working;
+});
+const merged = mergeReviews(ledger, reviews, rulers);
+if (merged.errors.length > 0) fail(merged.errors.join('\n'));
 
 const manifestIn = read(MANIFEST);
 const stateIn = read(STATE_FILE);
 const clashes = new Set();
+/** A merge's base for one file as a map, read from the real merge bases where git's is crossed. */
+const baseMap = (input, toMap, same) => {
+  if (input.base !== CROSSED) return toMap(input.base);
+  const maps = (input.bases ?? []).map(toMap);
+  const keys = new Set(
+    [toMap(input.ours), toMap(input.theirs), ...maps].flatMap((m) => [...m.keys()])
+  );
+  return agreedBase(maps, keys, same);
+};
 // git's own merge of hljod.yaml, each conflicted hunk taken from ours, so what git merged cleanly
 // (the voice, comments) is kept; the clips are merged recording by recording below.
-const oursHunks = (raw) =>
-  raw.replace(
-    /^<{7}[^\n]*\n([\s\S]*?)(?:^\|{7}[^\n]*\n[\s\S]*?)?^={7}\n[\s\S]*?^>{7}[^\n]*\n/gm,
-    '$1'
-  );
-const doc = parseDocument(
-  manifestIn.ours !== undefined ? oursHunks(manifestIn.raw) : manifestIn.raw
-);
-// What students hear now, on this side of a merge: what the report measures changes from.
-const now = readHljod(parseDocument(manifestIn.ours ?? manifestIn.raw).toJS());
+const doc = parsed('hljod.yaml', () => {
+  const d = parseDocument(oursHunks(manifestIn.raw ?? manifestIn.ours ?? ''));
+  if (d.errors.length > 0) throw d.errors[0];
+  return d;
+});
 if (manifestIn.ours !== undefined) {
   const values = (text) => {
-    if (text === undefined) return new Map();
+    if (text === undefined || text === '') return new Map();
     const m = readHljod(parseDocument(text).toJS());
     return new Map([...m.clips.keys()].map((t) => [t, valueOf(m, t)]));
   };
-  const { merged: clips, clashes: both } = mergeThreeWay(
-    values(manifestIn.base),
-    values(manifestIn.ours),
-    values(manifestIn.theirs)
+  const { merged: clips, clashes: both } = parsed('hljod.yaml', () =>
+    mergeThreeWay(baseMap(manifestIn, values), values(manifestIn.ours), values(manifestIn.theirs))
   );
   // A clash stays listed, as false (below); only a recording one side removed goes.
   for (const t of both) {
     clashes.add(t);
     clips.set(t, false);
   }
-  for (const t of readHljod(doc.toJS()).clips.keys()) if (!clips.has(t)) doc.deleteIn(['clips', t]);
+  for (const t of Object.keys(doc.toJS()?.clips ?? {}))
+    if (!clips.has(t)) doc.deleteIn(['clips', t]);
   for (const [t, value] of clips) doc.setIn(['clips', t], value);
 }
 let state;
 if (stateIn.ours !== undefined) {
   const entries = (text) => new Map(Object.entries(readState(json(text, {}))));
-  const { merged: kept, clashes: both } = mergeThreeWay(
-    entries(stateIn.base),
-    entries(stateIn.ours),
-    entries(stateIn.theirs),
-    (a, b) => JSON.stringify(a) === JSON.stringify(b)
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const { merged: kept, clashes: both } = parsed('stada.json', () =>
+    mergeThreeWay(
+      baseMap(stateIn, entries, same),
+      entries(stateIn.ours),
+      entries(stateIn.theirs),
+      same
+    )
   );
   for (const t of both) clashes.add(t);
   state = Object.fromEntries(kept);
-} else state = readState(json(stateIn.raw, {}));
+} else state = parsed('stada.json', () => readState(json(stateIn.raw, {})));
 // A clash leaves nobody's word on that recording: false, and no record of it, as for a new one.
 for (const t of clashes) {
   if (doc.hasIn(['clips', t])) doc.setIn(['clips', t], false);
@@ -199,9 +265,19 @@ for (const t of clashes) {
 }
 if (conflicted.length > 0) {
   console.log(
-    `Merge conflicts in ${conflicted.join(', ')}, merged again recording by recording.${apply ? '' : ' Nothing is written without --apply.'}\n`
+    `Merge conflicts in ${conflicted.join(', ')}, merged again recording by recording.${apply ? ' Run git add on them once this is done.' : ' Nothing is written without --apply.'}\n`
   );
 }
+// What students hear now, on this side of a merge (HEAD), whichever files git merged cleanly:
+// what the report measures changes from. Outside a merge, hljod.yaml as it stands.
+const now = parsed('hljod.yaml', () =>
+  readHljod(
+    parseDocument(
+      (conflicted.length > 0 || sides?.inProgress ? fileAt(ROOT, 'HEAD', MANIFEST) : undefined) ??
+        oursHunks(manifestIn.raw ?? '')
+    ).toJS()
+  )
+);
 
 const texts = textsToVoice(loadCategories());
 const version = (text) => {
@@ -209,30 +285,32 @@ const version = (text) => {
   return existsSync(file) ? clipVersion(readFileSync(file)) : null;
 };
 // A clip made again since the record is a draft again, as --record would write it.
-const found = readHljod(doc.toJS());
+const found = parsed('hljod.yaml', () => readHljod(doc.toJS()));
 const synced = syncState(found, state, version);
 for (const text of synced.reset) doc.setIn(['clips', text], false);
 const manifest = readHljod(doc.toJS());
 const result = approvals(merged.ledger, manifest, { texts, version, names: merged.names });
 const decided = new Set(result.outcomes.map((o) => o.text));
-// What a person reads is measured from hljod.yaml as it is on this side (`now`), not from the
-// merge or the resets above; the writes go from the values after them.
+// What a person reads is measured from hljod.yaml as it is on this side (`now`); the writes go
+// from the values after the merge and the resets above. Every recording that changes from `now`
+// with no verdict deciding it is listed, with why.
 process.stdout.write(
   report(
     merged.people,
     { ...result, outcomes: result.outcomes.map((o) => ({ ...o, from: valueOf(now, o.text) })) },
     merged.ledger.rulers,
     {
-      // Set back to false here and decided by no verdict: a remake, or a clash in the merge.
-      reset: [...new Set([...synced.reset, ...clashes])]
-        .filter((t) => !decided.has(t) && now.clips.has(t))
+      reset: [...now.clips.keys()]
+        .filter((t) => !decided.has(t) && valueOf(manifest, t) !== valueOf(now, t))
         .map((t) => ({
           text: t,
           from: valueOf(now, t),
-          ...(clashes.has(t) ? { clash: true } : {}),
+          to: valueOf(manifest, t),
+          ...(clashes.has(t) ? { clash: true } : synced.reset.includes(t) ? {} : { merged: true }),
         })),
       stamped: synced.stamped.filter((t) => !decided.has(t) && !clashes.has(t)),
       clashes: [...clashes].sort(),
+      shared: merged.shared,
     }
   )
 );

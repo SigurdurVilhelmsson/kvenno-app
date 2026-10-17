@@ -62,8 +62,9 @@ export async function versionOf(src: string): Promise<string | undefined> {
 /**
  * A small play button for a text on the card. Renders nothing for a text with no recording,
  * so the card looks as printed until a person has approved one. `onHeard`, on the listening
- * page, is told the version the server holds at the clip's address, which a page left open since
- * before a recording was made again knows by an older one.
+ * page, is told `null` as a play starts, then the version the server holds at the clip's address
+ * (which a page left open since before a recording was made again knows by an older one), or
+ * `undefined` where the browser cannot tell.
  */
 export function Hlusta({
   text,
@@ -72,7 +73,7 @@ export function Hlusta({
 }: {
   text: string;
   color: string;
-  onHeard?: (version: string) => void;
+  onHeard?: (version: string | null | undefined) => void;
 }) {
   const src = useClip(text);
   if (!src) return null;
@@ -81,7 +82,11 @@ export function Hlusta({
       type="button"
       onClick={() => {
         play(src);
-        if (onHeard) void versionOf(src).then((v) => v && onHeard(v));
+        // Checking first, so nothing is judged on the page's word for the audio meanwhile.
+        if (onHeard) {
+          onHeard(null);
+          void versionOf(src).then((v) => onHeard(v));
+        }
       }}
       aria-label={`Hlusta: ${text}`}
       title="Hlusta"

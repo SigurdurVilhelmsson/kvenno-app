@@ -496,8 +496,9 @@ rammanum.`
 
 A play button beside every word, frame and worked example on the card page: 524 recordings,
 synthesised with Reykjavík University's Talrómur C voice (CC BY 4.0). **None plays for students
-until a person marks it `true`** in `content/islenskubraut/hljod/hljod.yaml`; add `?drog` to a card
-page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
+until a teacher approves it on the listening page** and `pnpm islenskubraut:yfirferd --apply`
+writes it `true` in `content/islenskubraut/hljod/hljod.yaml`; the build refuses a `true` written by
+hand. Add `?drog` to a card page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 
 - [ ] **Listen to the recordings** on `/islenskubraut/yfirferd/hljod` (2026-10-16), which marks
       each one `Rétt` or `Rangt` and sends the marks back as a file (C20).
@@ -631,14 +632,14 @@ other, and `Yfirferd.test.tsx` fails if any other file in the app quotes their r
 The notes stay in the teacher's own browser, also after they press `Sækja skrá`, which saves a
 file, or `Afrita sem texta`, which copies text for an email, until they clear them. No server holds
 them. Two tabs with the pages open keep each other up to date. A private window keeps them until it
-is closed; the page cannot tell, so it says that in any case, and it warns when the browser refuses
-storage outright. `pnpm islenskubraut:yfirferd <files>` prints every note by item, with the
+is closed, and Safari on iPhone and iPad deletes them after seven days without a visit; the page
+cannot tell, so it says both in any case, and it warns when the browser refuses storage outright. `pnpm islenskubraut:yfirferd <files>` prints every note by item, with the
 verdicts on the recordings, and `--apply` adds them to the committed record `mat.json` and
 writes the values (C15). Per recording, a reviewer's latest verdict counts; pressing the pressed
 button takes one back, and a mark merely missing from a later file, as after `Hreinsa allt`, still
 stands from an earlier one. A teacher types a name before sending, for the report; the page also
-gives each browser a random id, which is what the record keeps, so two teachers of one name stay
-two and the record names nobody.
+gives each browser a random id, and the record keeps a hash of it and the name, so two teachers
+of one name stay two, as do two sharing a browser, and the record names nobody.
 
 An adversarial review of the pages on 2026-10-16 found and fixed: two tabs overwriting each other,
 a double click on `Hreinsa allt` erasing the review, the "not yet marked" filter hiding a row
@@ -678,7 +679,15 @@ line wrapping, carried no data for a review of the cards alone, and lost a secon
 email; and that a merge dropped the other side's voice credit and miscounted what it revoked. Now
 a recording plays only with an approval of its current audio in the record, every clip address
 carries its version, the copied text is base64 in short lines and always present, and a conflicted
-`hljod.yaml` starts from git's own merge.
+`hljod.yaml` starts from git's own merge. An eighth pass found that taking one side of `mat.json`
+whole still let a recording a teacher heard as wrong play, since the approval left was backed; that
+a criss-cross merge revived a removed ruler; that a CRLF checkout could not resolve a conflict;
+that a stale tab, or one still checking what it had just played, could file a verdict under the
+wrong audio; that two teachers sharing a browser were one reviewer; and that the recordings sheet
+still said to write `true` by hand. Now a file git holds unmerged is merged again whatever it shows,
+the build refuses a merged record that lost an entry, the real merge bases stand in for git's
+crossed one, a play locks its row until its audio is known, a reviewer is the browser and the
+name, and approvals are given only on the listening page.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
