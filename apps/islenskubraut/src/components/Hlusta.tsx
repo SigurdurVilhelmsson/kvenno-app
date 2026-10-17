@@ -3,17 +3,22 @@ import { createContext, useContext } from 'react';
 import { HLJOD_VOICE, hljod } from '../data/hljod';
 
 /**
- * Whether the card page was opened with `?drog`, so draft recordings play too. Provided by
- * `SpjaldPage`; anywhere else only approved recordings play.
+ * Whether draft recordings play too: on the card page opened with `?drog` (`SpjaldPage`), and on
+ * the teachers' listening page (`YfirferdHljod`). Anywhere else only approved recordings play.
  */
 export const DrogContext = createContext(false);
 
-/** The recording of a text as printed, if it may play here: approved, or a draft under `?drog`. */
+/**
+ * The recording of a text as printed, if it may play here: approved, or a draft under `?drog`.
+ * Its address carries the version of its audio (`?v=`), so a browser fetches a recording made
+ * again rather than replaying the copy it kept (Firefox does, for a while after a reload, whatever
+ * the server's `Cache-Control` says).
+ */
 export function useClip(text: string): string | undefined {
   const drafts = useContext(DrogContext);
   const clip = hljod[text];
   if (!clip || !(clip.approved || drafts)) return undefined;
-  return `${import.meta.env.BASE_URL}hljod/${clip.file}`;
+  return `${import.meta.env.BASE_URL}hljod/${clip.file}${clip.v ? `?v=${clip.v}` : ''}`;
 }
 
 /** Whether any of these texts has a recording that may play here, for the credit line. */
@@ -28,22 +33,61 @@ let playing: HTMLAudioElement | null = null;
 function play(src: string) {
   playing?.pause();
   playing = new Audio(src);
-  void playing.play().catch(() => {
+  void playing.play()?.catch(() => {
     /* a browser that refuses autoplay-like playback leaves the button as it was */
   });
 }
 
 /**
- * A small play button for a text on the card. Renders nothing for a text with no recording,
- * so the card looks as printed until a person has approved one.
+ * The version of the recording the server has now, as `clipVersion` in
+ * `scripts/islenskubraut/hljod.mjs` computes it (the first 12 hex digits of its SHA-256), or
+ * undefined where the browser cannot tell: no network, or no `crypto.subtle` off https.
  */
-export function Hlusta({ text, color }: { text: string; color: string }) {
+export async function versionOf(src: string): Promise<string | undefined> {
+  try {
+    const subtle = globalThis.crypto?.subtle;
+    if (!subtle) return undefined;
+    const response = await fetch(src, { cache: 'no-cache' });
+    if (!response.ok) return undefined;
+    const digest = await subtle.digest('SHA-256', await response.arrayBuffer());
+    return [...new Uint8Array(digest)]
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+      .slice(0, 12);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * A small play button for a text on the card. Renders nothing for a text with no recording,
+ * so the card looks as printed until a person has approved one. `onPlay`, on the listening page,
+ * is called as a play starts and returns what to call with the version the server holds at the
+ * clip's address (which a page left open since before a recording was made again knows by an
+ * older one), or `undefined` where the browser cannot tell.
+ */
+export function Hlusta({
+  text,
+  color,
+  onPlay,
+}: {
+  text: string;
+  color: string;
+  onPlay?: () => (version: string | undefined) => void;
+}) {
   const src = useClip(text);
   if (!src) return null;
   return (
     <button
       type="button"
-      onClick={() => play(src)}
+      onClick={() => {
+        play(src);
+        // Checking first, so nothing is judged on the page's word for the audio meanwhile.
+        if (onPlay) {
+          const done = onPlay();
+          void versionOf(src).then(done);
+        }
+      }}
       aria-label={`Hlusta: ${text}`}
       title="Hlusta"
       className="inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0 align-middle hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-1"

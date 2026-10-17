@@ -16,7 +16,10 @@ export const LEVELS: { value: Level; label: string; description: string }[] = [
 
 export function LevelSelector({ selected, onChange, color, labelledBy }: LevelSelectorProps) {
   return (
-    <div role="group" aria-labelledby={labelledBy} className="flex gap-3">
+    // On a phone the three share the row: narrower padding, so "Grunnþekking" fits in a wide
+    // fallback font (DejaVu Sans) as well as in DM Sans, and min-w-0 so none can push the page
+    // sideways.
+    <div role="group" aria-labelledby={labelledBy} className="flex gap-3 phone:gap-2">
       {LEVELS.map((level) => {
         const isSelected = selected === level.value;
         return (
@@ -26,7 +29,7 @@ export function LevelSelector({ selected, onChange, color, labelledBy }: LevelSe
             aria-pressed={isSelected}
             onClick={() => onChange(level.value)}
             className={`
-              flex-1 sm:flex-none px-5 py-3 rounded-xl font-semibold text-center transition-all duration-200
+              flex-1 min-w-0 sm:flex-none px-5 py-3 phone:px-2 rounded-xl font-semibold text-center transition-all duration-200
               ${
                 isSelected
                   ? 'text-white shadow-lg scale-105'

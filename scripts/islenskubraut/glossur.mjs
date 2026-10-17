@@ -26,7 +26,9 @@ function chipsOf(category) {
 /** The chips a card offers at A1, which an approved language must gloss first. */
 function a1Chips(category) {
   return new Set(
-    category.guidingQuestions.flatMap((q) => q.answers.find((a) => a.level === LEVELS[0])?.options ?? [])
+    category.guidingQuestions.flatMap(
+      (q) => q.answers.find((a) => a.level === LEVELS[0])?.options ?? []
+    )
   );
 }
 
@@ -66,7 +68,9 @@ export function readGlossur(raw, code, categories) {
   }
   if (dictionary !== null) {
     assert(
-      typeof dictionary === 'string' && dictionary.startsWith('https://') && dictionary.includes('{word}'),
+      typeof dictionary === 'string' &&
+        dictionary.startsWith('https://') &&
+        dictionary.includes('{word}'),
       `${where}: dictionary must be an https address with {word} where the word goes`
     );
   }

@@ -222,20 +222,35 @@ function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions 
         return { word, role };
       });
 
+      // A frame that does not fit some subjects names them, and the builder does not offer it
+      // with those: one does not `borða` a `drykkur` (REVIEW-QUEUE C9).
+      const except = f.except ?? [];
+      assert(Array.isArray(except), `${at}.except must be a list`);
+      if (except.length > 0) {
+        assert(subject.kind === 'words', `${at}.except needs a subject word list`);
+        for (const e of except) {
+          assert(subject.options.includes(e), `${at}.except: "${e}" is not a subject`);
+        }
+      }
+      const exceptKey = except.length > 0 ? { except } : {};
+
       if (blanks === 0) {
         assert(
-          f.blank === undefined && f.words === undefined,
-          `${at}: "${f.frame}" has no blank to fill`
+          f.blank === undefined &&
+            f.words === undefined &&
+            f.form === undefined &&
+            f.forms === undefined,
+          `${at}: "${f.frame}" has no blank to fill, so it takes no blank, words, form or forms`
         );
-        return { frame: f.frame, agree, blank: null };
+        return { frame: f.frame, agree, blank: null, ...exceptKey };
       }
       if (f.blank === 'subject') {
         assert(subject.kind === 'words', `${at}: blank: subject needs a subject word list`);
         assert(
-          f.words === undefined && f.form === undefined,
-          `${at}: the subject blank takes no words or form`
+          f.words === undefined && f.form === undefined && f.forms === undefined,
+          `${at}: the subject blank takes no words, form or forms`
         );
-        return { frame: f.frame, agree, blank: { subject: true } };
+        return { frame: f.frame, agree, blank: { subject: true }, ...exceptKey };
       }
       assert(f.blank === undefined, `${at}.blank: only "subject" is allowed`);
       const form = f.form ?? 'as-is';
@@ -243,12 +258,44 @@ function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions 
         BLANK_FORMS.includes(form),
         `${at}.form: "${form}" is not one of ${BLANK_FORMS.join(', ')}`
       );
+      const options = wordList(f.words, `${at}.words`);
+      // One word of the list can take another form than the rest: `hátt` and `lágt` follow
+      // `hljómar` as written, while the adjective `þögult` agrees (`Hann hljómar þögull`).
+      const forms = f.forms ?? {};
+      assert(
+        forms && typeof forms === 'object' && !Array.isArray(forms),
+        `${at}.forms must be a map`
+      );
+      for (const [word, wordForm] of Object.entries(forms)) {
+        assert(options.includes(word), `${at}.forms: "${word}" is not in its word list`);
+        assert(
+          BLANK_FORMS.includes(wordForm),
+          `${at}.forms.${word}: "${wordForm}" is not one of ${BLANK_FORMS.join(', ')}`
+        );
+        assert(wordForm !== form, `${at}.forms.${word}: "${wordForm}" is already the blank's form`);
+      }
       return {
         frame: f.frame,
         agree,
-        blank: { words: f.words, options: wordList(f.words, `${at}.words`), form },
+        blank: {
+          words: f.words,
+          options,
+          form,
+          ...(Object.keys(forms).length > 0 ? { forms } : {}),
+        },
+        ...exceptKey,
       };
     });
+
+    // The page starts on the first frame a subject fits, so every subject must fit one.
+    if (subject.kind === 'words') {
+      for (const s of subject.options) {
+        assert(
+          frames.some((f) => !f.except?.includes(s)),
+          `${where}: "${s}" is left out of every frame by except`
+        );
+      }
+    }
 
     // A word BÍN reads as two words of the class the builder needs (`sætt`: `sær` or `sætur`)
     // names the one meant, by its BÍN headword. The builder never picks one itself.

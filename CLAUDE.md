@@ -43,6 +43,8 @@ kvenno-app/
 /islenskubraut/spjald/:flokkur         # Teaching card detail page
 /islenskubraut/smidur/:flokkur         # Sentence builder (A1), linked from the card once confirmed
 /islenskubraut/smidur                  # Every builder, drafts included, for teachers — linked from nowhere
+/islenskubraut/yfirferd                # Teachers' review of every draft, with notes to send back — no student page links here
+/islenskubraut/yfirferd/hljod          # Every recording to mark right or wrong — linked only from the review page
 /auth/callback                         # MSAL redirect target — serves the 2-ar lab-reports build
 ```
 
@@ -70,6 +72,12 @@ pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags mak
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
+pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply adds their
+                          #   verdicts to the record as a new file in hljod/mat/, writes true, false
+                          #   or rangt in hljod.yaml from the whole record and runs islenskubraut:build;
+                          #   --urskurdur "Nafn" makes Nafn's verdicts rule, --afturkalla stops it;
+                          #   with no files after a git merge, it works the values out again and
+                          #   resolves a conflict in hljod.yaml or stada.json: see hljod/README.md)
 pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
                           #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
                           #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
@@ -690,12 +698,31 @@ each named by a hash of its text (`clipName` in `scripts/islenskubraut/hljod.mjs
 needs a new one. They are **synthesised**: Reykjavík University's Talrómur C voice (CC BY 4.0) with
 ice-g2p for pronunciation, by `scripts/islenskubraut/hljod/talgerving.py`. That is a Python 3.10
 setup on a teacher's machine, never in CI. `content/islenskubraut/hljod/hljod.yaml` lists each clip
-`true`/`false`; **only `true` plays for students**, `?drog` plays the rest (`DrogContext` in
-`Hlusta.tsx`), and the card page credits the voice whenever a clip plays. **The build fails only on an
-approved clip with no file.** A text with no clip simply has no button, so editing a card never needs
-the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
-review page; it flags eight of 524 (C15). Tiro's TTS service, which the research named,
-is gone. Workflow: `content/islenskubraut/hljod/README.md`.
+`true`, `false` or `rangt` (heard as wrong); **only `true` plays for students**, `?drog` plays the
+rest (`DrogContext` in `Hlusta.tsx`), and the card page credits the voice whenever a clip plays.
+**`stada.json` beside it is the tools' record** of each clip's audio version and its value for that
+audio (`syncState` in `hljod.mjs`), written by `pnpm islenskubraut:hljod --record` and
+`pnpm islenskubraut:yfirferd --apply`, never by hand. A replaced file, or a `true` with no record,
+sets its clip back to `false`, and **the build fails while the record is out of date**
+(`stateProblems`), so an approval is always for the audio approved. `scripts/build-all.mjs` runs
+`build.mjs --check` before building the app, so `pnpm build` and `deploy.sh` refuse stale data too.
+**It also fails where `hljod.yaml` disagrees with the teachers' verdicts in the record
+(`hljod/mat/`)** on the audio as it is now (below), which a hand edit or a git merge can leave, **on any
+`true` the record does not back with an approval of the audio as it is now** (`unbacked` in
+`approvals`: a `true` carried in by a merge, across a remake or by hand cannot be told from a real
+one, so only a verdict approves), and on an approved clip with no file. A text with no
+clip simply has no button, so editing a card never needs the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
+review pages; it flags eight of 524 over 20 % (C15). It merges into
+`content/islenskubraut/hljod/hlustun.json`, which is committed, since the build turns it into
+`src/data/hlustun.ts` for the listening page, with each clip's audio hash (`clipVersion`); each
+reading carries the hash it heard, and one of other audio is dropped. Tiro's TTS
+service, which the research named, is gone. Workflow: `content/islenskubraut/hljod/README.md`.
+**`server/nginx-site.conf` gives `/islenskubraut/hljod/` its own location** (2026-10-16): a missing
+clip is a 404, not the app's HTML with a 200, and clips are sent `Cache-Control: no-cache`, since a
+remade one keeps its name. That is not enough: Firefox replays its own copy for a while after a
+reload whatever the header says, so every page asks for a clip at `?v=<version>`, the version
+`hljod.ts` carries for it (`clipsForApp`). `deploy.sh` does not install the config
+(REVIEW-QUEUE A).
 
 **Can-do statements, "Ég get…" (2026-10-16).** `content/islenskubraut/egget/<flokkur>.yaml` gives three
 or four statements per level, each starting `Ég get` (`scripts/islenskubraut/egget.mjs` refuses one
@@ -737,7 +764,102 @@ means** entries in `myndir/myndir.yaml` for its A1 chips (the build fails withou
 expect one per category, a file each in `giskaleikur/`, `texti/` and `egget/`, glosses in every
 glossary language (`pl.yaml`), and Bildetema's address in `tenglar/tenglar.yaml`.
 
-**UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
+**Teachers' review pages (2026-10-16).** `/islenskubraut/yfirferd` (`Yfirferd.tsx`) lists every
+card's items (card, word list, guessing game, talk-to-write, can-do, builder, recordings, links,
+glosses) with each one's state, links that open the drafts as students would see them and as they
+print, and a note box. `/islenskubraut/yfirferd/hljod` (`YfirferdHljod.tsx`) plays every recording
+with `Rétt`/`Rangt`, the recogniser's doubts first. **No server holds a review:** it is kept in the
+teacher's browser (`src/yfirferd/store.ts`, `localStorage`, read back when another tab writes it
+and never written back: only a change made in that tab is written) until they clear it, though
+Safari on iOS drops it after seven days unvisited, which the page says, and sent,
+once the teacher has typed a name, as a downloaded file or copied text. Each verdict carries the
+hash of the audio it was given to and when it was given, and a verdict taken back is kept as such.
+`pnpm islenskubraut:yfirferd <files> [--urskurdur "Nafn"] [--apply]`
+(`scripts/islenskubraut/yfirferd-check.mjs`; `yfirferd.mjs` is the pure half) prints the notes
+and every change. **`--apply` adds the files' verdicts to the committed record of every verdict
+given, as a new file in `content/islenskubraut/hljod/mat/`** (`mat.mjs`), gives every
+recording with a verdict on its current audio the value all the record's verdicts give it together
+(`true` heard as right and never wrong, `rangt` the other way, `false` otherwise), and runs the
+build, so the generated `hljod.ts` and `hlustun.ts` are committed with it and CI's `--check`
+passes. So the values come from every file ever applied, on any machine; the files, gitignored
+since they carry names, can be deleted once applied and their notes read. **The record is a
+folder of files that are only ever added**, each named by its time and a hash of what it holds and
+never changed after, so git never has two versions of one to merge: no merge, rebase or
+cherry-pick can take a side of it. A `git revert`, a `merge -s ours` or a restore can still take a
+file out, so the build and the scripts refuse while a file `HEAD`'s history added is missing
+(`missingRecordFiles` in `mat.mjs`, from `git log --full-history -m --diff-filter=A`, so a file a
+merge commit added counts too), naming the commit to restore it from. **What that cannot see:** a
+commit dropped from history (`git rebase --skip`, a `drop` in `rebase -i`, `git reset`) takes its
+files with nothing left to say they were there, so the tools warn when a rebase or cherry-pick
+stops on a commit adding one (`skipWarning`), and `--apply` refuses to add a file while a merge,
+rebase, cherry-pick or revert is open, since a later rebase that flattens a merge drops what the
+merge added; and a shallow clone sees no further back than its oldest commit (`shallowNote`), so
+CI's lint job, which runs `--check`, fetches the whole history. That replaced a single `mat.json` on
+2026-10-17, after five review passes found ways a merge of it lost a teacher's "wrong" (taking a
+side, rebases, older entries under one key, rulers). `foldRecord` joins the files, in any order:
+per `[text][reviewer][audio version]` the latest entry counts (at one moment, the one that approves
+least), so a verdict on one recording of a text survives one on the next; a ruling, or one taken
+back (`--afturkalla`), is an entry with a time, the latest counting; every `--urskurdur` is
+recorded, and one is refused on a machine whose clock is not past the reviewer's latest ruling, so
+each is later than the one before it on every machine. Files are written through
+Prettier, so the commit hook leaves them alone. It names nobody: a reviewer is a hash of the random
+id the page gives each browser (`newId` in `store.ts`, reset by `Hreinsa allt`) and the name typed,
+so two teachers who type one name stay two, as do two sharing one browser, and a file without an id
+is refused. Each entry also keeps a hash of the browser alone (`browserOf`), since the page keeps
+one mark per recording per browser: a later withdrawal or "wrong" from it under another name cancels
+its earlier "right", so a teacher who retypes her name can still take a mark back.
+It keeps what was wrong with a recording, never the notes on the cards. The result does not depend
+on file order; an earlier design that compared verdict times with decision times lost a
+late-arriving "wrong" silently, and one that read only the files passed let a machine holding fewer
+files approve what another had heard as wrong. **After a git merge, rebase or cherry-pick that
+touched them, run `--apply` with no files, before `git add`**: `hljod.yaml` or `stada.json` held
+unmerged, markers or none, or added or committed with markers where git can say what they came
+from (`canMergeAgain` and `mergeSides` in `scripts/islenskubraut/git.mjs`: a merge, cherry-pick,
+rebase or revert open, a rebase only while git's `rebase-merge` folder exists since 2.43 leaves
+`REBASE_HEAD` behind, or the merge `HEAD` that committed them; not a replayed merge or a side
+already holding markers), is merged again (`mergeThreeWay` per
+recording, a clash going to `false`, the real merge bases standing in for a criss-cross one), and
+every value is worked out again from the record; the rest of `hljod.yaml` is as git merged it, ours
+where it conflicted, and the report lists every change from `HEAD`, what students hear now. Taking a
+side of either file whole can lose a hand-written `rangt` but cannot let a recording a teacher heard
+as wrong play: the record holds every verdict, and the build refuses any value it does not give.
+A ruler's verdict (`--urskurdur`, a name on one browser's files, in any case, and no other's)
+settles a recording, every verdict it overrules is printed, and **the record keeps who rules**, so
+a ruling outlasts the run that made it; of several rulings the latest decides. Per recording, a
+reviewer's latest verdict counts, by their browser's clock, and editing what is wrong gives it a new
+time. A page left open across a deploy that remade a recording would stamp the old version: the
+listening page hashes what a clip's address holds when it plays (`versionOf` in `Hlusta.tsx`, the
+same hash as `clipVersion`) and takes no verdict or note on one that differs, nor over a verdict
+this browser gave other audio since the clip last played here (`blocked` in `YfirferdHljod.tsx`),
+so a stale tab cannot overwrite a newer one. A play locks its row until its check is back; only the
+latest play's check counts, and one that fails leaves what an earlier one found. What plays found is
+kept outside the page (`src/yfirferd/heard.ts`), so leaving it within the app and coming back does
+not forget a remade recording; only a reload does. The lock is `aria-disabled`, so a button that locks under the teacher's finger keeps focus. The report lists, uncounted, a
+verdict on other audio given after the current one was judged, unless a later ruling decides it. Without `--apply` the command says
+which files `--apply` would write, a new file of the record included. A download's name carries its time and the
+start of the browser's id, so none share one, and the copied text (`Afrita sem texta`) always
+carries the file's data between marker lines (`DATA_START` in `store.ts` and `yfirferd.mjs`), as
+base64 in lines of 64, which an email's wrapping, `> ` quoting or non-breaking spaces leave
+readable, with a `Vistist sem` line naming the file to save it as. An email with several copies
+gives every one (`reviewData` returns a list). The page writes the file's `format`, the script refuses any other, and a test
+holds the two constants equal. No page a student can reach links to either
+page; they link to each other, and `Yfirferd.test.tsx` fails if any other file in the app quotes
+their routes. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in
+`App.tsx`), and a page opened by a link opens at its top. A reload, a restored tab or back/forward
+returns the two review pages to their place (`useKeepScroll` in `src/yfirferd/scroll.ts`, keyed by
+the history entry in `sessionStorage`), which the browser alone cannot do for a page that loads
+after it has tried. An entry made by a `#card` link gets a key of its own, and a page being left
+never writes the next page's scroll as its place. This is the first review cycle's route, rather than
+the workbook below, because the workbook carries only the card text and its instructions are
+unfinished. Wording is C20.
+
+**The builder has two keys for a frame that reads wrong with some words (2026-10-16):** `except`
+leaves a frame out for the subjects listed, and `forms` fills one word of the blank in a form other
+than the blank's. `loadBuilder` refuses an `except` on a fixed or person subject, one that leaves a
+subject with no frame, a `forms` entry equal to the blank's own form, and `forms` on a frame with
+no blank or a subject blank. Both are C9's drafted fixes.
+
+**UNFINISHED, blocking any review by spreadsheet:** every reviewer-facing Icelandic string in
 the workbook — the instruction block, the six column headers, the six column cell notes and the
 Leiðbeiningar tab — is placeholder wording drafted by Claude and never reviewed. It is marked
 `PLACEHOLDER ICELANDIC` in `scripts/islenskubraut/export-xlsx.mjs`. **Do not send an export to a

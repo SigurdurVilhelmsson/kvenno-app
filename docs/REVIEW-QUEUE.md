@@ -32,6 +32,15 @@ needs no ruling, only time.
       returning browser can run the old bundle. See D for the lasting fix. **Moot from the deploy
       that carries PR #82**: the entry is hashed there, so new HTML names a file no browser has
       cached.
+- [ ] **Íslenskubraut recordings and review pages, after the deploy that carries them.** Before
+      sending colleagues to review (C20):
+  - Install `server/nginx-site.conf` as above. It gives `/islenskubraut/hljod/` its own location
+    (2026-10-16): without it a missing recording is answered with the app's HTML and a 200, and
+    a remade one can be served from a browser's cache.
+  - `curl -I https://kvenno.app/islenskubraut/hljod/<a file in apps/islenskubraut/public/hljod>`
+    should return 200 with `audio/mpeg`, and `…/hljod/0000000000000000.mp3` a 404.
+  - Open https://kvenno.app/islenskubraut/yfirferd on a phone and a laptop. Every PDF link should
+    open a PDF, and a recording on `/islenskubraut/yfirferd/hljod` should play.
 - [x] **Íslenskubraut PDF download** — done 2026-10-06 (PRs #87, #88): works on kvenno.app.
       The check: on https://kvenno.app/islenskubraut/, open any card and press
       `Hlaða niður PDF`. Expect a PDF in Noto Sans, not the alert
@@ -351,16 +360,21 @@ stór.` and `Maður notar hann …`. That is correct Icelandic, but it means an 
       names `hali` and `sætur` under `lemmas`. Confirm both.
 - [ ] **`skór` is read as plural** (`Þetta eru skór.`), since BÍN gives the same form for one
       and many. Listed under `plural:` in `klaednadur.yaml`.
-- [ ] **Two drafted tags read wrong once the sentences were printed (2026-10-11).** Fix the tag
-      or the content, your call:
-  - `matur`: `Maður borðar það ___.` takes every subject, so it prints `Maður borðar hann á
-morgnana.` about a `drykkur`. One drinks a drink. Either drop that frame from the builder,
-    or keep it and accept the pairing, as the printed card already does.
-  - `dyr`, `farartaeki`: `Það hljómar ___.` puts the sound chips in as written. `hátt` and `lágt`
-    work as adverbs for any subject, but `þögult` is the neuter adjective, so `Hún hljómar
-þögult.` (a `rúta`) and `Hann hljómar þögult.` (a `bíll`) do not agree. Tagging that blank
-    `agree` would make it `þögul`/`þögull` and also turn `hátt` into `hár`, which is wrong; the
-    content needs the chip changed (`hljóðlega`?) or split from the two adverbs.
+- [ ] **Two drafted tags read wrong once the sentences were printed (2026-10-11).** Drafted
+      fixes 2026-10-16, to confirm (the YAML keys are in `content/islenskubraut/README.md`):
+  - `matur`: the frame now has `except: [drykkur]`, so a drink is never offered
+    `Maður borðar hann …`. The printed card still has the frame, since it is about the food on
+    it.
+  - `farartaeki`: the blank has `forms: { þögult: agree }`, so it prints `Hann hljómar þögull.`
+    and `Hún hljómar þögul.`, with `hátt` and `lágt` as written. `dyr` needed nothing: its
+    subject `dýr` is neuter. If `þögull` is the wrong word after `hljómar`, change the chip.
+  - What was found:
+    - `matur`: `Maður borðar það ___.` takes every subject, so it printed
+      `Maður borðar hann á morgnana.` about a `drykkur`. One drinks a drink.
+    - `dyr`, `farartaeki`: `Það hljómar ___.` put the sound chips in as written. `hátt` and
+      `lágt` work as adverbs for any subject, but `þögult` is the neuter adjective, so
+      `Hún hljómar þögult.` (a `rúta`) and `Hann hljómar þögult.` (a `bíll`) did not agree. Tagging
+      the whole blank `agree` would also have turned `hátt` into `hár`.
 - [ ] **The page's own Icelandic, drafted by Claude.** The title `Setningasmiður`, the prompts
       `Veldu setningaramma` and `Um hvern er setningin?`, the draft note `Drög: kennari hefur ekki
 enn farið yfir þessar setningar.`, and the note under the sentence, `Undirstrikuðu orðin
@@ -482,19 +496,27 @@ rammanum.`
 
 A play button beside every word, frame and worked example on the card page: 524 recordings,
 synthesised with Reykjavík University's Talrómur C voice (CC BY 4.0). **None plays for students
-until a person marks it `true`** in `content/islenskubraut/hljod/hljod.yaml`; add `?drog` to a card
-page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
+until a teacher approves it on the listening page** and `pnpm islenskubraut:yfirferd --apply`
+writes it `true` in `content/islenskubraut/hljod/hljod.yaml`; the build refuses a `true` written by
+hand. Add `?drog` to a card page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 
-- [ ] **Listen to the recordings** from the review page `pnpm islenskubraut:hljod` writes, and mark
-      each right one `true`. The page puts first the eight that a speech recogniser heard as
-      something else: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`, `húfa`,
-      `oddhvasst`. The
-      research estimated 3–5 hours for all of them.
+- [ ] **Listen to the recordings** on `/islenskubraut/yfirferd/hljod` (2026-10-16), which marks
+      each one `Rétt` or `Rangt` and sends the marks back as a file (C20).
+      `pnpm islenskubraut:yfirferd <files> --apply` then adds their verdicts to the record, a
+      new file in `content/islenskubraut/hljod/mat/`, which is committed, and gives every recording the
+      value all the verdicts there give it: `true` heard as right and never wrong, `rangt` the
+      other way, `false` heard both ways. A recording made again goes back to `false`, and a
+      ruling (`--urskurdur "Nafn"`, kept in the record) settles one heard both ways
+      (`content/islenskubraut/hljod/README.md`). The page puts first the eight that a speech recogniser
+      heard as something else, over 20 %: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`,
+      `húfa`, `oddhvasst`. The research estimated 3–5 hours for all of them, so the work can be
+      split by card.
 - [ ] **Is a synthetic voice acceptable for the cards at all?** If not, the same files can be
-      recorded by a person under the same names, and the play buttons stay as they are.
+      recorded by a person under the same names. Each one then goes back to `false` until it has
+      been heard again, so nothing a person recorded plays to students unheard.
 - [ ] **The QR codes on the printed cards** wait until some recordings are approved.
 - [ ] **The Icelandic, drafted by Claude:** the button label `Hlusta: <texti>` (read by screen
-      readers), the credit line `Upptökur: <rödd>.` and the review page's instructions.
+      readers) and the credit line `Upptökur: <rödd>.`. The listening page's own text is C20's.
 
 ### C16. Can-do statements, "Ég get…" (2026-10-16)
 
@@ -591,8 +613,121 @@ are drafts too, under C13–C18.
       like `meðferð` and `heimild` are frequent across subjects but not obvious at B1. The
       research suggested 30–50; twelve fit the printed card.
 - [ ] **BÍN does not know** `námsorð`, `verkefnablað` and `LÍNO` (in the B1 teacher note).
-      Accept them in `content/islenskubraut/bin/ekki-i-bin.yaml` with a reason, or reword.
+      `verkefnablað` (a headword in Íslensk nútímamálsorðabók) and `LÍNO` (the list's name) were
+      accepted in `content/islenskubraut/bin/ekki-i-bin.yaml` on 2026-10-16. `námsorð` is in no
+      dictionary on Málið.is, nor is `námsorðaforði`; it is LÍNO's own word, so keep it or name
+      it otherwise (`orð sem eru notuð í öllum fögum`?).
 - [ ] **When it is right,** delete `draft: true` from `skolinn.yaml`, and the card joins the grid.
+
+### C20. The teachers' review pages (2026-10-16)
+
+`/islenskubraut/yfirferd` lists everything on Íslenskubraut that waits for a teacher, card by
+card. For each card it shows the card itself, the word list, the guessing game, the talk-to-write
+text, the can-do statements, the sentence builder, the recordings, the links and the glosses. Each
+has its state (`birt nemendum`, `staðfest` or `drög`), links that open it as a student sees it and
+as it prints, and a box for a note. `/islenskubraut/yfirferd/hljod` plays every recording with
+`Rétt` and `Rangt` beside it (C15). No page a student can reach links to either; they link to each
+other, and `Yfirferd.test.tsx` fails if any other file in the app quotes their routes.
+
+The notes stay in the teacher's own browser, also after they press `Sækja skrá`, which saves a
+file, or `Afrita sem texta`, which copies text for an email, until they clear them. No server holds
+them. Two tabs with the pages open keep each other up to date. A private window keeps them until it
+is closed, and Safari on iPhone and iPad deletes them after seven days without a visit; the page
+cannot tell, so it says both in any case, and it warns when the browser refuses storage outright. `pnpm islenskubraut:yfirferd <files>` prints every note by item, with the
+verdicts on the recordings, and `--apply` adds them to the committed record `hljod/mat/` and
+writes the values (C15). Per recording, a reviewer's latest verdict counts; pressing the pressed
+button takes one back, and a mark merely missing from a later file, as after `Hreinsa allt`, still
+stands from an earlier one. A teacher types a name before sending, for the report; the page also
+gives each browser a random id, and the record keeps a hash of it and the name, so two teachers
+of one name stay two, as do two sharing a browser, and the record names nobody.
+
+An adversarial review of the pages on 2026-10-16 found and fixed: two tabs overwriting each other,
+a double click on `Hreinsa allt` erasing the review, the "not yet marked" filter hiding a row
+before its note could be written, links that opened only the A1 card for links and glosses that
+differ by level, a note box that closed when emptied, pages opening scrolled to the middle, a tab
+left open across a deploy going blank, and a recording marked wrong being approvable by a later
+run. A second review of those fixes the same night found and fixed: a recording replaced after it
+was approved still playing as approved, a conflict a person had settled being undone by the next
+run, a second tab's echo swallowing keystrokes, a reload losing the reader's place on every page,
+two teachers' files sharing one name, and a verdict taken back still counting. A third pass
+found that deciding by when a verdict was given, against when a value was set, let a "wrong" that
+arrived after an `--apply` vanish without a word; values are now worked out from all the verdicts
+together, whatever order the files arrive in, and a person settles a disagreement with a ruling.
+A fourth pass found that working them out from the files passed let a machine holding fewer files
+approve a recording another had heard as wrong, and that a ruling lasted only for the run that
+made it; the verdicts and rulings are now kept in the committed record (`hljod/mat/`), and the reviewer is
+the browser, not the name typed. A fifth pass found that a git merge of two runs could still
+leave `hljod.yaml` approving what the record rejected, that a ruler could never change their mind
+from another browser, that a verdict on one recording of a text was overwritten by one on the next,
+that a page left open across a deploy stamped verdicts with the old audio, that two reviewers'
+downloads could share a name, and that the review pages lost their place after a `#card` link or
+on the way back. The build now checks `hljod.yaml` against the record, the latest ruling decides,
+the record keeps each recording's verdicts apart, the listening page checks the audio it plays,
+the download names the browser, and the scroll keeper was fixed for both. A sixth pass found that
+resolving a merge conflict by taking one side whole revived a removed ruler, lost one side's new
+recordings and approvals, and could approve a remade recording nobody had heard; that Firefox
+replays the previous page's copy of a clip for a while after a reload, so the audio check passed
+on old audio; that a note could still be written on a remade row; that a later download from the
+same browser replaced an earlier one; that the copied text could not be applied; and that the
+report miscounted. Conflicts are now merged recording by recording against the base, a clip is
+asked for by its version, downloads carry their time, the copied text carries the file's data,
+and a dry run says whether the files' verdicts are in the record yet. A seventh pass found that a
+`true` could still reach students unheard when a person took one side of a conflict whole, since
+nothing in the files tells a carried-over approval from a real one; that a stale tab could still
+overwrite a newer verdict before playing the clip; that the copied text broke under an email's
+line wrapping, carried no data for a review of the cards alone, and lost a second copy in the same
+email; and that a merge dropped the other side's voice credit and miscounted what it revoked. Now
+a recording plays only with an approval of its current audio in the record, every clip address
+carries its version, the copied text is base64 in short lines and always present, and a conflicted
+`hljod.yaml` starts from git's own merge. An eighth pass found that taking one side of `mat.json`
+whole still let a recording a teacher heard as wrong play, since the approval left was backed; that
+a criss-cross merge revived a removed ruler; that a CRLF checkout could not resolve a conflict;
+that a stale tab, or one still checking what it had just played, could file a verdict under the
+wrong audio; that two teachers sharing a browser were one reviewer; and that the recordings sheet
+still said to write `true` by hand. Now a file git holds unmerged is merged again whatever it shows,
+the build refuses a merged record that lost an entry, the real merge bases stand in for git's
+crossed one, a play locks its row until its audio is known, a reviewer is the browser and the
+name, and approvals are given only on the listening page. A ninth pass found
+that the record, a single `mat.json`, could still lose a teacher's "wrong" in a merge: where a side
+held an older verdict under the same key, in a rebase or cherry-pick, and its rulers too; that a
+failed or late audio check unlocked a row already found remade; and that a retyped name could not
+take a mark back. The record is now a folder of files only ever added, so git never merges it;
+only the latest play's check counts and a failed one changes nothing; and a browser's later
+withdrawal cancels its earlier approval under any name. A tenth pass found
+that a `git revert` or `merge -s ours` could still take a file of the record out, that a stale
+`REBASE_HEAD` made the tools merge markers from an unrelated operation, that rulings went by each
+machine's clock, and that leaving the listening page within the app forgot a remade recording. The
+tools now refuse while a record file is missing, count a rebase only while it runs, stamp rulings
+after the latest, and keep what plays found until a reload. An eleventh pass found that a file a
+merge commit added escaped that check, that a commit dropped by `git rebase --skip` takes its files
+with nothing left to say so, that a shallow clone sees only part of history, and that stamping a
+ruling after the latest made two machines' rulings tie. Now the check reads merge commits, the
+tools warn before a skip and refuse to add to the record while a merge, rebase, cherry-pick or
+revert is open, CI checks with the whole history, and a ruling on a clock not past the latest is
+refused. The level buttons on the card page also ran 2 px past a 360 px screen in a wide fallback
+font (DejaVu Sans) until the web font arrived; they now share the row on a phone.
+
+This was chosen over the spreadsheet round trip for this first review, for two reasons. The
+workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
+workbook carries only the card text, not the PDFs, recordings, builder or links.
+
+- [ ] **The pages' Icelandic, drafted by Claude.** On the review page: the intro and its four
+      steps, each item's one-line hint, the three states, and the sending box
+      (`Senda yfirferðina`, `Sækja skrá`, `Afrita sem texta`, `Hreinsa allt`, `Hætta við` and the
+      confirmation, what each says once pressed, the line on what the browser keeps, the request
+      for a name, and `Dregið til baka`, `Metnar áður en …` and the line before the data in the
+      copied text). On the listening page: the three paragraphs, the filters,
+      `Talgervillinn segir: …`, `(merkt röng)`,
+      `Í þessum vafra er mat á annarri útgáfu upptökunnar. Hlustaðu á hana hér áður en þú metur hana.` and
+      `Þessi upptaka hefur verið gerð aftur síðan þú opnaðir síðuna. …`. The script's report is
+      Icelandic too, and drafted the same way.
+      They are the only instructions a reviewer gets, so read them as a colleague will.
+- [ ] **Who reviews what?** One teacher per card, or everyone everything? The listening page
+      filters by card, so a link like `/islenskubraut/yfirferd/hljod?flokkur=dyr` hands one
+      reviewer one card's recordings.
+- [ ] **The Polish glosses need a Polish speaker**, not an Icelandic teacher (C18). The page says
+      so on that row.
+- [ ] **Run the deploy check in A first**, so that every link on the page opens.
 
 ## D. Work that needs no ruling
 
@@ -745,8 +880,17 @@ joins the list of probably-right compounds below.
   - **Not in BÍN-kjarninn, probably right:** `lestarbraut`, `sportvagn`, `sívalningslaga`,
     `straumlínulaga` and `þríhyrningslaga` (the last is in `ordabok.md`'s chemistry terms), and
     since 2026-10-10 `setningaramma` (B1 teacher note in all six; the app's own tab is
-    `Setningarammar`). Each part is in BÍN. A person who has checked them lists them in `bin/ekki-i-bin.yaml` with a
-    reason; Íslensk nútímamálsorðabók was not reachable from the session to do it.
+    `Setningarammar`). Each part is in BÍN. A person who has checked them lists them in
+    `bin/ekki-i-bin.yaml` with a reason.
+  - **Checked on Málið.is, 2026-10-16:** `sívalningslaga`, `straumlínulaga` and
+    `þríhyrningslaga` are headwords in Íslensk nútímamálsorðabók and are now accepted. The rest
+    are not, and each needs a person:
+    - `á lestarbraut` (Farartæki): `lestabraut` is only in Blöndal, while `járnbraut` is in 18
+      sources. `á teinum` or `á járnbraut`?
+    - `sportvagn` (Farartæki): in no dictionary. `sporvagn` (a tram, 17 sources) or `sportbíll`
+      (16) was probably meant; they are different things.
+    - `setningaramma` (B1 teacher note in six categories): `setningarammi` is in no dictionary,
+      though the app's own tab says `Setningarammar`. Keep it, or accept it with a reason.
 - [x] **The shape question is not about shape.** Now shapes only, in all five categories: A1
       `kringlótt`, `ferkantað`, `ílangt`, `flatt`; A2 adds `kúlulaga`, `oddhvasst`, `bogið`,
       `beint`; B1 adds `sporöskjulaga`, `þríhyrningslaga`, `sívalningslaga`, `óreglulegt`. Size

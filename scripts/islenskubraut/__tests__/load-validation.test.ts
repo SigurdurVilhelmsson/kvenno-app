@@ -400,6 +400,7 @@ sentenceFrames:
       - Þetta er ___.
       - Það er ___.
       - Það hefur ___ og ___.
+      - Þetta er gott.
 guidingQuestions:
   - id: q1
     question: Hvernig er það?
@@ -508,6 +509,86 @@ guidingQuestions:
     ).toThrow(/"ÞGF" is not one of as-is, agree, ÞF/);
   });
 
+  it('reads a frame that does not fit some subjects, and a word with its own form', () => {
+    const result = load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+      - frame: Það er ___.
+        words: Hvernig er það?
+        forms:
+          sætt: agree
+        except:
+          - skór
+`);
+    expect(result.builder?.[0].frames[1]).toEqual({
+      frame: 'Það er ___.',
+      agree: [],
+      blank: {
+        words: 'Hvernig er það?',
+        options: ['sætt', 'stórt'],
+        form: 'as-is',
+        forms: { sætt: 'agree' },
+      },
+      except: ['skór'],
+    });
+  });
+
+  it('refuses an exception or a word form the tags cannot honour', () => {
+    const frame = (extra: string) =>
+      load(
+        `${subject}    frames:\n      - frame: Þetta er ___.\n        blank: subject\n      - frame: Það er ___.\n        words: Hvernig er það?\n${extra}`
+      );
+    expect(() => frame(`        except: [kjöt]\n`)).toThrow(/except: "kjöt" is not a subject/);
+    expect(() => frame(`        except: skór\n`)).toThrow(/except must be a list/);
+    expect(() => frame(`        forms:\n          blátt: agree\n`)).toThrow(
+      /forms: "blátt" is not in its word list/
+    );
+    expect(() => frame(`        forms:\n          sætt: ÞGF\n`)).toThrow(
+      /"ÞGF" is not one of as-is, agree, ÞF/
+    );
+    expect(() => frame(`        forms:\n          sætt: as-is\n`)).toThrow(
+      /already the blank's form/
+    );
+  });
+
+  it('refuses an exception that leaves a subject with no frame at all', () => {
+    // The page opens on the first frame the first subject fits; there has to be one.
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+        except: [ávöxtur]
+      - frame: Það er ___.
+        words: Hvernig er það?
+        except: [ávöxtur]
+`)
+    ).toThrow(/"ávöxtur" is left out of every frame by except/);
+  });
+
+  it('refuses a form or a word list on a frame with no blank', () => {
+    for (const extra of ['form: agree', 'words: Tegund', 'forms:\n          gott: agree']) {
+      expect(() =>
+        load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+      - frame: Þetta er gott.
+        ${extra}
+`)
+      ).toThrow(/has no blank to fill, so it takes no blank, words, form or forms/);
+    }
+  });
+
+  it('refuses a word form on the subject blank, which takes the subject as it is', () => {
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+        forms:
+          ávöxtur: agree
+`)
+    ).toThrow(/the subject blank takes no words, form or forms/);
+  });
+
   it('throws on an agreeing word that is not in the frame', () => {
     expect(() =>
       load(`${subject}    frames:
@@ -546,7 +627,7 @@ guidingQuestions:
         blank: subject
         words: Tegund
 `)
-    ).toThrow(/the subject blank takes no words or form/);
+    ).toThrow(/the subject blank takes no words, form or forms/);
   });
 
   it('throws on a fixed subject word that no frame says', () => {

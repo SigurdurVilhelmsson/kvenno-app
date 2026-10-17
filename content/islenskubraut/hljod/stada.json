@@ -1,0 +1,2098 @@
+{
+  "Fólk fer þangað ___ og ___.": {
+    "v": "67fce87830b2",
+    "value": false
+  },
+  "Hvað finnst þér um ___?": {
+    "v": "8bd1f82d66a5",
+    "value": false
+  },
+  "Hún/Hann ___.": {
+    "v": "5cd50307270c",
+    "value": false
+  },
+  "Hún/Hann er ___ og ___.": {
+    "v": "e78dbac7c8a0",
+    "value": false
+  },
+  "Hún/Hann er ___.": {
+    "v": "c723dad87e85",
+    "value": false
+  },
+  "Hún/Hann er oft ___ vegna þess að ___.": {
+    "v": "83ba8001ba58",
+    "value": false
+  },
+  "Hún/Hann er oft ___.": {
+    "v": "45b3bd1f43ad",
+    "value": false
+  },
+  "Hún/Hann vinnur sem ___.": {
+    "v": "43113c9e9178",
+    "value": false
+  },
+  "Kennarinn biður okkur að ___.": {
+    "v": "dfdecbc291be",
+    "value": false
+  },
+  "Kennarinn segir: ___!": {
+    "v": "02ad6fb7872b",
+    "value": false
+  },
+  "Maður ___ þar.": {
+    "v": "431f5d137c32",
+    "value": false
+  },
+  "Maður borðar það ___.": {
+    "v": "4bb7d021975c",
+    "value": false
+  },
+  "Maður borðar/drekkur það ___.": {
+    "v": "5ddddcede319",
+    "value": false
+  },
+  "Maður fer þangað ___.": {
+    "v": "4d25c8fb525d",
+    "value": false
+  },
+  "Maður finnur það ___.": {
+    "v": "5be388f241b4",
+    "value": false
+  },
+  "Maður klæðist því ___.": {
+    "v": "f0361e5f2f50",
+    "value": false
+  },
+  "Maður notar það ___.": {
+    "v": "936da6065eba",
+    "value": false
+  },
+  "Mér finnst ___.": {
+    "v": "4f79d28ec63e",
+    "value": false
+  },
+  "Mér finnst þetta ___ vegna þess að ___.": {
+    "v": "2c23eeab2533",
+    "value": false
+  },
+  "Við ___ í tímanum.": {
+    "v": "29bd68f88af7",
+    "value": false
+  },
+  "___ nota það oftast ___.": {
+    "v": "0255daee988f",
+    "value": false
+  },
+  "___ skiptir máli vegna þess að ___.": {
+    "v": "9f4aa2aee0b5",
+    "value": false
+  },
+  "allir": {
+    "v": "aa0cbb78d68b",
+    "value": false
+  },
+  "allt árið": {
+    "v": "d543942e01c5",
+    "value": false
+  },
+  "alltaf": {
+    "v": "60ce395de91a",
+    "value": false
+  },
+  "alltaf/hvenær sem er": {
+    "v": "e69167d49122",
+    "value": false
+  },
+  "appelsínugult": {
+    "v": "8e897b86e522",
+    "value": false
+  },
+  "auka": {
+    "v": "bd328e4a480f",
+    "value": false
+  },
+  "bakarar": {
+    "v": "8cd88594e03e",
+    "value": false
+  },
+  "bakað": {
+    "v": "ddc22aaaf82e",
+    "value": false
+  },
+  "barn": {
+    "v": "2b7bcb5b2983",
+    "value": false
+  },
+  "beint": {
+    "v": "65798ae34605",
+    "value": false
+  },
+  "beiskt": {
+    "v": "326f93503cda",
+    "value": false
+  },
+  "bekkjarfélagi": {
+    "v": "3f14aa42bb7e",
+    "value": false
+  },
+  "berðu saman": {
+    "v": "ddce953a45a8",
+    "value": false
+  },
+  "blautt": {
+    "v": "d467d1d14835",
+    "value": false
+  },
+  "bleikir/bleikar": {
+    "v": "7e5eaa401d52",
+    "value": false
+  },
+  "bleikt": {
+    "v": "e10e077b02b7",
+    "value": false
+  },
+  "bleikur/bleik/bleikt": {
+    "v": "a5bdd5dea1a8",
+    "value": false
+  },
+  "bláir/bláar": {
+    "v": "e8bf01e21009",
+    "value": false
+  },
+  "blár/blá/blátt": {
+    "v": "86469bb60c11",
+    "value": false
+  },
+  "blátt": {
+    "v": "d83b187a7dc2",
+    "value": false
+  },
+  "blýantur": {
+    "v": "5f3878d760ca",
+    "value": false
+  },
+  "bogið": {
+    "v": "8d57e67097a0",
+    "value": false
+  },
+  "bolur": {
+    "v": "b2d8b4eebceb",
+    "value": false
+  },
+  "bolur/stuttermabolur": {
+    "v": "81848cc19abf",
+    "value": false
+  },
+  "borðar": {
+    "v": "b1899fd6a0c1",
+    "value": false
+  },
+  "bragðlaust": {
+    "v": "125053b3090b",
+    "value": false
+  },
+  "bragðmikið": {
+    "v": "ba4d1e707bfe",
+    "value": false
+  },
+  "brauð/korn": {
+    "v": "3bf1937ad950",
+    "value": false
+  },
+  "breyting": {
+    "v": "907f0a9333aa",
+    "value": false
+  },
+  "brúnir/brúnar": {
+    "v": "09bf3c5126a2",
+    "value": false
+  },
+  "brúnn/brún/brúnt": {
+    "v": "aa4e8201bf9f",
+    "value": false
+  },
+  "brúnt": {
+    "v": "844d6c968ed2",
+    "value": false
+  },
+  "buxur": {
+    "v": "552887064257",
+    "value": false
+  },
+  "bændur": {
+    "v": "43c8b77a6832",
+    "value": false
+  },
+  "bæði (alæta)": {
+    "v": "9da973fc5090",
+    "value": false
+  },
+  "bíll": {
+    "v": "da9c7702d377",
+    "value": false
+  },
+  "bílstjórar": {
+    "v": "ba91b9cda2cb",
+    "value": false
+  },
+  "bók": {
+    "v": "40ac8f2f48e9",
+    "value": false
+  },
+  "bókasafn": {
+    "v": "4f33e93b8df1",
+    "value": false
+  },
+  "börn": {
+    "v": "48dcf6e014d6",
+    "value": false
+  },
+  "búð": {
+    "v": "cc2470b3e18c",
+    "value": false
+  },
+  "búð/verslun": {
+    "v": "bef3b40146ae",
+    "value": false
+  },
+  "daglega": {
+    "v": "934de03c3800",
+    "value": false
+  },
+  "danska": {
+    "v": "952a2c0b4dfc",
+    "value": false
+  },
+  "dragðu saman": {
+    "v": "c27634431000",
+    "value": false
+  },
+  "drykkur": {
+    "v": "b612bcff3dd6",
+    "value": false
+  },
+  "dýralæknar": {
+    "v": "3dbdaea43bbf",
+    "value": false
+  },
+  "efnafræði": {
+    "v": "a8d85d0f75ad",
+    "value": false
+  },
+  "eftir skóla": {
+    "v": "a2ac89e6e68b",
+    "value": false
+  },
+  "einlitt": {
+    "v": "4710fd918753",
+    "value": false
+  },
+  "einn": {
+    "v": "68f9a937764f",
+    "value": false
+  },
+  "einstaklingur": {
+    "v": "31374aad821a",
+    "value": false
+  },
+  "ekkert": {
+    "v": "a03425ba4fe3",
+    "value": false
+  },
+  "ekki fræg/frægur": {
+    "v": "6b2f40136547",
+    "value": false
+  },
+  "ekki hjól": {
+    "v": "d805db647190",
+    "value": false
+  },
+  "eldar": {
+    "v": "d6b01de0576e",
+    "value": false
+  },
+  "enska": {
+    "v": "a86aeda20f0c",
+    "value": false
+  },
+  "fallegt": {
+    "v": "3b2c4174da26",
+    "value": false
+  },
+  "feld": {
+    "v": "737f63ea7e31",
+    "value": false
+  },
+  "feldur": {
+    "v": "96874e5ffb9a",
+    "value": false
+  },
+  "ferkantað": {
+    "v": "ddf3a4e09c0c",
+    "value": false
+  },
+  "ferskt": {
+    "v": "b482377ae0c6",
+    "value": false
+  },
+  "ferðamenn": {
+    "v": "4af9887f6879",
+    "value": false
+  },
+  "ferðast": {
+    "v": "b73956f7b990",
+    "value": false
+  },
+  "fiskur": {
+    "v": "d610f497d734",
+    "value": false
+  },
+  "fjaðrir": {
+    "v": "af55aec7c275",
+    "value": false
+  },
+  "fjóra fætur": {
+    "v": "def6613469e6",
+    "value": false
+  },
+  "fjórir fætur": {
+    "v": "02b6deca0412",
+    "value": false
+  },
+  "flatt": {
+    "v": "c200b4151e3d",
+    "value": false
+  },
+  "fljótandi": {
+    "v": "0d580e0301d5",
+    "value": false
+  },
+  "flugmenn": {
+    "v": "d14d08db27c0",
+    "value": false
+  },
+  "flugvél": {
+    "v": "e0d39799e09c",
+    "value": false
+  },
+  "flýgur": {
+    "v": "69bdcb41e6df",
+    "value": false
+  },
+  "frosið": {
+    "v": "1f6dd535de4a",
+    "value": false
+  },
+  "froskdýr": {
+    "v": "468f5fa4bfd7",
+    "value": false
+  },
+  "fræg/frægur": {
+    "v": "f61ca343fee7",
+    "value": false
+  },
+  "fugl": {
+    "v": "44386cf0d6d5",
+    "value": false
+  },
+  "fullorðin/fullorðinn": {
+    "v": "a3ebb56b62b1",
+    "value": false
+  },
+  "fullorðnir": {
+    "v": "c64ef46a2530",
+    "value": false
+  },
+  "fyrir próf": {
+    "v": "f0829b1ee234",
+    "value": false
+  },
+  "fáir": {
+    "v": "b8cf501b8ddd",
+    "value": false
+  },
+  "félagsfræði": {
+    "v": "f0657afc2bdb",
+    "value": false
+  },
+  "gamall/gömul": {
+    "v": "9a48115e70bb",
+    "value": false
+  },
+  "gamalt": {
+    "v": "095306627d69",
+    "value": false
+  },
+  "gangur": {
+    "v": "3b363746df95",
+    "value": false
+  },
+  "gelur": {
+    "v": "f8e555c213c4",
+    "value": false
+  },
+  "gogg": {
+    "v": "5b4e9c5f09fe",
+    "value": false
+  },
+  "goggur": {
+    "v": "71b62ca76dc1",
+    "value": false
+  },
+  "gott": {
+    "v": "7946a4ebf85c",
+    "value": false
+  },
+  "greina": {
+    "v": "449176c9214d",
+    "value": false
+  },
+  "greindu": {
+    "v": "99c2aa1192f3",
+    "value": false
+  },
+  "grænir/grænar": {
+    "v": "df6323cc09b2",
+    "value": false
+  },
+  "grænmeti": {
+    "v": "0dedebdd6b4f",
+    "value": false
+  },
+  "grænn/græn/grænt": {
+    "v": "dfdae6d96048",
+    "value": false
+  },
+  "grænt": {
+    "v": "4f6fa09d1cf2",
+    "value": false
+  },
+  "gróft": {
+    "v": "85aeb409bc12",
+    "value": false
+  },
+  "gulir/gular": {
+    "v": "a8bd464b897d",
+    "value": false
+  },
+  "gult": {
+    "v": "82ca0d4a1b17",
+    "value": false
+  },
+  "gulur/gul/gult": {
+    "v": "1bf81ac1647d",
+    "value": false
+  },
+  "gæludýr": {
+    "v": "b39bcc495dff",
+    "value": false
+  },
+  "gömul/gamall": {
+    "v": "d4d15950dac2",
+    "value": false
+  },
+  "hala": {
+    "v": "4d35e38a8761",
+    "value": false
+  },
+  "hali": {
+    "v": "1df04f261688",
+    "value": false
+  },
+  "hanskar": {
+    "v": "fffa21172799",
+    "value": false
+  },
+  "hart": {
+    "v": "3fda84b40e39",
+    "value": false
+  },
+  "heima": {
+    "v": "7625d668137b",
+    "value": false
+  },
+  "heimild": {
+    "v": "1342361f5fd4",
+    "value": false
+  },
+  "heitt": {
+    "v": "6409dabeac5d",
+    "value": false
+  },
+  "hjá námsráðgjafa": {
+    "v": "98e8b24398b5",
+    "value": false
+  },
+  "hjól": {
+    "v": "1ce91c417418",
+    "value": false
+  },
+  "hjól/reiðhjól": {
+    "v": "455df91f0270",
+    "value": false
+  },
+  "hlaupahjól": {
+    "v": "9bdf9159dbe8",
+    "value": false
+  },
+  "hleypur": {
+    "v": "18c807d64a1b",
+    "value": false
+  },
+  "hlustaðu": {
+    "v": "20882f196390",
+    "value": false
+  },
+  "hlustum": {
+    "v": "18aa99e4c081",
+    "value": false
+  },
+  "hluti": {
+    "v": "3e9b8812e789",
+    "value": false
+  },
+  "horn": {
+    "v": "025ea6bedee2",
+    "value": false
+  },
+  "hraðskreitt": {
+    "v": "247e79d978b5",
+    "value": false
+  },
+  "hreistur": {
+    "v": "64e12eb17a11",
+    "value": false
+  },
+  "hringir": {
+    "v": "83dc5da0c2d6",
+    "value": false
+  },
+  "hrátt": {
+    "v": "d6ed5bb5e664",
+    "value": false
+  },
+  "hugmynd": {
+    "v": "37ebbfd1a381",
+    "value": false
+  },
+  "hvæsir": {
+    "v": "eba141147add",
+    "value": false
+  },
+  "hvítir/hvítar": {
+    "v": "b67ab0c5003a",
+    "value": false
+  },
+  "hvítt": {
+    "v": "2f754dab9563",
+    "value": false
+  },
+  "hvítur/hvít/hvítt": {
+    "v": "87e5d40e1f2f",
+    "value": false
+  },
+  "há/hár": {
+    "v": "fad20172c904",
+    "value": false
+  },
+  "hált": {
+    "v": "8704ec3727d5",
+    "value": false
+  },
+  "hátt": {
+    "v": "ad07990d537a",
+    "value": false
+  },
+  "hægfara": {
+    "v": "21bdede36f43",
+    "value": false
+  },
+  "húfa": {
+    "v": "126782c71aa7",
+    "value": false
+  },
+  "hús": {
+    "v": "064f0b64eca3",
+    "value": false
+  },
+  "húsdýr": {
+    "v": "d3efe59848bc",
+    "value": false
+  },
+  "húsdýr (búfénaður)": {
+    "v": "3aa193dd4661",
+    "value": false
+  },
+  "ilmandi": {
+    "v": "84588a9f7d4c",
+    "value": false
+  },
+  "inni": {
+    "v": "f4ecfcd1faa6",
+    "value": false
+  },
+  "iðnaðarmenn": {
+    "v": "95e909e6f1ad",
+    "value": false
+  },
+  "jakki": {
+    "v": "08a2b48ee6eb",
+    "value": false
+  },
+  "kalt": {
+    "v": "39eba32264e9",
+    "value": false
+  },
+  "kennarar": {
+    "v": "33a5e0226a76",
+    "value": false
+  },
+  "kennari": {
+    "v": "c99aa44b3b12",
+    "value": false
+  },
+  "kennir": {
+    "v": "f5f1b44141b7",
+    "value": false
+  },
+  "kennslubók": {
+    "v": "bf759a0e3fe9",
+    "value": false
+  },
+  "kirkja": {
+    "v": "18892610e794",
+    "value": false
+  },
+  "kjöt": {
+    "v": "e66a70e35b75",
+    "value": false
+  },
+  "kjöt (kjötæta)": {
+    "v": "e23f3aed18d2",
+    "value": false
+  },
+  "kokkar": {
+    "v": "11eac0ad01cf",
+    "value": false
+  },
+  "kokkur": {
+    "v": "e4acbf650862",
+    "value": false
+  },
+  "kringlótt": {
+    "v": "45af4b5f0176",
+    "value": false
+  },
+  "krydd": {
+    "v": "9de8dc3ef38d",
+    "value": false
+  },
+  "kryddað": {
+    "v": "7f46141dd43c",
+    "value": false
+  },
+  "kryddað/sterkt": {
+    "v": "a37ac4928856",
+    "value": false
+  },
+  "kynnum": {
+    "v": "d6de3f414a32",
+    "value": false
+  },
+  "kúlulaga": {
+    "v": "fdf2fded8e09",
+    "value": false
+  },
+  "langt": {
+    "v": "f5e7dec0c28c",
+    "value": false
+  },
+  "leikari": {
+    "v": "8ac225bf3982",
+    "value": false
+  },
+  "leikur sér": {
+    "v": "5a2b802071a1",
+    "value": false
+  },
+  "leikvöllur": {
+    "v": "a39fa4213b2f",
+    "value": false
+  },
+  "les": {
+    "v": "f545705aad1b",
+    "value": false
+  },
+  "lest": {
+    "v": "91efc2be299b",
+    "value": false
+  },
+  "lestu": {
+    "v": "edee2070b8cc",
+    "value": false
+  },
+  "lesum": {
+    "v": "f8efa2e24108",
+    "value": false
+  },
+  "listamaður": {
+    "v": "572e192f3d64",
+    "value": false
+  },
+  "listamenn": {
+    "v": "8c7331aa2bde",
+    "value": false
+  },
+  "listir": {
+    "v": "ef872e0a9365",
+    "value": false
+  },
+  "litríkt": {
+    "v": "010d6eb933c2",
+    "value": false
+  },
+  "ljótt": {
+    "v": "692e307a9e50",
+    "value": false
+  },
+  "loðið": {
+    "v": "294bef7b425d",
+    "value": false
+  },
+  "lág/lágur": {
+    "v": "beac2e1763a2",
+    "value": false
+  },
+  "lágt": {
+    "v": "b75fb0a849c5",
+    "value": false
+  },
+  "látin/látinn": {
+    "v": "6493bc6aa321",
+    "value": false
+  },
+  "læknar": {
+    "v": "bf4c404e9b21",
+    "value": false
+  },
+  "læknir": {
+    "v": "6a1b75d5c387",
+    "value": false
+  },
+  "lærir": {
+    "v": "5bb6828dcc69",
+    "value": false
+  },
+  "létt": {
+    "v": "862de5f064ba",
+    "value": false
+  },
+  "lítill/lítil/lítið": {
+    "v": "c1e42f952ede",
+    "value": false
+  },
+  "lítið": {
+    "v": "bf20a40ae7f6",
+    "value": false
+  },
+  "lögreglumaður": {
+    "v": "595cb103ed41",
+    "value": false
+  },
+  "lýstu": {
+    "v": "f84c3f1e06ca",
+    "value": false
+  },
+  "margir": {
+    "v": "28d94a0e8252",
+    "value": false
+  },
+  "matsalur": {
+    "v": "cc3946d85cb5",
+    "value": false
+  },
+  "merktu við": {
+    "v": "d73b682eed24",
+    "value": false
+  },
+  "með gleraugu": {
+    "v": "580229b8ec2f",
+    "value": false
+  },
+  "með hjólum": {
+    "v": "32424b861955",
+    "value": false
+  },
+  "með skegg": {
+    "v": "4799907268b5",
+    "value": false
+  },
+  "með stutt hár": {
+    "v": "19326658e731",
+    "value": false
+  },
+  "með sítt hár": {
+    "v": "fed37c6bf193",
+    "value": false
+  },
+  "með vél": {
+    "v": "834a5c151fbc",
+    "value": false
+  },
+  "meðalstór/meðalstórt": {
+    "v": "b60e0c0283ae",
+    "value": false
+  },
+  "meðalstórt": {
+    "v": "e565490ae023",
+    "value": false
+  },
+  "meðferð": {
+    "v": "8a0acc10aaf8",
+    "value": false
+  },
+  "mikilvægur": {
+    "v": "228c57359cda",
+    "value": false
+  },
+  "milt": {
+    "v": "4f8a1f53d4a3",
+    "value": false
+  },
+  "mjálmar": {
+    "v": "f5ad7ab96b32",
+    "value": false
+  },
+  "mjólkurvara": {
+    "v": "deda6aa27946",
+    "value": false
+  },
+  "mjög stórt": {
+    "v": "b1ed7d375255",
+    "value": false
+  },
+  "mjög sætt": {
+    "v": "75647d1829fb",
+    "value": false
+  },
+  "mjúkt": {
+    "v": "baea6f1e821c",
+    "value": false
+  },
+  "mynstur": {
+    "v": "52d8e256e1fb",
+    "value": false
+  },
+  "mótorhjól": {
+    "v": "baddedd22b1b",
+    "value": false
+  },
+  "nemandi": {
+    "v": "84153d3a0ac1",
+    "value": false
+  },
+  "nemendur": {
+    "v": "0d2c00431d16",
+    "value": false
+  },
+  "námsráðgjafi": {
+    "v": "a1cd36a069cc",
+    "value": false
+  },
+  "náttúrufræði": {
+    "v": "be7f132b9cc8",
+    "value": false
+  },
+  "náttúrulega sætt": {
+    "v": "d567aca35d05",
+    "value": false
+  },
+  "nútímalegt": {
+    "v": "d4d057740ada",
+    "value": false
+  },
+  "nýtt": {
+    "v": "aee73b55df06",
+    "value": false
+  },
+  "oddhvasst": {
+    "v": "43f6af2ae919",
+    "value": false
+  },
+  "oft": {
+    "v": "c541cba1ff76",
+    "value": false
+  },
+  "penni": {
+    "v": "1ca9a36597cc",
+    "value": false
+  },
+  "peysa": {
+    "v": "9f4230e9a1ce",
+    "value": false
+  },
+  "pils": {
+    "v": "029164cef592",
+    "value": false
+  },
+  "plöntur (grasæta)": {
+    "v": "b0041bd1f9a2",
+    "value": false
+  },
+  "rautt": {
+    "v": "62bacc0dd310",
+    "value": false
+  },
+  "rauðir/rauðar": {
+    "v": "922a62b12b06",
+    "value": false
+  },
+  "rauður/rauð/rautt": {
+    "v": "f33792799138",
+    "value": false
+  },
+  "reglustika": {
+    "v": "7678a3a7aaac",
+    "value": false
+  },
+  "reiknivél": {
+    "v": "2468787e0065",
+    "value": false
+  },
+  "reiknum": {
+    "v": "4ab13199c932",
+    "value": false
+  },
+  "risastórt": {
+    "v": "2c91d3d040b3",
+    "value": false
+  },
+  "ræðum": {
+    "v": "b15424f864a4",
+    "value": false
+  },
+  "rökstyddu": {
+    "v": "5b7aa9a9151a",
+    "value": false
+  },
+  "rúta": {
+    "v": "19ba42dc7d7f",
+    "value": false
+  },
+  "safn": {
+    "v": "35980567acb7",
+    "value": false
+  },
+  "saga": {
+    "v": "8315947f7c05",
+    "value": false
+  },
+  "salt": {
+    "v": "ece04ddf63ef",
+    "value": false
+  },
+  "sefur": {
+    "v": "f12d6a3b5b82",
+    "value": false
+  },
+  "sem millimál": {
+    "v": "3ecfd7c91d3f",
+    "value": false
+  },
+  "sjaldan": {
+    "v": "a079ad49048b",
+    "value": false
+  },
+  "sjómenn": {
+    "v": "2fae6a454161",
+    "value": false
+  },
+  "sjúkrahús": {
+    "v": "372b13d736d3",
+    "value": false
+  },
+  "skapar": {
+    "v": "1799be949d9b",
+    "value": false
+  },
+  "skip": {
+    "v": "72b29982ae5c",
+    "value": false
+  },
+  "skip/bátur": {
+    "v": "7738c3ea3839",
+    "value": false
+  },
+  "skordýr": {
+    "v": "c755ed14f3ad",
+    "value": false
+  },
+  "skrifaðu": {
+    "v": "9e3a4833d6ca",
+    "value": false
+  },
+  "skrifstofa": {
+    "v": "8007650f0f89",
+    "value": false
+  },
+  "skrifum": {
+    "v": "72a5732eebe6",
+    "value": false
+  },
+  "skriðdýr": {
+    "v": "7770654e9a85",
+    "value": false
+  },
+  "skyrta": {
+    "v": "4f52e1fdbf8a",
+    "value": false
+  },
+  "skálduð persóna": {
+    "v": "7ccafaa4098e",
+    "value": false
+  },
+  "skólastjóri": {
+    "v": "1dec9350ffe5",
+    "value": false
+  },
+  "skólastofa": {
+    "v": "fc04fc5caf99",
+    "value": false
+  },
+  "skóli": {
+    "v": "23db74e94c1d",
+    "value": false
+  },
+  "skór": {
+    "v": "3b3afa26ffb0",
+    "value": false
+  },
+  "sköllótt/sköllóttur": {
+    "v": "b63423f9939d",
+    "value": false
+  },
+  "sleði": {
+    "v": "1b29cf0ce4f0",
+    "value": false
+  },
+  "slétt": {
+    "v": "0c378f5b023e",
+    "value": false
+  },
+  "sokkar": {
+    "v": "b36b7526217d",
+    "value": false
+  },
+  "soðið": {
+    "v": "e26c18c8e00b",
+    "value": false
+  },
+  "spendýr": {
+    "v": "89edf933c955",
+    "value": false
+  },
+  "spilar": {
+    "v": "8530afde2306",
+    "value": false
+  },
+  "sportvagn": {
+    "v": "9be29d7e341b",
+    "value": false
+  },
+  "sporöskjulaga": {
+    "v": "bed7eea030c4",
+    "value": false
+  },
+  "spyrjum": {
+    "v": "c04521ee9fd3",
+    "value": false
+  },
+  "starf": {
+    "v": "a1219c074bf0",
+    "value": false
+  },
+  "steikt": {
+    "v": "670752d2516b",
+    "value": false
+  },
+  "sterkt": {
+    "v": "b668ca879ab1",
+    "value": false
+  },
+  "stingandi": {
+    "v": "3799766174ac",
+    "value": false
+  },
+  "stinnt": {
+    "v": "1855279f81b4",
+    "value": false
+  },
+  "stjórnar": {
+    "v": "1d8ceb88542c",
+    "value": false
+  },
+  "stjórnmálamaður": {
+    "v": "727fcf973aad",
+    "value": false
+  },
+  "straumlínulaga": {
+    "v": "f9f936e3a2b6",
+    "value": false
+  },
+  "strokleður": {
+    "v": "e491730341dd",
+    "value": false
+  },
+  "stutt": {
+    "v": "253c634f35ff",
+    "value": false
+  },
+  "stærðfræði": {
+    "v": "b72a41805558",
+    "value": false
+  },
+  "stílabók": {
+    "v": "0cc15e3d0bf5",
+    "value": false
+  },
+  "stór/stórt": {
+    "v": "d4830dee59a0",
+    "value": false
+  },
+  "stórt": {
+    "v": "2564f36e15f2",
+    "value": false
+  },
+  "sundlaug": {
+    "v": "2e5c86b7f477",
+    "value": false
+  },
+  "suðar": {
+    "v": "43406c21e28f",
+    "value": false
+  },
+  "svaraðu": {
+    "v": "5cd892a726de",
+    "value": false
+  },
+  "svart": {
+    "v": "b34053c748ad",
+    "value": false
+  },
+  "svartir/svartar": {
+    "v": "9cfb561ee42d",
+    "value": false
+  },
+  "svartur/svört/svart": {
+    "v": "7920c332a189",
+    "value": false
+  },
+  "sveigjanlegt": {
+    "v": "46a89202e2e7",
+    "value": false
+  },
+  "svörum": {
+    "v": "745b0457a590",
+    "value": false
+  },
+  "syndir": {
+    "v": "c7068dc1ec1d",
+    "value": false
+  },
+  "syngur": {
+    "v": "3fc2c8eb8412",
+    "value": false
+  },
+  "sælgæti": {
+    "v": "d281720b25d7",
+    "value": false
+  },
+  "sætt": {
+    "v": "78dc3d1227cb",
+    "value": false
+  },
+  "sérfræðingar": {
+    "v": "a1f3863d4807",
+    "value": false
+  },
+  "sívalningslaga": {
+    "v": "03342631cd8a",
+    "value": false
+  },
+  "sósa": {
+    "v": "90ec73ddeaa1",
+    "value": false
+  },
+  "sögulegt": {
+    "v": "c9857c3d516b",
+    "value": false
+  },
+  "söngvari": {
+    "v": "bb53357c16c6",
+    "value": false
+  },
+  "súrt": {
+    "v": "ad65d4a82dbd",
+    "value": false
+  },
+  "taska": {
+    "v": "c1682dc2d456",
+    "value": false
+  },
+  "teiknar": {
+    "v": "129a8533e879",
+    "value": false
+  },
+  "tengja": {
+    "v": "536d9af0335a",
+    "value": false
+  },
+  "til að baka með": {
+    "v": "37358fc5f3f8",
+    "value": false
+  },
+  "til að bjarga": {
+    "v": "6f986363633d",
+    "value": false
+  },
+  "til að borða": {
+    "v": "1af095153694",
+    "value": false
+  },
+  "til að búa": {
+    "v": "71718c5ab1ff",
+    "value": false
+  },
+  "til að drekka": {
+    "v": "9a06ef66fa63",
+    "value": false
+  },
+  "til að elda með": {
+    "v": "35d08e8a5a41",
+    "value": false
+  },
+  "til að ferðast": {
+    "v": "df5929db00af",
+    "value": false
+  },
+  "til að flytja": {
+    "v": "2bf5b0bd8e22",
+    "value": false
+  },
+  "til að gæta": {
+    "v": "16bef6c4e5ee",
+    "value": false
+  },
+  "til að hjálpa": {
+    "v": "ca788192e9b8",
+    "value": false
+  },
+  "til að hlýja sér": {
+    "v": "b80a58578797",
+    "value": false
+  },
+  "til að hvílast": {
+    "v": "9ea0a7c765a8",
+    "value": false
+  },
+  "til að keppa": {
+    "v": "4aa65bb0b8e8",
+    "value": false
+  },
+  "til að klappa": {
+    "v": "ced8624f1852",
+    "value": false
+  },
+  "til að leika sér": {
+    "v": "e4b8c1ad2900",
+    "value": false
+  },
+  "til að læra": {
+    "v": "10b009cd04f7",
+    "value": false
+  },
+  "til að líta vel út": {
+    "v": "ea7915a21d35",
+    "value": false
+  },
+  "til að líða vel": {
+    "v": "a87240dc6d53",
+    "value": false
+  },
+  "til að njóta": {
+    "v": "70f53b07c004",
+    "value": false
+  },
+  "til að næra sig": {
+    "v": "fc68809060a7",
+    "value": false
+  },
+  "til að rannsaka": {
+    "v": "a3cda2241326",
+    "value": false
+  },
+  "til að skemmta sér": {
+    "v": "bb093414b534",
+    "value": false
+  },
+  "til að stunda íþróttir": {
+    "v": "0979b5c23fac",
+    "value": false
+  },
+  "til að verja": {
+    "v": "54079b0bbcc5",
+    "value": false
+  },
+  "til að verja sig": {
+    "v": "ef669e09443e",
+    "value": false
+  },
+  "til að versla": {
+    "v": "0abfea2bf0f8",
+    "value": false
+  },
+  "til að vinna": {
+    "v": "b5372087ac3e",
+    "value": false
+  },
+  "trefill": {
+    "v": "41f180354c7b",
+    "value": false
+  },
+  "tveir fætur": {
+    "v": "d9bf66cc10a3",
+    "value": false
+  },
+  "tvo fætur": {
+    "v": "d09cc4218e45",
+    "value": false
+  },
+  "tölum": {
+    "v": "fc8e6478a5dd",
+    "value": false
+  },
+  "tölva": {
+    "v": "a9bf55053966",
+    "value": false
+  },
+  "túlkur": {
+    "v": "9571f126634e",
+    "value": false
+  },
+  "um helgar": {
+    "v": "93173efb7bdc",
+    "value": false
+  },
+  "umsjónarkennari": {
+    "v": "ea0b85091f77",
+    "value": false
+  },
+  "ung/ungur": {
+    "v": "53dfd33eb56c",
+    "value": false
+  },
+  "unglingur": {
+    "v": "55e5b6b41744",
+    "value": false
+  },
+  "veitingastaður": {
+    "v": "fc520f0ddd15",
+    "value": false
+  },
+  "veiðimenn": {
+    "v": "6651a2b1422d",
+    "value": false
+  },
+  "verkefnablað": {
+    "v": "53b4bb3910bf",
+    "value": false
+  },
+  "verslar": {
+    "v": "1d705b73600b",
+    "value": false
+  },
+  "villt dýr": {
+    "v": "f2d122001baf",
+    "value": false
+  },
+  "vinnum saman": {
+    "v": "c008d693b231",
+    "value": false
+  },
+  "vinnur": {
+    "v": "9833c4b8b8a7",
+    "value": false
+  },
+  "vinur": {
+    "v": "c3675124237e",
+    "value": false
+  },
+  "við sjóinn": {
+    "v": "58e249978091",
+    "value": false
+  },
+  "við sérstök tilefni": {
+    "v": "66eade71ba29",
+    "value": false
+  },
+  "vont": {
+    "v": "c469793ec0fe",
+    "value": false
+  },
+  "Ég er ___.": {
+    "v": "7516ca2da47c",
+    "value": false
+  },
+  "Ég er sammála/ósammála af því að ___.": {
+    "v": "9d25ad51dd07",
+    "value": false
+  },
+  "Ég held að þetta sé ___ vegna þess að ___.": {
+    "v": "bc215fb35804",
+    "value": false
+  },
+  "Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.": {
+    "v": "62589bf922d1",
+    "value": false
+  },
+  "Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.": {
+    "v": "0925ed2a6d07",
+    "value": false
+  },
+  "Ég skil ekki ___. Getur þú hjálpað mér?": {
+    "v": "dc8ce1c32d9f",
+    "value": false
+  },
+  "Ég þarf ___ til að ___.": {
+    "v": "67efb32a4f15",
+    "value": false
+  },
+  "Í ___ lærum við að ___.": {
+    "v": "3343dab48c0b",
+    "value": false
+  },
+  "Í dag lærðum við um ___.": {
+    "v": "04a68d46c8cc",
+    "value": false
+  },
+  "Í dag lærðum við um breytingar á loftslagi. Þær skipta máli vegna þess að þær hafa áhrif á alla. Hvað finnst þér um það?": {
+    "v": "daab0dbe68fa",
+    "value": false
+  },
+  "Í stærðfræði lærum við að reikna. Ég þarf reiknivél til að reikna. Kennarinn biður okkur að svara.": {
+    "v": "28d6cb94f895",
+    "value": false
+  },
+  "Það er ___ að snerta vegna þess að ___.": {
+    "v": "264e3a2d9a13",
+    "value": false
+  },
+  "Það er ___ og hentar vel ___.": {
+    "v": "75b5f2829cf3",
+    "value": false
+  },
+  "Það er ___.": {
+    "v": "f72498e6ebbd",
+    "value": false
+  },
+  "Það er gert ___ sem er ___.": {
+    "v": "101b86967eda",
+    "value": false
+  },
+  "Það er gert ___.": {
+    "v": "dc69bba4eef6",
+    "value": false
+  },
+  "Það er gert úr ___ sem er ___.": {
+    "v": "cdfacddbc877",
+    "value": false
+  },
+  "Það er gert úr ___.": {
+    "v": "994e6dc13d45",
+    "value": false
+  },
+  "Það er líkt ___ en ólíkt ___.": {
+    "v": "2bf010da21ff",
+    "value": false
+  },
+  "Það er oft borðað/drukkið ___.": {
+    "v": "e0dd7e05f69c",
+    "value": false
+  },
+  "Það fer ___.": {
+    "v": "3d03afa56a26",
+    "value": false
+  },
+  "Það finnst ___ við snertingu.": {
+    "v": "d639395f43c3",
+    "value": false
+  },
+  "Það getur flutt ___ og fer ___.": {
+    "v": "431ac86a6a49",
+    "value": false
+  },
+  "Það hefur ___ og ___.": {
+    "v": "c7f7c9c0b6d8",
+    "value": false
+  },
+  "Það hefur ___ og er ___.": {
+    "v": "81b9a580b385",
+    "value": false
+  },
+  "Það hefur ___.": {
+    "v": "712957b4fe43",
+    "value": false
+  },
+  "Það hljómar ___.": {
+    "v": "0980665c4d02",
+    "value": false
+  },
+  "Það étur ___.": {
+    "v": "72e363cb3a58",
+    "value": false
+  },
+  "Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.": {
+    "v": "f7f14eeaa65e",
+    "value": false
+  },
+  "Þetta dýr er ___ og ___.": {
+    "v": "7165dfb287db",
+    "value": false
+  },
+  "Þetta er ___ sem bragðast ___.": {
+    "v": "50323ab30b86",
+    "value": false
+  },
+  "Þetta er ___ sem býr ___.": {
+    "v": "d768bfd15620",
+    "value": false
+  },
+  "Þetta er ___ sem er ___.": {
+    "v": "d882e0bbf4c9",
+    "value": false
+  },
+  "Þetta er ___ sem er ___. Maður notar það ___.": {
+    "v": "929b828a2eb0",
+    "value": false
+  },
+  "Þetta er ___ sem er staðsett ___.": {
+    "v": "5b82136f173c",
+    "value": false
+  },
+  "Þetta er ___ sem fer ___.": {
+    "v": "3a7479d66fdc",
+    "value": false
+  },
+  "Þetta er ___.": {
+    "v": "0496537a5ba5",
+    "value": false
+  },
+  "Þetta er bíll. Hann fer á landi. Hann er stór.": {
+    "v": "09211b66189b",
+    "value": false
+  },
+  "Þetta er bók. Ég er í skólastofunni. Við lesum í tímanum.": {
+    "v": "1dc0fb4a99c9",
+    "value": false
+  },
+  "Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.": {
+    "v": "59d155a284b6",
+    "value": false
+  },
+  "Þetta er dýr.": {
+    "v": "bf4570669c37",
+    "value": false
+  },
+  "Þetta er dýr. Það er stórt. Það hefur feld.": {
+    "v": "08735e04e9ba",
+    "value": false
+  },
+  "Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.": {
+    "v": "0996c7c65fa7",
+    "value": false
+  },
+  "Þetta er jakki sem er úr leðri. Maður notar hann á veturna. Hann er svartur og hentar vel í kulda.": {
+    "v": "1f104d5b9671",
+    "value": false
+  },
+  "Þetta er kennari. Hún er ung. Hún les.": {
+    "v": "54c92dfc82b2",
+    "value": false
+  },
+  "Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.": {
+    "v": "82d2496f960f",
+    "value": false
+  },
+  "Þetta er peysa sem er rauð. Maður klæðist henni á veturna.": {
+    "v": "ebf70c097e73",
+    "value": false
+  },
+  "Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.": {
+    "v": "539325d2bf67",
+    "value": false
+  },
+  "Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.": {
+    "v": "456b16f5b71c",
+    "value": false
+  },
+  "Þetta er skóli. Maður lærir þar.": {
+    "v": "f90113e6ec86",
+    "value": false
+  },
+  "Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.": {
+    "v": "d086df9e1b9b",
+    "value": false
+  },
+  "Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.": {
+    "v": "91f46e4afc2e",
+    "value": false
+  },
+  "Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.": {
+    "v": "c49a7b8a7cef",
+    "value": false
+  },
+  "Þetta er úlpa. Hún er blá.": {
+    "v": "414aa376765d",
+    "value": false
+  },
+  "Þetta farartæki er ___ sem er notað ___.": {
+    "v": "2618935f8678",
+    "value": false
+  },
+  "Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.": {
+    "v": "d7ba7897286a",
+    "value": false
+  },
+  "á bæ": {
+    "v": "cce765bb8f4c",
+    "value": false
+  },
+  "á bókasafninu": {
+    "v": "c5546b82f7b6",
+    "value": false
+  },
+  "á daginn": {
+    "v": "3e48f22b9a36",
+    "value": false
+  },
+  "á efri hluta líkamans": {
+    "v": "e898d31677b3",
+    "value": false
+  },
+  "á ferðalagi": {
+    "v": "4f1147a70c7c",
+    "value": false
+  },
+  "á flugvellinum": {
+    "v": "c02ea9d727f4",
+    "value": false
+  },
+  "á fótunum": {
+    "v": "d054d6753a7f",
+    "value": false
+  },
+  "á ganginum": {
+    "v": "6371fadbe440",
+    "value": false
+  },
+  "á götunni": {
+    "v": "2df87b309aa7",
+    "value": false
+  },
+  "á hálendinu": {
+    "v": "c9b73243256d",
+    "value": false
+  },
+  "á hátíð": {
+    "v": "112b71087266",
+    "value": false
+  },
+  "á hátíðum": {
+    "v": "d94ac36f6143",
+    "value": false
+  },
+  "á höfðinu": {
+    "v": "4b43e4600465",
+    "value": false
+  },
+  "á höndunum": {
+    "v": "d915eb76a4a3",
+    "value": false
+  },
+  "á kvöldin": {
+    "v": "6fcb9bc7a182",
+    "value": false
+  },
+  "á landi": {
+    "v": "336a03dfa525",
+    "value": false
+  },
+  "á landi og í vatni": {
+    "v": "5fbf2d40cf08",
+    "value": false
+  },
+  "á landi/sveitinni": {
+    "v": "fa5dc6608b9c",
+    "value": false
+  },
+  "á leikvelli": {
+    "v": "348653b4548c",
+    "value": false
+  },
+  "á lestarbraut": {
+    "v": "ee7e18230601",
+    "value": false
+  },
+  "á lífi": {
+    "v": "8e7fb34edc08",
+    "value": false
+  },
+  "á markaði": {
+    "v": "e1d2a0b99933",
+    "value": false
+  },
+  "á morgnana": {
+    "v": "07b90439a596",
+    "value": false
+  },
+  "á mánudögum": {
+    "v": "16ee84e13b94",
+    "value": false
+  },
+  "á neðri hluta líkamans": {
+    "v": "2e5dbd5279b8",
+    "value": false
+  },
+  "á sjó/vatni": {
+    "v": "761dca0780ce",
+    "value": false
+  },
+  "á sjónum": {
+    "v": "431e2b577aff",
+    "value": false
+  },
+  "á sjúkrahúsi": {
+    "v": "5980346f2924",
+    "value": false
+  },
+  "á skrifstofunni": {
+    "v": "f19eedc5d5a3",
+    "value": false
+  },
+  "á snjó": {
+    "v": "1363a486d54c",
+    "value": false
+  },
+  "á sumrin": {
+    "v": "d0718864daa7",
+    "value": false
+  },
+  "á sviði": {
+    "v": "0df7b9f2353c",
+    "value": false
+  },
+  "á veitingastað": {
+    "v": "61f06d585617",
+    "value": false
+  },
+  "á veturna": {
+    "v": "47263144b2d6",
+    "value": false
+  },
+  "á virkum dögum": {
+    "v": "19c59cacac91",
+    "value": false
+  },
+  "á þjóðveginum": {
+    "v": "16f39818633e",
+    "value": false
+  },
+  "áhrif": {
+    "v": "f022305800fc",
+    "value": false
+  },
+  "án gleraugna": {
+    "v": "9e472424e825",
+    "value": false
+  },
+  "án hjóla": {
+    "v": "913d71de3256",
+    "value": false
+  },
+  "án skeggs": {
+    "v": "a50174e9732c",
+    "value": false
+  },
+  "án vélar": {
+    "v": "8f63331213b8",
+    "value": false
+  },
+  "ávöxtur": {
+    "v": "385504e5b371",
+    "value": false
+  },
+  "í bænum": {
+    "v": "e7aedfffd26a",
+    "value": false
+  },
+  "í bænum/borginni": {
+    "v": "56f6f20240a5",
+    "value": false
+  },
+  "í búð": {
+    "v": "5f7caf2aa842",
+    "value": false
+  },
+  "í búðinni": {
+    "v": "2d514deda361",
+    "value": false
+  },
+  "í dýragarðinum": {
+    "v": "1475ac09536f",
+    "value": false
+  },
+  "í eldhúsinu": {
+    "v": "00b6ca26be3c",
+    "value": false
+  },
+  "í fjöllunum": {
+    "v": "f8f0d7089c84",
+    "value": false
+  },
+  "í frímínútum": {
+    "v": "844280e84ca3",
+    "value": false
+  },
+  "í garðinum": {
+    "v": "a6ea82a34321",
+    "value": false
+  },
+  "í hádeginu": {
+    "v": "f31e1dab16f1",
+    "value": false
+  },
+  "í hádegismat": {
+    "v": "d320b43a15b1",
+    "value": false
+  },
+  "í höfninni": {
+    "v": "abae58bf7768",
+    "value": false
+  },
+  "í kvöldmat": {
+    "v": "ce0191455b0e",
+    "value": false
+  },
+  "í lofti": {
+    "v": "aa997cc7fc10",
+    "value": false
+  },
+  "í loftinu": {
+    "v": "9323999a777d",
+    "value": false
+  },
+  "í lok annar": {
+    "v": "21280f1a1ac7",
+    "value": false
+  },
+  "í matsalnum": {
+    "v": "c74186a822af",
+    "value": false
+  },
+  "í miðborginni": {
+    "v": "0f3477e8311c",
+    "value": false
+  },
+  "í morgunmat": {
+    "v": "454839ee8da8",
+    "value": false
+  },
+  "í náttúrunni": {
+    "v": "17408c2b7331",
+    "value": false
+  },
+  "í prófinu": {
+    "v": "553db5d7c6ea",
+    "value": false
+  },
+  "í sjónum": {
+    "v": "51052559773f",
+    "value": false
+  },
+  "í sjónvarpi": {
+    "v": "59f9867ef519",
+    "value": false
+  },
+  "í skóginum": {
+    "v": "68a19d26256a",
+    "value": false
+  },
+  "í skólanum": {
+    "v": "0239fb0937f3",
+    "value": false
+  },
+  "í skólastofunni": {
+    "v": "4953265e13c1",
+    "value": false
+  },
+  "í sérstökum tilfellum": {
+    "v": "8cf79bd7ebb3",
+    "value": false
+  },
+  "í sérstökum tilvikum": {
+    "v": "abc243d6d36b",
+    "value": false
+  },
+  "í vatni": {
+    "v": "08d1bbb41297",
+    "value": false
+  },
+  "í vinnunni": {
+    "v": "e69bd9eab93f",
+    "value": false
+  },
+  "í ísskápnum": {
+    "v": "e0907ca77e1a",
+    "value": false
+  },
+  "í íþróttasalnum": {
+    "v": "250889035383",
+    "value": false
+  },
+  "í íþróttum": {
+    "v": "f6bdce75cfd9",
+    "value": false
+  },
+  "í úthverfi": {
+    "v": "676c3e559d6a",
+    "value": false
+  },
+  "íbúð": {
+    "v": "098988da2c3c",
+    "value": false
+  },
+  "ílangt": {
+    "v": "b8b3126eea72",
+    "value": false
+  },
+  "íslenska": {
+    "v": "cb65ffa4b281",
+    "value": false
+  },
+  "íþróttahús": {
+    "v": "e1e61e5ece09",
+    "value": false
+  },
+  "íþróttamaður": {
+    "v": "0d05095614b7",
+    "value": false
+  },
+  "íþróttamenn": {
+    "v": "6948cf174b54",
+    "value": false
+  },
+  "íþróttasalur": {
+    "v": "66710d64cf62",
+    "value": false
+  },
+  "íþróttir": {
+    "v": "64ba99214b59",
+    "value": false
+  },
+  "óreglulegt": {
+    "v": "172e615c3881",
+    "value": false
+  },
+  "öldruð/aldraður": {
+    "v": "d85ffd3e4813",
+    "value": false
+  },
+  "öskrar": {
+    "v": "138c1cfd9a31",
+    "value": false
+  },
+  "úlpa": {
+    "v": "c27933723287",
+    "value": false
+  },
+  "úr bómull": {
+    "v": "543e7db5fb3d",
+    "value": false
+  },
+  "úr endurunnu efni": {
+    "v": "03575699832a",
+    "value": false
+  },
+  "úr gerviefnum": {
+    "v": "f076680134b3",
+    "value": false
+  },
+  "úr gleri": {
+    "v": "ba04dfb271f9",
+    "value": false
+  },
+  "úr leðri": {
+    "v": "edacd07dd93e",
+    "value": false
+  },
+  "úr málmi": {
+    "v": "c256b7e9349a",
+    "value": false
+  },
+  "úr náttúrulegum efnum": {
+    "v": "db79c10203cd",
+    "value": false
+  },
+  "úr plasti": {
+    "v": "f5306b29ebec",
+    "value": false
+  },
+  "úr steini": {
+    "v": "d8599d37cdaa",
+    "value": false
+  },
+  "úr tré": {
+    "v": "1ab266576d67",
+    "value": false
+  },
+  "úr ull": {
+    "v": "eb0ec06abe4e",
+    "value": false
+  },
+  "úti": {
+    "v": "fbcb5745f6b8",
+    "value": false
+  },
+  "úti á landi": {
+    "v": "9e8a72f07078",
+    "value": false
+  },
+  "útskýrðu": {
+    "v": "d1311c1dfd6f",
+    "value": false
+  },
+  "þegar rignir": {
+    "v": "b1fe7bd16138",
+    "value": false
+  },
+  "þríhyrningslaga": {
+    "v": "b8a5d51ad829",
+    "value": false
+  },
+  "þungt": {
+    "v": "ecdf1ca3918d",
+    "value": false
+  },
+  "þurrt": {
+    "v": "e46e8043eaf2",
+    "value": false
+  },
+  "þyrla": {
+    "v": "4ec5486cb982",
+    "value": false
+  },
+  "þögult": {
+    "v": "2ca71f7fec78",
+    "value": false
+  }
+}

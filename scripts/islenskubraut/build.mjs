@@ -8,9 +8,27 @@ import { parse } from 'yaml';
 
 import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
+import { canMergeAgain, mergeSides, unmerged } from './git.mjs';
 import { readGlossur } from './glossur.mjs';
-import { clipsForApp, readHljod, textsToVoice } from './hljod.mjs';
+import {
+  clipName,
+  clipVersion,
+  clipsForApp,
+  clipsForReview,
+  readHeard,
+  readHljod,
+  readState,
+  stateProblems,
+  textsToVoice,
+} from './hljod.mjs';
 import { loadCategories } from './load.mjs';
+import {
+  loadRecord,
+  missingMessage,
+  missingRecordFiles,
+  shallowNote,
+  skipWarning,
+} from './mat.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
@@ -19,6 +37,7 @@ import {
   renderGiskaleikurApp,
   renderGlossur,
   renderHljod,
+  renderHlustun,
   renderTextiApp,
   renderTextiServer,
   renderGiskaleikurServer,
@@ -33,6 +52,7 @@ import {
 import { pageData } from './smidur.mjs';
 import { readTenglar } from './tenglar.mjs';
 import { allTexts, readTexti } from './texti.mjs';
+import { approvals, CONFLICT } from './yfirferd.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
@@ -61,6 +81,9 @@ const SPA_GLOSSUR = resolve(ROOT, 'apps/islenskubraut/src/data/glossur.ts');
 const HLJOD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hljod.yaml');
 const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
 const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
+const HEARD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hlustun.json');
+const SPA_HLUSTUN = resolve(ROOT, 'apps/islenskubraut/src/data/hlustun.ts');
+const STATE_FILE = resolve(ROOT, 'content/islenskubraut/hljod/stada.json');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -167,8 +190,102 @@ const glossur = readdirSync(GLOSSUR_DIR)
 
 // The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
 // drafts. An approved clip with no file breaks the build; a text with no clip has no button.
-const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
-const clips = clipsForApp(textsToVoice(categories), hljod, (f) => existsSync(resolve(CLIP_DIR, f)));
+// A git merge can leave conflict markers in the recordings' files, which no parser reads.
+const conflicted = [HLJOD_FILE, STATE_FILE].filter(
+  (f) => existsSync(f) && CONFLICT.test(readFileSync(f, 'utf8'))
+);
+if (conflicted.length > 0) {
+  console.error(
+    `git left a merge conflict in ${conflicted.map((f) => f.replace(`${ROOT}/`, '')).join(', ')}.`
+  );
+  // pnpm islenskubraut:yfirferd merges them again where git can say what they came from.
+  const sides = mergeSides(ROOT);
+  console.error(
+    conflicted.every((f) => canMergeAgain(ROOT, f, sides, CONFLICT))
+      ? 'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it resolves them.'
+      : 'pnpm islenskubraut:yfirferd cannot merge them again from what git holds now: run it to see why, or remove the markers by hand.'
+  );
+  const skip = skipWarning(sides);
+  if (skip) console.error(skip);
+  process.exit(1);
+}
+/** A recordings file read for what it says; one that cannot be read stops the build, naming it. */
+function readOrStop(file, fn) {
+  try {
+    return fn(readFileSync(file, 'utf8'));
+  } catch (e) {
+    console.error(`${file.replace(`${ROOT}/`, '')} cannot be read: ${e.message}`);
+    console.error(
+      mergeSides(ROOT)?.inProgress || unmerged(ROOT, file)
+        ? 'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it merges it again.'
+        : 'Correct it by hand.'
+    );
+    process.exit(1);
+  }
+}
+const hljod = readOrStop(HLJOD_FILE, (text) => readHljod(parse(text)));
+const voiced = textsToVoice(categories);
+const hasClip = (f) => existsSync(resolve(CLIP_DIR, f));
+const heard = existsSync(HEARD_FILE) ? readHeard(JSON.parse(readFileSync(HEARD_FILE, 'utf8'))) : {};
+// Each clip's audio version, so a verdict given to a recording is not taken for a remade one.
+const version = (f) => clipVersion(readFileSync(resolve(CLIP_DIR, f)));
+const clips = clipsForApp(voiced, hljod, hasClip, version);
+// An approval is for the audio approved: a recording replaced since, or a value changed by hand
+// and not recorded, stops the build until `pnpm islenskubraut:hljod --record` has seen it.
+const state = existsSync(STATE_FILE)
+  ? readOrStop(STATE_FILE, (text) => readState(JSON.parse(text)))
+  : {};
+const problems = stateProblems(hljod, state, (t) =>
+  hasClip(clipName(t)) ? version(clipName(t)) : null
+);
+if (problems.length > 0) {
+  console.error(`content/islenskubraut/hljod/stada.json is out of date:`);
+  for (const p of problems.slice(0, 20)) console.error(`  ${p}`);
+  if (problems.length > 20) console.error(`  … and ${problems.length - 20} more`);
+  console.error('Run: pnpm islenskubraut:hljod --record');
+  process.exit(1);
+}
+// And a value is what the teachers' verdicts give it, wherever the record (hljod/mat/) holds one
+// on the audio as it is now: a git merge, or a hand edit, can leave hljod.yaml saying otherwise.
+// The record's files are only ever added, so no merge can take a side of it or lose an entry.
+// A revert, a merge -s ours or a restore can still take a file of the record out, and with it a
+// teacher's "wrong": then nothing is built until it is back.
+const missing = missingRecordFiles();
+if (missing.length > 0) {
+  console.error(missingMessage(missing));
+  process.exit(1);
+}
+const shallow = shallowNote();
+if (shallow) console.log(shallow);
+let ledger;
+try {
+  ledger = loadRecord();
+} catch (e) {
+  console.error(e.message);
+  process.exit(1);
+}
+const drift = approvals(ledger, hljod, {
+  texts: voiced,
+  version: (t) => (hasClip(clipName(t)) ? version(clipName(t)) : null),
+}).outcomes.filter((o) => o.from !== o.to);
+if (drift.length > 0) {
+  console.error(
+    'content/islenskubraut/hljod/hljod.yaml disagrees with the verdicts in the record (hljod/mat/):'
+  );
+  for (const o of drift.slice(0, 20)) {
+    console.error(
+      o.unbacked
+        ? `  "${o.text}": true, with no approval in the record of its audio as it is now`
+        : `  "${o.text}": ${o.from}, the verdicts give ${o.to}`
+    );
+  }
+  if (drift.length > 20) console.error(`  … and ${drift.length - 20} more`);
+  console.error(
+    'Run: pnpm islenskubraut:yfirferd --apply   (no files needed). To overrule the verdicts, give a ruling.'
+  );
+  process.exit(1);
+}
+const review = clipsForReview(voiced, hljod, hasClip, heard, version);
 
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
@@ -184,6 +301,7 @@ const outputs = [
   [SERVER_TEXTI, renderTextiServer(texts)],
   [SPA_TEXTI, renderTextiApp(texts)],
   [SPA_HLJOD, renderHljod(clips, hljod.voice)],
+  [SPA_HLUSTUN, renderHlustun(review)],
   [SERVER_EGGET, renderEggetServer(egget)],
   [SPA_GLOSSUR, renderGlossur(glossur)],
   [SPA_EGGET, renderEggetApp(egget)],

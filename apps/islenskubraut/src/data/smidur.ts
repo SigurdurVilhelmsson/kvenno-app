@@ -56,6 +56,8 @@ export interface SmidurFrame {
   options: string[] | null;
   /** `sentences[subject][option]`, with a single option slot when `options` is null. */
   sentences: SmidurWord[][][];
+  /** Subjects the frame does not fit; the page does not offer it with them, and their slot is empty. */
+  except?: string[];
 }
 
 export interface SmidurLevel {
@@ -1178,117 +1180,9 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 },
               ],
             ],
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'morgnana.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'daginn.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'kvöldin.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'alltaf.',
-                  changed: false,
-                },
-              ],
-            ],
+            [],
           ],
+          except: ['drykkur'],
         },
         {
           frame: 'Maður notar það ___.',
@@ -2609,8 +2503,15 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'þögult.',
-                  changed: false,
+                  word: 'þögull.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'þögult',
+                    to: 'þögull',
+                  },
+                  lemma: 'e2cc91a3f2d6627b8760297a68af8a2a',
+                  choices: ['þögull', 'þögul', 'þögult'],
                 },
               ],
             ],
@@ -2671,8 +2572,15 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'þögult.',
-                  changed: false,
+                  word: 'þögul.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'þögult',
+                    to: 'þögul',
+                  },
+                  lemma: 'e2cc91a3f2d6627b8760297a68af8a2a',
+                  choices: ['þögull', 'þögul', 'þögult'],
                 },
               ],
             ],
@@ -2777,8 +2685,15 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'þögult.',
-                  changed: false,
+                  word: 'þögul.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'þögult',
+                    to: 'þögul',
+                  },
+                  lemma: 'e2cc91a3f2d6627b8760297a68af8a2a',
+                  choices: ['þögull', 'þögul', 'þögult'],
                 },
               ],
             ],
@@ -3352,6 +3267,28 @@ export const smidur: Record<string, SmidurLevel[]> = {
             {
               case: 'EF',
               forms: ['lítils', 'lítillar', 'lítils'],
+            },
+          ],
+        },
+        e2cc91a3f2d6627b8760297a68af8a2a: {
+          ord: 'þögull',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['þögull', 'þögul', 'þögult'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['þöglan', 'þögla', 'þögult'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['þöglum', 'þögulli', 'þöglu'],
+            },
+            {
+              case: 'EF',
+              forms: ['þöguls', 'þögullar', 'þöguls'],
             },
           ],
         },

@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 import { test, expect } from '@playwright/test';
 
@@ -169,15 +170,126 @@ test.describe('Islenskubraut — card download', () => {
     expect(apiCalls).toEqual([]);
   });
 
-  test('every card the app can link to exists', async ({ request }) => {
-    for (const id of ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur']) {
+  test('every card and sheet the app can link to exists', async ({ request }) => {
+    const ids = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur', 'skolinn'];
+    const kinds = ['spjald', 'ordalisti', 'giskaleikur', 'texti', 'egget'];
+    for (const id of ids) {
       for (const level of ['A1', 'A2', 'B1']) {
-        const res = await request.get(`/islenskubraut/spjold/spjald-${id}-${level}.pdf`);
-        expect(res.status(), `${id} ${level}`).toBe(200);
-        expect(res.headers()['content-type']).toBe('application/pdf');
+        for (const kind of kinds) {
+          const res = await request.get(`/islenskubraut/spjold/${kind}-${id}-${level}.pdf`);
+          expect(res.status(), `${kind} ${id} ${level}`).toBe(200);
+          expect(res.headers()['content-type']).toBe('application/pdf');
+        }
       }
     }
     // A card that does not exist is a 404, not the app's index.html under a .pdf name.
     expect((await request.get('/islenskubraut/spjold/spjald-dyr-C2.pdf')).status()).toBe(404);
+  });
+
+  // The recordings sit beside the app as files, as nginx serves them (server/nginx-site.conf):
+  // a missing one is a 404, not the app's index.html handed to an audio player.
+  test('a recording is served as audio, and a missing one is a 404', async ({ request }) => {
+    const dir = fileURLToPath(new URL('../dist/islenskubraut/hljod', import.meta.url));
+    const file = readdirSync(dir).find((f) => f.endsWith('.mp3'));
+    expect(file).toBeTruthy();
+    const res = await request.get(`/islenskubraut/hljod/${file}`);
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toBe('audio/mpeg');
+    expect((await request.get('/islenskubraut/hljod/0000000000000000.mp3')).status()).toBe(404);
+  });
+});
+
+test.describe('Islenskubraut — the teachers’ review pages', () => {
+  // The review page is several screens long; a page opened from low down on it opens at its top.
+  test('a page opened from far down the review page opens at its top', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd');
+    const last = page.getByRole('link', { name: /^Hlusta\s*, Skólinn/ });
+    await last.scrollIntoViewIfNeeded();
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(1000);
+    await last.click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Hlustun' })).toBeVisible();
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  });
+
+  // The listening page is tens of thousands of pixels long and loads on its own, after the
+  // browser's own attempt to restore the scroll; a reload must still keep the teacher's place.
+  test('a reload keeps the place on the long listening page', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd/hljod');
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 6000));
+    await page.waitForFunction(() =>
+      Object.keys(window.sessionStorage).some(
+        (k) =>
+          k.startsWith('islenskubraut-skrun:') && Number(window.sessionStorage.getItem(k)) > 5000
+      )
+    );
+    await page.reload();
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(5900);
+  });
+
+  // A link to a card on the review page (`#matur`) makes a history entry the router gives no key;
+  // the page gives it one, so a reload there still finds the teacher's place.
+  test('a reload after a link to a card keeps the place', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd');
+    await page
+      .getByRole('navigation', { name: 'Spjöldin' })
+      .getByRole('link', { name: /Matur/ })
+      .click();
+    await expect(page).toHaveURL(/#matur$/);
+    await page.evaluate(() => window.scrollBy(0, 700));
+    const y = await page.evaluate(() => Math.round(window.scrollY));
+    await page.waitForFunction(
+      (y) =>
+        Object.keys(window.sessionStorage).some(
+          (k) =>
+            k.startsWith('islenskubraut-skrun:') &&
+            k !== 'islenskubraut-skrun:default' &&
+            Math.abs(Number(window.sessionStorage.getItem(k)) - y) <= 2
+        ),
+      y
+    );
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 2, name: /Matur/ })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBeGreaterThan(y - 5);
+    expect(await page.evaluate(() => Math.round(window.scrollY))).toBeLessThan(y + 5);
+  });
+
+  // The page being left must not write the next page's scroll to the top as its own place: back
+  // after a reload on the next page returns to where the teacher was.
+  test('back to the listening page after a reload elsewhere keeps its place', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd/hljod');
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 20000));
+    await page.waitForFunction(() =>
+      Object.keys(window.sessionStorage).some(
+        (k) =>
+          k.startsWith('islenskubraut-skrun:') && Number(window.sessionStorage.getItem(k)) > 19000
+      )
+    );
+    // A click as a mouse gives it, without scrolling the link into view first.
+    await page.getByRole('link', { name: 'Yfirferð' }).dispatchEvent('click');
+    await expect(page.getByRole('heading', { level: 1, name: /Yfirferð/ })).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 1, name: /Yfirferð/ })).toBeVisible();
+    await page.goBack();
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(19900);
+  });
+
+  // A tab left open across a deploy asks for a chunk the deploy removed. It reloads once and
+  // gets the new one, rather than going blank.
+  test('a page whose chunk has gone since the tab opened reloads instead of going blank', async ({
+    page,
+  }) => {
+    await page.goto('/islenskubraut/yfirferd');
+    let refused = 0;
+    await page.route(/\/islenskubraut\/assets\/YfirferdHljod-[^/]+\.js$/, (route) => {
+      if (refused++ === 0) return route.fulfill({ status: 404, body: '' });
+      return route.continue();
+    });
+    await page.getByRole('link', { name: 'hlustunarsíðunni' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Hlustun' })).toBeVisible();
+    expect(refused).toBeGreaterThanOrEqual(2);
   });
 });

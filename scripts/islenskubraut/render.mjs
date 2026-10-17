@@ -78,7 +78,15 @@ export interface BuilderFrame {
   blank:
     | null
     | { subject: true }
-    | { words: string; options: string[]; form: 'as-is' | 'agree' | 'ÞF' };
+    | {
+        words: string;
+        options: string[];
+        form: 'as-is' | 'agree' | 'ÞF';
+        /** A word of the list that takes another form than the blank's. */
+        forms?: Record<string, 'as-is' | 'agree' | 'ÞF'>;
+      };
+  /** Subjects the frame does not fit, which the builder does not offer it with. */
+  except?: string[];
 }
 
 /** The sentence builder's tags for one level (REVIEW-QUEUE D3, C9). */
@@ -235,6 +243,8 @@ export interface SmidurFrame {
   options: string[] | null;
   /** \`sentences[subject][option]\`, with a single option slot when \`options\` is null. */
   sentences: SmidurWord[][][];
+  /** Subjects the frame does not fit; the page does not offer it with them, and their slot is empty. */
+  except?: string[];
 }
 
 export interface SmidurLevel {
@@ -403,6 +413,11 @@ export interface Hljod {
   file: string;
   /** A person has listened to it and agrees. */
   approved: boolean;
+  /**
+   * The version of its audio, put in its address (\`?v=\`), so a browser fetches a recording made
+   * again rather than replaying a copy it kept of the old one.
+   */
+  v?: string;
 }
 
 /** The voice the clips were made with, credited wherever they play. */
@@ -465,6 +480,45 @@ export interface Glossur {
 }
 
 export const glossur: Glossur[] = ${literal(glossur)};
+`;
+}
+
+/**
+ * The listening page's data (\`/islenskubraut/yfirferd/hljod\`): every clip with where it appears,
+ * whether it is approved, and what a speech recogniser heard in it. Only the teachers' review
+ * pages import it, and they load on their own, so the card pages never carry it.
+ */
+export function renderHlustun(clips) {
+  return `${WARNING}
+//
+// What the recogniser heard comes from content/islenskubraut/hljod/hlustun.json (hljod/hlustun.py).
+
+import type { Level } from './types';
+
+/** Where a text is on the cards; \`level\` is null on the vocabulary page, the same at every level. */
+export interface HlustunPlace {
+  category: string;
+  level: Level | null;
+  where: string;
+}
+
+export interface HlustunClip {
+  text: string;
+  file: string;
+  /** A hash of the audio: a verdict given to another version is for a recording since remade. */
+  v: string;
+  approved: boolean;
+  /** Heard as wrong (\`rangt\` in hljod.yaml): students never hear it. */
+  rejected?: true;
+  places: HlustunPlace[];
+  /** What the voice was told to say, where it is not the text as printed (\`Hún eða Hann er …\`). */
+  say?: string;
+  /** What the recogniser heard, and how much it differs from the text (0 is a match). */
+  heard?: string;
+  score?: number;
+}
+
+export const hlustun: HlustunClip[] = ${literal(clips)};
 `;
 }
 
