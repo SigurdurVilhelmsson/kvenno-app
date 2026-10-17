@@ -397,6 +397,8 @@ builder:
         agree:
           það: ÞF
         words: Hvenær er þetta notað?
+        except:
+          - drykkur
       - frame: Maður notar það ___.
         agree:
           það: ÞF

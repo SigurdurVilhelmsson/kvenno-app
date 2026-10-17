@@ -415,3 +415,16 @@ describe('Islenskubraut App routing', () => {
     }
   });
 });
+
+describe('Islenskubraut scroll on navigation', () => {
+  // A link opens the next page at its top; a reload, a restored tab or back/forward (all POP) are
+  // left to the browser, which puts the reader back where they were.
+  it('scrolls to the top on a link, and not on the first load', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    renderWithRouter(<App />, ['/']);
+    expect(scrollTo).not.toHaveBeenCalled();
+    fireEvent.click(screen.getAllByRole('link', { name: new RegExp(categories[0].name) })[0]);
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+    scrollTo.mockRestore();
+  });
+});

@@ -1026,6 +1026,7 @@ export const categories: Category[] = [
               options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
               form: 'as-is',
             },
+            except: ['drykkur'],
           },
           {
             frame: 'Maður notar það ___.',
@@ -1514,6 +1515,9 @@ export const categories: Category[] = [
               words: 'Hvaða hljóð gefur það frá sér?',
               options: ['hátt', 'lágt', 'þögult'],
               form: 'as-is',
+              forms: {
+                þögult: 'agree',
+              },
             },
           },
           {

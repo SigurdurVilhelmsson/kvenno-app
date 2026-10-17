@@ -59,6 +59,16 @@ export function lemmaOf(form, ofl, lookups, chosen = {}) {
   return null;
 }
 
+/** The form one word of a blank takes: its own, where the tags give it one, else the blank's. */
+export function formOf(blank, option) {
+  return blank.forms?.[option] ?? blank.form;
+}
+
+/** Whether a frame is offered with a subject: not when the tags name the subject under `except`. */
+export function fits(frame, subject) {
+  return !frame.except?.includes(subject.text);
+}
+
 /** Every inflection table the builder needs: one GUID per word it inflects or reads a gender from. */
 export function paradigmsNeeded(categories, lookups) {
   const guids = new Set();
@@ -85,9 +95,10 @@ export function paradigmsNeeded(categories, lookups) {
         need(b.subject.word, 'no', `${where} subject`, b.lemmas);
       }
       for (const f of b.frames) {
-        const form = f.blank?.form;
-        if (form !== 'agree' && form !== 'ÞF') continue;
+        if (!f.blank?.options) continue;
         for (const o of f.blank.options) {
+          const form = formOf(f.blank, o);
+          if (form !== 'agree' && form !== 'ÞF') continue;
           for (const t of tokens(o))
             need(t, form === 'agree' ? 'lo' : 'no', `${where} "${f.frame}"`, b.lemmas);
         }
@@ -143,7 +154,9 @@ const GENDERS = ['KK', 'KVK', 'HK'];
 
 /** The distinct forms among `tags` in a table, in order: the alternatives a drill offers. */
 function formsOf(paradigm, tags) {
-  return [...new Set(tags.flatMap((t) => paradigm.bmyndir.filter((f) => f.g === t).map((f) => f.b)))];
+  return [
+    ...new Set(tags.flatMap((t) => paradigm.bmyndir.filter((f) => f.g === t).map((f) => f.b))),
+  ];
 }
 
 /**
@@ -208,12 +221,13 @@ export function buildWords(frame, subject, option, lookups, paradigms, chosen = 
       // Word by word, as the sentence is compared with the card word by word.
       const asWritten = (text) => text.split(' ').map((word) => ({ word }));
       if (frame.blank?.subject) return end(asWritten(subject.text));
-      if (frame.blank.form === 'as-is') return end(asWritten(option));
-      const kind = frame.blank.form === 'agree' ? 'samræmi' : 'þolfall';
+      const form = formOf(frame.blank, option);
+      if (form === 'as-is') return end(asWritten(option));
+      const kind = form === 'agree' ? 'samræmi' : 'þolfall';
       const verb = kind === 'þolfall' ? parts[i - 1]?.replace(/[.,?!]+$/, '') : undefined;
       return end(
         tokens(option).map((w) => {
-          const done = inflectWord(w, frame.blank.form, subject, lookups, paradigms, chosen);
+          const done = inflectWord(w, form, subject, lookups, paradigms, chosen);
           if (!done.lemma) return done;
           return { ...done, why: { kind, from: w, to: done.word, ...(verb ? { verb } : {}) } };
         })
@@ -255,7 +269,7 @@ export function allSentences(category, lookups, paradigms) {
       continue;
     }
     for (const subject of subjects) {
-      for (const frame of builder.frames) {
+      for (const frame of builder.frames.filter((f) => fits(f, subject))) {
         const options = frame.blank && !frame.blank.subject ? frame.blank.options : [null];
         for (const option of options) {
           const entry = { level: builder.level, subject: subject.text, frame: frame.frame, option };
@@ -325,18 +339,25 @@ export function pageData(category, lookups, paradigms) {
     const subjects = subjectsOf(builder, lookups, paradigms);
     const frames = builder.frames.map((frame) => {
       const options = frame.blank && !frame.blank.subject ? frame.blank.options : null;
+      // A subject the frame does not fit gets no sentences; the page does not offer the frame.
       const sentences = subjects.map((subject) =>
-        (options ?? [null]).map((option) => {
-          const built = buildWords(frame, subject, option, lookups, paradigms, builder.lemmas);
-          const fill = frame.blank?.subject ? subject.text : option;
-          return markChanges(fill === null ? frame.frame : frame.frame.replace('___', fill), built);
-        })
+        fits(frame, subject)
+          ? (options ?? [null]).map((option) => {
+              const built = buildWords(frame, subject, option, lookups, paradigms, builder.lemmas);
+              const fill = frame.blank?.subject ? subject.text : option;
+              return markChanges(
+                fill === null ? frame.frame : frame.frame.replace('___', fill),
+                built
+              );
+            })
+          : []
       );
       return {
         frame: frame.frame,
         question: frame.blank?.words ?? null,
         options,
         sentences,
+        ...(frame.except ? { except: frame.except } : {}),
       };
     });
     // "Allar myndir orðsins": the table of every word a sentence on this page inflects.

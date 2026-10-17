@@ -356,6 +356,8 @@ builder:
         agree:
           Það: NF
         words: Hvaða hljóð gefur það frá sér?
+        forms:
+          þögult: agree
       - frame: Maður notar það ___.
         agree:
           það: ÞF

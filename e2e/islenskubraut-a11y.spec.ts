@@ -31,6 +31,36 @@ async function expectNoViolations(page: Page, where: string) {
   expect(summary, where).toEqual([]);
 }
 
+/**
+ * How far the page runs past the screen's right edge, measured once the web fonts have loaded.
+ * Measured before then, the result depends on how fast they arrive: CI's DejaVu Sans fallback is
+ * wider than DM Sans, and the level buttons ran 2 px past the screen in it until 2026-10-17.
+ */
+async function sidewaysAt(page: Page, url: string) {
+  await page.goto(url);
+  await expect(page.locator('h1')).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  return page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+}
+
+/**
+ * The page as a phone shows it while the web fonts are still loading, or when they never arrive:
+ * in a wide fallback. DejaVu Sans is named because it is the widest of the common ones and is on
+ * every Ubuntu machine, CI's included; a machine without it falls back to its own sans-serif.
+ */
+async function withoutWebFonts(page: Page) {
+  await page.route(/\.woff2?$/, (route) => route.abort());
+  await page.addInitScript(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('style');
+      style.textContent = "* { font-family: 'DejaVu Sans', sans-serif !important; }";
+      document.head.append(style);
+    });
+  });
+}
+
 test('the home page has no WCAG AA violations', async ({ page }) => {
   await page.goto('/islenskubraut/');
   await expect(page.locator('h1')).toBeVisible();
@@ -86,8 +116,12 @@ test('the card page with its draft recordings has no WCAG AA violations', async 
     );
     expect(overflow, tab).toBeLessThanOrEqual(0);
   }
-  const played = page.waitForRequest((r) =>
-    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3$/.test(r.url())
+  // Asked for by the version of its audio, so a browser plays a recording made again, not a copy.
+  // The player's own request (`media`), not the page's check of what the address holds.
+  const played = page.waitForRequest(
+    (r) =>
+      r.resourceType() === 'media' &&
+      /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
   );
   await page
     .getByRole('button', { name: /^Hlusta: / })
@@ -130,27 +164,76 @@ test('the list of sentence builders has no WCAG AA violations', async ({ page })
 });
 
 // The tabs (Orðaforði, Setningarammar, Spurningaspjald) ran 32 px past a 360 px screen until
-// 2026-10-16, on every card, so every card and its draft links are checked.
-test('the card pages do not scroll sideways at 360 px', async ({ page }) => {
+// 2026-10-16, on every card, so every card and its draft links are checked, in the web font and
+// in a wide fallback.
+for (const fonts of ['web', 'fallback'] as const) {
+  test(`the card pages do not scroll sideways at 360 px (${fonts} font)`, async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    if (fonts === 'fallback') await withoutWebFonts(page);
+    for (const id of CARDS) {
+      expect(await sidewaysAt(page, `/islenskubraut/spjald/${id}?drog`), id).toBeLessThanOrEqual(0);
+    }
+  });
+
+  test(`the sentence builder does not scroll sideways at 360 px (${fonts} font)`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    if (fonts === 'fallback') await withoutWebFonts(page);
+    for (const id of CATEGORIES) {
+      expect(await sidewaysAt(page, `/islenskubraut/smidur/${id}`), id).toBeLessThanOrEqual(0);
+    }
+  });
+}
+
+// The teachers' review pages, linked from nowhere on the site. Checked with a note written and a
+// recording marked wrong, so the note box and the "Hvað er rangt?" field are checked too, and
+// at a phone's width, since a teacher may review on one.
+test('the review page has no WCAG AA violations and keeps a note over a reload', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 360, height: 640 });
-  for (const id of CARDS) {
-    await page.goto(`/islenskubraut/spjald/${id}?drog`);
-    await expect(page.locator('h1')).toBeVisible();
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-    );
-    expect(overflow, id).toBeLessThanOrEqual(0);
-  }
+  await page.goto('/islenskubraut/yfirferd');
+  await expect(page.getByRole('heading', { level: 1, name: 'Yfirferð' })).toBeVisible();
+  const dyr = page.getByRole('region', { name: /Dýr/ });
+  await dyr.locator('summary').first().click();
+  await page.getByLabel('Athugasemd um Spjaldið, Dýr').fill('A1: prófun.');
+  await expectNoViolations(page, 'yfirferð');
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+  await page.reload();
+  await expect(page.getByLabel('Athugasemd um Spjaldið, Dýr')).toHaveValue('A1: prófun.');
+  // A name first: it says who sent the file, a ruling is given by it, and it names the file,
+  // between the time and the start of the browser's id.
+  await page.getByLabel('Nafnið þitt').fill('Þóra Ösp');
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Sækja skrá' }).click();
+  expect((await download).suggestedFilename()).toMatch(
+    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}-\d{6}-thora-osp-[a-z0-9]{6}\.json$/
+  );
 });
 
-test('the sentence builder does not scroll sideways at 360 px', async ({ page }) => {
+test('the listening page has no WCAG AA violations', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
-  for (const id of CATEGORIES) {
-    await page.goto(`/islenskubraut/smidur/${id}`);
-    await expect(page.locator('h1')).toBeVisible();
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-    );
-    expect(overflow, id).toBeLessThanOrEqual(0);
-  }
+  await page.goto('/islenskubraut/yfirferd/hljod?flokkur=dyr');
+  await expect(page.getByRole('heading', { level: 1, name: 'Hlustun' })).toBeVisible();
+  const first = page.getByRole('list', { name: 'Upptökur' }).getByRole('listitem').first();
+  await first.getByRole('button', { name: 'Rangt' }).click();
+  await expect(first.getByLabel(/^Hvað er rangt\?/)).toBeVisible();
+  await expectNoViolations(page, 'hlustun');
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+  // Asked for by the version the page was built with, so no copy of older audio is played.
+  // The player's own request (`media`), not the page's check of what the address holds.
+  const played = page.waitForRequest(
+    (r) =>
+      r.resourceType() === 'media' &&
+      /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
+  );
+  await first.getByRole('button', { name: /^Hlusta: / }).click();
+  expect((await (await played).response())?.status()).toBe(200);
 });

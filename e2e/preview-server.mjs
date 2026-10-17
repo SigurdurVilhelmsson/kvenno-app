@@ -39,6 +39,7 @@ const MIME = {
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
   '.pdf': 'application/pdf',
+  '.mp3': 'audio/mpeg',
   '.ttf': 'font/ttf',
   '.txt': 'text/plain; charset=utf-8',
   '.webmanifest': 'application/manifest+json',
@@ -79,7 +80,7 @@ function tryServeFile(filePath, res) {
 
 // Static files with no SPA behind them (mirroring their own nginx location): a missing one is
 // a 404, never the app's index.html, which a browser would save under a .pdf name.
-const NO_FALLBACK = ['/islenskubraut/spjold/'];
+const NO_FALLBACK = ['/islenskubraut/spjold/', '/islenskubraut/hljod/'];
 
 function fallbackIndex(urlPath, res) {
   if (NO_FALLBACK.some((prefix) => urlPath.startsWith(prefix))) {

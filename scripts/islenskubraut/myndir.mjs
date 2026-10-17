@@ -144,7 +144,9 @@ export function parseSearch(word, status, body) {
   if (status === 404) return [];
   if (status < 200 || status >= 300) throw new Error(`ARASAAC answered ${status} for "${word}"`);
   if (!Array.isArray(body) || body.some((p) => !Number.isInteger(p?._id))) {
-    throw new Error(`unexpected ARASAAC answer for "${word}": ${JSON.stringify(body).slice(0, 200)}`);
+    throw new Error(
+      `unexpected ARASAAC answer for "${word}": ${JSON.stringify(body).slice(0, 200)}`
+    );
   }
   return body.filter((p) => !p.sex && !p.violence).map((p) => p._id);
 }
@@ -175,7 +177,10 @@ export async function fetchPicture(id, fetchImpl = fetch) {
 }
 
 const escape = (s) =>
-  String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  String(s).replace(
+    /[&<>"]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]
+  );
 
 /**
  * A page for a person to check every pairing: each chip with the chosen picture and the other

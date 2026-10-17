@@ -9,6 +9,7 @@ import {
   buildSentence,
   buildWords,
   markChanges,
+  pageData,
   paradigmsNeeded,
   subjectsOf,
   wordTable,
@@ -368,5 +369,57 @@ describe('a word’s table', () => {
     const t = wordTable(paradigms.saetur);
     expect(t.columns).toEqual(['karlkyn', 'kvenkyn', 'hvorugkyn']);
     expect(t.rows[0]).toEqual({ case: 'NF', forms: ['sætur', 'sæt', 'sætt'] });
+  });
+});
+
+// REVIEW-QUEUE C9's two drafted fixes: a frame not offered with some subjects, and one word of a
+// blank in another form than the rest.
+describe('exceptions in the tags', () => {
+  const builder = {
+    level: 'A1',
+    confirmed: false,
+    subject: { kind: 'words', words: 'x', options: ['ávöxtur', 'kjöt'] },
+    lemmas: { sætt: 'sætur' },
+    frames: [
+      {
+        ...frame(
+          'Það er ___.',
+          { Það: 'NF' },
+          { ...words(['sætt', 'úti']), forms: { sætt: 'agree' } }
+        ),
+      },
+      { ...frame('Maður notar það ___.', { það: 'ÞF' }, words(['úti'])), except: ['kjöt'] },
+    ],
+  };
+  const category = { id: 'prufa', builder: [builder] };
+
+  it('puts one word of a blank in its own form and leaves the rest as written', () => {
+    const [avoxtur] = subjectsOf(builder, lookups, paradigms);
+    const f = builder.frames[0];
+    expect(buildSentence(f, avoxtur, 'sætt', lookups, paradigms, builder.lemmas)).toBe(
+      'Hann er sætur.'
+    );
+    expect(buildSentence(f, avoxtur, 'úti', lookups, paradigms, builder.lemmas)).toBe(
+      'Hann er úti.'
+    );
+  });
+
+  it('builds no sentence for a subject the frame does not fit, and tells the page so', () => {
+    const sentences = allSentences(category, lookups, paradigms);
+    expect(
+      sentences.filter((e) => e.frame === 'Maður notar það ___.').map((e) => e.subject)
+    ).toEqual(['ávöxtur']);
+    const [level] = pageData(category, lookups, paradigms);
+    expect(level.frames[1].except).toEqual(['kjöt']);
+    expect(level.frames[1].sentences[1]).toEqual([]);
+    expect(level.frames[1].sentences[0]).toHaveLength(1);
+  });
+
+  it('fetches a table only for the words a blank inflects', () => {
+    // Exactly these, and no problem: an as-is word taken for an inflected one would add either.
+    expect(paradigmsNeeded([category], lookups)).toEqual({
+      guids: ['avoxtur', 'kjot', 'saetur'],
+      problems: [],
+    });
   });
 });

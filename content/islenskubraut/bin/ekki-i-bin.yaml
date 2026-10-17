@@ -7,4 +7,11 @@
 #   grasæta: Samsett orð (gras + æta); stendur í Íslenskri nútímamálsorðabók.
 #
 # Do not list a misspelling here to make the check pass. Fix it in the category YAML.
-{}
+
+# Checked on Málið.is on 2026-10-16: each is a headword in Íslensk nútímamálsorðabók.
+sívalningslaga: Stendur í Íslenskri nútímamálsorðabók (Málið.is, 2026-10-16).
+straumlínulaga: Stendur í Íslenskri nútímamálsorðabók (Málið.is, 2026-10-16).
+þríhyrningslaga: Stendur í Íslenskri nútímamálsorðabók (Málið.is, 2026-10-16).
+verkefnablað: Stendur í Íslenskri nútímamálsorðabók (Málið.is, 2026-10-16).
+# A proper name, in Skólinn's B1 teacher note.
+líno: Heiti orðalistans LÍNO-2 (Listi yfir íslenskan námsorðaforða), sem Námsorð Skólans koma úr.
