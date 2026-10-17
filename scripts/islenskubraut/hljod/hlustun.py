@@ -2,8 +2,9 @@
 
     python scripts/islenskubraut/hljod/hlustun.py hljod-verk.json content/islenskubraut/hljod/hlustun.json
 
-It merges into the file named, keeping every reading of a clip it was not given. For each job
-whose clip exists, it transcribes the clip and compares it with what the voice was told
+It merges into the file named, keeping every reading of a clip it was not given, and records the
+version of the audio it heard (`v`, as `clipVersion` in hljod.mjs), so a reading of a recording
+since made again is ignored. For each job whose clip exists, it transcribes the clip and compares it with what the voice was told
 to say: the share of its letters that differ from the closest stretch of what was heard (0 is a
 perfect match). Only the closest stretch counts, because the recogniser often hears a word that is
 not there before a single word (`og hart` for `hart`). A high rate does not prove the clip is
@@ -14,6 +15,7 @@ show what was heard beside each clip and put the doubtful ones first.
 The recogniser is wav2vec2-large-xlsr-53-icelandic-ep30-967h (Reykjavík University's Language and
 Voice Lab, CC BY 4.0).
 """
+import hashlib
 import json
 import os
 import re
@@ -73,7 +75,14 @@ def main(jobs_file, out_file):
             ids = model(inputs.input_values).logits.argmax(dim=-1)
         heard = letters(processor.batch_decode(ids)[0])
         said = letters(job['say'])
-        out[job['text']] = {'heard': heard, 'score': round(distance(said, heard) / max(1, len(said)), 3)}
+        with open(path, 'rb') as f:
+            version = hashlib.sha256(f.read()).hexdigest()[:12]
+        out[job['text']] = {
+            'heard': heard,
+            'score': round(distance(said, heard) / max(1, len(said)), 3),
+            # The audio heard, as clipVersion in hljod.mjs: a reading of other audio is ignored.
+            'v': version,
+        }
     tmp = f'{out_file}.tmp'
     with open(tmp, 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, indent=2)

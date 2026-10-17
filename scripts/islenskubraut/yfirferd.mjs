@@ -8,13 +8,17 @@
 
 export const FORMAT = 'islenskubraut-yfirferd/1';
 
+/** A verdict the reviewer took back by pressing the pressed button again. */
+export const WITHDRAWN = 'withdrawn';
+
 function assert(condition, message) {
   if (!condition) throw new Error(`yfirferd: ${message}`);
 }
 
 /**
  * One review file, checked. Returns `{ reviewer, date, saved, notes, clips }`. A file with no
- * reviewer's name is named by `where`, its file name.
+ * reviewer's name is named by `where`, its file name. Each verdict carries the version of the
+ * audio it was given to (`v`) and when it was given (`at`, else when the file was saved).
  */
 export function readReview(raw, where = 'review') {
   assert(raw && typeof raw === 'object', `${where} is not a review file`);
@@ -34,12 +38,13 @@ export function readReview(raw, where = 'review') {
   const clips = raw.clips.map((c, i) => {
     assert(c && typeof c.text === 'string' && c.text !== '', `${where}: clips[${i}] needs a text`);
     assert(
-      c.verdict === 'right' || c.verdict === 'wrong',
-      `${where}: clips[${i}].verdict must be right or wrong`
+      c.verdict === 'right' || c.verdict === 'wrong' || c.verdict === WITHDRAWN,
+      `${where}: clips[${i}].verdict must be right, wrong or ${WITHDRAWN}`
     );
     return {
       text: c.text,
       verdict: c.verdict,
+      at: typeof c.at === 'string' ? c.at : saved,
       ...(typeof c.v === 'string' ? { v: c.v } : {}),
       ...(c.note ? { note: String(c.note) } : {}),
     };
@@ -47,11 +52,15 @@ export function readReview(raw, where = 'review') {
   return { reviewer: reviewer || where, date, saved, notes, clips };
 }
 
+/** Two files are from one reviewer when the names match, ignoring case and spaces at the ends. */
+const reviewerKey = (name) => name.trim().toLocaleLowerCase('is');
+
 /**
- * What each reviewer says, once: a reviewer's later file replaces what an earlier one said about
- * the same note or recording, since the page keeps the review and each file carries all of it.
- * Files are ordered by when they were saved, then as given. Returns
- * `[{ reviewer, dates, notes: Map(key → note), clips: Map(text → verdict) }]`.
+ * What each reviewer says, once. Per recording, a reviewer's latest verdict counts, by when it
+ * was given, and a withdrawn one leaves that reviewer with none. Per item, the note in their
+ * latest file that has one counts. A verdict or note in an earlier file stands unless a later
+ * one replaces or withdraws it: clearing the review on the page withdraws nothing already sent.
+ * Returns `[{ reviewer, dates, notes: Map(key → note), clips: Map(text → verdict) }]`.
  */
 export function byReviewer(reviews) {
   const ordered = reviews
@@ -60,52 +69,67 @@ export function byReviewer(reviews) {
     .map(({ r }) => r);
   const out = new Map();
   for (const r of ordered) {
-    if (!out.has(r.reviewer)) {
-      out.set(r.reviewer, { reviewer: r.reviewer, dates: [], notes: new Map(), clips: new Map() });
+    const key = reviewerKey(r.reviewer);
+    if (!out.has(key)) {
+      out.set(key, { reviewer: r.reviewer, dates: [], notes: new Map(), clips: new Map() });
     }
-    const who = out.get(r.reviewer);
+    const who = out.get(key);
     if (r.date && !who.dates.includes(r.date)) who.dates.push(r.date);
     for (const n of r.notes) who.notes.set(n.key, n);
-    for (const c of r.clips) who.clips.set(c.text, c);
+    for (const c of r.clips) {
+      const before = who.clips.get(c.text);
+      if (!before || before.at <= c.at) who.clips.set(c.text, c);
+    }
+  }
+  for (const who of out.values()) {
+    for (const [text, c] of who.clips) if (c.verdict === WITHDRAWN) who.clips.delete(text);
   }
   return [...out.values()];
 }
 
 /**
- * What the reviews mean for the recordings, against `hljod.yaml` (`manifest`, from `readHljod`),
- * the texts on the cards (`texts`, from `textsToVoice`) and each clip's current audio
- * (`version(text)`, from `clipVersion`, or null for a clip with no file).
+ * What the reviews mean for the recordings. `manifest` is `hljod.yaml` (`readHljod`), `texts` the
+ * texts on the cards (`textsToVoice`), `version(text)` the clip's current audio (`clipVersion`,
+ * null with no file), and `state` the record of when each value was set (`stada.json`, brought up
+ * to date with `syncState`). A verdict counts only for the audio it was given to.
  *
- * - `approve`: someone heard it as right, nobody as wrong, and it is still a draft.
- * - `reject`: someone heard it as wrong, nobody as right, and it is a draft. `--apply` writes
- *   `rangt`, so a later run cannot approve it on another reviewer's word.
- * - `revoke`: approved, and now heard as wrong by someone. It plays for students until `--apply`
- *   writes `rangt`.
- * - `conflicts`: a draft heard both ways, for a person to settle.
- * - `blocked`: marked `rangt` before, now heard as right. Make it again, then write `false`.
- * - `already`: approved and heard as right, or `rangt` and heard as wrong.
+ * A draft (`false`) goes by every verdict on it. A decision (`true` or `rangt`), whether by a
+ * person or by an earlier `--apply`, stands against every verdict given before it, so a conflict
+ * a person has settled stays settled; only a verdict given since can reopen it.
+ *
+ * - `approve`: a draft someone heard as right and nobody as wrong. `--apply` writes `true`.
+ * - `reject`: a draft someone heard as wrong and nobody as right. `--apply` writes `rangt`, so a
+ *   later run cannot approve it on another reviewer's word.
+ * - `revoke`: approved, and heard as wrong since. Students hear it until `--apply` has written
+ *   `rangt` and the site has been built and deployed.
+ * - `conflicts`: a draft heard both ways, for a person to settle by writing `true` or `rangt`.
+ * - `blocked`: `rangt`, and heard as right since. A person decides: `true`, or make it again.
+ * - `already`: nothing new since the decision.
  * - `stale`: every verdict was given to a recording since made again; listen again.
+ * - `noFile`: the clip has no file just now (deleted to be made again).
  * - `unknown`: no longer on the cards, or never recorded.
  *
- * Each entry is `{ text, verdicts: [{ reviewer, verdict, note? }] }`.
+ * Each entry is `{ text, verdicts: [{ reviewer, verdict, at, note? }] }`.
  */
-export function approvals(reviews, manifest, { texts, version }) {
+export function approvals(reviews, manifest, { texts, version, state = {} }) {
   const onCards = (text) => texts.has(text) && manifest.clips.has(text);
-  const verdicts = new Map();
-  const stale = new Map();
-  const unknown = new Map();
+  const sorted = { current: new Map(), stale: new Map(), noFile: new Map(), unknown: new Map() };
   for (const who of byReviewer(reviews)) {
     for (const c of who.clips.values()) {
-      const current = onCards(c.text) ? version(c.text) : null;
-      const target = !onCards(c.text)
-        ? unknown
-        : current !== null && c.v === current
-          ? verdicts
-          : stale;
-      if (!target.has(c.text)) target.set(c.text, []);
-      target.get(c.text).push({
+      const current = onCards(c.text) ? version(c.text) : undefined;
+      const bucket = !onCards(c.text)
+        ? 'unknown'
+        : current === null
+          ? 'noFile'
+          : c.v === current
+            ? 'current'
+            : 'stale';
+      const list = sorted[bucket];
+      if (!list.has(c.text)) list.set(c.text, []);
+      list.get(c.text).push({
         reviewer: who.reviewer,
         verdict: c.verdict,
+        at: c.at,
         ...(c.note ? { note: c.note } : {}),
       });
     }
@@ -118,22 +142,24 @@ export function approvals(reviews, manifest, { texts, version }) {
     blocked: [],
     already: [],
     stale: [],
+    noFile: [],
     unknown: [],
   };
-  for (const [text, vs] of unknown) result.unknown.push({ text, verdicts: vs });
-  for (const [text, vs] of stale) {
-    if (!verdicts.has(text)) result.stale.push({ text, verdicts: vs });
+  for (const [text, vs] of sorted.unknown) result.unknown.push({ text, verdicts: vs });
+  for (const [text, vs] of sorted.noFile) result.noFile.push({ text, verdicts: vs });
+  for (const [text, vs] of sorted.stale) {
+    if (!sorted.current.has(text)) result.stale.push({ text, verdicts: vs });
   }
-  for (const [text, vs] of verdicts) {
+  for (const [text, vs] of sorted.current) {
     const entry = { text, verdicts: vs };
-    const right = vs.some((v) => v.verdict === 'right');
-    const wrong = vs.some((v) => v.verdict === 'wrong');
-    const approved = manifest.clips.get(text);
-    const rejected = manifest.rejected.has(text);
-    if (approved) result[wrong ? 'revoke' : 'already'].push(entry);
-    else if (rejected) result[right ? 'blocked' : 'already'].push(entry);
-    else if (right && wrong) result.conflicts.push(entry);
-    else result[right ? 'approve' : 'reject'].push(entry);
+    const decided = state[text]?.v === version(text) ? state[text].at : '';
+    const since = vs.filter((v) => v.at > decided);
+    const right = (list) => list.some((v) => v.verdict === 'right');
+    const wrong = (list) => list.some((v) => v.verdict === 'wrong');
+    if (manifest.clips.get(text)) result[wrong(since) ? 'revoke' : 'already'].push(entry);
+    else if (manifest.rejected.has(text)) result[right(since) ? 'blocked' : 'already'].push(entry);
+    else if (right(vs) && wrong(vs)) result.conflicts.push(entry);
+    else result[right(vs) ? 'approve' : 'reject'].push(entry);
   }
   for (const list of Object.values(result)) list.sort((a, b) => a.text.localeCompare(b.text, 'is'));
   return result;
@@ -160,7 +186,7 @@ export function report(reviews, result) {
   if (result.revoke.length > 0) {
     lines.push(
       '',
-      `SAMÞYKKTAR EN NÚ MERKTAR RANGAR, heyrast nemendum þar til --apply: ${result.revoke.length}`
+      `SAMÞYKKTAR EN SÍÐAN HEYRÐAR RANGAR: ${result.revoke.length}. Nemendur heyra þær þar til --apply hefur verið keyrt og vefurinn byggður og settur upp.`
     );
     for (const e of result.revoke) lines.push(`  ${quoted(e.text)} — ${said(e.verdicts)}`);
   }
@@ -184,14 +210,15 @@ export function report(reviews, result) {
   lines.push('', 'Upptökur');
   section('réttar, --apply samþykkir', result.approve);
   section('rangar, --apply merkir rangt', result.reject, true);
-  section('rétt hjá einum, rangt hjá öðrum', result.conflicts, true);
+  section('rétt hjá einum, rangt hjá öðrum (skrifaðu true eða rangt)', result.conflicts, true);
   section(
-    'merktar rangt áður en nú réttar (búðu þær til aftur, skrifaðu svo false)',
+    'heyrðar réttar eftir að þær voru merktar rangt (skrifaðu true, eða búðu þær til aftur)',
     result.blocked,
     true
   );
-  section('hlustað á eldri upptöku, sem hefur verið búin til aftur', result.stale, true);
-  section('þegar samþykktar eða merktar rangt', result.already);
+  section('hlustað á eldri upptöku, sem hefur verið gerð aftur', result.stale, true);
+  section('engin skrá núna (búðu hana til, keyrðu svo --record)', result.noFile, true);
+  section('ekkert nýtt síðan ákveðið var', result.already);
   if (result.unknown.length > 0) {
     lines.push(`  ekki á spjöldunum: ${result.unknown.map((e) => quoted(e.text)).join(', ')}`);
   }

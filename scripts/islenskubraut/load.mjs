@@ -236,8 +236,11 @@ function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions 
 
       if (blanks === 0) {
         assert(
-          f.blank === undefined && f.words === undefined && f.forms === undefined,
-          `${at}: "${f.frame}" has no blank to fill`
+          f.blank === undefined &&
+            f.words === undefined &&
+            f.form === undefined &&
+            f.forms === undefined,
+          `${at}: "${f.frame}" has no blank to fill, so it takes no blank, words, form or forms`
         );
         return { frame: f.frame, agree, blank: null, ...exceptKey };
       }

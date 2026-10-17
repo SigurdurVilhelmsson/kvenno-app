@@ -1,2098 +1,2622 @@
 {
   "gæludýr": {
     "heard": "gæludýr",
-    "score": 0.0
+    "score": 0,
+    "v": "b39bcc495dff"
   },
   "villt dýr": {
     "heard": "vilt dýr",
-    "score": 0.111
+    "score": 0.111,
+    "v": "f2d122001baf"
   },
   "húsdýr (búfénaður)": {
     "heard": "kúsdýr búfénaður",
-    "score": 0.062
+    "score": 0.062,
+    "v": "3aa193dd4661"
   },
   "spendýr": {
     "heard": "spendýr",
-    "score": 0.0
+    "score": 0,
+    "v": "89edf933c955"
   },
   "fugl": {
     "heard": "fugl",
-    "score": 0.0
+    "score": 0,
+    "v": "44386cf0d6d5"
   },
   "fiskur": {
     "heard": "er fiskur",
-    "score": 0.0
+    "score": 0,
+    "v": "d610f497d734"
   },
   "skriðdýr": {
     "heard": "skrið dýr",
-    "score": 0.125
+    "score": 0.125,
+    "v": "7770654e9a85"
   },
   "froskdýr": {
     "heard": "frosk dýr",
-    "score": 0.125
+    "score": 0.125,
+    "v": "468f5fa4bfd7"
   },
   "skordýr": {
     "heard": "skordýr",
-    "score": 0.0
+    "score": 0,
+    "v": "c755ed14f3ad"
   },
   "á landi": {
     "heard": "á landi",
-    "score": 0.0
+    "score": 0,
+    "v": "336a03dfa525"
   },
   "í vatni": {
     "heard": "í vatni",
-    "score": 0.0
+    "score": 0,
+    "v": "08d1bbb41297"
   },
   "í lofti": {
     "heard": "í lofti",
-    "score": 0.0
+    "score": 0,
+    "v": "aa997cc7fc10"
   },
   "á landi og í vatni": {
     "heard": "frá landi og í vatni",
-    "score": 0.0
+    "score": 0,
+    "v": "5fbf2d40cf08"
   },
   "feld": {
     "heard": "felld",
-    "score": 0.25
+    "score": 0.25,
+    "v": "737f63ea7e31"
   },
   "fjaðrir": {
     "heard": "fjaðrir",
-    "score": 0.0
+    "score": 0,
+    "v": "af55aec7c275"
   },
   "hreistur": {
     "heard": "hreistur",
-    "score": 0.0
+    "score": 0,
+    "v": "64e12eb17a11"
   },
   "hala": {
     "heard": "um hala",
-    "score": 0.0
+    "score": 0,
+    "v": "4d35e38a8761"
   },
   "gogg": {
     "heard": "gok",
-    "score": 0.5
+    "score": 0.5,
+    "v": "5b4e9c5f09fe"
   },
   "horn": {
     "heard": "horn",
-    "score": 0.0
+    "score": 0,
+    "v": "025ea6bedee2"
   },
   "fjóra fætur": {
     "heard": "fjóra fætur",
-    "score": 0.0
+    "score": 0,
+    "v": "def6613469e6"
   },
   "tvo fætur": {
     "heard": "tvo fætur",
-    "score": 0.0
+    "score": 0,
+    "v": "d09cc4218e45"
   },
   "flýgur": {
     "heard": "og flýgur",
-    "score": 0.0
+    "score": 0,
+    "v": "69bdcb41e6df"
   },
   "syndir": {
     "heard": "sindir",
-    "score": 0.167
+    "score": 0.167,
+    "v": "c7068dc1ec1d"
   },
   "hleypur": {
     "heard": "hleypur",
-    "score": 0.0
+    "score": 0,
+    "v": "18c807d64a1b"
   },
   "lítið": {
     "heard": "lítið",
-    "score": 0.0
+    "score": 0,
+    "v": "bf20a40ae7f6"
   },
   "meðalstórt": {
     "heard": "meðal stórt",
-    "score": 0.1
+    "score": 0.1,
+    "v": "e565490ae023"
   },
   "stórt": {
     "heard": "mög stórt",
-    "score": 0.0
+    "score": 0,
+    "v": "2564f36e15f2"
   },
   "mjög stórt": {
     "heard": "mjög stórt",
-    "score": 0.0
+    "score": 0,
+    "v": "b1ed7d375255"
   },
   "plöntur (grasæta)": {
     "heard": "plöntur grasæta",
-    "score": 0.0
+    "score": 0,
+    "v": "b0041bd1f9a2"
   },
   "kjöt (kjötæta)": {
     "heard": "kjöt kjötæta",
-    "score": 0.0
+    "score": 0,
+    "v": "e23f3aed18d2"
   },
   "bæði (alæta)": {
     "heard": "bæði alæta",
-    "score": 0.0
+    "score": 0,
+    "v": "9da973fc5090"
   },
   "húsdýr": {
     "heard": "og hús dýr",
-    "score": 0.167
+    "score": 0.167,
+    "v": "d3efe59848bc"
   },
   "feldur": {
     "heard": "feldur",
-    "score": 0.0
+    "score": 0,
+    "v": "96874e5ffb9a"
   },
   "hali": {
     "heard": "um hali",
-    "score": 0.0
+    "score": 0,
+    "v": "1df04f261688"
   },
   "goggur": {
     "heard": "bokur",
-    "score": 0.5
+    "score": 0.5,
+    "v": "71b62ca76dc1"
   },
   "fjórir fætur": {
     "heard": "fjórir fætur",
-    "score": 0.0
+    "score": 0,
+    "v": "02b6deca0412"
   },
   "tveir fætur": {
     "heard": "tveir fætur",
-    "score": 0.0
+    "score": 0,
+    "v": "d9bf66cc10a3"
   },
   "mjúkt": {
     "heard": "mjúkt",
-    "score": 0.0
+    "score": 0,
+    "v": "baea6f1e821c"
   },
   "hart": {
     "heard": "en hart",
-    "score": 0.0
+    "score": 0,
+    "v": "3fda84b40e39"
   },
   "slétt": {
     "heard": "og slétt",
-    "score": 0.0
+    "score": 0,
+    "v": "0c378f5b023e"
   },
   "gróft": {
     "heard": "og gróft",
-    "score": 0.0
+    "score": 0,
+    "v": "85aeb409bc12"
   },
   "þungt": {
     "heard": "þungt",
-    "score": 0.0
+    "score": 0,
+    "v": "ecdf1ca3918d"
   },
   "létt": {
     "heard": "létt",
-    "score": 0.0
+    "score": 0,
+    "v": "862de5f064ba"
   },
   "blautt": {
     "heard": "en blautt",
-    "score": 0.0
+    "score": 0,
+    "v": "d467d1d14835"
   },
   "þurrt": {
     "heard": "þurrt",
-    "score": 0.0
+    "score": 0,
+    "v": "e46e8043eaf2"
   },
   "loðið": {
     "heard": "loðið",
-    "score": 0.0
+    "score": 0,
+    "v": "294bef7b425d"
   },
   "hált": {
     "heard": "hált",
-    "score": 0.0
+    "score": 0,
+    "v": "8704ec3727d5"
   },
   "stinnt": {
     "heard": "ég stint",
-    "score": 0.167
+    "score": 0.167,
+    "v": "1855279f81b4"
   },
   "sveigjanlegt": {
     "heard": "sveigjanlegt",
-    "score": 0.0
+    "score": 0,
+    "v": "46a89202e2e7"
   },
   "hátt": {
     "heard": "en hátt",
-    "score": 0.0
+    "score": 0,
+    "v": "ad07990d537a"
   },
   "lágt": {
     "heard": "lágt",
-    "score": 0.0
+    "score": 0,
+    "v": "b75fb0a849c5"
   },
   "þögult": {
     "heard": "þögult",
-    "score": 0.0
+    "score": 0,
+    "v": "2ca71f7fec78"
   },
   "gelur": {
     "heard": "gelur",
-    "score": 0.0
+    "score": 0,
+    "v": "f8e555c213c4"
   },
   "mjálmar": {
     "heard": "mjálmar",
-    "score": 0.0
+    "score": 0,
+    "v": "f5ad7ab96b32"
   },
   "öskrar": {
     "heard": "öskrar",
-    "score": 0.0
+    "score": 0,
+    "v": "138c1cfd9a31"
   },
   "suðar": {
     "heard": "suðar",
-    "score": 0.0
+    "score": 0,
+    "v": "43406c21e28f"
   },
   "hringir": {
     "heard": "hringir",
-    "score": 0.0
+    "score": 0,
+    "v": "83dc5da0c2d6"
   },
   "hvæsir": {
     "heard": "hvæsir",
-    "score": 0.0
+    "score": 0,
+    "v": "eba141147add"
   },
   "kringlótt": {
     "heard": "kring lótt",
-    "score": 0.111
+    "score": 0.111,
+    "v": "45af4b5f0176"
   },
   "ferkantað": {
     "heard": "og fer kantað",
-    "score": 0.111
+    "score": 0.111,
+    "v": "ddf3a4e09c0c"
   },
   "ílangt": {
     "heard": "í langt",
-    "score": 0.167
+    "score": 0.167,
+    "v": "b8b3126eea72"
   },
   "flatt": {
     "heard": "og flatt",
-    "score": 0.0
+    "score": 0,
+    "v": "c200b4151e3d"
   },
   "kúlulaga": {
     "heard": "kúlu laga",
-    "score": 0.125
+    "score": 0.125,
+    "v": "fdf2fded8e09"
   },
   "oddhvasst": {
     "heard": "ot hvasst",
-    "score": 0.222
+    "score": 0.222,
+    "v": "43f6af2ae919"
   },
   "bogið": {
     "heard": "bogið",
-    "score": 0.0
+    "score": 0,
+    "v": "8d57e67097a0"
   },
   "beint": {
     "heard": "en beint",
-    "score": 0.0
+    "score": 0,
+    "v": "65798ae34605"
   },
   "sporöskjulaga": {
     "heard": "spora skjulaga",
-    "score": 0.154
+    "score": 0.154,
+    "v": "bed7eea030c4"
   },
   "þríhyrningslaga": {
     "heard": "þríhyrningslaga",
-    "score": 0.0
+    "score": 0,
+    "v": "b8a5d51ad829"
   },
   "sívalningslaga": {
     "heard": "sívalningslaga",
-    "score": 0.0
+    "score": 0,
+    "v": "03342631cd8a"
   },
   "óreglulegt": {
     "heard": "sóreglulegt",
-    "score": 0.0
+    "score": 0,
+    "v": "172e615c3881"
   },
   "til að gæta": {
     "heard": "til að gæta",
-    "score": 0.0
+    "score": 0,
+    "v": "16bef6c4e5ee"
   },
   "til að klappa": {
     "heard": "til að klappa",
-    "score": 0.0
+    "score": 0,
+    "v": "ced8624f1852"
   },
   "til að borða": {
     "heard": "til að borða",
-    "score": 0.0
+    "score": 0,
+    "v": "1af095153694"
   },
   "til að hjálpa": {
     "heard": "til að hjálpa",
-    "score": 0.0
+    "score": 0,
+    "v": "ca788192e9b8"
   },
   "til að vinna": {
     "heard": "til að vinna",
-    "score": 0.0
+    "score": 0,
+    "v": "b5372087ac3e"
   },
   "til að leika sér": {
     "heard": "til að leika sér",
-    "score": 0.0
+    "score": 0,
+    "v": "e4b8c1ad2900"
   },
   "til að verja": {
     "heard": "til að verja",
-    "score": 0.0
+    "score": 0,
+    "v": "54079b0bbcc5"
   },
   "til að rannsaka": {
     "heard": "til að rannsaka",
-    "score": 0.0
+    "score": 0,
+    "v": "a3cda2241326"
   },
   "allir": {
     "heard": "allir",
-    "score": 0.0
+    "score": 0,
+    "v": "aa0cbb78d68b"
   },
   "börn": {
     "heard": "börn",
-    "score": 0.0
+    "score": 0,
+    "v": "48dcf6e014d6"
   },
   "fullorðnir": {
     "heard": "fullorðnir",
-    "score": 0.0
+    "score": 0,
+    "v": "c64ef46a2530"
   },
   "bændur": {
     "heard": "en bændur",
-    "score": 0.0
+    "score": 0,
+    "v": "43c8b77a6832"
   },
   "dýralæknar": {
     "heard": "díralæknar",
-    "score": 0.1
+    "score": 0.1,
+    "v": "3dbdaea43bbf"
   },
   "veiðimenn": {
     "heard": "veiði menn",
-    "score": 0.111
+    "score": 0.111,
+    "v": "6651a2b1422d"
   },
   "sérfræðingar": {
     "heard": "sérfræðingar",
-    "score": 0.0
+    "score": 0,
+    "v": "a1f3863d4807"
   },
   "ferðamenn": {
     "heard": "ferðamenn",
-    "score": 0.0
+    "score": 0,
+    "v": "4af9887f6879"
   },
   "heima": {
     "heard": "heima",
-    "score": 0.0
+    "score": 0,
+    "v": "7625d668137b"
   },
   "úti": {
     "heard": "úti",
-    "score": 0.0
+    "score": 0,
+    "v": "fbcb5745f6b8"
   },
   "á bæ": {
     "heard": "á bæ",
-    "score": 0.0
+    "score": 0,
+    "v": "cce765bb8f4c"
   },
   "í dýragarðinum": {
     "heard": "í dýragarðinum",
-    "score": 0.0
+    "score": 0,
+    "v": "1475ac09536f"
   },
   "í náttúrunni": {
     "heard": "í náttúrunni",
-    "score": 0.0
+    "score": 0,
+    "v": "17408c2b7331"
   },
   "í sjónum": {
     "heard": "í sjónum",
-    "score": 0.0
+    "score": 0,
+    "v": "51052559773f"
   },
   "á hálendinu": {
     "heard": "á hálendinu",
-    "score": 0.0
+    "score": 0,
+    "v": "c9b73243256d"
   },
   "í skóginum": {
     "heard": "í skóginum",
-    "score": 0.0
+    "score": 0,
+    "v": "68a19d26256a"
   },
   "á morgnana": {
     "heard": "á morgnanna",
-    "score": 0.1
+    "score": 0.1,
+    "v": "07b90439a596"
   },
   "á daginn": {
     "heard": "á daginn",
-    "score": 0.0
+    "score": 0,
+    "v": "3e48f22b9a36"
   },
   "á kvöldin": {
     "heard": "þá kvöldin",
-    "score": 0.0
+    "score": 0,
+    "v": "6fcb9bc7a182"
   },
   "alltaf": {
     "heard": "alltaf",
-    "score": 0.0
+    "score": 0,
+    "v": "60ce395de91a"
   },
   "á veturna": {
     "heard": "á veturna",
-    "score": 0.0
+    "score": 0,
+    "v": "47263144b2d6"
   },
   "á sumrin": {
     "heard": "á sumrin",
-    "score": 0.0
+    "score": 0,
+    "v": "d0718864daa7"
   },
   "um helgar": {
     "heard": "um helgar",
-    "score": 0.0
+    "score": 0,
+    "v": "93173efb7bdc"
   },
   "í sérstökum tilvikum": {
     "heard": "í sérstökum tilvikum",
-    "score": 0.0
+    "score": 0,
+    "v": "abc243d6d36b"
   },
   "daglega": {
     "heard": "daglega",
-    "score": 0.0
+    "score": 0,
+    "v": "934de03c3800"
   },
   "sjaldan": {
     "heard": "sjaldan",
-    "score": 0.0
+    "score": 0,
+    "v": "a079ad49048b"
   },
   "oft": {
     "heard": "oft",
-    "score": 0.0
+    "score": 0,
+    "v": "c541cba1ff76"
   },
   "Þetta er dýr.": {
     "heard": "en þetta er dýr",
-    "score": 0.0
+    "score": 0,
+    "v": "bf4570669c37"
   },
   "Það er ___.": {
     "heard": "það er",
-    "score": 0.0
+    "score": 0,
+    "v": "f72498e6ebbd"
   },
   "Það hefur ___.": {
     "heard": "það hefur",
-    "score": 0.0
+    "score": 0,
+    "v": "712957b4fe43"
   },
   "Það hljómar ___.": {
     "heard": "það hljómar",
-    "score": 0.0
+    "score": 0,
+    "v": "0980665c4d02"
   },
   "Maður notar það ___.": {
     "heard": "maður notar það",
-    "score": 0.0
+    "score": 0,
+    "v": "936da6065eba"
   },
   "Þetta er ___ sem býr ___.": {
     "heard": "þetta er sem býr",
-    "score": 0.0
+    "score": 0,
+    "v": "d768bfd15620"
   },
   "Það hefur ___ og ___.": {
     "heard": "það hefur og",
-    "score": 0.0
+    "score": 0,
+    "v": "c7f7c9c0b6d8"
   },
   "Það étur ___.": {
     "heard": "það etur",
-    "score": 0.125
+    "score": 0.125,
+    "v": "72e363cb3a58"
   },
   "Það finnst ___ við snertingu.": {
     "heard": "það finnst við snertingu",
-    "score": 0.0
+    "score": 0,
+    "v": "d639395f43c3"
   },
   "Maður finnur það ___.": {
     "heard": "maður finnur það",
-    "score": 0.0
+    "score": 0,
+    "v": "5be388f241b4"
   },
   "Ég held að þetta sé ___ vegna þess að ___.": {
     "heard": "ég held að þetta sé vegna þess að",
-    "score": 0.0
+    "score": 0,
+    "v": "bc215fb35804"
   },
   "Þetta dýr er ___ og ___.": {
     "heard": "þetta dýr er og",
-    "score": 0.0
+    "score": 0,
+    "v": "7165dfb287db"
   },
   "Það er líkt ___ en ólíkt ___.": {
     "heard": "það er líkt en ólíkt",
-    "score": 0.0
+    "score": 0,
+    "v": "2bf010da21ff"
   },
   "Það er ___ að snerta vegna þess að ___.": {
     "heard": "það er að snerta vegna þess að",
-    "score": 0.0
+    "score": 0,
+    "v": "264e3a2d9a13"
   },
   "___ nota það oftast ___.": {
     "heard": "ég nota það oftast",
-    "score": 0.0
+    "score": 0,
+    "v": "0255daee988f"
   },
   "Þetta er dýr. Það er stórt. Það hefur feld.": {
     "heard": "þetta er dýr það er stórt það hefur felld",
-    "score": 0.025
+    "score": 0.025,
+    "v": "08735e04e9ba"
   },
   "Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.": {
     "heard": "þetta er dýr sem býr í vatni það hefur hreistur og syndir það etur plöntur",
-    "score": 0.014
+    "score": 0.014,
+    "v": "59d155a284b6"
   },
   "Ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum. Þetta dýr er grátt og snjallt. Það er líkt hval en ólíkt fiski.": {
     "heard": "ég held að þetta sé höfrungur vegna þess að hann syndir og býr í sjónum þetta dýr er grátt og snjallt það er líkt hval en ólíkt fiski",
-    "score": 0.0
+    "score": 0,
+    "v": "62589bf922d1"
   },
   "ávöxtur": {
     "heard": "ávöxtur",
-    "score": 0.0
+    "score": 0,
+    "v": "385504e5b371"
   },
   "grænmeti": {
     "heard": "græn meti",
-    "score": 0.125
+    "score": 0.125,
+    "v": "0dedebdd6b4f"
   },
   "kjöt": {
     "heard": "kjöt",
-    "score": 0.0
+    "score": 0,
+    "v": "e66a70e35b75"
   },
   "mjólkurvara": {
     "heard": "og mjólkurvara",
-    "score": 0.0
+    "score": 0,
+    "v": "deda6aa27946"
   },
   "sælgæti": {
     "heard": "sæ gæti",
-    "score": 0.143
+    "score": 0.143,
+    "v": "d281720b25d7"
   },
   "brauð/korn": {
     "heard": "brauð eða korn",
-    "score": 0.0
+    "score": 0,
+    "v": "3bf1937ad950"
   },
   "drykkur": {
     "heard": "er drykkur",
-    "score": 0.0
+    "score": 0,
+    "v": "b612bcff3dd6"
   },
   "sætt": {
     "heard": "sætt",
-    "score": 0.0
+    "score": 0,
+    "v": "78dc3d1227cb"
   },
   "salt": {
     "heard": "salt",
-    "score": 0.0
+    "score": 0,
+    "v": "ece04ddf63ef"
   },
   "súrt": {
     "heard": "og súrt",
-    "score": 0.0
+    "score": 0,
+    "v": "ad65d4a82dbd"
   },
   "beiskt": {
     "heard": "hann beist",
-    "score": 0.167
+    "score": 0.167,
+    "v": "326f93503cda"
   },
   "kryddað/sterkt": {
     "heard": "kryddað eða sterkt",
-    "score": 0.0
+    "score": 0,
+    "v": "a37ac4928856"
   },
   "fljótandi": {
     "heard": "fljótandi",
-    "score": 0.0
+    "score": 0,
+    "v": "0d580e0301d5"
   },
   "hrátt": {
     "heard": "hrátt",
-    "score": 0.0
+    "score": 0,
+    "v": "d6ed5bb5e664"
   },
   "soðið": {
     "heard": "soðið",
-    "score": 0.0
+    "score": 0,
+    "v": "e26c18c8e00b"
   },
   "steikt": {
     "heard": "steikt",
-    "score": 0.0
+    "score": 0,
+    "v": "670752d2516b"
   },
   "bakað": {
     "heard": "n bakað",
-    "score": 0.0
+    "score": 0,
+    "v": "ddc22aaaf82e"
   },
   "heitt": {
     "heard": "heitt",
-    "score": 0.0
+    "score": 0,
+    "v": "6409dabeac5d"
   },
   "kalt": {
     "heard": "kalt",
-    "score": 0.0
+    "score": 0,
+    "v": "39eba32264e9"
   },
   "frosið": {
     "heard": "og frosið",
-    "score": 0.0
+    "score": 0,
+    "v": "1f6dd535de4a"
   },
   "í eldhúsinu": {
     "heard": "í eldhúsinu",
-    "score": 0.0
+    "score": 0,
+    "v": "00b6ca26be3c"
   },
   "í ísskápnum": {
     "heard": "í ísskápnum",
-    "score": 0.0
+    "score": 0,
+    "v": "e0907ca77e1a"
   },
   "í búðinni": {
     "heard": "í búðinni",
-    "score": 0.0
+    "score": 0,
+    "v": "2d514deda361"
   },
   "á veitingastað": {
     "heard": "á veitingastað",
-    "score": 0.0
+    "score": 0,
+    "v": "61f06d585617"
   },
   "í morgunmat": {
     "heard": "í morgunmat",
-    "score": 0.0
+    "score": 0,
+    "v": "454839ee8da8"
   },
   "í hádegismat": {
     "heard": "ný hádegismat",
-    "score": 0.083
+    "score": 0.083,
+    "v": "d320b43a15b1"
   },
   "í kvöldmat": {
     "heard": "í kvöldmat",
-    "score": 0.0
+    "score": 0,
+    "v": "ce0191455b0e"
   },
   "sem millimál": {
     "heard": "sem villi mál",
-    "score": 0.167
+    "score": 0.167,
+    "v": "3ecfd7c91d3f"
   },
   "alltaf/hvenær sem er": {
     "heard": "alltaf eða hvenær sem er",
-    "score": 0.0
+    "score": 0,
+    "v": "e69167d49122"
   },
   "krydd": {
     "heard": "krídd",
-    "score": 0.2
+    "score": 0.2,
+    "v": "9de8dc3ef38d"
   },
   "sósa": {
     "heard": "sósa",
-    "score": 0.0
+    "score": 0,
+    "v": "90ec73ddeaa1"
   },
   "rautt": {
     "heard": "rautt",
-    "score": 0.0
+    "score": 0,
+    "v": "62bacc0dd310"
   },
   "grænt": {
     "heard": "grænt",
-    "score": 0.0
+    "score": 0,
+    "v": "4f6fa09d1cf2"
   },
   "gult": {
     "heard": "gult",
-    "score": 0.0
+    "score": 0,
+    "v": "82ca0d4a1b17"
   },
   "hvítt": {
     "heard": "hvítt",
-    "score": 0.0
+    "score": 0,
+    "v": "2f754dab9563"
   },
   "brúnt": {
     "heard": "brúnt",
-    "score": 0.0
+    "score": 0,
+    "v": "844d6c968ed2"
   },
   "appelsínugult": {
     "heard": "appelsínu gult",
-    "score": 0.077
+    "score": 0.077,
+    "v": "8e897b86e522"
   },
   "langt": {
     "heard": "langt",
-    "score": 0.0
+    "score": 0,
+    "v": "f5e7dec0c28c"
   },
   "kryddað": {
     "heard": "kryddað",
-    "score": 0.0
+    "score": 0,
+    "v": "7f46141dd43c"
   },
   "sterkt": {
     "heard": "en sterkt",
-    "score": 0.0
+    "score": 0,
+    "v": "b668ca879ab1"
   },
   "milt": {
     "heard": "milt",
-    "score": 0.0
+    "score": 0,
+    "v": "4f8a1f53d4a3"
   },
   "ferskt": {
     "heard": "ég ferst",
-    "score": 0.167
+    "score": 0.167,
+    "v": "b482377ae0c6"
   },
   "bragðmikið": {
     "heard": "en bragðmikið",
-    "score": 0.0
+    "score": 0,
+    "v": "ba4d1e707bfe"
   },
   "bragðlaust": {
     "heard": "en bragðlaust",
-    "score": 0.0
+    "score": 0,
+    "v": "125053b3090b"
   },
   "mjög sætt": {
     "heard": "mjög sætt",
-    "score": 0.0
+    "score": 0,
+    "v": "75647d1829fb"
   },
   "náttúrulega sætt": {
     "heard": "það er náttúrlega sætt",
-    "score": 0.062
+    "score": 0.062,
+    "v": "d567aca35d05"
   },
   "gott": {
     "heard": "gott",
-    "score": 0.0
+    "score": 0,
+    "v": "7946a4ebf85c"
   },
   "vont": {
     "heard": "vont",
-    "score": 0.0
+    "score": 0,
+    "v": "c469793ec0fe"
   },
   "ekkert": {
     "heard": "ekkert",
-    "score": 0.0
+    "score": 0,
+    "v": "a03425ba4fe3"
   },
   "ilmandi": {
     "heard": "ilmandi",
-    "score": 0.0
+    "score": 0,
+    "v": "84588a9f7d4c"
   },
   "stingandi": {
     "heard": "ég stingandi",
-    "score": 0.0
+    "score": 0,
+    "v": "3799766174ac"
   },
   "til að drekka": {
     "heard": "til að drekka",
-    "score": 0.0
+    "score": 0,
+    "v": "9a06ef66fa63"
   },
   "til að elda með": {
     "heard": "til að elda með",
-    "score": 0.0
+    "score": 0,
+    "v": "35d08e8a5a41"
   },
   "til að baka með": {
     "heard": "til að baka með",
-    "score": 0.0
+    "score": 0,
+    "v": "37358fc5f3f8"
   },
   "til að næra sig": {
     "heard": "til að næra sig",
-    "score": 0.0
+    "score": 0,
+    "v": "fc68809060a7"
   },
   "til að njóta": {
     "heard": "til að njóta",
-    "score": 0.0
+    "score": 0,
+    "v": "70f53b07c004"
   },
   "kokkar": {
     "heard": "kokkar",
-    "score": 0.0
+    "score": 0,
+    "v": "11eac0ad01cf"
   },
   "bakarar": {
     "heard": "bakarar",
-    "score": 0.0
+    "score": 0,
+    "v": "8cd88594e03e"
   },
   "í búð": {
     "heard": "í búð",
-    "score": 0.0
+    "score": 0,
+    "v": "5f7caf2aa842"
   },
   "í skólanum": {
     "heard": "í skólanum",
-    "score": 0.0
+    "score": 0,
+    "v": "0239fb0937f3"
   },
   "á markaði": {
     "heard": "á markaði",
-    "score": 0.0
+    "score": 0,
+    "v": "e1d2a0b99933"
   },
   "í garðinum": {
     "heard": "í garðinum",
-    "score": 0.0
+    "score": 0,
+    "v": "a6ea82a34321"
   },
   "á virkum dögum": {
     "heard": "á virkum dögum",
-    "score": 0.0
+    "score": 0,
+    "v": "19c59cacac91"
   },
   "á hátíðum": {
     "heard": "fá hátíðum",
-    "score": 0.0
+    "score": 0,
+    "v": "d94ac36f6143"
   },
   "Þetta er ___.": {
     "heard": "þetta er",
-    "score": 0.0
+    "score": 0,
+    "v": "0496537a5ba5"
   },
   "Maður borðar það ___.": {
     "heard": "maður borðar það",
-    "score": 0.0
+    "score": 0,
+    "v": "4bb7d021975c"
   },
   "Þetta er ___ sem er ___.": {
     "heard": "þetta er sem er",
-    "score": 0.0
+    "score": 0,
+    "v": "d882e0bbf4c9"
   },
   "Maður borðar/drekkur það ___.": {
     "heard": "maður borðar eða drekkur það",
-    "score": 0.0
+    "score": 0,
+    "v": "5ddddcede319"
   },
   "Það er gert úr ___.": {
     "heard": "það er gert úr",
-    "score": 0.0
+    "score": 0,
+    "v": "994e6dc13d45"
   },
   "Þetta er ___ sem bragðast ___.": {
     "heard": "þetta er sem bragðast",
-    "score": 0.0
+    "score": 0,
+    "v": "50323ab30b86"
   },
   "Það er oft borðað/drukkið ___.": {
     "heard": "það er oft borðað eða drukkið",
-    "score": 0.0
+    "score": 0,
+    "v": "e0dd7e05f69c"
   },
   "Mér finnst ___.": {
     "heard": "omér finnst",
-    "score": 0.0
+    "score": 0,
+    "v": "4f79d28ec63e"
   },
   "Það er gert úr ___ sem er ___.": {
     "heard": "það er gert úr sem er",
-    "score": 0.0
+    "score": 0,
+    "v": "cdfacddbc877"
   },
   "Þetta er ávöxtur. Hann er sætur. Maður borðar hann í morgunmat.": {
     "heard": "þetta er ávöxtur hann er sætur maður borðar hann í morgunmat",
-    "score": 0.0
+    "score": 0,
+    "v": "c49a7b8a7cef"
   },
   "Þetta er grænmeti sem er grænt. Maður borðar það hrátt. Það er hollt.": {
     "heard": "þetta er grænmeti sem er grænt maður borðar það hrátt það er hálft",
-    "score": 0.03
+    "score": 0.03,
+    "v": "0996c7c65fa7"
   },
   "Þetta er ávöxtur sem bragðast sætt og súrt. Hann er oft borðaður sem millimál. Mér finnst hann mjög góður.": {
     "heard": "þetta er ávöxtur sem bragðast sætt og súrt hann er oft borðaður sem milli mál mér finnst hann mjög góður",
-    "score": 0.01
+    "score": 0.01,
+    "v": "91f46e4afc2e"
   },
   "bíll": {
     "heard": "bíll",
-    "score": 0.0
+    "score": 0,
+    "v": "da9c7702d377"
   },
   "rúta": {
     "heard": "rúta",
-    "score": 0.0
+    "score": 0,
+    "v": "19ba42dc7d7f"
   },
   "hjól/reiðhjól": {
     "heard": "hjól eða reið hjól",
-    "score": 0.059
+    "score": 0.059,
+    "v": "455df91f0270"
   },
   "mótorhjól": {
     "heard": "mótor hjól",
-    "score": 0.111
+    "score": 0.111,
+    "v": "baddedd22b1b"
   },
   "lest": {
     "heard": "lest",
-    "score": 0.0
+    "score": 0,
+    "v": "91efc2be299b"
   },
   "flugvél": {
     "heard": "flugvél",
-    "score": 0.0
+    "score": 0,
+    "v": "e0d39799e09c"
   },
   "skip/bátur": {
     "heard": "skip eða bátur",
-    "score": 0.0
+    "score": 0,
+    "v": "7738c3ea3839"
   },
   "sleði": {
     "heard": "ég sleði",
-    "score": 0.0
+    "score": 0,
+    "v": "1b29cf0ce4f0"
   },
   "hlaupahjól": {
     "heard": "hlaupa hjól",
-    "score": 0.1
+    "score": 0.1,
+    "v": "9bdf9159dbe8"
   },
   "á sjó/vatni": {
     "heard": "á sjó eða vatni",
-    "score": 0.0
+    "score": 0,
+    "v": "761dca0780ce"
   },
   "á snjó": {
     "heard": "ná snjó",
-    "score": 0.0
+    "score": 0,
+    "v": "1363a486d54c"
   },
   "risastórt": {
     "heard": "risa stórt",
-    "score": 0.111
+    "score": 0.111,
+    "v": "2c91d3d040b3"
   },
   "hjól": {
     "heard": "hjól",
-    "score": 0.0
+    "score": 0,
+    "v": "1ce91c417418"
   },
   "ekki hjól": {
     "heard": "ekki hjól",
-    "score": 0.0
+    "score": 0,
+    "v": "d805db647190"
   },
   "með vél": {
     "heard": "var með vél",
-    "score": 0.0
+    "score": 0,
+    "v": "834a5c151fbc"
   },
   "án vélar": {
     "heard": "án vélar",
-    "score": 0.0
+    "score": 0,
+    "v": "8f63331213b8"
   },
   "hraðskreitt": {
     "heard": "hraðskreytt",
-    "score": 0.091
+    "score": 0.091,
+    "v": "247e79d978b5"
   },
   "hægfara": {
     "heard": "um hægfara",
-    "score": 0.0
+    "score": 0,
+    "v": "21bdede36f43"
   },
   "allt árið": {
     "heard": "allt árið",
-    "score": 0.0
+    "score": 0,
+    "v": "d543942e01c5"
   },
   "í sérstökum tilfellum": {
     "heard": "í sérstökum tilfellum",
-    "score": 0.0
+    "score": 0,
+    "v": "8cf79bd7ebb3"
   },
   "einn": {
     "heard": "einn",
-    "score": 0.0
+    "score": 0,
+    "v": "68f9a937764f"
   },
   "fáir": {
     "heard": "fáir",
-    "score": 0.0
+    "score": 0,
+    "v": "b8cf501b8ddd"
   },
   "margir": {
     "heard": "margir",
-    "score": 0.0
+    "score": 0,
+    "v": "28d94a0e8252"
   },
   "skip": {
     "heard": "skip",
-    "score": 0.0
+    "score": 0,
+    "v": "72b29982ae5c"
   },
   "sportvagn": {
     "heard": "sport vagn",
-    "score": 0.111
+    "score": 0.111,
+    "v": "9be29d7e341b"
   },
   "þyrla": {
     "heard": "þyrla",
-    "score": 0.0
+    "score": 0,
+    "v": "4ec5486cb982"
   },
   "með hjólum": {
     "heard": "með hjólum",
-    "score": 0.0
+    "score": 0,
+    "v": "32424b861955"
   },
   "án hjóla": {
     "heard": "án hjóla",
-    "score": 0.0
+    "score": 0,
+    "v": "913d71de3256"
   },
   "stutt": {
     "heard": "en stutt",
-    "score": 0.0
+    "score": 0,
+    "v": "253c634f35ff"
   },
   "straumlínulaga": {
     "heard": "straum línu laga",
-    "score": 0.143
+    "score": 0.143,
+    "v": "f9f936e3a2b6"
   },
   "litríkt": {
     "heard": "litríkt",
-    "score": 0.0
+    "score": 0,
+    "v": "010d6eb933c2"
   },
   "úr málmi": {
     "heard": "úr málmi",
-    "score": 0.0
+    "score": 0,
+    "v": "c256b7e9349a"
   },
   "úr plasti": {
     "heard": "úr plasti",
-    "score": 0.0
+    "score": 0,
+    "v": "f5306b29ebec"
   },
   "úr tré": {
     "heard": "þúr tré",
-    "score": 0.0
+    "score": 0,
+    "v": "1ab266576d67"
   },
   "úr steini": {
     "heard": "úr steini",
-    "score": 0.0
+    "score": 0,
+    "v": "d8599d37cdaa"
   },
   "úr gleri": {
     "heard": "úr gleri",
-    "score": 0.0
+    "score": 0,
+    "v": "ba04dfb271f9"
   },
   "úr endurunnu efni": {
     "heard": "úrendur unnu efni",
-    "score": 0.118
+    "score": 0.118,
+    "v": "03575699832a"
   },
   "úr náttúrulegum efnum": {
     "heard": "úr náttúrlegum efnum",
-    "score": 0.048
+    "score": 0.048,
+    "v": "db79c10203cd"
   },
   "úr gerviefnum": {
     "heard": "úr gerviefnum",
-    "score": 0.0
+    "score": 0,
+    "v": "f076680134b3"
   },
   "til að ferðast": {
     "heard": "til að ferðast",
-    "score": 0.0
+    "score": 0,
+    "v": "df5929db00af"
   },
   "til að flytja": {
     "heard": "til að flytja",
-    "score": 0.0
+    "score": 0,
+    "v": "2bf5b0bd8e22"
   },
   "til að keppa": {
     "heard": "til að keppa",
-    "score": 0.0
+    "score": 0,
+    "v": "4aa65bb0b8e8"
   },
   "til að bjarga": {
     "heard": "til að bjarga",
-    "score": 0.0
+    "score": 0,
+    "v": "6f986363633d"
   },
   "bílstjórar": {
     "heard": "bílstjórar",
-    "score": 0.0
+    "score": 0,
+    "v": "ba91b9cda2cb"
   },
   "flugmenn": {
     "heard": "og flugmenn",
-    "score": 0.0
+    "score": 0,
+    "v": "d14d08db27c0"
   },
   "sjómenn": {
     "heard": "sjómenn",
-    "score": 0.0
+    "score": 0,
+    "v": "2fae6a454161"
   },
   "iðnaðarmenn": {
     "heard": "iðnaðarmenn",
-    "score": 0.0
+    "score": 0,
+    "v": "95e909e6f1ad"
   },
   "á götunni": {
     "heard": "á götunni",
-    "score": 0.0
+    "score": 0,
+    "v": "2df87b309aa7"
   },
   "á sjónum": {
     "heard": "á sjónum",
-    "score": 0.0
+    "score": 0,
+    "v": "431e2b577aff"
   },
   "í loftinu": {
     "heard": "í loftinu",
-    "score": 0.0
+    "score": 0,
+    "v": "9323999a777d"
   },
   "á þjóðveginum": {
     "heard": "á þjóðveginum",
-    "score": 0.0
+    "score": 0,
+    "v": "16f39818633e"
   },
   "á flugvellinum": {
     "heard": "á flugvellinum",
-    "score": 0.0
+    "score": 0,
+    "v": "c02ea9d727f4"
   },
   "í höfninni": {
     "heard": "í höfninni",
-    "score": 0.0
+    "score": 0,
+    "v": "abae58bf7768"
   },
   "á lestarbraut": {
     "heard": "sá lestarbraut",
-    "score": 0.0
+    "score": 0,
+    "v": "ee7e18230601"
   },
   "Það fer ___.": {
     "heard": "það fer",
-    "score": 0.0
+    "score": 0,
+    "v": "3d03afa56a26"
   },
   "Þetta er ___ sem fer ___.": {
     "heard": "þetta er sem fer",
-    "score": 0.0
+    "score": 0,
+    "v": "3a7479d66fdc"
   },
   "Það hefur ___ og er ___.": {
     "heard": "það hefur og er",
-    "score": 0.0
+    "score": 0,
+    "v": "81b9a580b385"
   },
   "Það er gert ___.": {
     "heard": "það er gert",
-    "score": 0.0
+    "score": 0,
+    "v": "dc69bba4eef6"
   },
   "Þetta farartæki er ___ sem er notað ___.": {
     "heard": "þetta farartæki er sem er notað",
-    "score": 0.0
+    "score": 0,
+    "v": "2618935f8678"
   },
   "Það getur flutt ___ og fer ___.": {
     "heard": "en það getur flutt og fer",
-    "score": 0.0
+    "score": 0,
+    "v": "431ac86a6a49"
   },
   "Það er gert ___ sem er ___.": {
     "heard": "það er gert sem er",
-    "score": 0.0
+    "score": 0,
+    "v": "101b86967eda"
   },
   "Þetta er bíll. Hann fer á landi. Hann er stór.": {
     "heard": "þetta er bíll hann fer á landi hann er stór",
-    "score": 0.0
+    "score": 0,
+    "v": "09211b66189b"
   },
   "Þetta er skip sem fer á sjó. Það hefur ekki hjól og er stórt.": {
     "heard": "þetta er skip sem fer á sjó það hefur ekki hjól og er stórt",
-    "score": 0.0
+    "score": 0,
+    "v": "456b16f5b71c"
   },
   "Þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir. Hún getur flutt marga og fer í lofti.": {
     "heard": "þetta farartæki er flugvél sem er notuð til að ferðast langar leiðir hún getur flutt marga og fer í lofti",
-    "score": 0.0
+    "score": 0,
+    "v": "d7ba7897286a"
   },
   "á lífi": {
     "heard": "á lífi",
-    "score": 0.0
+    "score": 0,
+    "v": "8e7fb34edc08"
   },
   "látin/látinn": {
     "heard": "látin eða látin",
-    "score": 0.062
+    "score": 0.062,
+    "v": "6493bc6aa321"
   },
   "skálduð persóna": {
     "heard": "skálduð persóna",
-    "score": 0.0
+    "score": 0,
+    "v": "7ccafaa4098e"
   },
   "fræg/frægur": {
     "heard": "fræg eða frægur",
-    "score": 0.0
+    "score": 0,
+    "v": "f61ca343fee7"
   },
   "ekki fræg/frægur": {
     "heard": "ekki fræg eða frægur",
-    "score": 0.0
+    "score": 0,
+    "v": "6b2f40136547"
   },
   "leikari": {
     "heard": "leikari",
-    "score": 0.0
+    "score": 0,
+    "v": "8ac225bf3982"
   },
   "íþróttamaður": {
     "heard": "íþróttamaður",
-    "score": 0.0
+    "score": 0,
+    "v": "0d05095614b7"
   },
   "söngvari": {
     "heard": "söngvari",
-    "score": 0.0
+    "score": 0,
+    "v": "bb53357c16c6"
   },
   "stjórnmálamaður": {
     "heard": "ég stjórnmálamaður",
-    "score": 0.0
+    "score": 0,
+    "v": "727fcf973aad"
   },
   "nemandi": {
     "heard": "nemandi",
-    "score": 0.0
+    "score": 0,
+    "v": "84153d3a0ac1"
   },
   "kennari": {
     "heard": "kennari",
-    "score": 0.0
+    "score": 0,
+    "v": "c99aa44b3b12"
   },
   "læknir": {
     "heard": "læknir",
-    "score": 0.0
+    "score": 0,
+    "v": "6a1b75d5c387"
   },
   "lögreglumaður": {
     "heard": "lögreglumaður",
-    "score": 0.0
+    "score": 0,
+    "v": "595cb103ed41"
   },
   "kokkur": {
     "heard": "kokkur",
-    "score": 0.0
+    "score": 0,
+    "v": "e4acbf650862"
   },
   "listamaður": {
     "heard": "listamaður",
-    "score": 0.0
+    "score": 0,
+    "v": "572e192f3d64"
   },
   "barn": {
     "heard": "barn",
-    "score": 0.0
+    "score": 0,
+    "v": "2b7bcb5b2983"
   },
   "unglingur": {
     "heard": "unglingur",
-    "score": 0.0
+    "score": 0,
+    "v": "55e5b6b41744"
   },
   "fullorðin/fullorðinn": {
     "heard": "fullorðin eða fullorðin",
-    "score": 0.042
+    "score": 0.042,
+    "v": "a3ebb56b62b1"
   },
   "öldruð/aldraður": {
     "heard": "öldruð eða aldraður",
-    "score": 0.0
+    "score": 0,
+    "v": "d85ffd3e4813"
   },
   "há/hár": {
     "heard": "há eða hár",
-    "score": 0.0
+    "score": 0,
+    "v": "fad20172c904"
   },
   "lág/lágur": {
     "heard": "lá eða lágur",
-    "score": 0.077
+    "score": 0.077,
+    "v": "beac2e1763a2"
   },
   "ung/ungur": {
     "heard": "ung eða ungur",
-    "score": 0.0
+    "score": 0,
+    "v": "53dfd33eb56c"
   },
   "gömul/gamall": {
     "heard": "gömul eða gamall",
-    "score": 0.0
+    "score": 0,
+    "v": "d4d15950dac2"
   },
   "með sítt hár": {
     "heard": "er með sítt hár",
-    "score": 0.0
+    "score": 0,
+    "v": "fed37c6bf193"
   },
   "með stutt hár": {
     "heard": "með stutt hár",
-    "score": 0.0
+    "score": 0,
+    "v": "19326658e731"
   },
   "sköllótt/sköllóttur": {
     "heard": "og skölótt eða skölóttur",
-    "score": 0.087
+    "score": 0.087,
+    "v": "b63423f9939d"
   },
   "með gleraugu": {
     "heard": "með gleraugu",
-    "score": 0.0
+    "score": 0,
+    "v": "580229b8ec2f"
   },
   "án gleraugna": {
     "heard": "án gleraugna",
-    "score": 0.0
+    "score": 0,
+    "v": "9e472424e825"
   },
   "með skegg": {
     "heard": "með skegg",
-    "score": 0.0
+    "score": 0,
+    "v": "4799907268b5"
   },
   "án skeggs": {
     "heard": "án skeggs",
-    "score": 0.0
+    "score": 0,
+    "v": "a50174e9732c"
   },
   "vinnur": {
     "heard": "vinnur",
-    "score": 0.0
+    "score": 0,
+    "v": "9833c4b8b8a7"
   },
   "lærir": {
     "heard": "lærir",
-    "score": 0.0
+    "score": 0,
+    "v": "5bb6828dcc69"
   },
   "syngur": {
     "heard": "ég syngur",
-    "score": 0.0
+    "score": 0,
+    "v": "3fc2c8eb8412"
   },
   "spilar": {
     "heard": "a spilar",
-    "score": 0.0
+    "score": 0,
+    "v": "8530afde2306"
   },
   "ferðast": {
     "heard": "og ferðast",
-    "score": 0.0
+    "score": 0,
+    "v": "b73956f7b990"
   },
   "eldar": {
     "heard": "eldar",
-    "score": 0.0
+    "score": 0,
+    "v": "d6b01de0576e"
   },
   "les": {
     "heard": "e",
-    "score": 0.667
+    "score": 0.667,
+    "v": "f545705aad1b"
   },
   "teiknar": {
     "heard": "ég teiknar",
-    "score": 0.0
+    "score": 0,
+    "v": "129a8533e879"
   },
   "gamall/gömul": {
     "heard": "gamall eða gömul",
-    "score": 0.0
+    "score": 0,
+    "v": "9a48115e70bb"
   },
   "leikur sér": {
     "heard": "en leikur sér",
-    "score": 0.0
+    "score": 0,
+    "v": "5a2b802071a1"
   },
   "læknar": {
     "heard": "læknar",
-    "score": 0.0
+    "score": 0,
+    "v": "bf4c404e9b21"
   },
   "kennir": {
     "heard": "ið kennir",
-    "score": 0.0
+    "score": 0,
+    "v": "f5f1b44141b7"
   },
   "stjórnar": {
     "heard": "mig stjórnar",
-    "score": 0.0
+    "score": 0,
+    "v": "1d8ceb88542c"
   },
   "skapar": {
     "heard": "hann skapar",
-    "score": 0.0
+    "score": 0,
+    "v": "1799be949d9b"
   },
   "í vinnunni": {
     "heard": "í vinnunni",
-    "score": 0.0
+    "score": 0,
+    "v": "e69bd9eab93f"
   },
   "á sjúkrahúsi": {
     "heard": "sá sjúkrahúsi",
-    "score": 0.0
+    "score": 0,
+    "v": "5980346f2924"
   },
   "á leikvelli": {
     "heard": "á leikvelli",
-    "score": 0.0
+    "score": 0,
+    "v": "348653b4548c"
   },
   "á sviði": {
     "heard": "á sviði",
-    "score": 0.0
+    "score": 0,
+    "v": "0df7b9f2353c"
   },
   "í sjónvarpi": {
     "heard": "í sjónvarpi",
-    "score": 0.0
+    "score": 0,
+    "v": "59f9867ef519"
   },
   "á ferðalagi": {
     "heard": "á ferðalagi",
-    "score": 0.0
+    "score": 0,
+    "v": "4f1147a70c7c"
   },
   "Hún/Hann er ___.": {
     "heard": "hún eða hann er",
-    "score": 0.0
+    "score": 0,
+    "v": "c723dad87e85"
   },
   "Hún/Hann ___.": {
     "heard": "hún eða hann",
-    "score": 0.0
+    "score": 0,
+    "v": "5cd50307270c"
   },
   "Hún/Hann er ___ og ___.": {
     "heard": "hún eða hann er og",
-    "score": 0.0
+    "score": 0,
+    "v": "e78dbac7c8a0"
   },
   "Hún/Hann vinnur sem ___.": {
     "heard": "hún eða hann vinnur sem",
-    "score": 0.0
+    "score": 0,
+    "v": "43113c9e9178"
   },
   "Hún/Hann er oft ___.": {
     "heard": "hún eða hann er oft",
-    "score": 0.0
+    "score": 0,
+    "v": "45b3bd1f43ad"
   },
   "Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.": {
     "heard": "þessi manneskja er og er þekkt eða óþekkt fyrir",
-    "score": 0.0
+    "score": 0,
+    "v": "f7f14eeaa65e"
   },
   "Hún/Hann er oft ___ vegna þess að ___.": {
     "heard": "hún eða hann er oft vegna þess að",
-    "score": 0.0
+    "score": 0,
+    "v": "83ba8001ba58"
   },
   "Þetta er kennari. Hún er ung. Hún les.": {
     "heard": "þetta er kennari hún er ung hunlu",
-    "score": 0.114
+    "score": 0.114,
+    "v": "54c92dfc82b2"
   },
   "Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.": {
     "heard": "þetta er kona sem er há hún er ung og myndarleg hún vinnur sem læknir",
-    "score": 0.0
+    "score": 0,
+    "v": "82d2496f960f"
   },
   "Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.": {
     "heard": "ég held að þetta sé söngvari vegna þess að hún er fræg og syngur þessi manneskja er ung og er þekkt fyrir tónlist",
-    "score": 0.0
+    "score": 0,
+    "v": "0925ed2a6d07"
   },
   "hús": {
     "heard": "hús",
-    "score": 0.0
+    "score": 0,
+    "v": "064f0b64eca3"
   },
   "íbúð": {
     "heard": "íbúð",
-    "score": 0.0
+    "score": 0,
+    "v": "098988da2c3c"
   },
   "skóli": {
     "heard": "skóli",
-    "score": 0.0
+    "score": 0,
+    "v": "23db74e94c1d"
   },
   "sjúkrahús": {
     "heard": "sjúkrahús",
-    "score": 0.0
+    "score": 0,
+    "v": "372b13d736d3"
   },
   "búð/verslun": {
     "heard": "búð eða verslun",
-    "score": 0.0
+    "score": 0,
+    "v": "bef3b40146ae"
   },
   "veitingastaður": {
     "heard": "veitingastaður",
-    "score": 0.0
+    "score": 0,
+    "v": "fc520f0ddd15"
   },
   "safn": {
     "heard": "safn",
-    "score": 0.0
+    "score": 0,
+    "v": "35980567acb7"
   },
   "kirkja": {
     "heard": "kirkja",
-    "score": 0.0
+    "score": 0,
+    "v": "18892610e794"
   },
   "sundlaug": {
     "heard": "sundlaug",
-    "score": 0.0
+    "score": 0,
+    "v": "2e5c86b7f477"
   },
   "leikvöllur": {
     "heard": "leikvöllur",
-    "score": 0.0
+    "score": 0,
+    "v": "a39fa4213b2f"
   },
   "í bænum/borginni": {
     "heard": "í bænum eða borginni",
-    "score": 0.0
+    "score": 0,
+    "v": "56f6f20240a5"
   },
   "í úthverfi": {
     "heard": "í úthverfi",
-    "score": 0.0
+    "score": 0,
+    "v": "676c3e559d6a"
   },
   "á landi/sveitinni": {
     "heard": "á landi eða sveitinni",
-    "score": 0.0
+    "score": 0,
+    "v": "fa5dc6608b9c"
   },
   "við sjóinn": {
     "heard": "við sjóinn",
-    "score": 0.0
+    "score": 0,
+    "v": "58e249978091"
   },
   "í fjöllunum": {
     "heard": "í fjöllunum",
-    "score": 0.0
+    "score": 0,
+    "v": "f8f0d7089c84"
   },
   "lítill/lítil/lítið": {
     "heard": "lítill eða lítil eða lítið",
-    "score": 0.0
+    "score": 0,
+    "v": "c1e42f952ede"
   },
   "meðalstór/meðalstórt": {
     "heard": "er meðal stór eða meðalstórt",
-    "score": 0.042
+    "score": 0.042,
+    "v": "b60e0c0283ae"
   },
   "stór/stórt": {
     "heard": "stór eða stórt",
-    "score": 0.0
+    "score": 0,
+    "v": "d4830dee59a0"
   },
   "borðar": {
     "heard": "han borðar",
-    "score": 0.0
+    "score": 0,
+    "v": "b1899fd6a0c1"
   },
   "verslar": {
     "heard": "verslar",
-    "score": 0.0
+    "score": 0,
+    "v": "1d705b73600b"
   },
   "sefur": {
     "heard": "sefur",
-    "score": 0.0
+    "score": 0,
+    "v": "f12d6a3b5b82"
   },
   "búð": {
     "heard": "búð",
-    "score": 0.0
+    "score": 0,
+    "v": "cc2470b3e18c"
   },
   "bókasafn": {
     "heard": "bókasafn",
-    "score": 0.0
+    "score": 0,
+    "v": "4f33e93b8df1"
   },
   "íþróttahús": {
     "heard": "íþróttahús",
-    "score": 0.0
+    "score": 0,
+    "v": "e1e61e5ece09"
   },
   "gamalt": {
     "heard": "gamalt",
-    "score": 0.0
+    "score": 0,
+    "v": "095306627d69"
   },
   "nýtt": {
     "heard": "nýtt",
-    "score": 0.0
+    "score": 0,
+    "v": "aee73b55df06"
   },
   "fallegt": {
     "heard": "og fallegt",
-    "score": 0.0
+    "score": 0,
+    "v": "3b2c4174da26"
   },
   "ljótt": {
     "heard": "ljótt",
-    "score": 0.0
+    "score": 0,
+    "v": "692e307a9e50"
   },
   "nútímalegt": {
     "heard": "nútímalegt",
-    "score": 0.0
+    "score": 0,
+    "v": "d4d057740ada"
   },
   "sögulegt": {
     "heard": "sögulegt",
-    "score": 0.0
+    "score": 0,
+    "v": "c9857c3d516b"
   },
   "til að búa": {
     "heard": "til að búa",
-    "score": 0.0
+    "score": 0,
+    "v": "71718c5ab1ff"
   },
   "til að læra": {
     "heard": "til að læra",
-    "score": 0.0
+    "score": 0,
+    "v": "10b009cd04f7"
   },
   "til að versla": {
     "heard": "til að versla",
-    "score": 0.0
+    "score": 0,
+    "v": "0abfea2bf0f8"
   },
   "til að hvílast": {
     "heard": "til að hvílast",
-    "score": 0.0
+    "score": 0,
+    "v": "9ea0a7c765a8"
   },
   "til að stunda íþróttir": {
     "heard": "til að stunda íþróttir",
-    "score": 0.0
+    "score": 0,
+    "v": "0979b5c23fac"
   },
   "til að skemmta sér": {
     "heard": "til að skemmta sér",
-    "score": 0.0
+    "score": 0,
+    "v": "bb093414b534"
   },
   "nemendur": {
     "heard": "nemendur",
-    "score": 0.0
+    "score": 0,
+    "v": "0d2c00431d16"
   },
   "kennarar": {
     "heard": "kennarar",
-    "score": 0.0
+    "score": 0,
+    "v": "33a5e0226a76"
   },
   "listamenn": {
     "heard": "listamenn",
-    "score": 0.0
+    "score": 0,
+    "v": "8c7331aa2bde"
   },
   "í bænum": {
     "heard": "í bænum",
-    "score": 0.0
+    "score": 0,
+    "v": "e7aedfffd26a"
   },
   "úti á landi": {
     "heard": "úti á landi",
-    "score": 0.0
+    "score": 0,
+    "v": "9e8a72f07078"
   },
   "í miðborginni": {
     "heard": "í miðborginni",
-    "score": 0.0
+    "score": 0,
+    "v": "0f3477e8311c"
   },
   "Maður ___ þar.": {
     "heard": "maður þar",
-    "score": 0.0
+    "score": 0,
+    "v": "431f5d137c32"
   },
   "Maður fer þangað ___.": {
     "heard": "maður fer þangað",
-    "score": 0.0
+    "score": 0,
+    "v": "4d25c8fb525d"
   },
   "Þetta er ___ sem er staðsett ___.": {
     "heard": "þetta er sem er staðsett",
-    "score": 0.0
+    "score": 0,
+    "v": "5b82136f173c"
   },
   "Fólk fer þangað ___ og ___.": {
     "heard": "fólk fer þangað og",
-    "score": 0.0
+    "score": 0,
+    "v": "67fce87830b2"
   },
   "Mér finnst þetta ___ vegna þess að ___.": {
     "heard": "og mér finnst þetta vegna þess að",
-    "score": 0.0
+    "score": 0,
+    "v": "2c23eeab2533"
   },
   "Þetta er skóli. Maður lærir þar.": {
     "heard": "þetta er skóli maður lærir þar",
-    "score": 0.0
+    "score": 0,
+    "v": "f90113e6ec86"
   },
   "Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.": {
     "heard": "þetta er sundlaug sem er í bænum maður fer þangað til að synda",
-    "score": 0.0
+    "score": 0,
+    "v": "d086df9e1b9b"
   },
   "Þetta er safn sem er staðsett í borginni. Fólk fer þangað til að læra og skoða list.": {
     "heard": "þetta er safn sem er staðsett í borginni fólk fer þangað til að læra og skoða list",
-    "score": 0.0
+    "score": 0,
+    "v": "539325d2bf67"
   },
   "bolur/stuttermabolur": {
     "heard": "bolur eða stutt er bollur",
-    "score": 0.167
+    "score": 0.167,
+    "v": "81848cc19abf"
   },
   "peysa": {
     "heard": "peysa",
-    "score": 0.0
+    "score": 0,
+    "v": "9f4230e9a1ce"
   },
   "skyrta": {
     "heard": "ég skyrta",
-    "score": 0.0
+    "score": 0,
+    "v": "4f52e1fdbf8a"
   },
   "buxur": {
     "heard": "buxur",
-    "score": 0.0
+    "score": 0,
+    "v": "552887064257"
   },
   "pils": {
     "heard": "pils",
-    "score": 0.0
+    "score": 0,
+    "v": "029164cef592"
   },
   "jakki": {
     "heard": "jakki",
-    "score": 0.0
+    "score": 0,
+    "v": "08a2b48ee6eb"
   },
   "úlpa": {
     "heard": "úlpa",
-    "score": 0.0
+    "score": 0,
+    "v": "c27933723287"
   },
   "sokkar": {
     "heard": "sokkar",
-    "score": 0.0
+    "score": 0,
+    "v": "b36b7526217d"
   },
   "skór": {
     "heard": "an er skór",
-    "score": 0.0
+    "score": 0,
+    "v": "3b3afa26ffb0"
   },
   "húfa": {
     "heard": "kúfa",
-    "score": 0.25
+    "score": 0.25,
+    "v": "126782c71aa7"
   },
   "hanskar": {
     "heard": "hanskar",
-    "score": 0.0
+    "score": 0,
+    "v": "fffa21172799"
   },
   "trefill": {
     "heard": "trefill",
-    "score": 0.0
+    "score": 0,
+    "v": "41f180354c7b"
   },
   "rauður/rauð/rautt": {
     "heard": "rauður eða rauð eða rautt",
-    "score": 0.0
+    "score": 0,
+    "v": "f33792799138"
   },
   "blár/blá/blátt": {
     "heard": "blár eða blá eða blátt",
-    "score": 0.0
+    "score": 0,
+    "v": "86469bb60c11"
   },
   "grænn/græn/grænt": {
     "heard": "grænn eða græn eða grænt",
-    "score": 0.0
+    "score": 0,
+    "v": "dfdae6d96048"
   },
   "gulur/gul/gult": {
     "heard": "gulur eða gul eða gult",
-    "score": 0.0
+    "score": 0,
+    "v": "1bf81ac1647d"
   },
   "svartur/svört/svart": {
     "heard": "svartur eða svört eða svart",
-    "score": 0.0
+    "score": 0,
+    "v": "7920c332a189"
   },
   "hvítur/hvít/hvítt": {
     "heard": "hvítur eða hvít eða hvítt",
-    "score": 0.0
+    "score": 0,
+    "v": "87e5d40e1f2f"
   },
   "bleikur/bleik/bleikt": {
     "heard": "bleikur eða bleik eða bleikt",
-    "score": 0.0
+    "score": 0,
+    "v": "a5bdd5dea1a8"
   },
   "brúnn/brún/brúnt": {
     "heard": "brúnn eða brún eða brúnt",
-    "score": 0.0
+    "score": 0,
+    "v": "aa4e8201bf9f"
   },
   "rauðir/rauðar": {
     "heard": "rauðir eða rauðar",
-    "score": 0.0
+    "score": 0,
+    "v": "922a62b12b06"
   },
   "bláir/bláar": {
     "heard": "bláir eða bláar",
-    "score": 0.0
+    "score": 0,
+    "v": "e8bf01e21009"
   },
   "grænir/grænar": {
     "heard": "grænir eða grænar",
-    "score": 0.0
+    "score": 0,
+    "v": "df6323cc09b2"
   },
   "gulir/gular": {
     "heard": "gulir eða gular",
-    "score": 0.0
+    "score": 0,
+    "v": "a8bd464b897d"
   },
   "svartir/svartar": {
     "heard": "svartir eða svartar",
-    "score": 0.0
+    "score": 0,
+    "v": "9cfb561ee42d"
   },
   "hvítir/hvítar": {
     "heard": "hvítir eða hvítar",
-    "score": 0.0
+    "score": 0,
+    "v": "b67ab0c5003a"
   },
   "bleikir/bleikar": {
     "heard": "bleikir eða bleikar",
-    "score": 0.0
+    "score": 0,
+    "v": "7e5eaa401d52"
   },
   "brúnir/brúnar": {
     "heard": "brúnir eða brúnar",
-    "score": 0.0
+    "score": 0,
+    "v": "09bf3c5126a2"
   },
   "úr ull": {
     "heard": "sú rull",
-    "score": 0.333
+    "score": 0.333,
+    "v": "eb0ec06abe4e"
   },
   "úr bómull": {
     "heard": "þú er bómull",
-    "score": 0.111
+    "score": 0.111,
+    "v": "543e7db5fb3d"
   },
   "úr leðri": {
     "heard": "úr leðri",
-    "score": 0.0
+    "score": 0,
+    "v": "edacd07dd93e"
   },
   "þegar rignir": {
     "heard": "þegar rignir",
-    "score": 0.0
+    "score": 0,
+    "v": "b1fe7bd16138"
   },
   "við sérstök tilefni": {
     "heard": "við sérstök tilefni",
-    "score": 0.0
+    "score": 0,
+    "v": "66eade71ba29"
   },
   "á höfðinu": {
     "heard": "á höfðinu",
-    "score": 0.0
+    "score": 0,
+    "v": "4b43e4600465"
   },
   "á efri hluta líkamans": {
     "heard": "sá efri hluta líkamans",
-    "score": 0.0
+    "score": 0,
+    "v": "e898d31677b3"
   },
   "á neðri hluta líkamans": {
     "heard": "á neðri hluta líkamans",
-    "score": 0.0
+    "score": 0,
+    "v": "2e5dbd5279b8"
   },
   "á fótunum": {
     "heard": "á fótunum",
-    "score": 0.0
+    "score": 0,
+    "v": "d054d6753a7f"
   },
   "á höndunum": {
     "heard": "sá höndunum",
-    "score": 0.0
+    "score": 0,
+    "v": "d915eb76a4a3"
   },
   "bolur": {
     "heard": "bolur",
-    "score": 0.0
+    "score": 0,
+    "v": "b2d8b4eebceb"
   },
   "blátt": {
     "heard": "en blátt",
-    "score": 0.0
+    "score": 0,
+    "v": "d83b187a7dc2"
   },
   "svart": {
     "heard": "og svart",
-    "score": 0.0
+    "score": 0,
+    "v": "b34053c748ad"
   },
   "bleikt": {
     "heard": "eg bleikt",
-    "score": 0.0
+    "score": 0,
+    "v": "e10e077b02b7"
   },
   "mynstur": {
     "heard": "aer mynstur",
-    "score": 0.0
+    "score": 0,
+    "v": "52d8e256e1fb"
   },
   "einlitt": {
     "heard": "ein litt",
-    "score": 0.143
+    "score": 0.143,
+    "v": "4710fd918753"
   },
   "til að hlýja sér": {
     "heard": "til að hlýja sér",
-    "score": 0.0
+    "score": 0,
+    "v": "b80a58578797"
   },
   "til að verja sig": {
     "heard": "til að verja sig",
-    "score": 0.0
+    "score": 0,
+    "v": "ef669e09443e"
   },
   "til að líta vel út": {
     "heard": "til að líta vel út",
-    "score": 0.0
+    "score": 0,
+    "v": "ea7915a21d35"
   },
   "til að líða vel": {
     "heard": "til að líða vel",
-    "score": 0.0
+    "score": 0,
+    "v": "a87240dc6d53"
   },
   "íþróttamenn": {
     "heard": "íþróttamenn",
-    "score": 0.0
+    "score": 0,
+    "v": "6948cf174b54"
   },
   "inni": {
     "heard": "inni",
-    "score": 0.0
+    "score": 0,
+    "v": "f4ecfcd1faa6"
   },
   "í íþróttum": {
     "heard": "í íþróttum",
-    "score": 0.0
+    "score": 0,
+    "v": "f6bdce75cfd9"
   },
   "á hátíð": {
     "heard": "þá hátíð",
-    "score": 0.0
+    "score": 0,
+    "v": "112b71087266"
   },
   "Maður klæðist því ___.": {
     "heard": "maður klæðist því",
-    "score": 0.0
+    "score": 0,
+    "v": "f0361e5f2f50"
   },
   "Þetta er ___ sem er ___. Maður notar það ___.": {
     "heard": "þetta er sem er maður notar það",
-    "score": 0.0
+    "score": 0,
+    "v": "929b828a2eb0"
   },
   "Það er ___ og hentar vel ___.": {
     "heard": "það er og hentar vel",
-    "score": 0.0
+    "score": 0,
+    "v": "75b5f2829cf3"
   },
   "Þetta er úlpa. Hún er blá.": {
     "heard": "þetta er úlpa hún er blá",
-    "score": 0.0
+    "score": 0,
+    "v": "414aa376765d"
   },
   "Þetta er peysa sem er rauð. Maður klæðist henni á veturna.": {
     "heard": "þetta er peysa sem er rauð maður klæðist henni á veturna",
-    "score": 0.0
+    "score": 0,
+    "v": "ebf70c097e73"
   },
   "Þetta er jakki sem er úr leðri. Maður notar hann á veturna. Hann er svartur og hentar vel í kulda.": {
     "heard": "þetta er jakki sem er úr leðri maður notar hana á veturna hann er svartur og hentar vel í kulda",
-    "score": 0.011
+    "score": 0.011,
+    "v": "1f104d5b9671"
   },
   "bók": {
     "heard": "í bók",
-    "score": 0.0
+    "score": 0,
+    "v": "40ac8f2f48e9"
   },
   "penni": {
     "heard": "petni",
-    "score": 0.2
+    "score": 0.2,
+    "v": "1ca9a36597cc"
   },
   "blýantur": {
     "heard": "blý antur",
-    "score": 0.125
+    "score": 0.125,
+    "v": "5f3878d760ca"
   },
   "tölva": {
     "heard": "og tölva",
-    "score": 0.0
+    "score": 0,
+    "v": "a9bf55053966"
   },
   "stílabók": {
     "heard": "stíla bók",
-    "score": 0.125
+    "score": 0.125,
+    "v": "0cc15e3d0bf5"
   },
   "strokleður": {
     "heard": "ég strokleður",
-    "score": 0.0
+    "score": 0,
+    "v": "e491730341dd"
   },
   "reglustika": {
     "heard": "reglu slíka",
-    "score": 0.3
+    "score": 0.3,
+    "v": "7678a3a7aaac"
   },
   "reiknivél": {
     "heard": "reikni vél",
-    "score": 0.111
+    "score": 0.111,
+    "v": "2468787e0065"
   },
   "taska": {
     "heard": "taska",
-    "score": 0.0
+    "score": 0,
+    "v": "c1682dc2d456"
   },
   "skólastofa": {
     "heard": "skólastofa",
-    "score": 0.0
+    "score": 0,
+    "v": "fc04fc5caf99"
   },
   "matsalur": {
     "heard": "matsalur",
-    "score": 0.0
+    "score": 0,
+    "v": "cc3946d85cb5"
   },
   "íþróttasalur": {
     "heard": "íþróttasalur",
-    "score": 0.0
+    "score": 0,
+    "v": "66710d64cf62"
   },
   "gangur": {
     "heard": "in gangur",
-    "score": 0.0
+    "score": 0,
+    "v": "3b363746df95"
   },
   "skrifstofa": {
     "heard": "er skrifstofa",
-    "score": 0.0
+    "score": 0,
+    "v": "8007650f0f89"
   },
   "skólastjóri": {
     "heard": "skólastjóri",
-    "score": 0.0
+    "score": 0,
+    "v": "1dec9350ffe5"
   },
   "námsráðgjafi": {
     "heard": "námsráðgjafi",
-    "score": 0.0
+    "score": 0,
+    "v": "a1cd36a069cc"
   },
   "bekkjarfélagi": {
     "heard": "bekkjarfélagi",
-    "score": 0.0
+    "score": 0,
+    "v": "3f14aa42bb7e"
   },
   "íslenska": {
     "heard": "íslenska",
-    "score": 0.0
+    "score": 0,
+    "v": "cb65ffa4b281"
   },
   "stærðfræði": {
     "heard": "stærðfræði",
-    "score": 0.0
+    "score": 0,
+    "v": "b72a41805558"
   },
   "enska": {
     "heard": "enska",
-    "score": 0.0
+    "score": 0,
+    "v": "a86aeda20f0c"
   },
   "saga": {
     "heard": "saga",
-    "score": 0.0
+    "score": 0,
+    "v": "8315947f7c05"
   },
   "náttúrufræði": {
     "heard": "náttúrufræði",
-    "score": 0.0
+    "score": 0,
+    "v": "be7f132b9cc8"
   },
   "íþróttir": {
     "heard": "íþróttir",
-    "score": 0.0
+    "score": 0,
+    "v": "64ba99214b59"
   },
   "lestu": {
     "heard": "lestu",
-    "score": 0.0
+    "score": 0,
+    "v": "edee2070b8cc"
   },
   "skrifaðu": {
     "heard": "en skrifaðu",
-    "score": 0.0
+    "score": 0,
+    "v": "9e3a4833d6ca"
   },
   "hlustaðu": {
     "heard": "hlustaðu",
-    "score": 0.0
+    "score": 0,
+    "v": "20882f196390"
   },
   "svaraðu": {
     "heard": "ég svaraðu",
-    "score": 0.0
+    "score": 0,
+    "v": "5cd892a726de"
   },
   "merktu við": {
     "heard": "sem ertu við",
-    "score": 0.2
+    "score": 0.2,
+    "v": "d73b682eed24"
   },
   "lýstu": {
     "heard": "lýstu",
-    "score": 0.0
+    "score": 0,
+    "v": "f84c3f1e06ca"
   },
   "berðu saman": {
     "heard": "þau berðu saman",
-    "score": 0.0
+    "score": 0,
+    "v": "ddce953a45a8"
   },
   "útskýrðu": {
     "heard": "útskýrðu",
-    "score": 0.0
+    "score": 0,
+    "v": "d1311c1dfd6f"
   },
   "kennslubók": {
     "heard": "kennslubók",
-    "score": 0.0
+    "score": 0,
+    "v": "bf759a0e3fe9"
   },
   "verkefnablað": {
     "heard": "verkefnablað",
-    "score": 0.0
+    "score": 0,
+    "v": "53b4bb3910bf"
   },
   "listir": {
     "heard": "listir",
-    "score": 0.0
+    "score": 0,
+    "v": "ef872e0a9365"
   },
   "danska": {
     "heard": "danska",
-    "score": 0.0
+    "score": 0,
+    "v": "952a2c0b4dfc"
   },
   "félagsfræði": {
     "heard": "félagsfræði",
-    "score": 0.0
+    "score": 0,
+    "v": "f0657afc2bdb"
   },
   "efnafræði": {
     "heard": "sefnafræði",
-    "score": 0.0
+    "score": 0,
+    "v": "a8d85d0f75ad"
   },
   "rökstyddu": {
     "heard": "rökstíddu",
-    "score": 0.111
+    "score": 0.111,
+    "v": "5b7aa9a9151a"
   },
   "dragðu saman": {
     "heard": "þau dragðu saman",
-    "score": 0.0
+    "score": 0,
+    "v": "c27634431000"
   },
   "greindu": {
     "heard": "þer greindu",
-    "score": 0.0
+    "score": 0,
+    "v": "99c2aa1192f3"
   },
   "hluti": {
     "heard": "hluti",
-    "score": 0.0
+    "score": 0,
+    "v": "3e9b8812e789"
   },
   "áhrif": {
     "heard": "áhrif",
-    "score": 0.0
+    "score": 0,
+    "v": "f022305800fc"
   },
   "breyting": {
     "heard": "breyting",
-    "score": 0.0
+    "score": 0,
+    "v": "907f0a9333aa"
   },
   "mikilvægur": {
     "heard": "mikilvægur",
-    "score": 0.0
+    "score": 0,
+    "v": "228c57359cda"
   },
   "einstaklingur": {
     "heard": "einstaklingur",
-    "score": 0.0
+    "score": 0,
+    "v": "31374aad821a"
   },
   "starf": {
     "heard": "ég starf",
-    "score": 0.0
+    "score": 0,
+    "v": "a1219c074bf0"
   },
   "auka": {
     "heard": "hauka",
-    "score": 0.0
+    "score": 0,
+    "v": "bd328e4a480f"
   },
   "meðferð": {
     "heard": "meðferð",
-    "score": 0.0
+    "score": 0,
+    "v": "8a0acc10aaf8"
   },
   "heimild": {
     "heard": "heimild",
-    "score": 0.0
+    "score": 0,
+    "v": "1342361f5fd4"
   },
   "greina": {
     "heard": "til greina",
-    "score": 0.0
+    "score": 0,
+    "v": "449176c9214d"
   },
   "tengja": {
     "heard": "tengja",
-    "score": 0.0
+    "score": 0,
+    "v": "536d9af0335a"
   },
   "hugmynd": {
     "heard": "hugmynd",
-    "score": 0.0
+    "score": 0,
+    "v": "37ebbfd1a381"
   },
   "lesum": {
     "heard": "lesum",
-    "score": 0.0
+    "score": 0,
+    "v": "f8efa2e24108"
   },
   "skrifum": {
     "heard": "við skrifum",
-    "score": 0.0
+    "score": 0,
+    "v": "72a5732eebe6"
   },
   "hlustum": {
     "heard": "hlustum",
-    "score": 0.0
+    "score": 0,
+    "v": "18aa99e4c081"
   },
   "tölum": {
     "heard": "tölum",
-    "score": 0.0
+    "score": 0,
+    "v": "fc8e6478a5dd"
   },
   "reiknum": {
     "heard": "reiknum",
-    "score": 0.0
+    "score": 0,
+    "v": "4ab13199c932"
   },
   "svörum": {
     "heard": "svörum",
-    "score": 0.0
+    "score": 0,
+    "v": "745b0457a590"
   },
   "spyrjum": {
     "heard": "spyrjum",
-    "score": 0.0
+    "score": 0,
+    "v": "c04521ee9fd3"
   },
   "vinnum saman": {
     "heard": "við vinnum saman",
-    "score": 0.0
+    "score": 0,
+    "v": "c008d693b231"
   },
   "ræðum": {
     "heard": "ræðum",
-    "score": 0.0
+    "score": 0,
+    "v": "b15424f864a4"
   },
   "kynnum": {
     "heard": "kinnum",
-    "score": 0.167
+    "score": 0.167,
+    "v": "d6de3f414a32"
   },
   "vinur": {
     "heard": "vinur",
-    "score": 0.0
+    "score": 0,
+    "v": "c3675124237e"
   },
   "umsjónarkennari": {
     "heard": "um sjónarkennari",
-    "score": 0.067
+    "score": 0.067,
+    "v": "ea0b85091f77"
   },
   "túlkur": {
     "heard": "túlkur",
-    "score": 0.0
+    "score": 0,
+    "v": "9571f126634e"
   },
   "í skólastofunni": {
     "heard": "í skólastofunni",
-    "score": 0.0
+    "score": 0,
+    "v": "4953265e13c1"
   },
   "á bókasafninu": {
     "heard": "sá bókasafninu",
-    "score": 0.0
+    "score": 0,
+    "v": "c5546b82f7b6"
   },
   "í íþróttasalnum": {
     "heard": "í íþróttasalnum",
-    "score": 0.0
+    "score": 0,
+    "v": "250889035383"
   },
   "í matsalnum": {
     "heard": "í matsalnum",
-    "score": 0.0
+    "score": 0,
+    "v": "c74186a822af"
   },
   "á ganginum": {
     "heard": "á ganginum",
-    "score": 0.0
+    "score": 0,
+    "v": "6371fadbe440"
   },
   "á skrifstofunni": {
     "heard": "á skrifstofunni",
-    "score": 0.0
+    "score": 0,
+    "v": "f19eedc5d5a3"
   },
   "hjá námsráðgjafa": {
     "heard": "hjá námsráðgjafa",
-    "score": 0.0
+    "score": 0,
+    "v": "98e8b24398b5"
   },
   "í frímínútum": {
     "heard": "í frímínútum",
-    "score": 0.0
+    "score": 0,
+    "v": "844280e84ca3"
   },
   "eftir skóla": {
     "heard": "eftir skóla",
-    "score": 0.0
+    "score": 0,
+    "v": "a2ac89e6e68b"
   },
   "í hádeginu": {
     "heard": "í hádeginu",
-    "score": 0.0
+    "score": 0,
+    "v": "f31e1dab16f1"
   },
   "á mánudögum": {
     "heard": "á mánudögum",
-    "score": 0.0
+    "score": 0,
+    "v": "16ee84e13b94"
   },
   "í prófinu": {
     "heard": "í prófinu",
-    "score": 0.0
+    "score": 0,
+    "v": "553db5d7c6ea"
   },
   "fyrir próf": {
     "heard": "fyrir próf",
-    "score": 0.0
+    "score": 0,
+    "v": "f0829b1ee234"
   },
   "í lok annar": {
     "heard": "í lok hennar",
-    "score": 0.182
+    "score": 0.182,
+    "v": "21280f1a1ac7"
   },
   "Ég er ___.": {
     "heard": "ég er",
-    "score": 0.0
+    "score": 0,
+    "v": "7516ca2da47c"
   },
   "Við ___ í tímanum.": {
     "heard": "við í tímanum",
-    "score": 0.0
+    "score": 0,
+    "v": "29bd68f88af7"
   },
   "Kennarinn segir: ___!": {
     "heard": "kennarinn segir",
-    "score": 0.0
+    "score": 0,
+    "v": "02ad6fb7872b"
   },
   "Í ___ lærum við að ___.": {
     "heard": "því lærum við að",
-    "score": 0.0
+    "score": 0,
+    "v": "3343dab48c0b"
   },
   "Ég þarf ___ til að ___.": {
     "heard": "ég þarf til að",
-    "score": 0.0
+    "score": 0,
+    "v": "67efb32a4f15"
   },
   "Kennarinn biður okkur að ___.": {
     "heard": "kennarinn biður okkur að",
-    "score": 0.0
+    "score": 0,
+    "v": "dfdecbc291be"
   },
   "Ég skil ekki ___. Getur þú hjálpað mér?": {
     "heard": "enég skil ekki getur þú hjálpað mér",
-    "score": 0.0
+    "score": 0,
+    "v": "dc8ce1c32d9f"
   },
   "Í dag lærðum við um ___.": {
     "heard": "í dag lærðum við um",
-    "score": 0.0
+    "score": 0,
+    "v": "04a68d46c8cc"
   },
   "___ skiptir máli vegna þess að ___.": {
     "heard": "að skiptir máli vegna þess að",
-    "score": 0.0
+    "score": 0,
+    "v": "9f4aa2aee0b5"
   },
   "Ég er sammála/ósammála af því að ___.": {
     "heard": "ég er sammála eða ósammála af því að",
-    "score": 0.0
+    "score": 0,
+    "v": "9d25ad51dd07"
   },
   "Hvað finnst þér um ___?": {
     "heard": "hvað finnst þér um",
-    "score": 0.0
+    "score": 0,
+    "v": "8bd1f82d66a5"
   },
   "Þetta er bók. Ég er í skólastofunni. Við lesum í tímanum.": {
     "heard": "þetta er bók ég er í skólastofunni við lesum í tímanum",
-    "score": 0.0
+    "score": 0,
+    "v": "1dc0fb4a99c9"
   },
   "Í stærðfræði lærum við að reikna. Ég þarf reiknivél til að reikna. Kennarinn biður okkur að svara.": {
     "heard": "því stærðfræði lærum við að reikna ég þarf reiknivél til að reikna kennarinn biður okkur að svara",
-    "score": 0.0
+    "score": 0,
+    "v": "28d6cb94f895"
   },
   "Í dag lærðum við um breytingar á loftslagi. Þær skipta máli vegna þess að þær hafa áhrif á alla. Hvað finnst þér um það?": {
     "heard": "í dag lærðum við um breytingar á loftslagi þær skipta máli vegna þess að þær hafa áhrif á alla hvað finnst þér um það",
-    "score": 0.0
+    "score": 0,
+    "v": "daab0dbe68fa"
   }
 }

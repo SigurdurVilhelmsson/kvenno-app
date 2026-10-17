@@ -10,11 +10,14 @@ import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
 import { readGlossur } from './glossur.mjs';
 import {
+  clipName,
   clipVersion,
   clipsForApp,
   clipsForReview,
   readHeard,
   readHljod,
+  readState,
+  stateProblems,
   textsToVoice,
 } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
@@ -71,6 +74,7 @@ const CLIP_DIR = resolve(ROOT, 'apps/islenskubraut/public/hljod');
 const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
 const HEARD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hlustun.json');
 const SPA_HLUSTUN = resolve(ROOT, 'apps/islenskubraut/src/data/hlustun.ts');
+const STATE_FILE = resolve(ROOT, 'content/islenskubraut/hljod/stada.json');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -184,6 +188,19 @@ const clips = clipsForApp(voiced, hljod, hasClip);
 const heard = existsSync(HEARD_FILE) ? readHeard(JSON.parse(readFileSync(HEARD_FILE, 'utf8'))) : {};
 // Each clip's audio version, so a verdict given to a recording is not taken for a remade one.
 const version = (f) => clipVersion(readFileSync(resolve(CLIP_DIR, f)));
+// An approval is for the audio approved: a recording replaced since, or a value changed by hand
+// and not recorded, stops the build until `pnpm islenskubraut:hljod --record` has seen it.
+const state = existsSync(STATE_FILE) ? readState(JSON.parse(readFileSync(STATE_FILE, 'utf8'))) : {};
+const problems = stateProblems(hljod, state, (t) =>
+  hasClip(clipName(t)) ? version(clipName(t)) : null
+);
+if (problems.length > 0) {
+  console.error(`content/islenskubraut/hljod/stada.json is out of date:`);
+  for (const p of problems.slice(0, 20)) console.error(`  ${p}`);
+  if (problems.length > 20) console.error(`  … and ${problems.length - 20} more`);
+  console.error('Run: pnpm islenskubraut:hljod --record');
+  process.exit(1);
+}
 const review = clipsForReview(voiced, hljod, hasClip, heard, version);
 
 const outputs = [

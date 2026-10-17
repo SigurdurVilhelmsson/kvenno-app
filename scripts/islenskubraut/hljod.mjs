@@ -69,8 +69,9 @@ export function spoken(text) {
     .trim();
 }
 
-/** The value in `hljod.yaml` for a clip a teacher heard as wrong: it never plays, and
- * `yfirferd-check.mjs --apply` never approves it. Make the clip again, then write `false`. */
+/** The value in `hljod.yaml` for a clip a teacher heard as wrong: students never hear it (it
+ * plays only as a draft, under `?drog` and on the listening page), and a review heard before it
+ * was marked cannot approve it. Making the clip again sets it back to `false` (`syncState`). */
 export const REJECTED = 'rangt';
 
 /**
@@ -106,6 +107,81 @@ export function clipVersion(bytes) {
   return createHash('sha256').update(bytes).digest('hex').slice(0, 12);
 }
 
+/** A clip's value in `hljod.yaml` as written: `true`, `false` or `rangt`. */
+export function valueOf(manifest, text) {
+  return manifest.clips.get(text) ? true : manifest.rejected.has(text) ? REJECTED : false;
+}
+
+const VALUES = [true, false, REJECTED];
+
+/**
+ * `stada.json`, the tools' record of every listed clip with a file: the version of its audio,
+ * the value `hljod.yaml` gave it, and when that value was set (`{ v, value, at }`). It is written
+ * by `pnpm islenskubraut:hljod --record` and `pnpm islenskubraut:yfirferd --apply`, never by hand.
+ * It ties an approval to the audio approved, and lets a person's decision stand against verdicts
+ * given before it.
+ */
+export function readState(raw) {
+  assert(raw && typeof raw === 'object' && !Array.isArray(raw), 'stada.json must be a map');
+  for (const [text, e] of Object.entries(raw)) {
+    assert(
+      e && typeof e.v === 'string' && VALUES.includes(e.value) && typeof e.at === 'string',
+      `stada.json: "${text}" needs v, value and at`
+    );
+  }
+  return raw;
+}
+
+/**
+ * Bring the record into line with `hljod.yaml` and the files. A clip new to it, or whose value was
+ * changed by hand, is stamped `now`. A clip whose audio has changed is a recording nobody has
+ * heard, so its value goes back to `false`: an approval or a `rangt` was for the old audio.
+ * `version(text)` is the clip's current version, or null when it has no file. Returns
+ * `{ state, reset, stamped }`, `reset` being the texts whose `hljod.yaml` value must become false.
+ */
+export function syncState(manifest, state, version, now) {
+  const next = {};
+  const reset = [];
+  const stamped = [];
+  for (const text of [...manifest.clips.keys()].sort()) {
+    const v = version(text);
+    const value = valueOf(manifest, text);
+    const was = state[text];
+    if (v === null) {
+      if (was) next[text] = was;
+    } else if (!was || (was.v === v && was.value !== value)) {
+      next[text] = { v, value, at: now };
+      stamped.push(text);
+    } else if (was.v !== v) {
+      next[text] = { v, value: false, at: now };
+      if (value !== false) reset.push(text);
+    } else {
+      next[text] = was;
+    }
+  }
+  return { state: next, reset, stamped };
+}
+
+/**
+ * Where the record and `hljod.yaml` or the files disagree: a listed clip with a file and no
+ * record, a record for other audio, or a value changed since it was recorded. The build refuses
+ * all three, so a replaced recording is never approved unheard; `--record` mends them.
+ */
+export function stateProblems(manifest, state, version) {
+  const out = [];
+  for (const text of manifest.clips.keys()) {
+    const v = version(text);
+    if (v === null) continue;
+    const was = state[text];
+    if (!was) out.push(`"${text}" is not in stada.json`);
+    else if (was.v !== v) out.push(`"${text}": its audio has changed since it was recorded`);
+    else if (was.value !== valueOf(manifest, text)) {
+      out.push(`"${text}": hljod.yaml says ${valueOf(manifest, text)}, recorded ${was.value}`);
+    }
+  }
+  return out;
+}
+
 /**
  * Compare the manifest with the content and the files on disk. Returns
  * `{ missing, stale, noFile }`: texts on the cards with no clip yet, clips for texts no longer on
@@ -136,15 +212,19 @@ export function clipsForApp(texts, manifest, hasFile) {
 
 /**
  * `hlustun.json`, what a speech recogniser heard in each clip (`hljod/hlustun.py`): per text,
- * `{ heard, score }`, the score the share of letters that differ (0 is a match). Optional; a clip
- * with no entry was simply not checked.
+ * `{ heard, score, v }`, the score the share of letters that differ (0 is a match) and `v` the
+ * version of the audio it heard. Optional; a clip with no entry, or an entry for other audio, was
+ * simply not checked.
  */
 export function readHeard(raw) {
   assert(raw && typeof raw === 'object' && !Array.isArray(raw), 'hlustun.json must be a map');
   for (const [text, entry] of Object.entries(raw)) {
     assert(
-      entry && typeof entry.heard === 'string' && typeof entry.score === 'number',
-      `hlustun.json: "${text}" needs heard and score`
+      entry &&
+        typeof entry.heard === 'string' &&
+        typeof entry.score === 'number' &&
+        typeof entry.v === 'string',
+      `hlustun.json: "${text}" needs heard, score and v`
     );
   }
   return raw;
@@ -161,12 +241,14 @@ export function clipsForReview(texts, manifest, hasFile, heard = {}, version = (
   for (const [text, places] of texts) {
     const file = clipName(text);
     if (!manifest.clips.has(text) || !hasFile(file)) continue;
-    const h = heard[text];
+    const v = version(file);
+    // A reading of other audio says nothing about this recording.
+    const h = heard[text]?.v === v ? heard[text] : undefined;
     const say = spoken(text);
     out.push({
       text,
       file,
-      v: version(file),
+      v,
       approved: manifest.clips.get(text),
       ...(manifest.rejected?.has(text) ? { rejected: true } : {}),
       places,

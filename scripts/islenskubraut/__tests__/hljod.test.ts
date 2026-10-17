@@ -13,7 +13,10 @@ import {
   placeLabel,
   readHeard,
   readHljod,
+  readState,
   spoken,
+  stateProblems,
+  syncState,
   textsToVoice,
 } from '../hljod.mjs';
 import { loadCategories } from '../load.mjs';
@@ -133,7 +136,11 @@ describe('the listening page’s data', () => {
   const version = (f: string) => `v-${f.slice(0, 4)}`;
 
   it('lists each clip with a file, its places, its audio version, and what was heard', () => {
-    const heard = readHeard({ hali: { heard: 'hala', score: 0.25 } });
+    // A reading of the clip as it is now counts; one of other audio is no guide to this one.
+    const heard = readHeard({
+      hali: { heard: 'hala', score: 0.25, v: version(clipName('hali')) },
+      feldur: { heard: 'veldur', score: 0.4, v: 'gamalt' },
+    });
     expect(clipsForReview(texts, manifest, hasFile, heard, version)).toEqual([
       {
         text: 'feldur',
@@ -169,9 +176,59 @@ describe('the listening page’s data', () => {
     expect(clipVersion(Buffer.from('a'))).not.toBe(clipVersion(Buffer.from('b')));
   });
 
-  it('refuses a recogniser entry without what it heard and a score', () => {
-    expect(() => readHeard({ hali: { heard: 'hala' } })).toThrow(/needs heard and score/);
+  it('refuses a recogniser entry without what it heard, a score and the audio it heard', () => {
+    expect(() => readHeard({ hali: { heard: 'hala', score: 0 } })).toThrow(
+      /needs heard, score and v/
+    );
     expect(() => readHeard([])).toThrow(/must be a map/);
+  });
+});
+
+describe('the record of each clip’s audio and decision', () => {
+  const manifest = readHljod({
+    voice: 'Rödd',
+    clips: { feldur: true, hali: 'rangt', gæludýr: false, horfin: false },
+  });
+  const V: Record<string, string | null> = { feldur: 'a', hali: 'b', gæludýr: 'c', horfin: null };
+  const version = (t: string) => V[t] ?? null;
+  const state = readState({
+    feldur: { v: 'a', value: true, at: 'T1' },
+    hali: { v: 'b', value: 'rangt', at: 'T1' },
+    gæludýr: { v: 'c', value: false, at: 'T1' },
+  });
+
+  it('is in line when every clip with a file is recorded with its audio and value', () => {
+    expect(stateProblems(manifest, state, version)).toEqual([]);
+    expect(syncState(manifest, state, version, 'T2')).toEqual({ state, reset: [], stamped: [] });
+  });
+
+  it('sets a clip made again back to false: the approval was for the old audio', () => {
+    const remade = (t: string) => (t === 'feldur' || t === 'hali' ? 'new' : version(t));
+    expect(stateProblems(manifest, state, remade)).toEqual([
+      '"feldur": its audio has changed since it was recorded',
+      '"hali": its audio has changed since it was recorded',
+    ]);
+    const synced = syncState(manifest, state, remade, 'T2');
+    expect(synced.reset).toEqual(['feldur', 'hali']);
+    expect(synced.state.feldur).toEqual({ v: 'new', value: false, at: 'T2' });
+  });
+
+  it('stamps a value changed by hand with when it was recorded, and a clip new to the record', () => {
+    const edited = readHljod({
+      voice: 'Rödd',
+      clips: { ...{ feldur: true, hali: true, gæludýr: false } },
+    });
+    expect(stateProblems(edited, state, version)).toEqual([
+      '"hali": hljod.yaml says true, recorded rangt',
+    ]);
+    const synced = syncState(edited, {}, version, 'T2');
+    expect(synced.stamped).toEqual(['feldur', 'gæludýr', 'hali']);
+  });
+
+  it('refuses a record entry it cannot read', () => {
+    expect(() => readState({ feldur: { v: 'a', value: 'já', at: 'T' } })).toThrow(
+      /needs v, value and at/
+    );
   });
 });
 
@@ -184,6 +241,18 @@ describe('the real manifest', () => {
 
   it('lists a clip with a file for every text on the cards, and nothing else', () => {
     expect(compare(texts, manifest, hasFile)).toEqual({ missing: [], stale: [], noFile: [] });
+  });
+
+  it('is recorded in stada.json, audio and value, so no approval is for audio since replaced', () => {
+    const dir = resolve(ROOT, 'apps/islenskubraut/public/hljod');
+    const state = readState(
+      JSON.parse(readFileSync(resolve(ROOT, 'content/islenskubraut/hljod/stada.json'), 'utf8'))
+    );
+    const version = (t: string) =>
+      existsSync(resolve(dir, clipName(t)))
+        ? clipVersion(readFileSync(resolve(dir, clipName(t))))
+        : null;
+    expect(stateProblems(manifest, state, version)).toEqual([]);
   });
 
   it('credits the voice by name and licence', () => {

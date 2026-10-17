@@ -400,6 +400,7 @@ sentenceFrames:
       - Þetta er ___.
       - Það er ___.
       - Það hefur ___ og ___.
+      - Þetta er gott.
 guidingQuestions:
   - id: q1
     question: Hvernig er það?
@@ -562,6 +563,19 @@ guidingQuestions:
         except: [ávöxtur]
 `)
     ).toThrow(/"ávöxtur" is left out of every frame by except/);
+  });
+
+  it('refuses a form or a word list on a frame with no blank', () => {
+    for (const extra of ['form: agree', 'words: Tegund', 'forms:\n          gott: agree']) {
+      expect(() =>
+        load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+      - frame: Þetta er gott.
+        ${extra}
+`)
+      ).toThrow(/has no blank to fill, so it takes no blank, words, form or forms/);
+    }
   });
 
   it('refuses a word form on the subject blank, which takes the subject as it is', () => {
