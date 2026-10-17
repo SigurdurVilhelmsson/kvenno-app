@@ -126,6 +126,10 @@ if (!skipLabReports) {
 if (!skipIslenskubraut) {
   console.log('\n📚 Building íslenskubraut...');
   try {
+    // The app ships the generated data as committed, so refuse to build from data that no longer
+    // matches the content, the recordings or their record (stada.json): a recording replaced
+    // after it was approved must not ship as approved.
+    execSync('node scripts/islenskubraut/build.mjs --check', { cwd: rootDir, stdio });
     execSync('pnpm --filter @kvenno/islenskubraut build', { cwd: rootDir, stdio });
     console.log('   ✅ Íslenskubraut built');
   } catch (error) {

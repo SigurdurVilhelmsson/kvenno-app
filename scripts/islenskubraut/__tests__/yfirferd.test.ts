@@ -47,7 +47,7 @@ const file = (over: Record<string, unknown> = {}) => ({
   clips: [clip('gæludýr', 'right', MON), clip('les', 'wrong', MON, 'heyrist sem „e“')],
   ...over,
 });
-// `horfið` is in hljod.yaml but no longer on the cards; `fugl` was heard as wrong before.
+// `horfið` is in hljod.yaml but no longer on the cards; feldur is approved, fugl marked rangt.
 const manifest = readHljod({
   voice: 'Rödd',
   clips: {
@@ -60,19 +60,15 @@ const manifest = readHljod({
     horfin: false,
   },
 });
-// When each value was set: feldur approved, and fugl marked rangt, on Tuesday.
-const state = {
-  feldur: { v: 'v4', value: true, at: TUE },
-  fugl: { v: 'v5', value: 'rangt', at: TUE },
-};
 const texts = new Map(['gæludýr', 'les', 'hali', 'feldur', 'fugl', 'horfin'].map((t) => [t, []]));
-const run = (...files: Record<string, unknown>[]) =>
+const run = (files: Record<string, unknown>[], rulers: string[] = []) =>
   approvals(
     files.map((f, i) => readReview(f, `f${i}.json`)),
     manifest,
-    { texts, version, state }
+    { texts, version, rulers }
   );
-const textsOf = (list: { text: string }[]) => list.map((e) => e.text);
+const to = (r: ReturnType<typeof run>) =>
+  Object.fromEntries(r.outcomes.map((o: { text: string; to: unknown }) => [o.text, o.to]));
 
 describe('a review file', () => {
   it('is the format the review page writes', () => {
@@ -113,130 +109,130 @@ describe('a review file', () => {
   });
 });
 
-describe('what the reviews do to the recordings', () => {
-  it('approves what someone heard as right and nobody as wrong, and marks the wrong ones', () => {
-    const r = run(
+describe('what the reviews make of the recordings', () => {
+  it('gives each recording the value all the verdicts on it give together', () => {
+    const r = run([
       file(),
       file({
         reviewer: 'Jón',
         notes: [],
         clips: [clip('gæludýr', 'right', MON), clip('hali', 'wrong', MON)],
       }),
-      file({ reviewer: 'Gunna', notes: [], clips: [clip('hali', 'right', MON)] })
-    );
-    expect(textsOf(r.approve)).toEqual(['gæludýr']);
-    // A clean "wrong" is written down as rangt, so a later run cannot approve it.
-    expect(textsOf(r.reject)).toEqual(['les']);
-    expect(textsOf(r.conflicts)).toEqual(['hali']);
-  });
-
-  it('revokes an approved recording heard as wrong since it was approved', () => {
-    const r = run(file({ clips: [clip('feldur', 'wrong', THU, 'rangt orð')] }));
-    expect(textsOf(r.revoke)).toEqual(['feldur']);
-    expect(r.revoke[0].verdicts).toEqual([
-      { reviewer: 'Anna', verdict: 'wrong', at: THU, note: 'rangt orð' },
+      file({ reviewer: 'Gunna', notes: [], clips: [clip('hali', 'right', MON)] }),
     ]);
+    // Right only, wrong only, and both ways.
+    expect(to(r)).toEqual({ gæludýr: true, hali: false, les: 'rangt' });
   });
 
-  it('keeps a decision against every verdict given before it, so a settled conflict stays settled', () => {
-    // Jón heard feldur as wrong on Monday; it was approved on Tuesday, over his verdict.
-    const r = run(
-      file({ reviewer: 'Jón', clips: [clip('feldur', 'wrong', MON)] }),
-      file({ saved: THU, clips: [clip('hali', 'right', THU)] })
+  it('does not depend on the order the files came in, or on anyone’s clock', () => {
+    // Anna's file came on Monday and was applied; Jón's, from earlier, came on Wednesday.
+    const anna = file({ saved: TUE, clips: [clip('les', 'right', TUE)] });
+    const jon = file({ reviewer: 'Jón', saved: MON, clips: [clip('les', 'wrong', MON, 'e')] });
+    for (const order of [
+      [anna, jon],
+      [jon, anna],
+    ]) {
+      expect(to(run(order))).toEqual({ les: false });
+    }
+    // An approved recording someone heard as wrong stops being approved, whenever it was said.
+    expect(to(run([file({ clips: [clip('feldur', 'wrong', MON)] })]))).toEqual({ feldur: 'rangt' });
+  });
+
+  it('lets a ruler settle a recording, and lists every verdict the ruling overrules', () => {
+    const files = [
+      file({ clips: [clip('les', 'right', MON)] }),
+      file({ reviewer: 'Jón', clips: [clip('les', 'wrong', MON, 'óskýrt')] }),
+      file({ reviewer: 'Siggi', clips: [clip('les', 'right', TUE)] }),
+    ];
+    const r = run(files, ['siggi']);
+    expect(to(r)).toEqual({ les: true });
+    const les = r.outcomes.find((o: { text: string }) => o.text === 'les');
+    expect(les.overruled).toEqual([{ reviewer: 'Jón', verdict: 'wrong', at: MON, note: 'óskýrt' }]);
+    // Two rulers who disagree settle nothing.
+    const split = run(
+      [...files, file({ reviewer: 'Gunna', clips: [clip('les', 'wrong', TUE)] })],
+      ['Siggi', 'Gunna']
     );
-    expect(r.revoke).toEqual([]);
-    expect(textsOf(r.already)).toEqual(['feldur']);
-    // The same for rangt: a "right" from before it was marked does not reopen it.
-    expect(textsOf(run(file({ clips: [clip('fugl', 'right', MON)] })).already)).toEqual(['fugl']);
+    expect(to(split)).toEqual({ les: false });
   });
 
-  it('reopens a rangt recording only on a verdict given since, for a person to decide', () => {
-    const r = run(file({ clips: [clip('fugl', 'right', THU)] }));
-    expect(r.approve).toEqual([]);
-    expect(textsOf(r.blocked)).toEqual(['fugl']);
+  it('leaves a recording to be heard again when its verdicts are for audio since replaced', () => {
+    const r = run([file({ clips: [{ text: 'feldur', verdict: 'right', v: 'gamalt', at: MON }] })]);
+    expect(to(r)).toEqual({ feldur: false });
+    expect(r.outcomes[0].stale).toEqual(['Anna']);
+    const deleted = run([file({ clips: [{ text: 'horfin', verdict: 'right', v: 'x', at: MON }] })]);
+    expect(deleted.outcomes[0]).toMatchObject({ text: 'horfin', to: false, noFile: true });
   });
 
-  it('ignores a verdict given to a recording since made again, or with no file now', () => {
-    const r = run(file({ clips: [{ text: 'les', verdict: 'right', v: 'gamalt', at: MON }] }));
-    expect(r.approve).toEqual([]);
-    expect(textsOf(r.stale)).toEqual(['les']);
-    // A verdict with no version cannot be tied to a recording either.
-    expect(textsOf(run(file({ clips: [{ text: 'les', verdict: 'right' }] })).stale)).toEqual([
-      'les',
-    ]);
-    const deleted = run(file({ clips: [{ text: 'horfin', verdict: 'right', v: 'x', at: MON }] }));
-    expect(textsOf(deleted.noFile)).toEqual(['horfin']);
-    expect(deleted.stale).toEqual([]);
-  });
-
-  it('approves nothing that is no longer on the cards', () => {
-    const r = run(file({ clips: [{ text: 'horfið', verdict: 'right', v: 'x', at: MON }] }));
-    expect(r.approve).toEqual([]);
-    expect(textsOf(r.unknown)).toEqual(['horfið']);
-  });
-
-  it('takes a reviewer’s latest verdict on a recording, whatever the order of the files', () => {
+  it('takes a reviewer’s latest verdict on a recording, and a withdrawal takes it back', () => {
     const monday = file({ clips: [clip('les', 'wrong', MON)] });
-    const thursday = file({
-      date: '2026-10-22',
-      saved: THU,
-      notes: [{ key: 'dyr/giskaleikur', label: 'Dýr — Hvað er þetta?', text: 'Lagað.' }],
-      clips: [clip('les', 'right', THU)],
-    });
+    const thursday = file({ saved: THU, clips: [clip('les', 'right', THU)] });
     for (const order of [
       [monday, thursday],
       [thursday, monday],
     ]) {
-      const r = run(...order);
-      expect(textsOf(r.approve)).toEqual(['les']);
-      expect(r.conflicts).toEqual([]);
+      expect(to(run(order))).toEqual({ les: true });
     }
-    const [anna] = byReviewer([readReview(thursday), readReview(monday)]);
-    expect(anna.dates).toEqual(['2026-10-19', '2026-10-22']);
-    expect([...anna.notes.values()].map((n) => n.text)).toEqual(['Lagað.']);
-  });
-
-  it('lets a later file withdraw a verdict, and keeps one a later file merely leaves out', () => {
-    const withdrawn = run(
-      file({ clips: [clip('les', 'wrong', MON)] }),
-      file({ saved: THU, clips: [clip('les', 'withdrawn', THU)] })
-    );
-    expect(withdrawn.reject).toEqual([]);
-    expect(withdrawn.conflicts).toEqual([]);
-    const omitted = run(
-      file({ clips: [clip('les', 'wrong', MON)] }),
-      file({ saved: THU, clips: [] })
-    );
-    expect(textsOf(omitted.reject)).toEqual(['les']);
+    const withdrawn = run([monday, file({ saved: THU, clips: [clip('les', 'withdrawn', THU)] })]);
+    expect(to(withdrawn)).toEqual({ les: false });
+    // An approved recording whose only verdict is taken back is no longer approved.
+    expect(to(run([file({ clips: [clip('feldur', 'withdrawn', THU)] })]))).toEqual({
+      feldur: false,
+    });
+    // A mark merely missing from a later file still stands.
+    expect(to(run([monday, file({ saved: THU, clips: [] })]))).toEqual({ les: 'rangt' });
   });
 
   it('takes one reviewer whatever the case or spaces of the name', () => {
-    const r = run(
+    const r = run([
       file({ clips: [clip('les', 'wrong', MON)] }),
-      file({ reviewer: ' anna ', saved: THU, clips: [clip('les', 'right', THU)] })
-    );
-    expect(textsOf(r.approve)).toEqual(['les']);
+      file({ reviewer: ' anna ', saved: THU, clips: [clip('les', 'right', THU)] }),
+    ]);
+    expect(to(r)).toEqual({ les: true });
     expect(byReviewer([readReview(file()), readReview(file({ reviewer: 'ANNA' }))])).toHaveLength(
       1
     );
   });
+
+  it('touches nothing the files do not mention, and nothing no longer on the cards', () => {
+    const r = run([file({ clips: [{ text: 'horfið', verdict: 'right', v: 'x', at: MON }] })]);
+    expect(r.outcomes).toEqual([]);
+    expect(r.unknown).toEqual(['horfið']);
+  });
 });
 
 describe('the report', () => {
-  it('names each reviewer once with their dates, every note under its item, and the recordings', () => {
-    const reviews = [readReview(file()), readReview(file({ date: '2026-10-20', saved: TUE }))];
-    const text = report(reviews, approvals(reviews, manifest, { texts, version, state }));
+  it('names each reviewer once with their dates, every change with why, and the notes', () => {
+    const reviews = [file(), file({ date: '2026-10-20', saved: TUE })].map((f) => readReview(f));
+    const text = report(reviews, approvals(reviews, manifest, { texts, version }));
     expect(text).toContain('2 skrá(r) frá 1: Anna (2026-10-19, 2026-10-20)');
     expect(text.match(/A2: lundi er ekki á bæ\./g)).toHaveLength(1);
     expect(text).toContain('Dýr — Hvað er þetta?\n  Anna: A2: lundi er ekki á bæ.');
-    expect(text).toContain('réttar, --apply samþykkir: 1');
-    expect(text).toContain('„les“ — Anna: rangt (heyrist sem „e“)');
+    expect(text).toContain('„les“: false → rangt — Anna: rangt (heyrist sem „e“)');
+    expect(text).toContain('„gæludýr“: false → true — Anna: rétt');
   });
 
-  it('puts first an approved recording heard as wrong since, and says until when students hear it', () => {
+  it('puts first an approved recording that stops being approved, and says until when students hear it', () => {
     const reviews = [readReview(file({ clips: [clip('feldur', 'wrong', THU, 'rangt orð')] }))];
-    const text = report(reviews, approvals(reviews, manifest, { texts, version, state }));
-    expect(text.split('\n')[2]).toMatch(/^SAMÞYKKTAR EN SÍÐAN HEYRÐAR RANGAR: 1\..*settur upp\.$/);
-    expect(text).toContain('„feldur“ — Anna: rangt (rangt orð)');
+    const text = report(reviews, approvals(reviews, manifest, { texts, version }));
+    expect(text.split('\n')[2]).toMatch(/^SAMÞYKKTAR SEM HÆTTA AÐ VERA ÞAÐ: 1\..*settur upp\.$/);
+    expect(text).toContain('„feldur“: true → rangt — Anna: rangt (rangt orð)');
+  });
+
+  it('lists every recording heard both ways, and every verdict a ruling overrules, by name', () => {
+    const reviews = [
+      file({ clips: [clip('les', 'right', MON)] }),
+      file({
+        reviewer: 'Jón',
+        clips: [clip('les', 'wrong', MON, 'óskýrt'), clip('hali', 'wrong', MON)],
+      }),
+      file({ reviewer: 'Siggi', clips: [clip('hali', 'right', MON)] }),
+    ].map((f) => readReview(f));
+    const text = report(
+      reviews,
+      approvals(reviews, manifest, { texts, version, rulers: ['Siggi'] })
+    );
+    expect(text).toContain('„les“ — Anna: rétt, Jón: rangt (óskýrt)');
+    expect(text).toContain('„hali“ — Siggi: rétt; gegn: Jón: rangt');
   });
 });

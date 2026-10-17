@@ -67,7 +67,7 @@ if (process.argv.includes('--record')) {
   }
   manifest = readHljod(doc.toJS());
   // A clip made again is a recording nobody has heard: its approval or rangt goes back to false.
-  const synced = syncState(manifest, state, version, new Date().toISOString());
+  const synced = syncState(manifest, state, version);
   for (const text of synced.reset) doc.setIn(['clips', text], false);
   if (added > 0 || synced.reset.length > 0) {
     // One clip per line, however the list started (`clips: {}` is written on one line).

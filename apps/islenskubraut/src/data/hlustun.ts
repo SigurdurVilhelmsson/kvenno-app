@@ -22,7 +22,7 @@ export interface HlustunClip {
   /** A hash of the audio: a verdict given to another version is for a recording since remade. */
   v: string;
   approved: boolean;
-  /** Heard as wrong (`rangt` in hljod.yaml): students never hear it, and no review heard before it was marked approves it. */
+  /** Heard as wrong (`rangt` in hljod.yaml): students never hear it. */
   rejected?: true;
   places: HlustunPlace[];
   /** What the voice was told to say, where it is not the text as printed (`Hún eða Hann er …`). */

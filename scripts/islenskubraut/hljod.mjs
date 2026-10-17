@@ -70,8 +70,8 @@ export function spoken(text) {
 }
 
 /** The value in `hljod.yaml` for a clip a teacher heard as wrong: students never hear it (it
- * plays only as a draft, under `?drog` and on the listening page), and a review heard before it
- * was marked cannot approve it. Making the clip again sets it back to `false` (`syncState`). */
+ * plays only as a draft, under `?drog` and on the listening page). Making the clip again sets it
+ * back to `false` (`syncState`). */
 export const REJECTED = 'rangt';
 
 /**
@@ -115,31 +115,32 @@ export function valueOf(manifest, text) {
 const VALUES = [true, false, REJECTED];
 
 /**
- * `stada.json`, the tools' record of every listed clip with a file: the version of its audio,
- * the value `hljod.yaml` gave it, and when that value was set (`{ v, value, at }`). It is written
- * by `pnpm islenskubraut:hljod --record` and `pnpm islenskubraut:yfirferd --apply`, never by hand.
- * It ties an approval to the audio approved, and lets a person's decision stand against verdicts
- * given before it.
+ * `stada.json`, the tools' record of every listed clip with a file: the version of its audio and
+ * the value `hljod.yaml` gave it then (`{ v, value }`). It is written by
+ * `pnpm islenskubraut:hljod --record` and `pnpm islenskubraut:yfirferd --apply`, never by hand,
+ * and it ties an approval to the audio approved.
  */
 export function readState(raw) {
   assert(raw && typeof raw === 'object' && !Array.isArray(raw), 'stada.json must be a map');
   for (const [text, e] of Object.entries(raw)) {
     assert(
-      e && typeof e.v === 'string' && VALUES.includes(e.value) && typeof e.at === 'string',
-      `stada.json: "${text}" needs v, value and at`
+      e && typeof e.v === 'string' && VALUES.includes(e.value),
+      `stada.json: "${text}" needs v and value`
     );
   }
   return raw;
 }
 
 /**
- * Bring the record into line with `hljod.yaml` and the files. A clip new to it, or whose value was
- * changed by hand, is stamped `now`. A clip whose audio has changed is a recording nobody has
- * heard, so its value goes back to `false`: an approval or a `rangt` was for the old audio.
- * `version(text)` is the clip's current version, or null when it has no file. Returns
- * `{ state, reset, stamped }`, `reset` being the texts whose `hljod.yaml` value must become false.
+ * Bring the record into line with `hljod.yaml` and the files. A clip whose audio has changed is a
+ * recording nobody has heard, so its value goes back to `false`: an approval or a `rangt` was for
+ * the old audio. So does a `true` with no record at all (the record lost, or rebuilt after a
+ * merge), since nothing says which audio was approved. Any other clip new to the record, or whose
+ * value was changed by hand, is recorded as it stands. `version(text)` is the clip's current
+ * version, or null when it has no file. Returns `{ state, reset, stamped }`, `reset` being the
+ * texts whose `hljod.yaml` value must become false.
  */
-export function syncState(manifest, state, version, now) {
+export function syncState(manifest, state, version) {
   const next = {};
   const reset = [];
   const stamped = [];
@@ -149,12 +150,12 @@ export function syncState(manifest, state, version, now) {
     const was = state[text];
     if (v === null) {
       if (was) next[text] = was;
-    } else if (!was || (was.v === v && was.value !== value)) {
-      next[text] = { v, value, at: now };
-      stamped.push(text);
-    } else if (was.v !== v) {
-      next[text] = { v, value: false, at: now };
+    } else if ((was && was.v !== v) || (!was && value === true)) {
+      next[text] = { v, value: false };
       if (value !== false) reset.push(text);
+    } else if (!was || was.value !== value) {
+      next[text] = { v, value };
+      stamped.push(text);
     } else {
       next[text] = was;
     }

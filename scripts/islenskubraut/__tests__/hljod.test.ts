@@ -184,7 +184,7 @@ describe('the listening page’s data', () => {
   });
 });
 
-describe('the record of each clip’s audio and decision', () => {
+describe('the record of each clip’s audio and value', () => {
   const manifest = readHljod({
     voice: 'Rödd',
     clips: { feldur: true, hali: 'rangt', gæludýr: false, horfin: false },
@@ -192,14 +192,14 @@ describe('the record of each clip’s audio and decision', () => {
   const V: Record<string, string | null> = { feldur: 'a', hali: 'b', gæludýr: 'c', horfin: null };
   const version = (t: string) => V[t] ?? null;
   const state = readState({
-    feldur: { v: 'a', value: true, at: 'T1' },
-    hali: { v: 'b', value: 'rangt', at: 'T1' },
-    gæludýr: { v: 'c', value: false, at: 'T1' },
+    feldur: { v: 'a', value: true },
+    hali: { v: 'b', value: 'rangt' },
+    gæludýr: { v: 'c', value: false },
   });
 
   it('is in line when every clip with a file is recorded with its audio and value', () => {
     expect(stateProblems(manifest, state, version)).toEqual([]);
-    expect(syncState(manifest, state, version, 'T2')).toEqual({ state, reset: [], stamped: [] });
+    expect(syncState(manifest, state, version)).toEqual({ state, reset: [], stamped: [] });
   });
 
   it('sets a clip made again back to false: the approval was for the old audio', () => {
@@ -208,27 +208,35 @@ describe('the record of each clip’s audio and decision', () => {
       '"feldur": its audio has changed since it was recorded',
       '"hali": its audio has changed since it was recorded',
     ]);
-    const synced = syncState(manifest, state, remade, 'T2');
+    const synced = syncState(manifest, state, remade);
     expect(synced.reset).toEqual(['feldur', 'hali']);
-    expect(synced.state.feldur).toEqual({ v: 'new', value: false, at: 'T2' });
+    expect(synced.state.feldur).toEqual({ v: 'new', value: false });
   });
 
-  it('stamps a value changed by hand with when it was recorded, and a clip new to the record', () => {
+  it('records a value changed by hand for the audio it was changed on', () => {
     const edited = readHljod({
       voice: 'Rödd',
-      clips: { ...{ feldur: true, hali: true, gæludýr: false } },
+      clips: { feldur: true, hali: true, gæludýr: false },
     });
     expect(stateProblems(edited, state, version)).toEqual([
       '"hali": hljod.yaml says true, recorded rangt',
     ]);
-    const synced = syncState(edited, {}, version, 'T2');
-    expect(synced.stamped).toEqual(['feldur', 'gæludýr', 'hali']);
+    const synced = syncState(edited, state, version);
+    expect(synced.stamped).toEqual(['hali']);
+    expect(synced.reset).toEqual([]);
+    expect(synced.state.hali).toEqual({ v: 'b', value: true });
+  });
+
+  it('sets a true with no record back to false, since nothing says which audio was approved', () => {
+    const synced = syncState(manifest, {}, version);
+    expect(synced.reset).toEqual(['feldur']);
+    expect(synced.state.feldur).toEqual({ v: 'a', value: false });
+    // A false or a rangt with no record is recorded as it stands: neither plays for students.
+    expect(synced.stamped).toEqual(['gæludýr', 'hali']);
   });
 
   it('refuses a record entry it cannot read', () => {
-    expect(() => readState({ feldur: { v: 'a', value: 'já', at: 'T' } })).toThrow(
-      /needs v, value and at/
-    );
+    expect(() => readState({ feldur: { v: 'a', value: 'já' } })).toThrow(/needs v and value/);
   });
 });
 
