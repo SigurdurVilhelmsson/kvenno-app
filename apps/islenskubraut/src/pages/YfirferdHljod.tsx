@@ -193,20 +193,25 @@ export function YfirferdHljod() {
               onHeard={(v) => setHeard((h) => (h[clip.text] === v ? h : { ...h, [clip.text]: v }))}
               setVerdict={setVerdict}
               setNote={(note) =>
-                update((r) => ({
-                  ...r,
-                  clips: {
-                    ...r.clips,
-                    [clip.text]: {
-                      verdict: 'wrong',
-                      v: clip.v,
-                      // Saying what is wrong is a later word on it, so a file with the note
-                      // outweighs one sent before it was written, in whatever order they come.
-                      at: now(),
-                      note,
-                    },
-                  },
-                }))
+                update((r) =>
+                  // Words on audio this page does not know would be filed under the old recording.
+                  heard[clip.text] !== undefined && heard[clip.text] !== clip.v
+                    ? r
+                    : {
+                        ...r,
+                        clips: {
+                          ...r.clips,
+                          [clip.text]: {
+                            verdict: 'wrong',
+                            v: clip.v,
+                            // Saying what is wrong is a later word on it, so a file with the note
+                            // outweighs one sent before it was written, in whatever order they come.
+                            at: now(),
+                            note,
+                          },
+                        },
+                      }
+                )
               }
             />
           ))}
@@ -277,7 +282,7 @@ function ClipRow({
   return (
     <li className="rounded-xl border border-warm-200 bg-surface-raised p-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Hlusta text={clip.text} color="#1F2937" onHeard={onHeard} />
+        <Hlusta text={clip.text} color="#1F2937" version={clip.v} onHeard={onHeard} />
         <span lang="is" className="font-semibold text-warm-900">
           {clip.text}
         </span>
@@ -318,6 +323,7 @@ function ClipRow({
             ref={noteRef}
             type="text"
             value={mine.note ?? ''}
+            disabled={changed}
             onChange={(e) => setNote(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-warm-300 bg-surface-page px-3 py-2"
           />

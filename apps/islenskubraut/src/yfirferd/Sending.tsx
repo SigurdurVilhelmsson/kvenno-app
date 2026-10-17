@@ -70,7 +70,8 @@ export function Sending({
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(reviewText(review, now().slice(0, 10)));
+      const stamp = now();
+      await navigator.clipboard.writeText(reviewText(review, stamp.slice(0, 10), stamp));
       setStatus('Afritað. Límdu textann í tölvupóst.');
     } catch {
       setStatus('Vafrinn leyfði ekki afritun. Sæktu skrána í staðinn.');

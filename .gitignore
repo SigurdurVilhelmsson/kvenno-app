@@ -49,5 +49,5 @@ islenskubraut-myndir-yfirlit.html
 islenskubraut-hljod-yfirlit.html
 hljod-verk.json
 # Teachers' review files from /islenskubraut/yfirferd: their names and notes, never committed
-yfirferd-islenskubraut-*.json
+yfirferd-islenskubraut-*
 .deploy-bundle/

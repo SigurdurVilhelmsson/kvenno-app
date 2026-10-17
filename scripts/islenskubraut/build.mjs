@@ -183,6 +183,17 @@ const glossur = readdirSync(GLOSSUR_DIR)
 
 // The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
 // drafts. An approved clip with no file breaks the build; a text with no clip has no button.
+// A git merge can leave conflict markers in the recordings' files, which no parser reads.
+const conflicted = [HLJOD_FILE, STATE_FILE, LEDGER_FILE].filter(
+  (f) => existsSync(f) && /^(<{7}|={7}|>{7})( |$)/m.test(readFileSync(f, 'utf8'))
+);
+if (conflicted.length > 0) {
+  console.error(
+    `git left a merge conflict in ${conflicted.map((f) => f.replace(`${ROOT}/`, '')).join(', ')}.`
+  );
+  console.error('Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it resolves them.');
+  process.exit(1);
+}
 const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
 const voiced = textsToVoice(categories);
 const hasClip = (f) => existsSync(resolve(CLIP_DIR, f));

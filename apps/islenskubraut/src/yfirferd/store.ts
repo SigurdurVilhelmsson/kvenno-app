@@ -16,6 +16,13 @@ const STORAGE_KEY = 'islenskubraut-yfirferd';
 /** The file's format, so the script can refuse one it does not know. */
 export const FORMAT = 'islenskubraut-yfirferd/1';
 
+/**
+ * Around the file's data in the copied text, so a review sent by email is read as the file
+ * would be (`reviewData` in `scripts/islenskubraut/yfirferd.mjs`, whose copies a test holds equal).
+ */
+export const DATA_START = '-----YFIRFERÐ, EKKI BREYTA-----';
+export const DATA_END = '-----YFIRFERÐ LÝKUR-----';
+
 export type Verdict = 'right' | 'wrong';
 
 export interface Review {
@@ -139,6 +146,8 @@ export function useReview(): {
   }, []);
   const update = useCallback((change: (r: Review) => Review) => {
     const next = change(latest.current);
+    // A change refused (one returning the review as it was) writes nothing.
+    if (next === latest.current) return;
     latest.current = next;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
@@ -220,8 +229,8 @@ export function reviewFile(review: Review, date: string, saved = date) {
  * as they are now, and names apart the ones on a recording since made again, or no longer on the
  * cards, which a reader would otherwise take for current.
  */
-export function reviewText(review: Review, date: string): string {
-  const file = reviewFile(review, date);
+export function reviewText(review: Review, date: string, saved = date): string {
+  const file = reviewFile(review, date, saved);
   const lines = [`Yfirferð á Íslenskubraut, ${date}${file.reviewer ? `, ${file.reviewer}` : ''}`];
   for (const n of file.notes) lines.push('', n.label, n.text);
   const { right, wrong, old, withdrawn } = sortClips(review);
@@ -246,13 +255,23 @@ export function reviewText(review: Review, date: string): string {
       `Metnar áður en upptakan var gerð aftur, eða ekki lengur á spjöldunum: ${q(old)}`
     );
   }
+  // The verdicts as the file has them, which the script needs to tell recordings apart.
+  if (file.clips.length > 0) {
+    lines.push(
+      '',
+      'Hér fyrir neðan er sama yfirferð á formi sem forritið les. Ekki breyta neinu þar.',
+      DATA_START,
+      JSON.stringify(file, null, 1),
+      DATA_END
+    );
+  }
   return `${lines.join('\n')}\n`;
 }
 
 /**
- * The download's name: the date, the reviewer and the start of this browser's id, so two
- * reviewers' files never share one, two teachers of one name included. A later file from the same
- * browser may replace an earlier one, which is harmless: it holds everything the earlier one did.
+ * The download's name: the date and time, the reviewer and the start of this browser's id, so no
+ * two downloads share one. Each must be kept: a later file from the same browser need not hold
+ * what an earlier one did, a verdict on a recording since made again and marked again included.
  */
 export function fileName(review: Review, stamp: string): string {
   const who =
@@ -269,12 +288,13 @@ export function fileName(review: Review, stamp: string): string {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '') || stamp.slice(11, 19).replace(/:/g, '');
+      .replace(/^-|-$/g, '') || 'nafnlaus';
   const tag = (review.id ?? '')
     .replace(/[^a-z0-9]/gi, '')
     .slice(0, 6)
     .toLowerCase();
-  return `yfirferd-islenskubraut-${stamp.slice(0, 10)}-${who}${tag ? `-${tag}` : ''}.json`;
+  const time = stamp.slice(11, 19).replace(/:/g, '');
+  return `yfirferd-islenskubraut-${stamp.slice(0, 10)}-${time}-${who}${tag ? `-${tag}` : ''}.json`;
 }
 
 /** Now, as the file's `saved` stamp: 2026-10-17T10:00:00.000Z. */

@@ -49,12 +49,18 @@ teachers, give a ruling (below).
 **Teachers listen on the site**, at `/islenskubraut/yfirferd/hljod`, which only the review page,
 `/islenskubraut/yfirferd`, links to. Every recording plays there, drafts included, with `Rétt` and
 `Rangt` beside it and a box for what is wrong. The page keeps the marks in the teacher's browser,
-and they type their name and press `Sækja skrá` and send the file back. Its name carries the date,
-theirs and the start of their browser's id, so no two reviewers' files share one. Save the files in
-the repository root, where they are gitignored (they carry teachers' names). Then:
+and they type their name and press `Sækja skrá` and send the file back. Its name carries the date
+and time, theirs and the start of their browser's id, so no two downloads share one; keep every
+one, since a later file need not hold all an earlier did. A teacher who cannot send a file presses
+`Afrita sem texta` and pastes the text into an email: it carries the same data between two marker
+lines, so save the email's text as `yfirferd-islenskubraut-<name>.txt` and pass it like a file.
+Save them in the repository root, where they are gitignored (they carry teachers' names). Then:
 
-    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json           # read what they say
-    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --apply   # write the verdicts
+    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*                # read what they say
+    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-* --apply        # write the verdicts
+
+Without `--apply` it ends by saying what `--apply` would write. Until it no longer names `mat.json`,
+the files' verdicts are not in the record, so keep the files.
 
 **`--apply` adds the files' verdicts to `mat.json` here, the record of every verdict given,** works
 each recording's value out from the whole record, and runs `pnpm islenskubraut:build`. Commit
@@ -90,30 +96,38 @@ or clears the review and starts again, is two reviewers. That only matters if th
 mind: the earlier verdict still stands, and the recording is heard both ways until it is settled.
 
 A page left open since before a recording was made again would name the old audio. The listening
-page checks the audio it plays against the one it was built with, and where they differ it takes
-no verdict until the page is reloaded. Where the browser cannot check (an old browser, or no
-https), the report lists a verdict on older audio given after someone heard the new one, without
-counting it: listen to that recording yourself.
+page asks for each recording by the version it was built with (`?v=` in the address, so the
+browser fetches it afresh rather than playing a copy kept from before), fetches the same address
+to hash what the server holds there, and where that is not the version it knows it takes no
+verdict or note until the page is reloaded. Where the browser cannot check (an old browser, or no
+https), a verdict on other audio given after someone had judged the current one is listed in the
+report without counting. So is one given to audio since abandoned, by a revert say: the record
+cannot tell the two apart. Listen to that recording yourself, and rule.
 
 **To settle a recording heard both ways, or to overrule the teachers,** listen yourself on the
 same page, send yourself the file, and pass your name as a ruling:
 
-    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --urskurdur "Siggi" --apply
+    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-* --urskurdur "Siggi" --apply
 
 The name must be on the files of exactly one browser among those passed (any name that browser's
 files carry). A ruler's verdict decides the recording whatever the others say, and the report lists
 every verdict it overrules, on every run, so none is lost. **The record keeps who rules,** so the
 ruling lasts on later runs without `--urskurdur`, and so do the ruler's later verdicts. Of several
 rulings on a recording the latest decides, so a ruler who changes their mind, on another browser or
-after `Hreinsa allt`, rules again the same way; only two given at the same moment that disagree
-leave it `false`. The report ends with who rules, by the hash `mat.json` keeps; to stop someone
-ruling, delete their hash from `rulers` there and run `--apply`.
+after `Hreinsa allt`, rules again: pass the new browser's file alone with `--urskurdur`, since a
+name the files of two browsers carry is refused, even when one of them already rules (the other
+could be a colleague of the same name). Only two rulings given at the same moment that disagree
+leave a recording `false`. The report ends with who rules, by the hash `mat.json` keeps; to stop
+someone ruling, delete their hash from `rulers` there and run `--apply`.
 
-**After a git merge that touched `mat.json`, run `pnpm islenskubraut:yfirferd --apply`** with no
-files, and commit what it changes. If git left a conflict in `mat.json`, `hljod.yaml` or
-`stada.json`, the same command resolves it: the record takes both sides, the other two take ours,
-and every value the record decides is worked out again. Run `pnpm islenskubraut:hljod --record`
-after it if the other side listed new recordings.
+**After a git merge or rebase that touched these files, run `pnpm islenskubraut:yfirferd --apply`**
+with no files. If git left a conflict in `mat.json`, `hljod.yaml` or `stada.json`, it merges each
+again from git's three versions of it, recording by recording: the record takes every verdict from
+both sides, a ruler one side removed stays removed, and a recording only one side changed takes
+that side. One both sides changed differently goes back to `false`, and the report lists it. Every
+value the record decides is then worked out again, and the build regenerates the app's data, a
+conflicted `hljod.ts` or `hlustun.ts` included. Then `git add` the files and commit, or
+`git rebase --continue`.
 
 To listen without the site:
 

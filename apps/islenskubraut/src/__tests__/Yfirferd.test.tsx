@@ -342,6 +342,49 @@ describe('the listening page', () => {
     fetched.mockRestore();
   });
 
+  it('asks for a recording by the version the page knows, and hashes what that address holds', async () => {
+    const played: string[] = [];
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(function (
+      this: HTMLMediaElement
+    ) {
+      played.push(this.src);
+      return Promise.resolve();
+    });
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(new Uint8Array([1, 2, 3])));
+    renderAt('/yfirferd/hljod');
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
+    expect(played).toEqual([expect.stringMatching(/\/hljod\/b\.mp3\?v=vb$/)]);
+    expect(String(fetched.mock.calls[0][0])).toMatch(/\/hljod\/b\.mp3\?v=vb$/);
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('takes no note either on a recording made again since the page was opened', async () => {
+    const at = '2026-10-17T10:00:00.000Z';
+    const before = JSON.stringify({
+      reviewer: '',
+      notes: {},
+      clips: { les: { verdict: 'wrong', v: 'vb', at } },
+    });
+    window.localStorage.setItem('islenskubraut-yfirferd', before);
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(new Uint8Array([1, 2, 3])));
+    renderAt('/yfirferd/hljod');
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
+    const box = screen.getByLabelText('Hvað er rangt? „les“');
+    expect(box).toHaveProperty('disabled', true);
+    fireEvent.change(box, { target: { value: 'nýja upptakan' } });
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(before);
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
   it('hashes what it plays as the scripts hash a recording', async () => {
     const fetched = vi
       .spyOn(globalThis, 'fetch')
@@ -435,11 +478,14 @@ describe('sending and keeping a review', () => {
     expect(JSON.parse(window.localStorage.getItem(KEY)!).id).toBe('hinn-flipinn');
   });
 
-  it('names the file by the date, the name and the browser, so two Önnur never share one', () => {
+  it('names the file by the date and time, the name and the browser, so none share one', () => {
     const stamp = '2026-10-17T10:00:00.000Z';
     expect(fileName({ reviewer: 'Þóra Ösp', id: 'Ab-12cd-ef', notes: {}, clips: {} }, stamp)).toBe(
-      'yfirferd-islenskubraut-2026-10-17-thora-osp-ab12cd.json'
+      'yfirferd-islenskubraut-2026-10-17-100000-thora-osp-ab12cd.json'
     );
+    // Two downloads from one browser on one day: a later one need not hold all an earlier did.
+    const anna = { reviewer: 'Anna', id: 'aaaaaa-1', notes: {}, clips: {} };
+    expect(fileName(anna, stamp)).not.toBe(fileName(anna, '2026-10-17T14:30:00.000Z'));
     const a = fileName({ reviewer: 'Anna', id: 'aaaaaa-1', notes: {}, clips: {} }, stamp);
     const b = fileName({ reviewer: 'Anna', id: 'bbbbbb-2', notes: {}, clips: {} }, stamp);
     expect(a).not.toBe(b);

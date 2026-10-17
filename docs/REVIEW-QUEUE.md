@@ -662,7 +662,15 @@ that a page left open across a deploy stamped verdicts with the old audio, that 
 downloads could share a name, and that the review pages lost their place after a `#card` link or
 on the way back. The build now checks `hljod.yaml` against the record, the latest ruling decides,
 the record keeps each recording's verdicts apart, the listening page checks the audio it plays,
-the download names the browser, and the scroll keeper was fixed for both.
+the download names the browser, and the scroll keeper was fixed for both. A sixth pass found that
+resolving a merge conflict by taking one side whole revived a removed ruler, lost one side's new
+recordings and approvals, and could approve a remade recording nobody had heard; that Firefox
+replays the previous page's copy of a clip for a while after a reload, so the audio check passed
+on old audio; that a note could still be written on a remade row; that a later download from the
+same browser replaced an earlier one; that the copied text could not be applied; and that the
+report miscounted. Conflicts are now merged recording by recording against the base, a clip is
+asked for by its version, downloads carry their time, the copied text carries the file's data,
+and a dry run says whether the files' verdicts are in the record yet.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
@@ -672,9 +680,12 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
       steps, each item's one-line hint, the three states, and the sending box
       (`Senda yfirferðina`, `Sækja skrá`, `Afrita sem texta`, `Hreinsa allt`, `Hætta við` and the
       confirmation, what each says once pressed, the line on what the browser keeps, the request
-      for a name, and `Dregið til baka` and `Metnar áður en …` in the copied text). On the
-      listening page: the three paragraphs, the filters, `Talgervillinn segir: …`,
-      `(merkt röng)` and `Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu aftur.`.
+      for a name, and `Dregið til baka`, `Metnar áður en …` and the line before the data in the
+      copied text). On the listening page: the three paragraphs, the filters,
+      `Talgervillinn segir: …`, `(merkt röng)`,
+      `Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu aftur.` and
+      `Þessi upptaka hefur verið gerð aftur síðan þú opnaðir síðuna. …`. The script's report is
+      Icelandic too, and drafted the same way.
       They are the only instructions a reviewer gets, so read them as a colleague will.
 - [ ] **Who reviews what?** One teacher per card, or everyone everything? The listening page
       filters by card, so a link like `/islenskubraut/yfirferd/hljod?flokkur=dyr` hands one

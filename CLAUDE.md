@@ -784,18 +784,25 @@ reviewer is a hash of the random id the page gives each browser (`newId` in `sto
 It keeps what was wrong with a recording, never the notes on the cards. The result does not depend
 on file order; an earlier design that compared verdict times with decision times lost a
 late-arriving "wrong" silently, and one that read only the files passed let a machine holding fewer
-files approve what another had heard as wrong. **After a git merge that touched `mat.json`, run
-`--apply` with no files**: it joins both sides of a conflict there (`unionLedgers`), takes ours of
-`hljod.yaml` and `stada.json`, and works the values out again. A ruler's verdict (`--urskurdur`, a
-name among those one browser's files carry, and no other's) settles a recording, every verdict it
-overrules is printed, and **the record keeps who rules**, so a ruling outlasts the run that made
-it; of several rulings the latest decides. Per recording, a reviewer's latest verdict counts, by
-their browser's clock, and editing what is wrong gives it a new time. A page left open across a
-deploy that remade a recording would stamp the old version: the listening page hashes the audio it
-plays (`versionOf` in `Hlusta.tsx`, the same hash as `clipVersion`) and takes no verdict on one
-that differs, and the report lists, uncounted, a verdict on older audio given after the new one was
-heard. The download's name carries the start of the browser's id, so two reviewers' files never
-share one. The page writes the file's `format`, the script refuses any other, and a test
+files approve what another had heard as wrong. **After a git merge or rebase that touched them,
+run `--apply` with no files**: a conflict in any of the three is merged again from git's three
+versions (`mergeThreeWay` per recording for `hljod.yaml` and `stada.json`, a clash going to
+`false`; `unionLedgers` for the record, its rulers against the base so a removal stays), and every
+value is worked out again. Taking one side whole, as the first version did, lost one side's new
+recordings and approvals, revived a removed ruler, and could approve a remade recording unheard.
+A ruler's verdict (`--urskurdur`, a name among those one browser's files carry, and no other's)
+settles a recording, every verdict it overrules is printed, and **the record keeps who rules**, so
+a ruling outlasts the run that made it; of several rulings the latest decides. Per recording, a
+reviewer's latest verdict counts, by their browser's clock, and editing what is wrong gives it a new
+time. A page left open across a deploy that remade a recording would stamp the old version: the
+listening page asks for a clip at `?v=<version>` (Firefox otherwise replays the previous page's
+copy after a reload), hashes what that address holds (`versionOf` in `Hlusta.tsx`, the same hash
+as `clipVersion`), and takes no verdict or note on one that differs. The report lists, uncounted, a
+verdict on other audio given after the current one was judged. Without `--apply` the command says
+which files `--apply` would write, `mat.json` included. A download's name carries its time and the
+start of the browser's id, so none share one, and the copied text (`Afrita sem texta`) carries
+the file's data between marker lines (`DATA_START` in `store.ts` and `yfirferd.mjs`), so a review
+sent by email is read as the file would be. The page writes the file's `format`, the script refuses any other, and a test
 holds the two constants equal. No page a student can reach links to either
 page; they link to each other, and `Yfirferd.test.tsx` fails if any other file in the app quotes
 their routes. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in

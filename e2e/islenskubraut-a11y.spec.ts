@@ -86,8 +86,9 @@ test('the card page with its draft recordings has no WCAG AA violations', async 
     );
     expect(overflow, tab).toBeLessThanOrEqual(0);
   }
+  // Asked for by the version the page was built with, so no copy of older audio is played.
   const played = page.waitForRequest((r) =>
-    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3$/.test(r.url())
+    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
   );
   await page
     .getByRole('button', { name: /^Hlusta: / })
@@ -175,12 +176,12 @@ test('the review page has no WCAG AA violations and keeps a note over a reload',
   await page.reload();
   await expect(page.getByLabel('Athugasemd um Spjaldið, Dýr')).toHaveValue('A1: prófun.');
   // A name first: it says who sent the file, a ruling is given by it, and it names the file,
-  // with the start of the browser's id after it.
+  // between the time and the start of the browser's id.
   await page.getByLabel('Nafnið þitt').fill('Þóra Ösp');
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Sækja skrá' }).click();
   expect((await download).suggestedFilename()).toMatch(
-    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}-thora-osp-[a-z0-9]{6}\.json$/
+    /^yfirferd-islenskubraut-\d{4}-\d{2}-\d{2}-\d{6}-thora-osp-[a-z0-9]{6}\.json$/
   );
 });
 
@@ -196,8 +197,9 @@ test('the listening page has no WCAG AA violations', async ({ page }) => {
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth
   );
   expect(overflow).toBeLessThanOrEqual(0);
+  // Asked for by the version the page was built with, so no copy of older audio is played.
   const played = page.waitForRequest((r) =>
-    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3$/.test(r.url())
+    /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
   );
   await first.getByRole('button', { name: /^Hlusta: / }).click();
   expect((await (await played).response())?.status()).toBe(200);

@@ -16,6 +16,39 @@ import { valueOf } from './hljod.mjs';
 
 export const FORMAT = 'islenskubraut-yfirferd/1';
 
+/**
+ * Where a review copied as text (`Afrita sem texta`) carries the same data as the file, so the
+ * script can read an email as it reads a file. The page writes them (`store.ts`), and a test holds
+ * the two copies equal.
+ */
+export const DATA_START = '-----YFIRFERÐ, EKKI BREYTA-----';
+export const DATA_END = '-----YFIRFERÐ LÝKUR-----';
+
+/**
+ * The review in a file the page saved, or in the text it copied, pasted or saved from an email.
+ * Returns the parsed data for `readReview`.
+ */
+export function reviewData(raw, where = 'review') {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    // Not a file: text, with the data between the markers.
+  }
+  const start = raw.indexOf(DATA_START);
+  const end = raw.indexOf(DATA_END, start);
+  assert(
+    start >= 0 && end > start,
+    `${where} is neither a review file nor a review's text with its data (${DATA_START})`
+  );
+  try {
+    return JSON.parse(raw.slice(start + DATA_START.length, end).replace(/\u00a0/g, ' '));
+  } catch (e) {
+    throw new Error(
+      `yfirferd: ${where}: the data in the text was changed on its way (${e.message}); ask for the file`
+    );
+  }
+}
+
 /** A verdict the reviewer took back by pressing the pressed button again. */
 export const WITHDRAWN = 'withdrawn';
 
@@ -119,7 +152,7 @@ const sortedBy = (entries) =>
  * browser's files carry, and no other's, and is kept in the record, so a ruling lasts. Returns
  * `{ ledger, names, people, errors }`: `names` maps each reviewer hash in the files to the name
  * on their latest file, `people` lists each reviewer once with that name, the dates of their files
- * and their latest note per item.
+ * and the notes their latest file carries.
  */
 export function mergeReviews(ledger, reviews, rulers = []) {
   const verdicts = {};
@@ -143,7 +176,8 @@ export function mergeReviews(ledger, reviews, rulers = []) {
     person.reviewer = r.reviewer;
     person.keys.add(reviewerKey(r.reviewer));
     if (r.date && !person.dates.includes(r.date)) person.dates.push(r.date);
-    for (const n of r.notes) person.notes.set(n.key, n);
+    // Each file holds every note its browser keeps, so the latest file's are the notes.
+    person.notes = new Map(r.notes.map((n) => [n.key, n]));
     for (const c of r.clips) {
       if (!c.v) continue;
       const byV = ((verdicts[c.text] ??= {})[who] ??= {});
@@ -160,8 +194,11 @@ export function mergeReviews(ledger, reviews, rulers = []) {
     if (matching.length === 0)
       errors.push(`--urskurdur "${name}": no file from a reviewer of that name`);
     else if (matching.length > 1) {
+      const ruling = matching.filter((p) => next.has(p.who)).length;
       errors.push(
-        `--urskurdur "${name}": ${matching.length} reviewers go by that name; a ruling must be one person`
+        `--urskurdur "${name}": the files of ${matching.length} browsers carry that name${
+          ruling > 0 ? ` (${ruling} of them already ${ruling === 1 ? 'rules' : 'rule'})` : ''
+        }; a ruling must be one person. Pass only the files of the browser that should rule.`
       );
     } else next.add(matching[0].who);
   }
@@ -177,12 +214,34 @@ export function mergeReviews(ledger, reviews, rulers = []) {
   return { ledger: out, names, people: [...people.values()], errors };
 }
 
+const CLASH = Symbol('clash');
+
 /**
- * Two records as one, for a git merge in which both sides added verdicts: every entry from
- * either, the later where both hold one for the same recording, reviewer and audio, and every
- * ruler of either. It is what applying both sides' files on one machine would have made.
+ * One map merged three ways, key by key, as git merges lines: a key only one side changed since
+ * the base takes that side, and one both changed alike takes it. One both changed differently is
+ * a clash, left out of `merged` and listed. `same` compares two values; `undefined` is absent.
  */
-export function unionLedgers(a, b) {
+export function mergeThreeWay(base, ours, theirs, same = (a, b) => a === b) {
+  const merged = new Map();
+  const clashes = [];
+  for (const k of new Set([...base.keys(), ...ours.keys(), ...theirs.keys()])) {
+    const b = base.get(k);
+    const o = ours.get(k);
+    const t = theirs.get(k);
+    const value = same(o, t) ? o : same(o, b) ? t : same(t, b) ? o : CLASH;
+    if (value === CLASH) clashes.push(k);
+    else if (value !== undefined) merged.set(k, value);
+  }
+  return { merged, clashes: clashes.sort() };
+}
+
+/**
+ * Two records as one, for a git merge that left a conflict in `mat.json`. The verdicts are every
+ * entry from either side, the later where both hold one for the same recording, reviewer and
+ * audio: a record only grows. The rulers are merged against the record both sides started from
+ * (`base`), so a ruler one side removed stays removed and one either side added is kept.
+ */
+export function unionLedgers(a, b, base = { rulers: [], verdicts: {} }) {
   const verdicts = {};
   for (const ledger of [a, b]) {
     for (const [t, byWho] of Object.entries(ledger.verdicts)) {
@@ -195,7 +254,9 @@ export function unionLedgers(a, b) {
     }
   }
   return {
-    rulers: [...new Set([...a.rulers, ...b.rulers])].sort(),
+    rulers: [...new Set([...a.rulers, ...b.rulers])]
+      .filter((r) => (a.rulers.includes(r) && b.rulers.includes(r)) || !base.rulers.includes(r))
+      .sort(),
     verdicts: sortedBy(
       Object.entries(verdicts).map(([t, byWho]) => [
         t,
@@ -228,22 +289,29 @@ function valueFrom(verdicts) {
  * from another browser too, can rule again; two given at the same moment that disagree settle
  * nothing.
  *
- * `late` lists verdicts on other audio given after a verdict on the current audio: given, most
- * likely, from a page left open since before the recording was made again, so to the old audio
- * as the page knew it but perhaps to the new as it played. They do not count, and are shown.
+ * `late` lists verdicts on other audio given after a verdict on the current audio. Most are from
+ * a page left open since before the recording was made again; one on audio since replaced by a
+ * revert is another. The record cannot tell which, so they do not count and are shown, unless a
+ * ruling (whose ruler has listened) decides the recording.
  *
- * Returns `{ outcomes, unknown }`. Each outcome is `{ text, from, to, verdicts, ruling,
- * overruled, late }`, the verdicts `[{ who, reviewer, verdict, at, note? }]`. `unknown` lists
- * texts in the record no longer on the cards.
+ * Returns `{ outcomes, unknown, unlisted }`. Each outcome is `{ text, from, to, verdicts,
+ * ruling, overruled, late }`, the verdicts `[{ who, reviewer, verdict, at, note? }]`. `unknown`
+ * lists texts in the record no longer on the cards, `unlisted` texts on the cards the record holds
+ * verdicts for that `hljod.yaml` does not list (`pnpm islenskubraut:hljod --record` lists them).
  */
 export function approvals(ledger, manifest, { texts, version, names = new Map() }) {
   const rulers = new Set(ledger.rulers);
   const outcomes = [];
   const unknown = [];
+  const unlisted = [];
   const label = (who) => names.get(who) ?? `kennari ${who.slice(0, 6)}`;
   for (const [text, byWho] of Object.entries(ledger.verdicts)) {
-    if (!texts.has(text) || !manifest.clips.has(text)) {
+    if (!texts.has(text)) {
       unknown.push(text);
+      continue;
+    }
+    if (!manifest.clips.has(text)) {
+      unlisted.push(text);
       continue;
     }
     const current = version(text);
@@ -293,11 +361,12 @@ export function approvals(ledger, manifest, { texts, version, names = new Map() 
       verdicts,
       ...(ruled ? { ruling: ruled } : {}),
       overruled: ruled ? verdicts.filter((v) => v.verdict !== ruled.verdict) : [],
-      late,
+      late: ruled ? [] : late,
     });
   }
   outcomes.sort((a, b) => a.text.localeCompare(b.text, 'is'));
-  return { outcomes, unknown: unknown.sort((a, b) => a.localeCompare(b, 'is')) };
+  const byIs = (a, b) => a.localeCompare(b, 'is');
+  return { outcomes, unknown: unknown.sort(byIs), unlisted: unlisted.sort(byIs) };
 }
 
 const quoted = (t) => `„${t}“`;
@@ -313,10 +382,16 @@ const shown = (value) => (value === true ? 'true' : value === false ? 'false' : 
 /**
  * Everything the record and the files say, as text for a person: first any approved recording
  * that stops being approved, then every change, every recording heard both ways, every verdict a
- * ruling overrules, every verdict that came late on older audio, every recording heard as wrong
+ * ruling overrules, every verdict on other audio that came late, every recording heard as wrong
  * with what was said about it, the notes by item from the files given, and who rules.
+ *
+ * `extra` is what the command does beside the verdicts: `reset`, `[{ text, from }]`, the
+ * recordings set back to `false` because their audio changed or nothing recorded which audio was
+ * approved; `stamped`, values written in hljod.yaml by hand that stada.json now records; and
+ * `clashes`, recordings both sides of a git merge changed differently, set to `false`.
  */
-export function report(people, result, rulers = []) {
+export function report(people, result, rulers = [], extra = {}) {
+  const { reset = [], stamped = [], clashes = [] } = extra;
   const lines = [];
   lines.push(
     people.length === 0
@@ -325,14 +400,19 @@ export function report(people, result, rulers = []) {
           .map((p) => `${p.reviewer}${p.dates.length ? ` (${p.dates.join(', ')})` : ''}`)
           .join(', ')}`
   );
-  const changes = result.outcomes.filter((o) => o.from !== o.to);
   const why = (o) =>
-    [
-      o.verdicts.length ? said(o.verdicts) : 'dregið til baka',
-      o.ruling ? `úrskurður ${o.ruling.reviewer}` : '',
-    ]
-      .filter(Boolean)
-      .join('; ');
+    o.remade
+      ? 'upptakan er ný, eða ekki skráð hvaða upptaka var samþykkt'
+      : [
+          o.verdicts.length ? said(o.verdicts) : 'dregið til baka',
+          o.ruling ? `úrskurður ${o.ruling.reviewer}` : '',
+        ]
+          .filter(Boolean)
+          .join('; ');
+  const changes = [
+    ...result.outcomes.filter((o) => o.from !== o.to),
+    ...reset.filter((r) => r.from !== false).map((r) => ({ ...r, to: false, remade: true })),
+  ].sort((a, b) => a.text.localeCompare(b.text, 'is'));
   const revoked = changes.filter((o) => o.from === true);
   if (revoked.length > 0) {
     lines.push(
@@ -344,6 +424,18 @@ export function report(people, result, rulers = []) {
   lines.push('', `Breytingar sem --apply gerir: ${changes.length}`);
   for (const o of changes)
     lines.push(`  ${quoted(o.text)}: ${shown(o.from)} → ${shown(o.to)} — ${why(o)}`);
+  if (clashes.length > 0) {
+    lines.push(
+      '',
+      `Breytt á báða vegu í samruna í git, og því sett á false nema matið ráði: ${clashes.map(quoted).join(', ')}`
+    );
+  }
+  if (stamped.length > 0) {
+    lines.push(
+      '',
+      `Breytt í hljod.yaml í höndunum, skráð í stada.json eins og það stendur: ${stamped.map(quoted).join(', ')}`
+    );
+  }
   const both = result.outcomes.filter(
     (o) =>
       !o.ruling &&
@@ -370,7 +462,7 @@ export function report(people, result, rulers = []) {
   if (late.length > 0) {
     lines.push(
       '',
-      `Metnar á eldri upptöku eftir að sú nýja var komin, líklega á síðu sem var opin frá því fyrir uppfærslu; ekki taldar, hlustaðu sjálf/ur: ${late.length}`
+      `Metnar á annarri upptöku en þeirri sem nú er, eftir að hún hafði verið metin (á síðu sem var opin frá því fyrir uppfærslu, eða á upptöku sem síðan var horfið frá); ekki taldar, hlustaðu sjálf/ur og skerðu úr: ${late.length}`
     );
     for (const o of late) lines.push(`  ${quoted(o.text)} — ${said(o.late)}`);
   }
@@ -393,6 +485,12 @@ export function report(people, result, rulers = []) {
   )) {
     lines.push('', label);
     for (const n of notes) lines.push(`  ${n.reviewer}: ${n.text.replace(/\n+/g, ' / ')}`);
+  }
+  if (result.unlisted?.length > 0) {
+    lines.push(
+      '',
+      `Metnar en ekki í hljod.yaml (keyrðu pnpm islenskubraut:hljod --record og svo --apply): ${result.unlisted.map(quoted).join(', ')}`
+    );
   }
   if (result.unknown.length > 0) {
     lines.push('', `Í skránni en ekki á spjöldunum: ${result.unknown.map(quoted).join(', ')}`);

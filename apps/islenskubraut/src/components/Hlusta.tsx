@@ -56,21 +56,28 @@ export async function versionOf(src: string): Promise<string | undefined> {
 
 /**
  * A small play button for a text on the card. Renders nothing for a text with no recording,
- * so the card looks as printed until a person has approved one. `onHeard`, on the listening
- * page, is told the version of the audio that played, which a page left open since before a
- * recording was made again knows by an older one.
+ * so the card looks as printed until a person has approved one.
+ *
+ * On the listening page `version` is the audio the page was built with, put in the address so
+ * the browser fetches the clip anew for a page that expects new audio (Firefox otherwise plays
+ * the copy the previous page had, for a while after a reload). `onHeard` is told the version the
+ * server has at that address, which a page left open since before a recording was made again
+ * knows by an older one.
  */
 export function Hlusta({
   text,
   color,
+  version,
   onHeard,
 }: {
   text: string;
   color: string;
+  version?: string;
   onHeard?: (version: string) => void;
 }) {
-  const src = useClip(text);
-  if (!src) return null;
+  const clip = useClip(text);
+  if (!clip) return null;
+  const src = version ? `${clip}?v=${version}` : clip;
   return (
     <button
       type="button"
