@@ -501,16 +501,17 @@ page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 
 - [ ] **Listen to the recordings** on `/islenskubraut/yfirferd/hljod` (2026-10-16), which marks
       each one `Rétt` or `Rangt` and sends the marks back as a file (C20).
-      `pnpm islenskubraut:yfirferd <files> --apply` then writes `true` for one someone heard as
-      right and nobody as wrong, and `rangt` for one someone heard as wrong and nobody as right,
-      or approved and heard as wrong since. A decision stands against every verdict given before
-      it, and a recording made again goes back to `false` (`content/islenskubraut/hljod/README.md`).
-      The page puts first the eight that a speech recogniser
+      `pnpm islenskubraut:yfirferd <files> --apply` then gives every recording the files mention
+      the value all their verdicts give it: `true` heard as right and never wrong, `rangt` the
+      other way, `false` heard both ways. A recording made again goes back to `false`, and a
+      ruling (`--urskurdur "Nafn"`) settles one heard both ways
+      (`content/islenskubraut/hljod/README.md`). The page puts first the eight that a speech recogniser
       heard as something else, over 20 %: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`,
       `húfa`, `oddhvasst`. The research estimated 3–5 hours for all of them, so the work can be
       split by card.
 - [ ] **Is a synthetic voice acceptable for the cards at all?** If not, the same files can be
-      recorded by a person under the same names, and the play buttons stay as they are.
+      recorded by a person under the same names. Each one then goes back to `false` until it has
+      been heard again, so nothing a person recorded plays to students unheard.
 - [ ] **The QR codes on the printed cards** wait until some recordings are approved.
 - [ ] **The Icelandic, drafted by Claude:** the button label `Hlusta: <texti>` (read by screen
       readers) and the credit line `Upptökur: <rödd>.`. The listening page's own text is C20's.
@@ -633,7 +634,8 @@ is closed; the page cannot tell, so it says that in any case, and it warns when 
 storage outright. `pnpm islenskubraut:yfirferd <files>` prints every note by item, with the
 verdicts on the recordings, and `--apply` writes them (C15). Per recording, a reviewer's latest
 verdict counts; pressing the pressed button takes one back, and a mark merely missing from a later
-file, as after `Hreinsa allt`, still stands from an earlier one.
+file, as after `Hreinsa allt`, still stands from an earlier one. A teacher types a name before
+sending, since the name tells one teacher's files from another's.
 
 An adversarial review of the pages on 2026-10-16 found and fixed: two tabs overwriting each other,
 a double click on `Hreinsa allt` erasing the review, the "not yet marked" filter hiding a row
@@ -643,7 +645,10 @@ left open across a deploy going blank, and a recording marked wrong being approv
 run. A second review of those fixes the same night found and fixed: a recording replaced after it
 was approved still playing as approved, a conflict a person had settled being undone by the next
 run, a second tab's echo swallowing keystrokes, a reload losing the reader's place on every page,
-two teachers' files sharing one name, and a verdict taken back still counting.
+two teachers' files sharing one name, and a verdict taken back still counting. A third pass
+found that deciding by when a verdict was given, against when a value was set, let a "wrong" that
+arrived after an `--apply` vanish without a word; values are now worked out from all the verdicts
+together, whatever order the files arrive in, and a person settles a disagreement with a ruling.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
@@ -652,7 +657,8 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
 - [ ] **The pages' Icelandic, drafted by Claude.** On the review page: the intro and its four
       steps, each item's one-line hint, the three states, and the sending box
       (`Senda yfirferðina`, `Sækja skrá`, `Afrita sem texta`, `Hreinsa allt`, `Hætta við` and the
-      confirmation, what each says once pressed, and the line on what the browser keeps). On the
+      confirmation, what each says once pressed, the line on what the browser keeps, the request
+      for a name, and `Dregið til baka` and `Metnar áður en …` in the copied text). On the
       listening page: the three paragraphs, the filters, `Talgervillinn segir: …`,
       `(merkt röng)` and `Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu aftur.`.
       They are the only instructions a reviewer gets, so read them as a colleague will.

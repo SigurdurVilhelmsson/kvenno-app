@@ -696,11 +696,13 @@ ice-g2p for pronunciation, by `scripts/islenskubraut/hljod/talgerving.py`. That 
 setup on a teacher's machine, never in CI. `content/islenskubraut/hljod/hljod.yaml` lists each clip
 `true`, `false` or `rangt` (heard as wrong); **only `true` plays for students**, `?drog` plays the
 rest (`DrogContext` in `Hlusta.tsx`), and the card page credits the voice whenever a clip plays.
-**`stada.json` beside it is the tools' record** of each clip's audio version, value and when it was
-set (`syncState` in `hljod.mjs`), written by `pnpm islenskubraut:hljod --record` and
-`pnpm islenskubraut:yfirferd --apply`, never by hand. A replaced file sets its clip back to
-`false`, and **the build fails while the record is out of date** (`stateProblems`), so an approval
-is always for the audio approved; it also fails on an approved clip with no file. A text with no
+**`stada.json` beside it is the tools' record** of each clip's audio version and its value for that
+audio (`syncState` in `hljod.mjs`), written by `pnpm islenskubraut:hljod --record` and
+`pnpm islenskubraut:yfirferd --apply`, never by hand. A replaced file, or a `true` with no record,
+sets its clip back to `false`, and **the build fails while the record is out of date**
+(`stateProblems`), so an approval is always for the audio approved. `scripts/build-all.mjs` runs
+`build.mjs --check` before building the app, so `pnpm build` and `deploy.sh` refuse stale data too.
+It also fails on an approved clip with no file. A text with no
 clip simply has no button, so editing a card never needs the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
 review pages; it flags eight of 524 over 20 % (C15). It merges into
 `content/islenskubraut/hljod/hlustun.json`, which is committed, since the build turns it into
@@ -758,15 +760,17 @@ glosses) with each one's state, links that open the drafts as students would see
 print, and a note box. `/islenskubraut/yfirferd/hljod` (`YfirferdHljod.tsx`) plays every recording
 with `Rétt`/`Rangt`, the recogniser's doubts first. **No server holds a review:** it is kept in the
 teacher's browser (`src/yfirferd/store.ts`, `localStorage`, read back when another tab writes it
-and never written back) until they clear it, and sent as a downloaded file or copied text. Each
-verdict carries the hash of the audio it was given to and when it was given, and a verdict taken
-back is kept as such. `pnpm islenskubraut:yfirferd <files> [--apply]`
-(`scripts/islenskubraut/yfirferd-check.mjs`; `yfirferd.mjs` is the pure half) prints the notes and
-writes `true` for a draft heard as right by someone and wrong by nobody, and `rangt` for a draft
-heard as wrong by someone and right by nobody, or an approved clip heard as wrong since it was
-approved. **A decision stands against every verdict given before it** (`stada.json`'s `at`), so a
-conflict a person settled stays settled. Per recording, a reviewer's latest verdict counts;
-reviewers match by name, ignoring case. The page writes the file's `format`, the script refuses
+and never written back: only a change made in that tab is written) until they clear it, and sent,
+once the teacher has typed a name, as a downloaded file or copied text. Each verdict carries the
+hash of the audio it was given to and when it was given, and a verdict taken back is kept as such.
+`pnpm islenskubraut:yfirferd <files> [--urskurdur "Nafn"] [--apply]`
+(`scripts/islenskubraut/yfirferd-check.mjs`; `yfirferd.mjs` is the pure half) prints the notes
+and every change, and **gives every recording the files mention the value all their verdicts give
+it together**: `true` heard as right and never wrong, `rangt` the other way, `false` otherwise. The
+result does not depend on file order or on anyone's clock; an earlier design that compared verdict
+times with decision times lost a late-arriving "wrong" silently. A ruler's verdict
+(`--urskurdur`) settles a recording, and every verdict it overrules is printed. Per recording, a
+reviewer's latest verdict counts; reviewers match by name, ignoring case. The page writes the file's `format`, the script refuses
 any other, and a test holds the two constants equal. No page a student can reach links to either
 page; they link to each other, and `Yfirferd.test.tsx` fails if any other file in the app quotes
 their routes. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in

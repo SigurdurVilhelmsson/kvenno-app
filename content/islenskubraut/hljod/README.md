@@ -27,47 +27,56 @@ Tiro's public speech service, which the research first named, had gone by 2026-1
 plays, the card page credits the voice, as its licence requires.
 
 **`stada.json` beside it is the tools' record** of each recording: the version of its audio (a
-hash of the file), its value in `hljod.yaml`, and when that value was set. Never edit it by hand;
-`pnpm islenskubraut:hljod --record` and `pnpm islenskubraut:yfirferd --apply` write it. It does
-two things:
+hash of the file) and its value in `hljod.yaml` for that audio. Never edit it by hand;
+`pnpm islenskubraut:hljod --record` and `pnpm islenskubraut:yfirferd --apply` write it. It ties an
+approval to the audio approved: when a file is replaced, by the voice or by a person recording
+under the same name, `--record` sets that recording back to `false`, since nobody has heard the new
+audio. So does a `true` with no record at all. The build, `pnpm build` and so `deploy.sh` included,
+refuses to run until `--record` has seen every change, so a replaced recording can never play to
+students unheard.
 
-- **An approval is for the audio approved.** When a file is replaced, by the voice or by a person
-  recording under the same name, `--record` sets that recording back to `false`, since nobody has
-  heard the new audio. The build refuses to run until `--record` has seen every change, so a
-  replaced recording can never play to students unheard.
-- **A decision stands against what was said before it.** Once a recording is `true` or `rangt`,
-  whether a person wrote it or `--apply` did, only a verdict given after that can reopen it.
-
-**After editing `hljod.yaml` by hand, run `pnpm islenskubraut:hljod --record`** before building.
+**After editing `hljod.yaml` by hand, run `pnpm islenskubraut:hljod --record`** before building. A
+hand edit lasts until a review file says something about that recording; to overrule teachers, use
+a ruling (below).
 
 ## Listening
 
 **Teachers listen on the site**, at `/islenskubraut/yfirferd/hljod`, which only the review page,
 `/islenskubraut/yfirferd`, links to. Every recording plays there, drafts included, with `Rétt` and
 `Rangt` beside it and a box for what is wrong. The page keeps the marks in the teacher's browser,
-and they press `Sækja skrá` and send the file back; its name carries the date and their name. Save
-the files in the repository root, where they are gitignored (they carry teachers' names), and keep
-every one. Then:
+and they type their name and press `Sækja skrá` and send the file back; its name carries the date
+and theirs. Save the files in the repository root, where they are gitignored (they carry teachers'
+names), and **keep every one: they are what the values come from.** Then:
 
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json           # read what they say
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --apply   # write the verdicts
     pnpm islenskubraut:build
 
+Every recording the files say anything about gets the value all their verdicts give it together,
+whatever order the files came in and whatever anyone's clock says:
+
+- `true` if someone heard it as right and nobody as wrong;
+- `rangt` if someone heard it as wrong and nobody as right;
+- `false` if it was heard both ways, or the verdicts on it were taken back, or given to audio
+  since replaced: it is to be heard again.
+
+An approved recording that this makes `false` or `rangt` is listed first in the report: students
+hear it until the site is built and deployed again. Every change is listed with who said what.
+A recording the files do not mention keeps its value.
+
 A verdict counts only for the audio it was given to, and each teacher's latest verdict on a
-recording counts, by when they gave it. Pressing the pressed button again takes a verdict back,
-and the next file says so. A mark merely missing from a later file still stands from an earlier
-one, which is what happens after `Hreinsa allt`. `--apply` changes `hljod.yaml` and `stada.json`
-only:
+recording counts. Pressing the pressed button again takes a verdict back, and the next file says
+so; a teacher can send a file that only takes one back. A mark merely missing from a later file
+still stands from an earlier one, which is what happens after `Hreinsa allt`. Teachers' files are
+told apart by the name typed, ignoring case.
 
-- `true` beside each draft someone heard as right and nobody as wrong;
-- `rangt` beside each draft someone heard as wrong and nobody as right, so that a later run cannot
-  approve it on another teacher's word;
-- `rangt` beside an approved one that someone has heard as wrong since it was approved, which the
-  report lists first: students hear it until the site is built and deployed again.
+**To settle a recording heard both ways, or to overrule the teachers,** listen yourself on the
+same page, send yourself the file, and pass your name as a ruling:
 
-A draft heard both ways is listed for a person to settle, by writing `true` or `rangt`. So is a
-`rangt` one heard as right since, and every note. A person's settlement stands: older verdicts do
-not undo it.
+    pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --urskurdur "Siggi" --apply
+
+A ruler's verdict decides the recording whatever the others say, and the report lists every
+verdict it overrules, on every run, so none is lost.
 
 To listen without the site:
 
@@ -76,7 +85,8 @@ To listen without the site:
 This writes `islenskubraut-hljod-yfirlit.html` in the repository root: every text with its
 recording, sorted so the doubtful ones come first. Open it in a browser, listen, and write `true`
 or `rangt` in `hljod.yaml` beside each one. Then run `pnpm islenskubraut:hljod --record` and
-`pnpm islenskubraut:build`.
+`pnpm islenskubraut:build`. The next `--apply` overrides such a hand edit wherever a review file
+speaks to the recording; a ruling does not.
 
 Both pages are sorted by a speech recogniser's reading, from `hlustun.json` here (see below). It
 transcribed each recording back, and the pages show what it heard. A high score means the
