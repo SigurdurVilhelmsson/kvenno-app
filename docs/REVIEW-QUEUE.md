@@ -502,8 +502,8 @@ hand. Add `?drog` to a card page to hear them. Workflow: `content/islenskubraut/
 
 - [ ] **Listen to the recordings** on `/islenskubraut/yfirferd/hljod` (2026-10-16), which marks
       each one `Rétt` or `Rangt` and sends the marks back as a file (C20).
-      `pnpm islenskubraut:yfirferd <files> --apply` then adds their verdicts to
-      `content/islenskubraut/hljod/mat.json`, which is committed, and gives every recording the
+      `pnpm islenskubraut:yfirferd <files> --apply` then adds their verdicts to the record, a
+      new file in `content/islenskubraut/hljod/mat/`, which is committed, and gives every recording the
       value all the verdicts there give it: `true` heard as right and never wrong, `rangt` the
       other way, `false` heard both ways. A recording made again goes back to `false`, and a
       ruling (`--urskurdur "Nafn"`, kept in the record) settles one heard both ways
@@ -634,7 +634,7 @@ file, or `Afrita sem texta`, which copies text for an email, until they clear th
 them. Two tabs with the pages open keep each other up to date. A private window keeps them until it
 is closed, and Safari on iPhone and iPad deletes them after seven days without a visit; the page
 cannot tell, so it says both in any case, and it warns when the browser refuses storage outright. `pnpm islenskubraut:yfirferd <files>` prints every note by item, with the
-verdicts on the recordings, and `--apply` adds them to the committed record `mat.json` and
+verdicts on the recordings, and `--apply` adds them to the committed record `hljod/mat/` and
 writes the values (C15). Per recording, a reviewer's latest verdict counts; pressing the pressed
 button takes one back, and a mark merely missing from a later file, as after `Hreinsa allt`, still
 stands from an earlier one. A teacher types a name before sending, for the report; the page also
@@ -655,7 +655,7 @@ arrived after an `--apply` vanish without a word; values are now worked out from
 together, whatever order the files arrive in, and a person settles a disagreement with a ruling.
 A fourth pass found that working them out from the files passed let a machine holding fewer files
 approve a recording another had heard as wrong, and that a ruling lasted only for the run that
-made it; the verdicts and rulings are now kept in the committed `mat.json`, and the reviewer is
+made it; the verdicts and rulings are now kept in the committed record (`hljod/mat/`), and the reviewer is
 the browser, not the name typed. A fifth pass found that a git merge of two runs could still
 leave `hljod.yaml` approving what the record rejected, that a ruler could never change their mind
 from another browser, that a verdict on one recording of a text was overwritten by one on the next,
@@ -687,7 +687,13 @@ wrong audio; that two teachers sharing a browser were one reviewer; and that the
 still said to write `true` by hand. Now a file git holds unmerged is merged again whatever it shows,
 the build refuses a merged record that lost an entry, the real merge bases stand in for git's
 crossed one, a play locks its row until its audio is known, a reviewer is the browser and the
-name, and approvals are given only on the listening page.
+name, and approvals are given only on the listening page. A ninth pass found
+that the record, a single `mat.json`, could still lose a teacher's "wrong" in a merge: where a side
+held an older verdict under the same key, in a rebase or cherry-pick, and its rulers too; that a
+failed or late audio check unlocked a row already found remade; and that a retyped name could not
+take a mark back. The record is now a folder of files only ever added, so git never merges it;
+only the latest play's check counts and a failed one changes nothing; and a browser's later
+withdrawal cancels its earlier approval under any name.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
@@ -700,7 +706,7 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
       for a name, and `Dregið til baka`, `Metnar áður en …` and the line before the data in the
       copied text). On the listening page: the three paragraphs, the filters,
       `Talgervillinn segir: …`, `(merkt röng)`,
-      `Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu á hana áður en þú metur hana aftur.` and
+      `Upptakan hefur verið gerð aftur síðan hún var metin í þessum vafra. Hlustaðu á hana áður en þú metur hana aftur.` and
       `Þessi upptaka hefur verið gerð aftur síðan þú opnaðir síðuna. …`. The script's report is
       Icelandic too, and drafted the same way.
       They are the only instructions a reviewer gets, so read them as a colleague will.

@@ -1,12 +1,12 @@
 /**
  * Teachers' reviews, as the review page sends them (`/islenskubraut/yfirferd`, "Sækja skrá"): a
- * note per item and a verdict per recording. This module reads a file, merges its verdicts into
- * the committed record of every verdict given (`mat.json`), and works out from that record what
- * `yfirferd-check.mjs --apply` writes to `hljod.yaml`.
+ * note per item and a verdict per recording. This module reads a file, adds its verdicts to the
+ * committed record of every verdict given (the files in `hljod/mat/`), and works out from that
+ * record what `yfirferd-check.mjs --apply` writes to `hljod.yaml`.
  *
  * The record, not the files, is what the values come from, so a file can be deleted once it has
  * been applied, and every machine works from the same verdicts. It names no one: each reviewer is
- * a hash of the id their browser stamps into every file it sends.
+ * a hash of the id their browser stamps into every file it sends and the name typed there.
  *
  * Pure: the command does the reading and writing.
  */
@@ -127,27 +127,51 @@ export function reviewerOf(review) {
 }
 
 /**
- * `mat.json`, checked. Returns `{ rulers: [who], verdicts: { text: { who: { v: entry } } } }`:
- * per recording, per reviewer and per version of its audio, the latest entry
- * (`{ verdict, at, note? }`). A verdict on one recording of a text is kept beside one on another,
- * so audio that comes back (a revert, a remake that comes out the same) finds its verdicts again.
+ * The browser a file is from, whatever name was typed: a hash of its id alone. The page keeps one
+ * mark per recording per browser, so a later withdrawal or "wrong" from a browser, under any name,
+ * is what that browser now says (`approvals`).
+ */
+export function browserOf(review) {
+  return createHash('sha256').update(`vafri:${review.id}`, 'utf8').digest('hex').slice(0, 12);
+}
+
+const HASH = /^[0-9a-f]{12}$/;
+const VERDICTS = ['right', 'wrong', WITHDRAWN];
+// Of two entries given at the same moment, the one that approves least counts.
+const RANK = { right: 0, [WITHDRAWN]: 1, wrong: 2 };
+
+/** Whether entry `a` outranks `b` for one recording, reviewer and audio: the later, then the one
+ * that approves least, then the note, so every machine keeps the same one. */
+const outranks = (a, b) =>
+  a.at !== b.at
+    ? a.at > b.at
+    : RANK[a.verdict] !== RANK[b.verdict]
+      ? RANK[a.verdict] > RANK[b.verdict]
+      : (a.note ?? '') > (b.note ?? '');
+
+/**
+ * The record in memory, checked: `{ rulers: [who], verdicts: { text: { who: { v: entry } } } }`,
+ * per recording, per reviewer and per version of its audio the entry that counts
+ * (`{ verdict, at, b?, note? }`, `b` the browser). A verdict on one recording of a text is kept
+ * beside one on another, so audio that comes back (a revert, a remake that comes out the same)
+ * finds its verdicts again.
  */
 export function readLedger(raw) {
   if (raw === undefined) return { rulers: [], verdicts: {} };
-  assert(raw && typeof raw === 'object', 'mat.json must be a map');
+  assert(raw && typeof raw === 'object', 'the record must be a map');
   const rulers = raw.rulers ?? [];
   const verdicts = raw.verdicts ?? {};
-  assert(Array.isArray(rulers) && rulers.every((r) => typeof r === 'string'), 'mat.json: rulers');
+  assert(Array.isArray(rulers) && rulers.every((r) => typeof r === 'string'), 'record: rulers');
   for (const [text, byWho] of Object.entries(verdicts)) {
     for (const [who, byV] of Object.entries(byWho)) {
-      assert(byV && typeof byV === 'object', `mat.json: "${text}" from ${who} must be a map`);
+      assert(byV && typeof byV === 'object', `record: "${text}" from ${who} must be a map`);
       for (const [v, e] of Object.entries(byV)) {
         assert(
           e &&
-            ['right', 'wrong', WITHDRAWN].includes(e.verdict) &&
+            VERDICTS.includes(e.verdict) &&
             typeof e.at === 'string' &&
             (e.note === undefined || typeof e.note === 'string'),
-          `mat.json: "${text}" from ${who} on ${v} needs verdict and at`
+          `record: "${text}" from ${who} on ${v} needs verdict and at`
         );
       }
     }
@@ -155,40 +179,118 @@ export function readLedger(raw) {
   return { rulers, verdicts };
 }
 
+/**
+ * One file of the record (`hljod/mat/*.json`), checked. Each holds what one `--apply` added:
+ * `verdicts`, `[{ text, who, b, v, verdict, at, note? }]`, and `rulings`, `[{ who, rules, at }]`,
+ * a reviewer starting (`rules: true`) or stopping to rule at `at`. A file is never changed once
+ * written, so git never has two versions of one to merge.
+ */
+export function readRecordFile(raw, where = 'record file') {
+  assert(raw && typeof raw === 'object' && !Array.isArray(raw), `${where} must be a map`);
+  const { verdicts = [], rulings = [], ...rest } = raw;
+  assert(Object.keys(rest).length === 0, `${where} has unknown keys: ${Object.keys(rest)}`);
+  assert(
+    Array.isArray(verdicts) && Array.isArray(rulings),
+    `${where}: verdicts and rulings are lists`
+  );
+  for (const [i, e] of verdicts.entries()) {
+    assert(
+      e &&
+        typeof e.text === 'string' &&
+        HASH.test(e.who) &&
+        HASH.test(e.b) &&
+        typeof e.v === 'string' &&
+        VERDICTS.includes(e.verdict) &&
+        typeof e.at === 'string' &&
+        (e.note === undefined || typeof e.note === 'string'),
+      `${where}: verdicts[${i}] needs text, who, b, v, verdict and at`
+    );
+  }
+  for (const [i, r] of rulings.entries()) {
+    assert(
+      r && HASH.test(r.who) && typeof r.rules === 'boolean' && typeof r.at === 'string',
+      `${where}: rulings[${i}] needs who, rules and at`
+    );
+  }
+  return { verdicts, rulings };
+}
+
 const sortedBy = (entries) =>
   Object.fromEntries(entries.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 
+const sortedLedger = (rulers, verdicts) => ({
+  rulers: [...rulers].sort(),
+  verdicts: sortedBy(
+    Object.entries(verdicts).map(([t, byWho]) => [
+      t,
+      sortedBy(Object.entries(byWho).map(([who, byV]) => [who, sortedBy(Object.entries(byV))])),
+    ])
+  ),
+});
+
 /**
- * Merge files into the record. Per recording, reviewer and audio, the entry given latest counts,
- * by the time it was given: a verdict, or `withdrawn` for one taken back. A mark merely missing
- * from a later file stands; clearing the review on the page withdraws nothing already sent.
- * `rulers` are names whose verdicts rule (`--urskurdur`): each must be among the names one
- * browser's files carry, and no other's, and is kept in the record, so a ruling lasts. Returns
- * `{ ledger, names, people, shared, errors }`: `names` maps each reviewer hash in the files to the
- * name on their latest file, `people` lists each reviewer once with that name, the dates of their
- * files and the notes their latest file carries, and `shared` the names of each browser whose
- * files carry more than one.
+ * The record from its files, in any order: per recording, reviewer and audio the entry that
+ * outranks the rest (the latest; at one moment the one that approves least), and as rulers every
+ * reviewer whose latest ruling says so (at one moment, stopping wins). Files only ever add, so
+ * the same files give the same record on every machine, whatever git did to bring them together.
  */
-export function mergeReviews(ledger, reviews, rulers = []) {
+export function foldRecord(files) {
+  const verdicts = {};
+  const rulings = new Map();
+  for (const f of files) {
+    for (const { text, who, v, ...e } of f.verdicts) {
+      const byV = ((verdicts[text] ??= {})[who] ??= {});
+      if (!byV[v] || outranks(e, byV[v])) byV[v] = e;
+    }
+    for (const r of f.rulings) {
+      const was = rulings.get(r.who);
+      if (!was || r.at > was.at || (r.at === was.at && !r.rules)) rulings.set(r.who, r);
+    }
+  }
+  const rulers = [...rulings.values()].filter((r) => r.rules).map((r) => r.who);
+  return sortedLedger(rulers, verdicts);
+}
+
+/**
+ * Add files to the record. Per recording, reviewer and audio, the entry given latest counts, by
+ * the time it was given: a verdict, or `withdrawn` for one taken back. A mark merely missing from
+ * a later file stands; clearing the review on the page withdraws nothing already sent.
+ *
+ * `rulers` are names whose verdicts are to rule (`--urskurdur`), `unrule` names or hashes to stop
+ * ruling: each name must be among the names one browser's files carry, and no other's. `now` is
+ * when the rulings are given. Returns `{ ledger, added, names, people, shared, errors }`: `added`
+ * is what the record lacked (`{ verdicts, rulings }`, the next file of the record, empty when the
+ * files add nothing), `names` maps each reviewer hash in the files to the name on their latest
+ * file, `people` lists each reviewer once with that name, the dates of their files and the notes
+ * their latest file carries, and `shared` the names of each browser whose files carry more than
+ * one.
+ */
+export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = '' } = {}) {
   const verdicts = {};
   for (const [t, byWho] of Object.entries(ledger.verdicts)) {
     verdicts[t] = {};
     for (const [who, byV] of Object.entries(byWho)) verdicts[t][who] = { ...byV };
   }
+  const added = { verdicts: [], rulings: [] };
   const names = new Map();
   const people = new Map();
-  const browsers = new Map();
   const ordered = reviews
     .map((r, i) => ({ r, i }))
     .sort((a, b) => a.r.saved.localeCompare(b.r.saved) || a.i - b.i)
     .map(({ r }) => r);
   for (const r of ordered) {
     const who = reviewerOf(r);
+    const b = browserOf(r);
     names.set(who, r.reviewer);
-    if (!browsers.has(r.id)) browsers.set(r.id, new Map());
-    browsers.get(r.id).set(reviewerKey(r.reviewer), r.reviewer);
     if (!people.has(who)) {
-      people.set(who, { who, reviewer: r.reviewer, keys: new Set(), dates: [], notes: new Map() });
+      people.set(who, {
+        who,
+        b,
+        reviewer: r.reviewer,
+        keys: new Set(),
+        dates: [],
+        notes: new Map(),
+      });
     }
     const person = people.get(who);
     person.reviewer = r.reviewer;
@@ -198,40 +300,86 @@ export function mergeReviews(ledger, reviews, rulers = []) {
     person.notes = new Map(r.notes.map((n) => [n.key, n]));
     for (const c of r.clips) {
       if (!c.v) continue;
+      const e = { verdict: c.verdict, at: c.at, b, ...(c.note ? { note: c.note } : {}) };
       const byV = ((verdicts[c.text] ??= {})[who] ??= {});
-      const before = byV[c.v];
-      if (!before || before.at <= c.at) {
-        byV[c.v] = { verdict: c.verdict, at: c.at, ...(c.note ? { note: c.note } : {}) };
-      }
+      if (byV[c.v] && !outranks(e, byV[c.v])) continue;
+      byV[c.v] = e;
+      added.verdicts = added.verdicts.filter(
+        (a) => !(a.text === c.text && a.who === who && a.v === c.v)
+      );
+      added.verdicts.push({ text: c.text, who, v: c.v, ...e });
     }
   }
   const errors = [];
-  const next = new Set(ledger.rulers);
-  for (const name of rulers) {
+  const ruling = new Set(ledger.rulers);
+  const one = (name, flag) => {
+    if (HASH.test(name) && flag === '--afturkalla') return name;
     const matching = [...people.values()].filter((p) => p.keys.has(reviewerKey(name)));
+    if (matching.length === 1) return matching[0].who;
     if (matching.length === 0)
-      errors.push(`--urskurdur "${name}": no file from a reviewer of that name`);
-    else if (matching.length > 1) {
-      const ruling = matching.filter((p) => next.has(p.who)).length;
+      errors.push(`${flag} "${name}": no file from a reviewer of that name`);
+    else {
+      const already = matching.filter((p) => ruling.has(p.who)).length;
       errors.push(
-        `--urskurdur "${name}": the files of ${matching.length} browsers carry that name${
-          ruling > 0 ? ` (${ruling} of them already ${ruling === 1 ? 'rules' : 'rule'})` : ''
-        }; a ruling must be one person. Pass only the files of the browser that should rule.`
+        `${flag} "${name}": the files of ${matching.length} browsers carry that name${
+          already > 0 ? ` (${already} of them already ${already === 1 ? 'rules' : 'rule'})` : ''
+        }; a ruling must be one person. Pass only the files of the browser meant.`
       );
-    } else next.add(matching[0].who);
-  }
-  const out = {
-    rulers: [...next].sort(),
-    verdicts: sortedBy(
-      Object.entries(verdicts).map(([t, byWho]) => [
-        t,
-        sortedBy(Object.entries(byWho).map(([who, byV]) => [who, sortedBy(Object.entries(byV))])),
-      ])
-    ),
+    }
+    return undefined;
   };
-  // One browser that sent files under two names: two people sharing it, or one who retyped hers.
-  const shared = [...browsers.values()].filter((m) => m.size > 1).map((m) => [...m.values()]);
-  return { ledger: out, names, people: [...people.values()], shared, errors };
+  for (const name of rulers) {
+    const who = one(name, '--urskurdur');
+    if (who && !ruling.has(who)) {
+      ruling.add(who);
+      added.rulings.push({ who, rules: true, at: now });
+    }
+  }
+  for (const name of unrule) {
+    const who = one(name, '--afturkalla');
+    if (who === undefined) continue;
+    if (!ruling.has(who)) errors.push(`--afturkalla "${name}": ${who} does not rule`);
+    else {
+      ruling.delete(who);
+      added.rulings.push({ who, rules: false, at: now });
+    }
+  }
+  added.verdicts.sort((x, y) =>
+    x.text < y.text
+      ? -1
+      : x.text > y.text
+        ? 1
+        : x.who < y.who
+          ? -1
+          : x.who > y.who
+            ? 1
+            : x.v < y.v
+              ? -1
+              : 1
+  );
+  // A browser of the files whose verdicts, in these files or the record, carry two names: two
+  // people sharing it, or one who retyped hers.
+  const whosOf = new Map();
+  const note = (b, who) => (whosOf.get(b) ?? whosOf.set(b, new Set()).get(b)).add(who);
+  for (const byWho of Object.values(verdicts)) {
+    for (const [who, byV] of Object.entries(byWho)) {
+      for (const e of Object.values(byV)) if (e.b) note(e.b, who);
+    }
+  }
+  for (const p of people.values()) note(p.b, p.who);
+  const label = (who) => names.get(who) ?? `kennari ${who.slice(0, 6)}`;
+  const shared = [...new Set([...people.values()].map((p) => p.b))]
+    .map((b) => [...whosOf.get(b)])
+    .filter((whos) => whos.length > 1)
+    .map((whos) => whos.map(label).sort((a, b) => a.localeCompare(b, 'is')));
+  return {
+    ledger: sortedLedger(ruling, verdicts),
+    added,
+    names,
+    people: [...people.values()],
+    shared,
+    errors,
+  };
 }
 
 const CLASH = Symbol('clash');
@@ -260,84 +408,25 @@ export function mergeThreeWay(base, ours, theirs, same = (a, b) => a === b) {
 }
 
 /**
- * Two records as one, for a git merge that left a conflict in `mat.json`. The verdicts are every
- * entry from either side, the later where both hold one for the same recording, reviewer and
- * audio: a record only grows. The rulers are merged against the record both sides started from
- * (`base`), so a ruler one side removed stays removed and one either side added is kept.
- */
-export function unionLedgers(a, b, base = { rulers: [], verdicts: {} }) {
-  const verdicts = {};
-  for (const ledger of [a, b]) {
-    for (const [t, byWho] of Object.entries(ledger.verdicts)) {
-      for (const [who, byV] of Object.entries(byWho)) {
-        for (const [v, e] of Object.entries(byV)) {
-          const into = ((verdicts[t] ??= {})[who] ??= {});
-          if (!into[v] || into[v].at < e.at) into[v] = e;
-        }
-      }
-    }
-  }
-  return {
-    rulers: [...new Set([...a.rulers, ...b.rulers])]
-      .filter((r) => (a.rulers.includes(r) && b.rulers.includes(r)) || !base.rulers.includes(r))
-      .sort(),
-    verdicts: sortedBy(
-      Object.entries(verdicts).map(([t, byWho]) => [
-        t,
-        sortedBy(Object.entries(byWho).map(([who, byV]) => [who, sortedBy(Object.entries(byV))])),
-      ])
-    ),
-  };
-}
-
-/**
  * The base of a three-way merge where git's own (`:1:`) is no use: in a criss-cross history it is
  * a merge of several bases, with conflict markers of its own. Here each key the real merge bases
  * (`maps`) all give alike has that value, and one they disagree on is `UNKNOWN`, so only a change
- * both sides agree on is taken. With no base to read, every key is `UNKNOWN`.
+ * both sides agree on is taken. With no base to read, every key is `UNKNOWN`. `absent` is what a
+ * base that lacks a key some other base has counts as (`false` for a clip `hljod.yaml` does not
+ * list: nobody had approved it); a key no base has stays absent.
  */
-export function agreedBase(maps, keys, same = (a, b) => a === b) {
+export function agreedBase(maps, keys, same = (a, b) => a === b, absent = undefined) {
   const out = new Map();
   for (const k of keys) {
-    if (maps.length === 0) out.set(k, UNKNOWN);
-    else if (maps.every((m) => same(m.get(k), maps[0].get(k)))) {
-      if (maps[0].get(k) !== undefined) out.set(k, maps[0].get(k));
-    } else out.set(k, UNKNOWN);
-  }
-  return out;
-}
-
-/**
- * The record after a git merge, however its conflict was left: every verdict on either side, and
- * in the working file (`working`, where it can be read: one side taken whole, or a merge already
- * run), the later where two hold one for the same recording, reviewer and audio. So a side taken
- * whole loses nothing. A ruler the merge removes (one in `base` that a side has removed) goes;
- * otherwise the rulers are the working file's, so one added or removed while resolving stays as it
- * is, and with no working file both sides' (`unionLedgers`). For a criss-cross history, `base`
- * holds every ruler any merge base held.
- */
-export function mergeLedgers({ ours, theirs, base = { rulers: [], verdicts: {} }, working }) {
-  const sides = unionLedgers(ours, theirs, base);
-  if (!working) return sides;
-  const removed = new Set(
-    base.rulers.filter((r) => !(ours.rulers.includes(r) && theirs.rulers.includes(r)))
-  );
-  return {
-    rulers: [...new Set(working.rulers)].filter((r) => !removed.has(r)).sort(),
-    verdicts: unionLedgers(sides, working).verdicts,
-  };
-}
-
-/** The entries (recording, reviewer, audio) `other` holds and `ledger` does not. A record only
- * grows, so after a merge none of either side's should be missing. */
-export function missingEntries(ledger, other) {
-  const out = [];
-  for (const [text, byWho] of Object.entries(other.verdicts)) {
-    for (const [who, byV] of Object.entries(byWho)) {
-      for (const v of Object.keys(byV)) {
-        if (!ledger.verdicts[text]?.[who]?.[v]) out.push({ text, who, v });
-      }
+    if (maps.length === 0) {
+      out.set(k, UNKNOWN);
+      continue;
     }
+    if (!maps.some((m) => m.has(k))) continue;
+    const values = maps.map((m) => (m.has(k) ? m.get(k) : absent));
+    if (values.every((v) => same(v, values[0]))) {
+      if (values[0] !== undefined) out.set(k, values[0]);
+    } else out.set(k, UNKNOWN);
   }
   return out;
 }
@@ -382,6 +471,11 @@ function valueFrom(verdicts) {
  * back to `false` (`unbacked`): an approval carried in by a git merge, or across a remake, or
  * written by hand, is not one anybody gave to what students would hear.
  *
+ * A "right" is not counted where the same browser later withdrew it, or said "wrong", under
+ * another name (`b`): the page keeps one mark per recording, so that is what the browser now says.
+ * A "wrong" stands whatever another name on the browser says later, since two names may be two
+ * teachers sharing it.
+ *
  * A ruler's verdict decides a recording whatever the others say, and every verdict it overrules
  * is listed. Of several rulers' verdicts the latest decides, so a ruler who changes their mind,
  * from another browser too, can rule again; two given at the same moment that disagree settle
@@ -418,8 +512,14 @@ export function approvals(ledger, manifest, { texts, version, names = new Map() 
       byV[current] ? [{ who, ...byV[current] }] : []
     );
     if (onCurrent.length === 0) continue;
+    // The page keeps one mark per recording per browser: a later withdrawal or "wrong" from a
+    // browser, under another name, is what it now says, so its earlier "right" no longer counts.
+    const superseded = (e) =>
+      e.verdict === 'right' &&
+      e.b !== undefined &&
+      onCurrent.some((o) => o.b === e.b && o.who !== e.who && o.at > e.at && o.verdict !== 'right');
     const verdicts = onCurrent
-      .filter((e) => e.verdict !== WITHDRAWN)
+      .filter((e) => e.verdict !== WITHDRAWN && !superseded(e))
       .map((e) => ({
         who: e.who,
         reviewer: label(e.who),
@@ -501,27 +601,28 @@ const shown = (value) => (value === true ? 'true' : value === false ? 'false' : 
  * `to` says otherwise): their audio changed or nothing recorded which audio was approved, both
  * sides of a git merge changed them differently (`clash`), or the merge took the other side's
  * value (`merged`); `stamped`, values written in hljod.yaml by hand that stada.json now records;
- * `clashes`, recordings both sides of a git merge changed differently, set to `false`; and
- * `shared`, the names of each browser whose files carry more than one.
+ * `clashes`, recordings both sides of a git merge changed differently, set to `false`; `shared`,
+ * the names of each browser whose files carry more than one; and `inMerge`, that the changes are
+ * measured from HEAD within a merge, so git's own share of them is counted with --apply's.
  */
 export function report(people, result, rulers = [], extra = {}) {
-  const { reset = [], stamped = [], clashes = [], shared = [] } = extra;
+  const { reset = [], stamped = [], clashes = [], shared = [], inMerge = false } = extra;
   const lines = [];
   lines.push(
     people.length === 0
-      ? 'Engar skrár: aðeins það sem mat.json geymir.'
+      ? 'Engar skrár: aðeins það sem matið í hljod/mat/ geymir.'
       : `${people.length} yfirferð(ir) í skránum: ${people
           .map((p) => `${p.reviewer}${p.dates.length ? ` (${p.dates.join(', ')})` : ''}`)
           .join(', ')}`
   );
   for (const names of shared) {
     lines.push(
-      `Úr sama vafra undir fleiri en einu nafni: ${names.join(', ')}. Hvert nafn er talið sér. Ef vafrinn var ekki hreinsaður á milli, ber síðari skráin líka mat hins fyrra.`
+      `Úr sama vafra undir fleiri en einu nafni: ${names.join(', ')}. Hvert nafn er talið sér, en ef vafrinn dró „rétt“ síðar til baka eða sagði „rangt“ undir öðru nafni fellur það „rétt“ niður. Ef vafrinn var ekki hreinsaður á milli, ber síðari skráin líka mat hins fyrra.`
     );
   }
   const why = (o) =>
     o.unbacked
-      ? 'ekkert samþykki í mat.json á upptökunni eins og hún er'
+      ? 'ekkert samþykki í matinu (hljod/mat/) á upptökunni eins og hún er'
       : o.clash
         ? 'breytt á báða vegu í samruna í git'
         : o.merged
@@ -546,11 +647,16 @@ export function report(people, result, rulers = [], extra = {}) {
   if (revoked.length > 0) {
     lines.push(
       '',
-      `SAMÞYKKTAR SEM HÆTTA AÐ VERA ÞAÐ: ${revoked.length}. Nemendur heyra þær þar til --apply hefur verið keyrt og vefurinn byggður og settur upp.`
+      `SAMÞYKKTAR SEM HÆTTA AÐ VERA ÞAÐ: ${revoked.length}. Nemendur heyra þær þar til ${inMerge ? 'samruninn hefur verið kláraður' : '--apply hefur verið keyrt'} og vefurinn byggður og settur upp.`
     );
     for (const o of revoked) lines.push(`  ${quoted(o.text)}`);
   }
-  lines.push('', `Breytingar sem --apply gerir: ${changes.length}`);
+  lines.push(
+    '',
+    inMerge
+      ? `Breytingar frá því sem nemendur heyra nú (HEAD), samruninn og --apply saman: ${changes.length}`
+      : `Breytingar sem --apply gerir: ${changes.length}`
+  );
   for (const o of changes)
     lines.push(`  ${quoted(o.text)}: ${shown(o.from)} → ${shown(o.to)} — ${why(o)}`);
   if (clashes.length > 0) {
@@ -628,7 +734,7 @@ export function report(people, result, rulers = [], extra = {}) {
     const named = new Map(people.map((p) => [p.who, p.reviewer]));
     lines.push(
       '',
-      `Úrskurða (í mat.json): ${rulers.map((r) => (named.has(r) ? `${named.get(r)} (${r})` : r)).join(', ')}`
+      `Úrskurða (í matinu): ${rulers.map((r) => (named.has(r) ? `${named.get(r)} (${r})` : r)).join(', ')}`
     );
   }
   return `${lines.join('\n')}\n`;

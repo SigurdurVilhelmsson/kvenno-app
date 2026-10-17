@@ -8,7 +8,7 @@ import { parse } from 'yaml';
 
 import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
-import { fileAt, mergeSides } from './git.mjs';
+import { mergeSides, unmerged } from './git.mjs';
 import { readGlossur } from './glossur.mjs';
 import {
   clipName,
@@ -22,6 +22,7 @@ import {
   textsToVoice,
 } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
+import { loadRecord } from './mat.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
@@ -45,7 +46,7 @@ import {
 import { pageData } from './smidur.mjs';
 import { readTenglar } from './tenglar.mjs';
 import { allTexts, readTexti } from './texti.mjs';
-import { approvals, CONFLICT, missingEntries, readLedger } from './yfirferd.mjs';
+import { approvals, CONFLICT } from './yfirferd.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
@@ -77,7 +78,6 @@ const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
 const HEARD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hlustun.json');
 const SPA_HLUSTUN = resolve(ROOT, 'apps/islenskubraut/src/data/hlustun.ts');
 const STATE_FILE = resolve(ROOT, 'content/islenskubraut/hljod/stada.json');
-const LEDGER_FILE = resolve(ROOT, 'content/islenskubraut/hljod/mat.json');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -185,17 +185,34 @@ const glossur = readdirSync(GLOSSUR_DIR)
 // The recordings: every clip on the cards with a file, approved or not, so `?drog` can play the
 // drafts. An approved clip with no file breaks the build; a text with no clip has no button.
 // A git merge can leave conflict markers in the recordings' files, which no parser reads.
-const conflicted = [HLJOD_FILE, STATE_FILE, LEDGER_FILE].filter(
+const conflicted = [HLJOD_FILE, STATE_FILE].filter(
   (f) => existsSync(f) && CONFLICT.test(readFileSync(f, 'utf8'))
 );
 if (conflicted.length > 0) {
   console.error(
     `git left a merge conflict in ${conflicted.map((f) => f.replace(`${ROOT}/`, '')).join(', ')}.`
   );
-  console.error('Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it resolves them.');
+  // pnpm islenskubraut:yfirferd merges them again from the operation's sides, if there are any.
+  console.error(
+    conflicted.some((f) => unmerged(ROOT, f)) || mergeSides(ROOT)
+      ? 'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it resolves them.'
+      : 'No merge, rebase or cherry-pick is open to merge them again from: remove the markers by hand.'
+  );
   process.exit(1);
 }
-const hljod = readHljod(parse(readFileSync(HLJOD_FILE, 'utf8')));
+/** A recordings file read for what it says; one that cannot be read stops the build, naming it. */
+function readOrStop(file, fn) {
+  try {
+    return fn(readFileSync(file, 'utf8'));
+  } catch (e) {
+    console.error(`${file.replace(`${ROOT}/`, '')} cannot be read: ${e.message}`);
+    console.error(
+      'After a git merge, run: pnpm islenskubraut:yfirferd --apply   (no files needed).'
+    );
+    process.exit(1);
+  }
+}
+const hljod = readOrStop(HLJOD_FILE, (text) => readHljod(parse(text)));
 const voiced = textsToVoice(categories);
 const hasClip = (f) => existsSync(resolve(CLIP_DIR, f));
 const heard = existsSync(HEARD_FILE) ? readHeard(JSON.parse(readFileSync(HEARD_FILE, 'utf8'))) : {};
@@ -204,7 +221,9 @@ const version = (f) => clipVersion(readFileSync(resolve(CLIP_DIR, f)));
 const clips = clipsForApp(voiced, hljod, hasClip, version);
 // An approval is for the audio approved: a recording replaced since, or a value changed by hand
 // and not recorded, stops the build until `pnpm islenskubraut:hljod --record` has seen it.
-const state = existsSync(STATE_FILE) ? readState(JSON.parse(readFileSync(STATE_FILE, 'utf8'))) : {};
+const state = existsSync(STATE_FILE)
+  ? readOrStop(STATE_FILE, (text) => readState(JSON.parse(text)))
+  : {};
 const problems = stateProblems(hljod, state, (t) =>
   hasClip(clipName(t)) ? version(clipName(t)) : null
 );
@@ -215,58 +234,28 @@ if (problems.length > 0) {
   console.error('Run: pnpm islenskubraut:hljod --record');
   process.exit(1);
 }
-// And a value is what the teachers' verdicts give it, wherever mat.json holds one on the audio as
-// it is now: a git merge of two runs, or a hand edit, can leave hljod.yaml saying otherwise.
+// And a value is what the teachers' verdicts give it, wherever the record (hljod/mat/) holds one
+// on the audio as it is now: a git merge, or a hand edit, can leave hljod.yaml saying otherwise.
+// The record's files are only ever added, so no merge can take a side of it or lose an entry.
 let ledger;
 try {
-  ledger = readLedger(
-    existsSync(LEDGER_FILE) ? JSON.parse(readFileSync(LEDGER_FILE, 'utf8')) : undefined
-  );
+  ledger = loadRecord();
 } catch (e) {
-  console.error(`content/islenskubraut/hljod/mat.json cannot be read: ${e.message}`);
-  console.error(
-    'After a git merge with a conflict in it, run: pnpm islenskubraut:yfirferd --apply'
-  );
+  console.error(e.message);
   process.exit(1);
-}
-// A record only grows, so after a git merge (one in progress, or the merge commit HEAD is) it
-// holds every entry either side held. One side of it taken whole drops the other side's, a
-// teacher's "wrong" among them, and what is left still backs its approvals: nothing below could
-// tell. Where git cannot read the parents (a shallow clone), there is nothing to compare.
-const sides = mergeSides(ROOT);
-if (sides) {
-  const lost = [sides.ours, sides.theirs].flatMap((c) => {
-    const text = fileAt(ROOT, c, LEDGER_FILE);
-    try {
-      return missingEntries(ledger, readLedger(text === undefined ? undefined : JSON.parse(text)));
-    } catch {
-      return [];
-    }
-  });
-  if (lost.length > 0) {
-    const texts = [...new Set(lost.map((e) => e.text))];
-    console.error(
-      `content/islenskubraut/hljod/mat.json is missing ${lost.length} verdict(s) one side of the merge holds, on ${texts
-        .slice(0, 5)
-        .map((t) => `"${t}"`)
-        .join(', ')}${texts.length > 5 ? ' …' : ''}: one side of it was taken whole.`
-    );
-    console.error(
-      'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it joins both sides again.'
-    );
-    process.exit(1);
-  }
 }
 const drift = approvals(ledger, hljod, {
   texts: voiced,
   version: (t) => (hasClip(clipName(t)) ? version(clipName(t)) : null),
 }).outcomes.filter((o) => o.from !== o.to);
 if (drift.length > 0) {
-  console.error('content/islenskubraut/hljod/hljod.yaml disagrees with the verdicts in mat.json:');
+  console.error(
+    'content/islenskubraut/hljod/hljod.yaml disagrees with the verdicts in the record (hljod/mat/):'
+  );
   for (const o of drift.slice(0, 20)) {
     console.error(
       o.unbacked
-        ? `  "${o.text}": true, with no approval in mat.json of its audio as it is now`
+        ? `  "${o.text}": true, with no approval in the record of its audio as it is now`
         : `  "${o.text}": ${o.from}, the verdicts give ${o.to}`
     );
   }

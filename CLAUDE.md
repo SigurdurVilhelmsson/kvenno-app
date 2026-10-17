@@ -73,10 +73,11 @@ pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC a
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
 pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply adds their
-                          #   verdicts to hljod/mat.json, writes true, false or rangt in hljod.yaml
-                          #   from the whole record and runs islenskubraut:build; --urskurdur "Nafn"
-                          #   makes Nafn's verdicts rule; with no files after a git merge, it works
-                          #   the values out again and resolves a conflict there: see hljod/README.md)
+                          #   verdicts to the record as a new file in hljod/mat/, writes true, false
+                          #   or rangt in hljod.yaml from the whole record and runs islenskubraut:build;
+                          #   --urskurdur "Nafn" makes Nafn's verdicts rule, --afturkalla stops it;
+                          #   with no files after a git merge, it works the values out again and
+                          #   resolves a conflict in hljod.yaml or stada.json: see hljod/README.md)
 pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
                           #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
                           #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
@@ -705,8 +706,8 @@ audio (`syncState` in `hljod.mjs`), written by `pnpm islenskubraut:hljod --recor
 sets its clip back to `false`, and **the build fails while the record is out of date**
 (`stateProblems`), so an approval is always for the audio approved. `scripts/build-all.mjs` runs
 `build.mjs --check` before building the app, so `pnpm build` and `deploy.sh` refuse stale data too.
-**It also fails where `hljod.yaml` disagrees with the teachers' verdicts in `mat.json`** on the
-audio as it is now (below), which a hand edit or a clean git merge of two runs can leave, **on any
+**It also fails where `hljod.yaml` disagrees with the teachers' verdicts in the record
+(`hljod/mat/`)** on the audio as it is now (below), which a hand edit or a git merge can leave, **on any
 `true` the record does not back with an approval of the audio as it is now** (`unbacked` in
 `approvals`: a `true` carried in by a merge, across a remake or by hand cannot be told from a real
 one, so only a verdict approves), and on an approved clip with no file. A text with no
@@ -775,34 +776,39 @@ once the teacher has typed a name, as a downloaded file or copied text. Each ver
 hash of the audio it was given to and when it was given, and a verdict taken back is kept as such.
 `pnpm islenskubraut:yfirferd <files> [--urskurdur "Nafn"] [--apply]`
 (`scripts/islenskubraut/yfirferd-check.mjs`; `yfirferd.mjs` is the pure half) prints the notes
-and every change. **`--apply` merges the files' verdicts into
-`content/islenskubraut/hljod/mat.json`, the committed record of every verdict given**, gives every
+and every change. **`--apply` adds the files' verdicts to the committed record of every verdict
+given, as a new file in `content/islenskubraut/hljod/mat/`** (`mat.mjs`), gives every
 recording with a verdict on its current audio the value all the record's verdicts give it together
 (`true` heard as right and never wrong, `rangt` the other way, `false` otherwise), and runs the
 build, so the generated `hljod.ts` and `hlustun.ts` are committed with it and CI's `--check`
 passes. So the values come from every file ever applied, on any machine; the files, gitignored
-since they carry names, can be deleted once applied and their notes read. The record is
-`verdicts[text][reviewer][audio version]`, so a verdict on one recording of a text survives one on
-the next, and is written through Prettier, so the commit hook leaves it alone. It names nobody: a
-reviewer is a hash of the random id the page gives each browser (`newId` in `store.ts`, reset by
-`Hreinsa allt`) and the name typed, so two teachers who type one name stay two, as do two sharing
-one browser, and a file without an id is refused.
+since they carry names, can be deleted once applied and their notes read. **The record is a
+folder of files that are only ever added**, each named by its time and a hash of what it holds and
+never changed after, so git never has two versions of one to merge: no merge, rebase or
+cherry-pick can take a side of it or lose an entry. That replaced a single `mat.json` on
+2026-10-17, after five review passes found ways a merge of it lost a teacher's "wrong" (taking a
+side, rebases, older entries under one key, rulers). `foldRecord` joins the files, in any order:
+per `[text][reviewer][audio version]` the latest entry counts (at one moment, the one that approves
+least), so a verdict on one recording of a text survives one on the next; a ruling, or one taken
+back (`--afturkalla`), is an entry with a time, the latest counting. Files are written through
+Prettier, so the commit hook leaves them alone. It names nobody: a reviewer is a hash of the random
+id the page gives each browser (`newId` in `store.ts`, reset by `Hreinsa allt`) and the name typed,
+so two teachers who type one name stay two, as do two sharing one browser, and a file without an id
+is refused. Each entry also keeps a hash of the browser alone (`browserOf`), since the page keeps
+one mark per recording per browser: a later withdrawal or "wrong" from it under another name cancels
+its earlier "right", so a teacher who retypes her name can still take a mark back.
 It keeps what was wrong with a recording, never the notes on the cards. The result does not depend
 on file order; an earlier design that compared verdict times with decision times lost a
 late-arriving "wrong" silently, and one that read only the files passed let a machine holding fewer
-files approve what another had heard as wrong. **After a git merge or rebase that touched them,
-run `--apply` with no files, before `git add`**: any of the three git holds unmerged, markers or
-none, is merged again from git's three versions (`mergeThreeWay` per recording for `hljod.yaml` and
-`stada.json`, a clash going to `false`; `mergeLedgers` for the record, its rulers against the base
-so a removal stays, the real merge bases standing in for a criss-cross one, `scripts/islenskubraut/git.mjs`),
-and every value is worked out again; the rest of `hljod.yaml` is as git merged it, ours where it
-conflicted, and the report lists every change from `HEAD`, what students hear now. Within a merge
-(open, or the merge commit `HEAD` is) `--apply` joins both parents' records even where nothing
-conflicts, and the build refuses a `mat.json` missing an entry either parent holds
-(`missingEntries`): one side of the record taken whole drops a teacher's "wrong" and still backs
-the approval left, which no other check can see. Taking one side whole, as the first version did,
-lost one side's new recordings and approvals, revived a removed ruler, and could approve a remade
-recording unheard.
+files approve what another had heard as wrong. **After a git merge, rebase or cherry-pick that
+touched them, run `--apply` with no files, before `git add`**: `hljod.yaml` or `stada.json` held
+unmerged, markers or none, or added or committed with markers while the operation's sides can be
+read (`mergeSides` in `scripts/islenskubraut/git.mjs`), is merged again (`mergeThreeWay` per
+recording, a clash going to `false`, the real merge bases standing in for a criss-cross one), and
+every value is worked out again from the record; the rest of `hljod.yaml` is as git merged it, ours
+where it conflicted, and the report lists every change from `HEAD`, what students hear now. Taking a
+side of either file whole can lose a hand-written `rangt` but cannot let a recording a teacher heard
+as wrong play: the record holds every verdict, and the build refuses any value it does not give.
 A ruler's verdict (`--urskurdur`, a name on one browser's files, in any case, and no other's)
 settles a recording, every verdict it overrules is printed, and **the record keeps who rules**, so
 a ruling outlasts the run that made it; of several rulings the latest decides. Per recording, a
@@ -810,10 +816,12 @@ reviewer's latest verdict counts, by their browser's clock, and editing what is 
 time. A page left open across a deploy that remade a recording would stamp the old version: the
 listening page hashes what a clip's address holds when it plays (`versionOf` in `Hlusta.tsx`, the
 same hash as `clipVersion`) and takes no verdict or note on one that differs, nor over a verdict
-this browser gave other audio until the clip has been played here (`blocked` in
-`YfirferdHljod.tsx`), so a stale tab cannot overwrite a newer one. The report lists, uncounted, a
+this browser gave other audio since the clip last played here (`blocked` in `YfirferdHljod.tsx`),
+so a stale tab cannot overwrite a newer one. A play locks its row until its check is back; only the
+latest play's check counts (`Hlusta` numbers them), and one that fails leaves what an earlier one
+found. The lock is `aria-disabled`, so a button that locks under the teacher's finger keeps focus. The report lists, uncounted, a
 verdict on other audio given after the current one was judged, unless a later ruling decides it. Without `--apply` the command says
-which files `--apply` would write, `mat.json` included. A download's name carries its time and the
+which files `--apply` would write, a new file of the record included. A download's name carries its time and the
 start of the browser's id, so none share one, and the copied text (`Afrita sem texta`) always
 carries the file's data between marker lines (`DATA_START` in `store.ts` and `yfirferd.mjs`), as
 base64 in lines of 64, which an email's wrapping, `> ` quoting or non-breaking spaces leave

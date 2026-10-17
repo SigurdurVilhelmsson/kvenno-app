@@ -349,7 +349,7 @@ describe('the listening page', () => {
     const rangt = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
       name: 'Rangt',
     });
-    expect(rangt).toHaveProperty('disabled', true);
+    expect(rangt).toHaveProperty('ariaDisabled', 'true');
     fireEvent.click(rangt);
     expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBeNull();
     // Rows whose audio is what the page knows are untouched.
@@ -357,7 +357,7 @@ describe('the listening page', () => {
       within(screen.getByRole('group', { name: 'Mat: feldur' })).getByRole('button', {
         name: 'Rétt',
       })
-    ).toHaveProperty('disabled', false);
+    ).toHaveProperty('ariaDisabled', null);
     play.mockRestore();
     fetched.mockRestore();
   });
@@ -398,7 +398,7 @@ describe('the listening page', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
     await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
     const box = screen.getByLabelText('Hvað er rangt? „les“');
-    expect(box).toHaveProperty('disabled', true);
+    expect(box).toHaveProperty('ariaDisabled', 'true');
     fireEvent.change(box, { target: { value: 'nýja upptakan' } });
     expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(before);
     play.mockRestore();
@@ -421,7 +421,7 @@ describe('the listening page', () => {
       name: 'Rangt',
     });
     // Not played here yet, so this page cannot tell whose audio is the server's.
-    expect(rangt).toHaveProperty('disabled', true);
+    expect(rangt).toHaveProperty('ariaDisabled', 'true');
     fireEvent.click(rangt);
     expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(newer);
     // Played, and the server holds what this page knows: then it may be judged again here.
@@ -430,7 +430,7 @@ describe('the listening page', () => {
       .spyOn(globalThis, 'fetch')
       .mockImplementation(async () => new Response(LES_BYTES));
     fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
-    await vi.waitFor(() => expect(rangt).toHaveProperty('disabled', false));
+    await vi.waitFor(() => expect(rangt).toHaveProperty('ariaDisabled', null));
     expect(screen.queryByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeNull();
     fireEvent.click(rangt);
     expect(
@@ -452,7 +452,7 @@ describe('the listening page', () => {
     // Played here while the server still held what this page knows.
     fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
     await vi.waitFor(() => expect(fetched).toHaveBeenCalled());
-    await vi.waitFor(() => expect(rett).toHaveProperty('disabled', false));
+    await vi.waitFor(() => expect(rett).toHaveProperty('ariaDisabled', null));
     // Then the recording is made again, and a newer tab judges the new audio.
     const later = new Date(Date.now() + 60_000).toISOString();
     const newer = JSON.stringify({
@@ -465,7 +465,7 @@ describe('the listening page', () => {
       window.localStorage.setItem('islenskubraut-yfirferd', newer);
       window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
     });
-    expect(rett).toHaveProperty('disabled', true);
+    expect(rett).toHaveProperty('ariaDisabled', 'true');
     fireEvent.click(rett);
     expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBe(newer);
     play.mockRestore();
@@ -482,15 +482,96 @@ describe('the listening page', () => {
     const rett = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
       name: 'Rétt',
     });
-    expect(rett).toHaveProperty('disabled', false);
+    expect(rett).toHaveProperty('ariaDisabled', null);
     fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
     // The server may have sent other audio; until its hash is in, nothing is judged here.
-    expect(rett).toHaveProperty('disabled', true);
+    expect(rett).toHaveProperty('ariaDisabled', 'true');
     fireEvent.click(rett);
     expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBeNull();
     await act(async () => serve(new Response(new Uint8Array([1, 2, 3]))));
     expect(await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
-    expect(rett).toHaveProperty('disabled', true);
+    expect(rett).toHaveProperty('ariaDisabled', 'true');
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('keeps a row locked that a play found remade, whatever a later check that fails says', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    // The first check finds other audio; the second cannot reach the server.
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementationOnce(async () => new Response(new Uint8Array([1, 2, 3])))
+      .mockImplementationOnce(async () => {
+        throw new TypeError('network');
+      });
+    renderAt('/yfirferd/hljod');
+    const rett = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rétt',
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await vi.waitFor(() => expect(fetched).toHaveBeenCalledTimes(2));
+    await act(async () => {});
+    expect(screen.getByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
+    expect(rett).toHaveProperty('ariaDisabled', 'true');
+    fireEvent.click(rett);
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBeNull();
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('takes the latest play’s check, not one that comes back after it', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    let late: (r: Response) => void = () => {};
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      // The first play's check is slow and finds the page's audio; the second's finds other audio.
+      .mockImplementationOnce(() => new Promise<Response>((done) => (late = done)))
+      .mockImplementationOnce(async () => new Response(new Uint8Array([1, 2, 3])));
+    renderAt('/yfirferd/hljod');
+    const rett = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rétt',
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
+    await act(async () => late(new Response(LES_BYTES)));
+    expect(screen.getByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
+    expect(rett).toHaveProperty('ariaDisabled', 'true');
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('keeps focus on a verdict button another tab locks, and says why a row is locked', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(LES_BYTES));
+    renderAt('/yfirferd/hljod');
+    const rett = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rétt',
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await vi.waitFor(() => expect(rett).toHaveProperty('ariaDisabled', null));
+    rett.focus();
+    // Another tab takes back a mark on newer audio.
+    const later = new Date(Date.now() + 60_000).toISOString();
+    act(() => {
+      window.localStorage.setItem(
+        'islenskubraut-yfirferd',
+        JSON.stringify({
+          reviewer: '',
+          id: 'x',
+          notes: {},
+          clips: { les: { verdict: null, v: 'vNYTT', at: later } },
+        })
+      );
+      window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
+    });
+    expect(rett).toHaveProperty('ariaDisabled', 'true');
+    expect(document.activeElement).toBe(rett);
+    expect(screen.getByText(/gerð aftur síðan hún var metin í þessum vafra/)).toBeDefined();
     play.mockRestore();
     fetched.mockRestore();
   });

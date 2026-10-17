@@ -35,14 +35,30 @@ export const mergeBases = (root, a, b) =>
   (git(root, ['merge-base', '--all', a, b]) ?? '').split('\n').filter(Boolean);
 
 /**
- * The two sides of the merge in hand: one in progress (`HEAD` and `MERGE_HEAD`), or else the merge
- * commit `HEAD` is, by its first two parents. Undefined outside a merge, or where git cannot read
- * a parent (a shallow clone).
+ * The two sides of the operation in hand, and the commits it started from: a merge in progress
+ * (`HEAD` and `MERGE_HEAD`, from their merge bases), a cherry-pick or a rebase stopped on a
+ * conflict (`HEAD` and the commit being replayed, from that commit's parent), or else the merge
+ * commit `HEAD` is, by its first two parents. `inProgress` says whether one is open. Undefined
+ * outside all of them, or where git cannot read a commit (a shallow clone).
  */
 export function mergeSides(root) {
+  const head = commitOf(root, 'HEAD');
   const merging = commitOf(root, 'MERGE_HEAD');
-  const [ours, theirs] = merging
-    ? [commitOf(root, 'HEAD'), merging]
-    : [commitOf(root, 'HEAD^1'), commitOf(root, 'HEAD^2')];
-  return ours && theirs ? { ours, theirs, inProgress: Boolean(merging) } : undefined;
+  if (merging) {
+    return head
+      ? { ours: head, theirs: merging, bases: mergeBases(root, head, merging), inProgress: true }
+      : undefined;
+  }
+  for (const name of ['CHERRY_PICK_HEAD', 'REBASE_HEAD']) {
+    const replayed = commitOf(root, name);
+    if (!replayed) continue;
+    const parent = commitOf(root, `${name}^1`);
+    return head
+      ? { ours: head, theirs: replayed, bases: parent ? [parent] : [], inProgress: true }
+      : undefined;
+  }
+  const [ours, theirs] = [commitOf(root, 'HEAD^1'), commitOf(root, 'HEAD^2')];
+  return ours && theirs
+    ? { ours, theirs, bases: mergeBases(root, ours, theirs), inProgress: false }
+    : undefined;
 }

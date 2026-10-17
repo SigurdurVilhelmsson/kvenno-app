@@ -23,7 +23,7 @@ Tiro's public speech service, which the research first named, had gone by 2026-1
       les: rangt        # listened to, and wrong: make it again
 
 **A student hears only the ones marked `true`, and a recording is `true` only with an approval of
-its audio as it is now in `mat.json`** (below), given on the listening page. Add `?drog` to a card
+its audio as it is now in the record, `mat/`** (below), given on the listening page. Add `?drog` to a card
 page's address, for example
 `/islenskubraut/spjald/dyr?drog`, to hear the rest, `rangt` ones included. Whenever any recording
 plays, the card page credits the voice, as its licence requires.
@@ -37,13 +37,13 @@ audio. So does a `true` with no record at all. The build, `pnpm build` and so `d
 refuses to run until `--record` has seen every change, so a replaced recording can never play to
 students unheard.
 
-**The build also refuses a value the teachers' verdicts do not give,** wherever `mat.json` (below)
-holds a verdict on the recording as it is now, and **any `true` the record does not back**. A hand
-edit or a git merge of two runs could otherwise approve a recording a teacher heard as wrong, or
-one made again since anybody heard it, and nothing in the files could tell that `true` from a real
-one. What it cannot see is a verdict that is no longer in the record, which is why one side of
-`mat.json` must never be taken whole in a merge (below). `pnpm islenskubraut:yfirferd --apply`, with no files,
-works every such value out again, and sets an approval nobody gave the audio back to `false`.
+**The build also refuses a value the teachers' verdicts do not give,** wherever the record
+(`mat/`, below) holds a verdict on the recording as it is now, and **any `true` the record does not
+back**. A hand edit, or a git merge where one side of `hljod.yaml` was taken, could otherwise
+approve a recording a teacher heard as wrong, or one made again since anybody heard it, and nothing
+in the files could tell that `true` from a real one. `pnpm islenskubraut:yfirferd --apply`, with no
+files, works every such value out again, and sets an approval nobody gave the audio back to
+`false`.
 
 **After editing `hljod.yaml` by hand, run `pnpm islenskubraut:hljod --record`** before building. A
 hand edit to `false` or `rangt` holds for a recording nobody has given a verdict on as it is now;
@@ -68,16 +68,19 @@ gitignored (they carry teachers' names). Then:
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*                # read what they say
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-* --apply        # write the verdicts
 
-Without `--apply` it ends by saying what `--apply` would write. Until it no longer names `mat.json`,
-the files' verdicts are not in the record, so keep the files.
+Without `--apply` it ends by saying what `--apply` would write. Until it no longer names a new file
+of the record, the files' verdicts are not in it, so keep the files.
 
-**`--apply` adds the files' verdicts to `mat.json` here, the record of every verdict given,** works
-each recording's value out from the whole record, and runs `pnpm islenskubraut:build`. Commit
-everything git then shows changed: `mat.json`, `hljod.yaml`, `stada.json` and the app's generated
-`hljod.ts` and `hlustun.ts`. After that the files can be deleted once their notes on the cards have
-been read, since the record keeps only the verdicts; a file applied twice changes nothing. The
-record names nobody: each reviewer in it is a hash of their browser's id, and of what they wrote it
-keeps only what was wrong with a recording, not the notes on the cards. So the values come from
+**`--apply` adds the files' verdicts to the record of every verdict given, as a new file in `mat/`
+here,** works each recording's value out from the whole record, and runs
+`pnpm islenskubraut:build`. Commit everything git then shows changed: the new file in `mat/`,
+`hljod.yaml`, `stada.json` and the app's generated `hljod.ts` and `hlustun.ts`. After that the files
+can be deleted once their notes on the cards have been read, since the record keeps only the
+verdicts; a file applied twice adds nothing. **The record is a folder of files that are only ever
+added** (`mat/README.md`): never edit or delete one. So git never has two versions of one to merge,
+and no merge, rebase or cherry-pick can lose a verdict. The record names nobody: each reviewer in it
+is a hash of their browser's id and the name typed there, and of what they wrote it keeps only what
+was wrong with a recording, not the notes on the cards. So the values come from
 every file ever applied, on any machine, not only from the ones passed this time:
 
 - `true` if someone heard it as right and nobody as wrong;
@@ -102,8 +105,12 @@ from a later file still stands from an earlier one, which is what happens after 
 **A reviewer is a browser and the name typed on it:** the page gives each browser a random id, put
 in every file it sends, so two teachers who type the same name are still two, and two who share a
 browser, each under her own name, are two as well, so neither's verdicts replace the other's. The
-report says when one browser's files carry two names; unless the browser was cleared between them,
-the later file carries the earlier teacher's marks too. `Hreinsa allt` gives the browser a new id,
+report says when one browser's files, or the record's verdicts from it, carry two names; unless the
+browser was cleared between them, the later file carries the earlier teacher's marks too. Since the
+page keeps one mark per recording per browser, a later withdrawal or `Rangt` from the browser under
+one name cancels its earlier `Rétt` under another, so a teacher who retypes her name can still take
+a mark back; a later `Rétt` under another name does not cancel a `Rangt`, since that may be a
+colleague. `Hreinsa allt` gives the browser a new id,
 since the next person to use it is someone else. So a teacher who reviews on two devices, types her
 name another way, or clears the review and starts again, is two reviewers. That only matters if they change their
 mind: the earlier verdict still stands, and the recording is heard both ways until it is settled.
@@ -113,9 +120,10 @@ asks for a recording by the version of its audio (`?v=` in the address, so the b
 afresh rather than replaying a copy kept from before, which Firefox does for a while after a
 reload). When a recording plays, the listening page also fetches that address and hashes what the
 server holds there; where that is not the version it knows, it takes no verdict or note until the
-page is reloaded. Where this browser holds a verdict on audio the page does not know, from another
-tab, the clip must be played here before it is judged again, so a stale tab cannot overwrite a
-newer verdict. Where the browser cannot check (an old browser, or no https), a verdict on other
+page is reloaded, nor while that check is still out; only the latest play's check counts, and one
+that fails leaves what an earlier one found standing. Where this browser holds a verdict on audio the page does not know, from another
+tab, given since the clip last played here, the clip must be played here again before it is judged,
+so a stale tab cannot overwrite a newer verdict. Where the browser cannot check (an old browser, or no https), a verdict on other
 audio given after someone had judged the current one is listed in the report without counting.
 So is one given to audio since abandoned, by a revert say: the record cannot tell the two apart.
 Listen to that recording yourself, and rule; a ruling hides only such verdicts given before it.
@@ -132,27 +140,31 @@ rulings on a recording the latest decides, so a ruler who changes their mind, on
 after `Hreinsa allt`, rules again: pass the new browser's file alone with `--urskurdur`, since a
 name the files of two browsers carry is refused, even when one of them already rules (the other
 could be a colleague of the same name). Only rulings given at the same moment that disagree
-leave a recording `false`. The report ends with who rules, by the hash `mat.json` keeps; to stop
-someone ruling, delete their hash from `rulers` there and run `--apply`.
+leave a recording `false`. The report ends with who rules, by the hash the record keeps. To stop
+someone ruling, take the ruling back by the name on their files or by that hash:
 
-**After a git merge or rebase that touched these files, run `pnpm islenskubraut:yfirferd --apply`**
-with no files, before `git add`. While git holds `mat.json`, `hljod.yaml` or `stada.json` unmerged,
-conflict markers or none, it merges each again from git's three versions of it, recording by
-recording: the record takes every verdict from both sides, a ruler one side removed stays removed
-(in a criss-cross history too, where it reads the real merge bases), and a recording only one side
-changed takes that side. One both sides changed differently goes back to `false`, and the report
-counts it. The rest of `hljod.yaml` (the voice, comments) is as git merged it, ours where it
-conflicted. Every value the record decides is then worked out again, and the report lists every
-recording that changes from this side (`HEAD`), which is what students hear now, whichever files
-git merged cleanly. The build regenerates the app's data, a conflicted `hljod.ts` or `hlustun.ts`
-included. Then `git add` the files and commit, or `git rebase --continue`.
+    pnpm islenskubraut:yfirferd --afturkalla 2c6304514a84 --apply
 
-**Never take one side of `mat.json` whole** (`git checkout --theirs`, or a merge tool's "use
-theirs"): that drops the other side's verdicts, a teacher's `rangt` among them, and what is left
-still backs its approvals, so nothing else could tell. While the merge is open, or while its commit
-is `HEAD`, the build refuses a `mat.json` missing anything either side holds, and `--apply` with no
-files puts it back, since it joins both sides' records whatever the working file holds. Once
-another commit is on top of the merge, nothing checks it.
+A ruling, or one taken back, is a file of the record with its time, and the latest counts on every
+machine, so a ruling taken back on one branch and given again on another settles by which came
+later.
+
+**After a git merge, rebase or cherry-pick that touched these files, run
+`pnpm islenskubraut:yfirferd --apply`** with no files, before `git add`. The record's files never
+conflict. While git holds `hljod.yaml` or `stada.json` unmerged, conflict markers or none, it merges
+each again from git's three versions of it, recording by recording, and a recording only one side
+changed takes that side (in a criss-cross history too, where it reads the real merge bases). One
+both sides changed differently goes back to `false`, and the report counts it. A file added or
+committed with its markers still in it is merged again from the merge's two sides, and a merge
+tool's "accept both", which leaves a recording listed twice, gives way to this side's version. The
+rest of `hljod.yaml` (the voice, comments) is as git merged it, ours where it conflicted. Every
+value the record decides is then worked out again, and the report lists every recording that
+changes from this side (`HEAD`), which is what students hear now, whichever files git merged
+cleanly. The build regenerates the app's data, a conflicted `hljod.ts` or `hlustun.ts` included.
+Then `git add` the files and commit, or `git rebase --continue`. Taking one side of `hljod.yaml` or `stada.json` whole instead cannot let a
+recording a teacher heard as wrong play: the record holds every verdict either side had, and the
+build refuses any value it does not give. It can lose a `rangt` written by hand on the other side,
+which is then only `false`.
 
 To listen without the deployed site, run `pnpm dev:islenskubraut` and open the listening page
 there: marking, sending yourself the file and applying it work as above. Or:

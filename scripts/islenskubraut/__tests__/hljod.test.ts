@@ -252,10 +252,10 @@ describe('the real manifest', () => {
 
   // A text edited on a card has no clip until the voice says it again, which needs the Python
   // setup on a teacher's machine (README.md): it just has no play button meanwhile, so neither
-  // that nor the old text's clip, now playing nowhere, fails here. A listed clip with no file
-  // does, since an approved one breaks the build.
-  it('gives every clip it lists a file', () => {
-    expect(compare(texts, manifest, hasFile).noFile).toEqual([]);
+  // that nor the old text's clip, now playing nowhere, fails here. A clip for a text on the cards
+  // listed with no file does, since an approved one breaks the build.
+  it('gives every clip it lists for a text on the cards a file', () => {
+    expect(compare(texts, manifest, hasFile).noFile.filter((t) => texts.has(t))).toEqual([]);
   });
 
   it('is recorded in stada.json, audio and value, so no approval is for audio since replaced', () => {

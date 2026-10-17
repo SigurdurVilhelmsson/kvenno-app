@@ -21,29 +21,30 @@ const canCheck = () => globalThis.crypto?.subtle !== undefined;
 
 /**
  * What playing a clip here showed: the audio the server holds at its address and when that was
- * learnt, or `null` while it is being checked.
+ * learnt (`v`, `at`), if a check has ever said, and whether a play's check is still out.
  */
-type Heard = { v: string; at: string } | null;
+type Heard = { v?: string; at?: string; checking?: boolean };
 
 /**
  * Whether a verdict or note given here would name audio other than the server's. Either a play's
- * check is not back yet (`heard` null), or the server has audio this page does not know, or this
- * browser holds a verdict on audio this page does not know, from another tab, given since the clip
- * last played here (or before it ever did): the server may have changed, so the clip must be played
- * here again first. Both times are this browser's, so comparing them is sound.
+ * check is not back yet, or the server has audio this page does not know (a check that failed
+ * since leaves that standing), or this browser holds a verdict on audio this page does not know,
+ * from another tab, given since the clip last played here (or before it ever did): the server may
+ * have changed, so the clip must be played here again first. Both times are this browser's, so
+ * comparing them is sound.
  */
 function blocked(
   clip: HlustunClip,
   heard: Heard | undefined,
   stored: { v: string; at: string } | undefined
 ) {
-  if (heard === null) return true;
-  if (heard !== undefined && heard.v !== clip.v) return true;
+  if (heard?.checking) return true;
+  if (heard?.v !== undefined && heard.v !== clip.v) return true;
   return (
     stored !== undefined &&
     stored.v !== clip.v &&
     canCheck() &&
-    (heard === undefined || stored.at > heard.at)
+    (heard?.at === undefined || stored.at > heard.at)
   );
 }
 
@@ -222,14 +223,17 @@ export function YfirferdHljod() {
               review={review}
               heard={heard[clip.text]}
               onHeard={(v) =>
-                setHeard((h) => {
-                  // The browser could not tell: as if it had not played here.
-                  if (v === undefined) {
-                    const { [clip.text]: _gone, ...rest } = h;
-                    return rest;
-                  }
-                  return { ...h, [clip.text]: v === null ? null : { v, at: now() } };
-                })
+                setHeard((h) => ({
+                  ...h,
+                  // A check under way; then what it found, or, where the browser could not tell,
+                  // what an earlier check found stands.
+                  [clip.text]:
+                    v === null
+                      ? { ...h[clip.text], checking: true }
+                      : v === undefined
+                        ? { ...h[clip.text], checking: false }
+                        : { v, at: now(), checking: false },
+                }))
               }
               setVerdict={setVerdict}
               setNote={(note) =>
@@ -285,11 +289,12 @@ function ClipRow({
 }) {
   const mine = current(review, clip);
   // Made again since this page was opened: what played is not what a verdict here would name.
-  const changed = heard != null && heard.v !== clip.v;
+  const changed = heard?.v !== undefined && heard.v !== clip.v;
   // Or not yet known: a verdict stored on other audio, and the clip not played here yet.
   const locked = blocked(clip, heard, review.clips[clip.text]);
   const stored = review.clips[clip.text];
-  const remade = stored !== undefined && stored.verdict !== null && stored.v !== clip.v;
+  // A mark in this browser on audio since made again, a withdrawn one too: play it here first.
+  const remade = !changed && stored !== undefined && stored.v !== clip.v && (locked || !canCheck());
   // Where the clip is on the card being reviewed, when one is chosen.
   const place = clip.places.find((p) => p.category === flokkur) ?? clip.places[0];
   const noteRef = useRef<HTMLInputElement>(null);
@@ -307,13 +312,16 @@ function ClipRow({
       <button
         type="button"
         aria-pressed={pressed}
-        disabled={locked}
+        // Not `disabled`: a button that turns disabled under the teacher's finger, when another
+        // tab writes, would drop focus to the page. setVerdict refuses it meanwhile.
+        aria-disabled={locked || undefined}
         onClick={() => {
+          if (locked) return;
           setVerdict(clip, pressed ? null : verdict);
           // After "Rangt", straight to saying what is wrong.
           if (!pressed && verdict === 'wrong') setFocusNote(true);
         }}
-        className={`px-3 py-1 rounded-lg text-sm font-semibold border-2 pointer-coarse:min-h-11 disabled:opacity-50 ${
+        className={`px-3 py-1 rounded-lg text-sm font-semibold border-2 pointer-coarse:min-h-11 aria-disabled:opacity-50 ${
           pressed ? 'bg-warm-900 border-warm-900 text-white' : 'border-warm-300 text-warm-900'
         }`}
       >
@@ -355,8 +363,8 @@ function ClipRow({
       )}
       {remade && (
         <p className="mt-1 text-sm text-warm-800">
-          Upptakan hefur verið gerð aftur síðan þú mast hana. Hlustaðu á hana áður en þú metur hana
-          aftur.
+          Upptakan hefur verið gerð aftur síðan hún var metin í þessum vafra. Hlustaðu á hana áður
+          en þú metur hana aftur.
         </p>
       )}
       {mine?.verdict === 'wrong' && (
@@ -366,7 +374,8 @@ function ClipRow({
             ref={noteRef}
             type="text"
             value={mine.note ?? ''}
-            disabled={locked}
+            readOnly={locked}
+            aria-disabled={locked || undefined}
             onChange={(e) => setNote(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-warm-300 bg-surface-page px-3 py-2"
           />

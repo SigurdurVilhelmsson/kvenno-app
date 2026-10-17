@@ -11,7 +11,7 @@
  *
  * Every run writes `islenskubraut-hljod-yfirlit.html` (gitignored), the page a person listens
  * from. Exits 1 when an approved clip has no file, stada.json is out of date or a clip is true
- * with no teacher's approval of its audio in mat.json (the build refuses all three), and 2 when a
+ * with no teacher's approval of its audio in the record, hljod/mat/ (the build refuses all three), and 2 when a
  * text on the cards has no clip yet, which is not an error for the build: that text simply has no
  * play button.
  */
@@ -33,7 +33,8 @@ import {
   textsToVoice,
 } from './hljod.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
-import { approvals, readLedger } from './yfirferd.mjs';
+import { loadRecord } from './mat.mjs';
+import { approvals } from './yfirferd.mjs';
 
 const ROOT = resolve(CONTENT_DIR, '../..');
 const MANIFEST = resolve(CONTENT_DIR, 'hljod/hljod.yaml');
@@ -44,8 +45,6 @@ const HEARD_FILE = resolve(CONTENT_DIR, 'hljod/hlustun.json');
 const SHEET_FILE = resolve(ROOT, 'islenskubraut-hljod-yfirlit.html');
 // The tools' record of each clip's audio and decision; written here and by `--apply`, not by hand.
 const STATE_FILE = resolve(CONTENT_DIR, 'hljod/stada.json');
-// The teachers' verdicts (`yfirferd.mjs`): what a true in hljod.yaml must stand on.
-const LEDGER_FILE = resolve(CONTENT_DIR, 'hljod/mat.json');
 
 const hasFile = (name) => existsSync(resolve(CLIP_DIR, name));
 const versions = new Map();
@@ -94,6 +93,13 @@ if (process.argv.includes('--record')) {
 }
 
 const { missing, stale, noFile } = compare(texts, manifest, hasFile);
+// An approval is a teacher's verdict in the record (hljod/mat/) on the audio as it is now; a true
+// written in hljod.yaml without one is refused by the build, so it is not counted as approved.
+const unbacked = new Set(
+  approvals(loadRecord(), manifest, { texts, version })
+    .outcomes.filter((o) => o.unbacked)
+    .map((o) => o.text)
+);
 
 const escape = (s) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 const heard = existsSync(HEARD_FILE) ? JSON.parse(readFileSync(HEARD_FILE, 'utf8')) : {};
@@ -122,7 +128,9 @@ const rows = ordered.map(([text, places]) => {
   const state = !manifest.clips.has(text)
     ? 'vantar'
     : manifest.clips.get(text)
-      ? 'samþykkt'
+      ? unbacked.has(text)
+        ? 'true án samþykkis'
+        : 'samþykkt'
       : manifest.rejected.has(text)
         ? 'rangt'
         : 'drög';
@@ -154,16 +162,7 @@ ${rows.join('\n')}
 </table>\n`
 );
 
-// An approval is a teacher's verdict in mat.json on the audio as it is now; a true written in
-// hljod.yaml without one is refused by the build, so it is not counted as approved here.
-const unbacked = approvals(
-  readLedger(existsSync(LEDGER_FILE) ? JSON.parse(readFileSync(LEDGER_FILE, 'utf8')) : undefined),
-  manifest,
-  { texts, version }
-)
-  .outcomes.filter((o) => o.unbacked)
-  .map((o) => o.text);
-const approved = [...manifest.clips.values()].filter(Boolean).length - unbacked.length;
+const approved = [...manifest.clips.values()].filter(Boolean).length - unbacked.size;
 console.log(
   `${texts.size} texts on the cards: ${texts.size - missing.length} with a clip listed, ${approved} approved, ${missing.length} without a clip`
 );
@@ -185,16 +184,17 @@ if (problems.length > 0) {
   console.error(`\nstada.json is out of date; run pnpm islenskubraut:hljod --record:`);
   for (const p of problems) console.error(`  ${p}`);
 }
-const brokenApproved = noFile.filter((t) => manifest.clips.get(t));
+// One whose text has left the cards plays nowhere, and the build skips it.
+const brokenApproved = noFile.filter((t) => manifest.clips.get(t) && texts.has(t));
 if (brokenApproved.length > 0) {
   console.error(`\n${brokenApproved.length} approved clip(s) with no file:`);
   for (const t of brokenApproved) console.error(`  ${t} (${clipName(t)})`);
 }
-if (unbacked.length > 0) {
+if (unbacked.size > 0) {
   console.error(
-    `\n${unbacked.length} clip(s) true in hljod.yaml with no approval in mat.json of their audio as it is now; the build refuses them. Approve on /islenskubraut/yfirferd/hljod and run pnpm islenskubraut:yfirferd --apply, or set them back to false:`
+    `\n${unbacked.size} clip(s) true in hljod.yaml with no approval in the record (hljod/mat/) of their audio as it is now; the build refuses them. Approve on /islenskubraut/yfirferd/hljod and run pnpm islenskubraut:yfirferd --apply, or set them back to false:`
   );
   for (const t of unbacked) console.error(`  ${t}`);
 }
-if (brokenApproved.length > 0 || problems.length > 0 || unbacked.length > 0) process.exit(1);
+if (brokenApproved.length > 0 || problems.length > 0 || unbacked.size > 0) process.exit(1);
 if (missing.length > 0) process.exit(2);

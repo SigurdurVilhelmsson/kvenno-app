@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useRef } from 'react';
 
 import { HLJOD_VOICE, hljod } from '../data/hljod';
 
@@ -64,7 +64,7 @@ export async function versionOf(src: string): Promise<string | undefined> {
  * so the card looks as printed until a person has approved one. `onHeard`, on the listening
  * page, is told `null` as a play starts, then the version the server holds at the clip's address
  * (which a page left open since before a recording was made again knows by an older one), or
- * `undefined` where the browser cannot tell.
+ * `undefined` where the browser cannot tell: of several plays, only the latest one's answer.
  */
 export function Hlusta({
   text,
@@ -76,6 +76,9 @@ export function Hlusta({
   onHeard?: (version: string | null | undefined) => void;
 }) {
   const src = useClip(text);
+  // Each play is numbered, and only the latest one's check is reported: one that comes back late
+  // must not overwrite what a later play found.
+  const plays = useRef(0);
   if (!src) return null;
   return (
     <button
@@ -84,8 +87,11 @@ export function Hlusta({
         play(src);
         // Checking first, so nothing is judged on the page's word for the audio meanwhile.
         if (onHeard) {
+          const n = (plays.current += 1);
           onHeard(null);
-          void versionOf(src).then((v) => onHeard(v));
+          void versionOf(src).then((v) => {
+            if (n === plays.current) onHeard(v);
+          });
         }
       }}
       aria-label={`Hlusta: ${text}`}
