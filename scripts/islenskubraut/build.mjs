@@ -8,7 +8,7 @@ import { parse } from 'yaml';
 
 import { readEgget } from './egget.mjs';
 import { allGames, readGiskaleikur } from './giskaleikur.mjs';
-import { mergeSides, unmerged } from './git.mjs';
+import { canMergeAgain, mergeSides, unmerged } from './git.mjs';
 import { readGlossur } from './glossur.mjs';
 import {
   clipName,
@@ -22,7 +22,7 @@ import {
   textsToVoice,
 } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
-import { loadRecord } from './mat.mjs';
+import { loadRecord, missingMessage, missingRecordFiles } from './mat.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
@@ -192,11 +192,12 @@ if (conflicted.length > 0) {
   console.error(
     `git left a merge conflict in ${conflicted.map((f) => f.replace(`${ROOT}/`, '')).join(', ')}.`
   );
-  // pnpm islenskubraut:yfirferd merges them again from the operation's sides, if there are any.
+  // pnpm islenskubraut:yfirferd merges them again where git can say what they came from.
+  const sides = mergeSides(ROOT);
   console.error(
-    conflicted.some((f) => unmerged(ROOT, f)) || mergeSides(ROOT)
+    conflicted.every((f) => canMergeAgain(ROOT, f, sides, CONFLICT))
       ? 'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it resolves them.'
-      : 'No merge, rebase or cherry-pick is open to merge them again from: remove the markers by hand.'
+      : 'pnpm islenskubraut:yfirferd cannot merge them again from what git holds now: run it to see why, or remove the markers by hand.'
   );
   process.exit(1);
 }
@@ -207,7 +208,9 @@ function readOrStop(file, fn) {
   } catch (e) {
     console.error(`${file.replace(`${ROOT}/`, '')} cannot be read: ${e.message}`);
     console.error(
-      'After a git merge, run: pnpm islenskubraut:yfirferd --apply   (no files needed).'
+      mergeSides(ROOT)?.inProgress || unmerged(ROOT, file)
+        ? 'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it merges it again.'
+        : 'Correct it by hand.'
     );
     process.exit(1);
   }
@@ -237,6 +240,13 @@ if (problems.length > 0) {
 // And a value is what the teachers' verdicts give it, wherever the record (hljod/mat/) holds one
 // on the audio as it is now: a git merge, or a hand edit, can leave hljod.yaml saying otherwise.
 // The record's files are only ever added, so no merge can take a side of it or lose an entry.
+// A revert, a merge -s ours or a restore can still take a file of the record out, and with it a
+// teacher's "wrong": then nothing is built until it is back.
+const missing = missingRecordFiles();
+if (missing.length > 0) {
+  console.error(missingMessage(missing));
+  process.exit(1);
+}
 let ledger;
 try {
   ledger = loadRecord();

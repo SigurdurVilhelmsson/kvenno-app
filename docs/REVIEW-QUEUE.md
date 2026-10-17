@@ -693,7 +693,12 @@ held an older verdict under the same key, in a rebase or cherry-pick, and its ru
 failed or late audio check unlocked a row already found remade; and that a retyped name could not
 take a mark back. The record is now a folder of files only ever added, so git never merges it;
 only the latest play's check counts and a failed one changes nothing; and a browser's later
-withdrawal cancels its earlier approval under any name.
+withdrawal cancels its earlier approval under any name. A tenth pass found
+that a `git revert` or `merge -s ours` could still take a file of the record out, that a stale
+`REBASE_HEAD` made the tools merge markers from an unrelated operation, that rulings went by each
+machine's clock, and that leaving the listening page within the app forgot a remade recording. The
+tools now refuse while a record file is missing, count a rebase only while it runs, stamp rulings
+after the latest, and keep what plays found until a reload.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the
@@ -706,7 +711,7 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
       for a name, and `Dregið til baka`, `Metnar áður en …` and the line before the data in the
       copied text). On the listening page: the three paragraphs, the filters,
       `Talgervillinn segir: …`, `(merkt röng)`,
-      `Upptakan hefur verið gerð aftur síðan hún var metin í þessum vafra. Hlustaðu á hana áður en þú metur hana aftur.` and
+      `Í þessum vafra er mat á annarri útgáfu upptökunnar. Hlustaðu á hana hér áður en þú metur hana.` and
       `Þessi upptaka hefur verið gerð aftur síðan þú opnaðir síðuna. …`. The script's report is
       Icelandic too, and drafted the same way.
       They are the only instructions a reviewer gets, so read them as a colleague will.

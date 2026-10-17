@@ -520,8 +520,29 @@ describe('the record over time', () => {
     expect(mergeReviews(EMPTY, [], [], { unrule: [who], now: TUE }).errors[0]).toMatch(
       /does not rule/
     );
-    // Ruling again, someone already ruling, adds nothing.
-    expect(merge(readLedger(ruled.ledger), [siggi()], ['Siggi']).added.rulings).toEqual([]);
+    // A ruling given again is recorded, so it outweighs a take-back given before it elsewhere.
+    const takenBack = mergeReviews(readLedger(ruled.ledger), [], [], { unrule: [who], now: TUE });
+    const again = merge(readLedger(ruled.ledger), [siggi()], ['Siggi'], { now: THU });
+    expect(again.added.rulings).toEqual([{ who, rules: true, at: THU }]);
+    const files = (...runs: { added: object }[]) => runs.map((r) => readRecordFile(r.added));
+    expect(foldRecord(files(ruled, takenBack, again)).rulers).toEqual([who]);
+    expect(foldRecord(files(again, takenBack, ruled)).rulers).toEqual([who]);
+  });
+
+  it('stamps a ruling, or one taken back, after the latest in the record, whatever the clock', () => {
+    // Given on a machine whose clock ran two days ahead, taken back on one that is right.
+    const ahead = '2026-10-21T10:00:00.000Z';
+    const ruled = merge(EMPTY, [siggi({ clips: [clip('les', 'right', MON)] })], ['Siggi'], {
+      now: ahead,
+    });
+    const who = ruled.ledger.rulers[0];
+    const back = mergeReviews(readLedger(ruled.ledger), [], [], { unrule: [who], now: MON });
+    expect(back.added.rulings).toEqual([{ who, rules: false, at: '2026-10-21T10:00:00.001Z' }]);
+    // What the run works from is what every machine folds from the files.
+    expect(back.ledger.rulers).toEqual([]);
+    expect(foldRecord([readRecordFile(ruled.added), readRecordFile(back.added)]).rulers).toEqual(
+      []
+    );
   });
 
   it('refuses a file of the record it cannot read', () => {
@@ -554,10 +575,14 @@ describe('the record over time', () => {
     expect(to(run([file({ clips: [clip('les', 'wrong', MON)] }), colleague]))).toEqual({
       les: false,
     });
-    // And the report says the browser carries two names, when its later file is applied alone.
+    // And the report says the browser carries two names, when its later file is applied alone,
+    // and from the record alone, with no files.
     const later = merge(merge(EMPTY, [before]).ledger, [after]);
     expect(later.shared).toEqual([
       ['Anna Jónsdóttir', expect.stringMatching(/^kennari [0-9a-f]{6}$/)],
+    ]);
+    expect(merge(later.ledger, []).shared).toEqual([
+      [expect.stringMatching(/^kennari /), expect.stringMatching(/^kennari /)],
     ]);
   });
 

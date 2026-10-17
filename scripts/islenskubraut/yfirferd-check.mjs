@@ -35,9 +35,9 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { parseDocument } from 'yaml';
+import { parse, parseDocument } from 'yaml';
 
-import { fileAt, mergeSides, unmerged } from './git.mjs';
+import { canMergeAgain, fileAt, mergeSides, unmerged } from './git.mjs';
 import {
   clipName,
   clipVersion,
@@ -48,7 +48,13 @@ import {
   valueOf,
 } from './hljod.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
-import { loadRecord, recordFile, writeRecordFile } from './mat.mjs';
+import {
+  loadRecord,
+  missingMessage,
+  missingRecordFiles,
+  recordFile,
+  writeRecordFile,
+} from './mat.mjs';
 import { prettify } from './render.mjs';
 import {
   agreedBase,
@@ -116,7 +122,10 @@ try {
   fail(e.message);
 }
 
-// The record, and what the files add to it. Its files are only ever added, so no merge touches it.
+// The record, and what the files add to it. Its files are only ever added, so no merge touches
+// it; a revert or a merge that discards a side can still take one out, and then nothing is done.
+const missing = missingRecordFiles();
+if (missing.length > 0) fail(missingMessage(missing));
 const ledger = parsed('the record', () => loadRecord());
 const now = new Date().toISOString();
 const merged = mergeReviews(ledger, reviews, rulers, { unrule, now });
@@ -138,43 +147,80 @@ function stage(file, n) {
   // A criss-cross merge's base is itself a merge, and can hold conflict markers of its own.
   return n === 1 && text !== undefined && INNER_CONFLICT.test(text) ? CROSSED : text;
 }
-/** The file as found and, if a conflict in it is still to resolve, the versions it came from. */
-function read(file) {
+/**
+ * The file as found and, if a conflict in it is still to resolve, the versions it came from.
+ * `readable(text)` says whether the working file can be read as it is: one that cannot (a merge
+ * tool's "accept both" lists a recording twice) is merged again too while an operation is open.
+ */
+function read(file, readable) {
   const raw = existsSync(file) ? readFileSync(file, 'utf8') : undefined;
   const marked = raw !== undefined && CONFLICT.test(raw);
   const staged = unmerged(ROOT, file);
-  if (!staged && !marked) return { raw };
-  if (!staged && !sides) {
+  const unreadable = raw !== undefined && !marked && !readable(raw);
+  if (!staged && !marked && !(unreadable && sides?.inProgress)) return { raw };
+  if (!canMergeAgain(ROOT, file, sides, CONFLICT) && !(unreadable && sides?.inProgress)) {
     fail(
-      `${rel(file)} has conflict markers, and no merge, rebase or cherry-pick is open, nor is HEAD a merge, to merge it again from. Remove them by hand.`
+      sides?.replayedMerge
+        ? `${rel(file)} has conflict markers from replaying a merge, whose base git took from the command line. Bring the conflict back first: git checkout -m ${rel(file)}`
+        : `${rel(file)} has conflict markers that no merge, rebase, cherry-pick or revert now open, nor the merge HEAD is, put there. Remove them by hand.`
     );
   }
   conflicted.push(rel(file));
   const atBases = () => (sides?.bases ?? []).map((c) => fileAt(ROOT, c, file));
+  let found;
   if (staged) {
     const base = stage(file, 1);
-    return {
+    found = {
       raw,
       base,
       ours: stage(file, 2) ?? '',
       theirs: stage(file, 3) ?? '',
       ...(base === CROSSED ? { bases: sides ? atBases() : [] } : {}),
     };
+  } else {
+    // Added or committed with its markers, or unreadable: git keeps no stages, so the sides are
+    // the operation's commits.
+    const bases = atBases();
+    found = {
+      raw,
+      base: bases.length === 1 ? bases[0] : CROSSED,
+      bases,
+      ours: fileAt(ROOT, sides.ours, file) ?? '',
+      theirs: fileAt(ROOT, sides.theirs, file) ?? '',
+    };
   }
-  // Added or committed with its markers: git keeps no stages, so the sides are the commits.
-  const bases = atBases();
-  return {
-    raw,
-    base: bases.length === 1 ? bases[0] : CROSSED,
-    bases,
-    ours: fileAt(ROOT, sides.ours, file) ?? '',
-    theirs: fileAt(ROOT, sides.theirs, file) ?? '',
-  };
+  // A side that already holds markers, committed by an earlier step of a rebase, cannot be told
+  // from the conflict it records: resolve that one by hand.
+  for (const [side, text] of [
+    ['this side (HEAD)', found.ours],
+    ['the other side', found.theirs],
+  ]) {
+    if (CONFLICT.test(text)) {
+      fail(
+        `${rel(file)}, as ${side} has it, already holds conflict markers, committed by an earlier step. Resolve them there by hand, or start the rebase again.`
+      );
+    }
+  }
+  return found;
 }
 const json = (text, empty) => (text === undefined || text === '' ? empty : JSON.parse(text));
 
-const manifestIn = read(MANIFEST);
-const stateIn = read(STATE_FILE);
+const manifestIn = read(MANIFEST, (text) => {
+  try {
+    readHljod(parse(text));
+    return true;
+  } catch {
+    return false;
+  }
+});
+const stateIn = read(STATE_FILE, (text) => {
+  try {
+    readState(JSON.parse(text));
+    return true;
+  } catch {
+    return false;
+  }
+});
 const clashes = new Set();
 /** A merge's base for one file as a map, read from the real merge bases where git's is crossed. */
 const baseMap = (input, toMap, same, absent) => {

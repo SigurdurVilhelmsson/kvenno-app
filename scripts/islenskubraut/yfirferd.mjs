@@ -150,18 +150,26 @@ const outranks = (a, b) =>
       : (a.note ?? '') > (b.note ?? '');
 
 /**
- * The record in memory, checked: `{ rulers: [who], verdicts: { text: { who: { v: entry } } } }`,
- * per recording, per reviewer and per version of its audio the entry that counts
- * (`{ verdict, at, b?, note? }`, `b` the browser). A verdict on one recording of a text is kept
+ * The record in memory, checked: `{ rulers: [who], rulings: { who: { rules, at } }, verdicts:
+ * { text: { who: { v: entry } } } }`: who rules, each reviewer's latest ruling, and per recording,
+ * per reviewer and per version of its audio the entry that counts (`{ verdict, at, b?, note? }`,
+ * `b` the browser). A verdict on one recording of a text is kept
  * beside one on another, so audio that comes back (a revert, a remake that comes out the same)
  * finds its verdicts again.
  */
 export function readLedger(raw) {
-  if (raw === undefined) return { rulers: [], verdicts: {} };
+  if (raw === undefined) return { rulers: [], rulings: {}, verdicts: {} };
   assert(raw && typeof raw === 'object', 'the record must be a map');
   const rulers = raw.rulers ?? [];
+  const rulings = raw.rulings ?? {};
   const verdicts = raw.verdicts ?? {};
   assert(Array.isArray(rulers) && rulers.every((r) => typeof r === 'string'), 'record: rulers');
+  for (const [who, r] of Object.entries(rulings)) {
+    assert(
+      r && typeof r.rules === 'boolean' && typeof r.at === 'string',
+      `record: the ruling of ${who} needs rules and at`
+    );
+  }
   for (const [text, byWho] of Object.entries(verdicts)) {
     for (const [who, byV] of Object.entries(byWho)) {
       assert(byV && typeof byV === 'object', `record: "${text}" from ${who} must be a map`);
@@ -176,7 +184,7 @@ export function readLedger(raw) {
       }
     }
   }
-  return { rulers, verdicts };
+  return { rulers, rulings, verdicts };
 }
 
 /**
@@ -218,8 +226,9 @@ export function readRecordFile(raw, where = 'record file') {
 const sortedBy = (entries) =>
   Object.fromEntries(entries.sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 
-const sortedLedger = (rulers, verdicts) => ({
+const sortedLedger = (rulers, verdicts, rulings = {}) => ({
   rulers: [...rulers].sort(),
+  rulings: sortedBy(Object.entries(rulings)),
   verdicts: sortedBy(
     Object.entries(verdicts).map(([t, byWho]) => [
       t,
@@ -248,7 +257,11 @@ export function foldRecord(files) {
     }
   }
   const rulers = [...rulings.values()].filter((r) => r.rules).map((r) => r.who);
-  return sortedLedger(rulers, verdicts);
+  return sortedLedger(
+    rulers,
+    verdicts,
+    Object.fromEntries([...rulings].map(([who, r]) => [who, { rules: r.rules, at: r.at }]))
+  );
 }
 
 /**
@@ -262,8 +275,8 @@ export function foldRecord(files) {
  * is what the record lacked (`{ verdicts, rulings }`, the next file of the record, empty when the
  * files add nothing), `names` maps each reviewer hash in the files to the name on their latest
  * file, `people` lists each reviewer once with that name, the dates of their files and the notes
- * their latest file carries, and `shared` the names of each browser whose files carry more than
- * one.
+ * their latest file carries, and `shared` the names of each browser whose verdicts, in the record
+ * or the files, carry more than one.
  */
 export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = '' } = {}) {
   const verdicts = {};
@@ -312,6 +325,16 @@ export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = 
   }
   const errors = [];
   const ruling = new Set(ledger.rulers);
+  const rulings = { ...(ledger.rulings ?? {}) };
+  // A ruling, or one taken back, is stamped after the reviewer's latest one in the record, so
+  // the record says what this run says even where this machine's clock is behind the one that
+  // gave that.
+  const stamp = (who) => {
+    const latest = rulings[who]?.at;
+    return latest !== undefined && latest >= now
+      ? new Date(Date.parse(latest) + 1).toISOString()
+      : now;
+  };
   const one = (name, flag) => {
     if (HASH.test(name) && flag === '--afturkalla') return name;
     const matching = [...people.values()].filter((p) => p.keys.has(reviewerKey(name)));
@@ -328,20 +351,25 @@ export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = 
     }
     return undefined;
   };
+  // Every ruling given is recorded, one already in force too, so that it outweighs a take-back
+  // given before it on another branch.
   for (const name of rulers) {
     const who = one(name, '--urskurdur');
-    if (who && !ruling.has(who)) {
-      ruling.add(who);
-      added.rulings.push({ who, rules: true, at: now });
-    }
+    if (who === undefined) continue;
+    const at = stamp(who);
+    ruling.add(who);
+    rulings[who] = { rules: true, at };
+    added.rulings.push({ who, rules: true, at });
   }
   for (const name of unrule) {
     const who = one(name, '--afturkalla');
     if (who === undefined) continue;
     if (!ruling.has(who)) errors.push(`--afturkalla "${name}": ${who} does not rule`);
     else {
+      const at = stamp(who);
       ruling.delete(who);
-      added.rulings.push({ who, rules: false, at: now });
+      rulings[who] = { rules: false, at };
+      added.rulings.push({ who, rules: false, at });
     }
   }
   added.verdicts.sort((x, y) =>
@@ -357,8 +385,8 @@ export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = 
               ? -1
               : 1
   );
-  // A browser of the files whose verdicts, in these files or the record, carry two names: two
-  // people sharing it, or one who retyped hers.
+  // A browser whose verdicts, in the record or these files, carry two names: two people sharing
+  // it, or one who retyped hers.
   const whosOf = new Map();
   const note = (b, who) => (whosOf.get(b) ?? whosOf.set(b, new Set()).get(b)).add(who);
   for (const byWho of Object.values(verdicts)) {
@@ -368,12 +396,11 @@ export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = 
   }
   for (const p of people.values()) note(p.b, p.who);
   const label = (who) => names.get(who) ?? `kennari ${who.slice(0, 6)}`;
-  const shared = [...new Set([...people.values()].map((p) => p.b))]
-    .map((b) => [...whosOf.get(b)])
-    .filter((whos) => whos.length > 1)
-    .map((whos) => whos.map(label).sort((a, b) => a.localeCompare(b, 'is')));
+  const shared = [...whosOf.values()]
+    .filter((whos) => whos.size > 1)
+    .map((whos) => [...whos].map(label).sort((a, b) => a.localeCompare(b, 'is')));
   return {
-    ledger: sortedLedger(ruling, verdicts),
+    ledger: sortedLedger(ruling, verdicts, rulings),
     added,
     names,
     people: [...people.values()],

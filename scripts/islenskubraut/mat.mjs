@@ -10,11 +10,33 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import { addedInHistory } from './git.mjs';
 import { CONTENT_DIR } from './load.mjs';
 import { prettify } from './render.mjs';
 import { foldRecord, readRecordFile } from './yfirferd.mjs';
 
 export const MAT_DIR = resolve(CONTENT_DIR, 'hljod/mat');
+const ROOT = resolve(CONTENT_DIR, '../..');
+
+/**
+ * The files of the record a commit in `HEAD`'s history added and the working tree no longer has,
+ * each with that commit: taken out by a revert, a `merge -s ours` or a restore, and with them the
+ * verdicts they hold. Empty outside a git checkout.
+ */
+export function missingRecordFiles(dir = MAT_DIR) {
+  return [...addedInHistory(ROOT, dir)]
+    .filter(([path]) => path.endsWith('.json') && !existsSync(resolve(ROOT, path)))
+    .map(([path, commit]) => ({ path, commit }));
+}
+
+/** What a person reads when files of the record are missing, and how to put them back. */
+export const missingMessage = (missing) =>
+  [
+    `${missing.length} file(s) of the verdict record are missing, and with them the verdicts they hold (a git revert, a merge -s ours or a restore took them out):`,
+    ...missing.map((m) => `  ${m.path}   (added in ${m.commit.slice(0, 10)})`),
+    'Put each back as it was, then run the command again:',
+    ...missing.map((m) => `  git checkout ${m.commit.slice(0, 10)} -- ${m.path}`),
+  ].join('\n');
 
 /** Every file of the record, read and checked. A file that cannot be read stops the caller,
  * naming it. */

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 
 import { Link, useSearchParams } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import { Container } from '@kvenno/shared/components';
 import { DrogContext, HljodCredit, Hlusta } from '../components/Hlusta';
 import { categories } from '../data';
 import { hlustun, type HlustunClip, type HlustunPlace } from '../data/hlustun';
+import { beginPlay, heardStore, type Heard } from '../yfirferd/heard';
 import { useKeepScroll } from '../yfirferd/scroll';
 import { Sending } from '../yfirferd/Sending';
 import { isCurrent, now, useReview, type Review, type Verdict } from '../yfirferd/store';
@@ -18,12 +19,6 @@ const doubtful = (c: HlustunClip) => (c.score ?? 0) > DOUBT;
 
 /** Whether this browser can hash the audio it plays, to tell a page left open since a remake. */
 const canCheck = () => globalThis.crypto?.subtle !== undefined;
-
-/**
- * What playing a clip here showed: the audio the server holds at its address and when that was
- * learnt (`v`, `at`), if a check has ever said, and whether a play's check is still out.
- */
-type Heard = { v?: string; at?: string; checking?: boolean };
 
 /**
  * Whether a verdict or note given here would name audio other than the server's. Either a play's
@@ -87,8 +82,8 @@ export function YfirferdHljod() {
   // again; a row cleared since, here or in another tab, comes back.
   const [markedBefore, setMarkedBefore] = useState(() => marks(review));
   // The audio each recording played as here, and when: one that differs from what this page was
-  // built with was made again since the page was opened.
-  const [heard, setHeard] = useState<Record<string, Heard>>({});
+  // built with was made again since the page was opened. Kept outside the page (`heard.ts`).
+  const heard = useSyncExternalStore(heardStore.subscribe, heardStore.get);
   useKeepScroll();
 
   const setParam = (key: string, value: string | null) =>
@@ -222,19 +217,7 @@ export function YfirferdHljod() {
               flokkur={flokkur}
               review={review}
               heard={heard[clip.text]}
-              onHeard={(v) =>
-                setHeard((h) => ({
-                  ...h,
-                  // A check under way; then what it found, or, where the browser could not tell,
-                  // what an earlier check found stands.
-                  [clip.text]:
-                    v === null
-                      ? { ...h[clip.text], checking: true }
-                      : v === undefined
-                        ? { ...h[clip.text], checking: false }
-                        : { v, at: now(), checking: false },
-                }))
-              }
+              onPlay={() => beginPlay(clip.text, now)}
               setVerdict={setVerdict}
               setNote={(note) =>
                 update((r) =>
@@ -275,7 +258,7 @@ function ClipRow({
   flokkur,
   review,
   heard,
-  onHeard,
+  onPlay,
   setVerdict,
   setNote,
 }: {
@@ -283,7 +266,7 @@ function ClipRow({
   flokkur: string;
   review: Review;
   heard: Heard | undefined;
-  onHeard: (version: string | null | undefined) => void;
+  onPlay: () => (version: string | undefined) => void;
   setVerdict: (clip: HlustunClip, verdict: Verdict | null) => void;
   setNote: (note: string) => void;
 }) {
@@ -293,7 +276,8 @@ function ClipRow({
   // Or not yet known: a verdict stored on other audio, and the clip not played here yet.
   const locked = blocked(clip, heard, review.clips[clip.text]);
   const stored = review.clips[clip.text];
-  // A mark in this browser on audio since made again, a withdrawn one too: play it here first.
+  // A mark in this browser on other audio, a withdrawn one too: play it here first. Which of the
+  // two is newer, the page cannot tell.
   const remade = !changed && stored !== undefined && stored.v !== clip.v && (locked || !canCheck());
   // Where the clip is on the card being reviewed, when one is chosen.
   const place = clip.places.find((p) => p.category === flokkur) ?? clip.places[0];
@@ -332,7 +316,7 @@ function ClipRow({
   return (
     <li className="rounded-xl border border-warm-200 bg-surface-raised p-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Hlusta text={clip.text} color="#1F2937" onHeard={onHeard} />
+        <Hlusta text={clip.text} color="#1F2937" onPlay={onPlay} />
         <span lang="is" className="font-semibold text-warm-900">
           {clip.text}
         </span>
@@ -363,8 +347,8 @@ function ClipRow({
       )}
       {remade && (
         <p className="mt-1 text-sm text-warm-800">
-          Upptakan hefur verið gerð aftur síðan hún var metin í þessum vafra. Hlustaðu á hana áður
-          en þú metur hana aftur.
+          Í þessum vafra er mat á annarri útgáfu upptökunnar. Hlustaðu á hana hér áður en þú metur
+          hana.
         </p>
       )}
       {mine?.verdict === 'wrong' && (

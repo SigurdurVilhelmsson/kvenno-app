@@ -154,7 +154,9 @@ const GENDERS = ['KK', 'KVK', 'HK'];
 
 /** The distinct forms among `tags` in a table, in order: the alternatives a drill offers. */
 function formsOf(paradigm, tags) {
-  return [...new Set(tags.flatMap((t) => paradigm.bmyndir.filter((f) => f.g === t).map((f) => f.b)))];
+  return [
+    ...new Set(tags.flatMap((t) => paradigm.bmyndir.filter((f) => f.g === t).map((f) => f.b))),
+  ];
 }
 
 /**

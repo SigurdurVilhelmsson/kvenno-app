@@ -11,7 +11,8 @@
  *
  * Every run writes `islenskubraut-hljod-yfirlit.html` (gitignored), the page a person listens
  * from. Exits 1 when an approved clip has no file, stada.json is out of date or a clip is true
- * with no teacher's approval of its audio in the record, hljod/mat/ (the build refuses all three), and 2 when a
+ * that the record (hljod/mat/) does not approve on its audio as it is now (the build refuses all
+ * three), and 2 when a
  * text on the cards has no clip yet, which is not an error for the build: that text simply has no
  * play button.
  */
@@ -94,10 +95,11 @@ if (process.argv.includes('--record')) {
 
 const { missing, stale, noFile } = compare(texts, manifest, hasFile);
 // An approval is a teacher's verdict in the record (hljod/mat/) on the audio as it is now; a true
-// written in hljod.yaml without one is refused by the build, so it is not counted as approved.
+// written in hljod.yaml that the record does not give, with no verdict or with verdicts that give
+// something else, is refused by the build, so it is not counted as approved here.
 const unbacked = new Set(
   approvals(loadRecord(), manifest, { texts, version })
-    .outcomes.filter((o) => o.unbacked)
+    .outcomes.filter((o) => o.from === true && o.to !== true)
     .map((o) => o.text)
 );
 
@@ -129,7 +131,7 @@ const rows = ordered.map(([text, places]) => {
     ? 'vantar'
     : manifest.clips.get(text)
       ? unbacked.has(text)
-        ? 'true án samþykkis'
+        ? 'true sem matið styður ekki'
         : 'samþykkt'
       : manifest.rejected.has(text)
         ? 'rangt'
@@ -192,7 +194,7 @@ if (brokenApproved.length > 0) {
 }
 if (unbacked.size > 0) {
   console.error(
-    `\n${unbacked.size} clip(s) true in hljod.yaml with no approval in the record (hljod/mat/) of their audio as it is now; the build refuses them. Approve on /islenskubraut/yfirferd/hljod and run pnpm islenskubraut:yfirferd --apply, or set them back to false:`
+    `\n${unbacked.size} clip(s) true in hljod.yaml that the record (hljod/mat/) does not approve on their audio as it is now; the build refuses them. Approve on /islenskubraut/yfirferd/hljod and run pnpm islenskubraut:yfirferd --apply, or set them back to false:`
   );
   for (const t of unbacked) console.error(`  ${t}`);
 }

@@ -11,6 +11,7 @@ import { versionOf } from '../components/Hlusta';
 import { categories } from '../data';
 import { Yfirferd } from '../pages/Yfirferd';
 import { YfirferdHljod } from '../pages/YfirferdHljod';
+import { forgetHeard } from '../yfirferd/heard';
 import { fileName, reviewFile, reviewText } from '../yfirferd/store';
 
 expect.extend(toHaveNoViolations);
@@ -88,7 +89,10 @@ const renderAt = (path: string) =>
     </MemoryRouter>
   );
 
-afterEach(() => window.localStorage.clear());
+afterEach(() => {
+  window.localStorage.clear();
+  forgetHeard();
+});
 
 describe('the review page', () => {
   it('lists every card, drafts included, with each item’s state and where to open it', async () => {
@@ -537,6 +541,8 @@ describe('the listening page', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
     await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
     await act(async () => late(new Response(LES_BYTES)));
+    // Long enough for the late check to hash what it got and report, were it to count.
+    await act(async () => new Promise((done) => setTimeout(done, 100)));
     expect(screen.getByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
     expect(rett).toHaveProperty('ariaDisabled', 'true');
     play.mockRestore();
@@ -570,8 +576,56 @@ describe('the listening page', () => {
       window.dispatchEvent(new StorageEvent('storage', { key: 'islenskubraut-yfirferd' }));
     });
     expect(rett).toHaveProperty('ariaDisabled', 'true');
+    // Not disabled, which in a browser drops focus to the page (jsdom keeps it either way).
+    expect(rett).toHaveProperty('disabled', false);
     expect(document.activeElement).toBe(rett);
-    expect(screen.getByText(/gerð aftur síðan hún var metin í þessum vafra/)).toBeDefined();
+    expect(screen.getByText(/mat á annarri útgáfu upptökunnar/)).toBeDefined();
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('keeps what a play found when the page is left within the app and opened again', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(new Uint8Array([1, 2, 3])));
+    const first = renderAt('/yfirferd/hljod');
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
+    first.unmount();
+    renderAt('/yfirferd/hljod');
+    expect(screen.getByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
+    const rett = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rétt',
+    });
+    fireEvent.click(rett);
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBeNull();
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('counts the latest play’s check across a row shown again by a filter', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    let late: (r: Response) => void = () => {};
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementationOnce(() => new Promise<Response>((done) => (late = done)))
+      .mockImplementationOnce(async () => new Response(new Uint8Array([1, 2, 3])));
+    renderAt('/yfirferd/hljod');
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    // les is not on Skólinn: the row goes, and comes back as a new one.
+    const spjald = screen.getByRole('combobox', { name: 'Spjald' });
+    fireEvent.change(spjald, { target: { value: 'skolinn' } });
+    fireEvent.change(spjald, { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/);
+    await act(async () => late(new Response(LES_BYTES)));
+    await act(async () => new Promise((done) => setTimeout(done, 100)));
+    expect(screen.getByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
+    fireEvent.click(
+      within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', { name: 'Rétt' })
+    );
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBeNull();
     play.mockRestore();
     fetched.mockRestore();
   });
@@ -616,7 +670,7 @@ describe('the listening page', () => {
     renderAt('/yfirferd/hljod');
     const mat = within(screen.getByRole('group', { name: 'Mat: les' }));
     expect(mat.getByRole('button', { name: 'Rétt' }).getAttribute('aria-pressed')).toBe('false');
-    expect(screen.getByText(/Upptakan hefur verið gerð aftur/)).toBeDefined();
+    expect(screen.getByText(/mat á annarri útgáfu upptökunnar/)).toBeDefined();
     expect(screen.getByText(/Þú hefur metið 0 af 4/)).toBeDefined();
     // Not counted as a verdict, and named apart in the text sent, so it is not taken for current.
     expect(screen.getByText(/Réttar upptökur: 0/)).toBeDefined();

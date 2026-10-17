@@ -785,12 +785,16 @@ passes. So the values come from every file ever applied, on any machine; the fil
 since they carry names, can be deleted once applied and their notes read. **The record is a
 folder of files that are only ever added**, each named by its time and a hash of what it holds and
 never changed after, so git never has two versions of one to merge: no merge, rebase or
-cherry-pick can take a side of it or lose an entry. That replaced a single `mat.json` on
+cherry-pick can take a side of it. A `git revert`, a `merge -s ours` or a restore can still take a
+file out, so the build and the scripts refuse while a file `HEAD`'s history added is missing
+(`missingRecordFiles` in `mat.mjs`, from `git log --full-history --diff-filter=A`), naming the
+commit to restore it from. That replaced a single `mat.json` on
 2026-10-17, after five review passes found ways a merge of it lost a teacher's "wrong" (taking a
 side, rebases, older entries under one key, rulers). `foldRecord` joins the files, in any order:
 per `[text][reviewer][audio version]` the latest entry counts (at one moment, the one that approves
 least), so a verdict on one recording of a text survives one on the next; a ruling, or one taken
-back (`--afturkalla`), is an entry with a time, the latest counting. Files are written through
+back (`--afturkalla`), is an entry with a time, the latest counting; every `--urskurdur` is
+recorded, and each is stamped after the reviewer's latest one, so a slow clock cannot lose it. Files are written through
 Prettier, so the commit hook leaves them alone. It names nobody: a reviewer is a hash of the random
 id the page gives each browser (`newId` in `store.ts`, reset by `Hreinsa allt`) and the name typed,
 so two teachers who type one name stay two, as do two sharing one browser, and a file without an id
@@ -802,8 +806,11 @@ on file order; an earlier design that compared verdict times with decision times
 late-arriving "wrong" silently, and one that read only the files passed let a machine holding fewer
 files approve what another had heard as wrong. **After a git merge, rebase or cherry-pick that
 touched them, run `--apply` with no files, before `git add`**: `hljod.yaml` or `stada.json` held
-unmerged, markers or none, or added or committed with markers while the operation's sides can be
-read (`mergeSides` in `scripts/islenskubraut/git.mjs`), is merged again (`mergeThreeWay` per
+unmerged, markers or none, or added or committed with markers where git can say what they came
+from (`canMergeAgain` and `mergeSides` in `scripts/islenskubraut/git.mjs`: a merge, cherry-pick,
+rebase or revert open, a rebase only while git's `rebase-merge` folder exists since 2.43 leaves
+`REBASE_HEAD` behind, or the merge `HEAD` that committed them; not a replayed merge or a side
+already holding markers), is merged again (`mergeThreeWay` per
 recording, a clash going to `false`, the real merge bases standing in for a criss-cross one), and
 every value is worked out again from the record; the rest of `hljod.yaml` is as git merged it, ours
 where it conflicted, and the report lists every change from `HEAD`, what students hear now. Taking a
@@ -818,8 +825,9 @@ listening page hashes what a clip's address holds when it plays (`versionOf` in 
 same hash as `clipVersion`) and takes no verdict or note on one that differs, nor over a verdict
 this browser gave other audio since the clip last played here (`blocked` in `YfirferdHljod.tsx`),
 so a stale tab cannot overwrite a newer one. A play locks its row until its check is back; only the
-latest play's check counts (`Hlusta` numbers them), and one that fails leaves what an earlier one
-found. The lock is `aria-disabled`, so a button that locks under the teacher's finger keeps focus. The report lists, uncounted, a
+latest play's check counts, and one that fails leaves what an earlier one found. What plays found is
+kept outside the page (`src/yfirferd/heard.ts`), so leaving it within the app and coming back does
+not forget a remade recording; only a reload does. The lock is `aria-disabled`, so a button that locks under the teacher's finger keeps focus. The report lists, uncounted, a
 verdict on other audio given after the current one was judged, unless a later ruling decides it. Without `--apply` the command says
 which files `--apply` would write, a new file of the record included. A download's name carries its time and the
 start of the browser's id, so none share one, and the copied text (`Afrita sem texta`) always

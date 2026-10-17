@@ -78,7 +78,11 @@ here,** works each recording's value out from the whole record, and runs
 can be deleted once their notes on the cards have been read, since the record keeps only the
 verdicts; a file applied twice adds nothing. **The record is a folder of files that are only ever
 added** (`mat/README.md`): never edit or delete one. So git never has two versions of one to merge,
-and no merge, rebase or cherry-pick can lose a verdict. The record names nobody: each reviewer in it
+and no merge, rebase or cherry-pick can take a side of the record. A `git revert` of a commit that
+added one, a `merge -s ours` or a `git restore` can still take a file out, and a teacher's verdict
+with it, so every tool, the build included, refuses to run while a file history added is missing,
+and says how to put it back (`git checkout <commit> -- <file>`). A verdict applied by mistake cannot
+be taken out that way: have it withdrawn on the page, or rule. The record names nobody: each reviewer in it
 is a hash of their browser's id and the name typed there, and of what they wrote it keeps only what
 was wrong with a recording, not the notes on the cards. So the values come from
 every file ever applied, on any machine, not only from the ones passed this time:
@@ -145,18 +149,24 @@ someone ruling, take the ruling back by the name on their files or by that hash:
 
     pnpm islenskubraut:yfirferd --afturkalla 2c6304514a84 --apply
 
-A ruling, or one taken back, is a file of the record with its time, and the latest counts on every
-machine, so a ruling taken back on one branch and given again on another settles by which came
-later.
+A ruling, or one taken back, is an entry in the record with a time, and the latest counts on every
+machine: a ruling taken back on one branch and given again on another settles by which came later.
+Every `--urskurdur` is recorded, one already in force too, so pass it once; and an entry is stamped
+after that reviewer's latest one in the record, so a machine whose clock is behind can still take a
+ruling back.
 
 **After a git merge, rebase or cherry-pick that touched these files, run
 `pnpm islenskubraut:yfirferd --apply`** with no files, before `git add`. The record's files never
 conflict. While git holds `hljod.yaml` or `stada.json` unmerged, conflict markers or none, it merges
 each again from git's three versions of it, recording by recording, and a recording only one side
 changed takes that side (in a criss-cross history too, where it reads the real merge bases). One
-both sides changed differently goes back to `false`, and the report counts it. A file added or
-committed with its markers still in it is merged again from the merge's two sides, and a merge
-tool's "accept both", which leaves a recording listed twice, gives way to this side's version. The
+both sides changed differently goes back to `false`, and the report counts it. A file added with
+its markers still in it while the merge, rebase, cherry-pick or revert is open, or committed with
+them in the merge commit `HEAD` is, is merged again from the operation's two sides, and so is a
+merge tool's "accept both", which leaves a recording listed twice. It refuses, and says why, where
+git cannot say what the markers came from: a `git stash pop`, a rebase step that committed its
+markers before the next one, or a merge being replayed (`git checkout -m <file>` brings that
+conflict back first). The
 rest of `hljod.yaml` (the voice, comments) is as git merged it, ours where it conflicted. Every
 value the record decides is then worked out again, and the report lists every recording that
 changes from this side (`HEAD`), which is what students hear now, whichever files git merged
