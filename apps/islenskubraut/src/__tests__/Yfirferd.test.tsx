@@ -152,7 +152,12 @@ describe('the review page', () => {
     vi.useFakeTimers();
     window.localStorage.setItem(
       'islenskubraut-yfirferd',
-      JSON.stringify({ reviewer: 'Anna', notes: { 'dyr/spjald': 'x' }, clips: {} })
+      JSON.stringify({
+        reviewer: 'Anna',
+        id: 'onnu-vafri',
+        notes: { 'dyr/spjald': 'x' },
+        clips: {},
+      })
     );
     renderAt('/yfirferd');
     const stored = () => JSON.parse(window.localStorage.getItem('islenskubraut-yfirferd')!);
@@ -169,7 +174,9 @@ describe('the review page', () => {
     expect(stored().notes).toEqual({ 'dyr/spjald': 'x' });
     vi.advanceTimersByTime(500);
     fireEvent.click(screen.getByRole('button', { name: 'Já, eyða öllu sem ég hef skrifað' }));
-    expect(stored()).toEqual({ reviewer: '', notes: {}, clips: {} });
+    // The next person to use this browser is someone else, so they get an id of their own.
+    expect(stored()).toEqual({ reviewer: '', id: expect.any(String), notes: {}, clips: {} });
+    expect(stored().id).not.toBe('onnu-vafri');
     expect(document.activeElement?.getAttribute('role')).toBe('status');
     vi.useRealTimers();
   });
@@ -347,6 +354,34 @@ describe('sending and keeping a review', () => {
     setItem.mockRestore();
   });
 
+  it('gives this browser’s reviewer an id, kept with the review and put in every file', () => {
+    renderAt('/yfirferd');
+    fireEvent.change(screen.getByLabelText('Nafnið þitt'), { target: { value: 'Anna' } });
+    const first = JSON.parse(window.localStorage.getItem(KEY)!);
+    expect(first.id).toMatch(/\S/);
+    fireEvent.change(screen.getByLabelText('Athugasemd um Spjaldið, Dýr'), {
+      target: { value: 'x' },
+    });
+    const second = JSON.parse(window.localStorage.getItem(KEY)!);
+    expect(second.id).toBe(first.id);
+    expect(reviewFile(second, '2026-10-17').id).toBe(first.id);
+  });
+
+  it('keeps the id of the tab that wrote first, so two tabs are one reviewer', () => {
+    renderAt('/yfirferd');
+    act(() => {
+      window.localStorage.setItem(
+        KEY,
+        JSON.stringify({ reviewer: 'Anna', id: 'hinn-flipinn', notes: {}, clips: {} })
+      );
+      window.dispatchEvent(new StorageEvent('storage', { key: KEY }));
+    });
+    fireEvent.change(screen.getByLabelText('Athugasemd um Spjaldið, Dýr'), {
+      target: { value: 'x' },
+    });
+    expect(JSON.parse(window.localStorage.getItem(KEY)!).id).toBe('hinn-flipinn');
+  });
+
   it('asks for a name before sending, since the name ties a teacher’s files together', () => {
     window.localStorage.setItem(
       KEY,
@@ -355,7 +390,9 @@ describe('sending and keeping a review', () => {
     renderAt('/yfirferd');
     const download = screen.getByRole('button', { name: 'Sækja skrá' });
     expect(download).toHaveProperty('disabled', true);
-    expect(screen.getByText(/Skrifaðu nafnið þitt áður en þú sendir/)).toBeDefined();
+    const hint = screen.getByText(/Skrifaðu nafnið þitt áður en þú sendir/);
+    // Read with the box it asks to be filled, not only with the buttons it disables.
+    expect(screen.getByLabelText('Nafnið þitt').getAttribute('aria-describedby')).toBe(hint.id);
     fireEvent.change(screen.getByLabelText('Nafnið þitt'), { target: { value: 'Anna' } });
     expect(download).toHaveProperty('disabled', false);
   });

@@ -66,7 +66,8 @@ if (process.argv.includes('--record')) {
     added += 1;
   }
   manifest = readHljod(doc.toJS());
-  // A clip made again is a recording nobody has heard: its approval or rangt goes back to false.
+  // A clip made again is a recording nobody has heard: its approval or rangt goes back to false,
+  // as does an approval with no record of which audio it was for.
   const synced = syncState(manifest, state, version);
   for (const text of synced.reset) doc.setIn(['clips', text], false);
   if (added > 0 || synced.reset.length > 0) {
@@ -80,7 +81,9 @@ if (process.argv.includes('--record')) {
   manifest = readHljod(doc.toJS());
   console.log(`listed ${added} new clip(s) in hljod.yaml, not approved`);
   if (synced.reset.length > 0) {
-    console.log(`${synced.reset.length} clip(s) made again, set back to false:`);
+    console.log(
+      `${synced.reset.length} clip(s) set back to false, as their audio changed or nothing recorded which audio was approved:`
+    );
     for (const t of synced.reset) console.log(`  ${t}`);
   }
   console.log(`stada.json: ${synced.stamped.length} value(s) recorded`);

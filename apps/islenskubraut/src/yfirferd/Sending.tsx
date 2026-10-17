@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useArmedAfter } from '@kvenno/shared/utils/armed';
 
-import { counts, fileName, now, reviewFile, reviewText, type Review } from './store';
+import { counts, fileName, newId, now, reviewFile, reviewText, type Review } from './store';
 
 /**
  * Sending the review back: the reviewer's name, what the review holds, and two ways to send it,
@@ -27,7 +27,12 @@ export function Sending({
   const guard = useArmedAfter(400, clearing);
   const c = counts(review);
   const nothing = c.notes + c.right + c.wrong + c.withdrawn === 0;
-  // The name is what ties a teacher's files together, so a later one replaces an earlier one.
+  // Anything kept at all, a name or a verdict on a recording since made again included.
+  const keeps =
+    review.reviewer.trim() !== '' ||
+    Object.values(review.notes).some((t) => t.trim() !== '') ||
+    Object.keys(review.clips).length > 0;
+  // The name tells the person reading the files who sent each, and a ruling is given by name.
   const unnamed = review.reviewer.trim() === '';
   const cannotSend = nothing || unnamed;
 
@@ -90,11 +95,13 @@ export function Sending({
             update((r) => ({ ...r, reviewer }));
           }}
           autoComplete="name"
+          aria-describedby={unnamed && !nothing ? 'sending-nafn' : undefined}
           className="mt-1 block w-full max-w-sm rounded-lg border border-warm-300 bg-surface-page px-3 py-2"
         />
       </label>
       <p className="text-sm text-warm-700 mb-3">
         Athugasemdir: {c.notes} · Réttar upptökur: {c.right} · Rangar upptökur: {c.wrong}
+        {c.withdrawn > 0 ? ` · Dregnar til baka: ${c.withdrawn}` : ''}
       </p>
       <p className="text-sm text-warm-700 mb-3">
         {saved
@@ -132,7 +139,7 @@ export function Sending({
             ref={clearRef}
             type="button"
             onClick={() => setClearing(true)}
-            disabled={nothing && unnamed}
+            disabled={!keeps}
             className="px-4 py-2 rounded-lg text-warm-700 underline hover:text-warm-900 disabled:opacity-50 pointer-coarse:min-h-11"
           >
             Hreinsa allt
@@ -153,7 +160,8 @@ export function Sending({
               key="eyda"
               type="button"
               onClick={guard(() => {
-                update(() => ({ reviewer: '', notes: {}, clips: {} }));
+                // The next person to use this browser is someone else.
+                update(() => ({ reviewer: '', id: newId(), notes: {}, clips: {} }));
                 setClearing(false);
                 setStatus('Yfirferðin var hreinsuð.');
               })}

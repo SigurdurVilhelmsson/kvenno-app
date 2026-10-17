@@ -36,8 +36,8 @@ refuses to run until `--record` has seen every change, so a replaced recording c
 students unheard.
 
 **After editing `hljod.yaml` by hand, run `pnpm islenskubraut:hljod --record`** before building. A
-hand edit lasts until a review file says something about that recording; to overrule teachers, use
-a ruling (below).
+hand edit lasts until the next `--apply` wherever `mat.json` holds a verdict on that recording as
+it is now. To overrule teachers lastingly, use a ruling (below).
 
 ## Listening
 
@@ -46,37 +46,51 @@ a ruling (below).
 `Rangt` beside it and a box for what is wrong. The page keeps the marks in the teacher's browser,
 and they type their name and press `Sækja skrá` and send the file back; its name carries the date
 and theirs. Save the files in the repository root, where they are gitignored (they carry teachers'
-names), and **keep every one: they are what the values come from.** Then:
+names). Then:
 
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json           # read what they say
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --apply   # write the verdicts
     pnpm islenskubraut:build
 
-Every recording the files say anything about gets the value all their verdicts give it together,
-whatever order the files came in and whatever anyone's clock says:
+**`--apply` adds the files' verdicts to `mat.json` here, the record of every verdict given,** and
+works each recording's value out from the whole record. Commit `mat.json` with `hljod.yaml` and
+`stada.json`; after that the files can be deleted, and a file applied twice changes nothing. The
+record names nobody: each reviewer in it is a hash of their browser's id, and of what they wrote it
+keeps only what was wrong with a recording, not the notes on the cards. So the values come from
+every file ever applied, on any machine, not only from the ones passed this time:
 
 - `true` if someone heard it as right and nobody as wrong;
 - `rangt` if someone heard it as wrong and nobody as right;
-- `false` if it was heard both ways, or the verdicts on it were taken back, or given to audio
-  since replaced: it is to be heard again.
+- `false` if it was heard both ways, or the verdicts on it were taken back: it is to be heard
+  again.
 
-An approved recording that this makes `false` or `rangt` is listed first in the report: students
-hear it until the site is built and deployed again. Every change is listed with who said what.
-A recording the files do not mention keeps its value.
+A recording whose verdicts are all on audio since replaced keeps the value it has, which `--record`
+set back to `false` when the audio changed. A recording nobody has given a verdict on keeps its
+value too. An approved recording that this makes `false` or `rangt` is listed first in the report:
+students hear it until the site is built and deployed again. Every change is listed with who said
+what; a reviewer whose file is not among those passed shows as `kennari` and the start of their
+hash.
 
-A verdict counts only for the audio it was given to, and each teacher's latest verdict on a
-recording counts. Pressing the pressed button again takes a verdict back, and the next file says
-so; a teacher can send a file that only takes one back. A mark merely missing from a later file
-still stands from an earlier one, which is what happens after `Hreinsa allt`. Teachers' files are
-told apart by the name typed, ignoring case.
+A verdict counts only for the audio it was given to, and each reviewer's latest verdict on a
+recording counts, by when their browser says they gave it. Pressing the pressed button again takes a verdict back, and
+the next file says so; a teacher can send a file that only takes one back. A mark merely missing
+from a later file still stands from an earlier one, which is what happens after `Hreinsa allt`.
+**A reviewer is a browser, not a name:** the page gives each browser a random id, put in every file
+it sends, so two teachers who type the same name are still two. `Hreinsa allt` gives the browser a
+new id, since the next person to use it is someone else. So a teacher who reviews on two devices,
+or clears the review and starts again, is two reviewers. That only matters if they change their
+mind: the earlier verdict still stands, and the recording is heard both ways until it is settled.
 
 **To settle a recording heard both ways, or to overrule the teachers,** listen yourself on the
 same page, send yourself the file, and pass your name as a ruling:
 
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --urskurdur "Siggi" --apply
 
-A ruler's verdict decides the recording whatever the others say, and the report lists every
-verdict it overrules, on every run, so none is lost.
+The name must be on exactly one browser's file among those passed. A ruler's verdict decides the
+recording whatever the others say, and the report lists every verdict it overrules, on every run,
+so none is lost. **The record keeps who rules,** so the ruling lasts on later runs without
+`--urskurdur`, and so do the ruler's later verdicts. Two rulers who disagree settle nothing: the
+recording is `false`.
 
 To listen without the site:
 
@@ -85,8 +99,8 @@ To listen without the site:
 This writes `islenskubraut-hljod-yfirlit.html` in the repository root: every text with its
 recording, sorted so the doubtful ones come first. Open it in a browser, listen, and write `true`
 or `rangt` in `hljod.yaml` beside each one. Then run `pnpm islenskubraut:hljod --record` and
-`pnpm islenskubraut:build`. The next `--apply` overrides such a hand edit wherever a review file
-speaks to the recording; a ruling does not.
+`pnpm islenskubraut:build`. The next `--apply` overrides such a hand edit wherever `mat.json` holds
+a verdict on the recording as it is now; a ruling, given on the listening page, lasts.
 
 Both pages are sorted by a speech recogniser's reading, from `hlustun.json` here (see below). It
 transcribed each recording back, and the pages show what it heard. A high score means the

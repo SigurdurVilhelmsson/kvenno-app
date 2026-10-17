@@ -501,10 +501,11 @@ page to hear them. Workflow: `content/islenskubraut/hljod/README.md`.
 
 - [ ] **Listen to the recordings** on `/islenskubraut/yfirferd/hljod` (2026-10-16), which marks
       each one `Rétt` or `Rangt` and sends the marks back as a file (C20).
-      `pnpm islenskubraut:yfirferd <files> --apply` then gives every recording the files mention
-      the value all their verdicts give it: `true` heard as right and never wrong, `rangt` the
+      `pnpm islenskubraut:yfirferd <files> --apply` then adds their verdicts to
+      `content/islenskubraut/hljod/mat.json`, which is committed, and gives every recording the
+      value all the verdicts there give it: `true` heard as right and never wrong, `rangt` the
       other way, `false` heard both ways. A recording made again goes back to `false`, and a
-      ruling (`--urskurdur "Nafn"`) settles one heard both ways
+      ruling (`--urskurdur "Nafn"`, kept in the record) settles one heard both ways
       (`content/islenskubraut/hljod/README.md`). The page puts first the eight that a speech recogniser
       heard as something else, over 20 %: `les`, `gogg`, `goggur`, `úr ull`, `reglustika`, `feld`,
       `húfa`, `oddhvasst`. The research estimated 3–5 hours for all of them, so the work can be
@@ -632,10 +633,12 @@ file, or `Afrita sem texta`, which copies text for an email, until they clear th
 them. Two tabs with the pages open keep each other up to date. A private window keeps them until it
 is closed; the page cannot tell, so it says that in any case, and it warns when the browser refuses
 storage outright. `pnpm islenskubraut:yfirferd <files>` prints every note by item, with the
-verdicts on the recordings, and `--apply` writes them (C15). Per recording, a reviewer's latest
-verdict counts; pressing the pressed button takes one back, and a mark merely missing from a later
-file, as after `Hreinsa allt`, still stands from an earlier one. A teacher types a name before
-sending, since the name tells one teacher's files from another's.
+verdicts on the recordings, and `--apply` adds them to the committed record `mat.json` and
+writes the values (C15). Per recording, a reviewer's latest verdict counts; pressing the pressed
+button takes one back, and a mark merely missing from a later file, as after `Hreinsa allt`, still
+stands from an earlier one. A teacher types a name before sending, for the report; the page also
+gives each browser a random id, which is what the record keeps, so two teachers of one name stay
+two and the record names nobody.
 
 An adversarial review of the pages on 2026-10-16 found and fixed: two tabs overwriting each other,
 a double click on `Hreinsa allt` erasing the review, the "not yet marked" filter hiding a row
@@ -649,6 +652,10 @@ two teachers' files sharing one name, and a verdict taken back still counting. A
 found that deciding by when a verdict was given, against when a value was set, let a "wrong" that
 arrived after an `--apply` vanish without a word; values are now worked out from all the verdicts
 together, whatever order the files arrive in, and a person settles a disagreement with a ruling.
+A fourth pass found that working them out from the files passed let a machine holding fewer files
+approve a recording another had heard as wrong, and that a ruling lasted only for the run that
+made it; the verdicts and rulings are now kept in the committed `mat.json`, and the reviewer is
+the browser, not the name typed.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the

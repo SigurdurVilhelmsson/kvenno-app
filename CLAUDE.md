@@ -72,8 +72,10 @@ pnpm islenskubraut:smidur # Print every sentence the sentence builder's tags mak
 pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC and download)
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
-pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply writes true or
-                          #   rangt in hljod.yaml from the verdicts: see hljod/README.md)
+pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply adds their
+                          #   verdicts to hljod/mat.json and writes true, false or rangt in hljod.yaml
+                          #   from the whole record; --urskurdur "Nafn" makes Nafn's verdicts rule:
+                          #   see hljod/README.md)
 pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
                           #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
                           #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
@@ -765,17 +767,28 @@ once the teacher has typed a name, as a downloaded file or copied text. Each ver
 hash of the audio it was given to and when it was given, and a verdict taken back is kept as such.
 `pnpm islenskubraut:yfirferd <files> [--urskurdur "Nafn"] [--apply]`
 (`scripts/islenskubraut/yfirferd-check.mjs`; `yfirferd.mjs` is the pure half) prints the notes
-and every change, and **gives every recording the files mention the value all their verdicts give
-it together**: `true` heard as right and never wrong, `rangt` the other way, `false` otherwise. The
-result does not depend on file order or on anyone's clock; an earlier design that compared verdict
-times with decision times lost a late-arriving "wrong" silently. A ruler's verdict
-(`--urskurdur`) settles a recording, and every verdict it overrules is printed. Per recording, a
-reviewer's latest verdict counts; reviewers match by name, ignoring case. The page writes the file's `format`, the script refuses
-any other, and a test holds the two constants equal. No page a student can reach links to either
+and every change. **`--apply` merges the files' verdicts into
+`content/islenskubraut/hljod/mat.json`, the committed record of every verdict given**, and gives
+every recording with a verdict on its current audio the value all the record's verdicts give it
+together: `true` heard as right and never wrong, `rangt` the other way, `false` otherwise. So the
+values come from every file ever applied, on any machine; the files, gitignored since they carry
+names, can be deleted once applied. The record names nobody: a reviewer is a hash of the random id
+the page gives each browser (`newId` in `store.ts`, reset by `Hreinsa allt`), so two teachers who
+type one name stay two, and a file without an id is refused. It keeps what was wrong with a
+recording, never the notes on the cards. The result does not depend on file order; an earlier
+design that compared verdict times with decision times lost a late-arriving "wrong" silently, and
+one that read only the files passed let a machine holding fewer files approve what another had
+heard as wrong. A ruler's verdict (`--urskurdur`, a name on exactly one browser's file) settles a
+recording, every verdict it overrules is printed, and **the record keeps who rules**, so a ruling
+outlasts the run that made it. Per recording, a reviewer's latest verdict counts, by their
+browser's clock. The page writes the file's `format`, the script refuses any other, and a test
+holds the two constants equal. No page a student can reach links to either
 page; they link to each other, and `Yfirferd.test.tsx` fails if any other file in the app quotes
 their routes. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in
-`App.tsx`), and a page opened by a link opens at its top (a reload or back/forward keeps the
-browser's own scroll). This is the first review cycle's route, rather than
+`App.tsx`), and a page opened by a link opens at its top. A reload, a restored tab or back/forward
+returns the two review pages to their place (`useKeepScroll` in `src/yfirferd/scroll.ts`, keyed by
+the history entry in `sessionStorage`), which the browser alone cannot do for a page that loads
+after it has tried. This is the first review cycle's route, rather than
 the workbook below, because the workbook carries only the card text and its instructions are
 unfinished. Wording is C20.
 

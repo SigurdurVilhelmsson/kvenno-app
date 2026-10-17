@@ -218,7 +218,10 @@ test.describe('Islenskubraut — the teachers’ review pages', () => {
     await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
     await page.evaluate(() => window.scrollTo(0, 6000));
     await page.waitForFunction(() =>
-      window.sessionStorage.getItem('islenskubraut-skrun:/islenskubraut/yfirferd/hljod')
+      Object.keys(window.sessionStorage).some(
+        (k) =>
+          k.startsWith('islenskubraut-skrun:') && Number(window.sessionStorage.getItem(k)) > 5000
+      )
     );
     await page.reload();
     await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();

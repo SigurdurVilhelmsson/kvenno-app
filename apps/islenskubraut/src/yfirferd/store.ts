@@ -20,6 +20,11 @@ export type Verdict = 'right' | 'wrong';
 
 export interface Review {
   reviewer: string;
+  /**
+   * This browser's reviewer, a random id put in every file it sends, so two teachers who type the
+   * same name are still two. Cleared with the review, since the next person is someone else.
+   */
+  id?: string;
   /** A note per item, by `categoryId/itemId`. */
   notes: Record<string, string>;
   /**
@@ -65,6 +70,14 @@ export const ITEMS = [
 
 export type ItemId = (typeof ITEMS)[number]['id'];
 
+/** A new reviewer's id. */
+export function newId(): string {
+  return (
+    globalThis.crypto?.randomUUID?.() ??
+    `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+  );
+}
+
 const empty = (): Review => ({ reviewer: '', notes: {}, clips: {} });
 
 function load(): Review {
@@ -74,6 +87,7 @@ function load(): Review {
     const parsed = JSON.parse(raw) as Partial<Review>;
     return {
       reviewer: typeof parsed.reviewer === 'string' ? parsed.reviewer : '',
+      ...(typeof parsed.id === 'string' ? { id: parsed.id } : {}),
       notes: parsed.notes && typeof parsed.notes === 'object' ? parsed.notes : {},
       clips: parsed.clips && typeof parsed.clips === 'object' ? parsed.clips : {},
     };
@@ -97,7 +111,11 @@ export function useReview(): {
   update: (change: (r: Review) => Review) => void;
   saved: boolean;
 } {
-  const [review, setReview] = useState<Review>(load);
+  // A review with no id yet gets one, written with the first change made here.
+  const [review, setReview] = useState<Review>(() => {
+    const r = load();
+    return r.id ? r : { ...r, id: newId() };
+  });
   const [saved, setSaved] = useState(true);
   // The newest review this tab knows, its own changes and the other tab's, for the next change to
   // build on. A change made here is written at once; one read from another tab is never written
@@ -112,7 +130,8 @@ export function useReview(): {
     }
     const onStorage = (e: StorageEvent) => {
       if (e.key !== STORAGE_KEY) return;
-      latest.current = load();
+      const read = load();
+      latest.current = read.id ? read : { ...read, id: latest.current.id };
       setReview(latest.current);
     };
     window.addEventListener('storage', onStorage);
@@ -178,6 +197,7 @@ export function reviewFile(review: Review, date: string, saved = date) {
   return {
     format: FORMAT,
     reviewer: review.reviewer.trim(),
+    id: review.id ?? '',
     date,
     saved,
     notes: written(review).map(([key, text]) => ({
