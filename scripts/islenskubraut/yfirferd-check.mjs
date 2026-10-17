@@ -13,19 +13,38 @@
  * ruler (`--urskurdur`, a reviewer's name) decides a recording whatever the others say; the record
  * keeps who rules, so a ruling lasts, and the report lists each verdict it overrules.
  *
- * `--apply` writes `hljod.yaml`, its record `stada.json` and `mat.json`, and nothing else. Commit
- * all three; after that the review files can be deleted. Notes are for a person to act on. Run
- * `pnpm islenskubraut:build` after it, and deploy.
+ * `--apply` writes `hljod.yaml`, its record `stada.json` and `mat.json`, then runs
+ * `pnpm islenskubraut:build`, which turns them into the app's data. Commit everything git then
+ * shows changed; after that the review files can be deleted, once their notes have been read.
  */
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { basename, resolve } from 'node:path';
+import { basename, dirname, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { parseDocument } from 'yaml';
 
-import { clipName, clipVersion, readHljod, readState, syncState, textsToVoice } from './hljod.mjs';
+import {
+  clipName,
+  clipVersion,
+  readHljod,
+  readState,
+  syncState,
+  textsToVoice,
+  valueOf,
+} from './hljod.mjs';
 import { CONTENT_DIR, loadCategories } from './load.mjs';
-import { approvals, mergeReviews, readLedger, readReview, report } from './yfirferd.mjs';
+import { prettify } from './render.mjs';
+import {
+  approvals,
+  mergeReviews,
+  readLedger,
+  readReview,
+  report,
+  unionLedgers,
+} from './yfirferd.mjs';
 
+const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(CONTENT_DIR, '../..');
 const MANIFEST = resolve(CONTENT_DIR, 'hljod/hljod.yaml');
 const STATE_FILE = resolve(CONTENT_DIR, 'hljod/stada.json');
@@ -53,39 +72,87 @@ if (rulers.some((r) => r.trim() === '')) {
 }
 
 const reviews = files.map((f) => readReview(JSON.parse(readFileSync(f, 'utf8')), basename(f)));
-const merged = mergeReviews(
-  readLedger(existsSync(LEDGER_FILE) ? JSON.parse(readFileSync(LEDGER_FILE, 'utf8')) : undefined),
-  reviews,
-  rulers
-);
+
+// After a git merge that left conflicts in these files: both sides of the record, joined, and
+// our side of hljod.yaml and stada.json, whose values the record then decides again.
+const CONFLICT = /^(<{7}|={7}|>{7})( |$)/m;
+const resolved = [];
+function side(file, n) {
+  try {
+    return execFileSync('git', ['show', `:${n}:${relative(ROOT, file)}`], {
+      cwd: ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+  } catch {
+    console.error(
+      `${relative(ROOT, file)} has conflict markers outside a merge. Resolve it first.`
+    );
+    process.exit(1);
+  }
+}
+function read(file, ours = false) {
+  if (!existsSync(file)) return undefined;
+  const raw = readFileSync(file, 'utf8');
+  if (!CONFLICT.test(raw)) return raw;
+  resolved.push(relative(ROOT, file));
+  return ours ? side(file, 2) : [side(file, 2), side(file, 3)];
+}
+const ledgerRaw = read(LEDGER_FILE);
+const ledger = Array.isArray(ledgerRaw)
+  ? unionLedgers(...ledgerRaw.map((r) => readLedger(JSON.parse(r))))
+  : readLedger(ledgerRaw === undefined ? undefined : JSON.parse(ledgerRaw));
+const merged = mergeReviews(ledger, reviews, rulers);
 if (merged.errors.length > 0) {
   for (const e of merged.errors) console.error(e);
   process.exit(1);
 }
-const doc = parseDocument(readFileSync(MANIFEST, 'utf8'));
+const doc = parseDocument(read(MANIFEST, true));
 const texts = textsToVoice(loadCategories());
 const version = (text) => {
   const file = resolve(CLIP_DIR, clipName(text));
   return existsSync(file) ? clipVersion(readFileSync(file)) : null;
 };
 // A clip made again since the record is a draft again, as --record would write it.
+const found = readHljod(doc.toJS());
+const stateRaw = read(STATE_FILE, true);
 const synced = syncState(
-  readHljod(doc.toJS()),
-  readState(existsSync(STATE_FILE) ? JSON.parse(readFileSync(STATE_FILE, 'utf8')) : {}),
+  found,
+  readState(stateRaw === undefined ? {} : JSON.parse(stateRaw)),
   version
 );
+if (resolved.length > 0) {
+  console.log(
+    `Merge conflicts in ${resolved.join(', ')}: the record joins both sides, and the values are worked out again from it. Run pnpm islenskubraut:hljod --record afterwards if the other side listed new recordings.\n`
+  );
+  if (!apply) console.log('Nothing is written without --apply.\n');
+}
 for (const text of synced.reset) doc.setIn(['clips', text], false);
 const manifest = readHljod(doc.toJS());
 const result = approvals(merged.ledger, manifest, { texts, version, names: merged.names });
-process.stdout.write(report(merged.people, result));
-if (synced.reset.length > 0) {
+// What a person reads is measured from hljod.yaml as it was found, not from the resets above.
+const asFound = {
+  ...result,
+  outcomes: result.outcomes.map((o) => ({ ...o, from: valueOf(found, o.text) })),
+};
+process.stdout.write(report(merged.people, asFound, merged.ledger.rulers));
+const decided = new Set(result.outcomes.map((o) => o.text));
+const reset = synced.reset.filter((t) => !decided.has(t));
+if (reset.length > 0) {
   console.log(
-    `\nBack to false, as their audio changed or nothing recorded which audio was approved: ${synced.reset.join(', ')}`
+    `\nBack to false, as their audio changed or nothing recorded which audio was approved: ${reset.join(', ')}`
   );
 }
+// A value written in hljod.yaml by hand and not yet recorded: --apply records it, as --record would.
+const stamped = synced.stamped.filter((t) => !decided.has(t));
+if (stamped.length > 0) {
+  console.log(`\nHand edits of hljod.yaml that stada.json will record: ${stamped.join(', ')}`);
+}
 
+// The writes go from the values after the resets; the count, from the values as found.
 const changes = result.outcomes.filter((o) => o.from !== o.to);
-const total = changes.length + synced.reset.length;
+const total =
+  asFound.outcomes.filter((o) => o.from !== o.to).length + reset.length + stamped.length;
 if (apply) {
   const state = { ...synced.state };
   for (const o of changes) {
@@ -94,13 +161,17 @@ if (apply) {
     if (v !== null) state[o.text] = { v, value: o.to };
   }
   writeFileSync(MANIFEST, doc.toString());
-  writeFileSync(STATE_FILE, `${JSON.stringify(state, null, 2)}\n`);
-  writeFileSync(LEDGER_FILE, `${JSON.stringify(merged.ledger, null, 2)}\n`);
+  writeFileSync(STATE_FILE, await prettify(JSON.stringify(state), STATE_FILE));
+  writeFileSync(LEDGER_FILE, await prettify(JSON.stringify(merged.ledger), LEDGER_FILE));
   console.log(
     total > 0
-      ? `\n${total} change(s) written to hljod.yaml and stada.json, and the verdicts to mat.json. Commit all three, then run pnpm islenskubraut:build and deploy.`
-      : `\nNo value changed. The verdicts are in mat.json; commit it if git shows it changed.`
+      ? `\n${total} change(s) written to hljod.yaml and stada.json, and the verdicts to mat.json. Building the app's data:\n`
+      : `\nNo value changed; the verdicts are in mat.json. Building the app's data:\n`
   );
+  // The app's data comes from these files, and CI refuses a commit where it is stale.
+  const built = spawnSync(process.execPath, [resolve(HERE, 'build.mjs')], { stdio: 'inherit' });
+  if (built.status !== 0) process.exit(built.status ?? 1);
+  console.log('\nCommit everything git shows changed, then deploy.');
 } else if (total > 0) {
   console.log(`\n--apply would write ${total} change(s).`);
 }

@@ -44,6 +44,7 @@ import {
 import { pageData } from './smidur.mjs';
 import { readTenglar } from './tenglar.mjs';
 import { allTexts, readTexti } from './texti.mjs';
+import { approvals, readLedger } from './yfirferd.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
@@ -75,6 +76,7 @@ const SPA_HLJOD = resolve(ROOT, 'apps/islenskubraut/src/data/hljod.ts');
 const HEARD_FILE = resolve(ROOT, 'content/islenskubraut/hljod/hlustun.json');
 const SPA_HLUSTUN = resolve(ROOT, 'apps/islenskubraut/src/data/hlustun.ts');
 const STATE_FILE = resolve(ROOT, 'content/islenskubraut/hljod/stada.json');
+const LEDGER_FILE = resolve(ROOT, 'content/islenskubraut/hljod/mat.json');
 
 const check = process.argv.includes('--check');
 const categories = loadCategories();
@@ -199,6 +201,34 @@ if (problems.length > 0) {
   for (const p of problems.slice(0, 20)) console.error(`  ${p}`);
   if (problems.length > 20) console.error(`  … and ${problems.length - 20} more`);
   console.error('Run: pnpm islenskubraut:hljod --record');
+  process.exit(1);
+}
+// And a value is what the teachers' verdicts give it, wherever mat.json holds one on the audio as
+// it is now: a git merge of two runs, or a hand edit, can leave hljod.yaml saying otherwise.
+let ledger;
+try {
+  ledger = readLedger(
+    existsSync(LEDGER_FILE) ? JSON.parse(readFileSync(LEDGER_FILE, 'utf8')) : undefined
+  );
+} catch (e) {
+  console.error(`content/islenskubraut/hljod/mat.json cannot be read: ${e.message}`);
+  console.error(
+    'After a git merge with a conflict in it, run: pnpm islenskubraut:yfirferd --apply'
+  );
+  process.exit(1);
+}
+const drift = approvals(ledger, hljod, {
+  texts: voiced,
+  version: (t) => (hasClip(clipName(t)) ? version(clipName(t)) : null),
+}).outcomes.filter((o) => o.from !== o.to);
+if (drift.length > 0) {
+  console.error('content/islenskubraut/hljod/hljod.yaml disagrees with the verdicts in mat.json:');
+  for (const o of drift.slice(0, 20))
+    console.error(`  "${o.text}": ${o.from}, the verdicts give ${o.to}`);
+  if (drift.length > 20) console.error(`  … and ${drift.length - 20} more`);
+  console.error(
+    'Run: pnpm islenskubraut:yfirferd --apply   (no files needed). To overrule the verdicts, give a ruling.'
+  );
   process.exit(1);
 }
 const review = clipsForReview(voiced, hljod, hasClip, heard, version);

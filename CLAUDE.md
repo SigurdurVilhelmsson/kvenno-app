@@ -73,9 +73,10 @@ pnpm islenskubraut:myndir # Check the A1 pictograms (--fetch to search ARASAAC a
 pnpm islenskubraut:tenglar # List the card pages' links out (--online to check each address answers)
 pnpm islenskubraut:hljod  # Check the recordings, write their review page (--jobs, --record: see hljod/README.md)
 pnpm islenskubraut:yfirferd <files> # Read the review files teachers send back (--apply adds their
-                          #   verdicts to hljod/mat.json and writes true, false or rangt in hljod.yaml
-                          #   from the whole record; --urskurdur "Nafn" makes Nafn's verdicts rule:
-                          #   see hljod/README.md)
+                          #   verdicts to hljod/mat.json, writes true, false or rangt in hljod.yaml
+                          #   from the whole record and runs islenskubraut:build; --urskurdur "Nafn"
+                          #   makes Nafn's verdicts rule; with no files after a git merge, it works
+                          #   the values out again and resolves a conflict there: see hljod/README.md)
 pnpm islenskubraut:spjold # Render the 21 teaching-card PDFs, word lists, guessing games, talk-to-write and
                           #   can-do sheets into apps/islenskubraut/public/spjold/ (runs before the app's dev
                           #   and build; fails on a card that is not 3 pages, a game or can-do sheet that is
@@ -704,7 +705,9 @@ audio (`syncState` in `hljod.mjs`), written by `pnpm islenskubraut:hljod --recor
 sets its clip back to `false`, and **the build fails while the record is out of date**
 (`stateProblems`), so an approval is always for the audio approved. `scripts/build-all.mjs` runs
 `build.mjs --check` before building the app, so `pnpm build` and `deploy.sh` refuse stale data too.
-It also fails on an approved clip with no file. A text with no
+**It also fails where `hljod.yaml` disagrees with the teachers' verdicts in `mat.json`** on the
+audio as it is now (below), which a hand edit or a clean git merge of two runs can leave, and on an
+approved clip with no file. A text with no
 clip simply has no button, so editing a card never needs the Python setup. `hlustun.py` transcribes each clip back with RU's wav2vec2 recogniser to sort the
 review pages; it flags eight of 524 over 20 % (C15). It merges into
 `content/islenskubraut/hljod/hlustun.json`, which is committed, since the build turns it into
@@ -768,27 +771,39 @@ hash of the audio it was given to and when it was given, and a verdict taken bac
 `pnpm islenskubraut:yfirferd <files> [--urskurdur "Nafn"] [--apply]`
 (`scripts/islenskubraut/yfirferd-check.mjs`; `yfirferd.mjs` is the pure half) prints the notes
 and every change. **`--apply` merges the files' verdicts into
-`content/islenskubraut/hljod/mat.json`, the committed record of every verdict given**, and gives
-every recording with a verdict on its current audio the value all the record's verdicts give it
-together: `true` heard as right and never wrong, `rangt` the other way, `false` otherwise. So the
-values come from every file ever applied, on any machine; the files, gitignored since they carry
-names, can be deleted once applied. The record names nobody: a reviewer is a hash of the random id
-the page gives each browser (`newId` in `store.ts`, reset by `Hreinsa allt`), so two teachers who
-type one name stay two, and a file without an id is refused. It keeps what was wrong with a
-recording, never the notes on the cards. The result does not depend on file order; an earlier
-design that compared verdict times with decision times lost a late-arriving "wrong" silently, and
-one that read only the files passed let a machine holding fewer files approve what another had
-heard as wrong. A ruler's verdict (`--urskurdur`, a name on exactly one browser's file) settles a
-recording, every verdict it overrules is printed, and **the record keeps who rules**, so a ruling
-outlasts the run that made it. Per recording, a reviewer's latest verdict counts, by their
-browser's clock. The page writes the file's `format`, the script refuses any other, and a test
+`content/islenskubraut/hljod/mat.json`, the committed record of every verdict given**, gives every
+recording with a verdict on its current audio the value all the record's verdicts give it together
+(`true` heard as right and never wrong, `rangt` the other way, `false` otherwise), and runs the
+build, so the generated `hljod.ts` and `hlustun.ts` are committed with it and CI's `--check`
+passes. So the values come from every file ever applied, on any machine; the files, gitignored
+since they carry names, can be deleted once applied and their notes read. The record is
+`verdicts[text][reviewer][audio version]`, so a verdict on one recording of a text survives one on
+the next, and is written through Prettier, so the commit hook leaves it alone. It names nobody: a
+reviewer is a hash of the random id the page gives each browser (`newId` in `store.ts`, reset by
+`Hreinsa allt`), so two teachers who type one name stay two, and a file without an id is refused.
+It keeps what was wrong with a recording, never the notes on the cards. The result does not depend
+on file order; an earlier design that compared verdict times with decision times lost a
+late-arriving "wrong" silently, and one that read only the files passed let a machine holding fewer
+files approve what another had heard as wrong. **After a git merge that touched `mat.json`, run
+`--apply` with no files**: it joins both sides of a conflict there (`unionLedgers`), takes ours of
+`hljod.yaml` and `stada.json`, and works the values out again. A ruler's verdict (`--urskurdur`, a
+name among those one browser's files carry, and no other's) settles a recording, every verdict it
+overrules is printed, and **the record keeps who rules**, so a ruling outlasts the run that made
+it; of several rulings the latest decides. Per recording, a reviewer's latest verdict counts, by
+their browser's clock, and editing what is wrong gives it a new time. A page left open across a
+deploy that remade a recording would stamp the old version: the listening page hashes the audio it
+plays (`versionOf` in `Hlusta.tsx`, the same hash as `clipVersion`) and takes no verdict on one
+that differs, and the report lists, uncounted, a verdict on older audio given after the new one was
+heard. The download's name carries the start of the browser's id, so two reviewers' files never
+share one. The page writes the file's `format`, the script refuses any other, and a test
 holds the two constants equal. No page a student can reach links to either
 page; they link to each other, and `Yfirferd.test.tsx` fails if any other file in the app quotes
 their routes. A lazy page whose chunk a deploy removed reloads once (`lazyPage` in
 `App.tsx`), and a page opened by a link opens at its top. A reload, a restored tab or back/forward
 returns the two review pages to their place (`useKeepScroll` in `src/yfirferd/scroll.ts`, keyed by
 the history entry in `sessionStorage`), which the browser alone cannot do for a page that loads
-after it has tried. This is the first review cycle's route, rather than
+after it has tried. An entry made by a `#card` link gets a key of its own, and a page being left
+never writes the next page's scroll as its place. This is the first review cycle's route, rather than
 the workbook below, because the workbook carries only the card text and its instructions are
 unfinished. Wording is C20.
 

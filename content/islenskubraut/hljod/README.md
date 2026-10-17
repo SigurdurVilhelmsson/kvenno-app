@@ -35,26 +35,32 @@ audio. So does a `true` with no record at all. The build, `pnpm build` and so `d
 refuses to run until `--record` has seen every change, so a replaced recording can never play to
 students unheard.
 
+**The build also refuses a value the teachers' verdicts do not give,** wherever `mat.json` (below)
+holds a verdict on the recording as it is now. A hand edit, or a git merge of two runs, could
+otherwise approve a recording a teacher heard as wrong. `pnpm islenskubraut:yfirferd --apply`, with
+no files, works every such value out again.
+
 **After editing `hljod.yaml` by hand, run `pnpm islenskubraut:hljod --record`** before building. A
-hand edit lasts until the next `--apply` wherever `mat.json` holds a verdict on that recording as
-it is now. To overrule teachers lastingly, use a ruling (below).
+hand edit holds only for a recording nobody has given a verdict on as it is now; to overrule
+teachers, give a ruling (below).
 
 ## Listening
 
 **Teachers listen on the site**, at `/islenskubraut/yfirferd/hljod`, which only the review page,
 `/islenskubraut/yfirferd`, links to. Every recording plays there, drafts included, with `Rétt` and
 `Rangt` beside it and a box for what is wrong. The page keeps the marks in the teacher's browser,
-and they type their name and press `Sækja skrá` and send the file back; its name carries the date
-and theirs. Save the files in the repository root, where they are gitignored (they carry teachers'
-names). Then:
+and they type their name and press `Sækja skrá` and send the file back. Its name carries the date,
+theirs and the start of their browser's id, so no two reviewers' files share one. Save the files in
+the repository root, where they are gitignored (they carry teachers' names). Then:
 
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json           # read what they say
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --apply   # write the verdicts
-    pnpm islenskubraut:build
 
-**`--apply` adds the files' verdicts to `mat.json` here, the record of every verdict given,** and
-works each recording's value out from the whole record. Commit `mat.json` with `hljod.yaml` and
-`stada.json`; after that the files can be deleted, and a file applied twice changes nothing. The
+**`--apply` adds the files' verdicts to `mat.json` here, the record of every verdict given,** works
+each recording's value out from the whole record, and runs `pnpm islenskubraut:build`. Commit
+everything git then shows changed: `mat.json`, `hljod.yaml`, `stada.json` and the app's generated
+`hljod.ts` and `hlustun.ts`. After that the files can be deleted once their notes on the cards have
+been read, since the record keeps only the verdicts; a file applied twice changes nothing. The
 record names nobody: each reviewer in it is a hash of their browser's id, and of what they wrote it
 keeps only what was wrong with a recording, not the notes on the cards. So the values come from
 every file ever applied, on any machine, not only from the ones passed this time:
@@ -65,14 +71,16 @@ every file ever applied, on any machine, not only from the ones passed this time
   again.
 
 A recording whose verdicts are all on audio since replaced keeps the value it has, which `--record`
-set back to `false` when the audio changed. A recording nobody has given a verdict on keeps its
-value too. An approved recording that this makes `false` or `rangt` is listed first in the report:
+set back to `false` when the audio changed; the record keeps those verdicts beside the new ones, so
+audio that comes back (a revert, say) finds its own. A recording nobody has given a verdict on
+keeps its value too. An approved recording that this makes `false` or `rangt` is listed first in the report:
 students hear it until the site is built and deployed again. Every change is listed with who said
 what; a reviewer whose file is not among those passed shows as `kennari` and the start of their
 hash.
 
 A verdict counts only for the audio it was given to, and each reviewer's latest verdict on a
-recording counts, by when their browser says they gave it. Pressing the pressed button again takes a verdict back, and
+recording counts, by when their browser says they gave it; writing what is wrong counts as a later
+word. Pressing the pressed button again takes a verdict back, and
 the next file says so; a teacher can send a file that only takes one back. A mark merely missing
 from a later file still stands from an earlier one, which is what happens after `Hreinsa allt`.
 **A reviewer is a browser, not a name:** the page gives each browser a random id, put in every file
@@ -81,16 +89,31 @@ new id, since the next person to use it is someone else. So a teacher who review
 or clears the review and starts again, is two reviewers. That only matters if they change their
 mind: the earlier verdict still stands, and the recording is heard both ways until it is settled.
 
+A page left open since before a recording was made again would name the old audio. The listening
+page checks the audio it plays against the one it was built with, and where they differ it takes
+no verdict until the page is reloaded. Where the browser cannot check (an old browser, or no
+https), the report lists a verdict on older audio given after someone heard the new one, without
+counting it: listen to that recording yourself.
+
 **To settle a recording heard both ways, or to overrule the teachers,** listen yourself on the
 same page, send yourself the file, and pass your name as a ruling:
 
     pnpm islenskubraut:yfirferd yfirferd-islenskubraut-*.json --urskurdur "Siggi" --apply
 
-The name must be on exactly one browser's file among those passed. A ruler's verdict decides the
-recording whatever the others say, and the report lists every verdict it overrules, on every run,
-so none is lost. **The record keeps who rules,** so the ruling lasts on later runs without
-`--urskurdur`, and so do the ruler's later verdicts. Two rulers who disagree settle nothing: the
-recording is `false`.
+The name must be on the files of exactly one browser among those passed (any name that browser's
+files carry). A ruler's verdict decides the recording whatever the others say, and the report lists
+every verdict it overrules, on every run, so none is lost. **The record keeps who rules,** so the
+ruling lasts on later runs without `--urskurdur`, and so do the ruler's later verdicts. Of several
+rulings on a recording the latest decides, so a ruler who changes their mind, on another browser or
+after `Hreinsa allt`, rules again the same way; only two given at the same moment that disagree
+leave it `false`. The report ends with who rules, by the hash `mat.json` keeps; to stop someone
+ruling, delete their hash from `rulers` there and run `--apply`.
+
+**After a git merge that touched `mat.json`, run `pnpm islenskubraut:yfirferd --apply`** with no
+files, and commit what it changes. If git left a conflict in `mat.json`, `hljod.yaml` or
+`stada.json`, the same command resolves it: the record takes both sides, the other two take ours,
+and every value the record decides is worked out again. Run `pnpm islenskubraut:hljod --record`
+after it if the other side listed new recordings.
 
 To listen without the site:
 
@@ -99,8 +122,8 @@ To listen without the site:
 This writes `islenskubraut-hljod-yfirlit.html` in the repository root: every text with its
 recording, sorted so the doubtful ones come first. Open it in a browser, listen, and write `true`
 or `rangt` in `hljod.yaml` beside each one. Then run `pnpm islenskubraut:hljod --record` and
-`pnpm islenskubraut:build`. The next `--apply` overrides such a hand edit wherever `mat.json` holds
-a verdict on the recording as it is now; a ruling, given on the listening page, lasts.
+`pnpm islenskubraut:build`. This works only for a recording nobody has given a verdict on as it is
+now: for the others the build refuses the edit, and a ruling on the listening page is the way.
 
 Both pages are sorted by a speech recogniser's reading, from `hlustun.json` here (see below). It
 transcribed each recording back, and the pages show what it heard. A high score means the

@@ -9,6 +9,7 @@ import {
   readReview,
   report,
   reviewerOf,
+  unionLedgers,
 } from '../yfirferd.mjs';
 import { FORMAT as PAGE_FORMAT } from '../../../apps/islenskubraut/src/yfirferd/store';
 
@@ -214,6 +215,117 @@ describe('what the record makes of the recordings', () => {
   });
 });
 
+describe('the record over time', () => {
+  it('keeps a verdict on each recording of a text, so audio that comes back finds its own', () => {
+    // Anna heard v1 as wrong; the audio was remade as v2 and she heard that as right.
+    const first = merge(EMPTY, [
+      file({ clips: [{ text: 'les', verdict: 'wrong', v: 'v1', at: MON }] }),
+    ]);
+    const second = merge(readLedger(first.ledger), [
+      file({ saved: TUE, clips: [{ text: 'les', verdict: 'right', v: 'v2', at: TUE }] }),
+    ]);
+    const on = (v: string) =>
+      approvals(second.ledger, manifest, { texts, version: () => v, names: second.names });
+    expect(on('v2').outcomes[0].to).toBe(true);
+    // Back to v1, by a revert: her "wrong" on exactly that audio is still there.
+    expect(on('v1').outcomes[0].to).toBe('rangt');
+  });
+
+  it('keeps the latest note on a recording, whichever file is applied last', () => {
+    // The page gives a note its own time, so the file with the note is the later one.
+    const without = file({ clips: [clip('les', 'wrong', MON)] });
+    const withNote = file({ saved: TUE, clips: [clip('les', 'wrong', TUE, 'heyrist sem e')] });
+    const one = merge(readLedger(merge(EMPTY, [withNote]).ledger), [without]);
+    expect(Object.values(one.ledger.verdicts.les)[0]).toEqual({
+      v2: { verdict: 'wrong', at: TUE, note: 'heyrist sem e' },
+    });
+    // Older, newer, older again: the record is as it was after the newer.
+    const a = merge(EMPTY, [without]);
+    const b = merge(readLedger(a.ledger), [withNote]);
+    const c = merge(readLedger(b.ledger), [without]);
+    expect(c.ledger).toEqual(b.ledger);
+  });
+
+  it('lets the latest ruling decide, so a ruler can change their mind from another browser', () => {
+    const first = merge(EMPTY, [siggi({ clips: [clip('les', 'right', MON)] })], ['Siggi']);
+    // After Hreinsa allt the same person is a new browser, and rules again.
+    const again = merge(
+      readLedger(first.ledger),
+      [siggi({ id: 'siggi-nyr', saved: TUE, clips: [clip('les', 'wrong', TUE, 'e')] })],
+      ['Siggi']
+    );
+    const r = approvals(again.ledger, manifest, { texts, version, names: again.names });
+    expect(to(r)).toEqual({ les: 'rangt' });
+    expect(r.outcomes[0].overruled.map((v: { verdict: string }) => v.verdict)).toEqual(['right']);
+    // Two rulings given at the same moment that disagree settle nothing.
+    const tie = merge(
+      EMPTY,
+      [siggi({ clips: [clip('les', 'right', MON)] }), jon({ clips: [clip('les', 'wrong', MON)] })],
+      ['Siggi', 'Jón']
+    );
+    expect(to(approvals(tie.ledger, manifest, { texts, version, names: tie.names }))).toEqual({
+      les: false,
+    });
+  });
+
+  it('takes a ruling by any name a browser’s files carry, and shows its latest', () => {
+    const files = [
+      siggi({ reviewer: 'Sigi', clips: [clip('les', 'right', MON)] }),
+      siggi({ saved: TUE, date: '2026-10-20', clips: [] }),
+    ];
+    for (const name of ['Siggi', 'Sigi']) expect(merge(EMPTY, files, [name]).errors).toEqual([]);
+    expect(merge(EMPTY, files).people.map((p: { reviewer: string }) => p.reviewer)).toEqual([
+      'Siggi',
+    ]);
+    // A name on two browsers' files, once or since, is not one person.
+    const two = merge(EMPTY, [...files, jon({ reviewer: 'Sigi' })], ['Sigi']);
+    expect(two.errors[0]).toMatch(/2 reviewers go by that name/);
+  });
+
+  it('shows, without counting, a verdict on older audio given after the new one was heard', () => {
+    // Anna's page was open from before the remake: it names the old audio, on Thursday.
+    const r = run([
+      jon({ clips: [clip('les', 'right', TUE)] }),
+      file({
+        saved: THU,
+        clips: [{ text: 'les', verdict: 'wrong', v: 'gamalt', at: THU, note: 'e' }],
+      }),
+    ]);
+    expect(to(r)).toEqual({ les: true });
+    expect(r.outcomes[0].late.map((v: { reviewer: string }) => v.reviewer)).toEqual(['Anna']);
+    // Given before anyone heard the new audio, it is just a verdict on the old one.
+    const before = run([
+      file({ clips: [{ text: 'les', verdict: 'wrong', v: 'gamalt', at: MON }] }),
+      jon({ saved: TUE, clips: [clip('les', 'right', TUE)] }),
+    ]);
+    expect(before.outcomes[0].late).toEqual([]);
+  });
+
+  it('joins two sides of a git merge as applying both sides’ files would have', () => {
+    const base = merge(EMPTY, [file({ clips: [clip('les', 'wrong', MON)] })]).ledger;
+    const ours = merge(readLedger(base), [jon({ clips: [clip('les', 'right', TUE)] })], ['Jón']);
+    const theirs = merge(readLedger(base), [
+      file({ saved: THU, clips: [clip('les', 'wrong', THU, 'e'), clip('hali', 'right', THU)] }),
+    ]);
+    const both = merge(
+      readLedger(base),
+      [
+        jon({ clips: [clip('les', 'right', TUE)] }),
+        file({ saved: THU, clips: [clip('les', 'wrong', THU, 'e'), clip('hali', 'right', THU)] }),
+      ],
+      ['Jón']
+    );
+    expect(unionLedgers(ours.ledger, theirs.ledger)).toEqual(both.ledger);
+    expect(unionLedgers(theirs.ledger, ours.ledger)).toEqual(both.ledger);
+  });
+
+  it('refuses a record in the shape it had before verdicts were kept per recording', () => {
+    expect(() =>
+      readLedger({ rulers: [], verdicts: { les: { abc: { verdict: 'right', v: 'v2', at: MON } } } })
+    ).toThrow(/needs verdict and at/);
+  });
+});
+
 describe('the report', () => {
   const reportOf = (files: object[], rulers: string[] = []) => {
     const merged = merge(EMPTY, files, rulers);
@@ -257,5 +369,26 @@ describe('the report', () => {
     expect(text).toContain('„hali“ — Siggi: rétt; gegn: Jón: rangt');
     // A recording already rangt that stays rangt: what both said about it, for remaking it.
     expect(text).toContain('„fugl“ — Anna: rangt (gok), Jón: rangt (vantar g)');
+  });
+
+  it('names who rules, by the hash mat.json keeps, and lists late verdicts on older audio', () => {
+    const merged = merge(
+      EMPTY,
+      [
+        siggi({ clips: [clip('hali', 'right', MON)] }),
+        file({
+          saved: THU,
+          clips: [{ text: 'hali', verdict: 'wrong', v: 'gamalt', at: THU, note: 'e' }],
+        }),
+      ],
+      ['Siggi']
+    );
+    const text = report(
+      merged.people,
+      approvals(merged.ledger, manifest, { texts, version, names: merged.names }),
+      merged.ledger.rulers
+    );
+    expect(text).toContain(`Úrskurða (í mat.json): Siggi (${merged.ledger.rulers[0]})`);
+    expect(text).toMatch(/Metnar á eldri upptöku[^\n]*: 1\n  „hali“ — Anna: rangt \(e\)/);
   });
 });

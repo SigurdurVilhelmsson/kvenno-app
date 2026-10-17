@@ -228,6 +228,55 @@ test.describe('Islenskubraut — the teachers’ review pages', () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(5900);
   });
 
+  // A link to a card on the review page (`#matur`) makes a history entry the router gives no key;
+  // the page gives it one, so a reload there still finds the teacher's place.
+  test('a reload after a link to a card keeps the place', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd');
+    await page
+      .getByRole('navigation', { name: 'Spjöldin' })
+      .getByRole('link', { name: /Matur/ })
+      .click();
+    await expect(page).toHaveURL(/#matur$/);
+    await page.evaluate(() => window.scrollBy(0, 700));
+    const y = await page.evaluate(() => Math.round(window.scrollY));
+    await page.waitForFunction(
+      (y) =>
+        Object.keys(window.sessionStorage).some(
+          (k) =>
+            k.startsWith('islenskubraut-skrun:') &&
+            k !== 'islenskubraut-skrun:default' &&
+            Math.abs(Number(window.sessionStorage.getItem(k)) - y) <= 2
+        ),
+      y
+    );
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 2, name: /Matur/ })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBeGreaterThan(y - 5);
+    expect(await page.evaluate(() => Math.round(window.scrollY))).toBeLessThan(y + 5);
+  });
+
+  // The page being left must not write the next page's scroll to the top as its own place: back
+  // after a reload on the next page returns to where the teacher was.
+  test('back to the listening page after a reload elsewhere keeps its place', async ({ page }) => {
+    await page.goto('/islenskubraut/yfirferd/hljod');
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 20000));
+    await page.waitForFunction(() =>
+      Object.keys(window.sessionStorage).some(
+        (k) =>
+          k.startsWith('islenskubraut-skrun:') && Number(window.sessionStorage.getItem(k)) > 19000
+      )
+    );
+    // A click as a mouse gives it, without scrolling the link into view first.
+    await page.getByRole('link', { name: 'Yfirferð' }).dispatchEvent('click');
+    await expect(page.getByRole('heading', { level: 1, name: /Yfirferð/ })).toBeVisible();
+    await page.reload();
+    await expect(page.getByRole('heading', { level: 1, name: /Yfirferð/ })).toBeVisible();
+    await page.goBack();
+    await expect(page.getByRole('list', { name: 'Upptökur' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(19900);
+  });
+
   // A tab left open across a deploy asks for a chunk the deploy removed. It reloads once and
   // gets the new one, rather than going blank.
   test('a page whose chunk has gone since the tab opened reloads instead of going blank', async ({

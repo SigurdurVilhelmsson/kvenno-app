@@ -655,7 +655,14 @@ together, whatever order the files arrive in, and a person settles a disagreemen
 A fourth pass found that working them out from the files passed let a machine holding fewer files
 approve a recording another had heard as wrong, and that a ruling lasted only for the run that
 made it; the verdicts and rulings are now kept in the committed `mat.json`, and the reviewer is
-the browser, not the name typed.
+the browser, not the name typed. A fifth pass found that a git merge of two runs could still
+leave `hljod.yaml` approving what the record rejected, that a ruler could never change their mind
+from another browser, that a verdict on one recording of a text was overwritten by one on the next,
+that a page left open across a deploy stamped verdicts with the old audio, that two reviewers'
+downloads could share a name, and that the review pages lost their place after a `#card` link or
+on the way back. The build now checks `hljod.yaml` against the record, the latest ruling decides,
+the record keeps each recording's verdicts apart, the listening page checks the audio it plays,
+the download names the browser, and the scroll keeper was fixed for both.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the

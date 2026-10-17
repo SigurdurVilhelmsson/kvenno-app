@@ -28,22 +28,56 @@ let playing: HTMLAudioElement | null = null;
 function play(src: string) {
   playing?.pause();
   playing = new Audio(src);
-  void playing.play().catch(() => {
+  void playing.play()?.catch(() => {
     /* a browser that refuses autoplay-like playback leaves the button as it was */
   });
 }
 
 /**
- * A small play button for a text on the card. Renders nothing for a text with no recording,
- * so the card looks as printed until a person has approved one.
+ * The version of the recording the server has now, as `clipVersion` in
+ * `scripts/islenskubraut/hljod.mjs` computes it (the first 12 hex digits of its SHA-256), or
+ * undefined where the browser cannot tell: no network, or no `crypto.subtle` off https.
  */
-export function Hlusta({ text, color }: { text: string; color: string }) {
+export async function versionOf(src: string): Promise<string | undefined> {
+  try {
+    const subtle = globalThis.crypto?.subtle;
+    if (!subtle) return undefined;
+    const response = await fetch(src, { cache: 'no-cache' });
+    if (!response.ok) return undefined;
+    const digest = await subtle.digest('SHA-256', await response.arrayBuffer());
+    return [...new Uint8Array(digest)]
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+      .slice(0, 12);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * A small play button for a text on the card. Renders nothing for a text with no recording,
+ * so the card looks as printed until a person has approved one. `onHeard`, on the listening
+ * page, is told the version of the audio that played, which a page left open since before a
+ * recording was made again knows by an older one.
+ */
+export function Hlusta({
+  text,
+  color,
+  onHeard,
+}: {
+  text: string;
+  color: string;
+  onHeard?: (version: string) => void;
+}) {
   const src = useClip(text);
   if (!src) return null;
   return (
     <button
       type="button"
-      onClick={() => play(src)}
+      onClick={() => {
+        play(src);
+        if (onHeard) void versionOf(src).then((v) => v && onHeard(v));
+      }}
       aria-label={`Hlusta: ${text}`}
       title="Hlusta"
       className="inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0 align-middle hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-1"

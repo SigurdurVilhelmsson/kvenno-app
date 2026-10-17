@@ -7,10 +7,11 @@ import { axe, toHaveNoViolations } from 'jest-axe';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { versionOf } from '../components/Hlusta';
 import { categories } from '../data';
 import { Yfirferd } from '../pages/Yfirferd';
 import { YfirferdHljod } from '../pages/YfirferdHljod';
-import { reviewFile, reviewText } from '../yfirferd/store';
+import { fileName, reviewFile, reviewText } from '../yfirferd/store';
 
 expect.extend(toHaveNoViolations);
 
@@ -300,6 +301,58 @@ describe('the listening page', () => {
     expect(stored().les).toEqual({ verdict: 'right', v: 'vb', at });
   });
 
+  it('gives a note its own time, so a file with it outweighs one sent before it was written', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-10-17T10:00:00Z'));
+    renderAt('/yfirferd/hljod');
+    fireEvent.click(
+      within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+        name: 'Rangt',
+      })
+    );
+    vi.setSystemTime(new Date('2026-10-17T10:05:00Z'));
+    fireEvent.change(screen.getByLabelText('Hvað er rangt? „les“'), { target: { value: 'e' } });
+    const les = JSON.parse(window.localStorage.getItem('islenskubraut-yfirferd')!).clips.les;
+    expect(les).toEqual({ verdict: 'wrong', v: 'vb', at: '2026-10-17T10:05:00.000Z', note: 'e' });
+    vi.useRealTimers();
+  });
+
+  it('takes no verdict on a recording made again since the page was opened', async () => {
+    const play = vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue(undefined);
+    // The server's file is not the one this page was built with ('vb').
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(new Uint8Array([1, 2, 3])));
+    renderAt('/yfirferd/hljod');
+    fireEvent.click(screen.getByRole('button', { name: 'Hlusta: les' }));
+    expect(await screen.findByText(/gerð aftur síðan þú opnaðir síðuna/)).toBeDefined();
+    const rangt = within(screen.getByRole('group', { name: 'Mat: les' })).getByRole('button', {
+      name: 'Rangt',
+    });
+    expect(rangt).toHaveProperty('disabled', true);
+    fireEvent.click(rangt);
+    expect(window.localStorage.getItem('islenskubraut-yfirferd')).toBeNull();
+    // Rows whose audio is what the page knows are untouched.
+    expect(
+      within(screen.getByRole('group', { name: 'Mat: feldur' })).getByRole('button', {
+        name: 'Rétt',
+      })
+    ).toHaveProperty('disabled', false);
+    play.mockRestore();
+    fetched.mockRestore();
+  });
+
+  it('hashes what it plays as the scripts hash a recording', async () => {
+    const fetched = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => new Response(new Uint8Array([1, 2, 3])));
+    // The same value scripts/islenskubraut/__tests__/hljod.test.ts holds clipVersion to.
+    expect(await versionOf('/hljod/x.mp3')).toBe('039058c6f2c0');
+    fetched.mockImplementation(async () => new Response('', { status: 404 }));
+    expect(await versionOf('/hljod/x.mp3')).toBeUndefined();
+    fetched.mockRestore();
+  });
+
   it('keeps a recording cleared since the filter went on out of the hidden ones', () => {
     window.localStorage.setItem(
       'islenskubraut-yfirferd',
@@ -382,7 +435,17 @@ describe('sending and keeping a review', () => {
     expect(JSON.parse(window.localStorage.getItem(KEY)!).id).toBe('hinn-flipinn');
   });
 
-  it('asks for a name before sending, since the name ties a teacher’s files together', () => {
+  it('names the file by the date, the name and the browser, so two Önnur never share one', () => {
+    const stamp = '2026-10-17T10:00:00.000Z';
+    expect(fileName({ reviewer: 'Þóra Ösp', id: 'Ab-12cd-ef', notes: {}, clips: {} }, stamp)).toBe(
+      'yfirferd-islenskubraut-2026-10-17-thora-osp-ab12cd.json'
+    );
+    const a = fileName({ reviewer: 'Anna', id: 'aaaaaa-1', notes: {}, clips: {} }, stamp);
+    const b = fileName({ reviewer: 'Anna', id: 'bbbbbb-2', notes: {}, clips: {} }, stamp);
+    expect(a).not.toBe(b);
+  });
+
+  it('asks for a name before sending, since it says who sent each file and a ruling is given by it', () => {
     window.localStorage.setItem(
       KEY,
       JSON.stringify({ reviewer: '', notes: { 'dyr/spjald': 'x' }, clips: {} })

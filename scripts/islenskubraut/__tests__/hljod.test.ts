@@ -174,6 +174,9 @@ describe('the listening page’s data', () => {
   it('versions a clip by its audio, so a remade clip is told from the old one', () => {
     expect(clipVersion(Buffer.from('a'))).toMatch(/^[0-9a-f]{12}$/);
     expect(clipVersion(Buffer.from('a'))).not.toBe(clipVersion(Buffer.from('b')));
+    // The listening page hashes what it plays the same way (`versionOf` in Hlusta.tsx), and its
+    // test holds it to this same value.
+    expect(clipVersion(Buffer.from([1, 2, 3]))).toBe('039058c6f2c0');
   });
 
   it('refuses a recogniser entry without what it heard, a score and the audio it heard', () => {

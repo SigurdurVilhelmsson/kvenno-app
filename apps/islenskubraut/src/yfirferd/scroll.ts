@@ -20,14 +20,9 @@ export function useKeepScroll() {
   const { key } = location;
   const type = useNavigationType();
   const navigate = useNavigate();
+  // Back, forward or a reload into this page: its place, once it is there.
   useLayoutEffect(() => {
-    if (key === 'default') {
-      // Loaded afresh: give the entry a key of its own, so a reload of it can find its place.
-      const { pathname, search, hash } = location;
-      navigate({ pathname, search, hash }, { replace: true, preventScrollReset: true });
-      return;
-    }
-    if (type !== 'POP') return;
+    if (key === 'default' || type !== 'POP') return;
     try {
       const y = Number(window.sessionStorage.getItem(keyFor(key)));
       if (y > 0) window.scrollTo(0, y);
@@ -38,9 +33,19 @@ export function useKeepScroll() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
+    if (key === 'default') {
+      // Loaded afresh, or a link to a card on the page (`#dyr`), which the browser makes an entry
+      // for with no key: give it one, so a reload of it can find its place.
+      const { pathname, search, hash } = location;
+      navigate({ pathname, search, hash }, { replace: true, preventScrollReset: true });
+      return;
+    }
     let frame = 0;
     const store = () => {
       try {
+        // A scroll or pagehide after history has moved on, as when a link scrolls the next page
+        // to its top, belongs to that page and not to this entry.
+        if ((window.history.state as { key?: string } | null)?.key !== key) return;
         window.sessionStorage.setItem(keyFor(key), String(Math.round(window.scrollY)));
       } catch {
         // As above.
@@ -60,6 +65,8 @@ export function useKeepScroll() {
       window.removeEventListener('scroll', save);
       window.removeEventListener('pagehide', store);
     };
+    // The entry is what matters; the location it was read from is the entry's own.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 }
 

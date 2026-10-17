@@ -54,6 +54,9 @@ export function YfirferdHljod() {
   // the pass, or cleared and marked again, stays with its note box until the filter is switched
   // again; a row cleared since, here or in another tab, comes back.
   const [markedBefore, setMarkedBefore] = useState(() => marks(review));
+  // The audio each recording played as here, where it differs from what this page was built with:
+  // a recording made again since the page was opened.
+  const [heard, setHeard] = useState<Record<string, string>>({});
   useKeepScroll();
 
   const setParam = (key: string, value: string | null) =>
@@ -87,6 +90,8 @@ export function YfirferdHljod() {
 
   const setVerdict = (clip: HlustunClip, verdict: Verdict | null) =>
     update((r) => {
+      // A verdict on audio this page does not know would be filed under the old recording.
+      if (heard[clip.text] !== undefined && heard[clip.text] !== clip.v) return r;
       const clips = { ...r.clips };
       // What was written about this recording, kept through a verdict taken back by mistake.
       const stored = r.clips[clip.text];
@@ -184,6 +189,8 @@ export function YfirferdHljod() {
               clip={clip}
               flokkur={flokkur}
               review={review}
+              heard={heard[clip.text]}
+              onHeard={(v) => setHeard((h) => (h[clip.text] === v ? h : { ...h, [clip.text]: v }))}
               setVerdict={setVerdict}
               setNote={(note) =>
                 update((r) => ({
@@ -193,7 +200,9 @@ export function YfirferdHljod() {
                     [clip.text]: {
                       verdict: 'wrong',
                       v: clip.v,
-                      at: r.clips[clip.text]?.at ?? now(),
+                      // Saying what is wrong is a later word on it, so a file with the note
+                      // outweighs one sent before it was written, in whatever order they come.
+                      at: now(),
                       note,
                     },
                   },
@@ -216,16 +225,22 @@ function ClipRow({
   clip,
   flokkur,
   review,
+  heard,
+  onHeard,
   setVerdict,
   setNote,
 }: {
   clip: HlustunClip;
   flokkur: string;
   review: Review;
+  heard: string | undefined;
+  onHeard: (version: string) => void;
   setVerdict: (clip: HlustunClip, verdict: Verdict | null) => void;
   setNote: (note: string) => void;
 }) {
   const mine = current(review, clip);
+  // Made again since this page was opened: what played is not what a verdict here would name.
+  const changed = heard !== undefined && heard !== clip.v;
   const stored = review.clips[clip.text];
   const remade = stored !== undefined && stored.verdict !== null && stored.v !== clip.v;
   // Where the clip is on the card being reviewed, when one is chosen.
@@ -245,12 +260,13 @@ function ClipRow({
       <button
         type="button"
         aria-pressed={pressed}
+        disabled={changed}
         onClick={() => {
           setVerdict(clip, pressed ? null : verdict);
           // After "Rangt", straight to saying what is wrong.
           if (!pressed && verdict === 'wrong') setFocusNote(true);
         }}
-        className={`px-3 py-1 rounded-lg text-sm font-semibold border-2 pointer-coarse:min-h-11 ${
+        className={`px-3 py-1 rounded-lg text-sm font-semibold border-2 pointer-coarse:min-h-11 disabled:opacity-50 ${
           pressed ? 'bg-warm-900 border-warm-900 text-white' : 'border-warm-300 text-warm-900'
         }`}
       >
@@ -261,7 +277,7 @@ function ClipRow({
   return (
     <li className="rounded-xl border border-warm-200 bg-surface-raised p-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Hlusta text={clip.text} color="#1F2937" />
+        <Hlusta text={clip.text} color="#1F2937" onHeard={onHeard} />
         <span lang="is" className="font-semibold text-warm-900">
           {clip.text}
         </span>
@@ -283,6 +299,12 @@ function ClipRow({
       </p>
       {doubtful(clip) && (
         <p className="mt-1 text-sm text-warm-800">Talgreinir heyrði: „{clip.heard}“</p>
+      )}
+      {changed && (
+        <p className="mt-1 text-sm text-warm-800" role="status">
+          Þessi upptaka hefur verið gerð aftur síðan þú opnaðir síðuna. Endurhlaðaðu síðuna og
+          hlustaðu aftur áður en þú metur hana.
+        </p>
       )}
       {remade && (
         <p className="mt-1 text-sm text-warm-800">

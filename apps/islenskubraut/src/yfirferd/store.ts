@@ -249,7 +249,11 @@ export function reviewText(review: Review, date: string): string {
   return `${lines.join('\n')}\n`;
 }
 
-/** The download's name: the date and the reviewer, so two teachers' files never share one. */
+/**
+ * The download's name: the date, the reviewer and the start of this browser's id, so two
+ * reviewers' files never share one, two teachers of one name included. A later file from the same
+ * browser may replace an earlier one, which is harmless: it holds everything the earlier one did.
+ */
 export function fileName(review: Review, stamp: string): string {
   const who =
     review.reviewer
@@ -266,7 +270,11 @@ export function fileName(review: Review, stamp: string): string {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '') || stamp.slice(11, 19).replace(/:/g, '');
-  return `yfirferd-islenskubraut-${stamp.slice(0, 10)}-${who}.json`;
+  const tag = (review.id ?? '')
+    .replace(/[^a-z0-9]/gi, '')
+    .slice(0, 6)
+    .toLowerCase();
+  return `yfirferd-islenskubraut-${stamp.slice(0, 10)}-${who}${tag ? `-${tag}` : ''}.json`;
 }
 
 /** Now, as the file's `saved` stamp: 2026-10-17T10:00:00.000Z. */
