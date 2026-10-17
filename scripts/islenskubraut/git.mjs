@@ -47,7 +47,8 @@ const gitPathExists = (root, name) => {
  * going (`HEAD` and the commit being replayed, from that commit's parent: git can leave
  * `REBASE_HEAD` behind after a rebase ends, so only its folder counts), a revert (`HEAD` and the
  * reverted commit's parent, from the commit itself), or else the merge commit `HEAD` is, by its
- * first two parents. `inProgress` says whether one is open, `replayedMerge` that the commit being
+ * first two parents. `inProgress` says whether one is open, `replaying` that it is a rebase or
+ * cherry-pick (which `--skip` can drop the commit of), `replayedMerge` that the commit being
  * replayed is itself a merge, whose base git took from the parent named on its command line.
  * Undefined outside all of them, or where git cannot read a commit (a shallow clone).
  */
@@ -61,6 +62,7 @@ export function mergeSides(root) {
       theirs: merging,
       bases: mergeBases(root, head, merging),
       inProgress: true,
+      replaying: false,
       replayedMerge: false,
     };
   }
@@ -77,6 +79,7 @@ export function mergeSides(root) {
       theirs: replayed,
       bases: parent ? [parent] : [],
       inProgress: true,
+      replaying: true,
       replayedMerge: Boolean(commitOf(root, `${name}^2`)),
     };
   }
@@ -89,6 +92,7 @@ export function mergeSides(root) {
           theirs: parent,
           bases: [reverted],
           inProgress: true,
+          replaying: false,
           replayedMerge: Boolean(commitOf(root, 'REVERT_HEAD^2')),
         }
       : undefined;
@@ -100,10 +104,32 @@ export function mergeSides(root) {
         theirs,
         bases: mergeBases(root, ours, theirs),
         inProgress: false,
+        replaying: false,
         replayedMerge: false,
       }
     : undefined;
 }
+
+/** Whether this is a shallow clone, whose history stops short. */
+export const isShallow = (root) =>
+  git(root, ['rev-parse', '--is-shallow-repository'])?.trim() === 'true';
+
+/** The files under `dir` that one commit adds. */
+export const addedBy = (root, commit, dir) =>
+  (
+    git(root, [
+      'show',
+      '-m',
+      '--diff-filter=A',
+      '--name-only',
+      '--format=',
+      commit,
+      '--',
+      relative(root, dir),
+    ]) ?? ''
+  )
+    .split('\n')
+    .filter(Boolean);
 
 /**
  * Whether a recordings file with conflict markers (`marked`, the pattern) can be merged again from
@@ -124,14 +150,16 @@ export function canMergeAgain(root, file, sides, marked) {
 
 /**
  * Every file under `dir` that a commit in `HEAD`'s history added, with that commit (the latest,
- * where several did). `--full-history` reaches a branch a merge discarded (`-s ours`) as well.
- * In a shallow clone it sees only the history there is, whose oldest commit adds every file it
- * holds, so a file it names that is missing was really taken out.
+ * where several did). `--full-history` reaches a branch a merge discarded (`-s ours`) as well, and
+ * `-m` a file a merge commit itself added. In a shallow clone it sees only the history there is,
+ * whose oldest commit adds every file it holds: a file it names that is missing was really taken
+ * out, but one taken out before that commit cannot be seen (`isShallow`).
  */
 export function addedInHistory(root, dir) {
   const out = git(root, [
     'log',
     '--full-history',
+    '-m',
     '--diff-filter=A',
     '--name-only',
     '--format=%x00%H',

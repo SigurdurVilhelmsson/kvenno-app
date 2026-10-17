@@ -53,6 +53,7 @@ import {
   missingMessage,
   missingRecordFiles,
   recordFile,
+  skipWarning,
   writeRecordFile,
 } from './mat.mjs';
 import { prettify } from './render.mjs';
@@ -160,9 +161,11 @@ function read(file, readable) {
   if (!staged && !marked && !(unreadable && sides?.inProgress)) return { raw };
   if (!canMergeAgain(ROOT, file, sides, CONFLICT) && !(unreadable && sides?.inProgress)) {
     fail(
-      sides?.replayedMerge
-        ? `${rel(file)} has conflict markers from replaying a merge, whose base git took from the command line. Bring the conflict back first: git checkout -m ${rel(file)}`
-        : `${rel(file)} has conflict markers that no merge, rebase, cherry-pick or revert now open, nor the merge HEAD is, put there. Remove them by hand.`
+      staged
+        ? `${rel(file)}: a side of this conflict (${CONFLICT.test(stage(file, 2) ?? '') ? 'HEAD' : 'the commit being replayed'}) already holds conflict markers, committed by an earlier step. Resolve the file by hand, then git add it, or start the rebase again.`
+        : sides?.replayedMerge
+          ? `${rel(file)} has conflict markers from replaying a merge, whose base git took from the command line. Bring the conflict back first: git checkout -m ${rel(file)}`
+          : `${rel(file)} has conflict markers that no merge, rebase, cherry-pick or revert now open, nor the merge HEAD is, put there. Remove them by hand.`
     );
   }
   conflicted.push(rel(file));
@@ -296,6 +299,8 @@ if (conflicted.length > 0) {
     `Merge conflicts in ${conflicted.join(', ')}, merged again recording by recording.${apply ? ' Run git add on them once this is done.' : ' Nothing is written without --apply.'}\n`
   );
 }
+const skip = skipWarning(sides);
+if (skip) console.log(`${skip}\n`);
 // Within a merge, rebase or cherry-pick (or a conflict left from one), changes are measured from
 // what students hear now: this side's hljod.yaml (ours, or HEAD), whichever files git merged
 // cleanly. Outside one, from hljod.yaml as it stands.
@@ -361,6 +366,14 @@ const list = doc.get('clips', true);
 if (list) list.flow = false;
 // Written as --record writes stada.json, and through Prettier, so neither tool rewrites the other.
 const recordAdded = merged.added.verdicts.length > 0 || merged.added.rulings.length > 0;
+// A file of the record added inside a merge commit is dropped by any later rebase that flattens
+// the merge, with nothing left to say it was there: review files are applied in commits of their
+// own, after the merge, rebase, cherry-pick or revert is finished.
+if (recordAdded && sides?.inProgress) {
+  fail(
+    'A merge, rebase, cherry-pick or revert is open. Finish it first: run this with no files and no ruling, git add, then commit or continue. Then apply the review files, or the ruling, in a commit of their own.'
+  );
+}
 const next = recordAdded ? await recordFile(merged.added, now) : undefined;
 const outputs = [
   ['hljod.yaml', MANIFEST, manifestIn.raw, doc.toString()],

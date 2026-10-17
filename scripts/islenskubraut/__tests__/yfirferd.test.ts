@@ -529,18 +529,25 @@ describe('the record over time', () => {
     expect(foldRecord(files(again, takenBack, ruled)).rulers).toEqual([who]);
   });
 
-  it('stamps a ruling, or one taken back, after the latest in the record, whatever the clock', () => {
-    // Given on a machine whose clock ran two days ahead, taken back on one that is right.
+  it('refuses a ruling, or one taken back, on a clock not past the latest in the record', () => {
+    // Given on a machine whose clock ran two days ahead, then taken back on one that is right:
+    // stamped by that clock it would not count, so it is refused and says why.
     const ahead = '2026-10-21T10:00:00.000Z';
     const ruled = merge(EMPTY, [siggi({ clips: [clip('les', 'right', MON)] })], ['Siggi'], {
       now: ahead,
     });
     const who = ruled.ledger.rulers[0];
     const back = mergeReviews(readLedger(ruled.ledger), [], [], { unrule: [who], now: MON });
-    expect(back.added.rulings).toEqual([{ who, rules: false, at: '2026-10-21T10:00:00.001Z' }]);
-    // What the run works from is what every machine folds from the files.
-    expect(back.ledger.rulers).toEqual([]);
-    expect(foldRecord([readRecordFile(ruled.added), readRecordFile(back.added)]).rulers).toEqual(
+    expect(back.errors[0]).toMatch(/not before this machine's clock/);
+    expect(back.added.rulings).toEqual([]);
+    expect(back.ledger.rulers).toEqual([who]);
+    // Once the clock is past it, it counts, as every machine folds it.
+    const later = mergeReviews(readLedger(ruled.ledger), [], [], {
+      unrule: [who],
+      now: '2026-10-22T10:00:00.000Z',
+    });
+    expect(later.errors).toEqual([]);
+    expect(foldRecord([readRecordFile(ruled.added), readRecordFile(later.added)]).rulers).toEqual(
       []
     );
   });

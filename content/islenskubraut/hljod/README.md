@@ -81,8 +81,15 @@ added** (`mat/README.md`): never edit or delete one. So git never has two versio
 and no merge, rebase or cherry-pick can take a side of the record. A `git revert` of a commit that
 added one, a `merge -s ours` or a `git restore` can still take a file out, and a teacher's verdict
 with it, so every tool, the build included, refuses to run while a file history added is missing,
-and says how to put it back (`git checkout <commit> -- <file>`). A verdict applied by mistake cannot
-be taken out that way: have it withdrawn on the page, or rule. The record names nobody: each reviewer in it
+a merge commit included, and says how to put it back (`git checkout <commit> -- <file>`). A verdict
+applied by mistake cannot be taken out that way: have it withdrawn on the page, or rule. **Apply
+review files, or a ruling, in a commit of their own:** `--apply` refuses to add to the record while
+a merge, rebase, cherry-pick or revert is open, since a later rebase that flattens a merge drops
+what the merge added. **A commit dropped from history takes its files with it** (`git rebase
+--skip`, a `drop` in `git rebase -i`, `git reset`), and nothing is left to say they were there. The
+tools warn when a rebase or cherry-pick stops on a commit that adds one: resolve and continue, never
+skip. In a shallow clone a file taken out before its oldest commit cannot be seen, and the tools say
+so; CI checks with the whole history. The record names nobody: each reviewer in it
 is a hash of their browser's id and the name typed there, and of what they wrote it keeps only what
 was wrong with a recording, not the notes on the cards. So the values come from
 every file ever applied, on any machine, not only from the ones passed this time:
@@ -151,9 +158,10 @@ someone ruling, take the ruling back by the name on their files or by that hash:
 
 A ruling, or one taken back, is an entry in the record with a time, and the latest counts on every
 machine: a ruling taken back on one branch and given again on another settles by which came later.
-Every `--urskurdur` is recorded, one already in force too, so pass it once; and an entry is stamped
-after that reviewer's latest one in the record, so a machine whose clock is behind can still take a
-ruling back.
+Every `--urskurdur` is recorded, one already in force too, so pass it once. A ruling, or one taken
+back, is refused on a machine whose clock is not past that reviewer's latest one in the record,
+rather than recorded with a time every other machine would read as older: set the clock right and
+run again.
 
 **After a git merge, rebase or cherry-pick that touched these files, run
 `pnpm islenskubraut:yfirferd --apply`** with no files, before `git add`. The record's files never

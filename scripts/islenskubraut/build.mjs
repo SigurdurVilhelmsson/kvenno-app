@@ -22,7 +22,13 @@ import {
   textsToVoice,
 } from './hljod.mjs';
 import { loadCategories } from './load.mjs';
-import { loadRecord, missingMessage, missingRecordFiles } from './mat.mjs';
+import {
+  loadRecord,
+  missingMessage,
+  missingRecordFiles,
+  shallowNote,
+  skipWarning,
+} from './mat.mjs';
 import { allEntries, approvedPictures, checkCoverage, readMyndir } from './myndir.mjs';
 import {
   prettify,
@@ -199,6 +205,8 @@ if (conflicted.length > 0) {
       ? 'Run: pnpm islenskubraut:yfirferd --apply   (no files needed); it resolves them.'
       : 'pnpm islenskubraut:yfirferd cannot merge them again from what git holds now: run it to see why, or remove the markers by hand.'
   );
+  const skip = skipWarning(sides);
+  if (skip) console.error(skip);
   process.exit(1);
 }
 /** A recordings file read for what it says; one that cannot be read stops the build, naming it. */
@@ -247,6 +255,8 @@ if (missing.length > 0) {
   console.error(missingMessage(missing));
   process.exit(1);
 }
+const shallow = shallowNote();
+if (shallow) console.log(shallow);
 let ledger;
 try {
   ledger = loadRecord();

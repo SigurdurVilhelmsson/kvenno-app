@@ -10,7 +10,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { addedInHistory } from './git.mjs';
+import { addedBy, addedInHistory, isShallow } from './git.mjs';
 import { CONTENT_DIR } from './load.mjs';
 import { prettify } from './render.mjs';
 import { foldRecord, readRecordFile } from './yfirferd.mjs';
@@ -28,6 +28,25 @@ export function missingRecordFiles(dir = MAT_DIR) {
     .filter(([path]) => path.endsWith('.json') && !existsSync(resolve(ROOT, path)))
     .map(([path, commit]) => ({ path, commit }));
 }
+
+/**
+ * While a rebase or cherry-pick is stopped on a commit that adds files of the record: not to skip
+ * it, since skipping drops the commit, and the teachers' verdicts in it with nothing left to say
+ * they were ever there. Empty otherwise.
+ */
+export function skipWarning(sides, dir = MAT_DIR) {
+  if (!sides?.replaying) return '';
+  const adds = addedBy(ROOT, sides.theirs, dir).filter((f) => f.endsWith('.json'));
+  return adds.length === 0
+    ? ''
+    : `The commit being replayed adds ${adds.length} file(s) of the verdict record. Do not skip it (git rebase --skip, git cherry-pick --skip) or drop it: that loses those verdicts for good. Resolve the conflict, then git add and continue.`;
+}
+
+/** Said where the check for files taken out cannot see the whole history. */
+export const shallowNote = () =>
+  isShallow(ROOT)
+    ? 'Note: this is a shallow clone, so a file of the verdict record taken out before its oldest commit cannot be seen here. CI checks with the whole history.'
+    : '';
 
 /** What a person reads when files of the record are missing, and how to put them back. */
 export const missingMessage = (missing) =>

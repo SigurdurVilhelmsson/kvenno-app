@@ -787,14 +787,21 @@ folder of files that are only ever added**, each named by its time and a hash of
 never changed after, so git never has two versions of one to merge: no merge, rebase or
 cherry-pick can take a side of it. A `git revert`, a `merge -s ours` or a restore can still take a
 file out, so the build and the scripts refuse while a file `HEAD`'s history added is missing
-(`missingRecordFiles` in `mat.mjs`, from `git log --full-history --diff-filter=A`), naming the
-commit to restore it from. That replaced a single `mat.json` on
+(`missingRecordFiles` in `mat.mjs`, from `git log --full-history -m --diff-filter=A`, so a file a
+merge commit added counts too), naming the commit to restore it from. **What that cannot see:** a
+commit dropped from history (`git rebase --skip`, a `drop` in `rebase -i`, `git reset`) takes its
+files with nothing left to say they were there, so the tools warn when a rebase or cherry-pick
+stops on a commit adding one (`skipWarning`), and `--apply` refuses to add a file while a merge,
+rebase, cherry-pick or revert is open, since a later rebase that flattens a merge drops what the
+merge added; and a shallow clone sees no further back than its oldest commit (`shallowNote`), so
+CI's lint job, which runs `--check`, fetches the whole history. That replaced a single `mat.json` on
 2026-10-17, after five review passes found ways a merge of it lost a teacher's "wrong" (taking a
 side, rebases, older entries under one key, rulers). `foldRecord` joins the files, in any order:
 per `[text][reviewer][audio version]` the latest entry counts (at one moment, the one that approves
 least), so a verdict on one recording of a text survives one on the next; a ruling, or one taken
 back (`--afturkalla`), is an entry with a time, the latest counting; every `--urskurdur` is
-recorded, and each is stamped after the reviewer's latest one, so a slow clock cannot lose it. Files are written through
+recorded, and one is refused on a machine whose clock is not past the reviewer's latest ruling, so
+each is later than the one before it on every machine. Files are written through
 Prettier, so the commit hook leaves them alone. It names nobody: a reviewer is a hash of the random
 id the page gives each browser (`newId` in `store.ts`, reset by `Hreinsa allt`) and the name typed,
 so two teachers who type one name stay two, as do two sharing one browser, and a file without an id

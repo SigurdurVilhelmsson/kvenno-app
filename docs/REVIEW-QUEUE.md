@@ -698,7 +698,14 @@ that a `git revert` or `merge -s ours` could still take a file of the record out
 `REBASE_HEAD` made the tools merge markers from an unrelated operation, that rulings went by each
 machine's clock, and that leaving the listening page within the app forgot a remade recording. The
 tools now refuse while a record file is missing, count a rebase only while it runs, stamp rulings
-after the latest, and keep what plays found until a reload.
+after the latest, and keep what plays found until a reload. An eleventh pass found that a file a
+merge commit added escaped that check, that a commit dropped by `git rebase --skip` takes its files
+with nothing left to say so, that a shallow clone sees only part of history, and that stamping a
+ruling after the latest made two machines' rulings tie. Now the check reads merge commits, the
+tools warn before a skip and refuse to add to the record while a merge, rebase, cherry-pick or
+revert is open, CI checks with the whole history, and a ruling on a clock not past the latest is
+refused. The level buttons on the card page also ran 2 px past a 360 px screen in a wide fallback
+font (DejaVu Sans) until the web font arrived; they now share the row on a phone.
 
 This was chosen over the spreadsheet round trip for this first review, for two reasons. The
 workbook's instructions are still placeholder Icelandic (`CLAUDE.md`, "UNFINISHED"). And the

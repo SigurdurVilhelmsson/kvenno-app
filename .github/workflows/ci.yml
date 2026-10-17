@@ -15,7 +15,11 @@ jobs:
     name: Lint & Type Check
     runs-on: ubuntu-latest
     steps:
+      # The whole history: the Íslenskubraut check refuses a file of the verdict record that a
+      # revert or a merge took out, and a shallow clone cannot see one taken out before it.
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v6
 

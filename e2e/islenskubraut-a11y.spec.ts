@@ -31,6 +31,36 @@ async function expectNoViolations(page: Page, where: string) {
   expect(summary, where).toEqual([]);
 }
 
+/**
+ * How far the page runs past the screen's right edge, measured once the web fonts have loaded.
+ * Measured before then, the result depends on how fast they arrive: CI's DejaVu Sans fallback is
+ * wider than DM Sans, and the level buttons ran 2 px past the screen in it until 2026-10-17.
+ */
+async function sidewaysAt(page: Page, url: string) {
+  await page.goto(url);
+  await expect(page.locator('h1')).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  return page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+}
+
+/**
+ * The page as a phone shows it while the web fonts are still loading, or when they never arrive:
+ * in a wide fallback. DejaVu Sans is named because it is the widest of the common ones and is on
+ * every Ubuntu machine, CI's included; a machine without it falls back to its own sans-serif.
+ */
+async function withoutWebFonts(page: Page) {
+  await page.route(/\.woff2?$/, (route) => route.abort());
+  await page.addInitScript(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('style');
+      style.textContent = "* { font-family: 'DejaVu Sans', sans-serif !important; }";
+      document.head.append(style);
+    });
+  });
+}
+
 test('the home page has no WCAG AA violations', async ({ page }) => {
   await page.goto('/islenskubraut/');
   await expect(page.locator('h1')).toBeVisible();
@@ -134,30 +164,27 @@ test('the list of sentence builders has no WCAG AA violations', async ({ page })
 });
 
 // The tabs (Orðaforði, Setningarammar, Spurningaspjald) ran 32 px past a 360 px screen until
-// 2026-10-16, on every card, so every card and its draft links are checked.
-test('the card pages do not scroll sideways at 360 px', async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
-  for (const id of CARDS) {
-    await page.goto(`/islenskubraut/spjald/${id}?drog`);
-    await expect(page.locator('h1')).toBeVisible();
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-    );
-    expect(overflow, id).toBeLessThanOrEqual(0);
-  }
-});
+// 2026-10-16, on every card, so every card and its draft links are checked, in the web font and
+// in a wide fallback.
+for (const fonts of ['web', 'fallback'] as const) {
+  test(`the card pages do not scroll sideways at 360 px (${fonts} font)`, async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    if (fonts === 'fallback') await withoutWebFonts(page);
+    for (const id of CARDS) {
+      expect(await sidewaysAt(page, `/islenskubraut/spjald/${id}?drog`), id).toBeLessThanOrEqual(0);
+    }
+  });
 
-test('the sentence builder does not scroll sideways at 360 px', async ({ page }) => {
-  await page.setViewportSize({ width: 360, height: 640 });
-  for (const id of CATEGORIES) {
-    await page.goto(`/islenskubraut/smidur/${id}`);
-    await expect(page.locator('h1')).toBeVisible();
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-    );
-    expect(overflow, id).toBeLessThanOrEqual(0);
-  }
-});
+  test(`the sentence builder does not scroll sideways at 360 px (${fonts} font)`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    if (fonts === 'fallback') await withoutWebFonts(page);
+    for (const id of CATEGORIES) {
+      expect(await sidewaysAt(page, `/islenskubraut/smidur/${id}`), id).toBeLessThanOrEqual(0);
+    }
+  });
+}
 
 // The teachers' review pages, linked from nowhere on the site. Checked with a note written and a
 // recording marked wrong, so the note box and the "Hvað er rangt?" field are checked too, and

@@ -326,14 +326,15 @@ export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = 
   const errors = [];
   const ruling = new Set(ledger.rulers);
   const rulings = { ...(ledger.rulings ?? {}) };
-  // A ruling, or one taken back, is stamped after the reviewer's latest one in the record, so
-  // the record says what this run says even where this machine's clock is behind the one that
-  // gave that.
-  const stamp = (who) => {
+  // Rulings are ordered by when they were given, so one is refused where this machine's clock is
+  // not past the reviewer's latest one in the record: it would not count, or tie with another.
+  const stamp = (who, name, flag) => {
     const latest = rulings[who]?.at;
-    return latest !== undefined && latest >= now
-      ? new Date(Date.parse(latest) + 1).toISOString()
-      : now;
+    if (latest === undefined || latest < now) return now;
+    errors.push(
+      `${flag} "${name}": the latest ruling in the record for ${who} was given at ${latest}, which is not before this machine's clock (${now}). Set the clock right and run again.`
+    );
+    return undefined;
   };
   const one = (name, flag) => {
     if (HASH.test(name) && flag === '--afturkalla') return name;
@@ -356,7 +357,8 @@ export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = 
   for (const name of rulers) {
     const who = one(name, '--urskurdur');
     if (who === undefined) continue;
-    const at = stamp(who);
+    const at = stamp(who, name, '--urskurdur');
+    if (at === undefined) continue;
     ruling.add(who);
     rulings[who] = { rules: true, at };
     added.rulings.push({ who, rules: true, at });
@@ -366,7 +368,8 @@ export function mergeReviews(ledger, reviews, rulers = [], { unrule = [], now = 
     if (who === undefined) continue;
     if (!ruling.has(who)) errors.push(`--afturkalla "${name}": ${who} does not rule`);
     else {
-      const at = stamp(who);
+      const at = stamp(who, name, '--afturkalla');
+      if (at === undefined) continue;
       ruling.delete(who);
       rulings[who] = { rules: false, at };
       added.rulings.push({ who, rules: false, at });
