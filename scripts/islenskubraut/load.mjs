@@ -236,7 +236,7 @@ function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions 
 
       if (blanks === 0) {
         assert(
-          f.blank === undefined && f.words === undefined,
+          f.blank === undefined && f.words === undefined && f.forms === undefined,
           `${at}: "${f.frame}" has no blank to fill`
         );
         return { frame: f.frame, agree, blank: null, ...exceptKey };
@@ -244,8 +244,8 @@ function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions 
       if (f.blank === 'subject') {
         assert(subject.kind === 'words', `${at}: blank: subject needs a subject word list`);
         assert(
-          f.words === undefined && f.form === undefined,
-          `${at}: the subject blank takes no words or form`
+          f.words === undefined && f.form === undefined && f.forms === undefined,
+          `${at}: the subject blank takes no words, form or forms`
         );
         return { frame: f.frame, agree, blank: { subject: true }, ...exceptKey };
       }
@@ -283,6 +283,16 @@ function loadBuilder(id, raw, { subCategories, sentenceFrames, guidingQuestions 
         ...exceptKey,
       };
     });
+
+    // The page starts on the first frame a subject fits, so every subject must fit one.
+    if (subject.kind === 'words') {
+      for (const s of subject.options) {
+        assert(
+          frames.some((f) => !f.except?.includes(s)),
+          `${where}: "${s}" is left out of every frame by except`
+        );
+      }
+    }
 
     // A word BÍN reads as two words of the class the builder needs (`sætt`: `sær` or `sætur`)
     // names the one meant, by its BÍN headword. The builder never picks one itself.

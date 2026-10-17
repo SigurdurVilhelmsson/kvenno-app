@@ -416,7 +416,10 @@ describe('exceptions in the tags', () => {
   });
 
   it('fetches a table only for the words a blank inflects', () => {
-    const { guids } = paradigmsNeeded([category], lookups);
-    expect(guids).toContain('saetur');
+    // Exactly these, and no problem: an as-is word taken for an inflected one would add either.
+    expect(paradigmsNeeded([category], lookups)).toEqual({
+      guids: ['avoxtur', 'kjot', 'saetur'],
+      problems: [],
+    });
   });
 });

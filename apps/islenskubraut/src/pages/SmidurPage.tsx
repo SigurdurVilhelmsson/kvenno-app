@@ -28,8 +28,13 @@ export function SmidurPage() {
   const { flokkur } = useParams<{ flokkur: string }>();
   const category = getCategoryById(flokkur || '');
   const data = category ? getSmidur(category.id, 'A1') : undefined;
+  const fits = (frameAt: number, subjectAt: number) =>
+    !data?.frames[frameAt].except?.includes(data.subjects[subjectAt].text);
   const [subjectIndex, setSubjectIndex] = useState(0);
-  const [frameIndex, setFrameIndex] = useState(0);
+  // The first frame the first subject fits; the build makes sure there is one.
+  const [frameIndex, setFrameIndex] = useState(() =>
+    Math.max(0, data?.frames.findIndex((_, i) => fits(i, 0)) ?? 0)
+  );
   const [optionIndex, setOptionIndex] = useState<number | null>(null);
 
   if (!category || !data) {
@@ -66,9 +71,9 @@ export function SmidurPage() {
   // A subject the chosen frame does not fit moves the choice to the first frame that does.
   const pickSubject = (index: number) => {
     setSubjectIndex(index);
-    if (data.frames[frameIndex].except?.includes(data.subjects[index].text)) {
-      const first = data.frames.findIndex((f) => !f.except?.includes(data.subjects[index].text));
-      pickFrame(first);
+    if (!fits(frameIndex, index)) {
+      const first = data.frames.findIndex((_, i) => fits(i, index));
+      if (first !== -1) pickFrame(first);
     }
   };
 

@@ -124,16 +124,22 @@ builder:
 
 Until then the page still works at its address, marked as a draft, so it can be tried out.
 
-Two keys mend a frame that reads wrong with some words. `except` leaves a frame out for the
-subjects listed, so `Maður borðar það ___.` is not offered about a drink. `forms` fills one word
-of the blank differently from the rest, so `þögult` agrees with the subject while `hátt` and
-`lágt` stay as written:
+Two keys mend a frame that reads wrong with some words; add them to the frame as it stands.
+`except` leaves a frame out for the subjects listed, so `Maður borðar það ___.` is not offered
+about a drink. Every subject must still fit at least one frame. `forms` fills one word of the
+blank differently from the rest, so `þögult` agrees with the subject while `hátt` and `lágt` stay
+as written. The two frames as they are in `matur.yaml` and `farartaeki.yaml`:
 
 ```yaml
 - frame: Maður borðar það ___.
+  agree:
+    það: ÞF
+  words: Hvenær er þetta notað?
   except:
     - drykkur
 - frame: Það hljómar ___.
+  agree:
+    Það: NF
   words: Hvaða hljóð gefur það frá sér?
   forms:
     þögult: agree

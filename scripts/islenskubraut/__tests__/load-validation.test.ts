@@ -510,6 +510,8 @@ guidingQuestions:
 
   it('reads a frame that does not fit some subjects, and a word with its own form', () => {
     const result = load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
       - frame: Það er ___.
         words: Hvernig er það?
         forms:
@@ -517,7 +519,7 @@ guidingQuestions:
         except:
           - skór
 `);
-    expect(result.builder?.[0].frames[0]).toEqual({
+    expect(result.builder?.[0].frames[1]).toEqual({
       frame: 'Það er ___.',
       agree: [],
       blank: {
@@ -533,7 +535,7 @@ guidingQuestions:
   it('refuses an exception or a word form the tags cannot honour', () => {
     const frame = (extra: string) =>
       load(
-        `${subject}    frames:\n      - frame: Það er ___.\n        words: Hvernig er það?\n${extra}`
+        `${subject}    frames:\n      - frame: Þetta er ___.\n        blank: subject\n      - frame: Það er ___.\n        words: Hvernig er það?\n${extra}`
       );
     expect(() => frame(`        except: [kjöt]\n`)).toThrow(/except: "kjöt" is not a subject/);
     expect(() => frame(`        except: skór\n`)).toThrow(/except must be a list/);
@@ -546,6 +548,31 @@ guidingQuestions:
     expect(() => frame(`        forms:\n          sætt: as-is\n`)).toThrow(
       /already the blank's form/
     );
+  });
+
+  it('refuses an exception that leaves a subject with no frame at all', () => {
+    // The page opens on the first frame the first subject fits; there has to be one.
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+        except: [ávöxtur]
+      - frame: Það er ___.
+        words: Hvernig er það?
+        except: [ávöxtur]
+`)
+    ).toThrow(/"ávöxtur" is left out of every frame by except/);
+  });
+
+  it('refuses a word form on the subject blank, which takes the subject as it is', () => {
+    expect(() =>
+      load(`${subject}    frames:
+      - frame: Þetta er ___.
+        blank: subject
+        forms:
+          ávöxtur: agree
+`)
+    ).toThrow(/the subject blank takes no words, form or forms/);
   });
 
   it('throws on an agreeing word that is not in the frame', () => {
@@ -586,7 +613,7 @@ guidingQuestions:
         blank: subject
         words: Tegund
 `)
-    ).toThrow(/the subject blank takes no words or form/);
+    ).toThrow(/the subject blank takes no words, form or forms/);
   });
 
   it('throws on a fixed subject word that no frame says', () => {
