@@ -5333,6 +5333,29 @@
         }
       ]
     },
+    "hlýtt": {
+      "found": true,
+      "lemmas": [
+        {
+          "ord": "hlýða",
+          "guid": "44bd047d17c42f17cb35977e5b88e251",
+          "ofl": "so",
+          "kyn": ""
+        },
+        {
+          "ord": "hlýr",
+          "guid": "d70af374b0c6c0f04b4fe471c41de25c",
+          "ofl": "lo",
+          "kyn": ""
+        },
+        {
+          "ord": "hlýtt",
+          "guid": "de74dec939adebd05a443b07a899fc9a",
+          "ofl": "ao",
+          "kyn": ""
+        }
+      ]
+    },
     "hollt": {
       "found": true,
       "lemmas": [

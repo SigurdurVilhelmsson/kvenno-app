@@ -4980,16 +4980,6 @@ export const hlustun: HlustunClip[] = [
         level: 'B1',
         where: 'Hvernig finnst það við snertingu?',
       },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
     ],
     heard: 'heitt',
     score: 0,
