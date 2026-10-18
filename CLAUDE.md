@@ -353,8 +353,8 @@ labels are drei `<Text>`, which is troika-three-text, and it failed twice over
 1. With no `font` it fetched per-character font data from `cdn.jsdelivr.net`, and `<Text>`
    suspends until that answers. The game-HTML CSP in `server/nginx-site.conf` says
    `connect-src 'self'`, so wherever that config is live it never answered for anyone — not only on
-   networks that block the CDN. (`deploy.sh` does not install that file, so whether production
-   serves it was not checked from here.)
+   networks that block the CDN. (`deploy.sh` does not install that file. Production serves it:
+   checked 2026-10-18, the live header matches `nginx-site.conf` exactly.)
 2. It built glyphs in a Web Worker that loads its code with `importScripts(blob:…)`, which the same
    CSP's `script-src` refuses. A bundled font alone does not fix the view; this is the second half.
 

@@ -16,8 +16,9 @@ needs no ruling, only time.
 
 ## A. After the 2026-09-29 deploy
 
-- [ ] **Old game URL redirects.** `curl -I https://kvenno.app/efnafraedi/1-ar/games/jafna-jofnur.html`
-      should return 301 to `stilla-efnajofnur.html`.
+- [x] **Old game URL redirects** — done 2026-10-18, after the deploy carrying PR #107 with the
+      nginx config installed: `curl -I https://kvenno.app/efnafraedi/1-ar/games/jafna-jofnur.html`
+      returns 301 to `stilla-efnajofnur.html`.
   - `scripts/deploy.sh` does **not** install the nginx config. If you get a 200, copy
     `server/nginx-site.conf` over the live site file, then run
     `sudo nginx -t && sudo systemctl reload nginx`.
@@ -27,13 +28,20 @@ needs no ruling, only time.
       Mólhugtakið and Lögmál Hess.
   - Expect question → answer → feedback → Næsta with little or no scrolling.
   - After Næsta, the next item should open at its top.
-- [ ] **Hard-refresh the three 3D games** (VSEPR, Lewis, IMF) on a device that visited before the
+- [x] **Hard-refresh the three 3D games** — moot, checked 2026-10-18: the live HTML of all three
+      names a hashed entry (`assets/vsepr-geometry/vsepr-geometry-<hash>.js`), so PR #82 is
+      deployed. The original check: hard-refresh them on a device that visited before the
       deploy. Their `{game}.js` entry file has a fixed name and nginx caches it for a year, so a
       returning browser can run the old bundle. See D for the lasting fix. **Moot from the deploy
       that carries PR #82**: the entry is hashed there, so new HTML names a file no browser has
       cached.
-- [ ] **Íslenskubraut recordings and review pages, after the deploy that carries them.** Before
-      sending colleagues to review (C20):
+- [x] **Íslenskubraut recordings and review pages, after the deploy that carries them** — done
+      2026-10-18 (PR #107), apart from the device check below. Deployed, with the nginx config
+      installed. Checked from a cloud session: the live app's assets are the ones `main`
+      builds; all 524 recordings answer 200 `audio/mpeg` with `Cache-Control: no-cache`, and
+      `0000000000000000.mp3` a 404; all 105 PDFs under `spjold/` answer 200 `application/pdf`; both
+      review pages load. The game pages also send the CSP in `server/nginx-site.conf` exactly.
+      Before sending colleagues to review (C20), the check was:
   - Install `server/nginx-site.conf` as above. It gives `/islenskubraut/hljod/` its own location
     (2026-10-16): without it a missing recording is answered with the app's HTML and a 200, and
     a remade one can be served from a browser's cache.
@@ -41,6 +49,9 @@ needs no ruling, only time.
     should return 200 with `audio/mpeg`, and `…/hljod/0000000000000000.mp3` a 404.
   - Open https://kvenno.app/islenskubraut/yfirferd on a phone and a laptop. Every PDF link should
     open a PDF, and a recording on `/islenskubraut/yfirferd/hljod` should play.
+- [ ] **Play a recording on the review pages on a phone and on a laptop**, the one part of the item
+      above a request cannot show: a PDF link opens in the browser's viewer and a recording on
+      `/islenskubraut/yfirferd/hljod` is heard.
 - [x] **Íslenskubraut PDF download** — done 2026-10-06 (PRs #87, #88): works on kvenno.app.
       The check: on https://kvenno.app/islenskubraut/, open any card and press
       `Hlaða niður PDF`. Expect a PDF in Noto Sans, not the alert
