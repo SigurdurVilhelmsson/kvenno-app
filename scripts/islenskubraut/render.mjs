@@ -477,6 +477,12 @@ export interface Glossur {
   dictionary: string | null;
   /** \`words[categoryId][chip]\`: the gloss of a chip on that card. */
   words: Record<string, Record<string, string>>;
+  /**
+   * \`questions[categoryId][question][chip]\`: a chip that means something else under one question
+   * of the card, read before \`words\` (\`sterkt\` to the taste and in the nose on Matur). A question
+   * is named by its label (\`Útlit\`), or by its box's kind (\`hvar\`, \`hver\`, \`hvenaer\`, \`notagildi\`).
+   */
+  questions: Record<string, Record<string, Record<string, string>>>;
 }
 
 export const glossur: Glossur[] = ${literal(glossur)};

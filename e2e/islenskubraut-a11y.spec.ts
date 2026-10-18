@@ -145,6 +145,60 @@ test('the card page with a draft language has no WCAG AA violations', async ({ p
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
+// Until 2026-10-18 only the A1 chips had a Polish gloss, so at A2 and B1 most chips showed the
+// dictionary link alone, which reads as a missing word. Every chip on every card now has one, at
+// each level, and the longer glosses still fit a 360 px screen in the web font and in a fallback.
+for (const fonts of ['web', 'fallback'] as const) {
+  for (const level of ['A2', 'B1']) {
+    for (const id of CARDS) {
+      test(`every chip on ${id} has its Polish gloss at ${level} and fits 360 px (${fonts} font)`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width: 360, height: 640 });
+        if (fonts === 'fallback') await withoutWebFonts(page);
+        await page.addInitScript(() => {
+          try {
+            window.localStorage.setItem('islenskubraut-mal', 'pl');
+          } catch {
+            // The test then fails on the missing glosses, which says why.
+          }
+        });
+        await page.goto(`/islenskubraut/spjald/${id}?drog`);
+        await page.getByRole('tab', { name: 'Spurningaspjald' }).click();
+        await page.getByRole('button', { name: new RegExp(`^${level}`) }).click();
+        await page.evaluate(() => document.fonts.ready);
+        const glosses = page.locator('span[lang="pl"]');
+        await expect(glosses.first()).toBeVisible();
+        const bare = await glosses.evaluateAll((spans) =>
+          spans
+            .filter((span) => (span.textContent ?? '').replace('↗', '').trim() === '')
+            .map((span) => span.parentElement?.textContent?.replace('↗', '').trim())
+        );
+        expect(bare, 'chips with only the dictionary link').toEqual([]);
+        // A box hides what runs past its edge, so a gloss too wide for it is cut off, not
+        // scrolled: the page test above cannot see that.
+        const clipped = await glosses.evaluateAll((spans) =>
+          spans
+            .filter((span) => {
+              const box = (
+                span.closest('.overflow-hidden') ?? document.body
+              ).getBoundingClientRect();
+              const own = span.getBoundingClientRect();
+              return own.left < box.left - 0.5 || own.right > box.right + 0.5;
+            })
+            .map((span) => span.textContent?.replace('↗', '').trim())
+        );
+        expect(clipped, 'glosses cut off at the edge of their box').toEqual([]);
+        const overflow = await page.evaluate(
+          () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+        );
+        expect(overflow).toBeLessThanOrEqual(0);
+        if (fonts === 'web') await expectNoViolations(page, `pólska ${id} ${level}`);
+      });
+    }
+  }
+}
+
 // A draft category is left off the home page, and shown there under ?drog (C19).
 test('the home page leaves out a draft category except under ?drog', async ({ page }) => {
   await page.goto('/islenskubraut/');

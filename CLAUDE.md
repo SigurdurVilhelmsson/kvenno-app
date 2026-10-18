@@ -744,12 +744,15 @@ every change after it. Wording is C17; it goes live with the builder (C9).
 
 **Students' own languages, "Á þínu máli" (2026-10-16).** `content/islenskubraut/glossur/<code>.yaml`
 is one language: glosses per chip, per-card `categories` overrides for a chip that means something
-else on one card (`hátt`), `dir` for right-to-left, and an optional `dictionary` address with
-`{word}`. `scripts/islenskubraut/glossur.mjs` refuses a gloss for a chip no card prints, and **an
+else on one card (`hátt`), per-question `questions` overrides for one that means two things on one
+card (`sterkt` to the taste and in the nose on Matur, `hátt` loud and tall on Farartæki), `dir` for
+right-to-left, and an optional `dictionary` address with `{word}`. `scripts/islenskubraut/glossur.mjs` refuses a gloss for a chip no card prints, and **an
 approved language must name `approvedBy` and gloss every A1 chip**, unless it is a dictionary alone.
 The card page's picker (`Mal.tsx`) offers approved languages only, drafts under `?drog`, and
-remembers the choice in `localStorage`. `pl.yaml` is machine-drafted, with Árnastofnun's
-Icelandic–Polish dictionary linked per word (C18).
+remembers the choice in `localStorage`. `pl.yaml` is machine-drafted and glosses every chip at every level (A2 and B1
+since 2026-10-18, when most of them showed the dictionary link alone), with Árnastofnun's
+Icelandic–Polish dictionary linked per word (C18). **A new chip needs a Polish gloss in the same
+change**, or `glossur.test.ts` fails; a draft is enough.
 
 **Skólinn, the seventh category (2026-10-16), and draft categories.** `content/islenskubraut/skolinn.yaml`
 is the language of school: things in the bag, subjects, instructions (`lestu`, `berðu saman`,

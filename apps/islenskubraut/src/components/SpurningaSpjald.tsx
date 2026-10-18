@@ -1,5 +1,7 @@
+import { useContext } from 'react';
+
 import { Hlusta } from './Hlusta';
-import { Glossa } from './Mal';
+import { Glossa, MalContext } from './Mal';
 import { Pictogram, pictureFor } from './Pictogram';
 import { Sheet } from './Sheet';
 import { Category, Level, GuidingQuestion } from '../data/types';
@@ -104,7 +106,7 @@ function QuestionBlock({
               {picture !== undefined && <Pictogram id={picture} size={40} />}
               {option}
               <Hlusta text={option} color={categoryColor} />
-              <Glossa categoryId={categoryId} text={option} />
+              <Glossa categoryId={categoryId} question={question.label} text={option} />
             </span>
           );
         })}
@@ -124,6 +126,7 @@ function ContextCard({
   categoryId: string;
   color: string;
 }) {
+  const mal = useContext(MalContext);
   const answers = question.answers.find((a) => a.level === level);
   if (!answers || answers.options.length === 0) return null;
 
@@ -133,17 +136,28 @@ function ContextCard({
         <p className="text-xs font-bold">{question.question}</p>
       </div>
       {/* One wrapping line with separators, as on the printed card: each answer is kept
-          whole, so a line breaks between answers, never inside one. */}
+          whole, so a line breaks between answers, never inside one. A gloss in the student's
+          own language goes under its answer, as on the question cards: beside it, it ran past
+          the box's edge on a phone and was cut off. */}
       <p className="px-3 py-1.5 text-xs font-bold leading-relaxed" style={{ color }}>
         {answers.options.map((option, index) => {
           const picture = pictureAt(level, categoryId, option);
           return (
-            <span key={index} className="inline-flex items-center gap-1 mr-1 align-middle">
-              {picture !== undefined && <Pictogram id={picture} size={24} />}
-              {option}
-              <Hlusta text={option} color={color} />
-              <Glossa categoryId={categoryId} text={option} />
-              {index < answers.options.length - 1 && ' ·'}
+            <span
+              key={index}
+              className={`inline-flex flex-col max-w-full mr-1 ${mal ? 'align-top' : 'align-middle'}`}
+            >
+              {/* A long word takes the row, and its play button wraps under it. */}
+              <span className="inline-flex flex-wrap items-center gap-x-1">
+                {picture !== undefined && <Pictogram id={picture} size={24} />}
+                {option}
+                {/* The button and the separator wrap together, never the dot alone. */}
+                <span className="inline-flex items-center gap-1">
+                  <Hlusta text={option} color={color} />
+                  {index < answers.options.length - 1 && ' ·'}
+                </span>
+              </span>
+              <Glossa categoryId={categoryId} question={question.context?.kind} text={option} />
             </span>
           );
         })}

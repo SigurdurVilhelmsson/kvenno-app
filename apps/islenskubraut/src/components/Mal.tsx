@@ -81,11 +81,25 @@ export function lookupWord(chip: string): string {
   return chip.split('/')[0].trim().split(/\s+/).at(-1) ?? chip;
 }
 
-/** A chip's gloss in the picked language, and its dictionary link, under the chip's word. */
-export function Glossa({ categoryId, text }: { categoryId: string; text: string }) {
+/**
+ * A chip's gloss in the picked language, and its dictionary link, under the chip's word. `question`
+ * is the question's label (`Lykt`) or its box's kind (`hvar`): a chip that means something else
+ * under one question of the card has a gloss of its own there.
+ */
+export function Glossa({
+  categoryId,
+  question,
+  text,
+}: {
+  categoryId: string;
+  question?: string;
+  text: string;
+}) {
   const mal = useContext(MalContext);
   if (!mal) return null;
-  const gloss = mal.words[categoryId]?.[text];
+  const gloss =
+    (question ? mal.questions?.[categoryId]?.[question]?.[text] : undefined) ??
+    mal.words[categoryId]?.[text];
   if (!gloss && !mal.dictionary) return null;
   const href = mal.dictionary?.replace('{word}', encodeURIComponent(lookupWord(text)));
   return (

@@ -5,7 +5,9 @@
  *
  * `content/islenskubraut/glossur/<code>.yaml` is one language: its glosses, shared across cards
  * with per-card overrides for a chip that means something else there (`hátt` is loud on Dýr and
- * tall on Staðir), and optionally a dictionary that looks a word up by URL. A language can be a
+ * tall on Staðir), per-question overrides for one that means two things on one card (`sterkt` is
+ * strong to the taste and in the nose on Matur, and Polish says it two ways), and optionally a
+ * dictionary that looks a word up by URL. A language can be a
  * dictionary alone: Árnastofnun's Icelandic–Polish dictionary has every chip, checked by its
  * editors, so it needs no glosses written here at all.
  *
@@ -32,6 +34,9 @@ function a1Chips(category) {
   );
 }
 
+/** The key a language file names a question by: its label (Útlit), or its box's kind (hvar). */
+export const questionKey = (question) => question.label ?? question.context?.kind;
+
 function checkGloss(value, where) {
   assert(typeof value === 'string' && value.trim() !== '', `${where} must be text`);
   assert(findInvisible(value).length === 0, `${where} contains an invisible character`);
@@ -40,7 +45,8 @@ function checkGloss(value, where) {
 /**
  * One language's file, checked against the cards. Returns the language with its glosses resolved
  * per category: `{ code, name, dir, approved, approvedBy, dictionary, words: { [categoryId]:
- * { [chip]: gloss } } }`.
+ * { [chip]: gloss } }, questions: { [categoryId]: { [question]: { [chip]: gloss } } } }`. A
+ * question's own gloss is read before the card's, and the card's before the shared one.
  */
 export function readGlossur(raw, code, categories) {
   const where = `${code}.yaml`;
@@ -53,6 +59,7 @@ export function readGlossur(raw, code, categories) {
     dictionary = null,
     words = {},
     categories: overrides = {},
+    questions: byQuestion = {},
     ...rest
   } = raw;
   assert(Object.keys(rest).length === 0, `${where} has unknown keys: ${Object.keys(rest)}`);
@@ -90,6 +97,25 @@ export function readGlossur(raw, code, categories) {
     }
   }
 
+  const questions = {};
+  for (const [id, map] of Object.entries(byQuestion ?? {})) {
+    const category = categories.find((c) => c.id === id);
+    assert(category, `${where}: questions names no card ${id}`);
+    for (const [key, chips] of Object.entries(map ?? {})) {
+      const question = category.guidingQuestions.find((q) => questionKey(q) === key);
+      assert(
+        question,
+        `${where}: ${id} has no question ${key} (name it by its label, Útlit, or its box: hvar, hver, hvenaer, notagildi)`
+      );
+      const offered = new Set(question.answers.flatMap((a) => a.options));
+      for (const [chip, gloss] of Object.entries(chips ?? {})) {
+        assert(offered.has(chip), `${where}: "${chip}" is not a chip under ${id} ${key}`);
+        checkGloss(gloss, `${where}: ${id} ${key} ${chip}`);
+      }
+      (questions[id] ??= {})[key] = { ...chips };
+    }
+  }
+
   const resolved = Object.fromEntries(
     categories.map((c) => [
       c.id,
@@ -103,7 +129,11 @@ export function readGlossur(raw, code, categories) {
 
   // A language with glosses must gloss every A1 chip before students see it; a dictionary alone
   // covers every word by itself.
-  const glossed = Object.keys(words ?? {}).length + Object.keys(overrides ?? {}).length > 0;
+  const glossed =
+    Object.keys(words ?? {}).length +
+      Object.keys(overrides ?? {}).length +
+      Object.keys(byQuestion ?? {}).length >
+    0;
   assert(glossed || dictionary, `${where} has neither glosses nor a dictionary`);
   if (approved && glossed) {
     const missing = categories.flatMap((c) =>
@@ -112,5 +142,5 @@ export function readGlossur(raw, code, categories) {
     assert(missing.length === 0, `${where} is approved but has no gloss for ${missing.join(', ')}`);
   }
 
-  return { code, name, dir, approved, approvedBy, dictionary, words: resolved };
+  return { code, name, dir, approved, approvedBy, dictionary, words: resolved, questions };
 }

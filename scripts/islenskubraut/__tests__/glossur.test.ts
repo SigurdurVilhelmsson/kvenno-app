@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
-import { readGlossur } from '../glossur.mjs';
+import { questionKey, readGlossur } from '../glossur.mjs';
 import { loadCategories } from '../load.mjs';
 
 // Two cards that share a chip meaning different things, as `hátt` does on Dýr and Staðir.
@@ -57,6 +57,38 @@ describe('a language file', () => {
     expect(() => read({ words: {}, categories: {} })).toThrow(/neither glosses nor a dictionary/);
   });
 
+  it('reads a question’s own gloss first, for a chip that means two things on one card', () => {
+    // On Matur, sterkt answers the taste question and the smell one, and Polish says them two ways.
+    const matur = {
+      id: 'matur',
+      guidingQuestions: [
+        { ...q(['sterkt']), label: 'Bragð' },
+        { ...q(['sterkt']), label: 'Lykt' },
+        { ...q(['heima']), context: { kind: 'hvar', color: '#000' } },
+      ],
+    };
+    const own = (questions: unknown) =>
+      readGlossur(
+        { name: 'Polski', words: { sterkt: 'mocne', heima: 'w domu' }, questions },
+        'pl',
+        [matur]
+      );
+    const g = own({ matur: { Lykt: { sterkt: 'mocno' }, hvar: { heima: 'w domu' } } });
+    expect(g.words).toEqual({ matur: { sterkt: 'mocne', heima: 'w domu' } });
+    expect(g.questions).toEqual({
+      matur: { Lykt: { sterkt: 'mocno' }, hvar: { heima: 'w domu' } },
+    });
+    expect(own({}).questions).toEqual({});
+    expect(() => own({ matur: { Hljóð: { sterkt: 'głośno' } } })).toThrow(
+      /matur has no question Hljóð/
+    );
+    expect(() => own({ matur: { Lykt: { heima: 'w domu' } } })).toThrow(
+      /"heima" is not a chip under matur Lykt/
+    );
+    expect(() => own({ dyr: {} })).toThrow(/questions names no card dyr/);
+    expect(() => own({ matur: { Lykt: { sterkt: '' } } })).toThrow(/must be text/);
+  });
+
   it('refuses what would show a student the wrong thing', () => {
     expect(() => read({ words: { köttur: 'kot' } })).toThrow(/"köttur" is not a chip on any card/);
     expect(() => read({ categories: { stadir: { feldur: 'futro' } } })).toThrow(
@@ -99,5 +131,28 @@ describe('the real files', () => {
       for (const chip of a1) expect(pl.words[c.id][chip], `${c.id}: ${chip}`).toBeTruthy();
     }
     expect(pl.words.stadir['hátt']).not.toBe(pl.words.dyr['hátt']);
+  });
+
+  // Until 2026-10-18 only A1 was glossed, so at A2 and B1 most chips showed the dictionary link
+  // alone. A chip added to a card needs a Polish gloss too; a draft is enough, since none of it
+  // reaches students before a speaker has checked the file.
+  it('gloss every chip in Polish, at every level and under every question', () => {
+    const pl = readGlossur(parse(readFileSync(resolve(dir, 'pl.yaml'), 'utf8')), 'pl', categories);
+    const missing = [];
+    for (const c of categories) {
+      for (const question of c.guidingQuestions) {
+        const key = questionKey(question);
+        for (const a of question.answers) {
+          for (const chip of a.options) {
+            if (!(pl.questions[c.id]?.[key]?.[chip] ?? pl.words[c.id][chip])) {
+              missing.push(`${c.id} ${a.level} ${key}: ${chip}`);
+            }
+          }
+        }
+      }
+    }
+    expect(missing).toEqual([]);
+    // hátt is loud under Hljóð and tall under Útlit, on one card.
+    expect(pl.questions.farartaeki['Útlit']['hátt']).not.toBe(pl.words.farartaeki['hátt']);
   });
 });
