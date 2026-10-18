@@ -1,4 +1,4 @@
-# Á þínu máli — Polish beside the A1 chips. See README.md beside this file.
+# Á þínu máli — Polish beside every chip, at every level. See README.md beside this file.
 # The glosses were drafted by Claude (machine translation) and have not been checked by a speaker.
 # Nothing here reaches students until a Polish speaker has read every word and `approved: true`
 # and `approvedBy` are set.
@@ -137,8 +137,259 @@ words:
   í íþróttasalnum: na sali gimnastycznej
   í frímínútum: na przerwie
   eftir skóla: po szkole
+  # A2 and B1, drafted 2026-10-18 and checked against Árnastofnun's Icelandic–Polish dictionary.
+  brauð/korn: chleb/zboże
+  bókasafn: biblioteka
+  búð/verslun: sklep
+  ekki fræg/frægur: nieznana/nieznany
+  fiskur: ryba
+  froskdýr: płaz
+  fræg/frægur: znana/znany
+  fugl: ptak
+  hanskar: rękawiczki
+  hlaupahjól: hulajnoga
+  húfa: czapka
+  kirkja: kościół
+  krydd: przyprawa
+  leikvöllur: plac zabaw
+  lest: pociąg
+  látin/látinn: zmarła/zmarły
+  mjólkurvara: nabiał
+  mótorhjól: motocykl
+  peysa: sweter
+  pils: spódnica
+  safn: muzeum
+  sjúkrahús: szpital
+  skip/bátur: statek/łódź
+  skordýr: owad
+  skriðdýr: gad
+  skyrta: koszula
+  skálduð persóna: wymyślona postać
+  sleði: sanki
+  sokkar: skarpetki
+  spendýr: ssak
+  sportvagn: samochód sportowy
+  sælgæti: słodycze
+  sósa: sos
+  trefill: szalik
+  unglingur: nastolatek
+  veitingastaður: restauracja
+  á lífi: przy życiu
+  íbúð: mieszkanie
+  íþróttahús: hala sportowa
+  öldruð/aldraður: starsza/starszy
+  úlpa: kurtka zimowa
+  þyrla: helikopter
+  kennir: uczy
+  læknar: lekarze
+  skapar: tworzy
+  stjórnar: kieruje
+  syngur: śpiewa
+  bekkjarfélagi: kolega z klasy
+  námsráðgjafi: pedagog szkolny
+  skólastjóri: dyrektor szkoły
+  túlkur: tłumacz
+  umsjónarkennari: wychowawca
+  til að hvílast: do odpoczynku
+  til að skemmta sér: do rozrywki
+  til að stunda íþróttir: do uprawiania sportu
+  ilmandi: aromatycznie
+  stingandi: ostro
+  appelsínugult: pomarańczowe
+  bleikt: różowe
+  brúnt: brązowe
+  einlitt: jednokolorowe
+  fallegt: ładne
+  fjórir fætur: cztery nogi
+  flýgur: lata
+  gamalt: stare
+  goggur: dziób
+  hleypur: biega
+  horn: rogi
+  langt: długie
+  litríkt: kolorowe
+  ljótt: brzydkie
+  með gleraugu: w okularach
+  með skegg: z brodą
+  með stutt hár: z krótkimi włosami
+  með sítt hár: z długimi włosami
+  mynstur: wzór
+  nútímalegt: nowoczesne
+  nýtt: nowe
+  sköllótt/sköllóttur: łysa/łysy
+  straumlínulaga: opływowe
+  stutt: krótkie
+  syndir: pływa
+  sögulegt: historyczne
+  tveir fætur: dwie nogi
+  án skeggs: bez brody
+  berðu saman: porównaj
+  dragðu saman: podsumuj
+  greindu: przeanalizuj
+  lýstu: opisz
+  merktu við: zaznacz
+  rökstyddu: uzasadnij
+  útskýrðu: wyjaśnij
+  danska: język duński
+  efnafræði: chemia
+  félagsfræði: socjologia
+  listir: sztuka
+  náttúrufræði: przyroda
+  saga: historia
+  kennslubók: podręcznik
+  reglustika: linijka
+  reiknivél: kalkulator
+  strokleður: gumka
+  stílabók: zeszyt
+  verkefnablað: karta pracy
+  úr endurunnu efni: z recyklingu
+  úr gerviefnum: z materiałów syntetycznych
+  úr gleri: ze szkła
+  úr náttúrulegum efnum: z materiałów naturalnych
+  hjá námsráðgjafa: u pedagoga szkolnego
+  á ganginum: na korytarzu
+  á skrifstofunni: w sekretariacie
+  í matsalnum: na stołówce
+  bakarar: piekarze
+  bændur: rolnicy
+  bílstjórar: kierowcy
+  dýralæknar: weterynarze
+  ferðamenn: turyści
+  flugmenn: piloci
+  iðnaðarmenn: rzemieślnicy
+  kennarar: nauczyciele
+  kokkar: kucharze
+  listamenn: artyści
+  nemendur: uczniowie
+  sjómenn: marynarze
+  sérfræðingar: specjaliści
+  veiðimenn: myśliwi
+  íþróttamenn: sportowcy
+  blautt: mokre
+  heitt: gorące
+  hlýtt: ciepłe
+  hált: śliskie
+  kalt: zimne
+  loðið: włochate
+  létt: lekkie
+  stinnt: sztywne
+  sveigjanlegt: elastyczne
+  þungt: ciężkie
+  þurrt: suche
+  beint: proste
+  bogið: zakrzywione
+  kúlulaga: kuliste
+  oddhvasst: spiczaste
+  sporöskjulaga: owalne
+  sívalningslaga: walcowate
+  óreglulegt: nieregularne
+  þríhyrningslaga: trójkątne
+  daglega: codziennie
+  oft: często
+  sjaldan: rzadko
+  um helgar: w weekendy
+  á sumrin: latem
+  á veturna: zimą
+  í sérstökum tilvikum: w szczególnych przypadkach
+  á ferðalagi: w podróży
+  á leikvelli: na placu zabaw
+  á sjúkrahúsi: w szpitalu
+  á sviði: na scenie
+  í sjónvarpi: w telewizji
+  fyrir próf: przed sprawdzianem
+  á mánudögum: w poniedziałki
+  í hádeginu: w przerwie obiadowej
+  í lok annar: na koniec semestru
+  í prófinu: na sprawdzianie
+  í fjöllunum: w górach
+  í miðborginni: w centrum miasta
+  í úthverfi: na przedmieściu
+  á hátíðum: w święta
+  á virkum dögum: w dni powszednie
+  auka: zwiększać
+  breyting: zmiana
+  einstaklingur: osoba
+  greina: analizować
+  heimild: źródło
+  hluti: część
+  hugmynd: pomysł
+  meðferð: traktowanie
+  mikilvægur: ważny
+  starf: praca
+  tengja: łączyć
+  áhrif: wpływ
+  til að baka með: do pieczenia
+  til að bjarga: do ratowania
+  til að elda með: do gotowania
+  til að hjálpa: do pomocy
+  til að keppa: do wyścigów
+  til að líða vel: żeby dobrze się czuć
+  til að njóta: dla przyjemności
+  til að næra sig: żeby się odżywiać
+  til að rannsaka: do badań
+  til að verja: do ochrony
+  til að vinna: do pracy
+  bragðlaust: bez smaku
+  bragðmikið: wyraziste
+  ferskt: świeże
+  kryddað: przyprawione
+  milt: łagodne
+  mjög sætt: bardzo słodkie
+  náttúrulega sætt: naturalnie słodkie
+  sterkt: mocne
+  á hálendinu: na wyżynie
+  á markaði: na targu
+  í dýragarðinum: w zoo
+  í garðinum: w ogrodzie
+  í náttúrunni: w przyrodzie
+  í sjónum: w morzu
+  í skóginum: w lesie
+  gelur: pieje
+  hringir: dzwoni
+  hvæsir: syczy
+  mjálmar: miauczy
+  suðar: brzęczy
+  öskrar: ryczy
+  kynnum: prezentujemy
+  ræðum: dyskutujemy
+  spyrjum: pytamy
+  svörum: odpowiadamy
+  vinnum saman: pracujemy razem
+  á flugvellinum: na lotnisku
+  á lestarbraut: na torach
+  á þjóðveginum: na drodze krajowej
+  í höfninni: w porcie
+  á hátíð: na uroczystości
+  í íþróttum: na treningu
 # A chip that means something else on one card.
 categories:
   stadir:
     hátt: wysokie
     lágt: niskie
+  manneskja:
+    læknar: leczy
+  matur:
+    stinnt: jędrne
+  farartaeki:
+    suðar: szumi
+# A chip that means something else under one question of a card: smell takes an adverb
+# (jak pachnie? mocno), taste and looks an adjective, and on Farartæki hátt is loud and tall.
+questions:
+  farartaeki:
+    Útlit:
+      hátt: wysokie
+      lágt: niskie
+  matur:
+    Lykt:
+      ferskt: świeżo
+      sterkt: mocno
+      milt: łagodnie
+      sætt: słodko
+      beiskt: gorzko
+  stadir:
+    Lykt:
+      ferskt: świeżo
+      sterkt: mocno
+      milt: łagodnie
+      sætt: słodko
+      beiskt: gorzko

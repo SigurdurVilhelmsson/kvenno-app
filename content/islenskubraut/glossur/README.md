@@ -25,10 +25,18 @@ One file per language, named by its code (`pl.yaml`, `uk.yaml`, `ar.yaml`):
     categories:                 # a chip that means something else on one card
       stadir:
         hátt: wysokie
+    questions:                  # a chip that means two things on one card
+      farartaeki:
+        Útlit:                  # a question's label, or its box: hvar, hver, hvenaer, notagildi
+          hátt: wysokie
 
 - **`words`:** a gloss per chip, as the chip is printed.
 - **`categories`:** a gloss for one card only, for a chip that means something else there.
-  `hátt` is loud on Dýr and Farartæki, and tall on Staðir.
+  `hátt` is loud on Dýr, and tall on Staðir.
+- **`questions`:** a gloss under one question of a card, for a chip that means two things on the
+  same card. On Farartæki `hátt` is loud under Hljóð and tall under Útlit; on Matur `sterkt` answers
+  the taste question (`mocne`) and the smell one (`mocno`). A question is named by its label, or by
+  its box's kind. The question's gloss is read first, then the card's, then the shared one.
 - **`dictionary`:** optional. An address with `{word}` where the Icelandic word goes. Each chip then
   gets a link to look it up. A chip of several words is looked up by its last word, which the
   dictionary finds under its headword (`feld` under `feldur`).
@@ -42,8 +50,16 @@ chip, written and checked by its editors.
 
 ## Polish
 
-`pl.yaml` has a gloss for all 103 A1 chips. **They were drafted by machine translation (Claude) and
-no speaker has checked them.** The research's rule is that machine translation may draft but never
+`pl.yaml` has a gloss for every chip at every level: the 103 A1 chips, and since 2026-10-18 the 223
+that appear only at A2 and B1, which until then showed the dictionary link alone. **They were
+drafted by machine translation (Claude) and no speaker has checked them.** The A2 and B1 drafts were
+checked against Árnastofnun's dictionary, entry by entry, by the drafter and a second reviewer.
+
+**A chip added to a card needs a Polish gloss in the same change**, or CI fails
+(`glossur.test.ts`): a draft is enough, since nothing here reaches students before a speaker has
+read the file. Write it as the others are: a neuter adjective for `Það er …` (`mjúkt` → `miękkie`),
+an adverb for smell (`mocno`), a verb in the person the question asks for, and an idiomatic phrase
+for where and when. The research's rule is that machine translation may draft but never
 publish. Two ways forward, in `docs/REVIEW-QUEUE.md` C18:
 
 - a Polish speaker checks the glosses, or

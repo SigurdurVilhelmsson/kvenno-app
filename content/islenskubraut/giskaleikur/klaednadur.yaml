@@ -47,7 +47,7 @@ items:
     from: A2
     answers:
       Útlit: [rautt]
-      Áferð: [mjúkt, heitt]
+      Áferð: [mjúkt, hlýtt]
       Efniviður: [úr ull]
       notagildi: [til að hlýja sér]
       hver: [allir]
@@ -57,7 +57,7 @@ items:
     from: A2
     answers:
       Útlit: [grænt, stórt]
-      Áferð: [heitt, þungt]
+      Áferð: [hlýtt, þungt]
       Efniviður: [úr gerviefnum]
       notagildi: [til að hlýja sér, til að verja sig]
       hvar: [úti]
@@ -66,7 +66,7 @@ items:
     from: A2
     answers:
       Útlit: [gult, lítið]
-      Áferð: [mjúkt, heitt]
+      Áferð: [mjúkt, hlýtt]
       Efniviður: [úr ull]
       Lögun: [kringlótt]
       notagildi: [til að hlýja sér]

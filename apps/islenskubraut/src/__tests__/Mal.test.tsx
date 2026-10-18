@@ -16,7 +16,8 @@ vi.mock('../data/glossur', () => ({
       approved: true,
       approvedBy: 'Anna',
       dictionary: 'https://polska.arnastofnun.is/pl/leit/{word}',
-      words: { dyr: { feldur: 'futro' } },
+      words: { dyr: { feldur: 'futro' }, matur: { sterkt: 'mocne' } },
+      questions: { matur: { Lykt: { sterkt: 'mocno' } } },
     },
     {
       code: 'ar',
@@ -82,6 +83,20 @@ describe('Á þínu máli', () => {
     window.localStorage.setItem('islenskubraut-mal', 'ar');
     page('/spjald/dyr');
     expect((picker() as HTMLSelectElement).value).toBe('');
+  });
+
+  it('shows a question’s own gloss under that question, and the card’s under the others', () => {
+    // On Matur at A2, sterkt answers both "Hvernig bragðast það?" and "Hvernig lyktar af því?".
+    window.localStorage.setItem('islenskubraut-mal', 'pl');
+    page('/spjald/matur');
+    questions();
+    fireEvent.click(screen.getByRole('button', { name: /^A2/ }));
+    const taste = screen.getByText('Hvernig bragðast það?').closest('.rounded-xl') as HTMLElement;
+    const smell = screen.getByText('Hvernig lyktar af því?').closest('.rounded-xl') as HTMLElement;
+    expect(within(taste).getByText('mocne')).toBeDefined();
+    expect(within(taste).queryByText('mocno')).toBeNull();
+    expect(within(smell).getByText('mocno')).toBeDefined();
+    expect(within(smell).queryByText('mocne')).toBeNull();
   });
 
   it('looks a chip up by its last word', () => {

@@ -525,6 +525,10 @@ hand. Add `?drog` to a card page to hear them. Workflow: `content/islenskubraut/
 - [ ] **Is a synthetic voice acceptable for the cards at all?** If not, the same files can be
       recorded by a person under the same names. Each one then goes back to `false` until it has
       been heard again, so nothing a person recorded plays to students unheard.
+- [ ] **Record `hlýtt`** (2026-10-18), the one text on the cards without a clip. The clothes card
+      said `heitt` to the touch until a teacher's correction: `heitt` is for food, `hlýtt` for
+      clothes. It has no play button until `pnpm islenskubraut:hljod --jobs` and
+      `talgerving.py` have made one, on a machine with the Talrómur setup.
 - [ ] **The QR codes on the printed cards** wait until some recordings are approved.
 - [ ] **The Icelandic, drafted by Claude:** the button label `Hlusta: <texti>` (read by screen
       readers) and the credit line `Upptökur: <rödd>.`. The listening page's own text is C20's.
@@ -589,9 +593,21 @@ with a link to look the word up. One file per language in `content/islenskubraut
 an approved language is offered**; `?drog` shows drafts. Workflow:
 `content/islenskubraut/glossur/README.md`.
 
-- [ ] **Polish: glosses, the dictionary, or both?** `pl.yaml` glosses all 103 A1 chips, **drafted
-      by machine translation (Claude)**, and links each chip to Árnastofnun's Icelandic–Polish
-      dictionary (`polska.arnastofnun.is/pl/leit/<word>`, which finds `feld` under `feldur`).
+- [ ] **Polish: glosses, the dictionary, or both?** `pl.yaml` glosses every chip at every level,
+      **drafted by machine translation (Claude)**: the 103 A1 chips first, then on 2026-10-18 the
+      223 that appear only at A2 and B1, which until then showed the dictionary link alone. The
+      A2 and B1 drafts were each checked against Árnastofnun's dictionary by the drafter and by a
+      second reviewer. Each chip also links to that dictionary
+      (`polska.arnastofnun.is/pl/leit/<word>`, which finds `feld` under `feldur`). Calls a speaker
+      should look at first:
+  - **Smell takes an adverb** (`Jak pachnie? — mocno, świeżo`), as the A1 `gott → dobrze` already
+    did, while taste and looks take a neuter adjective (`mocne`). On Matur the same chips answer
+    both, so `pl.yaml` has a `questions` key for a gloss under one question of a card; Farartæki
+    uses it too, where `hátt` is loud under Hljóð and tall under Útlit.
+  - `námsráðgjafi` → `pedagog szkolny`, the dictionary's `doradca zawodowy i edukacyjny` being too
+    long for a chip; `listir` → `sztuka`; `félagsfræði` → `socjologia`; `úlpa` → `kurtka zimowa`,
+    since `jakki` is `kurtka`; `í hádeginu` → `w przerwie obiadowej`.
+  - `sportvagn` → `samochód sportowy`, which waits on the word itself (D3: `sportbíll` or `sporvagn`).
   - **With a Polish speaker:** they read the glosses, then set `approved: true` and `approvedBy`.
   - **Without one:** delete `words` and `categories` and approve the dictionary link alone. Its
     entries are written by Árnastofnun's editors.
