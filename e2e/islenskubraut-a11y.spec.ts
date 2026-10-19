@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type Request } from '@playwright/test';
 
 /**
  * axe on the real Íslenskubraut pages, with the real header, footer, fonts and category colours.
@@ -59,6 +59,17 @@ async function withoutWebFonts(page: Page) {
       document.head.append(style);
     });
   });
+}
+
+/**
+ * The player's request for a clip was answered with the clip. A browser asks for audio a range at
+ * a time, and nginx answers that with 206 Partial Content, while the test server sends the whole
+ * file with 200. Either is the clip; the app's page standing in for a missing one is not.
+ */
+async function expectClipServed(request: Request) {
+  const response = await request.response();
+  expect([200, 206]).toContain(response?.status());
+  expect(response?.headers()['content-type']).toBe('audio/mpeg');
 }
 
 test('the home page has no WCAG AA violations', async ({ page }) => {
@@ -127,8 +138,7 @@ test('the card page with its draft recordings has no WCAG AA violations', async 
     .getByRole('button', { name: /^Hlusta: / })
     .first()
     .click();
-  const response = await (await played).response();
-  expect(response?.status()).toBe(200);
+  await expectClipServed(await played);
 });
 
 // The students' own language beside the chips, a draft until a speaker approves it (C18).
@@ -289,5 +299,5 @@ test('the listening page has no WCAG AA violations', async ({ page }) => {
       /\/islenskubraut\/hljod\/[0-9a-f]{16}\.mp3\?v=[0-9a-f]{12}$/.test(r.url())
   );
   await first.getByRole('button', { name: /^Hlusta: / }).click();
-  expect((await (await played).response())?.status()).toBe(200);
+  await expectClipServed(await played);
 });
