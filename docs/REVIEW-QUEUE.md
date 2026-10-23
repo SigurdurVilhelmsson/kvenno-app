@@ -221,8 +221,10 @@ Siggi, 2026-10-23: accept 1, 2, 4, 5, 6 and 8 as applied; 3 and 7 as recommended
 - [x] **Hints that state the answer still count** (item 2 says hints never change a count):
       VSEPR Stig 2's second tier (`horn nálægt X`), gas-law's last practice hint,
       equilibrium-shifter's fourth tier. Count them as a revealed answer instead? — 2026-10-23:
-      yes. A right answer after such a hint is not counted, and the verdict says
-      `Rétt, en vísbendingin gaf svarið, svo svarið telst ekki með.`
+      yes. A right answer after such a hint is not counted, and the feedback says
+      `Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.` (VSEPR, whose verdict is
+      one line, prefixes `Rétt!`). In equilibrium-shifter a wrong answer after it drops out of
+      the count too, as an answer the game had shown always has there.
 - [x] **`redox-reactions` Stig 2 content change:** the diagram labelled `Cl afoxast` from the first
       answer on, so `Hvað afoxast?` was asked under its own answer. The labels now appear after
       the second answer.

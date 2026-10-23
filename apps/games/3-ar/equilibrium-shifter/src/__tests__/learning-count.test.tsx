@@ -14,14 +14,18 @@ import { calculateShift } from '../utils/le-chatelier';
  *
  * Now a Lærdómshamur sitting counts, and the menu shows the last one as `N af M rétt` once the
  * student goes back to it. The same stress on the same equilibrium, answered again after its
- * explanation has shown the answer, is not counted; a hint never changes the count.
- * Keppnishamur keeps its points and streak.
+ * explanation has shown the answer, is not counted. The first three hint tiers never change the
+ * count (mobile-pass decision 2); the fourth states the answer, so an answer given with it open
+ * is one the game had shown and is not counted either (Item 1 as applied, call 3, Siggi
+ * 2026-10-23). Keppnishamur keeps its points and streak, and has no hints.
  *
  * The gate in front of Keppnishamur promises it opens after five problems in Lærdómshamur, but
  * only Keppnishamur wrote the count it reads, so it never opened. Each counted right answer in
  * Lærdómshamur is now a finished problem (mobile-pass decision 101 (a), ruled 2026-10-23): one
- * the game had already shown, or a wrong one, is not.
+ * the game had already shown, the fourth hint tier included, or a wrong one, is not.
  */
+
+const HINT_GAVE_ANSWER = 'Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.';
 
 const STORAGE_KEY = 'kvenno-chemistry-equilibrium-shifter';
 
@@ -39,9 +43,12 @@ const advance = (ms: number) =>
     vi.advanceTimersByTime(ms);
   });
 
-/** Put stress `i` of the first equilibrium on it and answer, rightly or not. */
-function answerStress(i: number, right: boolean) {
+/** Put stress `i` of the first equilibrium on it, open `tiers` hint tiers, and answer. */
+function answerStress(i: number, right: boolean, tiers = 0) {
   fireEvent.click(document.querySelectorAll('.stress-btn')[i]);
+  for (let tier = 1; tier <= tiers; tier++) {
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(`Vísbending ${tier}/4`) }));
+  }
   const direction = calculateShift(equilibria[0], equilibria[0].possibleStresses[i]).direction;
   const pick = right
     ? direction
@@ -87,18 +94,14 @@ describe('Lærdómshamur', () => {
     answerStress(1, false);
     expect(container.textContent).not.toMatch(SCORE_TEXT);
 
-    // 3: on the next equilibrium (the same one, as Math.random is pinned), right after every
-    // hint. Counts: a hint never changes the count.
+    // 3: on the next equilibrium (the same one, as Math.random is pinned), right after the
+    // first three hints. Counts: those tiers never change the count. (This opened all four
+    // until 2026-10-23, when Siggi ruled that the fourth, which states the answer, makes the
+    // answer one the game had shown; the next test holds that.)
     fireEvent.click(screen.getByRole('button', { name: /Næsta jafnvægi/ }));
     advance(300);
-    fireEvent.click(document.querySelectorAll('.stress-btn')[2]);
-    for (let tier = 1; tier <= 4; tier++) {
-      fireEvent.click(screen.getByRole('button', { name: new RegExp(`Vísbending ${tier}/4`) }));
-    }
-    // The last tier is the worked answer.
-    expect(container.textContent).toMatch(/Rétt svar:/);
-    const direction = calculateShift(equilibria[0], equilibria[0].possibleStresses[2]).direction;
-    fireEvent.click(screen.getByRole('button', { name: LABEL[direction] }));
+    answerStress(2, true, 3);
+    expect(screen.queryByText(HINT_GAVE_ANSWER)).toBeNull();
     expect(container.textContent).not.toMatch(SCORE_TEXT);
 
     fireEvent.click(screen.getByRole('button', { name: /Til baka/ }));
@@ -114,6 +117,50 @@ describe('Lærdómshamur', () => {
       true
     );
     expect(screen.getByText(/\(3 eftir\)/)).toBeTruthy();
+  });
+
+  it('does not count an answer the fourth hint tier gave, nor make it a finished problem', () => {
+    const problems = () =>
+      JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{"problemsCompleted":0}').problemsCompleted;
+    const { container } = render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Lærdómshamur/ }));
+    advance(300);
+
+    // 1: right, no hint. Counts.
+    answerStress(0, true);
+    expect(problems()).toBe(1);
+
+    // 2: right, with every tier open. The fourth tier is the worked answer, so it is not
+    // counted and the feedback says why.
+    fireEvent.click(screen.getByRole('button', { name: 'Prófa annað álag' }));
+    fireEvent.click(document.querySelectorAll('.stress-btn')[1]);
+    for (let tier = 1; tier <= 4; tier++) {
+      fireEvent.click(screen.getByRole('button', { name: new RegExp(`Vísbending ${tier}/4`) }));
+    }
+    expect(container.textContent).toMatch(/Rétt svar:/);
+    const direction = calculateShift(equilibria[0], equilibria[0].possibleStresses[1]).direction;
+    fireEvent.click(screen.getByRole('button', { name: LABEL[direction] }));
+    expect(screen.getByText('✅ Rétt!')).toBeTruthy();
+    expect(screen.getByText(HINT_GAVE_ANSWER)).toBeTruthy();
+    expect(problems()).toBe(1);
+
+    // 3: right after the first three tiers. Counts, and says nothing about the hints: the
+    // tiers close with the new stress, so the fourth from answer 2 does not carry over.
+    fireEvent.click(screen.getByRole('button', { name: 'Prófa annað álag' }));
+    answerStress(2, true, 3);
+    expect(screen.queryByText(HINT_GAVE_ANSWER)).toBeNull();
+    expect(problems()).toBe(2);
+
+    // 4: wrong with the fourth tier open. Not counted either, as a wrong repeat is not.
+    fireEvent.click(screen.getByRole('button', { name: 'Prófa annað álag' }));
+    answerStress(3, false, 4);
+    expect(screen.queryByText(HINT_GAVE_ANSWER)).toBeNull();
+    expect(problems()).toBe(2);
+
+    fireEvent.click(screen.getByRole('button', { name: /Til baka/ }));
+    advance(300);
+    expect(screen.getByText('Lærdómshamur, síðasta lota: 2 af 2 rétt')).toBeTruthy();
+    expect(screen.getByText('Verkefni kláruð: 2')).toBeTruthy();
   });
 
   it('five right answers open Keppnishamur, as its card promises', () => {

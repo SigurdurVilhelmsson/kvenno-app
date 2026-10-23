@@ -171,7 +171,7 @@ describe('Stig 2, the angle hint', () => {
 
   it('does not count a right angle after the tier that states it', () => {
     const { verdict, onComplete } = playFirstWithHint(2);
-    expect(verdict).toBe('Rétt, en vísbendingin gaf svarið, svo svarið telst ekki með.');
+    expect(verdict).toBe('Rétt! Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.');
     expect(onComplete).toHaveBeenCalledWith(29, 30);
   });
 

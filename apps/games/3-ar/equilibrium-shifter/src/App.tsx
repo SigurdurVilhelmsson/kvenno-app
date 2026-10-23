@@ -110,7 +110,8 @@ function App() {
   const [userPrediction, setUserPrediction] = useState<ShiftDirection | null>(null);
   const [correctShift, setCorrectShift] = useState<ShiftResult | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [, setHintsUsedTier] = useState(0);
+  // The highest hint tier open on the current stress. The fourth states the answer.
+  const [hintsUsedTier, setHintsUsedTier] = useState(0);
   const [hintResetKey, setHintResetKey] = useState(0);
 
   // Stats
@@ -140,8 +141,12 @@ function App() {
   // Lærdómshamur scores nothing (mobile-pass decision 1 (b)); it counts. A sitting ends when
   // the student goes back to the menu, which then shows `N af M rétt`. An answer the game has
   // already shown in this sitting — the same stress on the same equilibrium, tried again
-  // after its explanation — is not counted; a hint never changes the count.
+  // after its explanation — is not counted. Nor is an answer given with the fourth hint tier
+  // open, since that tier states it (Item 1 as applied, call 3, Siggi 2026-10-23); the first
+  // three tiers are free and never change the count (mobile-pass decision 2).
   const [learningRound, setLearningRound] = useState({ correct: 0, total: 0 });
+  // A right answer the fourth tier had given, so the feedback says why it is not counted.
+  const [hintGaveAnswer, setHintGaveAnswer] = useState(false);
   const shownAnswersRef = useRef<Set<string>>(new Set());
   const { progress: lastLearning, updateProgress: saveLearning } = useGameProgress<LearningResult>(
     LEARNING_KEY,
@@ -385,6 +390,7 @@ function App() {
     setUserPrediction(null);
     setShowExplanation(false);
     setHintsUsedTier(0);
+    setHintGaveAnswer(false);
     setHintResetKey((prev) => prev + 1);
     setIsCorrect(null);
   };
@@ -506,6 +512,9 @@ function App() {
     setCorrectShift(shift);
     setUserPrediction(null);
     setShowExplanation(false);
+    // The hints mount with the stress, every tier closed, so a new stress starts unhinted.
+    setHintsUsedTier(0);
+    setHintGaveAnswer(false);
   };
 
   // Make prediction
@@ -523,6 +532,12 @@ function App() {
       const key = questionKey(currentEquilibrium, appliedStress);
       if (shownAnswersRef.current.has(key)) return;
       shownAnswersRef.current.add(key);
+      // The fourth tier printed the answer before it was given, so the answer is one the game
+      // had already shown: not counted, and not a finished problem either.
+      if (hintsUsedTier >= 4) {
+        setHintGaveAnswer(correct);
+        return;
+      }
       setLearningRound((prev) => ({
         correct: prev.correct + (correct ? 1 : 0),
         total: prev.total + 1,
@@ -1014,6 +1029,12 @@ function App() {
                     >
                       {isCorrect ? '✅ Rétt!' : '❌ Rangt'}
                     </div>
+
+                    {hintGaveAnswer && isCorrect && (
+                      <p className="text-sm text-warm-700 mb-4 phone:mb-3">
+                        Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.
+                      </p>
+                    )}
 
                     <div className="mb-4 phone:mb-3">
                       <div className="font-semibold mb-2 phone:mb-1">Rétt svar:</div>

@@ -1332,7 +1332,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               >
                 {stepResult === 'correct'
                   ? answerShown
-                    ? 'Rétt, en vísbendingin gaf svarið, svo svarið telst ekki með.'
+                    ? 'Rétt! Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.'
                     : 'Rétt!'
                   : 'Rangt — Sjáðu rétt svar hér að ofan'}
               </div>

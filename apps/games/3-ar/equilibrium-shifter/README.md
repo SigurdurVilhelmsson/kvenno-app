@@ -27,8 +27,9 @@ streaks are Keppnishamur's only (mobile-pass decision 1 (b)). Lærdómshamur sco
 counts instead: when the student goes back to the menu, it shows the sitting as
 `Lærdómshamur, síðasta lota: N af M rétt`, kept under its own storage key
 (`equilibrium-shifter-laerdomshamur`). The same stress on the same equilibrium, answered again
-after its explanation has shown the answer, is not counted; a hint never changes the count.
-`learning-count.test.tsx` holds this, and that the count writes nothing to `problemsCompleted`.
+after its explanation has shown the answer, is not counted, nor is one given with the fourth hint
+tier open (below). The first three tiers never change the count. `learning-count.test.tsx` holds
+this, and which answers add to `problemsCompleted`.
 
 ## What matters before touching it
 
@@ -158,6 +159,17 @@ in front of Keppnishamur could never open. On 2026-09-19 Siggi ruled that the ga
 the sitting counts adds one. A repeat the game had already shown, and a wrong answer, add nothing.
 A Keppnishamur round still adds its right answers. `learning-count.test.tsx` plays five right
 answers and opens Keppnishamur.
+
+## Fixed 2026-10-23: the fourth hint tier gives the answer
+
+Item 1 as applied, call 3/7, Siggi 2026-10-23. The fourth tier of Lærdómshamur's hints prints
+`Rétt svar: …` with the explanation, so an answer given with it open is one the game had already
+shown: it is not counted in the sitting's `N af M rétt` and adds nothing to `problemsCompleted`,
+right or wrong. A right one says so under the verdict:
+`Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.` (the sentence `gas-law-challenge`
+uses for its last hint). Tiers 1–3 stay free (decision 2). The tiers close with each new stress,
+so a fourth tier opened on one stress does not reach the next. Keppnishamur has no hints.
+`learning-count.test.tsx` (`does not count an answer the fourth hint tier gave, …`) holds it.
 
 ## Fixed 2026-09-23 (after the phone pass)
 
