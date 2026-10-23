@@ -24,6 +24,8 @@ interface FeedbackScreenProps {
   roundResult?: RoundResult | null;
   /** The worked solution was open before this practice answer was checked. */
   solutionSeen?: boolean;
+  /** The last hint, which states the answer, was open when this practice answer was checked. */
+  answerHinted?: boolean;
   /** This practice answer is a retry, given after this screen printed the answer. */
   retried?: boolean;
   gameMode: GameMode;
@@ -44,6 +46,7 @@ export function FeedbackScreen({
   selectedLevel,
   roundResult = null,
   solutionSeen = false,
+  answerHinted = false,
   retried = false,
   gameMode,
   onNext,
@@ -96,6 +99,11 @@ export function FeedbackScreen({
               {solutionSeen && feedback.isCorrect && (
                 <p className="text-sm text-warm-700 mt-1 phone:w-full phone:mt-0.5">
                   Lausnin var opin þegar þú svaraðir, svo svarið telst ekki með.
+                </p>
+              )}
+              {answerHinted && !solutionSeen && !retried && feedback.isCorrect && (
+                <p className="text-sm text-warm-700 mt-1 phone:w-full phone:mt-0.5">
+                  Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.
                 </p>
               )}
               {retried && !solutionSeen && feedback.isCorrect && (

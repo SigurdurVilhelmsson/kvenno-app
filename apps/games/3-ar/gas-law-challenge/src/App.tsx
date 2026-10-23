@@ -52,7 +52,8 @@ function App() {
   /** The finished round, once its last question is answered. */
   const [roundResult, setRoundResult] = useState<RoundResult | null>(null);
   // Whether the worked solution, which prints the answer, was opened before the answer was
-  // checked. A right answer copied from it is not counted; a hint never changes a count.
+  // checked. A right answer copied from it is not counted. Hints are free, except the last,
+  // which states the answer and so counts as the solution does (Siggi, 2026-10-23).
   const [solutionSeen, setSolutionSeen] = useState(false);
   // A near miss in practice can be tried again (mobile-pass decision 93 (a)). The feedback
   // screen has printed the answer by then, so the retry neither counts nor adds a question
@@ -131,6 +132,12 @@ function App() {
     setRetrying(true);
     setScreen('game');
   };
+
+  /** The last hint tier is open: every question's last hint ends on the answer itself. */
+  const answerHinted =
+    currentQuestion !== null &&
+    currentQuestion.hints.length > 0 &&
+    showHint >= currentQuestion.hints.length;
 
   /** Open or close the worked solution; opening it before answering is remembered. */
   const toggleSolution = (show: boolean) => {
@@ -236,7 +243,7 @@ function App() {
         challengeBestStreak: Math.max(progress.challengeBestStreak ?? 0, next.bestStreak),
       });
     } else if (!retrying) {
-      const counted = isCorrect && !solutionSeen;
+      const counted = isCorrect && !solutionSeen && !answerHinted;
       const nextRound = { correct: round.correct + (counted ? 1 : 0), total: round.total + 1 };
       setRound(nextRound);
       if (nextRound.total >= deck.length) {
@@ -444,6 +451,7 @@ function App() {
             selectedLevel={selectedLevel}
             roundResult={gameMode === 'practice' ? roundResult : null}
             solutionSeen={gameMode === 'practice' && solutionSeen}
+            answerHinted={gameMode === 'practice' && answerHinted}
             retried={gameMode === 'practice' && retrying}
             gameMode={gameMode}
             onNext={nextQuestion}
