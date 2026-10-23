@@ -166,11 +166,14 @@ leave".
 - [ ] 89–92 organic-nomenclature. Items 90, 91 and 92 done 2026-10-01; 89 left.
 - [ ] 93–94 gas-law-challenge
 - [ ] 95–100 jafnvaegisfasti
-- [ ] 101–104 equilibrium-shifter. 101 is the Keppnishamur unlock gate, which is live and needs a
-      ruling.
+- [ ] 101–104 equilibrium-shifter. Item 101 done 2026-10-23 (a): right Lærdómshamur answers open
+      Keppnishamur.
 - [ ] 105–108 syrufastinn
-- [ ] 109–111 thermodynamics-predictor. 109: the live ΔG° panel shows the answer while the
-      question is open.
+- [ ] 109–111 thermodynamics-predictor. Item 109 done 2026-10-23 (c): the live ΔG°, its verdict,
+      the graph's point and the T_cross position line wait for `Athuga svar`, and Keppnishamur's
+      slider is fixed. Kept, as ruled: the substituted line (now ending `= ?`, in both modes) and
+      the curve. To confirm: the drafted note under the fixed slider,
+      `Í keppni er hitastigið fast.`
 - [ ] 112–116 ph-titration
 - [ ] 117–119 buffer-recipe-creator
 - [ ] 120–122 leysnijafnvaegi

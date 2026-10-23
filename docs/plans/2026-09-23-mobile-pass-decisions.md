@@ -956,6 +956,8 @@ You ruled the gate stays (2026-09-19), but it can never open: only Keppnishamur 
 card promises `Opnast þegar þú hefur klárað 5 verkefni í lærdómshamri` (`:537`). Options: (a) count
 correct Lærdómshamur answers; (b) count any answered one. **Recommendation:** (a), which keeps the
 card's promise; arguably a fix under the existing ruling.
+**Ruled 2026-10-23: (a).** Applied the same day: each right Lærdómshamur answer the sitting counts
+adds one, so five open Keppnishamur. `learning-count.test.tsx` holds it.
 
 **102. Acetic acid is +5 kJ/mol in one system and 0 in the other.**
 Id 8 stores +5 and answers heating as a shift; id 24, the same reaction written with hydronium,
@@ -1012,6 +1014,11 @@ models what to type.
 player can slide to the printed T_cross and answer 0 / Jafnvægi. Options: (a) keep everything live;
 (b) hide the ΔG° number, verdict and marker label until `Athuga svar`; (c) (b), and lock T in
 Keppnishamur. **Recommendation:** (c). Könnun already exists for live exploration.
+**Ruled 2026-10-23: (c)**, keeping the substituted line and the curve. Applied the same day: the
+ΔG° value, its verdict, the graph's point and the T_cross position line wait for `Athuga svar`;
+the substituted line ends `= ?` in both modes; Keppnishamur's slider is fixed at the problem's
+temperature, with the drafted note `Í keppni er hitastigið fast.` `answer-hidden.test.tsx` holds
+it.
 
 **110. Gibbs free energy, crossover temperature, and two reaction names.**
 `App.tsx:344` `Gibbs frjálsa orku`: `ordabok.md` says `Gibbs fríorka`, the book `frjáls orka`

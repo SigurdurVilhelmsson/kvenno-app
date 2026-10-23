@@ -15,8 +15,12 @@ import { calculateShift } from '../utils/le-chatelier';
  * Now a Lærdómshamur sitting counts, and the menu shows the last one as `N af M rétt` once the
  * student goes back to it. The same stress on the same equilibrium, answered again after its
  * explanation has shown the answer, is not counted; a hint never changes the count.
- * Keppnishamur keeps its points and streak, and the gate in front of it is untouched: a
- * Lærdómshamur sitting still writes nothing to `problemsCompleted` (decision 101 is open).
+ * Keppnishamur keeps its points and streak.
+ *
+ * The gate in front of Keppnishamur promises it opens after five problems in Lærdómshamur, but
+ * only Keppnishamur wrote the count it reads, so it never opened. Each counted right answer in
+ * Lærdómshamur is now a finished problem (mobile-pass decision 101 (a), ruled 2026-10-23): one
+ * the game had already shown, or a wrong one, is not.
  */
 
 const STORAGE_KEY = 'kvenno-chemistry-equilibrium-shifter';
@@ -102,11 +106,36 @@ describe('Lærdómshamur', () => {
     expect(screen.getByText('Lærdómshamur, síðasta lota: 2 af 3 rétt')).toBeTruthy();
     expect(container.textContent).not.toMatch(SCORE_TEXT);
 
-    // The Keppnishamur gate is as it was: a Lærdómshamur sitting writes nothing to it.
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).problemsCompleted).toBe(0);
+    // The two counted right answers are finished problems; the repeat and the wrong one are
+    // not. Two of the five the Keppnishamur gate asks for.
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).problemsCompleted).toBe(2);
+    expect(screen.getByText('Verkefni kláruð: 2')).toBeTruthy();
     expect(screen.getByRole('button', { name: /Keppnishamur/ }).hasAttribute('disabled')).toBe(
       true
     );
+    expect(screen.getByText(/\(3 eftir\)/)).toBeTruthy();
+  });
+
+  it('five right answers open Keppnishamur, as its card promises', () => {
+    render(<App />);
+    expect(screen.getByRole('button', { name: /Keppnishamur/ }).hasAttribute('disabled')).toBe(
+      true
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Lærdómshamur/ }));
+    advance(300);
+    for (let i = 0; i < 5; i++) {
+      if (i > 0) fireEvent.click(screen.getByRole('button', { name: 'Prófa annað álag' }));
+      answerStress(i, true);
+    }
+    fireEvent.click(screen.getByRole('button', { name: /Til baka/ }));
+    advance(300);
+
+    expect(screen.getByText('Verkefni kláruð: 5')).toBeTruthy();
+    const challenge = screen.getByRole('button', { name: /Keppnishamur/ });
+    expect(challenge.hasAttribute('disabled')).toBe(false);
+    fireEvent.click(challenge);
+    advance(300);
+    expect(screen.getByText('Stig: 0')).toBeTruthy();
   });
 
   it('shows no sitting on the menu before one is played', () => {

@@ -26,8 +26,8 @@ disagree, this block is current.
 
 **Every phase of this plan is done.** The goal's three words now stand as follows:
 
-- **Accurate:** no known Tier-0 defect is open, and each fixed one has a test. Two live defects
-  wait on a ruling, listed below.
+- **Accurate:** no known Tier-0 defect is open, and each fixed one has a test. The two live
+  defects that waited on a ruling, items 101 and 109 below, were ruled and fixed on 2026-10-23.
 - **Pedagogically sound:** teach-before-test, free hints, no running score and `N af M rétt` at
   the end of each level are applied in all 26 games (PR #85, 2026-10-03).
 - **Covering the curriculum:** all four confirmed gaps are built, and the chains are 10, 8 and 8
@@ -38,20 +38,21 @@ playable by touch at 360 px and fitted each question loop on one screen (PRs #65
 design in `2026-09-23-vertical-scroll-design.md`). It also produced 122 content and terminology
 items for you in `2026-09-23-mobile-pass-decisions.md`. Rulings on them were applied from
 2026-09-30 to 2026-10-03 (PRs #70–#86). The desktop comparison has run on every PR since
-2026-10-03 (PR #83). No games work has landed since 2026-10-03.
+2026-10-03 (PR #83). After that, no games work landed until items 101 and 109 on 2026-10-23.
 
 **What is left is rulings and hand checks, not code.** `docs/REVIEW-QUEUE.md` is the live list.
 As of this date:
 
-- **66 of the 122 decision items have no ruling** (section C3). Year 3 is almost untouched:
+- **64 of the 122 decision items have no ruling** (section C3). Year 3 is almost untouched:
   `gas-law-challenge`, `jafnvaegisfasti`, `equilibrium-shifter`, `syrufastinn`,
   `thermodynamics-predictor`, `ph-titration`, `buffer-recipe-creator` and `leysnijafnvaegi`. Year
   1 has the most left in `dimensional-analysis` (10), `nafnakerfid` (5) and `molmassi` (4).
-- **Two of them are live defects students can hit:**
-  - **item 101:** `equilibrium-shifter`'s Keppnishamur can never be unlocked, because only
-    Keppnishamur writes the count its gate reads;
-  - **item 109:** `thermodynamics-predictor` prints the ΔG° value and verdict beside the question
-    that asks for them.
+- **Two were live defects students could hit, both ruled and fixed 2026-10-23:**
+  - **item 101 (a):** `equilibrium-shifter`'s Keppnishamur could never be unlocked, because only
+    Keppnishamur wrote the count its gate reads; right Lærdómshamur answers now count;
+  - **item 109 (c):** `thermodynamics-predictor` printed the ΔG° value and verdict beside the
+    question that asks for them; they now wait for `Athuga svar`, and Keppnishamur's slider is
+    fixed.
 - **Also waiting on you:** confirmations of the phone layout (C1), of the desktop behaviour
   changes (C2), of the judgement calls made applying item 1 (C3 "Item 1 as applied") and of four
   glossary entries (C4).
@@ -65,8 +66,9 @@ As of this date:
 Four of the five items in the Phase 4 body below were done on 2026-08-27. The fifth, **level
 gating, was settled on 2026-08-29**: levels are not gated, and there is no Level 4. The 93 dead
 gating strings were removed the same day (see the Phase 4 body). `equilibrium-shifter`'s
-Keppnishamur gate is a mode gate, not a level gate, and is still open as item 101 of
-`2026-09-23-mobile-pass-decisions.md`.
+Keppnishamur gate is a mode gate, not a level gate. It was ruled on its own: it stays
+(2026-09-19), and counts right Lærdómshamur answers (2026-10-23, item 101 of
+`2026-09-23-mobile-pass-decisions.md`).
 
 | Item                    | Done                                                                                                                                                               |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

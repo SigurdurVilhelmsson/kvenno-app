@@ -86,7 +86,7 @@ const questionKey = (eq: Equilibrium, stress: Stress) =>
   `${eq.id}:${stress.type}:${stress.target ?? ''}`;
 
 function App() {
-  const { progress, updateProgress } = useProgress({
+  const { progress, updateProgress, incrementProblems } = useProgress({
     gameId: 'equilibrium-shifter',
     initialProgress: {
       currentLevel: 0,
@@ -527,6 +527,10 @@ function App() {
         correct: prev.correct + (correct ? 1 : 0),
         total: prev.total + 1,
       }));
+      // A counted right answer is a finished problem, and five open Keppnishamur, as its card
+      // promises (mobile-pass decision 101 (a), ruled 2026-10-23). Only Keppnishamur wrote
+      // this count before, so the gate in front of Keppnishamur could never open.
+      if (correct) incrementProblems();
       return;
     }
 

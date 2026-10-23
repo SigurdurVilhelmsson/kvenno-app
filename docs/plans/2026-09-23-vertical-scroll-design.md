@@ -1353,8 +1353,8 @@ running animations and differ just as much when the base is compared with itself
   one `loop fits` per game in `mobile-vertical.spec.ts` (mouse, no touch, pressing Næsta) and the
   `mobile-games.spec.ts` sample. CI's E2E job passed on every pushed commit of this branch; on
   `f3944ea` it ran 1 474 tests (1 460 passed, 14 skipped), the Chromium suite plus that Firefox sample.
-- **Keppnishamur** in equilibrium-shifter has no `LoopCheck`: it cannot be unlocked (the gate
-  defect CLAUDE.md records), so only unit tests cover it.
+- **Keppnishamur** in equilibrium-shifter has no `LoopCheck`: it could not be unlocked (the gate
+  defect CLAUDE.md records, fixed 2026-10-23), so only unit tests cover it.
 
 ### §7 decisions still open for Siggi
 

@@ -129,6 +129,16 @@ The shared pieces it depends on: `packages/shared/engine/equilibrium.ts`,
 `packages/shared/data/thermo.ts`, `packages/shared/data/appendix-d.ts`. `MIGRATION-SUMMARY.md` is a
 historical record of the port from the old HTML game and is out of date on most specifics.
 
+## Fixed 2026-10-23: the Keppnishamur gate opens
+
+The card promises Keppnishamur opens after five problems in Lærdómshamur, and the menu counts
+them as «Verkefni kláruð», but only the end of a Keppnishamur round wrote that count, so the gate
+in front of Keppnishamur could never open. On 2026-09-19 Siggi ruled that the gate stays; on
+2026-10-23 Siggi ruled what it counts (mobile-pass decision 101 (a)): each right Lærdómshamur answer
+the sitting counts adds one. A repeat the game had already shown, and a wrong answer, add nothing.
+A Keppnishamur round still adds its right answers. `learning-count.test.tsx` plays five right
+answers and opens Keppnishamur.
+
 ## Fixed 2026-09-23 (after the phone pass)
 
 Each has a test that fails against the version before it.
@@ -157,15 +167,6 @@ Each has a test that fails against the version before it.
 
 ## Open
 
-- **The Keppnishamur gate cannot be opened.** It requires `progress.problemsCompleted >= 5`
-  (`App.tsx:521-522`), but the only write to `problemsCompleted` is at the end of a challenge round
-  (`App.tsx:427`). Learning mode never updates it, so a new student can never reach challenge
-  mode, and «Framvinda þín: Verkefni kláruð» on the menu stays at 0 however much Lærdómshamur a
-  student plays. The gate itself was already flagged as needing a ruling (a mode gate, outside the
-  2026-08-29 level-gating ruling); it now also needs fixing or removing, whichever the ruling is.
-  The Lærdómshamur count added on 2026-10-03 is kept apart from `problemsCompleted` on purpose, so
-  the gate behaves exactly as before until decision 101 is ruled; its option (a), counting correct
-  Lærdómshamur answers, could read that count.
 - **The ten unsourced systems** would need the Icelandic book's complex-ion formation constants
   (`m68869`) or another new source — Siggi's call.
 - **Aqueous temperature stresses stay directional.** They have a constant but no derivable ΔH,

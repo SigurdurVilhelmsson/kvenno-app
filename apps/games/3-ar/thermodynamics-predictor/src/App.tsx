@@ -337,8 +337,8 @@ function App() {
     setAnsweredCorrectly(right);
 
     // Æfingarhamur counts the answer towards the round and scores nothing. Nothing in it shows
-    // the answer before it is given except the live ΔG° panel, which is decision 109's
-    // question, not this one; a right answer counts.
+    // the answer before it is given (decision 109 hides the live ΔG° value, its verdict and the
+    // graph's point until now), so a right answer counts.
     if (mode === 'learning') {
       const nextRound = { correct: round.correct + (right ? 1 : 0), total: round.total + 1 };
       setRound(nextRound);
@@ -440,17 +440,21 @@ function App() {
       },
     ];
 
-    // Current temperature marker
+    // Current temperature marker, once the answer is checked. Its label is the ΔG° asked for
+    // and its colour the verdict, so it waits for "Athuga svar" (mobile-pass decision 109 (c)).
+    // The line itself stays: reading the sign off it is part of what is taught.
     const currentDeltaG = calcDeltaGForProblem(temperature);
-    const markers: MarkerConfig[] = [
-      {
-        x: temperature,
-        y: currentDeltaG,
-        color: currentDeltaG < 0 ? '#22c55e' : '#ef4444',
-        radius: 6,
-        label: `${formatRounded(currentDeltaG, 0)} kJ/mól`,
-      },
-    ];
+    const markers: MarkerConfig[] = showSolution
+      ? [
+          {
+            x: temperature,
+            y: currentDeltaG,
+            color: currentDeltaG < 0 ? '#22c55e' : '#ef4444',
+            radius: 6,
+            label: `${formatRounded(currentDeltaG, 0)} kJ/mól`,
+          },
+        ]
+      : [];
 
     // Crossover temperature line
     const verticalLines: VerticalLineConfig[] = [];
@@ -475,7 +479,7 @@ function App() {
 
     return { series, regions, markers, verticalLines, yHalf };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: calcDeltaGForProblem is derived from currentProblem
-  }, [currentProblem, temperature]);
+  }, [currentProblem, temperature, showSolution]);
 
   // Timer for challenge mode. Only Keppnishamur runs out of time: this used to fire in any
   // mode once the clock read 0, so after one timed-out challenge every Æfingarhamur problem
@@ -1049,10 +1053,20 @@ function App() {
                     max="1200"
                     value={temperature}
                     onChange={(e) => setTemperature(parseInt(e.target.value, 10))}
-                    className="w-full"
+                    // Keppnishamur asks at the problem's own temperature. With the slider free a
+                    // player could slide to T_cross and answer 0 / Jafnvægi without a sum
+                    // (mobile-pass decision 109 (c)); Könnun is where the temperature is explored.
+                    disabled={mode === 'challenge'}
+                    aria-describedby={mode === 'challenge' ? 'thermo-temp-fixed' : undefined}
+                    className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Hitastig í Kelvinum"
                     aria-valuetext={`${temperature} Kelvin (${temperature - 273} gráður á Celsíus)`}
                   />
+                  {mode === 'challenge' && (
+                    <p id="thermo-temp-fixed" className="text-xs text-warm-600 mt-1">
+                      Í keppni er hitastigið fast.
+                    </p>
+                  )}
                   <div className="flex justify-between text-sm text-warm-600 mt-2 phone:mt-1 phone:items-baseline">
                     <span>200 K</span>
                     <span className="text-xl font-bold phone:text-lg" style={{ color: '#f36b22' }}>
@@ -1073,17 +1087,22 @@ function App() {
                     ΔG° = ({formatDecimal(currentProblem.deltaH)}) - ({temperature})(
                     {formatDecimal(currentProblem.deltaS / 1000)})<br />
                     ΔG° ={' '}
+                    {/* The value and the verdict are the question's answer, so they wait for
+                        "Athuga svar" (mobile-pass decision 109 (c)). The substituted line above
+                        stays as the scaffold: the student does the arithmetic. */}
                     <span className="font-bold text-lg">
-                      {formatRounded(currentDeltaG, 1)} kJ/mól
+                      {showSolution ? `${formatRounded(currentDeltaG, 1)} kJ/mól` : '?'}
                     </span>
                   </div>
-                  <div
-                    className={`text-lg font-bold ${currentSpontaneity === 'spontaneous' ? 'text-green-600' : currentSpontaneity === 'equilibrium' ? 'text-yellow-600' : 'text-red-600'}`}
-                  >
-                    {currentSpontaneity === 'spontaneous' && '✓ Sjálfgengt'}
-                    {currentSpontaneity === 'equilibrium' && '⚖️ Jafnvægi'}
-                    {currentSpontaneity === 'non-spontaneous' && '✗ Ekki sjálfgengt'}
-                  </div>
+                  {showSolution && (
+                    <div
+                      className={`text-lg font-bold ${currentSpontaneity === 'spontaneous' ? 'text-green-600' : currentSpontaneity === 'equilibrium' ? 'text-yellow-600' : 'text-red-600'}`}
+                    >
+                      {currentSpontaneity === 'spontaneous' && '✓ Sjálfgengt'}
+                      {currentSpontaneity === 'equilibrium' && '⚖️ Jafnvægi'}
+                      {currentSpontaneity === 'non-spontaneous' && '✗ Ekki sjálfgengt'}
+                    </div>
+                  )}
                 </div>
 
                 {crossoverTemp && crossoverTemp >= 200 && crossoverTemp <= 1200 && (
@@ -1121,7 +1140,10 @@ function App() {
                         )}
                       </div>
                     )}
-                    {temperature > 0 && (
+                    {/* Where the temperature sits against T_cross, coloured by the verdict,
+                        once the answer is checked (decision 109 (c)). Before that the student
+                        compares the two numbers, which is the reasoning asked for. */}
+                    {showSolution && temperature > 0 && (
                       <div className="mt-2 text-xs">
                         {temperature < crossoverTemp ? (
                           <span
