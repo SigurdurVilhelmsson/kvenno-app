@@ -115,6 +115,9 @@ describe('Icelandic in the problem data', () => {
     ['Dímun NO₂', 'Tvíliðun NO₂'],
     // Decision 110: built on the glossary's `vatnsrof`; `vatnsrofhvarfun` is in neither source.
     ['ATP vatnsrofhvarfun', 'Vatnsrof ATP'],
+    // Decision 110, Siggi's word (2026-10-23): steam reforming, as equilibrium-shifter names it
+    // from the textbook; `Gufumyndun` read as vapour formation.
+    ['Gufumyndun', 'Hvarf metans og vatnsgufu'],
   ])('"%s" is now "%s"', (old, now) => {
     expect(all).not.toContain(old);
     expect(all).toContain(now);

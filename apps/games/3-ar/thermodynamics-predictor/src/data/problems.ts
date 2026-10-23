@@ -167,7 +167,7 @@ export const PROBLEMS: ProblemsData = {
     {
       id: 17,
       reaction: 'CH₄(g) + H₂O(g) → CO(g) + 3H₂(g)',
-      name: 'Gufumyndun',
+      name: 'Hvarf metans og vatnsgufu',
       deltaH: 205.9,
       deltaS: 216,
       defaultTemp: 1000,

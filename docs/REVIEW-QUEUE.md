@@ -149,14 +149,11 @@ was done. Still open, all waiting on Siggi:
 - [ ] 73 intermolecular-forces: challenge 6's name (`Ediksýra vs. asetaldehýð`?) and challenge
       7's word. Challenge 3 was applied.
 - [ ] 94 gas-law-challenge: an Explore screen, and its scope.
-- [ ] 97 jafnvaegisfasti: the NH₄Cl 5 % step, (a) skip it, and the sentence.
 - [ ] 103 equilibrium-shifter: the ten systems with no constant need a new source.
-- [ ] 110 thermodynamics-predictor: a word for steam reforming (id 17 `Gufumyndun`). The rest was
-      applied.
 - [ ] 67–71 vsepr-geometry: confirm 70's angle sets (applied 2026-10-01).
 
-Done: 12–72 except 51 (70 to confirm), 74–93, 95, 96, 98–102, 104–109, 111–122. Siggi ruled 27 (a),
-32 (b), 40 (b), 42 (c), 57 (a) and 61 (a) on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
+Done: 12–72 except 51 (70 to confirm), 74–93, 95–102, 104–122. Siggi ruled 27 (a), 32 (b),
+40 (b), 42 (c), 57 (a), 61 (a), 97 (a) and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
 
 #### Drafted wording from 2026-10-23: confirm or change
 

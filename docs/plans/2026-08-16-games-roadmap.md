@@ -43,7 +43,7 @@ items for you in `2026-09-23-mobile-pass-decisions.md`. Rulings on them were app
 **What is left is rulings and hand checks, not code.** `docs/REVIEW-QUEUE.md` is the live list.
 As of this date:
 
-- **6 of the 122 decision items have no ruling** (section C3), two of them in part. On
+- **4 of the 122 decision items have no ruling** (section C3), one of them in part. On
   2026-10-23 every item with a clear recommendation was applied as recommended; what is left
   asks for Siggi's choice or his wording, and the drafted wording from that pass waits for his
   confirmation.

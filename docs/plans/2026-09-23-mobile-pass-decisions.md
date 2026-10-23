@@ -970,6 +970,7 @@ marks `Nei — það verður að leysa nákvæmlega` wrong, though x² = Kp is e
 ~:290-360). Options: (a) skip the step for such a problem, with one sentence, e.g. `Hér er enginn
 nefnari — x² = Kp er leyst nákvæmlega og engin nálgun þarf.`; (b) accept either; (c) replace the
 problem. **Recommendation:** (a), your wording.
+**Ruled 2026-10-23:** (a), Siggi's ruling, with the item's sentence: the step is skipped where no reactant is in K.
 
 **98. `K er einfaldlega gufuþrýstingurinn` directly under `Kc = [Br₂]`.**
 `data/problems.ts:77-79`. True of Kp, loose beside Kc. **Recommendation:** `Vökvinn dettur út og K
@@ -1075,7 +1076,7 @@ means vapour formation; id 27 `ATP vatnsrofhvarfun` (the glossary has only `vatn
 **Recommendation:** the book's `frjáls orka`, correcting `ordabok.md`; `Umbreytingarhitastig` on
 both screens; `Vatnsrof ATP` for id 27, built on the glossary word; a word from you for steam
 reforming.
-**Ruled 2026-10-23:** in part, applied the same day: `frjáls orka` in `ordabok.md`, `Umbreytingarhitastig` on both screens, `Vatnsrof ATP` for id 27. Steam reforming's word is still open.
+**Ruled 2026-10-23:** in part, applied the same day: `frjáls orka` in `ordabok.md`, `Umbreytingarhitastig` on both screens, `Vatnsrof ATP` for id 27. Steam reforming is `Hvarf metans og vatnsgufu` (Siggi, the same day), as `equilibrium-shifter` names it.
 
 **111. The Erfitt `Áskorun` prompts are not graded.**
 Ids 23–30 (`data/problems.ts`) ask for K, −nFE°, Hess, melting point and optimum T; the grader

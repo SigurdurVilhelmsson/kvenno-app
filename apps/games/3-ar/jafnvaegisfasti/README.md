@@ -300,13 +300,15 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
 - **No temperature dependence of K itself.** The game states each constant's temperature and never
   varies it. Van 't Hoff now exists, in `3-ar/equilibrium-shifter` and in the shared engine, so this
   is no longer a gap on the platform — but this game does not use it.
-- **The NH₄Cl problem asks a 5 % question it has no answer to.** Kp = P(NH₃)·P(HCl) has no
-  denominator and both gases start at 0 atm, so the step asks whether x may be dropped from a
-  denominator that does not exist, reports the change as `0,00 %` of a starting pressure of zero,
-  and marks `Nei — það verður að leysa nákvæmlega` wrong. The likely fix is to skip that step where
-  no reactant is in K, but it needs a sentence to replace it, which is wording for Siggi.
 
-**Closed 2026-10-23** (mobile-pass decisions 95, 96, 98 and 99):
+**Closed 2026-10-23** (mobile-pass decisions 95, 96, 97, 98 and 99):
+
+- **The NH₄Cl problem no longer asks a 5 % question it has no answer to** (decision 97 (a), Siggi's
+  ruling). Kp = P(NH₃)·P(HCl) has no denominator and both gases start at 0 atm, so the step asked
+  whether x may be dropped from a denominator that does not exist and marked `Nei` wrong. Where no
+  reactant is in K the step is skipped, and the verdict reads
+  `Hér er enginn nefnari — x² = Kp er leyst nákvæmlega og engin nálgun þarf.`
+  `beita-no-denominator.test.tsx` holds it, and holds any future such problem to the sentence.
 
 - **Tengd jafnvægi's first stage has a way out** (decision 95). A wrong `Athuga jöfnuna` now
   offers `Sýna svarið og halda áfram`, as stage two and Beita do. It sets the givens to the route

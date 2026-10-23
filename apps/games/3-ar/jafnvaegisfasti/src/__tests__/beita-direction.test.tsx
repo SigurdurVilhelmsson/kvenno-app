@@ -33,7 +33,10 @@ function openProblem(index: number) {
     fireEvent.click(screen.getByText(FORWARD));
     fireEvent.click(screen.getByText('Athuga'));
     fireEvent.click(screen.getByText('Sýna svarið og halda áfram'));
-    fireEvent.click(screen.getByText(/nálgunin hefði dugað/i));
+    // NH₄Cl skips the five per cent question (decision 97 (a)), so it is answered only where
+    // it is asked.
+    const rule = screen.queryByText(/nálgunin hefði dugað/i);
+    if (rule) fireEvent.click(rule);
     fireEvent.click(screen.getByText(/Næsta dæmi|Ljúka/));
   }
 }

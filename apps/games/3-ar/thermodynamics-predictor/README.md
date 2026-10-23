@@ -111,6 +111,9 @@ stats take a row of their own; and Könnun's two buttons stack.
 
 ## Fixed
 
+- **Id 17, steam reforming, is `Hvarf metans og vatnsgufu` — 2026-10-23 (decision 110, Siggi's
+  word).** It was `Gufumyndun`, which reads as vapour formation. The name is the textbook's phrase
+  (ch. 13, m68801), as `equilibrium-shifter` already uses. `icelandic-text.test.tsx` holds it.
 - **The Erfitt prompts read as graded tasks — fixed 2026-10-23 (mobile-pass decision 111 (b)).**
   Ids 23–30 told the student to compute K, use Hess's law or ΔG° = −nFE°, or predict a melting
   point, under the heading `Áskorun`, while the grader checks only ΔG° and the verdict. The box is
@@ -186,7 +189,3 @@ hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`�
 
 - **No ΔS° is sourced anywhere on the platform**, so the ΔS values are unchecked. (ΔH° comes from
   `thermo.ts` for the 25 reactions it reaches since decision 9 (a), ids 12 and 21 included.)
-- **One name is still unsettled.** Id 17 `Gufumyndun` names steam reforming (CH₄ + H₂O → CO + 3H₂)
-  but reads as vapour formation; decision 110 leaves its word to Siggi. (Id 16 has been
-  `Snertiferlið` since decision 17, and the menu's `Gibbs frjálsa orku` follows the textbook's
-  `frjáls orka`, which `ordabok.md` now carries.)

@@ -1,6 +1,11 @@
 import { useId, useRef, useState } from 'react';
 
-import { APPROXIMATION_THRESHOLD, equationOf, type Direction } from '@shared/engine/equilibrium';
+import {
+  APPROXIMATION_THRESHOLD,
+  activeReactants,
+  equationOf,
+  type Direction,
+} from '@shared/engine/equilibrium';
 import {
   formatScientific,
   gradeScientific,
@@ -142,6 +147,13 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const sign = (side: 'hvarfefni' | 'myndefni') =>
     (side === 'myndefni') !== backwards ? '+' : '−';
 
+  // Nothing on the left of K (NH₄Cl(s) ⇌ NH₃ + HCl): there is no denominator to drop x from, so
+  // the five per cent question has no answer and is skipped, with the reason given instead
+  // (mobile-pass decision 97 (a), ruled 2026-10-23).
+  const noDenominator = activeReactants(problem.reaction).length === 0;
+  /** After x is right, or shown: the five per cent question, or straight to the verdict. */
+  const afterX = () => setStage(noDenominator ? 'done' : 'approximation');
+
   /** Dative singular definite, for "less than 5 % of the starting ___". */
   const startingAmount = unit === 'M' ? 'upphafsstyrknum' : 'upphafsþrýstingnum';
 
@@ -167,7 +179,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
     const graded = gradeScientific({ mantissa, exponent }, x, 0.03);
     setExtentOutcome(graded.outcome);
     setInvalid(graded.reason);
-    if (graded.outcome === 'rett') setStage('approximation');
+    if (graded.outcome === 'rett') afterX();
     committed('extent');
   };
 
@@ -368,7 +380,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     <button
                       type="button"
                       onClick={armed(() => {
-                        setStage('approximation');
+                        afterX();
                         committed('show');
                       })}
                       className="mt-3 block text-xs underline pointer-coarse:-mt-0.5 pointer-coarse:-mb-3.5 pointer-coarse:py-3.5 pointer-coarse:pr-4"
@@ -472,27 +484,33 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     aria-labelledby={verdictId}
                     tabIndex={-1}
                     className={`rounded-lg border-2 p-4 phone:p-3 ${
-                      ruleAnswer === result.approximationSafe
+                      noDenominator || ruleAnswer === result.approximationSafe
                         ? 'border-green-300 bg-green-50'
                         : 'border-amber-300 bg-amber-50'
                     }`}
                   >
                     <p id={verdictId} className="mb-2 font-semibold text-warm-900">
-                      {ruleAnswer === result.approximationSafe ? 'Rétt.' : 'Ekki rétt.'}
+                      {noDenominator
+                        ? 'Hér er enginn nefnari — x² = Kp er leyst nákvæmlega og engin nálgun þarf.'
+                        : ruleAnswer === result.approximationSafe
+                          ? 'Rétt.'
+                          : 'Ekki rétt.'}
                     </p>
-                    <p className="mb-2 text-sm text-warm-800">
-                      Stærsta breytingin er{' '}
-                      <span className="whitespace-nowrap font-mono">
-                        {(result.relativeChange * 100).toFixed(2).replace('.', ',')} %
-                      </span>{' '}
-                      af {startingAmount}, sem er {result.approximationSafe ? 'undir' : 'yfir'}{' '}
-                      <span className="whitespace-nowrap">
-                        {Math.round(APPROXIMATION_THRESHOLD * 100)} %.
-                      </span>{' '}
-                      {result.approximationSafe
-                        ? 'Nálgunin hefði gefið sama svar.'
-                        : 'Nálgunin hefði gefið rangt svar hér.'}
-                    </p>
+                    {!noDenominator && (
+                      <p className="mb-2 text-sm text-warm-800">
+                        Stærsta breytingin er{' '}
+                        <span className="whitespace-nowrap font-mono">
+                          {(result.relativeChange * 100).toFixed(2).replace('.', ',')} %
+                        </span>{' '}
+                        af {startingAmount}, sem er {result.approximationSafe ? 'undir' : 'yfir'}{' '}
+                        <span className="whitespace-nowrap">
+                          {Math.round(APPROXIMATION_THRESHOLD * 100)} %.
+                        </span>{' '}
+                        {result.approximationSafe
+                          ? 'Nálgunin hefði gefið sama svar.'
+                          : 'Nálgunin hefði gefið rangt svar hér.'}
+                      </p>
+                    )}
                     {result.approximateExtent !== null && (
                       <p className="mb-2 font-mono text-sm text-warm-700">
                         <span className="whitespace-nowrap">
