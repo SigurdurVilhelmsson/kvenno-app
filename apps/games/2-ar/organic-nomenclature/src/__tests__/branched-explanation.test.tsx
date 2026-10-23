@@ -46,7 +46,7 @@ describe('Stig 2 explains a branched name with its branch', () => {
         // Unbranched molecules start in the drag builder; any build reaches the feedback.
         const pool = container.querySelector('[data-drop-pool]') as HTMLElement;
         for (const [label, zone] of [
-          ['meth-', 'zone-prefix'],
+          ['met-', 'zone-prefix'],
           ['-an', 'zone-suffix'],
         ]) {
           fireEvent.click(within(pool).getByRole('button', { name: label }));

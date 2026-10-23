@@ -108,7 +108,8 @@ export const challenges: Challenge[] = [
         id: 'a',
         text: 'Vatn er þyngra',
         correct: false,
-        explanation: 'Vatn er í raun léttara en margir lífrænir leysar.',
+        explanation:
+          'Vatnssameind er í raun léttari en sameindir lífrænna leysa: 18 g/mól á móti 58 g/mól í asetoni.',
       },
       {
         id: 'b',

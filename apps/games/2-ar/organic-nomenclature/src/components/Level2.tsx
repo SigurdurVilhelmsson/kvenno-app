@@ -25,7 +25,7 @@ import { organicToMolecule, hasBranches, type OrganicBranch } from '../utils/org
 
 // Misconceptions for organic nomenclature
 const NOMENCLATURE_MISCONCEPTIONS: Record<string, string> = {
-  prefix: 'Forskeytið ákvarðast af fjölda kolefna: meth=1, eth=2, prop=3, but=4, pent=5, hex=6.',
+  prefix: 'Forskeytið ákvarðast af fjölda kolefna: met=1, et=2, próp=3, bút=4, pent=5, hex=6.',
   suffix: 'Viðskeytið ákvarðast af tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
   position: 'Staðsetningartala þarf fyrir 4+ kolefni til að sýna hvar tvítengi/þrítengi er.',
 };
@@ -63,7 +63,7 @@ export const molecules: Molecule[] = [
     structure: 'C-C',
     formula: 'C₂H₆',
     correctName: 'etan',
-    hint: '2 kolefni + eintengi = eth + an',
+    hint: '2 kolefni + eintengi = et + an',
   },
   {
     id: 2,
@@ -72,7 +72,7 @@ export const molecules: Molecule[] = [
     structure: 'C-C-C-C',
     formula: 'C₄H₁₀',
     correctName: 'bútan',
-    hint: '4 kolefni + eintengi = but + an',
+    hint: '4 kolefni + eintengi = bút + an',
   },
   {
     id: 3,
@@ -93,7 +93,7 @@ export const molecules: Molecule[] = [
     formula: 'C₂H₄',
     correctName: 'eten',
     doublePosition: 1,
-    hint: '2 kolefni + tvítengi = eth + en',
+    hint: '2 kolefni + tvítengi = et + en',
   },
   {
     id: 5,
@@ -103,7 +103,7 @@ export const molecules: Molecule[] = [
     formula: 'C₃H₆',
     correctName: 'própen',
     doublePosition: 1,
-    hint: '3 kolefni + tvítengi = prop + en',
+    hint: '3 kolefni + tvítengi = próp + en',
   },
   {
     id: 6,
@@ -135,7 +135,7 @@ export const molecules: Molecule[] = [
     formula: 'C₂H₂',
     correctName: 'etýn',
     triplePosition: 1,
-    hint: '2 kolefni + þrítengi = eth + ýn',
+    hint: '2 kolefni + þrítengi = et + ýn',
   },
   {
     id: 9,
@@ -145,7 +145,7 @@ export const molecules: Molecule[] = [
     formula: 'C₃H₄',
     correctName: 'própýn',
     triplePosition: 1,
-    hint: '3 kolefni + þrítengi = prop + ýn',
+    hint: '3 kolefni + þrítengi = próp + ýn',
   },
   {
     id: 10,
@@ -310,18 +310,19 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   // Generate draggable items for building names
   const { nameItems, nameZones } = useMemo(() => {
-    // Prefixes for carbon counts. The chip shows the prefix Stig 1 teaches; the built name
-    // uses the stem the answer is spelled with (eth- + -an builds `etan`, as the answer key and
-    // the textbook write it). Concatenating the chip label built `ethan`, which the grader
-    // then marked wrong, so etan, eten and etýn could not be answered in this mode at all.
+    // Prefixes for carbon counts. The chip shows the stem the textbook spells the names with
+    // and Stig 1 teaches (decision 89), so `et-` + `-an` builds `etan`, the answer key's own
+    // spelling. The chips used to show the English roots, and concatenating those built names
+    // the grader marked wrong. The ids keep their old spelling: they are not shown, and the
+    // e2e paths select chips by them.
     const prefixes = [
-      { id: 'prefix-meth', label: 'meth-', carbons: 1 },
-      { id: 'prefix-eth', label: 'eth-', carbons: 2 },
-      { id: 'prefix-prop', label: 'prop-', carbons: 3 },
-      { id: 'prefix-but', label: 'but-', carbons: 4 },
-      { id: 'prefix-pent', label: 'pent-', carbons: 5 },
-      { id: 'prefix-hex', label: 'hex-', carbons: 6 },
-    ].map((p) => ({ ...p, stem: CHAIN_STEMS[p.carbons] }));
+      { id: 'prefix-meth', carbons: 1 },
+      { id: 'prefix-eth', carbons: 2 },
+      { id: 'prefix-prop', carbons: 3 },
+      { id: 'prefix-but', carbons: 4 },
+      { id: 'prefix-pent', carbons: 5 },
+      { id: 'prefix-hex', carbons: 6 },
+    ].map((p) => ({ ...p, label: `${CHAIN_STEMS[p.carbons]}-`, stem: CHAIN_STEMS[p.carbons] }));
 
     // Position numbers (for molecules with 4+ carbons)
     const positions = [
@@ -521,7 +522,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     }
 
     // Name the part that is actually wrong. This used to go by which zones were filled, so
-    // eth- + -en for etan was told about prefixes, and any wrong build of 1-búten or 2-pentýn
+    // et- + -en for etan was told about prefixes, and any wrong build of 1-búten or 2-pentýn
     // was told about the position number even when the prefix or the ending was the mistake.
     const placed = (zoneId: string) =>
       nameItems.find((i) => i.id === zoneState[zoneId]?.[0])?.data as
@@ -958,25 +959,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="bg-warm-50 p-4 rounded-xl phone:p-3">
                   <div className="font-bold text-warm-700 mb-2 phone:mb-1">Útskýring:</div>
                   <div className="text-sm text-warm-600">
-                    <span className="text-blue-600 font-bold">
-                      {molecule.carbons === 1
-                        ? 'meth'
-                        : molecule.carbons === 2
-                          ? 'eth'
-                          : molecule.carbons === 3
-                            ? 'prop'
-                            : molecule.carbons === 4
-                              ? 'but'
-                              : molecule.carbons === 5
-                                ? 'pent'
-                                : molecule.carbons === 6
-                                  ? 'hex'
-                                  : molecule.carbons === 7
-                                    ? 'hept'
-                                    : molecule.carbons === 8
-                                      ? 'oct'
-                                      : 'non'}
-                    </span>
+                    <span className="text-blue-600 font-bold">{CHAIN_STEMS[molecule.carbons]}</span>
                     <span className="text-warm-500"> ({molecule.carbons} kolefni) + </span>
                     <span className="text-green-600 font-bold">
                       {molecule.type === 'alkane' ? 'an' : molecule.type === 'alkene' ? 'en' : 'ýn'}

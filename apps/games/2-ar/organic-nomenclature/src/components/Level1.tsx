@@ -18,9 +18,9 @@ import { MoleculeBuilder } from './MoleculeBuilder';
 // Misconceptions for organic nomenclature
 const MISCONCEPTIONS: Record<string, string> = {
   prefix:
-    'Forskeytið segir til um fjölda kolefna í keðjunni. meth=1, eth=2, prop=3, but=4, pent=5, hex=6...',
+    'Forskeytið segir til um fjölda kolefna í keðjunni. met=1, et=2, próp=3, bút=4, pent=5, hex=6...',
   suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
-  name: 'Nafnið er samsett úr forskeyti (fjöldi C) + viðskeyti (tengjategund). T.d. eth + en = eten.',
+  name: 'Nafnið er samsett úr forskeyti (fjöldi C) + viðskeyti (tengjategund). T.d. et + en = eten.',
 };
 
 // Related concepts for organic nomenclature
@@ -51,16 +51,16 @@ interface SuffixRule {
 }
 
 const prefixes: PrefixRule[] = [
-  { carbons: 1, prefix: 'meth-', example: 'metan', formula: 'CH₄' },
-  { carbons: 2, prefix: 'eth-', example: 'etan', formula: 'C₂H₆' },
-  { carbons: 3, prefix: 'prop-', example: 'própan', formula: 'C₃H₈' },
-  { carbons: 4, prefix: 'but-', example: 'bútan', formula: 'C₄H₁₀' },
+  { carbons: 1, prefix: 'met-', example: 'metan', formula: 'CH₄' },
+  { carbons: 2, prefix: 'et-', example: 'etan', formula: 'C₂H₆' },
+  { carbons: 3, prefix: 'próp-', example: 'própan', formula: 'C₃H₈' },
+  { carbons: 4, prefix: 'bút-', example: 'bútan', formula: 'C₄H₁₀' },
   { carbons: 5, prefix: 'pent-', example: 'pentan', formula: 'C₅H₁₂' },
   { carbons: 6, prefix: 'hex-', example: 'hexan', formula: 'C₆H₁₄' },
   { carbons: 7, prefix: 'hept-', example: 'heptan', formula: 'C₇H₁₆' },
-  { carbons: 8, prefix: 'oct-', example: 'oktan', formula: 'C₈H₁₈' },
-  { carbons: 9, prefix: 'non-', example: 'nónan', formula: 'C₉H₂₀' },
-  { carbons: 10, prefix: 'dec-', example: 'dekan', formula: 'C₁₀H₂₂' },
+  { carbons: 8, prefix: 'okt-', example: 'oktan', formula: 'C₈H₁₈' },
+  { carbons: 9, prefix: 'nón-', example: 'nónan', formula: 'C₉H₂₀' },
+  { carbons: 10, prefix: 'dek-', example: 'dekan', formula: 'C₁₀H₂₂' },
 ];
 
 const suffixes: SuffixRule[] = [
@@ -97,14 +97,14 @@ const quizQuestions: QuizQuestion[] = [
   {
     id: 1,
     type: 'prefix',
-    question: "Hvað táknar forskeytið 'meth-'?",
+    question: "Hvað táknar forskeytið 'met-'?",
     correctAnswer: '1 kolefni',
     options: ['1 kolefni', '2 kolefni', '3 kolefni', '4 kolefni'],
   },
   {
     id: 2,
     type: 'prefix',
-    question: "Hvað táknar forskeytið 'prop-'?",
+    question: "Hvað táknar forskeytið 'próp-'?",
     correctAnswer: '3 kolefni',
     options: ['2 kolefni', '3 kolefni', '4 kolefni', '5 kolefni'],
   },
@@ -127,7 +127,7 @@ const quizQuestions: QuizQuestion[] = [
     type: 'prefix',
     question: 'Hvaða forskeyti táknar 5 kolefni?',
     correctAnswer: 'pent-',
-    options: ['but-', 'pent-', 'hex-', 'hept-'],
+    options: ['bút-', 'pent-', 'hex-', 'hept-'],
   },
   {
     id: 6,
@@ -154,8 +154,8 @@ const quizQuestions: QuizQuestion[] = [
     id: 9,
     type: 'prefix',
     question: 'Hvaða forskeyti táknar 8 kolefni?',
-    correctAnswer: 'oct-',
-    options: ['hex-', 'hept-', 'oct-', 'non-'],
+    correctAnswer: 'okt-',
+    options: ['hex-', 'hept-', 'okt-', 'nón-'],
   },
   {
     id: 10,

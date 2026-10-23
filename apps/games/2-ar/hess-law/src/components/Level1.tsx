@@ -25,13 +25,13 @@ const MISCONCEPTIONS: Record<number, string> = {
 };
 
 // Related concepts for each challenge
-const RELATED_CONCEPTS: Record<number, string[]> = {
+export const RELATED_CONCEPTS: Record<number, string[]> = {
   1: ['Útvermið hvarf', 'Innvermið hvarf', 'Vermi'],
-  2: ['Öfug hvörf', 'Formerkisbreyting', 'Hverfanleiki'],
+  2: ['Öfug hvörf', 'Formerkisbreyting'],
   3: ['Hlutfallaefnafræði', 'Mólhlutföll', 'Hlutfallsleg orka'],
   4: ['Samsettar aðgerðir', 'Sundrun vs myndun', 'Margföldun'],
-  5: ['Lögmál Hess', 'Orkuvarðveisla', 'Hverfanleiki'],
-  6: ['Orkubraut', 'Ferlisstuðull', 'Heildar-ΔH'],
+  5: ['Lögmál Hess', 'Orkuvarðveisla'],
+  6: ['Orkubraut', 'Ástandsfall', 'Heildar-ΔH'],
 };
 
 // Energy diagram component

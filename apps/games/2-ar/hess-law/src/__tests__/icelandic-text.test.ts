@@ -58,6 +58,10 @@ const BANNED: { pattern: RegExp; why: string }[] = [
     pattern: /Útskýrðu rökstuðning/,
     why: 'Stig 2 has no step that asks for reasoning (decisions item 79)',
   },
+  {
+    pattern: /Hverfanleiki|Ferlisstuðul/,
+    why: 'coined chips, in no glossary or the book; path-independence is ástandsfall (item 78)',
+  },
 ];
 
 function sourceFiles(dir: string): string[] {

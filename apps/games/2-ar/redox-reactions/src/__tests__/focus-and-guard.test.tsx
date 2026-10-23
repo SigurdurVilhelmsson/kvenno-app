@@ -130,7 +130,8 @@ describe('Stig 3', () => {
     const { container } = render(<Level3 t={t} onComplete={vi.fn()} onBack={vi.fn()} />);
     const view = within(container);
     fireEvent.click(view.getByRole('button', { name: /Byrja æfingar/ }));
-    expect(document.activeElement?.textContent).toBe('Stilla redox-jöfnur');
+    // The heading carries the level's one name (decision 84), the same as the menu card's.
+    expect(document.activeElement?.textContent).toBe('Stig 3: Stilla redox-jöfnur');
 
     fireEvent.change(view.getByLabelText('Hvað oxast?'), { target: { value: 'Xx' } });
     fireEvent.change(view.getByLabelText('Hvað afoxast?'), { target: { value: 'Yy' } });
@@ -164,11 +165,11 @@ describe('screen swaps', () => {
     );
     const { container } = render(<App />);
     const view = within(container);
-    fireEvent.click(view.getByRole('button', { name: /Stig 3: Stilla hvörf/ }));
+    fireEvent.click(view.getByRole('button', { name: /Stig 3: Stilla redox-jöfnur/ }));
     expect(document.activeElement?.textContent).toBe('Hálfhvarfsaðferðin — Kennsla');
 
     fireEvent.click(view.getByRole('button', { name: /Til baka/ }));
-    const card = view.getByRole('button', { name: /Stig 2: Greina hvörf/ });
+    const card = view.getByRole('button', { name: /Stig 2: Greina redox-hvörf/ });
     expect(card.getAttribute('data-level-card')).toBe('2');
     expect(document.activeElement).toBe(card);
   });

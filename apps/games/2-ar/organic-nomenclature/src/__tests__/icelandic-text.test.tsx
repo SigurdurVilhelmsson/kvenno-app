@@ -21,7 +21,7 @@ import { Level3 } from '../components/Level3';
  *   the plural is not `Alkön`, and the alkene class is `alken`, not `alkén`.
  * - **Formula questions read `Hvaða formúlu hefur X?`**; `Hvaða formúla á X?` had a nominative
  *   where `eiga` takes an accusative. `Heildarstig` is one word, as the completion screen writes
- *   it. A named prefix takes the article, `forskeytið 'meth-'`, as the quiz's own
+ *   it. A named prefix takes the article, `forskeytið 'met-'`, as the quiz's own
  *   `viðskeytið '-an'` does two questions later.
  * - **A branch is a `metýlhópur`**, the book's word; the game called it a `grein`.
  * - **No subscript minus** (`C₋₄H₁₀`) and **no English**: Stig 3's learn cards carried
@@ -51,6 +51,14 @@ const BANNED: { wrong: RegExp; right: string }[] = [
     right: 'the accented name (própan, búten, etýn, …)',
   },
   { wrong: /(^|[^a-z-])-yn\b/, right: '-ýn' },
+  {
+    // Decision 89 (a): the textbook's stems, which the names are spelled with, not the English
+    // roots. Matched only as a taught prefix (`eth-`, `prop=3`, `but + an`, `'oct'`), so English
+    // prose in comments ("but the name", "non-zero") passes.
+    wrong:
+      /\b(meth|eth|prop|but|oct|non|dec)(-(?![a-zA-Z])|=| \+ )|'(meth|eth|prop|but|oct|non|dec)'/,
+    right: 'met-, et-, próp-, bút-, okt-, nón-, dek-',
+  },
   { wrong: /Hvaða formúla á /, right: 'Hvaða formúlu hefur …' },
   { wrong: /táknar forskeyti '/, right: "táknar forskeytið '…' (as viðskeytið '-an' beside it)" },
   { wrong: /Heildar stig/, right: 'Heildarstig' },

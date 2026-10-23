@@ -4917,7 +4917,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         prompt: { css: '[data-item-start]' },
         // Pinned to the bottom of a portrait phone (PIN_USES in mobile-vertical.spec.ts).
         action: { role: 'button', name: 'Athuga svar' },
-        // A wrong name, prop- + -en for etan: the longest feedback.
+        // A wrong name, próp- + -en for etan: the longest feedback.
         answer: [
           { css: '[data-drop-pool] [data-item-id="prefix-prop"]' },
           { css: '[data-zone-id="zone-prefix"]' },
@@ -5103,7 +5103,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — kennsla',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
       ],
     },
@@ -5111,7 +5111,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — leikur',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5131,7 +5131,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — endurgjöf',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5145,7 +5145,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — hálfhvarf stillt',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5174,7 +5174,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — galvaníhlað í gangi',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5194,7 +5194,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — kennsla',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
       ],
     },
@@ -5202,7 +5202,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — leikur',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5227,7 +5227,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — endurgjöf (rangt svar)',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5247,7 +5247,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — skref 4 (margfaldarar)',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -7549,8 +7549,8 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
-      // The hardest difficulty adds the 'Áskorun' box, the tallest prompt the game has. At the
-      // SE that costs a third flick to "Athuga svar", the SE residual §5 accepts, so the SE is
+      // The hardest difficulty adds the 'Til umhugsunar' box, the tallest prompt the game has. At
+      // the SE that costs a third flick to "Athuga svar", the SE residual §5 accepts, so the SE is
       // left to the default-difficulty loops above.
       loop: {
         prompt: { css: '[data-item-start]' },
