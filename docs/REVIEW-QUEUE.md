@@ -104,7 +104,7 @@ shipped with the design's "planned" option.
       → Tölur → Rök)?
 - [ ] 2. Einingagreining Stig 2 on phones:
   - (a) hide "Stuðlar notaðir" in drag mode?
-  - (b) hide "Strika út"?
+  - (b) hide "Strika út"? Moot since 2026-10-23: decision 29 (a) removed the button.
   - (c) make click mode the default on touch?
 
   None of these is done.
