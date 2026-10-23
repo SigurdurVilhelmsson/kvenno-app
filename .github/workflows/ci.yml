@@ -10,6 +10,10 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Nothing here writes to the repository, so the token can only read it.
+permissions:
+  contents: read
+
 jobs:
   lint-and-typecheck:
     name: Lint & Type Check
