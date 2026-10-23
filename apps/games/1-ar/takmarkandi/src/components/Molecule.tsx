@@ -12,7 +12,7 @@ export function Molecule({ formula, color, size = 50, className = '' }: Molecule
     <div
       className={`molecule flex items-center justify-center rounded-full font-bold text-white shadow-lg ${labelSize} ${className}`}
       role="img"
-      aria-label={`${formula} sameind`}
+      aria-label={`${formula} eind`}
       style={{
         width: size,
         height: size,

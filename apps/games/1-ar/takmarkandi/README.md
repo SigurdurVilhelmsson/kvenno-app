@@ -177,12 +177,16 @@ decides, with the two quotients. Only that clause changed.
   picked (`wrongPickMisconception` in `Level3.tsx`): the lighter mass is told a lighter reactant
   can be in excess, a heavier one with fewer moles to divide by the coefficient, and a heavier one
   with more moles keeps the old sentence. `yield.test.ts` and `level3-playable.test.tsx` hold it.
+- **Decision 57 (a), B7: Stig 1 and 2 count `eindir`, not `sameindir`.** They counted Mg, Na, K,
+  Ca, Zn and Cu, atoms that react to ionic formula units, as molecules. The neutral `eindir`
+  (`particle;eind`) now covers every particle the two levels count, H₂ and O₂ included, so the
+  word never depends on the species: the reactant cards (`6 eindir`), each ball's accessible name
+  (`Mg eind`, in `Molecule.tsx`), and `fjölda einda` in Stig 1's method and the two levels'
+  questions and feedback. Stig 3 weighs in grams and never named the particles. The `Molecule`
+  component keeps its name, which no student reads. `particle-word.test.tsx` plays both levels and
+  fails on `sameind` in their text or aria-labels.
 
 **Siggi's calls, found in the same pass and deliberately not changed:**
-
-- **B7 is still open here:** Stig 1 and 2 count Mg, Na, K, Ca, Zn and Cu as `sameindir`
-  (molecules), and the `Molecule` component labels each ball `… sameind`. Which word replaces it for
-  atoms and formula units (`eindir`?) is a terminology ruling, not a spelling fix.
 
 - **Percent composition and combustion analysis are the neighbours**, both unbuilt. The book puts
   percent composition in ch. 3 with Mólmassi and Reynsluformúlur, and combustion analysis in

@@ -271,7 +271,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
                 {/* Balanced on a phone, so it breaks before the brackets, not inside them. */}
                 <div className="text-sm text-warm-600 phone:text-balance">
-                  {q.r1Count} sameindir (stuðull: {q.reaction.reactant1.coeff})
+                  {q.r1Count} eindir (stuðull: {q.reaction.reactant1.coeff})
                 </div>
               </div>
               <div className="bg-white rounded-xl shadow-md p-4 text-center phone:p-2">
@@ -291,7 +291,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
                 {/* Balanced on a phone, so it breaks before the brackets, not inside them. */}
                 <div className="text-sm text-warm-600 phone:text-balance">
-                  {q.r2Count} sameindir (stuðull: {q.reaction.reactant2.coeff})
+                  {q.r2Count} eindir (stuðull: {q.reaction.reactant2.coeff})
                 </div>
               </div>
             </div>
@@ -362,7 +362,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       misconception: isCorrect
                         ? undefined
                         : q.type === 'times'
-                          ? 'Deildu fjölda sameinda hvarfefnis með stuðli þess. Lægri talan segir hversu oft hvörfin geta gerst.'
+                          ? 'Deildu fjölda einda hvarfefnis með stuðli þess. Lægri talan segir hversu oft hvörfin geta gerst.'
                           : 'Margfaldaðu fjölda skipta með stuðli MYNDEFNISINS, ekki hvarfefnisins.',
                     }}
                     config={{ showExplanation: true, showMisconceptions: !isCorrect }}

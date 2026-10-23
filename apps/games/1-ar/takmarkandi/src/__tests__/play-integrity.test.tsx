@@ -27,13 +27,13 @@ afterEach(() => {
 const reactantCards = (root: HTMLElement) =>
   within(root)
     .getAllByRole('button')
-    .filter((b) => /sameind/.test(b.textContent ?? ''));
+    .filter((b) => /\d+ eindir/.test(b.textContent ?? ''));
 
 /** 0 if the left reactant runs out first, 1 if the right one does — read off the cards. */
 function limitingSide(root: HTMLElement): 0 | 1 {
   const [left, right] = reactantCards(root).map((card) => {
     const text = card.textContent ?? '';
-    const count = Number(text.match(/(\d+) sameind/)![1]);
+    const count = Number(text.match(/(\d+) eindir/)![1]);
     const coeff = Number(text.match(/Stu.ull: (\d+)/)![1]);
     return count / coeff;
   });
@@ -90,7 +90,7 @@ describe('Stig 1', () => {
       let moreNumerousLimiting = 0;
       for (let q = 0; q < 8; q++) {
         const counts = reactantCards(container).map((card) =>
-          Number((card.textContent ?? '').match(/(\d+) sameind/)![1])
+          Number((card.textContent ?? '').match(/(\d+) eindir/)![1])
         );
         const side = limitingSide(container);
         if (counts[side] > counts[1 - side]) moreNumerousLimiting++;
@@ -123,7 +123,7 @@ describe('Stig 2', () => {
       asked.push(
         [
           ...within(root)
-            .getAllByText(/sameind/)
+            .getAllByText(/\d+ eindir/)
             .map((e) => e.textContent),
           within(root).getByRole('heading', { level: 2 }).textContent,
         ].join(' | ')

@@ -2174,11 +2174,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       loop: {
         prompt: { css: '#takmarkandi-l1-equation' },
         // Tapping a reactant is the answer: there is no separate Athuga.
-        action: { css: 'button:has-text("sameindir")' },
+        action: { css: 'button:has-text("eindir")' },
         answer: [],
         verdict: { css: '.feedback-panel' },
         next: { role: 'button', name: 'Næsta spurning' },
-        together: [[{ css: '#takmarkandi-l1-equation' }, { css: 'button:has-text("sameindir")' }]],
+        together: [[{ css: '#takmarkandi-l1-equation' }, { css: 'button:has-text("eindir")' }]],
         viewports: ['android', 'iphone', 'se', 'landscape'],
       },
     },
@@ -2192,7 +2192,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Byrja æfingar',
         },
         {
-          css: 'button:has-text("sameindir")',
+          css: 'button:has-text("eindir")',
         },
         {
           wait: 400,

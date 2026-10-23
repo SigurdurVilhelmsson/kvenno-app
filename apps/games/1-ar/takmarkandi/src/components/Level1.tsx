@@ -249,7 +249,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-5 phone:p-4 phone:mb-4">
               <h2 className="font-bold text-blue-800 mb-2">Aðferðin</h2>
               <p className="text-blue-700 mb-3">
-                Deildu fjölda sameinda með stuðlinum — <strong>lægri talan</strong> segir þér hvað
+                Deildu fjölda einda með stuðlinum — <strong>lægri talan</strong> segir þér hvað
                 rennur fyrst út.
               </p>
               <div className="bg-white rounded-lg p-4 font-mono text-sm text-warm-700 space-y-1">
@@ -308,7 +308,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       >
         <div className="text-center mb-3 phone:mb-2">
           <div className="text-2xl font-bold">{reactant.formula}</div>
-          <div className="text-sm text-warm-600">{count} sameindir</div>
+          <div className="text-sm text-warm-600">{count} eindir</div>
           <div className="text-xs text-warm-500">Stuðull: {reactant.coeff}</div>
         </div>
         <div className="flex flex-wrap justify-center gap-1">
@@ -373,7 +373,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             Hvort hvarfefnið eyðist fyrst?
           </h2>
           <p className="text-warm-600 mb-6 phone:mb-3 phone:text-sm phone-land:col-start-1 phone-land:mb-0">
-            Skoðaðu stuðlana og fjölda sameinda. Hvort hvarfefnið mun klárast fyrst?
+            Skoðaðu stuðlana og fjölda einda. Hvort hvarfefnið mun klárast fyrst?
           </p>
 
           <div
