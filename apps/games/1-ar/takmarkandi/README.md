@@ -180,11 +180,6 @@ decides, with the two quotients. Only that clause changed.
 
 **Siggi's calls, found in the same pass and deliberately not changed:**
 
-- **Stig 3's per-step "Reyna aftur" follows a feedback panel that prints the answer**, and a retried
-  step scores the full 10. Answering every step wrong, reading `Rétt svar`, and retrying scores
-  150 of 150 — measured by playing the real component. Options: a retried step earns nothing (or
-  less); hide the number while a retry is on offer (the review screen shows it anyway); or drop the
-  retry. Recommendation: score the first attempt only, keep the retry for practice.
 - **B7 is still open here:** Stig 1 and 2 count Mg, Na, K, Ca, Zn and Cu as `sameindir`
   (molecules), and the `Molecule` component labels each ball `… sameind`. Which word replaces it for
   atoms and formula units (`eindir`?) is a terminology ruling, not a spelling fix.

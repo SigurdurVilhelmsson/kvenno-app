@@ -184,14 +184,9 @@ hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`�
 
 ## Open
 
-- **Two stored ΔH° values disagree with what `thermo.ts` derives.** CaCO₃ decomposition (id 12)
-  stores 178 against a derived 191,6, and NO₂ dimerisation (id 21) −57 against −55,3 — the same two
-  divergences `thermo.ts`'s header records for `equilibrium-shifter`. Neither changes a sign, and
-  `thermo.ts` is the Icelandic book, not Brown, so which value is right is not settled. No ΔS° is
-  sourced anywhere on the platform, so the ΔS values are unchecked.
-- **Two names are still unsettled, so they were left as they are.** Id 16 is `Contact aðferðin`,
-  English, where `equilibrium-shifter` says `Snertiaðferð`, a name neither source has (decision
-  17). Id 17 `Gufumyndun` names steam reforming (CH₄ + H₂O → CO + 3H₂) but reads as vapour
-  formation; decision 110 leaves its word to Siggi. The menu's `Gibbs frjálsa orku` already follows
-  the textbook's `frjáls orka`, which decision 110 adopts; `ordabok.md`'s `Gibbs fríorka` is to be
-  corrected to match.
+- **No ΔS° is sourced anywhere on the platform**, so the ΔS values are unchecked. (ΔH° comes from
+  `thermo.ts` for the 25 reactions it reaches since decision 9 (a), ids 12 and 21 included.)
+- **One name is still unsettled.** Id 17 `Gufumyndun` names steam reforming (CH₄ + H₂O → CO + 3H₂)
+  but reads as vapour formation; decision 110 leaves its word to Siggi. (Id 16 has been
+  `Snertiferlið` since decision 17, and the menu's `Gibbs frjálsa orku` follows the textbook's
+  `frjáls orka`, which `ordabok.md` now carries.)

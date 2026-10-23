@@ -108,9 +108,6 @@ src/__tests__/                86 tests across empirical, problems, feedback-text
   composition but does not drill it.
 - **Combustion analysis** — the other route into an empirical formula, and the one a lab actually
   uses — is not covered.
-- **Æfa shows `rétt: …` beside each wrong cell and leaves the inputs live**, so a student can submit
-  zeros and copy the values back. No score rides on it, but a column then unlocks without being
-  worked. Hiding the value until a second wrong try is one option; it is a teaching call.
 
 Fixed 2026-09-23, each held by `feedback-text.test.tsx`: Beita's "Þitt n gaf …" line called the
 right formula wrong for a fractional n (1,5 on HO rounded back to H₂O₂ at the measured mass) and now

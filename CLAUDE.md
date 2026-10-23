@@ -1731,8 +1731,9 @@ book always writes them (decision 74); the open form is a platform row. Reaction
 
 **Decision 12, 2026-10-03:** `umreikningsstuðull` (not `umbreytingarstuðull`; same declension) and
 `styttast út` for cancelling units and terms (not `strikast út`; it agrees in number, `einingin
-styttist`, `einingarnar styttast`). `strika út` stays only as the name of the on-screen
-strike-through, Einingagreining's `Strika út` button. Both are platform rows.
+styttist`, `einingarnar styttast`). `strika út` may only name an on-screen
+strike-through; Einingagreining's `Strika út` button, the one example, went with decision 29 (a)
+on 2026-10-23. Both are platform rows.
 
 **Four more on 2026-10-02, Siggi's rulings from the review tracker** (decisions 11, 15, 16, 39):
 `nitur` for nitrogen, not `köfnunarefni` (neuter: `nitur`/`nitri`/`niturs`; compounds take the bare

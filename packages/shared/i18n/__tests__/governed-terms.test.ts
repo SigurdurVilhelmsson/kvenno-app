@@ -511,7 +511,7 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     correct: 'styttast út',
     banned: [/\bstrik(ast|ist|un)\b/i],
     guidance:
-      "Decision 12, ruled (a) 2026-10-03: the book writes stytta/styttast út (13 hits) and never strika út. 1-ar/dimensional-analysis said both, strikast út at about 20 sites; molmassi, hess-law and utfellingarhvorf said it too. strika út stays only as the name of the on-screen strike-through, e.g. Einingagreining's Strika út button, which the ban does not match. NOT always a string swap: the middle voice agrees in number, so einingin styttist út but einingarnar styttast út, and the subjunctive is styttist for both. The noun strikun has no book equivalent, so Strikun eininga became the sentence Einingar styttast út rather than a coined styttun.",
+      "Decision 12, ruled (a) 2026-10-03: the book writes stytta/styttast út (13 hits) and never strika út. 1-ar/dimensional-analysis said both, strikast út at about 20 sites; molmassi, hess-law and utfellingarhvorf said it too. strika út may only name an on-screen strike-through, which the ban does not match (Einingagreining's Strika út button, the one example, was removed by decision 29 (a) on 2026-10-23). NOT always a string swap: the middle voice agrees in number, so einingin styttist út but einingarnar styttast út, and the subjunctive is styttist for both. The noun strikun has no book equivalent, so Strikun eininga became the sentence Einingar styttast út rather than a coined styttun.",
   },
   {
     english: 'redox reaction',

@@ -188,8 +188,5 @@ own outside the site header, so focus would otherwise fall to the page.
   is in group 1, groups 13–14 are missing (Al, Sn and Pb, all used in Levels 2–3, among them), and
   15–16 hold metals too. Every warm-up element fits the card, so nothing is graded wrong; how much to
   simplify is a teaching call.
-- **`fjölatóma jón` against `ordabok.md`.** The game says `fjölatóma jón` throughout, as does the
-  textbook's prose (23 to 2), but `ordabok.md` has `polyatomic ion;fjölfrumeinda jón`; two Level 3
-  info lines say a third word, `Sameindajón`. Siggi's call.
 - **The i18n question is undecided platform-wide.** Level 3's teaching text and several Level 2
   strings are hardcoded Icelandic beside a full `i18n.ts`; see CLAUDE.md's deferred-work list.
