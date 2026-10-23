@@ -148,9 +148,8 @@ was done. Still open, all waiting on Siggi:
 - [ ] 51 utfellingarhvorf: the FeCl₃ coagulant sentence, in Siggi's Icelandic.
 - [ ] 94 gas-law-challenge: an Explore screen, and its scope.
 - [ ] 103 equilibrium-shifter: the ten systems with no constant need a new source.
-- [ ] 67–71 vsepr-geometry: confirm 70's angle sets (applied 2026-10-01).
 
-Done: 12–93 except 51 (70 to confirm), 95–102, 104–122. Siggi ruled 27 (a), 32 (b), 40 (b),
+Done: 12–93 except 51, 95–102, 104–122. Siggi ruled 27 (a), 32 (b), 40 (b),
 42 (c), 57 (a), 61 (a), 73, 97 (a) and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
 
 #### Drafted wording from 2026-10-23: confirm or change
@@ -193,14 +192,16 @@ says where.
 
 #### Found while applying them
 
-- [ ] **syrufastinn Æfa now has seven problems, not five** (106 (b), one per acid read
-      literally). Delete two rows of `PRACTICE_PAIRS` if five was meant.
-- [ ] **ph-titration grades indicators against the equivalence pH as printed** (113): unrounded,
-      HF's 7,97 fits no indicator, so HF now accepts þýmólblátt only, not fenólftalín.
-- [ ] **`ordabok.md` says `indicator;litvísir`**, while 116 keeps `vísir`, and
-      `leysnijafnvaegi` writes `litvísir` once.
-- [ ] **Q reads neuter in places** (`Q er minna`) in jafnvaegisfasti, though `hvarfstuðull` is
-      masculine like K (99).
+- [x] **syrufastinn Æfa now has seven problems, not five** (106 (b), one per acid read
+      literally). Siggi: keep seven, 2026-10-23.
+- [x] **ph-titration grades indicators against the equivalence pH as printed** (113): unrounded,
+      HF's 7,97 fits no indicator, so HF now accepts þýmólblátt only. Siggi: only þýmólblátt
+      counts, 2026-10-23.
+- [x] **`ordabok.md` says `indicator;litvísir`**, while 116 kept `vísir`. Siggi: `litvísir`,
+      2026-10-23; swept in `ph-titration`, with a row in its `icelandic-text.test.ts`.
+- [x] **Q reads neuter in places** (`Q er minna`) in jafnvaegisfasti. Siggi: neuter for both K
+      and Q, 2026-10-23 (99); the masculine K applied earlier that day is reverted, held by
+      `k-gender.test.ts`.
 - [ ] **molmassi Stig 3: NH₃ and O₂ still both come to 2 mól** (43 named three problems).
 
 #### Item 1 as applied (2026-10-03, PR #85): confirm or change

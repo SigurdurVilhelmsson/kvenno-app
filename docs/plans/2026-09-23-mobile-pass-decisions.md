@@ -703,6 +703,7 @@ linear 180; bent 104,5; trigonal planar 120; trigonal pyramidal 107; tetrahedral
 bipyramidal and see-saw 90, 120, 180; T-shape, octahedral and square planar 90, 180. Every
 written angle must be in the shape's set and every asked-for angle present. **Confirm the sets**
 — the see-saw and T-shape use the ideal bipyramid angles, not SF₄'s and ClF₃'s squeezed ones.
+**Confirmed by Siggi 2026-10-23:** the ideal bipyramid angles stay.
 
 **71. The angle hint and reference table give the answer; Stig 1 pictures show the
 shape asked about.**
@@ -981,7 +982,7 @@ er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufuþrýstingurinn
 Masculine in Skilja and `coupled.ts` (`K er háður hitastigi`); neuter in the `problems.ts` contexts
 (`K örsmátt`, `Stórt Kp`). The corpus has 2 hits, both masculine. **Recommendation:** masculine
 throughout, on your say-so.
-**Ruled 2026-10-23:** masculine throughout, applied the same day. Q (`hvarfstuðull`, also masculine) still reads neuter in places.
+**Ruled 2026-10-23: neuter for both K and Q** (Siggi), applied the same day; an earlier pass that day had applied the recommended masculine and was reverted. `k-gender.test.ts` holds it.
 
 **100. Two README Open items.**
 ICE before Le Chatelier, where the book puts it after: recommendation keep, since ICE needs only K.
@@ -1040,7 +1041,7 @@ student's own check, done the book's way.
 Three are ediksýra and the last is at 2,65 %, not near the 5 % line (`data/problems.ts:60-72`).
 Options: (a) end at the tightest valid pair (maurasýra 0,1 M, 4,15 %); (b) also one problem per acid;
 (c) keep and fix the comment. **Recommendation:** (a) and (b).
-**Ruled 2026-10-23:** (a) and (b), applied the same day: one pair per acid, seven in all, ending at maurasýra 0,1 M.
+**Ruled 2026-10-23:** (a) and (b), applied the same day: one pair per acid, seven in all, ending at maurasýra 0,1 M. **Confirmed by Siggi 2026-10-23:** keep seven problems.
 
 **107. The menu says students have already seen pKa in titrations and buffers.**
 `App.tsx:87-91`; both come after this game in the chain. Options: (a) `Í pH Títrun og Stuðpúðum
@@ -1105,7 +1106,7 @@ but accept it for P3 (also eq. 7), and accept phenolphthalein for P5 (eq. 8,08).
 by Level 1's rule with the unused `isIndicatorAppropriate` (`data/indicators.ts:68`); (b) the
 real-lab rule, any range inside the steep jump, rewording Level 1 ch6; (c) hand lists that agree.
 **Recommendation:** (a).
-**Ruled 2026-10-23:** (a), applied the same day, against the equivalence pH as printed (one decimal), so HF accepts þýmólblátt only.
+**Ruled 2026-10-23:** (a), applied the same day, against the equivalence pH as printed (one decimal), so HF accepts þýmólblátt only. **Confirmed by Siggi 2026-10-23:** for HF only þýmólblátt counts.
 
 **114. The indicator cards say which titration each suits.**
 `data/indicators.ts` `description`, rendered at `IndicatorSelector.tsx:63`, gives away half the
@@ -1127,7 +1128,7 @@ Half-equivalence: `hálfur jafngildispunktur` (11 sites); `ordabok.md` says `há
 `vísir` against `litvísir`: the corpus says `vísar` 35 times. **Recommendation:** the book's
 `hálfjafngildispunktur` (the glossary entry has a typo in its English headword), `keiluflaska`,
 `fenólftalín`, keep `vísir`.
-**Ruled 2026-10-23:** as recommended, applied the same day; `ordabok.md` now has `half-equivalence point;hálfjafngildispunktur`.
+**Ruled 2026-10-23:** as recommended, applied the same day; `ordabok.md` now has `half-equivalence point;hálfjafngildispunktur`. **Then, the same day, Siggi ruled `litvísir`, as `ordabok.md` says, not bare `vísir`**; swept in `ph-titration`, held by a row in its `icelandic-text.test.ts`.
 
 ### buffer-recipe-creator — Stuðpúðasmíði
 
