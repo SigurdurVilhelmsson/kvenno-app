@@ -33,6 +33,8 @@ interface ScoreResult {
 interface Level3Progress {
   problemsCompleted: number;
   compositeScores: number[];
+  /** Problems whose answer was right, for the line that ends the run. */
+  answersCorrect?: number;
   totalSteps?: number;
   achievements: string[];
   mastered: boolean;
@@ -78,6 +80,16 @@ function asGiven(value: number, prompt: string): string {
  * `1 míla / 1.609 km` form the tests multiply out, so the comma goes in here.
  */
 const withDecimalComma = (factor: string) => factor.replace(/(\d)\.(\d)/g, '$1,$2');
+
+/** The average composite a run needs to be mastered. */
+const MASTERY_AVERAGE = 0.75;
+
+/** Is a run with these composite scores mastered? One rule, for the check and the summary. */
+function runMastered(compositeScores: number[]): boolean {
+  if (compositeScores.length === 0) return false;
+  const average = compositeScores.reduce((a, b) => a + b, 0) / compositeScores.length;
+  return average >= MASTERY_AVERAGE;
+}
 
 interface Level3Props {
   onComplete: (progress: Level3Progress, maxScore?: number, hintsUsed?: number) => void;
@@ -258,11 +270,11 @@ export function Level3({
         else if (selected.steps === 2) efficiencyScore = 0.8;
       }
     } else if (problem.type === 'error_analysis') {
+      // Method credit comes from the right answer, never from the length of
+      // the explanation (decisions item 30 (b)): 21 characters under a wrong
+      // answer read "✓ Rétt aðferð valin".
       if (isAnswerCorrect(typed, problem.correctAnswer || 0)) {
         answerScore = 1;
-      }
-      // Credit method for any substantive explanation attempt
-      if (explanation.trim().length > 20) {
         methodScore = 1;
       }
     } else if (problem.type === 'efficiency') {
@@ -279,8 +291,11 @@ export function Level3({
         }
       }
     } else if (problem.type === 'synthesis' || problem.type === 'derivation') {
+      // As for error analysis: the method is credited by the right answer, not
+      // by the explanation's length (decisions item 30 (b)).
       if (isAnswerCorrect(typed, problem.expectedAnswer || 0)) {
         answerScore = 1;
+        methodScore = 1;
       }
 
       // Check significant figures if required (only for synthesis type)
@@ -289,10 +304,6 @@ export function Level3({
         userSigFigs = writtenFigures(userAnswer);
         sigFigScore =
           userSigFigs === null ? null : userSigFigs === problem.significantFigures ? 1 : 0;
-      }
-
-      if (explanation.length > 20) {
-        methodScore = 1;
       }
     } else if (problem.type === 'real_world') {
       // `parseInt` truncated a decimal answer and could not read an Icelandic
@@ -339,6 +350,7 @@ export function Level3({
     const newProgress = {
       ...progress,
       compositeScores: [...progress.compositeScores, composite],
+      answersCorrect: (progress.answersCorrect ?? 0) + (answerScore === 1 ? 1 : 0),
       totalSteps:
         (progress.totalSteps || 0) +
         (selectedPath !== null && problem.type === 'efficiency'
@@ -359,9 +371,7 @@ export function Level3({
     // This said `>= 10` from when the level had ten items; a run is now
     // `run.length` long, and a shorter one could never be mastered at all.
     if (newProgress.problemsCompleted >= run.length) {
-      const avgScore =
-        newProgress.compositeScores.reduce((a, b) => a + b, 0) / newProgress.compositeScores.length;
-      newProgress.mastered = avgScore >= 0.75;
+      newProgress.mastered = runMastered(newProgress.compositeScores);
     }
 
     setProgress(newProgress);
@@ -469,6 +479,18 @@ export function Level3({
           ? sciEntry.mantissa.trim() !== ''
           : userAnswer.trim() !== '';
   const canSubmit = answerGiven && explanation.trim() !== '';
+
+  // The last problem's feedback ends the run, so it says how the run went
+  // before "Ljúka stigi" returns to the menu (decisions item 31). It read
+  // nothing, and a student who missed mastery was not told why.
+  const isLastProblem = currentProblemIndex === run.length - 1;
+  const runSummary = isLastProblem
+    ? `Stigi lokið: ${progress.answersCorrect ?? 0} af ${run.length} rétt. ${
+        runMastered(progress.compositeScores)
+          ? 'Þú hefur náð tökum á stiginu.'
+          : 'Til að ná tökum á stiginu þarf rétt svar og útskýringu í flestum áskorunum.'
+      }`
+    : null;
 
   const problemTypeLabels: Record<string, string> = {
     reverse: 'Öfug greining',
@@ -1011,6 +1033,12 @@ export function Level3({
                       </p>
                     </div>
                   )}
+
+                {runSummary && (
+                  <p className="p-4 bg-white rounded-xl border-2 border-purple-200 font-semibold text-warm-800 text-center">
+                    {runSummary}
+                  </p>
+                )}
               </div>
 
               {/* A separate element from "Senda inn", and it ignores a press

@@ -188,3 +188,43 @@ describe('Level 2 — the chosen factors are not marked right before checking', 
     expect(shown.className).not.toMatch(/green/);
   });
 });
+
+describe('Level 2 — a wrong answer shows the right value (decisions item 28 (a))', () => {
+  // The verdict said only `Rétta leiðin er: <factors>`, so a right chain with a
+  // slipped number was told nothing about the number.
+  it.each(level2Problems.map((p, i) => [p.id, i] as const))(
+    '%s: the right chain is written out to the value it gives',
+    (_id, index) => {
+      const problem = level2Problems[index];
+      renderProblem(index);
+      choose(problem.correctPath);
+      submit('7777');
+      const line = screen.getByText(/^Rétta leiðin er:/);
+      expect(line.textContent).toBe(
+        `Rétta leiðin er: ${formatDecimal(problem.startValue)} ${problem.startUnit} × ${problem.correctPath
+          .map((f) => `(${f})`)
+          .join(' × ')} = ${formatDecimal(expected(index))} ${problem.targetUnit}`
+      );
+      expect(line.textContent).not.toMatch(/\d\.\d/);
+    }
+  );
+});
+
+describe('Level 2 — the related concepts are Icelandic (decisions item 26 (a))', () => {
+  // `Factor-label aðferð` was English, and the book calls the method a synonym
+  // of `víddagreining`, the chip beside it.
+  it('shows no Factor-label chip on a right or a wrong verdict', () => {
+    const problem = level2Problems[0];
+    renderProblem(0);
+    choose(problem.correctPath);
+    submit(formatDecimal(expected(0)));
+    expect(document.body.textContent).toMatch(/Víddagreining/);
+    expect(document.body.textContent).not.toMatch(/Factor-label/i);
+    cleanup();
+
+    renderProblem(0);
+    choose(problem.correctPath);
+    submit('7777');
+    expect(document.body.textContent).not.toMatch(/Factor-label/i);
+  });
+});

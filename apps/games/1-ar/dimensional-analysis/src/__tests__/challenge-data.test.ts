@@ -71,6 +71,56 @@ describe('significant figures a student can actually write', () => {
   );
 });
 
+describe('a declared precision the givens can carry — decisions item 34', () => {
+  // Under the rule Stig 0 teaches, a product carries no more significant
+  // figures than its least precise given. L3-12 gave `0,5 mól` and asked for
+  // three; L3-COOK-2 gave `4 oz` and asked for four — both give one. L3-12, a
+  // lab quantity, now gives `0,500 mól` (option (b)); a recipe's ounces are
+  // not a measurement, so COOK-2 declares no count (option (a)).
+  const declared = level3Challenges.filter(
+    (c) => c.type === 'synthesis' && c.significantFigures !== undefined
+  );
+
+  /** A given as the prompt writes it — the same reading the "Gefnar upplýsingar" card uses. */
+  function written(value: number, prompt: string): string | undefined {
+    return [...prompt.matchAll(/\d+(?:,\d+)?/g)]
+      .map(([match]) => match)
+      .find((match) => parseStudentNumber(match) === value);
+  }
+
+  it.each(declared.map((c) => [c.id, c] as const))(
+    '%s — asks for no more figures than its givens carry',
+    (id, challenge) => {
+      if (challenge.type !== 'synthesis' || challenge.significantFigures === undefined) {
+        throw new Error(`${id} is not a synthesis item with a declared precision`);
+      }
+      const givens = [challenge.startValue, challenge.density].filter(
+        (v): v is number => v !== undefined
+      );
+      expect(givens.length, `${id} has no given`).toBeGreaterThan(0);
+      for (const value of givens) {
+        const asWritten = written(value, challenge.prompt);
+        expect(asWritten, `${id}: ${value} is not written in the prompt`).toBeDefined();
+        expect(
+          countSignificantFigures(asWritten!),
+          `${id}: ${asWritten} carries fewer figures than the ${challenge.significantFigures} asked for`
+        ).toBeGreaterThanOrEqual(challenge.significantFigures);
+      }
+    }
+  );
+
+  it('L3-12 gives its amount to three figures, and L3-COOK-2 asks for no count', () => {
+    const l312 = level3Challenges.find((c) => c.id === 'L3-12');
+    const cook2 = level3Challenges.find((c) => c.id === 'L3-COOK-2');
+    if (l312?.type !== 'synthesis' || cook2?.type !== 'synthesis') {
+      throw new Error('L3-12 and L3-COOK-2 are synthesis items');
+    }
+    expect(l312.prompt).toContain('0,500 mól');
+    expect(l312.significantFigures).toBe(3);
+    expect(cook2.significantFigures).toBeUndefined();
+  });
+});
+
 describe('answer keys the stated method reproduces', () => {
   const derivations = level3Challenges.filter((c) => c.type === 'derivation');
 

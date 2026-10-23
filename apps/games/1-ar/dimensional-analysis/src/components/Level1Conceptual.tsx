@@ -129,13 +129,18 @@ export function Level1Conceptual({
     }
   };
 
+  // Every challenge reports every tap, but only a wrong one counts towards the
+  // automatic hint (decisions item 24 (a)). Counting every tap opened the hint
+  // on a student exploring as told — C4 says to try both factors — while the
+  // intro promises help to one who has tried a few times.
   const handleAttempt = (isIncorrect: boolean = false) => {
+    if (!isIncorrect) return;
+    onIncorrectAnswer?.();
     setAttempts((prev) => prev + 1);
     if (attempts >= 2 && !showHint) {
       setShowHint(true);
       setTotalHintsUsed((prev) => prev + 1);
     }
-    if (isIncorrect) onIncorrectAnswer?.();
   };
 
   if (!challenge && !showSummary) return null;

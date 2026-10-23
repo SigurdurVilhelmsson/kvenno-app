@@ -395,8 +395,10 @@ export const level3Challenges: Level3Challenge[] = [
   {
     id: 'L3-12',
     type: 'synthesis',
+    // `0,500 mól`, not `0,5`: the given carries the three figures the item asks
+    // for (decisions item 34 (b)). A lab quantity is measured to a precision.
     prompt:
-      '🔬 Þú ert að undirbúa tilraun sem krefst 0,5 mól af NaCl. Mólmassi NaCl er 58,5 g/mól. Hversu mörg grömm þarftu?',
+      '🔬 Þú ert að undirbúa tilraun sem krefst 0,500 mól af NaCl. Mólmassi NaCl er 58,5 g/mól. Hversu mörg grömm þarftu?',
     startValue: 0.5,
     startUnit: 'mól',
     startLabel: 'Efnismagn',
@@ -504,7 +506,8 @@ export const level3Challenges: Level3Challenge[] = [
     factorLabel: 'Umreikningsstuðull',
     targetUnit: 'g',
     expectedAnswer: 113.4,
-    significantFigures: 4,
+    // No significant-figure count: `4 oz` in a recipe carries one, so a declared
+    // 4 asked for more than the givens hold (decisions item 34 (a)).
     requiredSteps: ['⚖️ 28,35 g / 1 oz'],
   },
   {

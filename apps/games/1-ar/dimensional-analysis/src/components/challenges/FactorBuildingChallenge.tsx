@@ -48,14 +48,19 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
   // Success is reported from the click that completes the fraction, not from an
   // effect. An effect listing `onComplete` re-ran every time the level
   // re-rendered, and reporting success re-renders the level: a loop.
+  // Only the tap that completes a fraction can be wrong: the first fills the
+  // numerator and a third starts a new fraction.
   const handleBlockClick = (block: Block & { type: string }) => {
-    onAttempt();
     if (!numerator) {
+      onAttempt(false);
       setNumerator(block);
     } else if (!denominator) {
+      const completes = judge(numerator, block) === 'correct';
+      onAttempt(!completes);
       setDenominator(block);
-      if (judge(numerator, block) === 'correct') onComplete();
+      if (completes) onComplete();
     } else {
+      onAttempt(false);
       setNumerator(block);
       setDenominator(null);
     }
@@ -106,12 +111,19 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
           {denominator ? blockLabel(denominator) : 'Nefnari'}
         </div>
 
-        {/* Result */}
+        {/* Result. A block over itself (1 L / 1 L) really is 1, just not a
+            conversion: it reads `= 1` in red, without the tick, and the
+            "Sömu einingarnar!" box below says why (decisions item 25 (a)). It
+            read `≠ 1` above that box's own `1 L / 1 L = 1,0`. */}
         {numerator && denominator && (
           <div
             className={`mt-4 sm:mt-6 text-xl sm:text-2xl font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}`}
           >
-            {isCorrect ? '= 1 ✓' : '≠ 1'}
+            {isCorrect
+              ? '= 1 ✓'
+              : verdict === 'same_unit' && numerator.value === denominator.value
+                ? '= 1'
+                : '≠ 1'}
           </div>
         )}
       </div>

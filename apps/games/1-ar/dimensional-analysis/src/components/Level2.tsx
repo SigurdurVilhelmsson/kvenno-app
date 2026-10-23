@@ -72,13 +72,9 @@ const MISCONCEPTIONS: Record<string, string> = {
   extra_step: 'Þú gætir notað of marga stuðla. Reyndu að finna beina leið.',
 };
 
-// Related concepts
-const RELATED_CONCEPTS = [
-  'Umreikningsstuðlar',
-  'Einingar styttast út',
-  'Víddagreining',
-  'Factor-label aðferð',
-];
+// Related concepts. `Factor-label aðferð` was English, and the book calls the
+// method a synonym of `víddagreining`, the chip beside it (decisions item 26 (a)).
+const RELATED_CONCEPTS = ['Umreikningsstuðlar', 'Einingar styttast út', 'Víddagreining'];
 
 interface Level2Progress {
   problemsCompleted: number;
@@ -373,9 +369,11 @@ export function Level2({
       misconception = dotReadAsDecimalNote(userAnswer);
     }
 
+    // The value the right chain gives, after it (decisions item 28 (a)): a right
+    // chain with a slipped number was told nothing about the number.
     return {
       isCorrect: false,
-      explanation: `Rétta leiðin er: ${problem.correctPath.join(' × ')}`,
+      explanation: `Rétta leiðin er: ${printNumber(problem.startValue)} ${problem.startUnit} × ${problem.correctPath.map((f) => `(${f})`).join(' × ')} = ${printNumber(expectedAnswer)} ${problem.targetUnit}`,
       misconception,
       relatedConcepts: RELATED_CONCEPTS,
       nextSteps: 'Athugaðu hvort einingarnar styttist rétt út í hverju skrefi.',
@@ -754,7 +752,6 @@ export function Level2({
                   key={`${problem.id}|${chainKey}`}
                   numeratorUnits={numeratorUnits}
                   denominatorUnits={denominatorUnits}
-                  showCancelButton={showCancellationAnimation}
                   enhancedAnimation={true}
                   autoAnimate={showCancellationAnimation}
                 />
