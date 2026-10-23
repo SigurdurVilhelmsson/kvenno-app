@@ -64,8 +64,13 @@ describe('Level 2 on a name typed without Icelandic letters', () => {
     expect(answerFirst('Kalíumbrómid').verdict).toBe('Rétt — en skrifaðu Kalíumbrómíð');
   });
 
-  it('says only "Rétt!" when the letters are all there, whatever the case and spacing', () => {
+  // One render per test: a second game rendered beside the first, with fake timers installed
+  // again, left the second one's verdict empty in CI.
+  it('says only "Rétt!" when the letters are all there', () => {
     expect(answerFirst('Kalíumbrómíð')).toEqual({ counted: true, verdict: 'Rétt!' });
+  });
+
+  it('says only "Rétt!" whatever the case and spacing', () => {
     expect(answerFirst(' kalíum brómíð ')).toEqual({ counted: true, verdict: 'Rétt!' });
   });
 
