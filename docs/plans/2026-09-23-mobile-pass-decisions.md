@@ -348,7 +348,7 @@ or chosen path; (c) keep, and reword the intro. **Recommendation:** (b).
 `Ljúka stigi` returns straight to the menu (`Level3.tsx` → `App.tsx` `onComplete`), so a student
 who misses mastery is not told why. Levels 1 and 2 have one. **Recommendation:** add a one-line
 summary, after item 30, since mastery depends on it.
-**Ruled 2026-10-23:** applied the same day: one summary line sharing the mastery check (drafted wording).
+**Ruled 2026-10-23:** applied the same day: one summary line sharing the mastery check (drafted wording, accepted by Siggi 2026-10-23).
 
 **32. Stig 0's rule 4 is not the book's.**
 The game teaches that a trailing comma makes trailing zeros count (`1200,` = 4, `60,` = 2) and
@@ -357,7 +357,7 @@ grades by it (`data/sigfig-items.ts` `RULES[3]`, `COUNT_ITEMS` c5; `utils/sigfig
 significant (ch01/m68690:47,62). Options: (a) keep the game's convention; (b) follow the book,
 changing `countSigFigs`, the rule and c5. **Recommendation:** your call; (b) is small and contained
 if the course follows the book.
-**Ruled 2026-10-23:** (b), Siggi's ruling: rule 4 follows the book. A trailing comma changes nothing (`1200,` is 2, `60,` is 1); c5 is `4,500 × 10³`; the rule text and feedback are drafted wording.
+**Ruled 2026-10-23:** (b), Siggi's ruling: rule 4 follows the book. A trailing comma changes nothing (`1200,` is 2, `60,` is 1); c5 is `4,500 × 10³`; the rule text and feedback are drafted wording, accepted by Siggi 2026-10-23.
 
 **33. A word for scientific notation.**
 The game had coined `veldisritháttur` (Stig 0) and `vísindatölustafir` (Level 3), 0 corpus hits
@@ -604,7 +604,7 @@ with it after dropping the last card, and mark "remove" correct when that is sho
 inverted, "flip" only if the flipped card is on a shortest route; (b) keep the grading, make the
 sentences route-neutral; (c) leave. **Recommendation:** (a). The rule (shortest repair wins) and
 the wording are yours.
-**Ruled 2026-10-23:** (a), Siggi's ruling: the repair leaving the fewest cards to place counts; a tie keeps the old answer. The explanations are drafted wording.
+**Ruled 2026-10-23:** (a), Siggi's ruling: the repair leaving the fewest cards to place counts; a tie keeps the old answer. The explanations are drafted wording, accepted by Siggi 2026-10-23.
 
 **62. B4 puts 25,0 mL of ethanol in one dose of hand sanitiser.**
 `data/problems.ts` B4; one pump holds about 2 mL. Options: (a) `Í lítilli flösku af handspritti
@@ -1094,7 +1094,7 @@ Ids 23–30 (`data/problems.ts`) ask for K, −nFE°, Hess, melting point and op
 checks only ΔG° and the verdict. Options: (a) grade them; (b) reword them as optional reflection;
 (c) remove. **Recommendation:** (b) now; (a) for the K prompts only if ΔG° = −RT ln K returns to the
 formula card.
-**Ruled 2026-10-23:** (b), applied the same day, under `Til umhugsunar (ekki metið):` (drafted wording).
+**Ruled 2026-10-23:** (b), applied the same day, under `Til umhugsunar (ekki metið):` (drafted wording, accepted by Siggi 2026-10-23).
 
 Also here: scoring in practice (item 1), ids 12 and 21 (item 9), and
 `Contact aðferðin` (item 17).
@@ -1159,7 +1159,7 @@ the textbook treatment.
 **119. Stig 2's flask comparison never says what was added.**
 `Level2.tsx:336-342` adds 0,01 mol strong acid to 1 L. **Recommendation:** a one-line caption,
 e.g. `Eftir að 0,01 mól af sterkri sýru er bætt við 1 L`, your wording.
-**Ruled 2026-10-23:** applied the same day: the item's caption, built from the panel's amounts (drafted wording).
+**Ruled 2026-10-23:** applied the same day: the item's caption, built from the panel's amounts (drafted wording, accepted by Siggi 2026-10-23).
 
 Also here: the hint cost in all three levels (item 2).
 

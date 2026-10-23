@@ -153,43 +153,43 @@ was done. Still open, all waiting on Siggi:
 Done: 12–122. Siggi ruled 27 (a), 32 (b), 40 (b),
 42 (c), 51, 57 (a), 61 (a), 73, 97 (a), 103 and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
 
-#### Drafted wording from 2026-10-23: confirm or change
+#### Drafted wording from 2026-10-23: accepted
 
 The recommendations did not give these words; the agents applying them wrote them. Each file
-says where.
+says where. Siggi accepted all of it as written, 2026-10-23 (PR #112).
 
-- [ ] dimensional-analysis Level 3 summary (31), mastered and not:
+- [x] dimensional-analysis Level 3 summary (31), mastered and not:
       `Stigi lokið: {n} af {m} rétt. Þú hefur náð tökum á stiginu.` /
       `… Til að ná tökum á stiginu þarf rétt svar og útskýringu í flestum áskorunum.`
-- [ ] nafnakerfid: Level 2 `Rétt — en skrifaðu {nafn}` (36); the rules panel's added line
+- [x] nafnakerfid: Level 2 `Rétt — en skrifaðu {nafn}` (36); the rules panel's added line
       `Einnig ammóníum (NH₄⁺), fosfat (PO₄³⁻), vetniskarbónat (HCO₃⁻) og díkrómat (Cr₂O₇²⁻).` (38).
-- [ ] reynsluformulur (13): the column `Lágstafur`, `Ekki alveg — Lágstafasúlan`, and the hint
+- [x] reynsluformulur (13): the column `Lágstafur`, `Ekki alveg — Lágstafasúlan`, and the hint
       `Lágstafirnir eru hlutföllin sjálf, námunduð að næstu heilu tölu.`;
       stilla-efnajofnur:
       `Lágstöfunum (litlu tölunum) má aldrei breyta: þeir segja hvaða efni þetta er.`
-- [ ] takmarkandi Stig 3 (56): natriumklorid's new context and the two misconception sentences
+- [x] takmarkandi Stig 3 (56): natriumklorid's new context and the two misconception sentences
       (`yieldProblems.ts`, `Level3.tsx` `wrongPickMisconception`).
-- [ ] intermolecular-forces challenge 3 (73):
+- [x] intermolecular-forces challenge 3 (73):
       `Vatnssameind er í raun léttari en sameindir lífrænna leysa: 18 g/mól á móti 58 g/mól í asetoni.`
-- [ ] dimensional-analysis Stig 0, rule 4 (32): the rule's title
+- [x] dimensional-analysis Stig 0, rule 4 (32): the rule's title
       `Núll aftast telja ef þau standa á eftir kommu`, its body, the two examples, the c4/c5
       misconceptions, the r5 note and the added sentence
       `Komma aftast, án tölustafa á eftir, breytir engu (regla 4).`
       (`data/sigfig-items.ts`, `Level0SigFigs.tsx`).
-- [ ] einingakedjan (61): the ten repair explanations in `engine/chain.ts` `correctionPrompt`,
+- [x] einingakedjan (61): the ten repair explanations in `engine/chain.ts` `correctionPrompt`,
       e.g. `Rétt. Síðasta hlutfallið leiddi þig frá markinu. …`.
-- [ ] gas-law (93): `Rétta svarið var sýnt áður en þú reyndir aftur, svo svarið telst ekki með.`
-- [ ] jafnvaegisfasti: `Sýna svarið og halda áfram` (95), and the new problem's context (96),
+- [x] gas-law (93): `Rétta svarið var sýnt áður en þú reyndir aftur, svo svarið telst ekki með.`
+- [x] jafnvaegisfasti: `Sýna svarið og halda áfram` (95), and the new problem's context (96),
       `Tilraun 2 úr kennslubókinni. Q er langt yfir K, svo hvarfið gengur afturábak: …`.
-- [ ] equilibrium-shifter (104): `Fyrsta klofnunarþrep fosfórsýru` (id 27) and id 22's
+- [x] equilibrium-shifter (104): `Fyrsta klofnunarþrep fosfórsýru` (id 27) and id 22's
       description `Djúpblá kopar-ammóníakflókajón, dæmi um tenglaskipti.`
-- [ ] thermodynamics-predictor (111): `Til umhugsunar (ekki metið):` and the eight reworded
+- [x] thermodynamics-predictor (111): `Til umhugsunar (ekki metið):` and the eight reworded
       prompts (`data/problems.ts`, ids 23–30); (109) `Í keppni er hitastigið fast.`
-- [ ] ph-titration (112–114): the question-6 misconception note, the Level 2 explanations naming
+- [x] ph-titration (112–114): the question-6 misconception note, the Level 2 explanations naming
       the accepted indicators, and two indicator descriptions (`indicators.ts`).
-- [ ] buffer-recipe-creator (119): the caption
+- [x] buffer-recipe-creator (119): the caption
       `Eftir að {n} mól af sterkri sýru er bætt við {V} L`.
-- [ ] leysnijafnvaegi (120): the two `Algeng villa:` sentences for √Ksp and the forgotten 4.
+- [x] leysnijafnvaegi (120): the two `Algeng villa:` sentences for √Ksp and the forgotten 4.
 
 #### Found while applying them
 

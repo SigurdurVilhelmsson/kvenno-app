@@ -45,8 +45,8 @@ As of this date:
 
 - **All 122 decision items are ruled** (section C3). On 2026-10-23 every item with a clear
   recommendation was applied as recommended, and Siggi ruled the rest the same day; 94 (a Gaslögmál
-  Explore screen) was skipped for now. The drafted wording from that pass waits for his
-  confirmation.
+  Explore screen) was skipped for now. Siggi accepted the drafted wording from that pass as
+  written.
 - **Two were live defects students could hit, both ruled and fixed 2026-10-23:**
   - **item 101 (a):** `equilibrium-shifter`'s Keppnishamur could never be unlocked, because only
     Keppnishamur wrote the count its gate reads; right Lærdómshamur answers now count;
