@@ -76,6 +76,21 @@ const MISCONCEPTIONS: Record<string, string> = {
 // method a synonym of `víddagreining`, the chip beside it (decisions item 26 (a)).
 const RELATED_CONCEPTS = ['Umreikningsstuðlar', 'Einingar styttast út', 'Víddagreining'];
 
+/** The share of right answers a run needs to be mastered. */
+const MASTERY_ACCURACY = 0.8;
+
+/** Is a run with `correct` right of `done` mastered? One rule, for the check and the summary. */
+function runMastered(correct: number, done: number): boolean {
+  return done > 0 && correct / done >= MASTERY_ACCURACY;
+}
+
+/** The fewest right answers of `done` that master a run, read off the same rule. */
+function correctNeeded(done: number): number {
+  let needed = 0;
+  while (needed < done && !runMastered(needed, done)) needed++;
+  return needed;
+}
+
 interface Level2Progress {
   problemsCompleted: number;
   finalAnswersCorrect: number;
@@ -416,11 +431,10 @@ export function Level2({
 
     // Check mastery once every problem has been done
     if (newProgress.problemsCompleted >= PROBLEM_COUNT) {
-      const answerAccuracy =
-        newProgress.problemsCompleted > 0
-          ? newProgress.finalAnswersCorrect / newProgress.problemsCompleted
-          : 0;
-      newProgress.mastered = answerAccuracy >= 0.8;
+      newProgress.mastered = runMastered(
+        newProgress.finalAnswersCorrect,
+        newProgress.problemsCompleted
+      );
     }
 
     setProgress(newProgress);
@@ -442,6 +456,21 @@ export function Level2({
   };
 
   if (!problem && !showIntro) return null;
+
+  // The last problem's feedback ends the run, so it says how the run went
+  // before "Ljúka stigi" returns to the menu, as Level 3's does (decisions
+  // item 31; Item 1 as applied, Siggi 2026-10-23). The count and the verdict
+  // read the same two numbers `handleContinue` judges mastery on, so they
+  // cannot disagree.
+  const isLastProblem = currentProblemIndex === PROBLEM_COUNT - 1;
+  const runDone = progress.problemsCompleted + 1;
+  const runSummary = isLastProblem
+    ? `Stigi lokið: ${progress.finalAnswersCorrect} af ${runDone} rétt. ${
+        runMastered(progress.finalAnswersCorrect, runDone)
+          ? 'Þú hefur náð tökum á stiginu.'
+          : `Til að ná tökum á stiginu þarf rétt svar í ${correctNeeded(runDone)} af ${runDone} verkefnum.`
+      }`
+    : null;
 
   // Units for the visualiser. A compound start unit such as km/klst is split
   // across the fraction bar, or its parts could never cancel against a factor.
@@ -854,6 +883,12 @@ export function Level2({
                     })}
                   </div>
                 </div>
+
+                {runSummary && (
+                  <p className="p-4 bg-white rounded-xl border-2 border-blue-200 font-semibold text-warm-800 text-center phone:p-3">
+                    {runSummary}
+                  </p>
+                )}
               </div>
 
               {/* A separate element from "Athuga", and it ignores a press within
