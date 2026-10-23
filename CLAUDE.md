@@ -1102,12 +1102,15 @@ significant figures live **inside Einingagreining**, not in a game of their own.
   `Level3.tsx` or the data it reads, and the L3 check is feedback-only —
   `calculateCompositeScore` takes four scores and this is not one of them.
 - **`utils/sigfigs.ts` works on the written string, never on a `number`,** and that is the subject
-  rather than fussiness: `1200`, `1200,` and `1,200 × 10³` are one quantity written to two, four and
-  four significant figures, and a float cannot tell them apart.
+  rather than fussiness: `1200`, `1200,0` and `1,200 × 10³` are one quantity written to two, five
+  and four significant figures, and a float cannot tell them apart. **Rule 4 follows the book since
+  2026-10-23 (decision 32 (b)):** a whole number's trailing zeros are ambiguous, settled by standard
+  form and otherwise not counted, so a trailing comma changes nothing (`1200,` is two, `60,` one).
+  The game used to count them after a comma (`1200,` four).
 - **`roundToSigFigs` verifies its own output and falls back to scientific notation.** A round-trip
   property test found the case: **60,221 to two significant figures cannot be written in plain
-  decimal at all**, because `60` claims one figure by rule 4. It prints `6,0 × 10¹`, and Stig 0 says
-  why. 455 round-trip cases are asserted.
+  decimal at all**, because a whole number's trailing zero does not count (rule 4), so `60` claims
+  one figure. It prints `6,0 × 10¹`, and Stig 0 says why. 455 round-trip cases are asserted.
 - **Grading a written answer compares the value _and_ the figure count.** `2,5` and `2,50` are the
   same number and different answers; checking value alone would accept the exact mistake the step
   exists to correct.
