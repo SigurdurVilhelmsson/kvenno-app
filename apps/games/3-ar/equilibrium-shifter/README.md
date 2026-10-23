@@ -137,7 +137,9 @@ historical record of the port from the old HTML game and is out of date on most 
 - **Acetic acid offers no temperature stress** (mobile-pass decision 102 (b)). Id 8 stored an
   unsourced ΔH = +5 kJ/mól and answered heating as a shift, while id 24, the same reaction written
   with hydronium, stored 0; the literature value is near 0. Id 8's heating stress is gone, and the
-  stored value stays until an aqueous ΔH source is ruled on (option (a)). `ruled-names.test.ts`.
+  stored value stays: the book's table of species in water, transcribed 2026-10-23, has no row
+  for CH₃COOH(aq) or CH₃COO⁻(aq), so option (a) has nothing to source it from.
+  `ruled-names.test.ts`.
 - **The names are ruled** (decision 104). Ids 6 and 22 are `Járn-þíósýanatflókajón` and
   `Kopar-ammóníakflókajón`, and id 22's description says `tenglaskipti`. Id 17 is
   `Hvarf metans og vatnsgufu`, the textbook's phrase (`ch13/m68801`). Ids 23 and 27, each one
@@ -188,9 +190,10 @@ Each has a test that fails against the version before it.
 - **The eight unsourced systems** (hemoglobin, the two with nothing on one side of K, five gas
   reactions the book gives no number for) have no source on the platform. The two complex ions
   were sourced from `m68869` on 2026-10-23.
-- **Aqueous temperature stresses stay directional.** They have a constant but no derivable ΔH,
-  because `thermo.ts` carries no dissolved ions, so the numbers panel reports K as unknown. The
-  book's `m68865` does list them; transcribing them is a ruling of its own (decision 102). Their
-  stored ΔH values are unsourced. Acetic acid's +5 (id 8) no longer reaches a question (below), but
+- **Most aqueous temperature stresses stay directional.** `thermo.ts` has carried every (aq) row
+  of the book's `m68865` since 2026-10-23 (Siggi's ruling). That derives ΔH for water's
+  autoionisation (+55,83, was 56) and AgCl dissolving (+65,4, was 65), but the book has no row for
+  the weak acids, ammonia, SCN⁻ or the complex ions in water, so ids 6, 8, 9, 21, 22, 24 and 27
+  keep a stored, unsourced ΔH and the numbers panel reports K as unknown when they are heated. Acetic acid's +5 (id 8) no longer reaches a question (below), but
   it still disagrees with the 0 stored for the same chemistry as id 24 until a source is ruled on.
 - **i18n is partial** — 7 `t()` calls, the rest hardcoded Icelandic; see `docs/i18n-coverage.md`.

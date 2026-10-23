@@ -1424,9 +1424,11 @@ it. What matters platform-wide:
 
 **Still open here:** eight systems carry no constant (hemoglobin, the two with nothing on one side,
 five the book puts no number on); the two complex ions were sourced from `m68869` on 2026-10-23.
-And the aqueous systems have a constant but no derivable ΔH, because `thermo.ts` transcribed no
-dissolved ions, so their temperature stresses stay directional. The book's `m68865` does list
-dissolved ions; transcribing them would move stored ΔH values, and waits on a ruling (decision 102).
+**`thermo.ts` carries every (aq) row of `m68865` since 2026-10-23** (Siggi's ruling), save the two
+garbled mercury rows; it reaches water's autoionisation (+55,83) and AgCl dissolving (+65,4), both
+the same sign as before. The book has no row for the weak acids, ammonia or the complex ions in
+water, so the other aqueous systems keep a stored, unsourced ΔH and stay directional, and acetic
+acid keeps no temperature stress (decision 102 (b)).
 
 **ICE in partial pressures is built — 2026-09-20, in `3-ar/jafnvaegisfasti`.** The last thing the
 engine could do that nothing posed. Four problems in the Beita phase, sourced to ch. 13 like the

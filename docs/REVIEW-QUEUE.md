@@ -266,9 +266,10 @@ jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms
 - [x] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
       Icelandic book's complex-ion constants (`m68869`), which is a new source. — 2026-10-23
       (PR #112): Siggi said yes; it sources the two complex ions. Eight remain, with no source.
-- [ ] **equilibrium-shifter's aqueous ΔH.** `thermo.ts` transcribed no dissolved ions, though the
-      book's `m68865` lists them. Transcribing them would move stored ΔH values (decision 102's
-      option (a)). Siggi's call.
+- [x] **equilibrium-shifter's aqueous ΔH.** `thermo.ts` transcribed no dissolved ions, though the
+      book's `m68865` lists them. — 2026-10-23 (PR #112): Siggi said transcribe them; all 46
+      readable (aq) rows are in. They move ids 7 and 10 by under half a kJ, no sign. The book has
+      no row for the weak acids, ammonia or the complexes, so the rest stay unsourced.
 - [x] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
       view never finishes loading. Fixing it means bundling a font. — 2026-10-01, PR #71. Worse than
       recorded: the CSP in `server/nginx-site.conf` refuses both that fetch and troika's worker, so

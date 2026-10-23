@@ -144,6 +144,22 @@ describe('the derived enthalpies', () => {
     expect(e.thermodynamics.type).toBe('exothermic');
   });
 
+  it('derives the two dissolving systems the book’s ions now reach', () => {
+    // The book's (aq) rows were transcribed on 2026-10-23. They reach water's
+    // autoionisation, 0 + (−230,0) − (−285,83), and AgCl dissolving,
+    // 105,6 + (−167,2) − (−127,0); the stored values were 56 and 65.
+    expect(derivedEnthalpy(byId(7))!).toBeCloseTo(55.83, 2);
+    expect(derivedEnthalpy(byId(10))!).toBeCloseTo(65.4, 2);
+  });
+
+  it('still derives nothing for the weak acids, ammonia and the complexes', () => {
+    // The book lists no CH₃COOH(aq), CH₃COO⁻(aq), NH₃(aq), H₂CO₃(aq), H₃PO₄(aq),
+    // SCN⁻(aq) or complex ion, so these keep a stored, unsourced ΔH.
+    for (const id of [6, 8, 9, 21, 22, 24, 27]) {
+      expect(derivedEnthalpy(byId(id)), String(id)).toBeNull();
+    }
+  });
+
   it('records where the two books differ, without hiding it', () => {
     // Deriving from the Icelandic appendix moved two values by more than
     // rounding: N₂O₄ ⇌ 2NO₂ from 58 to 55,3 (its ΔHf°(N₂O₄) is 11,1 against
@@ -267,10 +283,11 @@ describe('applying a stress', () => {
 
   it('knows the new K exactly when it has both a reference temperature and a ΔH', () => {
     // Two things are needed and either can be missing, which is why this is
-    // stated as the conjunction rather than as "has a temperature". The
+    // stated as the conjunction rather than as "has a temperature". Most
     // aqueous systems are the second case: their constants are quoted at
-    // 25 °C, but the formation-enthalpy table carries no dissolved ions, so
-    // there is no ΔH to move K with.
+    // 25 °C, but the book's formation-enthalpy table has no row for the weak
+    // acids, ammonia or the complex ions in water, so there is no ΔH to move K
+    // with.
     let known = 0;
     let missingEnthalpy = 0;
     for (const e of equilibria) {

@@ -212,7 +212,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'OH⁻', coefficient: 1, phase: 'aq', display: '⊖' },
     ],
     thermodynamics: {
-      deltaH: 56,
+      deltaH: 55.83,
       type: 'endothermic',
     },
     gasMoles: {
@@ -307,7 +307,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'Cl⁻', coefficient: 1, phase: 'aq', display: '🟢⁻' },
     ],
     thermodynamics: {
-      deltaH: 65,
+      deltaH: 65.4,
       type: 'endothermic',
     },
     gasMoles: {

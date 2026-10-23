@@ -1010,7 +1010,8 @@ Id 8 stores +5 and answers heating as a shift; id 24, the same reaction written 
 stores 0 (`data/equilibria.ts:245,760`). Neither is sourced, and the literature value is near 0.
 Options: (a) source a value for both; (b) drop the heating stress from id 8; (c) leave.
 **Recommendation:** (b) now, (a) when an aqueous ΔH source is ruled on.
-**Ruled 2026-10-23:** (b), applied the same day.
+**Ruled 2026-10-23:** (b), applied the same day. The book's (aq) rows were transcribed later that
+day, but they have no CH₃COOH(aq) or CH₃COO⁻(aq), so (a) cannot follow; (b) stands.
 
 **103. Ten systems have no constant, and aqueous temperature stresses stay
 directional.**
@@ -1020,8 +1021,9 @@ call. `numbers.test.ts` pins the count at ten.
 **Ruled 2026-10-23:** yes, source them from m68869, applied the same day. Appendix K covers the two
 complex ions: id 6 takes Kf = 8,9 × 10², id 22 (written coming apart) `Kd = 1/Kf`, with Kf = 1,7 × 10¹³. It
 states no temperature, so none is written. Hemoglobin is not in it, so eight systems stay without
-a constant, and the test pins eight. The aqueous ΔH half was not part of the question and stays
-open: the book's m68865 does list dissolved ions.
+a constant, and the test pins eight. The aqueous ΔH half followed later that day: Siggi said
+transcribe m68865's dissolved species, and `thermo.ts` now carries all 46 readable (aq) rows. They
+derive ids 7 (+55,83) and 10 (+65,4); the weak acids, ammonia and the complexes have no row.
 
 **104. Several equilibrium names need a ruling.**
 `data/equilibria.ts`: id 1 `Díköfnunarefnisoxíð` (item 15); ids 6 and 22 `komplex`

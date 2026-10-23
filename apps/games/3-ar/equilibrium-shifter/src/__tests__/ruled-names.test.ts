@@ -9,8 +9,9 @@ import { equilibria } from '../data/equilibria';
  * game twice: id 8 with a bare proton stored ΔH = +5 kJ/mól and answered heating
  * as a shift, and id 24 with hydronium stored 0, the same chemistry. Neither
  * value is sourced and the literature value is near 0, so heating id 8 graded a
- * direction nobody can stand behind. The stored ΔH stays until an aqueous ΔH
- * source is ruled on.
+ * direction nobody can stand behind. The stored ΔH stays: the book's table of
+ * species in water, transcribed 2026-10-23, has no row for CH₃COOH(aq) or
+ * CH₃COO⁻(aq), so nothing sources it.
  *
  * **Decision 104: names.** The complex ions take `flókajón`, as `ordabok.md`
  * has it; steam reforming is named as the textbook names it; and two systems

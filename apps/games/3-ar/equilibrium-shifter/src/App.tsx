@@ -1050,7 +1050,7 @@ function App() {
                     )}
 
                     {/* The same comparison in real numbers, where the system
-                      carries a sourced constant. Twenty of the thirty do; the
+                      carries a sourced constant. Twenty-two of the thirty do; the
                       rest show the reasoning above and no figures, rather than
                       figures nobody can source. */}
                     {(gameMode === 'learning' || !isCorrect) &&
