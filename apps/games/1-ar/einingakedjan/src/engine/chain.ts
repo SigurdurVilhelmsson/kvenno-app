@@ -171,6 +171,14 @@ const ratioCount = (n: number | null): string =>
  * describe a different error than the one on screen. The pool is the one the
  * chain was built from: how many cards are still missing is counted in it, not
  * assumed.
+ *
+ * Which repair is right is counted in it too (decision 61 (a), ruled 2026-10-23):
+ * after a wrong turn the shortest repair counts as right. A chain that went down a
+ * distractor is closer to the target without its last card than with one more,
+ * so there "remove" is right and "add a step" is the long way round; and an
+ * upside-down card is worth flipping only if, flipped, it is on a shortest route.
+ * Each explanation is chosen by the same comparison, so none of them can claim
+ * the opposite of what the grading decided.
  */
 export function correctionPrompt(
   result: SolveResult,
@@ -179,35 +187,66 @@ export function correctionPrompt(
 ): CorrectionPrompt | null {
   if (result.status === 'solved') return null;
 
+  const goal = formatSignature(target);
+
   if (result.status === 'wrong-unit') {
-    const missing = ratioCount(stepsToTarget(result.final, pool, target));
+    const here = formatSignature(result.final);
+    const toGo = stepsToTarget(result.final, pool, target);
+    const missing = ratioCount(toGo);
+    // Where the chain stood before its last card: `null` for an empty chain,
+    // which the board never runs, and which has no card to remove.
+    const last = result.steps.length > 0 ? result.steps[result.steps.length - 1] : null;
+    const withoutLast = last ? stepsToTarget(last.before, pool, target) : null;
+    // A tie keeps "add a step", the answer before the ruling. Dropping a card
+    // moves the end of the chain one step, so the two counts differ by at most
+    // one either way.
+    const removeIsShorter = withoutLast !== null && toGo !== null && withoutLast < toGo;
+    const overshot = removeIsShorter && withoutLast === 0;
+
+    const whatIsWrong = !removeIsShorter
+      ? 'keðjan sé of stutt'
+      : overshot
+        ? 'keðjan sé einu hlutfalli of löng'
+        : 'síðasta hlutfallið leiði frá markinu';
+
+    let addStepExplanation = `Rétt. Þú ert kominn í ${here} og þarft ${missing} í viðbót til að komast í ${goal}.`;
+    let removeExplanation =
+      'Nei. Þá færirðu þig lengra frá markinu, ekki nær því. Keðjan þarf að lengjast.';
+    if (removeIsShorter) {
+      addStepExplanation = `Það gengi upp, en það er lengri leiðin. Þú ert kominn í ${here} og þarft ${missing} í viðbót til að komast í ${goal}, en án síðasta hlutfallsins ${
+        overshot ? `endar keðjan í ${goal}` : `þarftu aðeins ${ratioCount(withoutLast)}`
+      }.`;
+      removeExplanation = overshot
+        ? `Rétt. Keðjan fór einu hlutfalli of langt. Án síðasta hlutfallsins endar hún í ${goal}.`
+        : `Rétt. Síðasta hlutfallið leiddi þig frá markinu. Án þess ertu aftur í ${formatSignature(
+            last ? last.before : result.final
+          )} og þarft aðeins ${ratioCount(withoutLast)} í viðbót til að komast í ${goal}.`;
+    } else if (withoutLast === toGo) {
+      removeExplanation =
+        'Nei. Þá vantar þig jafnmörg hlutföll og nú, svo það færir þig ekki nær markinu. Keðjan þarf að lengjast.';
+    }
+
     return {
-      problem: `Keðjan gengur upp — allar einingar styttust út — en hún endar í ${formatSignature(
-        result.final
-      )}, ekki ${formatSignature(target)}.`,
+      problem: `Keðjan gengur upp — allar einingar styttust út — en hún endar í ${here}, ekki ${goal}.`,
       question: 'Hvað þarf að gera?',
       options: [
         {
           id: 'addStep',
           label: 'Bæta við hlutfalli aftast',
-          correct: true,
-          explanation: `Rétt. Þú ert kominn í ${formatSignature(
-            result.final
-          )} og þarft ${missing} í viðbót til að komast í ${formatSignature(target)}.`,
+          correct: !removeIsShorter,
+          explanation: addStepExplanation,
         },
         {
           id: 'flip',
           label: 'Snúa síðasta hlutfallinu við',
           correct: false,
-          explanation:
-            'Nei. Ef þú snýrð því við hættir það að styttast út — þá stendur eining eftir sem á ekki að vera þar. Vandinn er ekki að hlutfall snúi öfugt heldur að keðjan sé of stutt.',
+          explanation: `Nei. Ef þú snýrð því við hættir það að styttast út — þá stendur eining eftir sem á ekki að vera þar. Vandinn er ekki að hlutfall snúi öfugt heldur að ${whatIsWrong}.`,
         },
         {
           id: 'remove',
           label: 'Fjarlægja síðasta hlutfallið',
-          correct: false,
-          explanation:
-            'Nei. Þá færirðu þig lengra frá markinu, ekki nær því. Keðjan þarf að lengjast.',
+          correct: removeIsShorter,
+          explanation: removeExplanation,
         },
       ],
     };
@@ -219,6 +258,33 @@ export function correctionPrompt(
   const garbage = formatSignature(step.after);
 
   if (result.status === 'inverted') {
+    // Turned the other way, the card cancels: where does that leave the chain?
+    // Flipping is the repair only if that is a step along a shortest route;
+    // otherwise the card does not belong here at all, and removing it is shorter.
+    const flipped = applyRatio(step.before, orient(ratio.equivalence, flip(ratio.orientation)));
+    const toGo = stepsToTarget(step.before, pool, target);
+    const afterFlip = stepsToTarget(flipped.after, pool, target);
+    const flipIsOnRoute = toGo !== null && afterFlip !== null && afterFlip + 1 === toGo;
+    // A card placed after the chain had already reached the target.
+    const alreadyThere = toGo === 0;
+    const landsIn = formatSignature(flipped.after);
+
+    let flipExplanation = `Rétt. Til að ${currentUnit} styttist út þarf sú eining að standa í nefnaranum. Eftir að hlutfallinu er snúið við gerir hún það.`;
+    let removeExplanation =
+      'Hlutfallið sjálft er rétt valið — það tengir einmitt þær tvær einingar sem þú þarft. Það snýr bara öfugt.';
+    let addStepExplanation =
+      'Þú þarft ekkert millistig hér. Hlutfallið sem þú valdir nær beint á milli — það snýr bara öfugt.';
+    if (alreadyThere) {
+      flipExplanation = `Þá styttist ${currentUnit} út, en keðjan var þegar komin í mark, og þú lendir aftur í ${landsIn}.`;
+      removeExplanation = `Rétt. Keðjan var þegar komin í ${goal}, svo þetta hlutfall á ekki heima í henni.`;
+    } else if (!flipIsOnRoute) {
+      flipExplanation = `Þá styttist ${currentUnit} út, en þú lendir í ${landsIn}, sem er ekki nær ${goal} en ${currentUnit}. Þetta hlutfall er ekki á stystu leiðinni að markinu.`;
+      removeExplanation = `Rétt. Jafnvel rétt snúið færir þetta hlutfall þig ekki nær markinu. Veldu annað: frá ${currentUnit} þarftu ${ratioCount(toGo)} til að komast í ${goal}.`;
+    }
+    if (!flipIsOnRoute) {
+      addStepExplanation = `Millistig á undan hjálpar ekki. Þá myndi þetta hlutfall bara skila þér aftur í ${currentUnit}.`;
+    }
+
     return {
       problem: `Ekkert styttist út. Þú varst með ${currentUnit}, en ${formatSignature({
         num: [{ unit: ratio.den.unit, species: ratio.den.species }],
@@ -229,22 +295,20 @@ export function correctionPrompt(
         {
           id: 'flip',
           label: 'Snúa hlutfallinu við',
-          correct: true,
-          explanation: `Rétt. Til að ${currentUnit} styttist út þarf sú eining að standa í nefnaranum. Eftir að hlutfallinu er snúið við gerir hún það.`,
+          correct: flipIsOnRoute,
+          explanation: flipExplanation,
         },
         {
           id: 'remove',
           label: 'Fjarlægja hlutfallið',
-          correct: false,
-          explanation:
-            'Hlutfallið sjálft er rétt valið — það tengir einmitt þær tvær einingar sem þú þarft. Það snýr bara öfugt.',
+          correct: !flipIsOnRoute,
+          explanation: removeExplanation,
         },
         {
           id: 'addStep',
           label: 'Bæta öðru hlutfalli við á undan',
           correct: false,
-          explanation:
-            'Þú þarft ekkert millistig hér. Hlutfallið sem þú valdir nær beint á milli — það snýr bara öfugt.',
+          explanation: addStepExplanation,
         },
       ],
     };
