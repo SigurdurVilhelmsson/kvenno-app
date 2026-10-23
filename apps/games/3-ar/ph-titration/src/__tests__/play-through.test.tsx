@@ -122,7 +122,7 @@ describe('Level 2 played through', () => {
 
       fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
       settle();
-      fireEvent.click(screen.getByRole('button', { name: /Fenólftaleín/ }));
+      fireEvent.click(screen.getByRole('button', { name: /Fenólftalín/ }));
       fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
       settle();
       expectNoDecimalPoint(`puzzle ${n} result`);
@@ -155,7 +155,7 @@ describe('Level 2 result agrees with the marking readout', () => {
 
       fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
       settle();
-      fireEvent.click(screen.getByRole('button', { name: /Fenólftaleín/ }));
+      fireEvent.click(screen.getByRole('button', { name: /Fenólftalín/ }));
       fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
       settle();
       const stated = document.body.textContent!.match(

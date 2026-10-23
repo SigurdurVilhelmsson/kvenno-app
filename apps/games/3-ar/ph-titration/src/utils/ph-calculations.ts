@@ -2,7 +2,9 @@ import { Titration } from '../types';
 
 /**
  * pH Calculation Utilities for Titrations
- * Handles strong-strong, weak-strong, strong-weak, and polyprotic acid-base titrations
+ * Handles strong-strong, weak-strong and strong-weak acid-base titrations. The
+ * polyprotic branches were deleted on 2026-10-23 (mobile-pass decision 115 (a)):
+ * nothing rendered them, and some fell to −∞ or NaN.
  */
 
 const EPSILON = 1e-10; // Tolerance for floating point comparisons
@@ -135,126 +137,6 @@ export function calculateStrongWeakPH(
 }
 
 /**
- * Calculate pH for diprotic acid + strong base titration
- */
-export function calculatePolyproticDiproticPH(
-  volumeAcid: number,
-  molarityAcid: number,
-  Ka1: number,
-  Ka2: number,
-  volumeBase: number,
-  molarityBase: number
-): number {
-  const molesAcid = (volumeAcid * molarityAcid) / 1000;
-  const molesBase = (volumeBase * molarityBase) / 1000;
-  const totalVolume = (volumeAcid + volumeBase) / 1000;
-  const pKa1 = -Math.log10(Ka1);
-  const pKa2 = -Math.log10(Ka2);
-
-  if (molesBase === 0) {
-    // Initial pH - diprotic acid (use Ka1 only)
-    const sqrtKaCa = Math.sqrt(Ka1 * molarityAcid);
-    return -Math.log10(sqrtKaCa);
-  } else if (molesBase < molesAcid * 0.5 - EPSILON) {
-    // First buffer region (H2A/HA-)
-    const molesHA = molesBase;
-    const molesH2A = molesAcid - molesBase;
-    return pKa1 + Math.log10(molesHA / molesH2A);
-  } else if (Math.abs(molesBase - molesAcid * 0.5) < EPSILON) {
-    // First half-equivalence point
-    return pKa1;
-  } else if (molesBase < molesAcid - EPSILON) {
-    // Between half-eq and first eq point
-    const molesHA = molesAcid - molesBase;
-    const molesA = molesBase - molesHA;
-    return pKa1 + Math.log10(molesA / molesHA);
-  } else if (Math.abs(molesBase - molesAcid) < EPSILON) {
-    // First equivalence point (HA- amphoteric)
-    return (pKa1 + pKa2) / 2;
-  } else if (molesBase < molesAcid * 1.5 - EPSILON) {
-    // Second buffer region (HA-/A2-)
-    const molesA = molesBase - molesAcid;
-    const molesHA = 2 * molesAcid - molesBase;
-    return pKa2 + Math.log10(molesA / molesHA);
-  } else if (Math.abs(molesBase - molesAcid * 1.5) < EPSILON) {
-    // Second half-equivalence point
-    return pKa2;
-  } else if (molesBase < molesAcid * 2 - EPSILON) {
-    // Between second half-eq and second eq
-    const molesHA = molesAcid * 2 - molesBase;
-    const molesA = molesBase - molesAcid;
-    return pKa2 + Math.log10(molesA / molesHA);
-  } else if (Math.abs(molesBase - molesAcid * 2) < EPSILON) {
-    // Second equivalence point (A2- weak base)
-    const Cb = molesBase / totalVolume;
-    const Kb = KW / Ka2;
-    const pOH = 0.5 * (-Math.log10(Kb) - Math.log10(Cb));
-    return 14 - pOH;
-  } else {
-    // Excess strong base
-    const excessOH = (molesBase - molesAcid * 2) / totalVolume;
-    return 14 + Math.log10(excessOH);
-  }
-}
-
-/**
- * Calculate pH for triprotic acid + strong base titration
- */
-export function calculatePolyproticTriproticPH(
-  volumeAcid: number,
-  molarityAcid: number,
-  Ka1: number,
-  Ka2: number,
-  Ka3: number,
-  volumeBase: number,
-  molarityBase: number
-): number {
-  const molesAcid = (volumeAcid * molarityAcid) / 1000;
-  const molesBase = (volumeBase * molarityBase) / 1000;
-  const totalVolume = (volumeAcid + volumeBase) / 1000;
-  const pKa1 = -Math.log10(Ka1);
-  const pKa2 = -Math.log10(Ka2);
-  const pKa3 = -Math.log10(Ka3);
-
-  if (molesBase === 0) {
-    // Initial pH - triprotic acid
-    const sqrtKaCa = Math.sqrt(Ka1 * molarityAcid);
-    return -Math.log10(sqrtKaCa);
-  } else if (molesBase < molesAcid * 0.5) {
-    // First buffer region (H3A/H2A-)
-    const molesH2A = molesBase;
-    const molesH3A = molesAcid - molesBase;
-    return pKa1 + Math.log10(molesH2A / molesH3A);
-  } else if (Math.abs(molesBase - molesAcid) < EPSILON) {
-    // First equivalence point
-    return (pKa1 + pKa2) / 2;
-  } else if (molesBase < molesAcid * 1.5) {
-    // Second buffer region (H2A-/HA2-)
-    const molesHA = molesBase - molesAcid;
-    const molesH2A = 2 * molesAcid - molesBase;
-    return pKa2 + Math.log10(molesHA / molesH2A);
-  } else if (Math.abs(molesBase - molesAcid * 2) < EPSILON) {
-    // Second equivalence point
-    return (pKa2 + pKa3) / 2;
-  } else if (molesBase < molesAcid * 2.5) {
-    // Third buffer region (HA2-/A3-)
-    const molesA = molesBase - 2 * molesAcid;
-    const molesHA = 3 * molesAcid - molesBase;
-    return pKa3 + Math.log10(molesA / molesHA);
-  } else if (Math.abs(molesBase - molesAcid * 3) < EPSILON) {
-    // Third equivalence point
-    const Cb = molesBase / totalVolume;
-    const Kb = KW / Ka3;
-    const pOH = 0.5 * (-Math.log10(Kb) - Math.log10(Cb));
-    return 14 - pOH;
-  } else {
-    // Excess strong base
-    const excessOH = (molesBase - molesAcid * 3) / totalVolume;
-    return 14 + Math.log10(excessOH);
-  }
-}
-
-/**
  * Main pH calculation dispatcher based on titration type
  */
 export function calculatePH(titration: Titration, volumeAdded: number): number {
@@ -289,27 +171,6 @@ export function calculatePH(titration: Titration, volumeAdded: number): number {
       );
     }
 
-    case 'polyprotic-diprotic':
-      return calculatePolyproticDiproticPH(
-        titration.analyte.volume,
-        titration.analyte.molarity,
-        titration.Ka1,
-        titration.Ka2,
-        volumeAdded,
-        titration.titrant.molarity
-      );
-
-    case 'polyprotic-triprotic':
-      return calculatePolyproticTriproticPH(
-        titration.analyte.volume,
-        titration.analyte.molarity,
-        titration.Ka1,
-        titration.Ka2,
-        titration.Ka3!,
-        volumeAdded,
-        titration.titrant.molarity
-      );
-
     default: {
       const _exhaustiveCheck: never = titration;
       throw new Error(`Unknown titration type: ${(_exhaustiveCheck as Titration).type}`);
@@ -324,14 +185,7 @@ export function generateTitrationCurve(
   titration: Titration,
   maxVolume?: number
 ): Array<{ volume: number; pH: number }> {
-  // Determine equivalence volume based on titration type
-  let eqVol: number;
-  if ('equivalenceVolumes' in titration) {
-    eqVol = Math.max(...titration.equivalenceVolumes);
-  } else {
-    eqVol = titration.equivalenceVolume;
-  }
-
+  const eqVol = titration.equivalenceVolume;
   const max = maxVolume || eqVol * 2;
   const points: Array<{ volume: number; pH: number }> = [];
 

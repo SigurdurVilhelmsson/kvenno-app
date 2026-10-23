@@ -1,9 +1,17 @@
 import { Titration } from '../types';
 
 /**
- * Complete bank of titration problems
- * Currently: 13 titrations implemented
- * Planned expansion: 30 total titrations
+ * The titrations the levels serve: Level 1 draws its two sample curves from
+ * here, and each Level 2 puzzle names one by `titrationId`.
+ *
+ * Seven more sat here until 2026-10-23 that nothing rendered (mobile-pass
+ * decision 115 (a)): two further strong-acid flasks, benzoic acid at a Ka that
+ * is not Appendix D's, methylamine, and three polyprotic acids — sulfurous acid,
+ * which has no Appendix D row, and oxalic and phosphoric acids, the second at
+ * constants that are not Appendix D's either — whose pH branches fell to −∞ or
+ * NaN. They were deleted rather than corrected, with the polyprotic maths, as
+ * no level draws a polyprotic curve (Level 3's polyprotic problems carry their
+ * own data). `titration-data.test.ts` holds both.
  */
 export const titrations: Titration[] = [
   // ===== BEGINNER LEVEL (Strong Acid + Strong Base) =====
@@ -35,34 +43,6 @@ export const titrations: Titration[] = [
     Ka: null,
     pKa: null,
   },
-  {
-    id: 3,
-    type: 'strong-strong',
-    name: 'HCl + NaOH',
-    analyte: { formula: 'HCl', volume: 50.0, molarity: 0.2, name: 'Saltsýra' },
-    titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
-    equivalenceVolume: 100.0,
-    equivalencePH: 7.0,
-    initialPH: 0.7,
-    bestIndicator: 'bromothymol-blue',
-    difficulty: 'Byrjandi',
-    Ka: null,
-    pKa: null,
-  },
-  {
-    id: 4,
-    type: 'strong-strong',
-    name: 'HClO₄ + LiOH',
-    analyte: { formula: 'HClO₄', volume: 15.0, molarity: 0.125, name: 'Perklórsýra' },
-    titrant: { formula: 'LiOH', molarity: 0.1, name: 'Litíumhýdroxíð' },
-    equivalenceVolume: 18.75,
-    equivalencePH: 7.0,
-    initialPH: 0.9,
-    bestIndicator: 'phenolphthalein',
-    difficulty: 'Byrjandi',
-    Ka: null,
-    pKa: null,
-  },
 
   // ===== INTERMEDIATE LEVEL (Weak Acid + Strong Base) =====
   {
@@ -90,7 +70,9 @@ export const titrations: Titration[] = [
     equivalencePH: 8.08,
     initialPH: 2.08,
     halfEquivalencePH: 3.17,
-    bestIndicator: 'phenolphthalein',
+    // Not phenolphthalein, whose range starts at 8,3: the curve reaches pH
+    // 7,97 here, printed 8,0 (decision 113 (a)).
+    bestIndicator: 'thymol-blue',
     difficulty: 'Miðlungs',
     Ka: 6.8e-4,
     pKa: 3.17,
@@ -110,21 +92,6 @@ export const titrations: Titration[] = [
     Ka: 1.8e-4,
     pKa: 3.74,
   },
-  {
-    id: 8,
-    type: 'weak-strong',
-    name: 'C₆H₅COOH + NaOH',
-    analyte: { formula: 'C₆H₅COOH', volume: 25.0, molarity: 0.1, name: 'Bensósýra' },
-    titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
-    equivalenceVolume: 25.0,
-    equivalencePH: 8.6,
-    initialPH: 2.6,
-    halfEquivalencePH: 4.19,
-    bestIndicator: 'phenolphthalein',
-    difficulty: 'Miðlungs',
-    Ka: 6.5e-5,
-    pKa: 4.2,
-  },
 
   // ===== INTERMEDIATE LEVEL (Weak Base + Strong Acid) =====
   {
@@ -141,76 +108,6 @@ export const titrations: Titration[] = [
     difficulty: 'Miðlungs',
     Kb: 1.8e-5,
     pKa: 9.26,
-  },
-  {
-    id: 10,
-    type: 'strong-weak',
-    name: 'CH₃NH₂ + HCl',
-    analyte: { formula: 'CH₃NH₂', volume: 25.0, molarity: 0.1, name: 'Metýlamín' },
-    titrant: { formula: 'HCl', molarity: 0.1, name: 'Saltsýra' },
-    equivalenceVolume: 25.0,
-    equivalencePH: 5.82,
-    initialPH: 11.82,
-    halfEquivalencePH: 10.64,
-    bestIndicator: 'methyl-red',
-    difficulty: 'Miðlungs',
-    Kb: 4.4e-4,
-    pKa: 10.64,
-  },
-
-  // ===== ADVANCED LEVEL (Polyprotic Acids) =====
-  {
-    id: 11,
-    type: 'polyprotic-diprotic',
-    name: 'H₂SO₃ + NaOH',
-    analyte: { formula: 'H₂SO₃', volume: 25.0, molarity: 0.1, name: 'Brennisteinssýrlingur' },
-    titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
-    equivalenceVolumes: [25.0, 50.0],
-    equivalencePHs: [4.5, 9.0],
-    initialPH: 1.5,
-    halfEquivalencePHs: [1.9, 7.2],
-    bestIndicator: 'phenolphthalein',
-    difficulty: 'Háþróað',
-    Ka1: 1.3e-2,
-    Ka2: 6.3e-8,
-    pKa1: 1.9,
-    pKa2: 7.2,
-  },
-  {
-    id: 12,
-    type: 'polyprotic-diprotic',
-    name: 'H₂C₂O₄ + NaOH',
-    analyte: { formula: 'H₂C₂O₄', volume: 30.0, molarity: 0.08, name: 'Oxalsýra' },
-    titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
-    equivalenceVolumes: [24.0, 48.0],
-    equivalencePHs: [2.9, 8.4],
-    initialPH: 1.3,
-    halfEquivalencePHs: [1.3, 4.3],
-    bestIndicator: 'phenolphthalein',
-    difficulty: 'Háþróað',
-    Ka1: 5.9e-2,
-    Ka2: 6.4e-5,
-    pKa1: 1.3,
-    pKa2: 4.3,
-  },
-  {
-    id: 13,
-    type: 'polyprotic-triprotic',
-    name: 'H₃PO₄ + NaOH',
-    analyte: { formula: 'H₃PO₄', volume: 25.0, molarity: 0.1, name: 'Fosfórsýra' },
-    titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
-    equivalenceVolumes: [25.0, 50.0, 75.0],
-    equivalencePHs: [4.7, 9.8, 12.4],
-    initialPH: 1.6,
-    halfEquivalencePHs: [2.15, 7.2, 12.35],
-    bestIndicator: 'phenolphthalein',
-    difficulty: 'Sérfræðingur',
-    Ka1: 7.1e-3,
-    Ka2: 6.3e-8,
-    Ka3: 4.5e-13,
-    pKa1: 2.15,
-    pKa2: 7.2,
-    pKa3: 12.35,
   },
 ];
 

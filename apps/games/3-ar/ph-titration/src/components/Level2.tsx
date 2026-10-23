@@ -755,6 +755,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     <span className={indicatorCorrect ? 'text-green-600' : 'text-red-600'}>
                       {indicatorCorrect ? '✓ Góður vísir' : '✗ Ekki besti vísirinn'}
                     </span>
+                    {/* Which titration the indicator suits: shown only now, after
+                        the result, since on the choice it gave half the answer
+                        away (mobile-pass decision 114 (c)). */}
+                    <br />
+                    <span className="text-xs italic text-warm-600">
+                      {indicators.find((i) => i.id === selectedIndicator)?.description}
+                    </span>
                   </div>
                 </div>
 

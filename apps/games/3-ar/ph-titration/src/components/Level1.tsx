@@ -16,14 +16,29 @@ import type { MonoproticTitration } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
 
 // Misconceptions for titration concepts
-const TITRATION_MISCONCEPTIONS: Record<string, string> = {
-  equivalence: 'Jafngildispunktur er þar sem mól sýru = mól basa. pH fer ekki alltaf í 7!',
+const TITRATION_MISCONCEPTIONS = {
   strong_strong:
     'Sterk sýra + sterkur basi gefur pH = 7 við jafngildi vegna þess að salt og vatn myndast.',
   weak_strong:
     'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoka basinn er eftir.',
-  indicator: 'Veljið vísi sem breytir lit nálægt pH við jafngildi, ekki endilega pH = 7.',
+  // Level 1's rule, as question 6 states it and Level 2 grades it (decision 113 (a)).
+  indicator: 'Litbreytingasvið vísisins þarf að innihalda pH við jafngildi, ekki endilega pH = 7.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
+};
+
+/**
+ * The note a wrong answer shows, by question id: the mistake that question can
+ * diagnose, or none. Questions 3 and 4 read a colour off an indicator's range,
+ * and no note here names that mistake, so they show none. Until 2026-10-23
+ * every wrong answer showed one note about pH 7 at equivalence, so a student
+ * wrong about methyl orange's colour at pH 2 was told about pH 7 (mobile-pass
+ * decision 112).
+ */
+const MISCONCEPTION_BY_CHALLENGE: Partial<Record<number, string>> = {
+  1: TITRATION_MISCONCEPTIONS.strong_strong,
+  2: TITRATION_MISCONCEPTIONS.weak_strong,
+  5: TITRATION_MISCONCEPTIONS.buffer_region,
+  6: TITRATION_MISCONCEPTIONS.indicator,
 };
 
 /** Exit duration of the hint panel's Presence, which leaves as the feedback enters. */
@@ -357,7 +372,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               feedback={{
                 isCorrect,
                 explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}\n\n${challenge.explanationIs}`,
-                misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
+                misconception: isCorrect ? undefined : MISCONCEPTION_BY_CHALLENGE[challenge.id],
                 relatedConcepts: TITRATION_RELATED,
                 nextSteps: isCorrect
                   ? 'Frábært! Þú skilur títrunarferla vel.'

@@ -64,7 +64,8 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
                 </div>
               </div>
             </div>
-            <p className="text-xs text-warm-500 mt-1 italic">{indicator.description}</p>
+            {/* No description here: it says which titration the indicator suits,
+                which is half the question. The result shows it (decision 114 (c)). */}
           </button>
         ))}
       </div>
