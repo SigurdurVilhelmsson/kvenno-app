@@ -78,10 +78,10 @@ function clickModeButton(text: string): HTMLButtonElement {
   return found as HTMLButtonElement;
 }
 function toClickMode() {
-  fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
 }
 function toDragMode() {
-  fireEvent.click(screen.getByRole('button', { name: /Skipta í draga-ham/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Skipta í keðjusmíð/ }));
 }
 function submit(answer: string) {
   fireEvent.change(screen.getByPlaceholderText('Sláðu inn svar'), { target: { value: answer } });
@@ -179,6 +179,25 @@ describe('Level 2 — switching mode keeps one chain', () => {
     // Nothing left to grade, so there is nothing to submit.
     fireEvent.change(screen.getByPlaceholderText('Sláðu inn svar'), { target: { value: '0,5' } });
     expect(screen.getByRole('button', { name: /Athuga svar/ })).toHaveProperty('disabled', true);
+  });
+});
+
+describe('Level 2 — the mode toggle names a layout', () => {
+  it('says which layout it switches to, never click or drag', () => {
+    // Decision 27 (a), 2026-10-23: tapping works in both modes, so the old
+    // `Skipta í smella-ham` / `Skipta í draga-ham` named no difference. The
+    // toggle now names the layout it leads to: the plain buttons, or the
+    // builder with its chain.
+    renderLevel();
+    const toggle = screen.getByRole('button', { name: /^Skipta í / });
+    expect(toggle.textContent?.trim()).toBe('Skipta í hnappalista');
+    expect(pool()).toBeTruthy(); // the builder is what shows now
+
+    fireEvent.click(toggle);
+    expect(toggle.textContent?.trim()).toBe('Skipta í keðjusmíð');
+    expect(document.querySelector('.items-pool')).toBeNull(); // the buttons show now
+
+    expect(document.body.textContent).not.toMatch(/smella-ham|draga-ham/);
   });
 });
 

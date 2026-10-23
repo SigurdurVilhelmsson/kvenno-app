@@ -53,7 +53,7 @@ describe('Level 2 with a three-problem set', () => {
         initialProgress={{ problemsCompleted: 0, finalAnswersCorrect: 0, mastered: false }}
       />
     );
-    fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
     const bar = () => container.querySelector<HTMLElement>('.bg-blue-500.h-2')!;
 
     expect(screen.getByText(/Verkefni 1 \/ 3$/)).toBeTruthy();

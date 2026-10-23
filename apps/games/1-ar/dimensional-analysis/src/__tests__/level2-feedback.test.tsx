@@ -51,7 +51,7 @@ function renderProblem(index: number) {
       onIncorrectAnswer={onIncorrect}
     />
   );
-  fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
   return { onCorrect, onIncorrect };
 }
 function choose(factors: string[]) {

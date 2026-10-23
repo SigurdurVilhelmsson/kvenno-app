@@ -647,7 +647,10 @@ export function Level2({
                         onClick={() => setUseDragDrop(!useDragDrop)}
                         className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600"
                       >
-                        {useDragDrop ? '🖱️ Skipta í smella-ham' : '✋ Skipta í draga-ham'}
+                        {/* Named for the layout it switches to. Tapping works in both,
+                            so "click" and "drag" no longer named a difference
+                            (decision 27 (a), 2026-10-23). */}
+                        {useDragDrop ? 'Skipta í hnappalista' : 'Skipta í keðjusmíð'}
                       </button>
                     </div>
                   </div>

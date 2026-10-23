@@ -223,7 +223,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 2 — endurgjöf (smella-hamur)',
+      name: 'Stig 2 — endurgjöf (hnappalisti)',
       steps: [
         {
           click: 'Beiting',
@@ -232,7 +232,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Byrja æfingar',
         },
         {
-          click: 'Skipta í smella-ham',
+          click: 'Skipta í hnappalista',
         },
         {
           css: 'button:has(div.text-blue-600)',

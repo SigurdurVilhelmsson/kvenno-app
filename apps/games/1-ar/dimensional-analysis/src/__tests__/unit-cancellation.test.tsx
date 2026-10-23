@@ -55,7 +55,7 @@ function renderWithChain(index: number, factors: string[]) {
       initialProgress={{ problemsCompleted: index, finalAnswersCorrect: 0, mastered: false }}
     />
   );
-  fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
   const panel = () => screen.queryByText('Stuðlar notaðir:')?.parentElement;
   for (const factor of factors) {
     const button = screen

@@ -15,7 +15,7 @@ import {
  * implementation, plus the two arithmetic rules Stig 0 teaches.
  *
  * The cases that matter most are the ones where the written form carries
- * information a `number` does not: `1200` against `1200.`, and `0.00450`
+ * information a `number` does not: `1200` against `1.200e3`, and `0.00450`
  * against `450`.
  */
 
@@ -38,13 +38,33 @@ describe('countSigFigs', () => {
     expect(countSigFigs('0.0001')).toBe(1);
   });
 
-  it('counts trailing zeros only when a decimal point is written (rule 4)', () => {
-    // The case the whole topic turns on. Same quantity, different claim.
+  it('counts trailing zeros after the point, and not a whole number’s (rule 4)', () => {
+    // The case the whole topic turns on. Same quantity, different claim. A
+    // whole number's trailing zeros are ambiguous, and the book says to assume
+    // they do not count (ch01/m68690); standard form is how to say they do.
     expect(countSigFigs('1200')).toBe(2);
-    expect(countSigFigs('1200.')).toBe(4);
+    expect(countSigFigs('1.200e3')).toBe(4);
     expect(countSigFigs('1200.0')).toBe(5);
     expect(countSigFigs('2.50')).toBe(3);
     expect(countSigFigs('250')).toBe(2);
+  });
+
+  it('a trailing point with nothing after it changes nothing (decision 32 (b))', () => {
+    // Until 2026-10-23 the game taught that `1200.` made the zeros count, four
+    // figures, and graded `60,` as two. The book has no such rule: the zeros
+    // stay ambiguous, so they stay uncounted, written with or without it.
+    for (const [plain, withPoint] of [
+      ['1200', '1200.'],
+      ['1200', '1200,'],
+      ['60', '60,'],
+      ['4500', '4500,'],
+      ['100', '100.'],
+      ['7', '7,'],
+    ]) {
+      expect(countSigFigs(withPoint), withPoint).toBe(countSigFigs(plain));
+    }
+    expect(countSigFigs('1200,')).toBe(2);
+    expect(countSigFigs('60,')).toBe(1);
   });
 
   it('reads the Icelandic decimal comma', () => {
@@ -52,7 +72,7 @@ describe('countSigFigs', () => {
     // count `2,50` as an error or, worse, as `250`.
     expect(countSigFigs('2,50')).toBe(3);
     expect(countSigFigs('0,00450')).toBe(3);
-    expect(countSigFigs('1200,')).toBe(4);
+    expect(countSigFigs('1200,0')).toBe(5);
   });
 
   it('ignores the exponent, in every form the platform writes', () => {
@@ -135,10 +155,27 @@ describe('roundToSigFigs', () => {
 
   it('prefers plain decimal, and only goes scientific when plain would lie', () => {
     // 1234 to two figures is `1200`, which rule 4 already reads as two — plain
-    // is fine and is what a student writes. 60,221 to two cannot be written
-    // plainly without a trailing comma: `60` claims one figure.
+    // is fine and is what a student writes. 60,221 to two, and 1200 to three,
+    // cannot be written plainly at all: a whole number's trailing zeros are
+    // assumed not to count, so `60` claims one figure and `1200` two.
     expect(roundToSigFigs(1234, 2)).toBe('1200');
     expect(roundToSigFigs(60.221, 2)).toBe('6,0 × 10¹');
+    expect(roundToSigFigs(1200, 3)).toBe('1,20 × 10³');
+    expect(roundToSigFigs(1200, 4)).toBe('1,200 × 10³');
+    expect(roundToSigFigs(100, 3)).toBe('1,00 × 10²');
+  });
+
+  it('never prints a trailing comma, which would claim nothing', () => {
+    // Under decision 32 (b) `60,` reads as one figure, so a printer that fell
+    // back to it would fail its own round trip; this pins the form too.
+    for (let e = -3; e <= 5; e++) {
+      for (const mant of [1, 2.5, 6.0221, 9.95]) {
+        for (let figures = 1; figures <= 5; figures++) {
+          const printed = roundToSigFigs(mant * 10 ** e, figures);
+          expect(printed, `${mant}e${e} to ${figures}`).not.toMatch(/,(\s|$)/);
+        }
+      }
+    }
   });
 
   it('refuses nonsense rather than printing it', () => {

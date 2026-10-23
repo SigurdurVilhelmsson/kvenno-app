@@ -89,7 +89,7 @@ const focused = () => document.activeElement as HTMLElement | null;
 
 /** Stig 2, first problem, answered wrongly in click mode. */
 function answerLevel2() {
-  fireEvent.click(screen.getByRole('button', { name: /smella-ham/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
   fireEvent.click(screen.getAllByRole('button').find((b) => /\d/.test(b.textContent ?? ''))!);
   fireEvent.change(screen.getByPlaceholderText('Sláðu inn svar'), { target: { value: '999' } });
   fireEvent.click(screen.getByRole('button', { name: /Athuga svar/ }));
