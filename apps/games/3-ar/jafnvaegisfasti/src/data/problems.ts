@@ -251,21 +251,21 @@ const ICE_ORDER: {
     difficulty: 'ledd',
     initial: { HCN: 0.15, 'H⁺': 0, 'CN⁻': 0 },
     context:
-      'Hér er K örsmár, svo x er hverfandi á móti 0,15 og nálgunin heldur með miklum afgangi. Sama dæmi og Sýrufastinn leysir sem sýru — jafnvægisfasti og sýrufasti eru sama stærðin.',
+      'Hér er K örsmátt, svo x er hverfandi á móti 0,15 og nálgunin heldur með miklum afgangi. Sama dæmi og Sýrufastinn leysir sem sýru — jafnvægisfasti og sýrufasti eru sama stærðin.',
   },
   {
     reactionId: 'nituroxid',
     difficulty: 'mid',
     initial: { 'N₂': 0.781, 'O₂': 0.21, NO: 0 },
     context:
-      'Loft við 2000 °C. Styrkirnir eru hlutföll andrúmsloftsins, og K er svo lítill að nituroxíðið verður hverfandi — sem er einmitt af hverju það myndast bara í vélum og eldingum.',
+      'Loft við 2000 °C. Styrkirnir eru hlutföll andrúmsloftsins, og K er svo lítið að nituroxíðið verður hverfandi — sem er einmitt af hverju það myndast bara í vélum og eldingum.',
   },
   {
     reactionId: 'vetnisjodid',
     difficulty: 'mid',
     initial: { 'H₂': 1.0, 'I₂': 2.0, HI: 0 },
     context:
-      'Ójafnir upphafsstyrkir. Hér er K stór, svo nálgunin fellur — og það er rétt niðurstaða, ekki villa.',
+      'Ójafnir upphafsstyrkir. Hér er K stórt, svo nálgunin fellur — og það er rétt niðurstaða, ekki villa.',
   },
   // The one problem that runs backwards (mobile-pass decision 96 (b)). Every
   // other problem starts with no products, so Q = 0 and the direction step's
@@ -353,7 +353,7 @@ const PRESSURE_ORDER: {
     difficulty: 'ledd',
     initial: { 'H₂S': 0.824, 'H₂': 0, 'S₂': 0 },
     context:
-      'Kennslubókardæmið, og það er valið vegna þess að Kp er örsmár: breytingin er hverfandi á móti 0,824 atm og 5 % reglan heldur með miklum afgangi. Sama nálgun og í styrkjum — ekkert nýtt nema einingin.',
+      'Kennslubókardæmið, og það er valið vegna þess að Kp er örsmátt: breytingin er hverfandi á móti 0,824 atm og 5 % reglan heldur með miklum afgangi. Sama nálgun og í styrkjum — ekkert nýtt nema einingin.',
   },
   {
     reactionId: 'bromklorid',
@@ -376,7 +376,7 @@ const PRESSURE_ORDER: {
     difficulty: 'thung',
     initial: { NO: 1.0, 'Cl₂': 1.0, NOCl: 0 },
     context:
-      'Stór Kp, svo hvarfið gengur nánast til enda og nálgunin á ekkert erindi. Δn er −1, svo heildarþrýstingurinn fellur mælanlega meðan á því stendur.',
+      'Stórt Kp, svo hvarfið gengur nánast til enda og nálgunin á ekkert erindi. Δn er −1, svo heildarþrýstingurinn fellur mælanlega meðan á því stendur.',
   },
 ];
 

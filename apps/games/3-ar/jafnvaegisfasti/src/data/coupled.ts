@@ -84,7 +84,7 @@ const ORDER: Omit<CoupledProblem, 'route' | 'result'>[] = [
     ),
     rules: ['snua'],
     context:
-      'Sama aðgerð á kerfi sem þú hittir aftur í Hliðrun jafnvægis. Taktu eftir hvað stór K verður lítill þegar honum er snúið við: 1,6 × 10² verður 6,3 × 10⁻³, og hvorug talan segir neitt annað en hin.',
+      'Sama aðgerð á kerfi sem þú hittir aftur í Hliðrun jafnvægis. Taktu eftir hvað stórt K verður lítið þegar því er snúið við: 1,6 × 10² verður 6,3 × 10⁻³, og hvorug talan segir neitt annað en hin.',
   },
   {
     id: 'margfalda-vetnisjodid',
@@ -98,7 +98,7 @@ const ORDER: Omit<CoupledProblem, 'route' | 'result'>[] = [
     ),
     rules: ['margfalda'],
     context:
-      'Stuðlarnir tvöfaldast, svo hver liður í stæðunni fer í annað veldi og K fer í annað veldi með þeim. Þetta er ástæðan fyrir því að K er marklaus tala án jöfnunnar sem hann á við: sama efnahvarfið, tvær réttar jöfnur, tveir ólíkir fastar.',
+      'Stuðlarnir tvöfaldast, svo hver liður í stæðunni fer í annað veldi og K fer í annað veldi með þeim. Þetta er ástæðan fyrir því að K er marklaust tala án jöfnunnar sem hann á við: sama efnahvarfið, tvær réttar jöfnur, tveir ólíkir fastar.',
   },
   {
     id: 'ammoniak-jod',
@@ -126,7 +126,7 @@ const ORDER: Omit<CoupledProblem, 'route' | 'result'>[] = [
     ),
     rules: ['snua', 'leggja'],
     context:
-      'Föstu efnin eru það sem styttist út hér: CoO og Co standa sitt hvorum megin eftir að jöfnunum er snúið og þær lagðar saman, og hvorugt var í K hvort eð er. Eftir stendur vatnsgashvarfið afturábak — sama jafna og Vatnsgashvarfið í þessum leik, en við 550 °C í stað 800 °C, og fastarnir tveir eru gjörólíkir. Það er ekki ósamræmi: K er háður hitastigi.',
+      'Föstu efnin eru það sem styttist út hér: CoO og Co standa sitt hvorum megin eftir að jöfnunum er snúið og þær lagðar saman, og hvorugt var í K hvort eð er. Eftir stendur vatnsgashvarfið afturábak — sama jafna og Vatnsgashvarfið í þessum leik, en við 550 °C í stað 800 °C, og fastarnir tveir eru gjörólíkir. Það er ekki ósamræmi: K er háð hitastigi.',
   },
 ];
 

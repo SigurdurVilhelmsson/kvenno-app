@@ -325,6 +325,8 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
   `Vökvinn dettur út og K er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufunarþrýstingurinn.`
   The decision's wording said `gufuþrýstingurinn`; decision 18 ruled `gufunarþrýstingur`, which
   `governed-terms.test.ts` enforces, so that word follows the later ruling.
-- **K is masculine throughout** (decision 99), as Skilja and `coupled.ts` already had it:
-  `K örsmár`, `K svo lítill`, `K stór`, `Kp örsmár` and `Stór Kp` in `src/data/problems.ts`, and
-  `Kc og Kp … tengdir` on the menu, where they were neuter. No test reads agreement.
+- **K and Q are neuter throughout** (decision 99, Siggi's ruling): `K örsmátt`, `K svo lítið`,
+  `K stórt`, `Kp örsmátt` and `Stórt Kp` in `src/data/problems.ts`, `K er háð` in Skilja and
+  `coupled.ts`, `K verður lítið`, `K er marklaust`, and `Kc og Kp … tengd` on the menu. A pass
+  earlier the same day had made them masculine, on the recommendation, before the ruling.
+  `k-gender.test.ts` holds it.

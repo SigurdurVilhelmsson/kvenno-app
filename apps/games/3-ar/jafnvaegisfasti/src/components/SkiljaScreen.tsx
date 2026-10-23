@@ -348,7 +348,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             </div>
 
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 phone:p-3">
-              <strong>Eitt skilyrði:</strong> fastarnir verða að eiga við sama hitastig. K er háður
+              <strong>Eitt skilyrði:</strong> fastarnir verða að eiga við sama hitastig. K er háð
               hitastigi, svo margfeldi tveggja fasta sem mældir voru við sitt hvort hitastigið lýsir
               engu kerfi.
             </div>
