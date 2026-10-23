@@ -526,6 +526,8 @@ always wins. (b) is a one-line change.
 hreinsistöðvum`. Plants add iron(III) as a coagulant, and its hydroxide carries phosphate down;
 removing dissolved iron is mainly a groundwater process. Defensible, not false.
 **Recommendation:** reword, low priority, with your Icelandic for the coagulant wording.
+**Ruled 2026-10-23:** the drafted sentence, applied the same day: `Hreinsistöðvar bæta
+járn(III)salti í skólpið: járnhýdroxíðið sem fellur út tekur fosfat með sér.`
 
 **52. Acetate, bicarbonate and chlorate are in the book's table, not the ion pool.**
 `data/ions.ts`. Adding them needs Icelandic ion names `ordabok.md` does not settle.
@@ -945,6 +947,7 @@ vikmarka.`; (c) leave. **Recommendation:** (a) in practice, (b) in Keppnishamur.
 **94. There is no Explore phase.**
 The first thing after the menu is a graded question. **Recommendation:** an Explore screen with
 V/T/n sliders driving the existing `GasLawSimulator`; your call on scope.
+**Ruled 2026-10-23:** skipped for now. No Explore screen; revisit later.
 
 Also here: score and streak in practice (item 1) and trailing zeros (item
 10).

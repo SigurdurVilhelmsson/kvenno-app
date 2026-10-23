@@ -145,12 +145,12 @@ leave".
 "apply all your recommendations"), each marked `Ruled 2026-10-23` in the decisions doc with what
 was done. Still open, all waiting on Siggi:
 
-- [ ] 51 utfellingarhvorf: the FeCl₃ coagulant sentence, in Siggi's Icelandic.
-- [ ] 94 gas-law-challenge: an Explore screen, and its scope.
+- [x] 51 utfellingarhvorf: the FeCl₃ coagulant sentence. Siggi took the draft, 2026-10-23 (PR #112).
+- [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted.
 - [ ] 103 equilibrium-shifter: the ten systems with no constant need a new source.
 
-Done: 12–93 except 51, 95–102, 104–122. Siggi ruled 27 (a), 32 (b), 40 (b),
-42 (c), 57 (a), 61 (a), 73, 97 (a) and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
+Done: 12–102, 104–122. Siggi ruled 27 (a), 32 (b), 40 (b),
+42 (c), 51, 57 (a), 61 (a), 73, 97 (a) and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
 
 #### Drafted wording from 2026-10-23: confirm or change
 
