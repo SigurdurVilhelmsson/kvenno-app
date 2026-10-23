@@ -59,14 +59,14 @@ const PUZZLES: Level2PuzzleData[] = [
     id: 1,
     titrationId: 1, // HCl + NaOH (strong-strong)
     taskIs:
-      'Títraðu 25,0 mL af 0,100 M HCl með 0,100 M NaOH. Finndu jafngildispunktinn og veldu viðeigandi vísi.',
+      'Títraðu 25,0 mL af 0,100 M HCl með 0,100 M NaOH. Finndu jafngildispunktinn og veldu viðeigandi litvísi.',
     task: 'Titrate 25.0 mL of 0.100 M HCl with 0.100 M NaOH. Find the equivalence point and select an appropriate indicator.',
     volumeTolerance: 1.0,
     hintIs:
-      'Fyrir sterka sýru + sterkan basa er jafngildispunktur við pH = 7. Veldu vísi með litbreytingasvið sem inniheldur pH 7.',
+      'Fyrir sterka sýru + sterkan basa er jafngildispunktur við pH = 7. Veldu litvísi með litbreytingasvið sem inniheldur pH 7.',
     hint: 'For strong acid + strong base, equivalence point is at pH = 7. Choose an indicator whose color change range contains pH 7.',
     explanationIs:
-      'HCl + NaOH gefur NaCl + H₂O. Saltið NaCl er hlutlaust, svo jafngildispunktur er við pH = 7. Brómþýmólblátt (pH 6,0-7,6) er góður vísir.',
+      'HCl + NaOH gefur NaCl + H₂O. Saltið NaCl er hlutlaust, svo jafngildispunktur er við pH = 7. Brómþýmólblátt (pH 6,0-7,6) er góður litvísir.',
     explanation:
       'HCl + NaOH produces NaCl + H₂O. The salt NaCl is neutral, so equivalence point is at pH = 7. Bromothymol blue (pH 6.0-7.6) is a good indicator.',
   },
@@ -81,7 +81,7 @@ const PUZZLES: Level2PuzzleData[] = [
       'Veik sýra + sterkur basi myndar basískan samoka basa við jafngildispunkt. pH verður hærra en 7.',
     hint: 'Weak acid + strong base forms basic conjugate base at equivalence. pH will be higher than 7.',
     explanationIs:
-      'CH₃COOH + NaOH gefur CH₃COONa. Asetatjónin (CH₃COO⁻) er veikur basi, svo lausnin verður basísk við jafngildispunkt (~pH 8,7). Fenólftalín (pH 8,3-10,0) eða þýmólblátt (pH 8,0-9,6) eru góðir vísar.',
+      'CH₃COOH + NaOH gefur CH₃COONa. Asetatjónin (CH₃COO⁻) er veikur basi, svo lausnin verður basísk við jafngildispunkt (~pH 8,7). Fenólftalín (pH 8,3-10,0) eða þýmólblátt (pH 8,0-9,6) eru góðir litvísar.',
     explanation:
       'CH₃COOH + NaOH produces CH₃COONa. The acetate ion (CH₃COO⁻) is a weak base, so solution becomes basic at equivalence (~pH 8.7). Phenolphthalein (pH 8.3-10.0) or thymol blue (pH 8.0-9.6) are good indicators.',
   },
@@ -94,7 +94,7 @@ const PUZZLES: Level2PuzzleData[] = [
     hintIs: 'Þetta er títrun sterkrar sýru með sterkum basa, svipað og HCl + NaOH.',
     hint: 'This is a strong acid + strong base titration, similar to HCl + NaOH.',
     explanationIs:
-      'HNO₃ + KOH gefur KNO₃ + H₂O. Eins og öll sterk-sterk títrun, er jafngildispunktur við pH = 7. Brómþýmólblátt (pH 6,0-7,6) er góður vísir.',
+      'HNO₃ + KOH gefur KNO₃ + H₂O. Eins og öll sterk-sterk títrun, er jafngildispunktur við pH = 7. Brómþýmólblátt (pH 6,0-7,6) er góður litvísir.',
     explanation:
       'HNO₃ + KOH produces KNO₃ + H₂O. Like all strong-strong titrations, equivalence point is at pH = 7. Bromothymol blue (pH 6.0-7.6) is a good indicator.',
   },
@@ -109,7 +109,7 @@ const PUZZLES: Level2PuzzleData[] = [
       'Veikur basi + sterk sýra myndar súra samoka sýru við jafngildispunkt. pH verður lægra en 7.',
     hint: 'Weak base + strong acid forms acidic conjugate acid at equivalence. pH will be lower than 7.',
     explanationIs:
-      'NH₃ + HCl gefur NH₄Cl. Ammóníumjónin (NH₄⁺) er veik sýra, svo lausnin verður súr við jafngildispunkt (~pH 5,3). Metýlrautt (pH 4,4-6,2) er góður vísir.',
+      'NH₃ + HCl gefur NH₄Cl. Ammóníumjónin (NH₄⁺) er veik sýra, svo lausnin verður súr við jafngildispunkt (~pH 5,3). Metýlrautt (pH 4,4-6,2) er góður litvísir.',
     explanation:
       'NH₃ + HCl produces NH₄Cl. The ammonium ion (NH₄⁺) is a weak acid, so solution becomes acidic at equivalence (~pH 5.3). Methyl red (pH 4.4-6.2) is a good indicator.',
   },
@@ -122,7 +122,7 @@ const PUZZLES: Level2PuzzleData[] = [
     hintIs: 'HF er veik sýra þó hún sé halógenvetnissýra. Jafngildispunktur verður yfir pH 7.',
     hint: 'HF is a weak acid despite being a halogen acid. Equivalence point will be above pH 7.',
     explanationIs:
-      'HF + NaOH gefur NaF. Flúoríðjónin (F⁻) er veikur basi (samoka basi HF), svo lausnin verður basísk við jafngildispunkt. pKₐ(HF) ≈ 3,17. Við jafngildispunkt er pH um 8,0, svo þýmólblátt (pH 8,0-9,6) er góður vísir.',
+      'HF + NaOH gefur NaF. Flúoríðjónin (F⁻) er veikur basi (samoka basi HF), svo lausnin verður basísk við jafngildispunkt. pKₐ(HF) ≈ 3,17. Við jafngildispunkt er pH um 8,0, svo þýmólblátt (pH 8,0-9,6) er góður litvísir.',
     explanation:
       'HF + NaOH produces NaF. The fluoride ion (F⁻) is a weak base (conjugate base of HF), so solution becomes basic at equivalence. pKₐ(HF) ≈ 3.17. At equivalence the pH is about 8.0, so thymol blue (pH 8.0-9.6) is a good indicator.',
   },
@@ -135,7 +135,7 @@ const PUZZLES: Level2PuzzleData[] = [
     hintIs: 'Maurasýra er veik sýra eins og ediksýra. Jafngildispunktur verður yfir pH 7.',
     hint: 'Formic acid is a weak acid like acetic acid. Equivalence point will be above pH 7.',
     explanationIs:
-      'HCOOH + KOH gefur HCOOK. Formiatjónin (HCOO⁻) er veikur basi, svo lausnin verður basísk við jafngildispunkt. pKₐ(HCOOH) ≈ 3,74. Fenólftalín (pH 8,3-10,0) eða þýmólblátt (pH 8,0-9,6) eru góðir vísar.',
+      'HCOOH + KOH gefur HCOOK. Formiatjónin (HCOO⁻) er veikur basi, svo lausnin verður basísk við jafngildispunkt. pKₐ(HCOOH) ≈ 3,74. Fenólftalín (pH 8,3-10,0) eða þýmólblátt (pH 8,0-9,6) eru góðir litvísar.',
     explanation:
       'HCOOH + KOH produces HCOOK. The formate ion (HCOO⁻) is a weak base, so solution becomes basic at equivalence. pKₐ(HCOOH) ≈ 3.74. Phenolphthalein (pH 8.3-10.0) or thymol blue (pH 8.0-9.6) are good indicators.',
   },

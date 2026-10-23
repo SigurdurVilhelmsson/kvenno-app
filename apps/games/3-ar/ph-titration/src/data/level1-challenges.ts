@@ -143,13 +143,13 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um litbreytingasvið vísa og pH gildi.',
+      topic: 'Þetta snýst um litbreytingasvið litvísa og pH gildi.',
       strategy: 'Fenólftalín breytir lit YFIR pH 8,3. Berðu saman við pH 7.',
       method: 'Ef pH < 8,3, þá er fenólftalín á súru formi → litlaust.',
       solution: 'pH 7 < 8,3, svo fenólftalín er LITLAUST við jafngildispunkt HCl + NaOH.',
     },
     explanationIs:
-      'Við pH 7 (jafngildispunktur HCl + NaOH) er fenólftalín LITLAUST vegna þess að pH < 8,3. Þetta þýðir að fenólftalín er EKKI góður vísir fyrir títrun sterkrar sýru með sterkum basa!',
+      'Við pH 7 (jafngildispunktur HCl + NaOH) er fenólftalín LITLAUST vegna þess að pH < 8,3. Þetta þýðir að fenólftalín er EKKI góður litvísir fyrir títrun sterkrar sýru með sterkum basa!',
     explanation:
       'At pH 7 (HCl + NaOH equivalence point), phenolphthalein is COLORLESS because pH < 8.3. This means phenolphthalein is NOT a good indicator for strong acid + strong base titration!',
   },
@@ -185,13 +185,13 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     hints: {
       topic: 'Þetta snýst um litbreytingasvið metýlappelsínuguls.',
       strategy:
-        'pH 2 er UNDIR litbreytingarsviðinu (3,1-4,4). Hvaða lit hefur vísirinn í súrri lausn?',
+        'pH 2 er UNDIR litbreytingarsviðinu (3,1-4,4). Hvaða lit hefur litvísirinn í súrri lausn?',
       method:
         'Metýlappelsínugult er rautt undir pH 3,1, appelsínugult á milli, og gult yfir pH 4,4.',
       solution: 'pH 2 < 3,1, svo metýlappelsínugult er RAUTT.',
     },
     explanationIs:
-      'Við pH 2 er lausnin mjög súr (undir 3,1), svo metýlappelsínugult sýnir RAUÐAN lit. Í sýru hefur vísirinn tekið við róteind.',
+      'Við pH 2 er lausnin mjög súr (undir 3,1), svo metýlappelsínugult sýnir RAUÐAN lit. Í sýru hefur litvísirinn tekið við róteind.',
     explanation:
       'At pH 2, the solution is very acidic (below 3.1), so methyl orange shows RED color. In acid, the indicator is in its protonated form.',
   },
@@ -243,18 +243,18 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
   {
     id: 6,
     type: 'curve-feature',
-    questionIs: 'Hvernig er besti vísirinn valinn fyrir títrun?',
+    questionIs: 'Hvernig er besti litvísirinn valinn fyrir títrun?',
     question: 'How is the best indicator chosen for a titration?',
     options: [
       {
         id: 'A',
-        labelIs: 'Litbreytingasvið vísisins þarf að innihalda pH við jafngildispunkt',
+        labelIs: 'Litbreytingasvið litvísisins þarf að innihalda pH við jafngildispunkt',
         label: "The indicator's color change range must contain the equivalence point pH",
         isCorrect: true,
       },
       {
         id: 'B',
-        labelIs: 'Allir vísar virka fyrir allar títranir',
+        labelIs: 'Allir litvísar virka fyrir allar títranir',
         label: 'All indicators work for all titrations',
         isCorrect: false,
       },
@@ -266,20 +266,20 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
       {
         id: 'D',
-        labelIs: 'Litbreytingasvið vísisins þarf að vera við pH 7',
+        labelIs: 'Litbreytingasvið litvísisins þarf að vera við pH 7',
         label: "The indicator's color change range must be at pH 7",
         isCorrect: false,
       },
     ],
     hints: {
-      topic: 'Þetta snýst um val á vísi fyrir títrun.',
+      topic: 'Þetta snýst um val á litvísi fyrir títrun.',
       strategy:
-        'Jafngildispunktur er ekki alltaf við pH 7. Veldu vísi sem breytir lit við jafngildispunktinn.',
-      method: 'Litbreytingasvið vísisins verður að innihalda pH við jafngildispunkt.',
+        'Jafngildispunktur er ekki alltaf við pH 7. Veldu litvísi sem breytir lit við jafngildispunktinn.',
+      method: 'Litbreytingasvið litvísisins verður að innihalda pH við jafngildispunkt.',
       solution: 'HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH ~9) → fenólftalín.',
     },
     explanationIs:
-      'Besti vísirinn hefur litbreytingasvið sem inniheldur jafngildispunkt títrunarinnar. T.d.: HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH ~9) → fenólftalín.',
+      'Besti litvísirinn hefur litbreytingasvið sem inniheldur jafngildispunkt títrunarinnar. T.d.: HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH ~9) → fenólftalín.',
     explanation:
       "The best indicator has a color change range containing the titration's equivalence point. E.g.: HCl + NaOH (pH 7) → bromothymol blue; CH₃COOH + NaOH (pH ~9) → phenolphthalein.",
   },

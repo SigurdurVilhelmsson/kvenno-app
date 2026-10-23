@@ -22,7 +22,8 @@ const TITRATION_MISCONCEPTIONS = {
   weak_strong:
     'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoka basinn er eftir.',
   // Level 1's rule, as question 6 states it and Level 2 grades it (decision 113 (a)).
-  indicator: 'Litbreytingasvið vísisins þarf að innihalda pH við jafngildi, ekki endilega pH = 7.',
+  indicator:
+    'Litbreytingasvið litvísisins þarf að innihalda pH við jafngildi, ekki endilega pH = 7.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
 };
 
@@ -45,7 +46,7 @@ const MISCONCEPTION_BY_CHALLENGE: Partial<Record<number, string>> = {
 const HINT_EXIT_MS = 250;
 
 // Related concepts for titration
-const TITRATION_RELATED: string[] = ['Títrun', 'Jafngildispunktur', 'Vísar', 'Stuðpúðasvæði'];
+const TITRATION_RELATED: string[] = ['Títrun', 'Jafngildispunktur', 'Litvísar', 'Stuðpúðasvæði'];
 
 interface Level1Props {
   /** How many of the questions were answered right. Hints never change it. */
@@ -197,7 +198,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 Ferillinn er brattastur þar — pH breytist mest á lítilli rúmmálsviðbót.
               </li>
               <li>
-                <strong>Endapunktur</strong> = þar sem vísirinn skiptir um lit. Þetta er nálgun á
+                <strong>Endapunktur</strong> = þar sem litvísirinn skiptir um lit. Þetta er nálgun á
                 jafngildispunkt — ekki alveg það sama!
               </li>
             </ul>

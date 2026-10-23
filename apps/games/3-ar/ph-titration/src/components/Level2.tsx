@@ -386,7 +386,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       <div className="flex justify-between text-xs text-warm-600 mt-1">
         <span>Títra</span>
         <span>Merkja</span>
-        <span>Vísi</span>
+        <span>Litvísi</span>
         <span>Niðurstaða</span>
       </div>
     </div>
@@ -749,11 +749,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
 
                   <div>
-                    <span className="font-semibold">Þinn vísir:</span>{' '}
+                    <span className="font-semibold">Þinn litvísir:</span>{' '}
                     {indicators.find((i) => i.id === selectedIndicator)?.name}
                     <br />
                     <span className={indicatorCorrect ? 'text-green-600' : 'text-red-600'}>
-                      {indicatorCorrect ? '✓ Góður vísir' : '✗ Ekki besti vísirinn'}
+                      {indicatorCorrect ? '✓ Góður litvísir' : '✗ Ekki besti litvísirinn'}
                     </span>
                     {/* Which titration the indicator suits: shown only now, after
                         the result, since on the choice it gave half the answer
@@ -779,7 +779,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       {formatDecimal(calculatePH(titration, titration.equivalenceVolume), 1)}) — þar
                       sem mólfjöldi sýru = mólfjöldi basa.
                       <br />
-                      <strong>Endapunktur:</strong> þar sem vísirinn breytir um lit (
+                      <strong>Endapunktur:</strong> þar sem litvísirinn breytir um lit (
                       {indicators.find((i) => i.id === selectedIndicator)?.name} breytist við pH{' '}
                       {indicators
                         .find((i) => i.id === selectedIndicator)
@@ -787,7 +787,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                         .join('–')}
                       ).
                       <br />
-                      Góður vísir hefur endapunkt nálægt jafngildispunktinum.
+                      Góður litvísir hefur endapunkt nálægt jafngildispunktinum.
                     </div>
                   </div>
                 )}

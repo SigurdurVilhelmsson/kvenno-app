@@ -22,7 +22,7 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
   return (
     <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-warm-200 phone:p-2">
       <h3 className="text-lg font-bold text-warm-800 mb-3 phone:text-base phone:mb-2">
-        Veldu vísi
+        Veldu litvísi
       </h3>
       {/* Two columns on a phone on its side. */}
       <div className="grid grid-cols-1 gap-2 phone:gap-1.5 phone-land:grid-cols-2">

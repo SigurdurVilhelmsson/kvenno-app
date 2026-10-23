@@ -101,6 +101,12 @@ const WRONG: { form: RegExp; why: string }[] = [
     form: /\bhálf(?:ur|an|um|s|a|i)? jafngildispunkt|hálfgildispunkt/i,
     why: 'ordabok half-equivalence point;hálfjafngildispunktur, one word as in the textbook',
   },
+  {
+    // Every form of the bare noun (vísir, vísi, vísis, vísar, vísa, vísum and the definite ones),
+    // not preceded by a letter, so litvísir and veldisvísir pass. This game has no verb vísa.
+    form: /(?<![A-Za-zÁÉÍÓÚÝÞÆÖÐáéíóúýþæöð])[Vv]ís(?:irinn|inum|isins|arnir|unum|anna|inn|ana|ir|is|ar|um|i|a)(?![A-Za-zÁÉÍÓÚÝÞÆÖÐáéíóúýþæöð])/,
+    why: "ordabok indicator;litvísir, Siggi's ruling 116 (2026-10-23): litvísir, not bare vísir",
+  },
 ];
 
 describe('Icelandic text in this game', () => {
