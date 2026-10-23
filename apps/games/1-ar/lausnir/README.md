@@ -100,6 +100,9 @@ uses `t()`**, since `en`/`pl` blocks would mean coining Polish chemistry terms a
 - **`leysni` is the word for solubility** (Siggi's ruling, 2026-08-27, 19 occurrences swept here).
   Enforced repo-wide by `governed-terms.test.ts`, with a positive assertion in
   `cooling-scenarios.test.ts`.
+- **Scenario 6's cold soda (fixed 2026-10-23, decision 59 (a)):** its explanation called cold soda
+  `fríðara`, which means prettier. It now reads `Þess vegna helst kalt gos lengur kolsýrt!`;
+  `icelandic-text.test.tsx` holds it.
 
 **Flattened Icelandic was found here on 2026-09-22** — the subtitle and a menu label had lost their
 accents. Fixed, and `packages/shared/i18n/__tests__/no-flattened-icelandic.test.ts` now covers game
@@ -147,8 +150,6 @@ test needs the root config's DOM environment.
   menu's and completion screen's `Heildarstig` add Stig 1–3 and leave Stig 0 out. Stig 3 offers
   "Ljúka stigi" only at 5 of 8, and finishing it always opens a screen that says every level is done.
   Either put every level on one scale (100 per item) or drop points for `x af N rétt`.
-- **Stig 2 scenario 6's explanation says cold soda is `fríðara`** (prettier). The intended word needs
-  choosing — e.g. `Þess vegna helst kalt gos lengur kolsýrt!` — so it was left.
 - **Stig 1's "Athuga lausn ✓" does nothing on a wrong attempt.** The live arrows on the
   concentration indicator are the only feedback; whether to add a line or disable the button is a
   feedback-design choice.

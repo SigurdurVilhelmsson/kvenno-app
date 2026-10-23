@@ -71,11 +71,15 @@ const ORDER: Given[] = [
   {
     id: 'natriumklorid',
     reactionId: '7',
-    gramsR1: 23.0, // Na
-    gramsR2: 71.0, // Cl₂
-    actualGrams: 52.0,
+    // The heavier mass is the limiting one (decision 56 (a)). With 23 g of Na
+    // against 71 g of Cl₂ the lighter mass ran out, as in `vatn` and
+    // `magnesiumoxid`, so "pick the smaller number" passed step 1 three times
+    // in five.
+    gramsR1: 46.0, // Na
+    gramsR2: 60.0, // Cl₂
+    actualGrams: 85.0,
     context:
-      'Hér er klórinn í umframmagni og natríumið takmarkandi, þótt klórgasið sé miklu þyngra. Berðu saman mól deilt með stuðli, ekki grömmin sjálf.',
+      'Hér er klórinn takmarkandi, þótt meira sé af honum í grömmum: 60 g af klórgasi eru um 0,85 mól, en 46 g af natríum eru tvö mól. Deilt með stuðli: 2 ÷ 2 = 1 skipti fyrir natríumið, 0,85 ÷ 1 = 0,85 skipti fyrir klórinn. Grömmin ein segja ekki til um hvað klárast fyrst.',
   },
   {
     id: 'ammoniak',

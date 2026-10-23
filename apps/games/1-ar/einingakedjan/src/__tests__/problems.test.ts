@@ -240,6 +240,15 @@ describe('problem metadata', () => {
     }
   });
 
+  it("puts B4's 25,0 mL of ethanol in a small bottle, not one dose", () => {
+    // One pump of hand sanitiser holds about 2 mL, so "one dose" was a picture
+    // ten times too large. The numbers were right and are kept (decision 62 (a)).
+    const b4 = problems.find((p) => p.id === 'B4');
+    expect(b4?.context).toContain('Í lítilli flösku af handspritti eru um 25,0 mL af etanóli');
+    expect(b4?.context).not.toMatch(/skammti/);
+    expect(b4?.start.value).toBe(25.0);
+  });
+
   it('gives every problem that uses a mole ratio a visible balanced equation', () => {
     for (const problem of problems) {
       const usesEquation = problem.poolIds.some((id) => ratioById(id).kind === 'jafna');

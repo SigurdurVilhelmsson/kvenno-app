@@ -50,6 +50,10 @@ const WRONG: { pattern: RegExp; why: string }[] = [
     why: 'Eykst / Minnkar / Óbreytt cannot answer "what can you do"',
   },
   { pattern: /need[S]core|til að opna Stig/i, why: 'levels are not gated (ruling 2026-08-29)' },
+  {
+    pattern: /gos fr[í]ðara/,
+    why: 'the word means prettier: "helst kalt gos lengur kolsýrt" (decision 59 (a))',
+  },
 ];
 
 describe('the game source does not carry Icelandic it shipped wrong', () => {

@@ -71,6 +71,10 @@ Three things fall out of this for free:
 - **A chain that stops short is told how many cards it still needs, counted in its own pool**
   (`stepsToTarget`). Until 2026-09-23 it was always told "eitt hlutfall í viðbót", which was false
   after the first card of every three- and four-step problem, and after any wrong turn.
+- **B4's ethanol is in a small bottle (fixed 2026-10-23, decision 62 (a)).** The scenario put
+  25,0 mL of ethanol in one dose of hand sanitiser, about ten times a pump's worth. It now reads
+  `Í lítilli flösku af handspritti eru um 25,0 mL af etanóli`, every number kept;
+  `problems.test.ts` holds it.
 
 ## Layout
 
@@ -136,7 +140,7 @@ deliberately. CLAUDE.md's rule is Icelandic-only UI, and the dead-i18n question 
 
 ## Open
 
-All three are Siggi's call; none is built.
+Both are Siggi's call; neither is built.
 
 - **The fix-it question misdiagnoses a chain that took a wrong turn.** In `engine/chain.ts`,
   `correctionPrompt`'s `wrong-unit` branch always marks _Bæta við hlutfalli aftast_ correct and
@@ -149,8 +153,6 @@ All three are Siggi's call; none is built.
   repair to call correct when both lead somewhere — compare the shortest route from the chain's end
   with the route after removing its last card — and the wording for the new cases are teaching
   decisions.
-- **B4's scenario puts 25,0 mL of ethanol in one dose of hand sanitiser**, roughly ten times a
-  pump's worth. The numbers work; the picture does not.
 - **A card cannot state its own precision.** `0,1 mol NaOH = 1 L NaOH(aq)` sits directly above its
   source line `0,100 M NaOH`, and water's density prints `1 g = 1 mL`, because a JS number carries
   no trailing zeros — the reason `startLabel` exists. An optional `label` on `EquivalenceSide`,

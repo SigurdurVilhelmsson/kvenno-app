@@ -29,6 +29,15 @@ interface Question {
 
 const TOTAL = 8;
 
+/**
+ * Items per run where the limiting reactant is the one there are more of —
+ * 6 H₂ against 4 O₂, say: H₂ runs out after 3 times, O₂ would last 4. The
+ * feedback says the limiting reactant is not always the one there is less of,
+ * and until 2026-10-23 no item ever showed it (decision 55 (a), February's
+ * `FEBRUARY-DECISIONS-RECOVERED.md:358`).
+ */
+const MORE_NUMEROUS_LIMITING = 3;
+
 /** Pick 8 questions from easy reactions with clear limiting reactants */
 function buildQuestions(): Question[] {
   const easy = REACTIONS.filter((r) => r.difficulty === 'easy');
@@ -40,13 +49,31 @@ function buildQuestions(): Question[] {
   // scored in full without reading a question (CURRICULUM_REVIEW.md:198).
   const firstIsLimiting = shuffleArray(Array.from({ length: TOTAL }, (_, i) => i < TOTAL / 2));
 
+  // The more numerous reactant can be limiting only when its coefficient is
+  // the larger one; in every easy reaction that is the left reactant, so
+  // these items take left-limiting slots and the half-each-way split holds.
+  const leftSlots = firstIsLimiting.flatMap((left, i) => (left ? [i] : []));
+  const switched = new Set(shuffleArray(leftSlots).slice(0, MORE_NUMEROUS_LIMITING));
+  const unequal = pool.filter((r) => r.reactant1.coeff > r.reactant2.coeff);
+  const forSwitched = unequal.slice(0, MORE_NUMEROUS_LIMITING);
+  const rest = pool.filter((r) => !forSwitched.includes(r));
+
+  let nextSwitched = 0;
+  let nextRest = 0;
   for (let i = 0; i < TOTAL; i++) {
-    const reaction = pool[i % pool.length];
+    const isSwitched = switched.has(i);
+    const reaction = isSwitched
+      ? forSwitched[nextSwitched++ % forSwitched.length]
+      : rest[nextRest++ % rest.length];
     const c1 = reaction.reactant1.coeff;
     const c2 = reaction.reactant2.coeff;
 
     let r1Count: number, r2Count: number;
-    if (firstIsLimiting[i]) {
+    if (isSwitched) {
+      // 3 times against 4, with 3·c1 > 4·c2 molecules for a 2:1 reaction.
+      r1Count = c1 * 3;
+      r2Count = c2 * 4;
+    } else if (firstIsLimiting[i]) {
       r1Count = c1 * 2;
       r2Count = c2 * 4;
     } else {

@@ -48,6 +48,30 @@ type Step = 'limiting' | 'theoretical' | 'percent' | 'review';
 
 const decimals = (value: number, places = 2) => formatDecimal(value, places);
 
+/**
+ * What a wrong step-1 pick says, keyed to the reactant the student picked
+ * (decision 56 (a)). It used to say only that a heavier reactant can run out
+ * last, which speaks to a student who picked the heavier mass, never to one
+ * who picked the lighter — and "pick the smaller number" is the commoner
+ * guess. A heavier pick with fewer moles is the student who compared moles
+ * and forgot the coefficient, which is `vatn`'s lesson.
+ */
+function wrongPickMisconception(problem: YieldProblem, picked: string | null): string {
+  const { reaction, result, gramsR1, gramsR2 } = problem;
+  const pickedFirst = picked === reaction.reactant1.formula;
+  const pickedGrams = pickedFirst ? gramsR1 : gramsR2;
+  const otherGrams = pickedFirst ? gramsR2 : gramsR1;
+  const pickedMoles = pickedFirst ? result.molesR1 : result.molesR2;
+  const otherMoles = pickedFirst ? result.molesR2 : result.molesR1;
+  if (pickedGrams < otherGrams) {
+    return 'Þú valdir hvarfefnið sem minna er af í grömmum, en léttara hvarfefni getur vel verið í umframmagni. Berðu saman mólfjölda deilt með stuðli.';
+  }
+  if (pickedMoles < otherMoles) {
+    return 'Mólfjöldinn einn og sér segir ekki hvað klárast fyrst. Deildu mólfjölda hvors hvarfefnis með stuðli þess í jöfnunni.';
+  }
+  return 'Berðu saman mólfjölda deilt með stuðli — ekki grömmin. Þyngra hvarfefni getur vel verið það sem klárast síðast.';
+}
+
 export function Level3({
   onComplete,
   onBack,
@@ -223,9 +247,7 @@ export function Level3({
         explanation: stepCorrect
           ? `Rétt! ${result.limitingFormula} klárast fyrst.`
           : `Rétt svar: ${result.limitingFormula}. ${reaction.reactant1.formula}: ${decimals(result.extentR1, 3)} skipti, ${reaction.reactant2.formula}: ${decimals(result.extentR2, 3)} skipti.`,
-        misconception: stepCorrect
-          ? undefined
-          : 'Berðu saman mólfjölda deilt með stuðli — ekki grömmin. Þyngra hvarfefni getur vel verið það sem klárast síðast.',
+        misconception: stepCorrect ? undefined : wrongPickMisconception(problem, selectedLimiting),
       };
     }
     if (step === 'theoretical') {

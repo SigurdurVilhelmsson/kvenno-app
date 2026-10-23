@@ -96,6 +96,44 @@ describe('Stig 3', () => {
     expect(screen.queryByText('Reyna aftur')).toBeNull();
   });
 
+  it('answers a wrong pick according to which reactant was picked', () => {
+    // Decision 56 (a). The one sentence it had spoke only to a student who
+    // picked the heavier mass; one who picked the lighter is now told that a
+    // lighter reactant can be in excess, and one who picked the reactant with
+    // fewer moles is told to divide by the coefficient.
+    render(<Level3 onComplete={() => {}} onBack={() => {}} />);
+    const seen = new Set<string>();
+    for (let p = 0; p < YIELD_PROBLEMS.length; p++) {
+      const { reaction, result, gramsR1, gramsR2 } = showing();
+      const wrongIsFirst = result.limitingFormula !== reaction.reactant1.formula;
+      const wrong = wrongIsFirst ? reaction.reactant1.formula : reaction.reactant2.formula;
+      const [wrongGrams, rightGrams] = wrongIsFirst ? [gramsR1, gramsR2] : [gramsR2, gramsR1];
+      const [wrongMoles, rightMoles] = wrongIsFirst
+        ? [result.molesR1, result.molesR2]
+        : [result.molesR2, result.molesR1];
+      const expected =
+        wrongGrams < rightGrams
+          ? /minna er af í grömmum/
+          : wrongMoles < rightMoles
+            ? /Mólfjöldinn einn og sér/
+            : /Þyngra hvarfefni getur vel/;
+      seen.add(String(expected));
+
+      fireEvent.click(formulaButton(wrong));
+      fireEvent.click(screen.getByText('Athuga'));
+      expect(screen.getByText(expected)).toBeTruthy();
+      fireEvent.click(screen.getByText('Áfram →'));
+      for (let step = 0; step < 2; step++) {
+        fireEvent.change(document.querySelector('input')!, { target: { value: '1' } });
+        fireEvent.click(screen.getByText('Athuga'));
+        fireEvent.click(screen.getByText('Áfram →'));
+      }
+      fireEvent.click(screen.getByText(/Næsta verkefni|Sjá niðurstöður/));
+    }
+    // The lighter pick is the one the grams guess makes; it must be answered.
+    expect(seen).toContain(String(/minna er af í grömmum/));
+  });
+
   it('rejects a wrong limiting reactant rather than waving it through', () => {
     render(<Level3 onComplete={() => {}} onBack={() => {}} />);
     const problem = showing();

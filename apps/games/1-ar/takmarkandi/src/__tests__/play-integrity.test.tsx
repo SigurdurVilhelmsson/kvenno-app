@@ -79,6 +79,30 @@ describe('Stig 1', () => {
     expect(patterns.size, `the same sides every run: ${[...patterns]}`).toBeGreaterThan(1);
   });
 
+  it('poses the case its own feedback is about: the more numerous reactant runs out first', () => {
+    // A wrong answer is told the limiting reactant is not always the one there
+    // is less of, yet every item had the limiting reactant fewer or tied in
+    // molecules (decision 55 (a)). Now 2–3 items a run are like 6 H₂ against
+    // 4 O₂, read off the cards as a student would.
+    for (let run = 0; run < 12; run++) {
+      const { container } = render(<Level1 onComplete={() => {}} onBack={() => {}} />);
+      fireEvent.click(within(container).getByText(/Byrja æfingar/));
+      let moreNumerousLimiting = 0;
+      for (let q = 0; q < 8; q++) {
+        const counts = reactantCards(container).map((card) =>
+          Number((card.textContent ?? '').match(/(\d+) sameind/)![1])
+        );
+        const side = limitingSide(container);
+        if (counts[side] > counts[1 - side]) moreNumerousLimiting++;
+        fireEvent.click(reactantCards(container)[side]);
+        fireEvent.click(within(container).getByText(/Næsta spurning|Sjá niðurstöður/));
+      }
+      expect(moreNumerousLimiting).toBeGreaterThanOrEqual(2);
+      expect(moreNumerousLimiting).toBeLessThanOrEqual(3);
+      cleanup();
+    }
+  });
+
   it('draws a new set when the student tries again', () => {
     const { container } = render(<Level1 onComplete={() => {}} onBack={() => {}} />);
     fireEvent.click(within(container).getByText(/Byrja æfingar/));
