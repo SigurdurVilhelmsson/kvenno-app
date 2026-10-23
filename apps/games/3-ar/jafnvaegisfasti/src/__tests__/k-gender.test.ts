@@ -41,10 +41,7 @@ describe('K and Q are neuter', () => {
       'data/problems.ts',
       'data/coupled.ts',
     ]) {
-      expect(
-        names.some((n) => n.endsWith(name)),
-        name
-      ).toBe(true);
+      expect(names).toContain(name);
     }
   });
 
