@@ -1518,7 +1518,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Æfa — Vísitala rétt, reynsluformúla sýnd',
+      name: 'Æfa — Lágstafur réttur, reynsluformúla sýnd',
       steps: [
         {
           clickRole: ['button', 'Æfa'],
@@ -1554,10 +1554,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Næsta súla'],
         },
         {
-          fill: ['input[aria-label="Vísitala fyrir H"]', '1'],
+          fill: ['input[aria-label="Lágstafur fyrir H"]', '1'],
         },
         {
-          fill: ['input[aria-label="Vísitala fyrir O"]', '1'],
+          fill: ['input[aria-label="Lágstafur fyrir O"]', '1'],
         },
         {
           clickRole: ['button', 'Athuga'],
