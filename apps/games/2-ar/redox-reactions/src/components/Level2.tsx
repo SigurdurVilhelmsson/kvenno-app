@@ -388,7 +388,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-600 phone:text-xl">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-600 phone:text-lg">
           🔄 {t('levels.level2.name', 'Stig 2: Greina redox-hvörf')}
         </h1>
 
