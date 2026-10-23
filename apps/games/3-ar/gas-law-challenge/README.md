@@ -108,7 +108,8 @@ src/__tests__/last-hint-reveals-answer.test.tsx      the last hint gives the ans
 ## Open
 
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle
-  deferred a manipulable pre-game simulator.
+  deferred a manipulable pre-game simulator. Siggi, 2026-10-23 (decision 94): skipped for now.
+
 **Closed 2026-10-23 (Item 1 as applied, call 3/7, Siggi 2026-10-23).** In Æfingahamur the last
 hint states the answer, and a right answer given with it open still counted, so four presses of H
 on every question finished a round with a full count. It now counts as a revealed answer, as "Sýna
