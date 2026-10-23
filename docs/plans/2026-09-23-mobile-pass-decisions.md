@@ -318,6 +318,7 @@ Options: (a) drop the chip; (b) `einingabreytingaraðferð`; (c) `þáttamerking
 Tapping works in both Level 2 modes now, and they share one chain (`Level2.tsx`). Options:
 (a) rename to describe the layouts, e.g. `Skipta í hnappalista` / `Skipta í keðjusmíð`; (b) remove
 click mode; (c) leave. **Recommendation:** (a) or (b), your wording.
+**Ruled 2026-10-23:** (a), Siggi's ruling: `Skipta í hnappalista` / `Skipta í keðjusmíð`, each naming the layout it switches to; the default is unchanged.
 
 **28. A wrong Level 2 answer never shows the right value.**
 The incorrect branch says only `Rétta leiðin er: <factors>` (`Level2.tsx:311-329`), so a right
@@ -356,6 +357,7 @@ grades by it (`data/sigfig-items.ts` `RULES[3]`, `COUNT_ITEMS` c5; `utils/sigfig
 significant (ch01/m68690:47,62). Options: (a) keep the game's convention; (b) follow the book,
 changing `countSigFigs`, the rule and c5. **Recommendation:** your call; (b) is small and contained
 if the course follows the book.
+**Ruled 2026-10-23:** (b), Siggi's ruling: rule 4 follows the book. A trailing comma changes nothing (`1200,` is 2, `60,` is 1); c5 is `4,500 × 10³`; the rule text and feedback are drafted wording.
 
 **33. A word for scientific notation.**
 The game had coined `veldisritháttur` (Stig 0) and `vísindatölustafir` (Level 3), 0 corpus hits
@@ -431,6 +433,7 @@ hydrogen, groups 13–14 are missing, 15–16 hold Bi and Po. Nothing is graded 
 ask about Al, Sn and Pb. Options: (a) keep; (b) `vinstra megin og í miðju (hópar 1–12, nema
 vetni)` / `efst til hægri (hópar 14–18, að hluta)`; (c) point to the stair-step line.
 **Recommendation:** (b) or (c).
+**Ruled 2026-10-23:** (b), Siggi's ruling, with the option's wording verbatim.
 
 **41. The menu says IUPAC names are `óháð tungumáli`.**
 `App.tsx` `Af hverju` card: `Sama nafn, sama efni — óháð tungumáli`, while the next screen teaches
@@ -445,6 +448,7 @@ hvaða tungumáli sem er`.
 explicit `Ljúka stigi`. Options: (a) keep; (b) a pass threshold like Stig 2; (c) a `Ljúka stigi`
 button at any score, like Stig 1. **Recommendation:** (c) or (a); a threshold would make the tick a
 grade.
+**Ruled 2026-10-23:** (c), Siggi's ruling: Stig 3 completes on `Ljúka stigi` at any score, as Stig 1 does.
 
 **43. Five of Stig 3's six mass-to-particles problems have the same answer.**
 36 g H₂O, 88 g CO₂, 117 g NaCl, 34 g NH₃ and 64 g O₂ are all 2 mol, so all answer 1,20 × 10²⁴
@@ -563,6 +567,7 @@ Mg, Na, K, Ca, Zn, Cu: `Level1.tsx:257`, `Level2.tsx:235,252`, `Molecule.tsx:15`
 `fjölda sameinda` (`CURRICULUM_REVIEW.md:145`). Options: (a) neutral `eindir` throughout;
 (b) `sameindir`, `atóm` or `formúlueiningar` by species, with a particle-kind field in
 `reactions.ts`. **Recommendation:** (b) if you settle `formúlueining`; otherwise (a) for now.
+**Ruled 2026-10-23:** (a), Siggi's ruling: `eindir` throughout Stig 1 and 2, cards, prompts, hints and ball labels.
 
 ### lausnir — Lausnir
 
@@ -597,6 +602,7 @@ with it after dropping the last card, and mark "remove" correct when that is sho
 inverted, "flip" only if the flipped card is on a shortest route; (b) keep the grading, make the
 sentences route-neutral; (c) leave. **Recommendation:** (a). The rule (shortest repair wins) and
 the wording are yours.
+**Ruled 2026-10-23:** (a), Siggi's ruling: the repair leaving the fewest cards to place counts; a tie keeps the old answer. The explanations are drafted wording.
 
 **62. B4 puts 25,0 mL of ethanol in one dose of hand sanitiser.**
 `data/problems.ts` B4; one pump holds about 2 mL. Options: (a) `Í lítilli flösku af handspritti

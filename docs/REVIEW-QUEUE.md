@@ -145,13 +145,7 @@ leave".
 "apply all your recommendations"), each marked `Ruled 2026-10-23` in the decisions doc with what
 was done. Still open, all waiting on Siggi:
 
-- [ ] 27 dimensional-analysis: the Level 2 mode toggle, (a) rename or (b) remove, and the wording.
-- [ ] 32 dimensional-analysis: Stig 0's rule 4, the game's trailing-comma convention or the book's.
-- [ ] 40 nafnakerfid: the warm-up card's metal and non-metal groups, (b) or (c).
-- [ ] 42 molmassi: Stig 3 completes at any score; (c) a `Ljúka stigi` button, or (a) keep.
 - [ ] 51 utfellingarhvorf: the FeCl₃ coagulant sentence, in Siggi's Icelandic.
-- [ ] 57 takmarkandi: `sameindir` for atoms and formula units; (b) needs `formúlueining` settled.
-- [ ] 61 einingakedjan: which repair counts after a wrong turn, and the wording.
 - [ ] 73 intermolecular-forces: challenge 6's name (`Ediksýra vs. asetaldehýð`?) and challenge
       7's word. Challenge 3 was applied.
 - [ ] 94 gas-law-challenge: an Explore screen, and its scope.
@@ -161,8 +155,8 @@ was done. Still open, all waiting on Siggi:
       applied.
 - [ ] 67–71 vsepr-geometry: confirm 70's angle sets (applied 2026-10-01).
 
-Done: 12–26, 28–31, 33–39, 41, 43–50, 52–56, 58–60, 62–72 (70 to confirm), 74–93, 95, 96, 98–102,
-104–109, 111–122. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
+Done: 12–72 except 51 (70 to confirm), 74–93, 95, 96, 98–102, 104–109, 111–122. Siggi ruled 27 (a),
+32 (b), 40 (b), 42 (c), 57 (a) and 61 (a) on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
 
 #### Drafted wording from 2026-10-23: confirm or change
 
@@ -182,6 +176,13 @@ says where.
       (`yieldProblems.ts`, `Level3.tsx` `wrongPickMisconception`).
 - [ ] intermolecular-forces challenge 3 (73):
       `Vatnssameind er í raun léttari en sameindir lífrænna leysa: 18 g/mól á móti 58 g/mól í asetoni.`
+- [ ] dimensional-analysis Stig 0, rule 4 (32): the rule's title
+      `Núll aftast telja ef þau standa á eftir kommu`, its body, the two examples, the c4/c5
+      misconceptions, the r5 note and the added sentence
+      `Komma aftast, án tölustafa á eftir, breytir engu (regla 4).`
+      (`data/sigfig-items.ts`, `Level0SigFigs.tsx`).
+- [ ] einingakedjan (61): the ten repair explanations in `engine/chain.ts` `correctionPrompt`,
+      e.g. `Rétt. Síðasta hlutfallið leiddi þig frá markinu. …`.
 - [ ] gas-law (93): `Rétta svarið var sýnt áður en þú reyndir aftur, svo svarið telst ekki með.`
 - [ ] jafnvaegisfasti: `Sýna svarið og halda áfram` (95), and the new problem's context (96),
       `Tilraun 2 úr kennslubókinni. Q er langt yfir K, svo hvarfið gengur afturábak: …`.
