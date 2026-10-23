@@ -146,14 +146,12 @@ leave".
 was done. Still open, all waiting on Siggi:
 
 - [ ] 51 utfellingarhvorf: the FeCl₃ coagulant sentence, in Siggi's Icelandic.
-- [ ] 73 intermolecular-forces: challenge 6's name (`Ediksýra vs. asetaldehýð`?) and challenge
-      7's word. Challenge 3 was applied.
 - [ ] 94 gas-law-challenge: an Explore screen, and its scope.
 - [ ] 103 equilibrium-shifter: the ten systems with no constant need a new source.
 - [ ] 67–71 vsepr-geometry: confirm 70's angle sets (applied 2026-10-01).
 
-Done: 12–72 except 51 (70 to confirm), 74–93, 95–102, 104–122. Siggi ruled 27 (a), 32 (b),
-40 (b), 42 (c), 57 (a), 61 (a), 97 (a) and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
+Done: 12–93 except 51 (70 to confirm), 95–102, 104–122. Siggi ruled 27 (a), 32 (b), 40 (b),
+42 (c), 57 (a), 61 (a), 73, 97 (a) and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
 
 #### Drafted wording from 2026-10-23: confirm or change
 
@@ -244,10 +242,11 @@ Applying item 1 in seventeen games needed calls the ruling did not make. Each is
 
 Same document, items 123–126. Each is reversible.
 
-- [ ] 123 `eðalgas` for noble gas
-- [ ] 124 `ferflötungur` for tetrahedral
-- [ ] 125 `virknihópur` for functional group
-- [ ] 126 Einingagreining Stig 2 accepts the right factors in either order
+- [x] 123 `eðalgas` for noble gas — confirmed by Siggi 2026-10-23
+- [x] 124 `ferflötungur` for tetrahedral — confirmed by Siggi 2026-10-23
+- [x] 125 `virknihópur` for functional group — confirmed by Siggi 2026-10-23
+- [x] 126 Einingagreining Stig 2 accepts the right factors in either order — confirmed by Siggi
+      2026-10-23
 
 ### C5. Other open rulings recorded in `CLAUDE.md` (older than these PRs)
 
@@ -258,8 +257,8 @@ Same document, items 123–126. Each is reversible.
       also C3 item 14. — 2026-10-02: now `Vetnisklóríð`, a gas, and in the molar-volume pool.
 - [ ] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
 jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken.
-- [ ] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
-      C4 items 123 and 124.
+- [x] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
+      C4 items 123 and 124, confirmed by Siggi 2026-10-23.
 - [x] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
       item 19. — 2026-10-02: the compound, confirmed; a `governed-terms` row bans the split.
 - [ ] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the

@@ -43,7 +43,7 @@ items for you in `2026-09-23-mobile-pass-decisions.md`. Rulings on them were app
 **What is left is rulings and hand checks, not code.** `docs/REVIEW-QUEUE.md` is the live list.
 As of this date:
 
-- **4 of the 122 decision items have no ruling** (section C3), one of them in part. On
+- **3 of the 122 decision items have no ruling** (section C3): 51, 94 and 103. On
   2026-10-23 every item with a clear recommendation was applied as recommended; what is left
   asks for Siggi's choice or his wording, and the drafted wording from that pass waits for his
   confirmation.
@@ -54,8 +54,8 @@ As of this date:
     question that asks for them; they now wait for `Athuga svar`, and Keppnishamur's slider is
     fixed.
 - **Also waiting on you:** confirmations of the phone layout (C1), of the desktop behaviour
-  changes (C2), of the judgement calls made applying item 1 (C3 "Item 1 as applied") and of four
-  glossary entries (C4).
+  changes (C2), of the judgement calls made applying item 1 (C3 "Item 1 as applied"). The four
+  glossary entries (C4) were confirmed on 2026-10-23.
 - **No game has been played on a real phone or with a screen reader** (sections A and B). The
   vertical-scroll design's exit criterion, that you play each game on a phone once, is unmet.
 - **The brand fonts have never loaded** on the games (D1). Fixing it, or dropping the font names,

@@ -736,7 +736,7 @@ forces in turn. Guarded by `answer-cues.test.tsx`.
 can find. Challenge 3's distractor explanation `Vatn er í raun léttara en margir lífrænir leysar`
 is true per molecule, false per volume. **Recommendation:** retitle 6 `Ediksýra vs. asetaldehýð`
 (a naming call); supply or drop the word in 7; in 3 talk about mass per molecule.
-**Ruled 2026-10-23:** challenge 3 as recommended, applied the same day (mass per molecule). Challenges 6 and 7 are still open.
+**Ruled 2026-10-23:** challenge 3 as recommended, applied the same day (mass per molecule). Siggi ruled 6 and 7 the same day: challenge 6 is `Ediksýra eða asetaldehýð` (the scenario's `Edikaldehýð` became `Asetaldehýð` with it), and challenge 7 drops „kagala".
 
 **74. `London kraftar` without a hyphen.**
 About 15 sites; the corpus writes `London-kraftar` (8) or `dreifikraftar` (45), and `ordabok.md`
@@ -1184,18 +1184,22 @@ listed so a ruling can undo them, not because anything waits on them.
 **123. `eðalgas` for noble gas.** Swept in `lotukerfid` and `molmassi` (neuter:
 `eðalgös`), with a governed-terms row. `ordabok.md` and the book's glossary headword (ch02/m68695)
 say `eðalgas`; its running prose says `eðallofttegund` 38 to 19. Same shape as `prósentuheimtur`.
+**Confirmed by Siggi 2026-10-23.**
 
 **124. `ferflötungur` for tetrahedral.** Swept in `vsepr-geometry` and
 `intermolecular-forces`, with a row. `ordabok.md` and the VSEPR module's glossary headword
 (ch07/m68742) agree; the corpus overall is 84 `fjór-` to 57 `fer-`.
+**Confirmed by Siggi 2026-10-23.**
 
 **125. `virknihópur` for functional group** in `organic-nomenclature`, replacing the
 non-word `hóptengi`. `ordabok.md` and the glossary agree; the book's prose mostly writes `virkur
 hópur`. A row banning `hóptengi` could follow.
+**Confirmed by Siggi 2026-10-23.**
 
 **126. Level 2 of `dimensional-analysis` now accepts the right factors in either order.**
 B11 in `CURRICULUM_REVIEW.md:154` ("grades correct work as wrong"). Graded as a multiset, with tests;
 easy to revert if you want step order enforced.
+**Confirmed by Siggi 2026-10-23.**
 
 ---
 
