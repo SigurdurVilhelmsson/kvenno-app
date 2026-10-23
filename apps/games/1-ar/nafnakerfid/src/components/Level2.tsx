@@ -9,6 +9,8 @@ import {
   useIsPhone,
 } from '@shared/utils';
 
+import { foldPrefixVowel } from '../utils/nameMatch';
+
 interface Level2Props {
   t: (key: string, fallback?: string) => string;
   onComplete: (correct: number, total: number) => void;
@@ -291,6 +293,35 @@ export const greekPrefixes = [
   { count: 8, prefix: 'okta-', note: '' },
 ];
 
+/**
+ * A typed name as the grader reads it: case, spaces and brackets never count,
+ * nor the prefix vowel the textbook leaves to the student. Step 2 builds N₂O₄
+ * as `dí + nitur + tetra + oxíð`, so the unelided form is exactly what
+ * following the steps produces.
+ */
+export function nameKey(answer: string): string {
+  return foldPrefixVowel(answer.toLowerCase().trim().replace(/\s+/g, '').replace(/[()]/g, ''));
+}
+
+/**
+ * The same with the Icelandic letters folded away, so `Kalsiumoxid` matches.
+ * Such a name is accepted, but the reply shows how it is spelled (decision 36
+ * (c)): a phone keyboard types every Icelandic letter, and accepting the
+ * flattened form in silence teaches it.
+ */
+export function foldLetters(answer: string): string {
+  return nameKey(answer)
+    .replace(/í/g, 'i')
+    .replace(/ú/g, 'u')
+    .replace(/ý/g, 'y')
+    .replace(/ó/g, 'o')
+    .replace(/á/g, 'a')
+    .replace(/é/g, 'e')
+    .replace(/ð/g, 'd')
+    .replace(/æ/g, 'ae')
+    .replace(/ö/g, 'o');
+}
+
 type Step = 'identify' | 'build' | 'answer' | 'feedback';
 
 const SUPPORT = supportLadder(challenges);
@@ -387,30 +418,6 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   // tap on "Athuga svar" cannot skip the feedback.
   const armed = useArmedAfter(400, `${currentChallenge}:${step}`);
 
-  const normalizeAnswer = (answer: string): string => {
-    return (
-      answer
-        .toLowerCase()
-        .trim()
-        .replace(/í/g, 'i')
-        .replace(/ú/g, 'u')
-        .replace(/ý/g, 'y')
-        .replace(/ó/g, 'o')
-        .replace(/á/g, 'a')
-        .replace(/é/g, 'e')
-        .replace(/ð/g, 'd')
-        .replace(/æ/g, 'ae')
-        .replace(/ö/g, 'o')
-        .replace(/\s+/g, '')
-        .replace(/[()]/g, '')
-        // A Greek prefix may keep or drop its last vowel before oxíð. The
-        // textbook (ch02/m68698) lets students write either, and Step 2 builds
-        // N₂O₄ as `dí + nitur + tetra + oxíð`, so the unelided form is exactly
-        // what following the steps produces.
-        .replace(/(mon|tetr|pent|hex|hept|okt|non|dek)[ao](?=ox)/g, '$1')
-    );
-  };
-
   const handleTypeSelect = (type: CompoundType) => {
     setSelectedType(type);
     const correct = type === challenge.type;
@@ -424,8 +431,8 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   const handleSubmitAnswer = () => {
     setStep('feedback');
-    const normalizedUser = normalizeAnswer(userAnswer);
-    const normalizedCorrect = normalizeAnswer(challenge.correctName);
+    const normalizedUser = foldLetters(userAnswer);
+    const normalizedCorrect = foldLetters(challenge.correctName);
 
     if (normalizedUser === normalizedCorrect) {
       setCorrectCount((prev) => prev + 1);
@@ -448,7 +455,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     }
   };
 
-  const isAnswerCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(challenge.correctName);
+  const isAnswerCorrect = foldLetters(userAnswer) === foldLetters(challenge.correctName);
+  // Right, but typed without some of its Icelandic letters.
+  const misspelt = isAnswerCorrect && nameKey(userAnswer) !== nameKey(challenge.correctName);
 
   const getColorClasses = (color: string) => {
     const colors: Record<string, { bg: string; border: string; text: string; light: string }> = {
@@ -778,9 +787,16 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 id="nk-l2-verdict"
                 className={`text-xl font-bold phone:inline-block ${isAnswerCorrect ? 'text-green-800' : 'text-red-800'}`}
               >
-                {isAnswerCorrect
-                  ? t('common.correct', 'Rétt!')
-                  : t('level2.ui.notQuite', 'Ekki alveg')}
+                {misspelt ? (
+                  <>
+                    Rétt — en skrifaðu{' '}
+                    <span className="whitespace-nowrap">{challenge.correctName}</span>
+                  </>
+                ) : isAnswerCorrect ? (
+                  t('common.correct', 'Rétt!')
+                ) : (
+                  t('level2.ui.notQuite', 'Ekki alveg')
+                )}
               </div>
               {!isAnswerCorrect && (
                 <div className="mt-2 text-red-700">
@@ -793,7 +809,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                   </div>
                 </div>
               )}
-              {isAnswerCorrect && (
+              {isAnswerCorrect && !misspelt && (
                 <div className="mt-2 text-green-700 text-lg sm:text-2xl font-bold">
                   {challenge.correctName}
                 </div>

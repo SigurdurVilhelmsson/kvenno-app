@@ -91,7 +91,8 @@ src/__tests__/                     breakdown-sums, compound-names, element-atoms
                                    gas-volume, parse-answer, phone-input, utils, and from
                                    2026-09-23 ionic-particles, level1-teach-and-input,
                                    level2-feedback, level3-summary, name-cases,
-                                   notation-examples, periodic-table, wording
+                                   notation-examples, periodic-table, wording, and from
+                                   2026-10-23 level3-varied-answers
 HARVEST.md                         the 2026-08-27 harvest and the parser defect
 LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 that did not ship
 ```
@@ -101,22 +102,28 @@ LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 tha
 - **Stig 3's completion threshold.** It records the level as complete on reaching the summary,
   whatever the score — 0 of 8 included — while Stig 2 requires 60 of 100 and Stig 1 a press of
   `Ljúka stigi`. Whether Stig 3 should have a threshold is a scoring decision; nothing was changed.
-- **`magnefnafræði`** in the menu's "Af hverju mólmassi?" card is in neither `ordabok.md` nor the
-  textbook. If it means stoichiometry the ruled word is `hlutfallaefnafræði`; if it means
-  quantitative chemistry, `magnbundin efnafræði`. Siggi's call.
 - **Periodic-table legend, two names.** `Eðallofttegundir`: `ordabok.md` says `eðalgas`, the textbook
   prefers `eðallofttegund-` (54 to 25 in `02-mt-output`), so by the resolution order it is Siggi's call. `P-málmar`
   became `Tregir málmar` on 2026-10-02 (decisions item 21), and the plain-nonmetal swatch `Aðrir
 málmleysingjar` (item 35).
-- **Stig 3's mass-to-molecules answers are nearly all the same number.** Five of its six problems
-  (36 g H₂O, 88 g CO₂, 117 g NaCl, 34 g NH₃, 64 g O₂) are two moles each, so all five come to
-  1,20 × 10²⁴; only CH₄ differs. A student who notices can answer without calculating. Varying the
-  masses (e.g. 1,5, 2,5 and 3 mól) would fix it, but choosing problem values is content, so nothing
-  was changed. The notation example that pointed straight at that number is fixed (below).
 - **Percent composition** is recorded in the roadmap as "a fourth `molmassi` level", which the
   2026-08-29 no-Level-4 ruling does not allow. Where it goes is not decided.
 - **i18n.** Menu text uses `t()`; the level components are hardcoded Icelandic. Part of the
   platform-wide undecided `useGameI18n` question.
+
+**Fixed 2026-10-23 — the mobile-pass decisions.**
+
+- **Stig 3's mass-to-molecules answers were nearly all the same number** (decision 43, option
+  (b)). Five of its six problems (36 g H₂O, 88 g CO₂, 117 g NaCl, 34 g NH₃, 64 g O₂) were two moles
+  each, so all five came to 1,20 × 10²⁴, and a student who noticed could answer without
+  calculating. Water, CO₂ and NaCl now weigh 27 g, 110 g and 175,5 g — 1,5, 2,5 and 3 mól — and the
+  answers are still derived. NH₃ and O₂ stay at 2 mól, the ruling naming only the three. The worked
+  step now prints the mass as the question does, so 175,5 keeps its comma
+  (`level3-varied-answers.test.ts`).
+- **`magnefnafræði`** in the menu's "Af hverju mólmassi?" card, in neither `ordabok.md` nor the
+  textbook, is now `hlutfallaefnafræði`, the ruled word for stoichiometry (decision 44, option
+  (a)): grams to moles opens Brown ch. 3. Feminine and indeclinable in the singular, so `allrar
+  hlutfallaefnafræði` is a pure swap (`wording.test.ts`).
 
 **Fixed 2026-09-23 — non-layout defects found in the phone pass.** Each has a test that failed
 against the previous commit.

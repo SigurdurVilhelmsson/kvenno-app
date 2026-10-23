@@ -55,24 +55,27 @@ type Desc =
     };
 
 export const DESCRIPTORS: Desc[] = [
-  // mass -> particles (6)
+  // mass -> particles (6). Five of the six were 2 mól, so all five came to
+  // 1,20 × 10²⁴, and an answer that never changes can be learned without
+  // calculating. Water, CO₂ and NaCl are now 1,5, 2,5 and 3 mól (decision 43 (b));
+  // the answers are still derived.
   {
     type: 'mass-to-particles',
     formula: 'H\u2082O',
-    mass: 36,
-    massLabel: '36',
+    mass: 27,
+    massLabel: '27',
   },
   {
     type: 'mass-to-particles',
     formula: 'CO\u2082',
-    mass: 88,
-    massLabel: '88',
+    mass: 110,
+    massLabel: '110',
   },
   {
     type: 'mass-to-particles',
     formula: 'NaCl',
-    mass: 117,
-    massLabel: '117',
+    mass: 175.5,
+    massLabel: '175,5',
   },
   {
     type: 'mass-to-particles',
@@ -196,7 +199,7 @@ export function buildProblem(d: Desc): Problem {
       particles,
       steps: [
         `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mól`,
-        `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g styttist út.`,
+        `Skref 2: g → mól (einingagreining)\n  ${d.massLabel} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g styttist út.`,
         `Skref 3: mól → ${particles} (einingagreining)\n  ${formatDecimal(n, 3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${particles}\n  Einingin mól styttist út.`,
       ],
     };

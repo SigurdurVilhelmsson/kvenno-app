@@ -250,7 +250,7 @@ function App() {
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju nafnakerfið?</h3>
             <p className="text-sm text-amber-700">
               IUPAC nafnakerfið gerir vísindamönnum um allan heim kleift að eiga samskipti um efni
-              án misskilnings. Sama nafn, sama efni — óháð tungumáli.
+              án misskilnings. Sama kerfi, sama efni — á hvaða tungumáli sem er.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

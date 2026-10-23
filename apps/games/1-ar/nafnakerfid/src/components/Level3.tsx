@@ -20,6 +20,7 @@ import {
 import { type Compound } from '../data/compounds';
 import { type MorphemeKind } from '../data/naming';
 import { dropEarlyClicks } from '../utils/dropEarlyClicks';
+import { foldPrefixVowel } from '../utils/nameMatch';
 import { generateParts, selectCompounds, type NamePart } from '../utils/nameParts';
 
 /** Levenshtein table for `a` against `b`: cell [i][j] is the distance of their prefixes. */
@@ -203,7 +204,10 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   );
 
   const handleCheck = useCallback(() => {
-    const correct = displayName.toLowerCase() === compound.name.toLowerCase();
+    // `tetra` + `oxíð` is as right as `tetroxíð`: the textbook lets a student
+    // keep the prefix vowel or drop it, and Level 2 accepts both (decision 37).
+    const correct =
+      foldPrefixVowel(displayName.toLowerCase()) === foldPrefixVowel(compound.name.toLowerCase());
     setIsCorrect(correct);
     setAnswered(true);
     setAttempts((prev) => prev + 1);
@@ -292,7 +296,11 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 <strong>Breytileg hleðsla:</strong> Málmur(tala) + -íð (Fe₂O₃ = Járn(III)oxíð)
               </li>
               <li>
-                <strong>Fjölatóma jónir:</strong> halda föstu nafni (K₂SO₄ = Kalíumsúlfat)
+                {/* Levels 1 and 2 teach súlfat, nítrat, karbónat and hýdroxíð; the
+                    pool also holds these four, which the line under the formula
+                    used to name before the answer (decision 38 (a)). */}
+                <strong>Fjölatóma jónir:</strong> halda föstu nafni (K₂SO₄ = Kalíumsúlfat). Einnig
+                ammóníum (NH₄⁺), fosfat (PO₄³⁻), vetniskarbónat (HCO₃⁻) og díkrómat (Cr₂O₇²⁻).
               </li>
             </ul>
           )}
@@ -308,7 +316,14 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level3.ui.formulaLabel', 'Efnaformúla:')}
             </div>
             <div className="text-4xl font-mono font-bold text-warm-800">{compound.formula}</div>
-            <div className="text-xs text-warm-500 mt-1">{compound.info}</div>
+            {/* What can be said before the name is built, and once it is checked,
+                the charge or ion behind it (decision 38 (a)). */}
+            {compound.observable && (
+              <div className="text-xs text-warm-500 mt-1">{compound.observable}</div>
+            )}
+            {answered && compound.why && (
+              <div className="text-xs text-warm-500 mt-1">{compound.why}</div>
+            )}
           </div>
 
           {/* Build area */}

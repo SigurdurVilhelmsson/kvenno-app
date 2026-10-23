@@ -73,8 +73,9 @@ describe('the names B5 got wrong', () => {
 
   it('spells the element kóbalt everywhere it is mentioned, not kóbolt', () => {
     const cobalt = byFormula('Co(NO₃)₂');
-    expect(`${cobalt.name} ${cobalt.info}`).not.toMatch(/kóbolt/i);
-    expect(cobalt.info).toMatch(/Kóbalt/);
+    expect(`${cobalt.name} ${cobalt.why}`).not.toMatch(/kóbolt/i);
+    // Shown after the answer since decision 38 (a): it states the charge.
+    expect(cobalt.why).toMatch(/Kóbalt/);
   });
 
   it('gives sulfur a real Icelandic root', () => {

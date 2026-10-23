@@ -16,9 +16,10 @@ import { parseScientificAnswer } from '../utils/parseAnswer';
  * The examples that show how to write a number must not be answers.
  *
  * Stig 3's field said `t.d. 1,2e24 eða 22,0`, and its help line and its error
- * repeated `1,2e24`. Five of its six mass-to-molecules problems come to
+ * repeated `1,2e24`. Five of its six mass-to-molecules problems came to
  * 1,20 × 10²⁴ (36 g of water, 88 g of CO₂, 117 g of NaCl, 34 g of NH₃, 64 g of
- * O₂ — two moles each), and CO₂'s particles-to-mass problem comes to 22,0 g. A
+ * O₂ — two moles each, until decision 43 varied the first three), and CO₂'s
+ * particles-to-mass problem comes to 22,0 g. A
  * student who typed the example was graded correct. Both levels grade at 5 %,
  * so an example within 5 % of a key is that key.
  *

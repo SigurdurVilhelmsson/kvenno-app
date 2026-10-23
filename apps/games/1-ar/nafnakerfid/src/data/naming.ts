@@ -78,7 +78,10 @@ export const ELEMENT_ROOTS: Record<string, { root: string; full: string; stem?: 
  *
  * These are single morphemes rather than two, because that is how they are
  * written and what a student has to recognise: the choice is `tetroxíð` over
- * `tetraoxíð`, not a rule applied after the fact.
+ * `tetraoxíð`, not a rule applied after the fact. The textbook (ch02/m68698)
+ * accepts the unelided form too, and the tray can offer `tetra` and `oxíð` as
+ * distractors, so Level 3 grades a name built that way as right
+ * (`utils/nameMatch.ts`, decision 37).
  */
 export const ELIDED_OXIDES: Record<number, string> = {
   4: 'tetroxíð',

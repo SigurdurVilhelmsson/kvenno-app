@@ -296,7 +296,7 @@ function App() {
             <p className="text-sm text-amber-700">
               Lyfjafræðingar reikna skammta lyfja í mólum. Matvælafræðingar nota mólmassa til að
               skilja efnainnihald. Án mólmassans gætum við ekki umbreytt milli gramma og mólfjölda —
-              undirstaða allrar magnefnafræði.
+              undirstaða allrar hlutfallaefnafræði.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
