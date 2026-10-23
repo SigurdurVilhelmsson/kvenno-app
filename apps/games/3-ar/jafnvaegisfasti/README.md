@@ -300,12 +300,6 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
 - **No temperature dependence of K itself.** The game states each constant's temperature and never
   varies it. Van 't Hoff now exists, in `3-ar/equilibrium-shifter` and in the shared engine, so this
   is no longer a gap on the platform — but this game does not use it.
-- **The water-gas reaction is named two ways on the platform** and the corpus cannot settle it:
-  `vatnsgashvarf` and `vatnsgas hvarf` both return **zero** hits in the book, so the compound
-  spelling is not the book's to decide. This game says `Vatnsgashvarfið`; `3-ar/equilibrium-shifter`
-  said `Vatnsgas hvarfið` and was harmonised to match, because a genitive compound
-  (`bakhvarf vatnsgashvarfsins`) cannot be split and one of the two had to give. That is a spelling
-  harmonisation, not a ruling — Siggi's to confirm or reverse.
 - **The NH₄Cl problem asks a 5 % question it has no answer to.** Kp = P(NH₃)·P(HCl) has no
   denominator and both gases start at 0 atm, so the step asks whether x may be dropped from a
   denominator that does not exist, reports the change as `0,00 %` of a starting pressure of zero,
@@ -325,8 +319,8 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
   task serves second, with K at 800 °C as the game already cites it. On it the change column reads
   `+x` for the reactants and `−x` for the products, and x is asked for as a size, since the
   engine's extent is signed. `beita-direction.test.tsx` holds both.
-- **The bromine expression's note** says what K is beside `Kc = [Br₂]` (decision 98): `Vökvinn
-  dettur út og K er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufunarþrýstingurinn.`
+- **The bromine expression's note** says what K is beside `Kc = [Br₂]` (decision 98):
+  `Vökvinn dettur út og K er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufunarþrýstingurinn.`
   The decision's wording said `gufuþrýstingurinn`; decision 18 ruled `gufunarþrýstingur`, which
   `governed-terms.test.ts` enforces, so that word follows the later ruling.
 - **K is masculine throughout** (decision 99), as Skilja and `coupled.ts` already had it:

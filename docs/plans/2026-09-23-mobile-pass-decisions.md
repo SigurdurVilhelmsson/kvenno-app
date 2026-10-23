@@ -933,6 +933,7 @@ well and stays.
 `App.tsx` `finishQuestion`; the feedback screen offers only `Næsta spurning` and `Valmynd`.
 Options: (a) a `Reyna aftur` button in practice mode; (b) reword to `Næstum rétt — en utan
 vikmarka.`; (c) leave. **Recommendation:** (a) in practice, (b) in Keppnishamur.
+**Ruled 2026-10-23:** (a) in practice and (b) in Keppnishamur, applied the same day. The practice retry does not count, since the feedback has printed the answer (item 1's rule).
 
 **94. There is no Explore phase.**
 The first thing after the menu is a graded question. **Recommendation:** an Explore screen with
@@ -948,12 +949,14 @@ Also here: score and streak in practice (item 1) and trailing zeros (item
 offer `Sýna svarið og halda áfram` after a wrong check; stage one does not. **Recommendation:** the
 same button after a wrong `Athuga jöfnuna`, applying the route and moving on, so the student still
 computes K.
+**Ruled 2026-10-23:** as recommended, applied the same day: `Sýna svarið og halda áfram`.
 
 **96. Beita's direction step is ungraded, and the answer is always forward.**
 Both buttons move on (`BeitaScreen.tsx` ~:180), and all ten problems start with every product at 0
 (`data/problems.ts`). Options: (a) grade it (`Rétt.`/`Ekki rétt.`); (b) add a sourced problem that
 starts with products and runs backwards; (c) leave. **Recommendation:** (a), and (b) if ch. 13 has
 an example.
+**Ruled 2026-10-23:** (a) and (b), applied the same day: the direction step is graded, and the book's Tilraun 2 (ch. 13, m68798) joins Beita as a reverse-direction problem.
 
 **97. The NH₄Cl pressure problem asks a 5 % question with no answer.**
 No reactant in K, both gases start at 0 atm; the screen reports `0,00 % af upphafsþrýstingnum` and
@@ -965,11 +968,13 @@ problem. **Recommendation:** (a), your wording.
 **98. `K er einfaldlega gufuþrýstingurinn` directly under `Kc = [Br₂]`.**
 `data/problems.ts:77-79`. True of Kp, loose beside Kc. **Recommendation:** `Vökvinn dettur út og K
 er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufuþrýstingurinn.`, low priority.
+**Ruled 2026-10-23:** applied the same day, with `gufunarþrýstingurinn` in place of the sentence's `gufuþrýstingurinn`, which item 18 rules out.
 
 **99. K is masculine in some strings and neuter in others.**
 Masculine in Skilja and `coupled.ts` (`K er háður hitastigi`); neuter in the `problems.ts` contexts
 (`K örsmátt`, `Stórt Kp`). The corpus has 2 hits, both masculine. **Recommendation:** masculine
 throughout, on your say-so.
+**Ruled 2026-10-23:** masculine throughout, applied the same day. Q (`hvarfstuðull`, also masculine) still reads neuter in places.
 
 **100. Two README Open items.**
 ICE before Le Chatelier, where the book puts it after: recommendation keep, since ICE needs only K.
@@ -994,6 +999,7 @@ Id 8 stores +5 and answers heating as a shift; id 24, the same reaction written 
 stores 0 (`data/equilibria.ts:245,760`). Neither is sourced, and the literature value is near 0.
 Options: (a) source a value for both; (b) drop the heating stress from id 8; (c) leave.
 **Recommendation:** (b) now, (a) when an aqueous ΔH source is ruled on.
+**Ruled 2026-10-23:** (b), applied the same day.
 
 **103. Ten systems have no constant, and aqueous temperature stresses stay
 directional.**
@@ -1009,6 +1015,7 @@ jafnvægi`, each naming a single reaction. `App.tsx`: `Le Chatelier meginreglan`
 `lögmál Le Chateliers`) and the menu bullet `Veltudæmi` (`:516`). **Recommendation:** as given in
 parentheses; rename ids 23 and 27 to what their equations show (e.g. `Bruni kolefnis í
 kolmónoxíð`); drop `Veltudæmi` or say `Útskýrð svör`.
+**Ruled 2026-10-23:** as recommended, applied the same day; id 17 is `Hvarf metans og vatnsgufu`, the book's phrase, and the menu bullet is `Útskýrð svör`.
 
 Also here: `Contact Process` (item 17) and water-gas naming (item 19).
 

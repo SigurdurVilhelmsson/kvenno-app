@@ -140,43 +140,72 @@ leave".
       2026-10-03 in every game they name (PR #85); items 3–8, 10 and 11 earlier. Still open:
       item 5's feedback wording is a draft, and its trailing-text strictness was not ruled. Item
       1's judgement calls are listed below, under "Item 1 as applied".
-- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 14,
-      15, 16, 17, 18, 19 and 21 done 2026-10-02; item 12 done 2026-10-03 (PR #85). Item 13
-      left.
-- [ ] 22–34 dimensional-analysis. Items 22, 23 and 33 done 2026-10-02.
-- [x] 35 lotukerfid — done 2026-10-02
-- [ ] 36–41 nafnakerfid. Item 39 done 2026-10-02.
-- [ ] 42–45 molmassi
-- [ ] 46–47 reynsluformulur. Item 46 done 2026-10-02.
-- [ ] 48–49 stilla-efnajofnur. Item 48 done 2026-10-02.
-- [ ] 50–53 utfellingarhvorf
-- [ ] 54–57 takmarkandi. Item 54 done 2026-10-03 with item 1 (PR #85).
-- [ ] 58–60 lausnir. Item 58 done 2026-10-03 with item 1 (PR #85). Item 60 done 2026-10-03: a wrong `Athuga lausn` says whether the
-      concentration is too low or too high and points at the readout's arrows. The wording is a
-      Claude draft, yours to change (`Level1.tsx`, the `missShown` block).
-- [ ] 61–62 einingakedjan
-- [ ] 63–64 rafeindabygging. Items 63 and 64 done 2026-10-01.
-- [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
-- [ ] 67–71 vsepr-geometry. All five applied 2026-10-01; confirm 70's angle sets.
-- [ ] 72–74 intermolecular-forces. Items 72 and 74 done 2026-10-01; 73 left.
-- [ ] 75–79 hess-law. Items 75, 76, 77 and 79 done 2026-10-01; 78 left.
-- [x] 80–82 kinetics. Item 82 done 2026-10-01; item 81's `stig efnahvarfs` done 2026-10-03
-      with item 1 (PR #85). Item 80 was applied 2026-10-01.
-- [ ] 83–88 redox-reactions. Items 83, 85, 86, 87 and 88 done 2026-10-01; 84 left.
-- [ ] 89–92 organic-nomenclature. Items 90, 91 and 92 done 2026-10-01; 89 left.
-- [ ] 93–94 gas-law-challenge
-- [ ] 95–100 jafnvaegisfasti
-- [ ] 101–104 equilibrium-shifter. Item 101 done 2026-10-23 (a): right Lærdómshamur answers open
-      Keppnishamur.
-- [ ] 105–108 syrufastinn
-- [ ] 109–111 thermodynamics-predictor. Item 109 done 2026-10-23 (c): the live ΔG°, its verdict,
-      the graph's point and the T_cross position line wait for `Athuga svar`, and Keppnishamur's
-      slider is fixed. Kept, as ruled: the substituted line (now ending `= ?`, in both modes) and
-      the curve. To confirm: the drafted note under the fixed slider,
-      `Í keppni er hitastigið fast.`
-- [ ] 112–116 ph-titration
-- [ ] 117–119 buffer-recipe-creator
-- [ ] 120–122 leysnijafnvaegi
+
+**2026-10-23: every item with a clear recommendation was applied as recommended** (Siggi:
+"apply all your recommendations"), each marked `Ruled 2026-10-23` in the decisions doc with what
+was done. Still open, all waiting on Siggi:
+
+- [ ] 27 dimensional-analysis: the Level 2 mode toggle, (a) rename or (b) remove, and the wording.
+- [ ] 32 dimensional-analysis: Stig 0's rule 4, the game's trailing-comma convention or the book's.
+- [ ] 40 nafnakerfid: the warm-up card's metal and non-metal groups, (b) or (c).
+- [ ] 42 molmassi: Stig 3 completes at any score; (c) a `Ljúka stigi` button, or (a) keep.
+- [ ] 51 utfellingarhvorf: the FeCl₃ coagulant sentence, in Siggi's Icelandic.
+- [ ] 57 takmarkandi: `sameindir` for atoms and formula units; (b) needs `formúlueining` settled.
+- [ ] 61 einingakedjan: which repair counts after a wrong turn, and the wording.
+- [ ] 73 intermolecular-forces: challenge 6's name (`Ediksýra vs. asetaldehýð`?) and challenge
+      7's word. Challenge 3 was applied.
+- [ ] 94 gas-law-challenge: an Explore screen, and its scope.
+- [ ] 97 jafnvaegisfasti: the NH₄Cl 5 % step, (a) skip it, and the sentence.
+- [ ] 103 equilibrium-shifter: the ten systems with no constant need a new source.
+- [ ] 110 thermodynamics-predictor: a word for steam reforming (id 17 `Gufumyndun`). The rest was
+      applied.
+- [ ] 67–71 vsepr-geometry: confirm 70's angle sets (applied 2026-10-01).
+
+Done: 12–26, 28–31, 33–39, 41, 43–50, 52–56, 58–60, 62–72 (70 to confirm), 74–93, 95, 96, 98–102,
+104–109, 111–122. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
+
+#### Drafted wording from 2026-10-23: confirm or change
+
+The recommendations did not give these words; the agents applying them wrote them. Each file
+says where.
+
+- [ ] dimensional-analysis Level 3 summary (31), mastered and not:
+      `Stigi lokið: {n} af {m} rétt. Þú hefur náð tökum á stiginu.` /
+      `… Til að ná tökum á stiginu þarf rétt svar og útskýringu í flestum áskorunum.`
+- [ ] nafnakerfid: Level 2 `Rétt — en skrifaðu {nafn}` (36); the rules panel's added line
+      `Einnig ammóníum (NH₄⁺), fosfat (PO₄³⁻), vetniskarbónat (HCO₃⁻) og díkrómat (Cr₂O₇²⁻).` (38).
+- [ ] reynsluformulur (13): the column `Lágstafur`, `Ekki alveg — Lágstafasúlan`, and the hint
+      `Lágstafirnir eru hlutföllin sjálf, námunduð að næstu heilu tölu.`;
+      stilla-efnajofnur:
+      `Lágstöfunum (litlu tölunum) má aldrei breyta: þeir segja hvaða efni þetta er.`
+- [ ] takmarkandi Stig 3 (56): natriumklorid's new context and the two misconception sentences
+      (`yieldProblems.ts`, `Level3.tsx` `wrongPickMisconception`).
+- [ ] intermolecular-forces challenge 3 (73):
+      `Vatnssameind er í raun léttari en sameindir lífrænna leysa: 18 g/mól á móti 58 g/mól í asetoni.`
+- [ ] gas-law (93): `Rétta svarið var sýnt áður en þú reyndir aftur, svo svarið telst ekki með.`
+- [ ] jafnvaegisfasti: `Sýna svarið og halda áfram` (95), and the new problem's context (96),
+      `Tilraun 2 úr kennslubókinni. Q er langt yfir K, svo hvarfið gengur afturábak: …`.
+- [ ] equilibrium-shifter (104): `Fyrsta klofnunarþrep fosfórsýru` (id 27) and id 22's
+      description `Djúpblá kopar-ammóníakflókajón, dæmi um tenglaskipti.`
+- [ ] thermodynamics-predictor (111): `Til umhugsunar (ekki metið):` and the eight reworded
+      prompts (`data/problems.ts`, ids 23–30); (109) `Í keppni er hitastigið fast.`
+- [ ] ph-titration (112–114): the question-6 misconception note, the Level 2 explanations naming
+      the accepted indicators, and two indicator descriptions (`indicators.ts`).
+- [ ] buffer-recipe-creator (119): the caption
+      `Eftir að {n} mól af sterkri sýru er bætt við {V} L`.
+- [ ] leysnijafnvaegi (120): the two `Algeng villa:` sentences for √Ksp and the forgotten 4.
+
+#### Found while applying them
+
+- [ ] **syrufastinn Æfa now has seven problems, not five** (106 (b), one per acid read
+      literally). Delete two rows of `PRACTICE_PAIRS` if five was meant.
+- [ ] **ph-titration grades indicators against the equivalence pH as printed** (113): unrounded,
+      HF's 7,97 fits no indicator, so HF now accepts þýmólblátt only, not fenólftalín.
+- [ ] **`ordabok.md` says `indicator;litvísir`**, while 116 keeps `vísir`, and
+      `leysnijafnvaegi` writes `litvísir` once.
+- [ ] **Q reads neuter in places** (`Q er minna`) in jafnvaegisfasti, though `hvarfstuðull` is
+      masculine like K (99).
+- [ ] **molmassi Stig 3: NH₃ and O₂ still both come to 2 mól** (43 named three problems).
 
 #### Item 1 as applied (2026-10-03, PR #85): confirm or change
 
