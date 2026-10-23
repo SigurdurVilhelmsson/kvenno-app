@@ -49,6 +49,13 @@ needs no ruling, only time.
     should return 200 with `audio/mpeg`, and `…/hljod/0000000000000000.mp3` a 404.
   - Open https://kvenno.app/islenskubraut/yfirferd on a phone and a laptop. Every PDF link should
     open a PDF, and a recording on `/islenskubraut/yfirferd/hljod` should play.
+- [ ] **Refuse compressed request bodies at nginx, after the deploy that carries the 2026-10-23
+      hardening (D4).** The backend refuses them itself from that deploy; the nginx copy also
+      covers a backend left on an unpatched Node.
+  - Install `server/nginx-site.conf` as above: its `/api/` location now answers a request
+    carrying a `Content-Encoding` other than `identity` with 415.
+  - Check: `printf '{}' | gzip | curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Origin: https://kvenno.app' -H 'Content-Type: application/json' -H 'Content-Encoding: gzip' --data-binary @- https://kvenno.app/api/analyze-2ar`
+    should print 415. It printed 400 before (the body was decoded and read).
 - [ ] **Play a recording on the review pages on a phone and on a laptop**, the one part of the item
       above a request cannot show: a PDF link opens in the browser's viewer and a recording on
       `/islenskubraut/yfirferd/hljod` is heard.
@@ -1116,3 +1123,33 @@ Both fixed 2026-10-10 (PR for this branch).
         dictionary link; who checks it is C18.
   - [x] Item 9, the Skólinn category (2026-10-16), a draft kept off the home page until it is
         read (C19).
+
+### D4. Security inspection (2026-10-23)
+
+An inspection of all the owner's repos after the October alerts (PHP2Shell, Node2Shell, the
+eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app items are here.
+
+- [x] **Node on the host to 22.23.4+** (Node2Shell, CVE-2026-111497): done 2026-10-23 by Siggi.
+      Express 5's body parsers decoded `Content-Encoding: br` request bodies from anyone, before
+      any check; kvenno-backend and ritstjorn share the host's `/usr/bin/node`.
+- [x] **Refuse compressed request bodies** in the backend (415, before parsing; both parsers
+      `inflate: false`); run LibreOffice and pandoc without the server's environment, so the
+      Claude key is not inherited; give pandoc a 30 s timeout; `permissions: contents: read` in
+      CI; `qs` 6.16.1, `proxy-addr` 2.0.8, `ip-address` 10.7.4. 2026-10-23, the PR carrying this
+      entry. The nginx copy of the refusal is a hand step in A.
+- [ ] **The Claude endpoints check no login.** `/api/analyze`, `/api/analyze-2ar` and
+      `/api/process-document` accept anyone who sends `Origin: https://kvenno.app`, so the key is
+      an open Claude Opus proxy (10 requests a minute per IP). The fix is to verify the Microsoft
+      ID token on the server (signature against the tenant's keys, `aud` = the app's client ID,
+      `exp`), with the front end sending it. Needs the Azure IDs in `server/.env`.
+- [ ] **Spend limit and usage alerts on the Anthropic key** (hand, Anthropic Console), and a look
+      at usage since November 2025: the older LabReports backend, with no origin check or rate
+      limit, probably served the site until the 2026-08-15 switch (commit `2538c79`).
+- [ ] **Old copies of the key on the host:** `/home/siggi/repos/LabReports/server/.env` and
+      `/var/www/labreports/server/.env`, if they still exist (the old guide set one to
+      `chmod 644`). Delete the old checkouts.
+- [ ] **Voice-tool venv** (`content/islenskubraut/hljod/README.md`): it pins `pip<24.1`, whose
+      CA bundle predates the eMudhra fix, so run `pip install -U "certifi>=2026.10.19"` there
+      before the next model download; pin `revision=` in `talgerving.py` and `hlustun.py`.
+- [ ] **Small things:** `server_tokens off;` in nginx; `/api/` responses carry nginx's and
+      helmet's headers twice (`X-Frame-Options` both `SAMEORIGIN` and `DENY`).

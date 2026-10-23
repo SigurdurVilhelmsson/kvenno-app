@@ -29,6 +29,18 @@ import type {
 
 const execFileAsync = promisify(execFile);
 const app: ReturnType<typeof express> = express();
+
+// LibreOffice and pandoc read files anyone can upload. They get only the
+// environment they need, not the server's: the Claude API key lives there, and
+// a converter exploited by a crafted document should not find it.
+const CONVERTER_ENV_KEYS = ['PATH', 'HOME', 'TMPDIR', 'LANG', 'LC_ALL'];
+function converterEnv(): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = {};
+  for (const key of CONVERTER_ENV_KEYS) {
+    if (process.env[key] !== undefined) env[key] = process.env[key];
+  }
+  return env;
+}
 const PORT = Number(process.env.PORT) || 8000;
 
 // The server listens on 127.0.0.1 only (see app.listen below), so every request
@@ -130,9 +142,24 @@ const pdfLimiter = rateLimit({
   message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
 });
 
+// Request bodies are never compressed: browsers do not compress what they send.
+// Decoding one anyway puts Node's Brotli decoder within reach of anyone on the
+// internet, and that decoder had an out-of-bounds write (CVE-2026-111497,
+// "Node2Shell", fixed in Node 22.23.4 / 24.22.1 / 26.12.1) that Express 5's body
+// parsers reach through `Content-Encoding: br`. So a compressed body is refused
+// before anything reads it, and the parsers below are told not to inflate one
+// either, in case this check is ever moved.
+app.use((req: Request, res: Response<ErrorResponse>, next: NextFunction) => {
+  const encoding = req.headers['content-encoding'];
+  if (encoding && encoding.trim().toLowerCase() !== 'identity') {
+    return res.status(415).json({ error: 'Þjappaðar beiðnir eru ekki studdar' });
+  }
+  next();
+});
+
 // 15MB limit covers multi-page PDFs with images while preventing abuse
-app.use(express.json({ limit: '15mb' }));
-app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+app.use(express.json({ limit: '15mb', inflate: false }));
+app.use(express.urlencoded({ extended: true, limit: '15mb', inflate: false }));
 
 // Health check endpoint
 app.get('/health', (_req: Request, res: Response<HealthResponse>) => {
@@ -144,7 +171,7 @@ app.get('/health', (_req: Request, res: Response<HealthResponse>) => {
  */
 async function isPandocAvailable(): Promise<boolean> {
   try {
-    await execFileAsync('pandoc', ['--version']);
+    await execFileAsync('pandoc', ['--version'], { env: converterEnv() });
     return true;
   } catch {
     return false;
@@ -156,7 +183,7 @@ async function isPandocAvailable(): Promise<boolean> {
  */
 async function isLibreOfficeAvailable(): Promise<boolean> {
   try {
-    await execFileAsync('libreoffice', ['--version']);
+    await execFileAsync('libreoffice', ['--version'], { env: converterEnv() });
     return true;
   } catch {
     return false;
@@ -184,7 +211,7 @@ async function convertDocxToPdf(docxPath: string): Promise<string> {
     const { stderr } = await execFileAsync(
       'libreoffice',
       ['--headless', '--convert-to', 'pdf', '--outdir', outputDir, docxPath],
-      { timeout: 30000 }
+      { timeout: 30000, env: converterEnv() }
     );
 
     if (stderr && !stderr.includes('Warning')) {
@@ -245,12 +272,13 @@ async function convertDocxToPdf(docxPath: string): Promise<string> {
  */
 async function processDocxWithPandoc(filePath: string): Promise<PandocResult> {
   try {
-    const { stdout, stderr } = await execFileAsync('pandoc', [
-      filePath,
-      '--from=docx',
-      '--to=markdown',
-      '--wrap=none',
-    ]);
+    // A timeout like LibreOffice's: without one, a crafted document could keep a
+    // pandoc process running indefinitely, and anyone can upload one.
+    const { stdout, stderr } = await execFileAsync(
+      'pandoc',
+      [filePath, '--from=docx', '--to=markdown', '--wrap=none'],
+      { timeout: 30000, env: converterEnv() }
+    );
 
     if (stderr && !stderr.includes('Warning')) {
       console.error('Pandoc stderr:', stderr);
