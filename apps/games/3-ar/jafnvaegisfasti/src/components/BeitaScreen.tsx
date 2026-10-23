@@ -1,6 +1,6 @@
 import { useId, useRef, useState } from 'react';
 
-import { APPROXIMATION_THRESHOLD, equationOf } from '@shared/engine/equilibrium';
+import { APPROXIMATION_THRESHOLD, equationOf, type Direction } from '@shared/engine/equilibrium';
 import {
   formatScientific,
   gradeScientific,
@@ -64,6 +64,8 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const [extentOutcome, setExtentOutcome] = useState<string | null>(null);
   const [invalid, setInvalid] = useState<InvalidReason | undefined>();
   const [ruleAnswer, setRuleAnswer] = useState<boolean | null>(null);
+  // The direction chosen, graded against Q (mobile-pass decision 96 (a)).
+  const [directionAnswer, setDirectionAnswer] = useState<Direction | null>(null);
   // Counts every step the student commits to, so a repeat check that fails the
   // same way still brings its feedback into view; `kind` says which step.
   const [commit, setCommit] = useState<{ n: number; kind: Commit }>({ n: 0, kind: 'direction' });
@@ -132,6 +134,13 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const problem = BEITA_PROBLEMS[index];
   const { result, unit, constantSymbol, totals } = problem;
   const k = problem.reaction.constant!.value;
+  // A problem that runs backwards (Q > K) is written as the book writes one: x is
+  // how far it runs, a positive number, and the signs in the change column turn
+  // round. The engine's extent is signed, so x is its size (decision 96 (b)).
+  const backwards = result.direction === 'afturabak';
+  const x = Math.abs(result.extent);
+  const sign = (side: 'hvarfefni' | 'myndefni') =>
+    (side === 'myndefni') !== backwards ? '+' : '−';
 
   /** Dative singular definite, for "less than 5 % of the starting ___". */
   const startingAmount = unit === 'M' ? 'upphafsstyrknum' : 'upphafsþrýstingnum';
@@ -142,6 +151,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
     setExponent('');
     setExtentOutcome(null);
     setRuleAnswer(null);
+    setDirectionAnswer(null);
   };
 
   const next = () => {
@@ -154,7 +164,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   };
 
   const checkExtent = () => {
-    const graded = gradeScientific({ mantissa, exponent }, result.extent, 0.03);
+    const graded = gradeScientific({ mantissa, exponent }, x, 0.03);
     setExtentOutcome(graded.outcome);
     setInvalid(graded.reason);
     if (graded.outcome === 'rett') setStage('approximation');
@@ -242,17 +252,15 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                       <td className="whitespace-nowrap py-2 phone:py-1.5 pl-2 text-right text-warm-600 sm:pl-0">
                         {stage === 'direction'
                           ? '—'
-                          : `${row.side === 'hvarfefni' ? '−' : '+'}${
-                              row.coefficient === 1 ? '' : row.coefficient
-                            }x`}
+                          : `${sign(row.side)}${row.coefficient === 1 ? '' : row.coefficient}x`}
                       </td>
                       <td className="whitespace-nowrap py-2 phone:py-1.5 pl-2 text-right text-warm-800 sm:pl-0">
                         {stage === 'direction'
                           ? '—'
                           : stage === 'extent'
-                            ? `${row.initial.toString().replace('.', ',')} ${
-                                row.side === 'hvarfefni' ? '−' : '+'
-                              } ${row.coefficient === 1 ? '' : row.coefficient}x`
+                            ? `${row.initial.toString().replace('.', ',')} ${sign(row.side)} ${
+                                row.coefficient === 1 ? '' : row.coefficient
+                              }x`
                             : decimals(row.equilibrium)}
                       </td>
                     </tr>
@@ -276,6 +284,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                       key={option}
                       type="button"
                       onClick={() => {
+                        setDirectionAnswer(option);
                         setStage('extent');
                         committed('direction');
                       }}
@@ -298,7 +307,8 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   id={qId}
                   className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900 phone:mb-2 phone:p-2.5"
                 >
-                  Q ={' '}
+                  <strong>{directionAnswer === result.direction ? 'Rétt.' : 'Ekki rétt.'}</strong> Q
+                  ={' '}
                   <span className="whitespace-nowrap">
                     {Number.isFinite(result.initialQuotient)
                       ? formatScientific(result.initialQuotient, 3)
@@ -382,7 +392,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   <p id={xId} className="font-mono text-green-900">
                     {/* One text node, as before, so a desktop window renders it identically. */}
                     {'x = '}
-                    <span className="whitespace-nowrap">{formatScientific(result.extent, 3)}</span>
+                    <span className="whitespace-nowrap">{formatScientific(x, 3)}</span>
                   </p>
                 </div>
 
@@ -490,7 +500,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                         </span>{' '}
                         ·{' '}
                         <span className="whitespace-nowrap">
-                          Nákvæmt: x = {formatScientific(result.extent, 3)}
+                          Nákvæmt: x = {formatScientific(x, 3)}
                         </span>
                       </p>
                     )}

@@ -93,7 +93,7 @@ src/components/NumbersPanel.tsx   the same comparison in computed numbers
 src/components/ParticleEquilibrium.tsx  particle picture
 src/types.ts, src/i18n.ts, src/styles.css, src/main.tsx
 src/__tests__/                    le-chatelier, numbers, numbers-panel, qk-pressure,
-                                  screen-anchoring, bar-labels, learning-count
+                                  screen-anchoring, bar-labels, learning-count, ruled-names
 ```
 
 **On a phone (2026-09-23).** Everything below `sm` is a phone layout and `sm:`/`md:` restore the
@@ -128,6 +128,21 @@ desktop one, which was checked pixel-identical at 1280 and 768. Four choices are
 The shared pieces it depends on: `packages/shared/engine/equilibrium.ts`,
 `packages/shared/data/thermo.ts`, `packages/shared/data/appendix-d.ts`. `MIGRATION-SUMMARY.md` is a
 historical record of the port from the old HTML game and is out of date on most specifics.
+
+## Fixed 2026-10-23: acetic acid's heating stress, and the names
+
+- **Acetic acid offers no temperature stress** (mobile-pass decision 102 (b)). Id 8 stored an
+  unsourced ΔH = +5 kJ/mól and answered heating as a shift, while id 24, the same reaction written
+  with hydronium, stored 0; the literature value is near 0. Id 8's heating stress is gone, and the
+  stored value stays until an aqueous ΔH source is ruled on (option (a)). `ruled-names.test.ts`.
+- **The names are ruled** (decision 104). Ids 6 and 22 are `Járn-þíósýanatflókajón` and
+  `Kopar-ammóníakflókajón`, and id 22's description says `tenglaskipti`. Id 17 is
+  `Hvarf metans og vatnsgufu`, the textbook's phrase (`ch13/m68801`). Ids 23 and 27, each one
+  reaction, are named for their equations: `Bruni kolefnis í kolmónoxíð` and
+  `Fyrsta klofnunarþrep fosfórsýru`. The principle is `lögmál Le Chateliers` throughout the
+  Icelandic, as the book has it, and the Lærdómshamur card's last bullet reads `Útskýrð svör`.
+  Id 1's name (decision 15), `Snertiferlið` (17) and `Vatnsgashvarfið` (19) were already applied.
+  `ruled-names.test.ts` holds the names, and `icelandic-text.test.ts` bans the old forms.
 
 ## Fixed 2026-10-23: the Keppnishamur gate opens
 
@@ -171,14 +186,6 @@ Each has a test that fails against the version before it.
   (`m68869`) or another new source — Siggi's call.
 - **Aqueous temperature stresses stay directional.** They have a constant but no derivable ΔH,
   because `thermo.ts` carries no dissolved ions, so the numbers panel reports K as unknown. Their
-  stored ΔH values are unsourced, and two describe the same chemistry differently: acetic acid is
-  +5 (endothermic, id 8, offered a heating stress) and the acetic-acid buffer is 0 (id 24).
-- **Water-gas naming** — `Vatnsgashvarfið` matches `jafnvaegisfasti`, but that is a spelling
-  harmonisation; the corpus has no hits for either form, so it is Siggi's call.
-- **Names that need a naming ruling.** Id 1 is called `Díköfnunarefnisoxíð`, which names N₂O, not
-  N₂O₄; `1-ar/nafnakerfid` says `Díniturtetroxíð` and the textbook `tvíköfnunarefnistetraoxíð`.
-  Ids 6 and 22 say `komplex` and `ligandskipti` where `ordabok.md` has `flóki`/`flókajón` and
-  `tengill`; id 17's `Gufuumbrot` (steam reforming) has no corpus support; the principle is called
-  `Le Chatelier meginreglan` where the book's one use is `lögmál Le Chateliers`; and the menu's
-  `Veltudæmi` bullet is not a word anyone could source.
+  stored ΔH values are unsourced. Acetic acid's +5 (id 8) no longer reaches a question (below), but
+  it still disagrees with the 0 stored for the same chemistry as id 24 until a source is ruled on.
 - **i18n is partial** — 7 `t()` calls, the rest hardcoded Icelandic; see `docs/i18n-coverage.md`.

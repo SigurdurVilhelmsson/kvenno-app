@@ -100,14 +100,13 @@ src/__tests__/simulator-readouts.test.tsx     the simulator shows only what the 
 src/__tests__/challenge-timer-and-keys.test.tsx
 src/__tests__/icelandic-grammar.test.tsx
 src/__tests__/points-in-keppnishamur-only.test.tsx   practice counts, Keppnishamur points
+src/__tests__/near-miss-retry.test.tsx               Reyna aftur in practice, not in Keppnishamur
 ```
 
 ## Open
 
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle
   deferred a manipulable pre-game simulator.
-- **"Næstum rétt! Reyndu aftur."** tells a near-miss student to try again, but the feedback
-  screen offers only the next question. Whether practice should allow a retry is a ruling.
 - **In Keppnishamur the last hint is the answer.** Every question's fourth hint ends on the
   number the grader accepts (`Reiknaðu: V = 3,82 L`), hints cost nothing, and four presses of H
   take 150 points plus the 50-point time bonus. Whether challenge hints should stop short of the
@@ -116,6 +115,13 @@ src/__tests__/points-in-keppnishamur-only.test.tsx   practice counts, Keppnisham
   count under decision 1 (b), as in `lewis-structures`; only "Sýna lausn" opened first stops a right
   answer counting. Whether a hint that prints the number should count as a revealed solution is
   Siggi's call.
+
+**Closed 2026-10-23.** A near miss said "Næstum rétt! Reyndu aftur." on a screen that offered only
+the next question (mobile-pass decision 93). In Æfingahamur it now comes with a `Reyna aftur`
+button (option (a)), which reopens the question past the law step with its hints still open. The
+feedback screen has printed the answer by then, so a right retry does not count and the retry adds
+no question to the round. Keppnishamur has no retry, so there the verdict reads `Næstum rétt — en
+utan vikmarka.` (option (b)). `near-miss-retry.test.tsx` holds both.
 
 **Closed 2026-10-03.** Score, streak and "Besta röð" showed in practice too, and both modes added
 to one saved score. Points now stay in Keppnishamur and practice ends with `N af M rétt` (decision 1

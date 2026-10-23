@@ -106,6 +106,13 @@ const BANNED: Array<{ pattern: RegExp; why: string }> = [
   { pattern: /hemóglóbín binding/i, why: 'binding súrefnis við blóðrauða' },
   { pattern: /hvítur fellur út/i, why: 'hvítt botnfall' },
   { pattern: /mótsögnum/i, why: 'trade-offs are málamiðlanir' },
+  // Names ruled 2026-10-23 (mobile-pass decision 104).
+  { pattern: /komplex/i, why: 'flókajón (ordabok: complex ion)' },
+  { pattern: /ligandskipt/i, why: 'tenglaskipti (ordabok: tengill)' },
+  { pattern: /Gufuumbrot/i, why: 'hvarf metans og vatnsgufu, as the textbook says' },
+  { pattern: /Samtengt kolefnishvarf|Samhliða jafnvægi/i, why: 'each names a single reaction' },
+  { pattern: /meginregl|Le Chatelier regl/i, why: 'lögmál Le Chateliers, as the textbook says' },
+  { pattern: /Veltudæmi/i, why: 'Útskýrð svör' },
   // English inside the Icelandic UI.
   { pattern: /Dynamic equilibrium simulation/, why: 'the particle picture’s accessible name' },
 ];

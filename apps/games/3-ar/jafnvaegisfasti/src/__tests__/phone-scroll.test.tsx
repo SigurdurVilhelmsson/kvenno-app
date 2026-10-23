@@ -290,7 +290,8 @@ describe('Beita', () => {
   it('on a desktop window, focuses the Q-against-K line instead', () => {
     phone = false;
     toExtent();
-    expect(focused()?.textContent).toMatch(/^Q = /);
+    // The line opens with the verdict on the direction (decision 96 (a)).
+    expect(focused()?.textContent).toMatch(/^Rétt\. Q = /);
   });
 
   it('moves focus through the steps and guards "Næsta dæmi"', () => {

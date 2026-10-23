@@ -813,6 +813,15 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
     setChecks((n) => n + 1);
   };
 
+  // After a wrong equation: set the givens to the route the data found and go
+  // on to the constant, so the student still computes K (decision 95).
+  const showRoute = () => {
+    setChoices(problem.route.map(({ reversed, factor }) => ({ reversed, factor })));
+    setWrongShape(false);
+    setStage('constant');
+    setChecks((n) => n + 1);
+  };
+
   const checkConstant = () => {
     if (stage !== 'constant') return;
     const graded = gradeScientific({ mantissa, exponent }, answer, 0.03);
@@ -978,6 +987,13 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
                 Þessi jafna er ekki markjafnan enn. Berðu saman hlið fyrir hlið: hvaða efni eiga að
                 standa vinstra megin og hvaða stuðlar? Það efni sem á að styttast út þarf að standa
                 sitt hvorum megin með sama stuðli.
+                <button
+                  type="button"
+                  onClick={armed(showRoute)}
+                  className="mt-3 block text-xs underline pointer-coarse:-mt-0.5 pointer-coarse:-mb-3.5 pointer-coarse:py-3.5 pointer-coarse:pr-4"
+                >
+                  Sýna svarið og halda áfram
+                </button>
               </div>
             )}
           </div>

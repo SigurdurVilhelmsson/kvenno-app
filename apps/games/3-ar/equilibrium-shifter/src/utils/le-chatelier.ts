@@ -50,7 +50,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       'This consumes excess reactant and establishes new equilibrium',
     ];
     reasoningIs = [
-      'Le Chatelier: Kerfið hliðrast þannig að það dragi úr álaginu',
+      'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr álaginu',
       `Álag: [${reactantFormula}] eykst`,
       'Viðbragð kerfisins: Hliðrun TIL HÆGRI (→), í átt að myndefnum',
       'Við það eyðist hluti viðbætta hvarfefnisins og nýtt jafnvægi næst',
@@ -69,7 +69,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       'This consumes excess product and establishes new equilibrium',
     ];
     reasoningIs = [
-      'Le Chatelier: Kerfið hliðrast þannig að það dragi úr álaginu',
+      'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr álaginu',
       `Álag: [${productFormula}] eykst`,
       'Viðbragð kerfisins: Hliðrun TIL VINSTRI (←), í átt að hvarfefnum',
       'Við það eyðist hluti viðbætta myndefnisins og nýtt jafnvægi næst',
@@ -88,7 +88,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       'This replaces the removed reactant',
     ];
     reasoningIs = [
-      'Le Chatelier: Kerfið hliðrast þannig að það dragi úr álaginu',
+      'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr álaginu',
       `Álag: [${reactantFormula}] minnkar`,
       'Viðbragð kerfisins: Hliðrun TIL VINSTRI (←), í átt að hvarfefnum',
       'Við það myndast aftur hluti hvarfefnisins sem var fjarlægt',
@@ -107,7 +107,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       'This replaces the removed product',
     ];
     reasoningIs = [
-      'Le Chatelier: Kerfið hliðrast þannig að það dragi úr álaginu',
+      'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr álaginu',
       `Álag: [${productFormula}] minnkar`,
       'Viðbragð kerfisins: Hliðrun TIL HÆGRI (→), í átt að myndefnum',
       'Við það myndast aftur hluti myndefnisins sem var fjarlægt',
@@ -261,7 +261,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
         'System shifts RIGHT (→) toward fewer moles',
       ];
       reasoningIs = [
-        'Le Chatelier: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
+        'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
         `Gasmól hvarfefna: ${gasMoles.reactants}`,
         `Gasmól myndefna: ${gasMoles.products}`,
         'Kerfið hliðrast TIL HÆGRI (→), að hliðinni með færri gasmólum',
@@ -282,7 +282,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
         'System shifts LEFT (←) toward fewer moles',
       ];
       reasoningIs = [
-        'Le Chatelier: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
+        'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
         `Gasmól hvarfefna: ${gasMoles.reactants}`,
         `Gasmól myndefna: ${gasMoles.products}`,
         'Kerfið hliðrast TIL VINSTRI (←), að hliðinni með færri gasmólum',
@@ -345,7 +345,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
         'System shifts LEFT (←) toward more moles',
       ];
       reasoningIs = [
-        'Le Chatelier: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
+        'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
         `Gasmól hvarfefna: ${gasMoles.reactants}`,
         `Gasmól myndefna: ${gasMoles.products}`,
         'Kerfið hliðrast TIL VINSTRI (←), að hliðinni með fleiri gasmólum',
@@ -366,7 +366,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
         'System shifts RIGHT (→) toward more moles',
       ];
       reasoningIs = [
-        'Le Chatelier: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
+        'Lögmál Le Chateliers: Kerfið hliðrast þannig að það dragi úr þrýstingsbreytingunni',
         `Gasmól hvarfefna: ${gasMoles.reactants}`,
         `Gasmól myndefna: ${gasMoles.products}`,
         'Kerfið hliðrast TIL HÆGRI (→), að hliðinni með fleiri gasmólum',

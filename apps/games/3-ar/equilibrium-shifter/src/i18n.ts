@@ -8,10 +8,10 @@ export const gameTranslations = createGameTranslations({
     game: {
       title: 'Jafnvægisbreyting',
       subtitle: 'Kvennaskólinn - Efnafræði 3. ár',
-      description: 'Lærðu Le Chatelier reglu og hvernig jafnvægi breytist',
+      description: 'Lærðu lögmál Le Chateliers og hvernig jafnvægi breytist',
     },
     intro: {
-      title: 'Hvað er Le Chatelier regla?',
+      title: 'Hvað er lögmál Le Chateliers?',
       description:
         'Þegar ytri aðstæður breytast, bregst kerfið við til að vinna á móti breytingunni og ná nýju jafnvægi.',
     },
@@ -24,7 +24,7 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Stig 2: Spá',
         description: 'Spáðu áhrifum breytinga',
-        details: 'Notaðu Le Chatelier reglu til að spá fyrir um jafnvægisfærslur.',
+        details: 'Notaðu lögmál Le Chateliers til að spá fyrir um jafnvægisfærslur.',
       },
       level3: {
         name: 'Stig 3: Q vs K',

@@ -159,7 +159,7 @@ function App() {
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
                     <span>
-                      Að Kc og Kp eru sami fastinn, tengd með (R·T) í veldinu Δn — og að Δn telur
+                      Að Kc og Kp eru sami fastinn, tengdir með (R·T) í veldinu Δn — og að Δn telur
                       aðeins gas
                     </span>
                   </li>

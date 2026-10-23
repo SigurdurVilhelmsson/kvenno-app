@@ -393,7 +393,7 @@ function App() {
   const generateHints = (): TieredHints => {
     if (!currentEquilibrium || !appliedStress) {
       return {
-        topic: 'Le Chatelier meginreglan fjallar um hvernig jafnvægi bregst við álagi.',
+        topic: 'Lögmál Le Chateliers fjallar um hvernig jafnvægi bregst við álagi.',
         strategy: 'Hugsaðu um hvernig kerfið reynir að minnka áhrif álagsins.',
         method: 'Athugaðu hvort álagið eykur eða minnkar magn á hvorri hlið.',
         solution: 'Veldu álag til að sjá vísbendingu.',
@@ -618,7 +618,7 @@ function App() {
     <div ref={menuRoot} className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 phone:p-3">
         <p className="text-lg text-warm-600 mb-6 text-center phone:text-base phone:mb-3">
-          Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
+          Lærðu lögmál Le Chateliers í gegnum gagnvirkar æfingar
         </p>
 
         {/* Conceptual intro — WHY does Le Chatelier work? */}
@@ -651,8 +651,8 @@ function App() {
           </div>
 
           <p className="text-xs text-indigo-600">
-            <strong>Le Chatelier:</strong> Kerfið bregst við álagi þannig að það dragi úr áhrifum
-            álagsins — það er afleiðing þess að Q ≠ K eftir truflun.
+            <strong>Lögmál Le Chateliers:</strong> Kerfið bregst við álagi þannig að það dragi úr
+            áhrifum álagsins — það er afleiðing þess að Q ≠ K eftir truflun.
           </p>
         </div>
 
@@ -678,7 +678,7 @@ function App() {
               <li>✓ Engin tímatakmörkun</li>
               <li>✓ Ítarlegar útskýringar</li>
               <li>✓ Vísbendingakerfi</li>
-              <li>✓ Veltudæmi</li>
+              <li>✓ Útskýrð svör</li>
             </ul>
           </button>
 
@@ -734,8 +734,8 @@ function App() {
         <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
           <h3 className="font-semibold text-amber-800 mb-2">Af hverju efnajafnvægi?</h3>
           <p className="text-sm text-amber-700">
-            Haber-ferlið framleiðir ammóníak til áburðargerðar og nærir milljarða manna. Le
-            Chatelier meginreglan hjálpar verkfræðingum að hámarka framleiðslu í iðnaði.
+            Haber-ferlið framleiðir ammóníak til áburðargerðar og nærir milljarða manna. Lögmál Le
+            Chateliers hjálpar verkfræðingum að hámarka framleiðslu í iðnaði.
           </p>
         </div>
         <div className="mt-3 text-center text-xs text-warm-500">
