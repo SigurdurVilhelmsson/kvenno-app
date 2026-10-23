@@ -172,8 +172,10 @@ export function calculatePH(titration: Titration, volumeAdded: number): number {
     }
 
     default: {
-      const _exhaustiveCheck: never = titration;
-      throw new Error(`Unknown titration type: ${(_exhaustiveCheck as Titration).type}`);
+      // `Titration` is one interface since the polyprotic type went (decision 115), so the switch
+      // narrows the `type` field, not the object.
+      const _exhaustiveCheck: never = titration.type;
+      throw new Error(`Unknown titration type: ${String(_exhaustiveCheck)}`);
     }
   }
 }
