@@ -7,7 +7,12 @@ import type { Level } from '../data';
 import { GasLawQuestion, GameMode, GameStats, GasLaw, GAS_LAW_INFO } from '../types';
 import { FormulaText } from './FormulaText';
 import { GasLawSimulator } from './GasLawSimulator';
-import { answerText, answerUnit, getVariableNameAccusative } from '../utils/gas-calculations';
+import {
+  answerText,
+  answerUnit,
+  getVariableNameAccusative,
+  hintsOffered,
+} from '../utils/gas-calculations';
 import { givenLabel } from '../utils/given';
 
 interface GameScreenProps {
@@ -471,14 +476,14 @@ export function GameScreen({
                     <h3 className="font-bold text-warm-800">Vísbendingar:</h3>
                     <button
                       onClick={onGetHint}
-                      disabled={showHint >= currentQuestion.hints.length}
+                      disabled={showHint >= hintsOffered(currentQuestion, gameMode)}
                       className={`px-3 py-1 rounded-lg text-sm font-bold transition pointer-coarse:min-h-11 pointer-coarse:px-4 ${
-                        showHint >= currentQuestion.hints.length
+                        showHint >= hintsOffered(currentQuestion, gameMode)
                           ? 'bg-warm-300 text-warm-500 cursor-not-allowed'
                           : 'bg-blue-500 text-white hover:bg-blue-600'
                       }`}
                     >
-                      Vísbending (H) {gameMode === 'challenge' && ''}
+                      Vísbending (H)
                     </button>
                   </div>
                   {showHint > 0 ? (

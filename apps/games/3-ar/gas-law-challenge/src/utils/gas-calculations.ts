@@ -1,6 +1,6 @@
 import { formatDecimal, parseStudentNumber } from '@shared/utils';
 
-import { Variable, GasValue, GasLawQuestion, R } from '../types';
+import { Variable, GasValue, GasLawQuestion, GameMode, R } from '../types';
 
 /**
  * Solve ideal gas law PV = nRT for any variable
@@ -30,6 +30,16 @@ export function solveGasLaw(
   }
 
   throw new Error(`Cannot solve for ${find} with given values`);
+}
+
+/**
+ * How many of a question's hints are on offer. Every question's last hint ends on the answer
+ * itself, so Keppnishamur, which scores, stops one short, as it offers no worked solution
+ * either; practice offers them all, and a right answer given with the last one open is not
+ * counted there (Item 1 as applied, call 3, and the Keppnishamur follow-up, 2026-10-23).
+ */
+export function hintsOffered(question: GasLawQuestion, mode: GameMode): number {
+  return mode === 'challenge' ? Math.max(0, question.hints.length - 1) : question.hints.length;
 }
 
 /**

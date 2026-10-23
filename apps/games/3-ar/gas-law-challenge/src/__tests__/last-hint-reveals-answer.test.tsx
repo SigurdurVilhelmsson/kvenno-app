@@ -130,16 +130,37 @@ describe('Æfingahamur', () => {
 });
 
 describe('Keppnishamur', () => {
-  it('is unchanged: the last hint is on offer there and a right answer still scores', () => {
-    render(<App />);
+  // It scores, and offers no worked solution, so its hints stop before the last one, which
+  // states the answer (2026-10-23). Until then four presses of H gave the answer and full
+  // points. The hints it does offer stay free: a right answer still scores in full.
+  it('offers every hint but the last, and a right answer still scores in full', () => {
+    const { container } = render(<App />);
     const first = getQuestionsForLevel(1)[0];
     fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
     settle();
 
-    openHints(first.hints.length);
+    openHints(first.hints.length - 1);
+    const hintButton = screen.getByRole('button', {
+      name: /Vísbending \(H\)/,
+    }) as HTMLButtonElement;
+    expect(hintButton.disabled).toBe(true);
+    fireEvent.click(hintButton);
+    expect(container.textContent).not.toContain(first.hints[first.hints.length - 1]);
+
     answer(answerText(first));
     expect(screen.queryByText(NOT_COUNTED)).toBeNull();
     // Exact (150) with more than 60 s left (+50).
     expect(screen.getByText('+200 stig')).toBeTruthy();
+  });
+
+  it('does not open the last hint from the keyboard either', () => {
+    const { container } = render(<App />);
+    const first = getQuestionsForLevel(1)[0];
+    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    settle();
+
+    for (let i = 0; i < first.hints.length + 1; i++) fireEvent.keyDown(window, { key: 'h' });
+    expect(container.textContent).toContain(first.hints[first.hints.length - 2]);
+    expect(container.textContent).not.toContain(first.hints[first.hints.length - 1]);
   });
 });

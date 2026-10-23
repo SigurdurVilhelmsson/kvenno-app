@@ -225,6 +225,10 @@ Siggi, 2026-10-23: accept 1, 2, 4, 5, 6 and 8 as applied; 3 and 7 as recommended
       `Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.` (VSEPR, whose verdict is
       one line, prefixes `Rétt!`). In equilibrium-shifter a wrong answer after it drops out of
       the count too, as an answer the game had shown always has there.
+- [x] **Follow-up: gas-law's Keppnishamur hints** gave the answer for full points (call 3 covers
+      practice only). — 2026-10-23, Siggi: "use your recommendations": Keppnishamur offers every
+      hint but the last, as it offers no worked solution; no points penalty
+      (`last-hint-reveals-answer.test.tsx`).
 - [x] **`redox-reactions` Stig 2 content change:** the diagram labelled `Cl afoxast` from the first
       answer on, so `Hvað afoxast?` was asked under its own answer. The labels now appear after
       the second answer.

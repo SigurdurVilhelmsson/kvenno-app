@@ -18,7 +18,7 @@ import {
   GAS_LAW_INFO,
   RoundResult,
 } from './types';
-import { checkAnswer, calculateError } from './utils/gas-calculations';
+import { checkAnswer, calculateError, hintsOffered } from './utils/gas-calculations';
 
 const DEFAULT_PROGRESS: GasLawProgress = {};
 
@@ -340,7 +340,7 @@ function App() {
   }, [screen]);
 
   const getHint = () => {
-    if (!currentQuestion || showHint >= currentQuestion.hints.length) return;
+    if (!currentQuestion || showHint >= hintsOffered(currentQuestion, gameMode)) return;
     setShowHint(showHint + 1);
     setSessionHintsUsed(sessionHintsUsed + 1);
   };

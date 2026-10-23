@@ -28,8 +28,8 @@ above (`LEVEL_LAWS`, `src/data/questions.ts`).
 - **Æfingahamur** — no timer, unlimited hints, a "Sýna lausn" panel, and no points or streak. On
   Levels 2 and 3 the student first picks which law applies ("Skref 1: Hvaða lögmál á við?") and is
   told why if wrong. The round ends with `N af M rétt`, and the menu shows each level's best round.
-- **Keppnishamur** — 90 seconds per question, no law-selection step, no solution panel, points, a
-  streak, and a 50-point bonus for answering with more than 60 seconds left. Each run starts from
+- **Keppnishamur** — 90 seconds per question, no law-selection step, no solution panel, every
+  hint but the last (which states the answer), points, a streak, and a 50-point bonus for answering with more than 60 seconds left. Each run starts from
   0; the menu shows the best run on the selected level and the longest streak.
 
 Feedback shows the student's and the correct answer, the step-by-step solution, and an
@@ -109,18 +109,20 @@ src/__tests__/last-hint-reveals-answer.test.tsx      the last hint gives the ans
 
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle
   deferred a manipulable pre-game simulator.
-- **In Keppnishamur the last hint is the answer.** Every question's fourth hint ends on the
-  number the grader accepts (`Reiknaðu: V = 3,82 L`), hints cost nothing, and four presses of H
-  take 150 points plus the 50-point time bonus. Whether challenge hints should stop short of the
-  final line is a ruling about the scored mode, not a code fix.
-
 **Closed 2026-10-23 (Item 1 as applied, call 3/7, Siggi 2026-10-23).** In Æfingahamur the last
 hint states the answer, and a right answer given with it open still counted, so four presses of H
 on every question finished a round with a full count. It now counts as a revealed answer, as "Sýna
 lausn" does: the round's count leaves it out and the feedback says `Síðasta vísbendingin gaf
-svarið, svo svarið telst ekki með.` The earlier hints stay free (decision 2). Keppnishamur, which
-shows the same hints, is unchanged (the open item above). `last-hint-reveals-answer.test.tsx` holds
-it, and checks that in every question only the last hint holds the answer.
+svarið, svo svarið telst ekki með.` The earlier hints stay free (decision 2).
+`last-hint-reveals-answer.test.tsx` holds it, and checks that in every question only the last hint
+holds the answer.
+
+**Closed 2026-10-23 (the Keppnishamur follow-up, Siggi: "use your recommendations").** In
+Keppnishamur four presses of H gave the answer and took 150 points plus the 50-point time bonus.
+It now offers every hint but the last, as it already offered no "Sýna lausn"; the hints it does
+offer stay free, so there is no points penalty. `hintsOffered` in `src/utils/gas-calculations.ts`
+sets the limit for the button and the H key alike, and `last-hint-reveals-answer.test.tsx` holds
+both.
 
 **Closed 2026-10-23.** A near miss said "Næstum rétt! Reyndu aftur." on a screen that offered only
 the next question (mobile-pass decision 93). In Æfingahamur it now comes with a `Reyna aftur`
