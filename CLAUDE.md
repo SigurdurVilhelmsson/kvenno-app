@@ -1384,7 +1384,10 @@ it. What matters platform-wide:
   written backwards takes `1/K` rather than a second lookup — a test asserts the reciprocal pair
   multiplies to 1. The ten without are the complex-ion and hemoglobin systems, the two where K has
   nothing on one side, and five the book puts no number on. **The count is asserted**, so quietly
-  supplying one is a failure rather than an improvement nobody reviewed.
+  supplying one is a failure rather than an improvement nobody reviewed. **Since 2026-10-23 it is
+  22 and 8** (decision 103): the two complex ions take Kf from the Icelandic book's appendix K
+  (`m68869`), Fe³⁺ + SCN⁻ at 8,9 × 10² and the copper ammine as `Kd = 1/Kf`, with no temperature,
+  since the appendix states none.
 - **`packages/shared/data/thermo.ts` is new, and is NOT a second `appendix-d.ts`.** It transcribes
   the **Icelandic** book's `m68865` formation enthalpies, for a quantity Brown's Appendix D does not
   cover — so the 2026-09-19 "Appendix D is authoritative" ruling does not reach it, and nothing in
@@ -1419,10 +1422,11 @@ it. What matters platform-wide:
   names to match. Pinned by a test for the same reason `docs/README.md` pins the four look-alike
   option arrays: so nobody "fixes" it and so it cannot quietly grow.
 
-**Still open here:** the ten systems with no sourced constant would need the Icelandic book's
-complex-ion formation constants (`m68869`), which is a new source and Siggi's call; and the aqueous
-systems have a constant but no derivable ΔH, because the formation table carries no dissolved ions,
-so their temperature stresses stay directional.
+**Still open here:** eight systems carry no constant (hemoglobin, the two with nothing on one side,
+five the book puts no number on); the two complex ions were sourced from `m68869` on 2026-10-23.
+And the aqueous systems have a constant but no derivable ΔH, because `thermo.ts` transcribed no
+dissolved ions, so their temperature stresses stay directional. The book's `m68865` does list
+dissolved ions; transcribing them would move stored ΔH values, and waits on a ruling (decision 102).
 
 **ICE in partial pressures is built — 2026-09-20, in `3-ar/jafnvaegisfasti`.** The last thing the
 engine could do that nothing posed. Four problems in the Beita phase, sourced to ch. 13 like the

@@ -1017,6 +1017,11 @@ directional.**
 Already open in the README: the complex-ion and hemoglobin systems need the Icelandic book's
 formation constants (m68869), and `thermo.ts` has no dissolved ions. Both are a new source, your
 call. `numbers.test.ts` pins the count at ten.
+**Ruled 2026-10-23:** yes, source them from m68869, applied the same day. Appendix K covers the two
+complex ions: id 6 takes Kf = 8,9 × 10², id 22 (written coming apart) `Kd = 1/Kf`, with Kf = 1,7 × 10¹³. It
+states no temperature, so none is written. Hemoglobin is not in it, so eight systems stay without
+a constant, and the test pins eight. The aqueous ΔH half was not part of the question and stays
+open: the book's m68865 does list dissolved ions.
 
 **104. Several equilibrium names need a ruling.**
 `data/equilibria.ts`: id 1 `Díköfnunarefnisoxíð` (item 15); ids 6 and 22 `komplex`

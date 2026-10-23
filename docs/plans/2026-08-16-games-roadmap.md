@@ -43,9 +43,9 @@ items for you in `2026-09-23-mobile-pass-decisions.md`. Rulings on them were app
 **What is left is rulings and hand checks, not code.** `docs/REVIEW-QUEUE.md` is the live list.
 As of this date:
 
-- **3 of the 122 decision items have no ruling** (section C3): 51, 94 and 103. On
-  2026-10-23 every item with a clear recommendation was applied as recommended; what is left
-  asks for Siggi's choice or his wording, and the drafted wording from that pass waits for his
+- **All 122 decision items are ruled** (section C3). On 2026-10-23 every item with a clear
+  recommendation was applied as recommended, and Siggi ruled the rest the same day; 94 (a Gaslögmál
+  Explore screen) was skipped for now. The drafted wording from that pass waits for his
   confirmation.
 - **Two were live defects students could hit, both ruled and fixed 2026-10-23:**
   - **item 101 (a):** `equilibrium-shifter`'s Keppnishamur could never be unlocked, because only

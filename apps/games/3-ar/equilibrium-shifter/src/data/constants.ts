@@ -10,9 +10,11 @@
  * up somewhere else.
  *
  * **Reactions with no sourced constant carry none, and that is deliberate.**
- * **Ten** of the thirty are in that position — the iron thiocyanate and copper
- * ammine complexes, the hemoglobin system, the two where K has nothing on one
- * side to solve for, and five gas reactions the book puts no number on. They still teach Le Chatelier perfectly well; they just
+ * **Eight** of the thirty are in that position — the hemoglobin system, the two
+ * where K has nothing on one side to solve for, and five gas reactions the book
+ * puts no number on. (The iron thiocyanate and copper ammine complexes joined
+ * the sourced ones on 2026-10-23, from the book's appendix K.) They still teach
+ * Le Chatelier perfectly well; they just
  * do not show a number. Inventing one would put an unsourced figure on screen
  * exactly where a student is being taught to trust the figure.
  *
@@ -22,8 +24,12 @@
 
 import { APPENDIX_D1_ACIDS, APPENDIX_D2_BASES, APPENDIX_D3_KSP } from '@shared/data/appendix-d';
 
-/** What kind of constant it is. They are all equilibrium constants; the label says which. */
-export type ConstantKind = 'Kc' | 'Ka' | 'Kb' | 'Ksp' | 'Kw';
+/**
+ * What kind of constant it is. They are all equilibrium constants; the label says which.
+ * `Kf` is a complex ion's formation constant and `Kd` its dissociation constant, `1/Kf`
+ * (the book's `myndunarfasti` and `sundrunarfasti`, ch. 15).
+ */
+export type ConstantKind = 'Kc' | 'Ka' | 'Kb' | 'Ksp' | 'Kw' | 'Kf' | 'Kd';
 
 export interface EquilibriumConstant {
   value: number;
@@ -40,6 +46,12 @@ const D1 = 'Brown, tafla D.1';
 const D2 = 'Brown, tafla D.2';
 const D3 = 'Brown, tafla D.3';
 const CH13 = 'Efnafræði 2e, kafli 13';
+/**
+ * The Icelandic book's appendix K, `m68869`: formation constants of complex ions (Siggi's
+ * ruling 103, 2026-10-23). It states no temperature, so none is written here, and a
+ * temperature stress on these systems says K moves without saying how far.
+ */
+const APP_K = 'Efnafræði 2e, viðauki K — myndunarfastar flókajóna';
 
 /**
  * Ion product of water at 25 °C.
@@ -79,6 +91,8 @@ export const CONSTANTS: Record<number, EquilibriumConstant> = {
     source: `${CH13} — útreikningur á Kp`,
     reversedFrom: 'CH₃OH ⇌ CO + 2H₂, Kc = 0,0952',
   },
+  // Fe³⁺ + SCN⁻ ⇌ FeSCN²⁺, as appendix K writes it.
+  6: { value: 8.9e2, kind: 'Kf', source: APP_K },
   7: { value: KW, kind: 'Kw', temperatureC: 25, source: 'Klofningsfasti vatns' },
   8: { value: APPENDIX_D1_ACIDS.acetic.ka[0], kind: 'Ka', temperatureC: 25, source: D1 },
   9: { value: APPENDIX_D2_BASES.ammonia.kb, kind: 'Kb', temperatureC: 25, source: D2 },
@@ -101,6 +115,13 @@ export const CONSTANTS: Record<number, EquilibriumConstant> = {
     source: `${CH13} — jafnvægisstyrkur sem vantar`,
   },
   21: { value: APPENDIX_D1_ACIDS.carbonic.ka[0], kind: 'Ka', temperatureC: 25, source: D1 },
+  // Cu(NH₃)₄²⁺ ⇌ Cu²⁺ + 4NH₃ is appendix K's formation written backwards.
+  22: {
+    value: 1 / 1.7e13,
+    kind: 'Kd',
+    source: APP_K,
+    reversedFrom: 'Cu²⁺ + 4NH₃ ⇌ Cu(NH₃)₄²⁺, Kf = 1,7 × 10¹³',
+  },
   24: { value: APPENDIX_D1_ACIDS.acetic.ka[0], kind: 'Ka', temperatureC: 25, source: D1 },
   25: { value: 0.5, kind: 'Kc', temperatureC: 400, source: `${CH13} — tengd efnahvörf` },
   26: { value: 0.5, kind: 'Kc', temperatureC: 400, source: `${CH13} — tengd efnahvörf` },
@@ -115,13 +136,11 @@ export const CONSTANTS: Record<number, EquilibriumConstant> = {
  */
 export const WITHOUT_CONSTANT: Record<number, string> = {
   5: 'CaCO₃ ⇌ CaO + CO₂ — K er einfaldlega [CO₂], svo ekkert jafnvægisdæmi er að leysa',
-  6: 'Fe³⁺ + SCN⁻ ⇌ FeSCN²⁺ — myndunarfasti flókajónar, ekki í töflum D.1–D.3',
   13: '4NH₃ + 5O₂ ⇌ 4NO + 6H₂O — kennslubókin gefur ekkert K fyrir þetta hvarf',
   15: '2NO + O₂ ⇌ 2NO₂ — ekkert K í heimildunum sem pallurinn notar',
   16: 'C + CO₂ ⇌ 2CO — ekkert K í heimildunum sem pallurinn notar',
   17: 'CH₄ + H₂O ⇌ CO + 3H₂ — ekkert K í heimildunum sem pallurinn notar',
   20: '2H₂S + 3O₂ ⇌ 2H₂O + 2SO₂ — ekkert K í heimildunum sem pallurinn notar',
-  22: 'Cu(NH₃)₄²⁺ ⇌ Cu²⁺ + 4NH₃ — myndunarfasti flókajónar, ekki í töflum D.1–D.3',
   23: '2C + O₂ ⇌ 2CO — ekkert K í heimildunum sem pallurinn notar',
   29: 'Hb + 4O₂ ⇌ Hb(O₂)₄ — lífefnafræðilegt jafnvægi, ekkert K í heimildunum',
 };
@@ -149,6 +168,8 @@ export const STARTING_MIXTURES: Record<number, Record<string, number>> = {
   2: { 'H₂': 1.0, 'I₂': 1.0, HI: 0 },
   3: { 'PCl₅': 1.0, 'PCl₃': 0, 'Cl₂': 0 },
   4: { CO: 1.0, 'H₂': 2.0, 'CH₃OH': 0 },
+  // 72 % of the iron ends up in the complex, so adding either ion visibly moves it.
+  6: { 'Fe³⁺': 0.01, 'SCN⁻': 0.01, 'FeSCN²⁺': 0 },
   8: { 'CH₃COOH': 0.1, 'CH₃COO⁻': 0, 'H⁺': 0 },
   // Water is written in because the equation names it; its amount is the molarity
   // of pure water and cannot move the answer, which a test checks.
@@ -160,6 +181,8 @@ export const STARTING_MIXTURES: Record<number, Record<string, number>> = {
   // The composition of dry air, so the answer says something about the real world.
   19: { 'N₂': 0.781, 'O₂': 0.209, NO: 0 },
   21: { 'H₂CO₃': 0.1, 'H⁺': 0, 'HCO₃⁻': 0 },
+  // A tenth-molar solution of the complex; about half a per cent of it comes apart.
+  22: { 'Cu(NH₃)₄²⁺': 0.1, 'Cu²⁺': 0, 'NH₃': 0 },
   24: { 'CH₃COOH': 0.1, 'H₂O': 55.5, 'CH₃COO⁻': 0, 'H₃O⁺': 0 },
   25: { 'N₂': 1.0, 'H₂': 3.0, 'NH₃': 0 },
   26: { 'N₂': 1.0, 'H₂': 3.0, 'NH₃': 0 },

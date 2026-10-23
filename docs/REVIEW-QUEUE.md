@@ -147,10 +147,11 @@ was done. Still open, all waiting on Siggi:
 
 - [x] 51 utfellingarhvorf: the FeCl₃ coagulant sentence. Siggi took the draft, 2026-10-23 (PR #112).
 - [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted.
-- [ ] 103 equilibrium-shifter: the ten systems with no constant need a new source.
+- [x] 103 equilibrium-shifter: the systems with no constant. Siggi: source them from `m68869`,
+      2026-10-23 (PR #112). It covers the two complex ions; eight remain with no source.
 
-Done: 12–102, 104–122. Siggi ruled 27 (a), 32 (b), 40 (b),
-42 (c), 51, 57 (a), 61 (a), 73, 97 (a) and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
+Done: 12–122. Siggi ruled 27 (a), 32 (b), 40 (b),
+42 (c), 51, 57 (a), 61 (a), 73, 97 (a), 103 and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
 
 #### Drafted wording from 2026-10-23: confirm or change
 
@@ -262,8 +263,12 @@ jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms
       C4 items 123 and 124, confirmed by Siggi 2026-10-23.
 - [x] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
       item 19. — 2026-10-02: the compound, confirmed; a `governed-terms` row bans the split.
-- [ ] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
-      Icelandic book's complex-ion constants (`m68869`), which is a new source.
+- [x] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
+      Icelandic book's complex-ion constants (`m68869`), which is a new source. — 2026-10-23
+      (PR #112): Siggi said yes; it sources the two complex ions. Eight remain, with no source.
+- [ ] **equilibrium-shifter's aqueous ΔH.** `thermo.ts` transcribed no dissolved ions, though the
+      book's `m68865` lists them. Transcribing them would move stored ΔH values (decision 102's
+      option (a)). Siggi's call.
 - [x] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
       view never finishes loading. Fixing it means bundling a font. — 2026-10-01, PR #71. Worse than
       recorded: the CSP in `server/nginx-site.conf` refuses both that fetch and troika's worker, so

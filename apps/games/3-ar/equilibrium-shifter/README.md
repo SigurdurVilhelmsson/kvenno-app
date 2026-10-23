@@ -49,11 +49,14 @@ no reference temperature or no derivable ΔH leaves K and the mixture unmoved �
 as a catalyst, and the opposite in meaning. `StressOutcome` carries both flags, and
 `numbers-panel.test.tsx` and `numbers.test.ts` hold them apart.
 
-**20 of the 30 systems carry a sourced constant; 10 carry none, each with a written reason.**
+**22 of the 30 systems carry a sourced constant; 8 carry none, each with a written reason.**
 `src/data/constants.ts` takes acids, bases and Ksp from `@shared/data/appendix-d`, gas-phase Kc
-from the ch. 13 citations `jafnvaegisfasti` already carries, and a reaction written backwards
-takes `1/K` rather than a second lookup. `numbers.test.ts` asserts the count of unsourced systems
-is exactly ten, so quietly supplying one fails. Starting mixtures (`STARTING_MIXTURES`) are the
+from the ch. 13 citations `jafnvaegisfasti` already carries, the two complex ions from the
+Icelandic book's appendix K (`m68869`, Siggi's ruling 103, 2026-10-23: Fe³⁺ + SCN⁻ ⇌ FeSCN²⁺ at
+Kf = 8,9 × 10², and the copper ammine written coming apart, so `Kd = 1/Kf`), and a reaction
+written backwards takes `1/K` rather than a second lookup. Appendix K states no temperature, so the
+complex ions' temperature stresses say K moves without saying how far. `numbers.test.ts` asserts
+the count of unsourced systems is exactly eight, so quietly supplying one fails. Starting mixtures (`STARTING_MIXTURES`) are the
 problem, not the answer; every equilibrium mixture shown is computed.
 
 **ΔH is derived, and the stored value is held equal to it.** `derivedEnthalpy` sums the Icelandic
@@ -84,7 +87,7 @@ reaction is `bakhvarf` (id 18 is `Bakhvarf vatnsgashvarfsins`), the buffer syste
 ```
 src/App.tsx                       menu, both modes, feedback and results screens
 src/data/equilibria.ts            the 30 equilibria, with stored ΔH held to the derived value
-src/data/constants.ts             sourced K per system, the ten unsourced reasons, starting mixtures
+src/data/constants.ts             sourced K per system, the eight unsourced reasons, starting mixtures
 src/data/index.ts                 data exports
 src/engine/stress.ts              what a stress does to Q, K and the mixture
 src/utils/le-chatelier.ts         the qualitative shift and its explanations
@@ -182,10 +185,12 @@ Each has a test that fails against the version before it.
 
 ## Open
 
-- **The ten unsourced systems** would need the Icelandic book's complex-ion formation constants
-  (`m68869`) or another new source — Siggi's call.
+- **The eight unsourced systems** (hemoglobin, the two with nothing on one side of K, five gas
+  reactions the book gives no number for) have no source on the platform. The two complex ions
+  were sourced from `m68869` on 2026-10-23.
 - **Aqueous temperature stresses stay directional.** They have a constant but no derivable ΔH,
-  because `thermo.ts` carries no dissolved ions, so the numbers panel reports K as unknown. Their
+  because `thermo.ts` carries no dissolved ions, so the numbers panel reports K as unknown. The
+  book's `m68865` does list them; transcribing them is a ruling of its own (decision 102). Their
   stored ΔH values are unsourced. Acetic acid's +5 (id 8) no longer reaches a question (below), but
   it still disagrees with the 0 stored for the same chemistry as id 24 until a source is ruled on.
 - **i18n is partial** — 7 `t()` calls, the rest hardcoded Icelandic; see `docs/i18n-coverage.md`.
