@@ -279,8 +279,10 @@ Same document, items 123–126. Each is reversible.
       before any export goes to a colleague.
 - [x] **molmassi names HCl `Saltsýra`** (a solution) while quoting the compound's molar mass. See
       also C3 item 14. — 2026-10-02: now `Vetnisklóríð`, a gas, and in the molar-volume pool.
-- [ ] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
-jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken.
+- [x] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
+      jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken. —
+      2026-10-23, kept on Claude's recommendation (PR #112): the book's running prose writes them
+      solid (23 to 8 for `nettójónajafna`), and `ordabok.md` already does.
 - [x] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
       C4 items 123 and 124, confirmed by Siggi 2026-10-23.
 - [x] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
