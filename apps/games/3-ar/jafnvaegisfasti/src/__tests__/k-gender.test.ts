@@ -34,7 +34,18 @@ describe('K and Q are neuter', () => {
   const files = sources();
 
   it('finds the source it scans', () => {
-    expect(files.length).toBeGreaterThan(10);
+    const names = files.map((file) => relative(SRC, file));
+    for (const name of [
+      'App.tsx',
+      'components/SkiljaScreen.tsx',
+      'data/problems.ts',
+      'data/coupled.ts',
+    ]) {
+      expect(
+        names.some((n) => n.endsWith(name)),
+        name
+      ).toBe(true);
+    }
   });
 
   it('agrees no K or Q as a masculine', () => {
