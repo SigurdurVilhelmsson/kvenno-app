@@ -136,10 +136,12 @@ Detail: `docs/plans/2026-09-23-mobile-pass-decisions.md`. Each item gives the de
 lives, the options and a recommendation. Reply by number, e.g. "4 (b), 17 as recommended, 30
 leave".
 
-- [ ] 1–11 Platform-wide. All eleven are now applied. Items 1, 2 and 9 were applied
-      2026-10-03 in every game they name (PR #85); items 3–8, 10 and 11 earlier. Still open:
-      item 5's feedback wording is a draft, and its trailing-text strictness was not ruled. Item
-      1's judgement calls, below under "Item 1 as applied", were ruled 2026-10-23.
+- [x] 1–11 Platform-wide. All eleven are now applied. Items 1, 2 and 9 were applied
+      2026-10-03 in every game they name (PR #85); items 3–8, 10 and 11 earlier. Item 1's
+      judgement calls, below under "Item 1 as applied", were ruled 2026-10-23. Item 5's last two
+      parts were settled on Claude's recommendation 2026-10-23 (PR #112): the drafted note
+      stands, and trailing text that carries a number on (`8,3 × 10²`) is unreadable, not its
+      first part; a unit still reads.
 
 **2026-10-23: every item with a clear recommendation was applied as recommended** (Siggi:
 "apply all your recommendations"), each marked `Ruled 2026-10-23` in the decisions doc with what

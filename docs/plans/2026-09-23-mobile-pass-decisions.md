@@ -96,6 +96,7 @@ Level 2 and Stig 0), say so in feedback when the typed value is exactly answer/1
 about trailing text in the same ruling. Only the docstring changed: it had claimed a thousands
 space is how Icelandic writes large numbers, and the book never does.
 **Applied 2026-10-02, (b) plus (d):** `parseStudentNumber` reads `1.000.000` and `2.219,2` as thousands, keeps a lone `d.ddd` a decimal, and returns `NaN` for any other mix of the two marks. Einingagreining's Level 2 and Stig 0 say when a typed full stop made the answer exactly a thousandth of the right one. **Still yours:** the wording of that note is a Claude draft (`dotReadAsDecimalNote` in `utils/grading.ts`), and strictness about trailing text was not ruled, so `4,64 g` still reads as 4,64.
+**Settled 2026-10-23 on Claude's recommendation** (Siggi: "continue, using your recommendations and best judgment"): the note's wording stands as drafted. Text after a number is still read as a unit (`4,64 g`, `0,05 M-1s-1`, `25 °C`, and a bare `1200,`), but text that carries the number on is `NaN` instead of its first part: `8,3 × 10²`, `8,3x10^2`, `1,5·10³`, `0,8-1,0`, `1,5,2`. `numbers.test.ts` holds both lists.
 
 **6. English glosses and abbreviations inside Icelandic text.**
 `kinetics` glosses terms in parentheses (`Hvarfhraði (reaction rate)`, `stefna (orientation)` ×3,

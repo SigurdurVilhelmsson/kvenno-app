@@ -82,6 +82,32 @@ describe('parseStudentNumber', () => {
     expect(parseStudentNumber('-')).toBeNaN();
   });
 
+  it('reads text after the number as a unit', () => {
+    expect(parseStudentNumber('4,64 g')).toBe(4.64);
+    expect(parseStudentNumber('22,4 L/mól')).toBe(22.4);
+    // A rate constant's unit carries digits, and starts with a letter.
+    expect(parseStudentNumber('0,05 M-1s-1')).toBe(0.05);
+    expect(parseStudentNumber('25 °C')).toBe(25);
+    expect(parseStudentNumber('95 %')).toBe(95);
+    // A bare trailing comma or point changes nothing (Einingagreining Stig 0, rule 4).
+    expect(parseStudentNumber('1200,')).toBe(1200);
+    expect(parseStudentNumber('60.')).toBe(60);
+  });
+
+  it('refuses text that carries the number on, rather than grading its first part', () => {
+    // 2026-10-23, item 5's trailing-text half. Each of these read as its first number.
+    expect(parseStudentNumber('8,3 × 10²')).toBeNaN();
+    expect(parseStudentNumber('8,3x10^2')).toBeNaN();
+    expect(parseStudentNumber('8,3 * 10^2')).toBeNaN();
+    expect(parseStudentNumber('1,5·10³')).toBeNaN();
+    expect(parseStudentNumber('0,8-1,0')).toBeNaN();
+    expect(parseStudentNumber('1,5,2')).toBeNaN();
+    expect(parseStudentNumber('4,64/2')).toBeNaN();
+    expect(parseStudentNumber('8,3²')).toBeNaN();
+    // Scientific notation with an e is still read whole.
+    expect(parseStudentNumber('8,3e2')).toBe(830);
+  });
+
   it('offers text + decimal input, never type=number', () => {
     // type="number" discards the comma before any code sees it, so no amount
     // of normalising downstream can recover it.
