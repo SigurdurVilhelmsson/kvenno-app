@@ -182,6 +182,17 @@ were like that. The three kept are HF at 0,010 M (22,9 %, gap 0,056), saltpétur
 by visibly different margins. `problems.test.ts` asserts one pair per rule-breaking acid, that it
 is the most dilute, and that the approximate answer is rejected on every rule-breaker Beita poses.
 
+### Æfa: one problem per acid, ending at the line
+
+**Decision 106 (a) and (b), 2026-10-23.** Æfa used to take "five evenly spaced" problems through
+the sorted pool, which gave three ediksýra problems and ended at 2,65 %, nowhere near the line its
+comment promised. It now poses **seven**, one per acid, from fenól at 1,0 M (0,0011 %) to the
+tightest valid pair in the pool, maurasýra at 0,100 M (4,15 %). The pairs are named in
+`PRACTICE_PAIRS`; every number still comes from the engine, and the import throws on a pair that
+is not answerable or not inside the rule. α depends only on Ka/C, so saltpéturssýrlingur at
+0,25 M and ediksýra at 0,010 M tie maurasýra's 4,15 %; the decision named maurasýra.
+`problems.test.ts` holds one problem per eligible acid, the ascending order and the last pair.
+
 ## Layout
 
 ```
@@ -226,6 +237,28 @@ through the shared helpers in `@shared/utils` (`useScreenTop`, `useItemTop`, `re
 - A desktop window keeps what the old helper did there, at any width: feedback or a first table
   row that opened within 48 px of the bottom edge is brought in, and a Skilja step whose top went
   under the header comes back. `phone-scroll.test.tsx` holds both.
+
+## Fixed 2026-10-23
+
+From `docs/plans/2026-09-23-mobile-pass-decisions.md`:
+
+- **105 (a) — the check sentence divides the x it prints.** Æfa's 5 % check printed
+  `x = 1,14e-3 M úr 0,100 M lausn. Klofnunarhlutfallið er 1,13 %`, the exact root's α beside the
+  approximate x, and Beita's klofnun explanation did the same (1,3 × 10⁻³ M, then 1,33 %). Both
+  sentences now print x_approx / C (1,14 %, 1,34 %), the student's own check done the book's way;
+  the bar, the 5 % verdict and the graded answer keep the exact α. Held by `wording.test.tsx`
+  (`divides the x it prints in the check sentence …`) and `problems.test.ts` (`divides the x it
+  prints when it states the klofnunarhlutfall`).
+- **106 (a) and (b)** — Æfa, above. Held by `problems.test.ts`.
+- **107 (a) — the menu no longer says pKa was met earlier.** pH Títrun and Stuðpúðar come after
+  this game, so the overview now reads `Í pH Títrun og Stuðpúðum færðu pKa gefinn upp í dæmum. Hér
+  kemur talan sjálf: …`. Held by `wording.test.tsx` (`does not say pKa was met earlier …`).
+- **108 — constants at the source's figures.** Æfa printed `Ka = 1,80e-5`, Skilja
+  `x = 1,333e-3 M` and Kanna's table `4,90 × 10⁻¹⁰`. Ka is now `formatScientific` to Appendix D's
+  two figures everywhere, as Beita prints it; computed x to three, the figures Æfa's x step grades
+  to. The e-form stays only where it models what to type: the placeholder, the x Æfa's feedback
+  says to enter, and the x the 5 % check echoes back. Held by `wording.test.tsx` (`constants as
+  the source gives them`).
 
 ## Tests
 

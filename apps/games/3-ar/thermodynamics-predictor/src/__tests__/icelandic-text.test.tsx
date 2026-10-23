@@ -58,6 +58,9 @@ const REPLACED: [string, string][] = [
   ['Lofttegundir hvarf', 'Lofttegundir hverfa'],
   // A promise the game does not keep: Æfingarhamur has no hints.
   ['Ótakmarkaður tími, vísbendingar', 'Ótakmarkaður tími'],
+  // One name for the crossover temperature on both screens (mobile-pass decision 110):
+  // Könnun said `þveragahitastig`, the game `Umbreytingarhitastig`.
+  ['þveragahitastig', 'umbreytingarhitastig'],
 ];
 
 /** Everything a student can read: the menu, Könnun, and one problem of each ΔS° sign. */
@@ -110,6 +113,8 @@ describe('Icelandic in the problem data', () => {
     // The textbook's word for this very reaction (ch. 18: "tvíliðun NO₂"); `Dímun` is in
     // neither it nor the glossary.
     ['Dímun NO₂', 'Tvíliðun NO₂'],
+    // Decision 110: built on the glossary's `vatnsrof`; `vatnsrofhvarfun` is in neither source.
+    ['ATP vatnsrofhvarfun', 'Vatnsrof ATP'],
   ])('"%s" is now "%s"', (old, now) => {
     expect(all).not.toContain(old);
     expect(all).toContain(now);
@@ -118,5 +123,29 @@ describe('Icelandic in the problem data', () => {
   it('names melting ice in the genitive', () => {
     expect(strings).not.toContain('Bræðsla ís');
     expect(strings).toContain('Bræðsla íss');
+  });
+});
+
+describe('the Erfitt prompts', () => {
+  // Mobile-pass decision 111 (b). Ids 23–30 told the student to compute K, use Hess's law or
+  // −nFE°, or predict a melting point, under the heading `Áskorun`, and the grader checks only
+  // ΔG° and the verdict. They are now questions to think about, and the box says it is not
+  // graded.
+  const advanced = ALL_PROBLEMS.filter(({ difficulty }) => difficulty === 'advanced');
+
+  it('asks every prompt as a question, not as a task to hand in', () => {
+    expect(advanced.length).toBeGreaterThan(0);
+    for (const { problem } of advanced) {
+      const task = problem.advancedTask ?? '';
+      expect(task, `id ${problem.id}`).toMatch(/\?$/);
+      expect(task, `id ${problem.id}`).not.toMatch(/^(Reiknaðu|Notaðu|Spáðu)\b/);
+    }
+  });
+
+  it('labels the box as reflection that is not graded', () => {
+    openProblem(23);
+    const text = document.body.textContent ?? '';
+    expect(text).toContain('Til umhugsunar (ekki metið):');
+    expect(text).not.toContain('Áskorun');
   });
 });

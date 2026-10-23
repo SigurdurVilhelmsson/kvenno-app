@@ -855,10 +855,13 @@ function App() {
                 stórt jákvætt tillag til ΔG.
               </li>
               <li>
-                Við <strong>þveragahitastig T = ΔH/ΔS ≈ {formatRounded(demoCrossover, 0)} K</strong>{' '}
+                Við{' '}
+                <strong>
+                  umbreytingarhitastig T = ΔH/ΔS ≈ {formatRounded(demoCrossover, 0)} K
+                </strong>{' '}
                 verða liðurnir jafnir og hvarfið nær jafnvægi.
               </li>
-              <li>Ofan við þveragahitastigið verður hvarfið ekki sjálfgengt.</li>
+              <li>Ofan við umbreytingarhitastigið verður hvarfið ekki sjálfgengt.</li>
             </ul>
           </div>
 
@@ -1037,7 +1040,10 @@ function App() {
 
                 {currentProblem.advancedTask && (
                   <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4 phone:p-2 phone:mb-0 phone:mt-2">
-                    <div className="text-sm font-bold">Áskorun:</div>
+                    {/* Nothing here is graded — the answer card checks ΔG° and the
+                        verdict only — so it is offered as something to think about
+                        (mobile-pass decision 111 (b)). */}
+                    <div className="text-sm font-bold">Til umhugsunar (ekki metið):</div>
                     <div className="text-sm">{currentProblem.advancedTask}</div>
                   </div>
                 )}

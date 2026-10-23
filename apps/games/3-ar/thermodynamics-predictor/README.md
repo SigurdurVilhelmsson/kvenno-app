@@ -111,6 +111,16 @@ stats take a row of their own; and Könnun's two buttons stack.
 
 ## Fixed
 
+- **The Erfitt prompts read as graded tasks — fixed 2026-10-23 (mobile-pass decision 111 (b)).**
+  Ids 23–30 told the student to compute K, use Hess's law or ΔG° = −nFE°, or predict a melting
+  point, under the heading `Áskorun`, while the grader checks only ΔG° and the verdict. The box is
+  now `Til umhugsunar (ekki metið):` and every prompt is a question to think about (drafted
+  wording). Grading them, option (a), waits on ΔG° = −RT ln K returning to the formula card.
+  `icelandic-text.test.tsx` (`the Erfitt prompts`) holds it.
+- **Two names settled — fixed 2026-10-23 (mobile-pass decision 110, in part).** Könnun called the
+  crossover temperature `þveragahitastig` and the game `Umbreytingarhitastig`; both now say
+  `umbreytingarhitastig`. Id 27 `ATP vatnsrofhvarfun` is `Vatnsrof ATP`, built on the glossary's
+  `vatnsrof`. Both are rows in `icelandic-text.test.tsx`.
 - **The answer was on screen before the student answered — fixed 2026-10-23 (mobile-pass
   decision 109 (c)).** The "Við núverandi hitastig" panel printed the ΔG° asked for and its
   verdict beside the question, the graph's point at the slider's temperature carried the same ΔG°
@@ -179,15 +189,9 @@ hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`�
   divergences `thermo.ts`'s header records for `equilibrium-shifter`. Neither changes a sign, and
   `thermo.ts` is the Icelandic book, not Brown, so which value is right is not settled. No ΔS° is
   sourced anywhere on the platform, so the ΔS values are unchecked.
-- **The Erfitt `advancedTask` prompts are not graded.** Ids 23, 24 and 27 ask for K, 28 for
-  ΔG° = −nFE°, 25 for Hess's law, 29 for a melting point, 30 for an optimum temperature; the grader
-  still checks only ΔG° and the verdict. `ΔG° = −RT ln K` was removed from the formula card for this
-  reason, but the prompts asking for K remain.
-- **Five names are unsettled, so they were left as they are.** The menu's `Gibbs frjálsa orku`:
-  `ordabok.md` says `Gibbs fríorka`, the textbook says `Gibbs frjáls orka` (and `fríork-` has zero
-  corpus hits) — they disagree. The crossover temperature is `þveragahitastig` in Könnun and
-  `Umbreytingarhitastig` (with an English `T_cross`) in the game; neither source names it. And id 16
-  is `Contact aðferðin`, English, where `equilibrium-shifter` says `Snertiaðferð`, a name neither
-  source has. Two more problem names have no source term either: id 17 `Gufumyndun` (steam
-  reforming, CH₄ + H₂O → CO + 3H₂, where the word reads as vapour formation) and id 27
-  `ATP vatnsrofhvarfun` (the glossary has `vatnsrof` for hydrolysis, but not this compound).
+- **Two names are still unsettled, so they were left as they are.** Id 16 is `Contact aðferðin`,
+  English, where `equilibrium-shifter` says `Snertiaðferð`, a name neither source has (decision
+  17). Id 17 `Gufumyndun` names steam reforming (CH₄ + H₂O → CO + 3H₂) but reads as vapour
+  formation; decision 110 leaves its word to Siggi. The menu's `Gibbs frjálsa orku` already follows
+  the textbook's `frjáls orka`, which decision 110 adopts; `ordabok.md`'s `Gibbs fríorka` is to be
+  corrected to match.

@@ -235,7 +235,7 @@ export const PROBLEMS: ProblemsData = {
       defaultTemp: 298,
       scenario: 3,
       difficulty: 'Erfitt',
-      advancedTask: 'Reiknaðu K við 298 K',
+      advancedTask: 'Hvað segir ΔG° um stærð K við 298 K?',
     },
     {
       id: 24,
@@ -246,7 +246,7 @@ export const PROBLEMS: ProblemsData = {
       defaultTemp: 500,
       scenario: 3,
       difficulty: 'Erfitt',
-      advancedTask: 'Reiknaðu K við 298 K, 500 K, og 700 K',
+      advancedTask: 'Hvernig breytist K frá 298 K til 700 K?',
     },
     {
       id: 25,
@@ -259,7 +259,7 @@ export const PROBLEMS: ProblemsData = {
       defaultTemp: 298,
       scenario: 1,
       difficulty: 'Erfitt',
-      advancedTask: 'Notaðu Hess lögmál',
+      advancedTask: 'Hvernig fæst ΔH° með lögmáli Hess?',
     },
     {
       id: 26,
@@ -275,13 +275,13 @@ export const PROBLEMS: ProblemsData = {
     {
       id: 27,
       reaction: 'ATP + H₂O → ADP + Pᵢ',
-      name: 'ATP vatnsrofhvarfun',
+      name: 'Vatnsrof ATP',
       deltaH: -20,
       deltaS: 35,
       defaultTemp: 310,
       scenario: 1,
       difficulty: 'Erfitt',
-      advancedTask: 'Reiknaðu K og útskýrðu líffræðilega þýðingu',
+      advancedTask: 'Hvað segir ΔG° um K, og hvaða þýðingu hefur það?',
     },
     {
       id: 28,
@@ -292,7 +292,7 @@ export const PROBLEMS: ProblemsData = {
       defaultTemp: 298,
       scenario: 3,
       difficulty: 'Erfitt',
-      advancedTask: 'Notaðu ΔG° = -nFE° (E° = 1,10 V)',
+      advancedTask: 'Hvernig tengist ΔG° spennunni E° = 1,10 V?',
     },
     {
       id: 29,
@@ -303,7 +303,7 @@ export const PROBLEMS: ProblemsData = {
       defaultTemp: 273,
       scenario: 4,
       difficulty: 'Erfitt',
-      advancedTask: 'Spáðu bræðslumarki við 1 atm',
+      advancedTask: 'Við hvaða hitastig bráðnar ís við 1 atm?',
     },
     {
       id: 30,
