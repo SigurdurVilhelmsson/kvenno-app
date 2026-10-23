@@ -197,7 +197,7 @@ const SOURCES: Level3PuzzleSource[] = [
   {
     id: 5,
     problemId: 17, // Ammonia pH 9.50
-    taskIs: 'Búðu til 200 mL af ammóníustuðpúða við pH 9,50.',
+    taskIs: 'Búðu til 200 mL af ammóníumstuðpúða við pH 9,50.',
     taskEn: 'Prepare 200 mL of ammonium buffer at pH 9.50.',
     taskPl: 'Przygotuj 200 mL buforu amonowego o pH 9,50.',
     stockAcidConc: 2.0, // 2.0 M NH4Cl
@@ -206,13 +206,13 @@ const SOURCES: Level3PuzzleSource[] = [
     targetConcentration: 0.2,
     volumeTolerance: 0.05,
     hintsIs: (n) => ({
-      topic: `Ammóníustuðpúði með pKa = ${n.pKa} og markmiðs-pH = ${n.pH}.`,
+      topic: `Ammóníumstuðpúði með pKa = ${n.pKa} og markmiðs-pH = ${n.pH}.`,
       strategy: `pH > pKa þannig að hlutfall > 1. Hlutfall = 10^(${n.diff}) = ${n.ratio}.`,
       method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mól. Sýra: ${n.acidMoles} mól, Basi: ${n.baseMoles} mól.`,
       solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
     }),
     explanationIs: (n) =>
-      `Ammóníustuðpúði við pH ${n.pH} þarf hlutfall ${n.ratio}, sem þýðir næstum tvöfalt meira af NH₃ en NH₄Cl.`,
+      `Ammóníumstuðpúði við pH ${n.pH} þarf hlutfall ${n.ratio}, sem þýðir næstum tvöfalt meira af NH₃ en NH₄Cl.`,
   },
   {
     id: 6,

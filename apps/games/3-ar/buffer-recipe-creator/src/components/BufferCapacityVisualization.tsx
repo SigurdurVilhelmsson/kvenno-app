@@ -29,6 +29,41 @@ interface BufferCapacityVisualizationProps {
   onAddition?: (type: 'acid' | 'base', amount: number, newPH: number) => void;
 }
 
+/** Water's ion product at 25 °C. */
+const KW = 1e-14;
+
+/**
+ * The buffer after a net amount of strong acid (M; negative for strong base) has reacted with it:
+ * A⁻ + H⁺ → HA, HA + OH⁻ → A⁻ + H₂O. Returns the pH and what is left of each component.
+ *
+ * - Both components left: Henderson-Hasselbalch, kept between the pH of the weak acid alone and
+ *   of the weak base alone at the same total. Near exhaustion the log ratio runs away, and a
+ *   trace of A⁻ cannot make a solution more acidic than the weak acid without it.
+ * - One used up: the excess strong acid or base sets [H⁺] or [OH⁻], unless the weak acid or base
+ *   now making up the whole mixture sets more (√(Ka·C), √(Kb·C)), as at the equivalence point.
+ */
+function simulateMixture(pKa: number, acid0: number, base0: number, netStrongAcid: number) {
+  const Ka = Math.pow(10, -pKa);
+  const Kb = KW / Ka;
+  const total = acid0 + base0;
+  const acid = acid0 + netStrongAcid;
+  const base = base0 - netStrongAcid;
+
+  if (base <= 0) {
+    // Every A⁻ is now HA; −base is the strong acid nothing has neutralised. Never above 7.
+    const H = Math.max(-base, Math.sqrt(Ka * total), 1e-7);
+    return { pH: -Math.log10(H), acidConc: total, baseConc: 0 };
+  }
+  if (acid <= 0) {
+    const OH = Math.max(-acid, Math.sqrt(Kb * total), 1e-7);
+    return { pH: 14 + Math.log10(OH), acidConc: 0, baseConc: total };
+  }
+  const weakAcidPH = -Math.log10(Math.max(Math.sqrt(Ka * total), 1e-7));
+  const weakBasePH = 14 + Math.log10(Math.max(Math.sqrt(Kb * total), 1e-7));
+  const hh = pKa + Math.log10(base / acid);
+  return { pH: Math.min(weakBasePH, Math.max(weakAcidPH, hh)), acidConc: acid, baseConc: base };
+}
+
 /**
  * BufferCapacityVisualization - Shows buffer capacity and acid/base addition effects
  *
@@ -63,33 +98,21 @@ export function BufferCapacityVisualization({
     if (showComparison) revealSpan(comparisonRef.current, [], { anyWidth: true, gap: 0 });
   }, [showComparison]);
 
-  // Calculate current pH from Henderson-Hasselbalch
-  const calculatePH = useCallback(
-    (acid: number, base: number): number => {
-      if (acid <= 0 || base <= 0) {
-        return acid <= 0 ? 14 : 0; // Extreme values
-      }
-      return pKa + Math.log10(base / acid);
-    },
-    [pKa]
+  // The mixture after the student's additions, worked out as the textbook does: while both
+  // components remain, Henderson-Hasselbalch, never past what the weak acid or the weak base
+  // alone would give; once the added strong acid or base has used one up, the pH comes from the
+  // excess (or from the weak acid or base left, whichever sets more H⁺ or OH⁻). This floored a
+  // used-up component at 0,001 M instead, so the pH stopped moving and the buffer looked
+  // limitless while the water beside it kept falling (mobile-pass decision 118 (a)).
+  const mixture = useCallback(
+    (netStrongAcid: number) => simulateMixture(pKa, acidConc, baseConc, netStrongAcid),
+    [pKa, acidConc, baseConc]
   );
 
-  // Calculate adjusted concentrations after acid/base addition
-  const adjustedState = useMemo(() => {
-    // Adding strong acid: A⁻ + H⁺ → HA
-    // Adding strong base: HA + OH⁻ → A⁻ + H₂O
-    // Clamp to prevent negative values
-    const adjustedAcid = Math.max(0.001, acidConc - baseAdded + acidAdded);
-    const adjustedBase = Math.max(0.001, baseConc + baseAdded - acidAdded);
-
-    const currentPH = calculatePH(adjustedAcid, adjustedBase);
-
-    return {
-      acidConc: adjustedAcid,
-      baseConc: adjustedBase,
-      pH: currentPH,
-    };
-  }, [acidConc, baseConc, acidAdded, baseAdded, calculatePH]);
+  const adjustedState = useMemo(
+    () => mixture(acidAdded - baseAdded),
+    [mixture, acidAdded, baseAdded]
+  );
 
   // Calculate what pH would be in unbuffered water. The amounts are concentrations (M), so
   // [H⁺] is the excess itself: 0,01 M strong acid gives pH 2. This divided by 1000 as if they
@@ -108,13 +131,9 @@ export function BufferCapacityVisualization({
     }
   }, [acidAdded, baseAdded]);
 
-  // Initial pH, clamped exactly as the current pH is, so that before anything is added the
-  // two agree and ΔpH reads 0. Unclamped, a mixture missing one component started at pH 0 or
-  // 14 while "Núverandi pH" read pKa ± 1,7.
-  const initialPH = useMemo(
-    () => calculatePH(Math.max(0.001, acidConc), Math.max(0.001, baseConc)),
-    [acidConc, baseConc, calculatePH]
-  );
+  // Initial pH, from the same model with nothing added, so that before anything is added the
+  // two agree and ΔpH reads 0.
+  const initialPH = useMemo(() => mixture(0).pH, [mixture]);
 
   // Buffer capacity (β) at current pH
   const bufferCapacity = useMemo(() => {
@@ -150,32 +169,14 @@ export function BufferCapacityVisualization({
   const handleAddAcid = (amount: number) => {
     const newAcidAdded = Math.max(0, acidAdded + amount);
     setAcidAdded(newAcidAdded);
-
-    const newState = {
-      acidConc: acidConc - baseAdded + newAcidAdded,
-      baseConc: baseConc + baseAdded - newAcidAdded,
-    };
-    const newPH = calculatePH(
-      Math.max(0.001, newState.acidConc),
-      Math.max(0.001, newState.baseConc)
-    );
-    onAddition?.('acid', amount, newPH);
+    onAddition?.('acid', amount, mixture(newAcidAdded - baseAdded).pH);
   };
 
   // Handle adding base (see handleAddAcid)
   const handleAddBase = (amount: number) => {
     const newBaseAdded = Math.max(0, baseAdded + amount);
     setBaseAdded(newBaseAdded);
-
-    const newState = {
-      acidConc: acidConc - newBaseAdded + acidAdded,
-      baseConc: baseConc + newBaseAdded - acidAdded,
-    };
-    const newPH = calculatePH(
-      Math.max(0.001, newState.acidConc),
-      Math.max(0.001, newState.baseConc)
-    );
-    onAddition?.('base', amount, newPH);
+    onAddition?.('base', amount, mixture(acidAdded - newBaseAdded).pH);
   };
 
   // Reset simulation
@@ -309,9 +310,10 @@ export function BufferCapacityVisualization({
               pKa = {formatDecimal(pKa, 1)}
             </text>
 
-            {/* Current pH marker */}
+            {/* Current pH marker, held at the edge of the plot once the excess strong acid or
+                base has taken the pH past pKa ± 3 */}
             <circle
-              cx={xScale(adjustedState.pH)}
+              cx={xScale(Math.min(pKa + 3, Math.max(pKa - 3, adjustedState.pH)))}
               cy={yScale(bufferCapacity)}
               r="6"
               fill={getPhColor(adjustedState.pH)}

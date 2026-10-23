@@ -151,6 +151,19 @@ export default function FlaskComparison({
         Stuðpúðaður vs Óstuðpúðaður
       </h4>
 
+      {/* What was added, so the unbuffered flask's pH does not come from nowhere (mobile-pass
+          decision 119). Read from the props, so it cannot disagree with the flasks. */}
+      {addedAcidMoles > 0 && (
+        <p className="text-xs text-warm-300 text-center mb-3">
+          {`Eftir að ${formatDecimal(addedAcidMoles)} mól af sterkri sýru er bætt við ${volume} L`}
+        </p>
+      )}
+      {addedBaseMoles > 0 && (
+        <p className="text-xs text-warm-300 text-center mb-3">
+          {`Eftir að ${formatDecimal(addedBaseMoles)} mól af sterkum basa er bætt við ${volume} L`}
+        </p>
+      )}
+
       {/* Side-by-side flasks */}
       <div className="flex justify-center gap-6 mb-3">
         <Flask color={bufferedColor} label="Stuðpúðaður" pH={bufferedPH} />

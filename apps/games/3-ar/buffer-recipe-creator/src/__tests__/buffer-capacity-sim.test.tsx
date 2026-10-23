@@ -72,6 +72,55 @@ describe('the addition simulator', () => {
   });
 });
 
+describe('the simulator past buffer capacity', () => {
+  // Until 2026-10-23 a used-up component was floored at 0,001 M, so once the added acid or base
+  // exceeded it the pH stalled near pKa ± 2: 0,10 M strong acid in this 0,05 : 0,05 acetate
+  // buffer read 2,56, then 2,44 after 0,05 M more, while the water beside it fell to 1,00 and
+  // 0,82. Past exhaustion the pH now comes from the excess strong acid or base, the textbook
+  // treatment (mobile-pass decision 118 (a)).
+  const value = (text: string | null | undefined) => Number((text ?? '').replace(',', '.'));
+
+  it('reads the weak acid alone at the point the base is used up', () => {
+    const { tap, readout, container } = setup();
+    tap('Bæta við 0,05 M sterkri sýru');
+    // 0,10 M acetic acid alone: ½(4,74 − log 0,10) = 2,87.
+    expect(readout('Núverandi pH')).toBe('2,87');
+    expect(within(container).getByText('0,000 M')).toBeTruthy();
+  });
+
+  it('takes the pH from the excess strong acid beyond that, and keeps it moving', () => {
+    const { tap, readout } = setup();
+    tap('Bæta við 0,05 M sterkri sýru');
+    tap('Bæta við 0,05 M sterkri sýru');
+    // 0,05 M of the 0,10 M added is left over: pH = −log 0,05.
+    expect(readout('Núverandi pH')).toBe('1,30');
+    tap('Bæta við 0,05 M sterkri sýru');
+    expect(readout('Núverandi pH')).toBe('1,00');
+  });
+
+  it('does the same with strong base on the other side', () => {
+    const { tap, readout } = setup();
+    tap('Bæta við 0,05 M sterkum basa');
+    tap('Bæta við 0,05 M sterkum basa');
+    // 0,05 M OH⁻ left over: pOH 1,30, pH 12,70.
+    expect(readout('Núverandi pH')).toBe('12,70');
+  });
+
+  it('falls at every step of acid, never rising at the point the base runs out', () => {
+    const { tap, readout } = setup();
+    const readings = [value(readout('Núverandi pH'))];
+    for (let i = 0; i < 10; i++) {
+      tap('Bæta við 0,01 M sterkri sýru');
+      readings.push(value(readout('Núverandi pH')));
+    }
+    for (let i = 1; i < readings.length; i++) {
+      expect(readings[i], `after ${i} × 0,01 M`).toBeLessThan(readings[i - 1]);
+    }
+    // The last five each leave 0,01 M more strong acid over: pH 2,00, 1,70, 1,52, 1,40, 1,30.
+    expect(readings.slice(6)).toEqual([2, 1.7, 1.52, 1.4, 1.3]);
+  });
+});
+
 describe('the buffer-versus-water comparison', () => {
   it('opens when asked, before anything is added, and makes no claim yet', () => {
     const { tap, comparison } = setup();

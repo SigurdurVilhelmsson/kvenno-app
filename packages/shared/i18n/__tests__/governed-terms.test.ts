@@ -250,6 +250,15 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       'stuðpúði is masculine; compounds take the genitive stem stuðpúða- (stuðpúðalausn, stuðpúðageta, stuðpúðasvæði), plural stuðpúðar. púffer was neuter in some strings, so adjectives change with it. EXTENDED 2026-09-20 with /bufferkerfi/i: the August sweep banned only the naturalised púffer, so 3-ar/equilibrium-shifter kept the bare English loanword in two student-facing Icelandic strings — its nameIs and its descriptionIs for the acetic-acid system — straight through it. Now Stuðpúðakerfi, the compound the book itself uses (7 corpus hits). The ban names that exact compound rather than bare buffer, because English buffer is correct English and appears legitimately in dozens of comments, in English description fields, and throughout the ph-titration test names.',
   },
   {
+    // ordabok.md has no ammonium-buffer entry, so the headword is buffer's, as the lone-pair
+    // row borrows its head noun's; the qualified term is the second half of `correct`.
+    english: 'buffer / ammonium buffer',
+    correct: 'stuðpúði / ammóníumstuðpúði',
+    banned: [/amm[oó]n[ií]ustuð/i],
+    guidance:
+      "Siggi's ruling, 2026-10-23 (mobile-pass decision 117, option a). 3-ar/buffer-recipe-creator wrote the ammonium buffer without the -m of ammóníum at nine sites, the only game to name it. Every ammóníum- word in the textbook keeps the -m (57 hits, and no ammóníu- stem at all), as the game's own ammóníumklóríð and Ammóníumjón already did. Masculine, declining like stuðpúði: ammóníumstuðpúði / ammóníumstuðpúða / ammóníumstuðpúða / ammóníumstuðpúða, plural ammóníumstuðpúðar. The ban needs stuð straight after the u, so the correct form, where an m comes between, cannot match it.",
+  },
+  {
     english: 'electrolyte',
     correct: 'rafkleyfi',
     banned: [/sterkt rafkleyfi/i, /veikt rafkleyfi/i, /órafkleyfi/i],
@@ -771,6 +780,15 @@ describe('the letter-lookaround bans', () => {
     expect(hits('buffer', 'blóðpufferkerfi')).toBe(true);
     expect(hits('buffer', 'Púffer')).toBe(true);
     expect(hits('buffer', 'stuðpúði')).toBe(false);
+  });
+
+  it('ammonium buffer: the compound without the -m, in any case, and never with it', () => {
+    for (const wrong of ['Ammóníustuðpúði', 'ammóníustuðpúða', 'ammoniustuðpúðar']) {
+      expect(hits('buffer / ammonium buffer', wrong), wrong).toBe(true);
+    }
+    for (const right of ['Ammóníumstuðpúði', 'ammóníumstuðpúða', 'ammóníumklóríð', 'stuðpúði']) {
+      expect(hits('buffer / ammonium buffer', right), right).toBe(false);
+    }
   });
 });
 

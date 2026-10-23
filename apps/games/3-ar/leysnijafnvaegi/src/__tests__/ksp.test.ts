@@ -14,6 +14,7 @@ import {
   mixAndCompare,
   molarSolubility,
   precipitationOrder,
+  solubilitySlip,
   solubilityWithCommonIon,
 } from '../engine/ksp';
 
@@ -318,6 +319,39 @@ describe('grading a scientific answer', () => {
         gradeScientific({ mantissa, exponent }, s).outcome,
         `${salt.formula} prints ${printed}, which does not grade back`
       ).toBe('rett');
+    }
+  });
+});
+
+describe('the two slips Æfa diagnoses (mobile-pass decision 120 (b))', () => {
+  const twoToOne = SALTS.filter((s) => s.x + s.y === 3);
+  const oneToOne = SALTS.filter((s) => s.x === 1 && s.y === 1);
+
+  it('finds both pools, so neither case passes vacuously', () => {
+    expect(twoToOne.length).toBeGreaterThan(0);
+    expect(oneToOne.length).toBeGreaterThan(0);
+  });
+
+  it('names √Ksp and ∛Ksp for a 1:2 or 2:1 salt, and not the right answer', () => {
+    for (const salt of twoToOne) {
+      expect(solubilitySlip(salt, Math.sqrt(salt.ksp)), salt.formula).toBe('kvadratrot');
+      expect(solubilitySlip(salt, Math.cbrt(salt.ksp)), salt.formula).toBe('gleymdi-fjarkanum');
+      expect(solubilitySlip(salt, molarSolubility(salt)), salt.formula).toBeNull();
+    }
+  });
+
+  it('calls a slip only within 2 % of it', () => {
+    for (const salt of twoToOne) {
+      expect(solubilitySlip(salt, Math.sqrt(salt.ksp) * 1.019), salt.formula).toBe('kvadratrot');
+      expect(solubilitySlip(salt, Math.sqrt(salt.ksp) * 1.05), salt.formula).toBeNull();
+      expect(solubilitySlip(salt, Math.cbrt(salt.ksp) * 0.95), salt.formula).toBeNull();
+    }
+  });
+
+  it('diagnoses nothing for a 1:1 salt, where √Ksp is the answer', () => {
+    for (const salt of oneToOne) {
+      expect(solubilitySlip(salt, Math.sqrt(salt.ksp)), salt.formula).toBeNull();
+      expect(solubilitySlip(salt, Math.cbrt(salt.ksp)), salt.formula).toBeNull();
     }
   });
 });

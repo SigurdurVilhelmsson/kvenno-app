@@ -65,7 +65,7 @@ const WRONG: { form: RegExp; why: string }[] = [
   { form: /hliðarsýru/i, why: 'not a word; the phosphate context meant the acidic side of pKa' },
   {
     form: /stuðpúði (basískari|súrari)/i,
-    why: 'an attributive adjective goes before its noun: Basískari ammóníustuðpúði',
+    why: 'an attributive adjective goes before its noun: Basískari ammóníumstuðpúði',
   },
 ];
 

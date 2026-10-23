@@ -294,7 +294,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     contextPl: 'Zasadowy bufor do reakcji chemicznych',
     hint: 'Sama reglan gildir: pH = pKa = jöfn hlutföll',
     hints: {
-      topic: 'Þetta snýst um ammóníustuðpúða sem virkar við hátt pH.',
+      topic: 'Þetta snýst um ammóníumstuðpúða sem virkar við hátt pH.',
       strategy: 'Þrátt fyrir að pKa sé hátt (9,26), gildir sama regla: pH = pKa → jafnt hlutfall.',
       method:
         'pH = pKa + log([Basi]/[Sýra]). 9,26 = 9,26 + log([Basi]/[Sýra]). log = 0 → hlutfall = 1.',
@@ -318,7 +318,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       solution: 'Docelowe pH (9,26) = pKa (9,26). Dodaj równe ilości, np. po 5 → proporcja = 1,0.',
     },
     explanation:
-      'Ammóníustuðpúði virkar við hátt pH. Sama hugmynd: jafnt hlutfall gefur pH = pKa, óháð hvaða stuðpúðakerfi er notað.',
+      'Ammóníumstuðpúði virkar við hátt pH. Sama hugmynd: jafnt hlutfall gefur pH = pKa, óháð hvaða stuðpúðakerfi er notað.',
     explanationEn:
       'The ammonium buffer works at high pH. Same idea: an equal ratio gives pH = pKa, regardless of which buffer system is used.',
     explanationPl:

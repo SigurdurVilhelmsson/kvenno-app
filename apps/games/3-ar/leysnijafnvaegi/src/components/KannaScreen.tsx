@@ -170,6 +170,15 @@ export function KannaScreen({ onComplete, onBack }: Props) {
             {note?.context && (
               <p className="mt-3 text-sm text-warm-700 phone:mt-2">{note.context}</p>
             )}
+            {/* Where the two books disagree (AgI, Ag₂CrO₄, CaCO₃, BaSO₄), a student checking
+                the Icelandic appendix finds another number; BaSO₄'s molar solubility is 14
+                times different. The maintainer's note says why the salt was kept; this tells
+                the student (mobile-pass decision 121). */}
+            {note?.divergenceNote && (
+              <p className="mt-2 text-sm text-warm-600">
+                Íslenska kennslubókin gefur annað gildi — hér er notað gildi Brown.
+              </p>
+            )}
           </div>
 
           <div

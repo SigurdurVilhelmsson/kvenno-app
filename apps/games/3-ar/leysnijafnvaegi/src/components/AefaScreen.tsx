@@ -19,7 +19,9 @@ import {
   gradeScientific,
   kspExpression,
   molarSolubility,
+  solubilitySlip,
   type GradeOutcome,
+  type SolubilitySlip,
 } from '../engine/ksp';
 
 /**
@@ -79,11 +81,24 @@ const MESSAGE: Record<GradeOutcome, string> = {
   ogilt: `Fylltu í báða reitina — tölu og veldisvísi, t.d. ${EXAMPLE.mantissa} og ${EXAMPLE.exponent.replace('-', '−')}.`,
 };
 
+/**
+ * What a wrong molar solubility of a 1:2 or 2:1 salt shows the student did, shown as the
+ * misconception: `tolustafir` and `baedi` only say the numbers do not match, and these two
+ * mistakes are the ones the topic is known for (mobile-pass decision 120 (b)).
+ */
+const SLIP: Record<SolubilitySlip, string> = {
+  kvadratrot:
+    'Þetta er √Ksp, kvaðratrótin, sem á aðeins við þegar hlutfallið er 1:1. Hér er Ksp = 4s³, svo s = ∛(Ksp / 4).',
+  'gleymdi-fjarkanum':
+    'Þetta er ∛Ksp: fjarkinn í Ksp = 4s³ gleymdist. Deildu fyrst með 4, s = ∛(Ksp / 4).',
+};
+
 export function AefaScreen({ onComplete, onBack }: Props) {
   const [index, setIndex] = useState(0);
   const [mantissa, setMantissa] = useState('');
   const [exponent, setExponent] = useState('');
   const [outcome, setOutcome] = useState<GradeOutcome | null>(null);
+  const [slip, setSlip] = useState<SolubilitySlip | null>(null);
   const [solved, setSolved] = useState(0);
   // An empty or unreadable entry is not an attempt: the fields stay open and
   // the answer stays hidden, so the student can do what the message asks.
@@ -131,6 +146,11 @@ export function AefaScreen({ onComplete, onBack }: Props) {
     }
     setInvalid(null);
     setOutcome(result.outcome);
+    setSlip(
+      result.outcome !== 'rett' && problem.direction === 'kspToS'
+        ? solubilitySlip(salt, result.value)
+        : null
+    );
     if (result.outcome === 'rett') setSolved(solved + 1);
   };
 
@@ -143,6 +163,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
     setMantissa('');
     setExponent('');
     setOutcome(null);
+    setSlip(null);
     setInvalid(null);
   };
 
@@ -262,6 +283,12 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                 <p id={verdictId} className="mb-2 font-semibold text-warm-900">
                   {MESSAGE[outcome]}
                 </p>
+                {slip && (
+                  <p className="mb-2 rounded-lg border border-amber-300 bg-amber-100 p-2.5 text-sm text-amber-800 sm:p-3">
+                    <span className="font-medium">Algeng villa: </span>
+                    {SLIP[slip]}
+                  </p>
+                )}
                 <p className="text-sm text-warm-800">
                   Svarið er{' '}
                   <span className="whitespace-nowrap">
