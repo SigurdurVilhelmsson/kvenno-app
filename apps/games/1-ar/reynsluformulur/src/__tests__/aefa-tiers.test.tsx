@@ -13,7 +13,7 @@ import { deriveEmpirical } from '../engine/empirical';
  * It printed `rétt: x` beside every wrong cell on the first try and left the inputs open,
  * so entering zeros and copying what it printed passed every column of every compound. The
  * first wrong try now marks which cells are wrong and gives the column's hint; only a second
- * wrong try on the same column shows the values. The Vísitala hint is built from the
+ * wrong try on the same column shows the values. The Lágstafur hint is built from the
  * compound on screen: it said `1,5 námundað í 2` for all of them, Kalíumdíkrómat's 3,5
  * included, and nothing at all where no multiplier was needed.
  *
@@ -76,7 +76,7 @@ describe('Æfa: a wrong column', () => {
   });
 });
 
-describe('Æfa: the Vísitala hint', () => {
+describe('Æfa: the Lágstafur hint', () => {
   const derivedOf = (name: string) => {
     const p = PROBLEMS.find((x) => x.name === name)!;
     return deriveEmpirical(Object.fromEntries(p.percentages.map((q) => [q.element, q.percent])));

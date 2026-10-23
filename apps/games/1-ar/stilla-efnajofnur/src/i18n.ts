@@ -22,7 +22,8 @@ export const gameTranslations = createGameTranslations({
       },
       level2: {
         title: 'Stig 2: Miðlungs jöfnur',
-        description: 'Jöfnur með fleiri frumefnum og stærri stuðlum',
+        description:
+          'Jöfnur með fleiri frumefnum og stærri stuðlum. Notaðu lægstu heilu tölurnar sem ganga upp.',
         tags: {
           medium: 'Miðlungs',
           multiElement: 'Fleiri frumefni',
@@ -31,7 +32,8 @@ export const gameTranslations = createGameTranslations({
       },
       level3: {
         title: 'Stig 3: Erfiðar jöfnur',
-        description: 'Brunajöfnur, einföld skiptihvörf og flóknari jöfnur',
+        description:
+          'Brunajöfnur, einföld skiptihvörf og flóknari jöfnur. Notaðu lægstu heilu tölurnar sem ganga upp.',
         tags: {
           combustion: 'Bruni',
           displacement: 'Einföld skiptihvörf',

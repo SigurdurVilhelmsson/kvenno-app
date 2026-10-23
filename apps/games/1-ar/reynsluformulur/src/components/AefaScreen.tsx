@@ -52,19 +52,20 @@ type Column = 'moles' | 'ratio' | 'subscript';
 const COLUMN_LABEL: Record<Column, string> = {
   moles: 'Mól',
   ratio: 'Hlutfall',
-  subscript: 'Vísitala',
+  subscript: 'Lágstafur',
 };
 
 /**
  * The column as the verdict names it, the definite compound `…súlan`. It is
- * not the label with `súlan` pasted on: `vísitala` compounds on its genitive
- * `vísitölu-` and `hlutfall` on `hlutfalls-`, as `vatnssúla` and
- * `kvikasilfurssúla` do in the textbook, so each form is written out here.
+ * not the label with `súlan` pasted on: `lágstafur` compounds on its genitive
+ * plural `lágstafa-` (the column holds one per element) and `hlutfall` on
+ * `hlutfalls-`, as `vatnssúla` and `kvikasilfurssúla` do in the textbook, so
+ * each form is written out here.
  */
 const COLUMN_HEADING: Record<Column, string> = {
   moles: 'Mólsúlan',
   ratio: 'Hlutfallssúlan',
-  subscript: 'Vísitölusúlan',
+  subscript: 'Lágstafasúlan',
 };
 
 const PROMPT: Record<Column, string> = {
@@ -79,13 +80,13 @@ function close(got: number, want: number): boolean {
 }
 
 /**
- * The Vísitala column's hint, built from the compound on screen. It used to say
+ * The Lágstafur column's hint, built from the compound on screen. It used to say
  * `1,5 námundað í 2` for every compound, Kalíumdíkrómat's 3,5 included, and said
  * nothing at all where no multiplier was needed.
  */
 export function subscriptHint(derived: Derivation): string {
   if (derived.multiplier === 1) {
-    return 'Hlutföllin hér eru þegar heilar tölur, eða mjög nálægt þeim. Vísitölurnar eru hlutföllin sjálf, námunduð að næstu heilu tölu.';
+    return 'Hlutföllin hér eru þegar heilar tölur, eða mjög nálægt þeim. Lágstafirnir eru hlutföllin sjálf, námunduð að næstu heilu tölu.';
   }
   const off = derived.rows.find((r) => Math.abs(r.ratio - Math.round(r.ratio)) > 0.1);
   const example = off

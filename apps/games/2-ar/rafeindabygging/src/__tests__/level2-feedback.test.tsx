@@ -137,6 +137,12 @@ describe('the format and order of an answer (decisions item 64)', () => {
     );
   });
 
+  it('names a superscript hávísir, the word the book uses (decisions item 13)', () => {
+    const { container } = startLevel();
+    expect(container.textContent).toContain('Notaðu tölustafi (1s2) eða hávísa (1s²)');
+    expect(container.textContent).not.toMatch(/yfirskrift/i);
+  });
+
   it('does not blame the order when the electrons are wrong', () => {
     const { ui, container } = startLevel();
     advanceTo(ui, container, 'Fe');

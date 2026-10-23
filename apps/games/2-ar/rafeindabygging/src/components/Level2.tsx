@@ -322,7 +322,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
             <p className="text-xs text-warm-500 mt-1">
-              Notaðu tölustafi (1s2) eða yfirskrift (1s²) — bæði virka.
+              Notaðu tölustafi (1s2) eða hávísa (1s²) — bæði virka.
             </p>
           </div>
 

@@ -183,7 +183,7 @@ export function diagnoseMisconception(
   if (allCoeffs.every((c) => c === 1)) {
     return (
       'Stuðullinn framan við sameind margfaldar öll atóm í henni — 2H₂O er fjögur vetni og ' +
-      'tvö súrefni. Vísitölunum (litlu tölunum) má aldrei breyta: þær segja hvaða efni þetta er.'
+      'tvö súrefni. Lágstöfunum (litlu tölunum) má aldrei breyta: þeir segja hvaða efni þetta er.'
     );
   }
 

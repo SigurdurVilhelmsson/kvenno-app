@@ -22,6 +22,7 @@ import { describe, expect, it } from 'vitest';
  *   words, natríum 73 to 2, kalsíum 37 to 5, strontíum 15 to 5), as `1-ar/lotukerfid` and
  *   this game's own menu already did. Nitrogen is `nitur`, Siggi's ruling of
  *   2026-10-02 (decision 15), held platform-wide by `governed-terms.test.ts`.
+ * - a superscript is a `hávísir`, the book's usual word (decision 13, option a)
  */
 const BANNED: { pattern: RegExp; why: string }[] = [
   { pattern: /rafeindauppsetning/i, why: 'electron configuration is rafeindaskipan' },
@@ -50,6 +51,7 @@ const BANNED: { pattern: RegExp; why: string }[] = [
   },
   { pattern: /Stig 3: Eðalgasstytting/, why: 'the menu names Stig 3 Lotukerfi og rafeindir' },
   { pattern: /[spdf] svigrúmið \(l =/, why: 'a subshell of l ≥ 1 has several svigrúm' },
+  { pattern: /yfirskrift/i, why: 'a superscript is a hávísir: eða hávísa (1s²)' },
 ];
 
 const ROOT = join(__dirname, '..', '..');

@@ -159,7 +159,7 @@ describe('Æfa: the verdict names the column that went wrong', () => {
     const columns = [
       ['moles', 'Mól', 'Mólsúlan'],
       ['ratio', 'Hlutfall', 'Hlutfallssúlan'],
-      ['subscript', 'Vísitala', 'Vísitölusúlan'],
+      ['subscript', 'Lágstafur', 'Lágstafasúlan'],
     ] as const;
 
     for (const [key, label, heading] of columns) {

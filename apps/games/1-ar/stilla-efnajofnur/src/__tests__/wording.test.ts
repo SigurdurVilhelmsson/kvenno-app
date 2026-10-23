@@ -3,6 +3,7 @@ import { join, relative } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { LEVEL1_CONFIG } from '../components/levelConfigs';
 import { REACTIONS } from '../data/reactions';
 import { gameTranslations } from '../i18n';
 
@@ -172,5 +173,21 @@ describe("the learning path's element counts match the levels", () => {
       const why = `Stig 2 has a ${n}-element equation; step 2 says "${step2}"`;
       expect(n >= Number(floor![1]), why).toBe(true);
     }
+  });
+});
+
+describe('Stig 2 and 3 state the lowest-whole-number rule before grading it', () => {
+  // Both levels mark a balanced but unreduced answer wrong (B12), and only Stig 1's
+  // banner said so. Levels are not gated, so a student could start at Stig 2 and
+  // meet the rule first as a mark against them. The menu cards now carry Stig 1's
+  // sentence (decisions item 49, option b), which costs the level screens nothing.
+  const RULE = 'Notaðu lægstu heilu tölurnar sem ganga upp.';
+
+  it('is the sentence Stig 1 already shows', () => {
+    expect(LEVEL1_CONFIG.instructions).toContain(RULE);
+  });
+
+  it.each(['level2', 'level3'] as const)('menu.%s.description', (level) => {
+    expect(String(at('is', `menu.${level}.description`))).toContain(RULE);
   });
 });

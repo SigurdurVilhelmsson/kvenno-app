@@ -28,7 +28,7 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
     id: 'skilja',
     number: '2',
     name: 'Skilja',
-    description: 'Fjórar súlur: prósenta → mól → hlutfall → vísitala.',
+    description: 'Fjórar súlur: prósenta → mól → hlutfall → lágstafur.',
     tone: 'bg-sky-600 hover:bg-sky-700',
   },
   {
@@ -148,7 +148,7 @@ function App() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
-                    <span>Fjögurra súlna leiðina: prósenta → mól → hlutfall → vísitala</span>
+                    <span>Fjögurra súlna leiðina: prósenta → mól → hlutfall → lágstafur</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
@@ -171,13 +171,13 @@ function App() {
                 <h3 className="mb-2 font-semibold text-warm-700">Lykilskref</h3>
                 <div className="space-y-2 font-mono text-sm text-warm-600">
                   <p>
-                    <strong>Mól:</strong> n = m / M — prósentan er grömm í 100 g sýni
+                    <strong>Mól:</strong> mól = massi / mólmassi — prósentan er grömm í 100 g sýni
                   </p>
                   <p>
                     <strong>Hlutfall:</strong> deildu öllu með minnsta mólfjöldanum
                   </p>
                   <p>
-                    <strong>Vísitala:</strong> margfaldaðu upp í heilar tölur
+                    <strong>Lágstafur:</strong> margfaldaðu upp í heilar tölur
                   </p>
                   <p>
                     <strong>Sameind:</strong> n = mólmassi / massi reynsluformúlu

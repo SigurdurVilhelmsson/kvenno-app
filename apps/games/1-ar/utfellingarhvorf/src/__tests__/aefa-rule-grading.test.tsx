@@ -24,8 +24,9 @@ clockPastNextGuard();
  *
  * Deliberately **not** widened: an anion row that reaches the right verdict only
  * through its exception clause while the cation row settles it directly — the
- * carbonate row for Na₂CO₃, say. Whether that counts is a teaching call, and it
- * is reported rather than decided here.
+ * carbonate row for Na₂CO₃, say. Siggi ruled it on 2026-10-23 (decisions item 50,
+ * option a): the carbonate row's face states the opposite verdict, and the drill's
+ * point is that group 1 always wins. The last block below holds that line.
  */
 
 const covers = (rule: SolubilityRule, formula: string) =>
@@ -74,8 +75,22 @@ describe('decidingRules', () => {
     expect(idsFor('NaNO₃')).toEqual(['flokkur1', 'nitrot']);
     expect(idsFor('KCl')).toEqual(['flokkur1', 'halid']);
     expect(idsFor('NaF')).toEqual(['flokkur1', 'fluorid']);
-    // Unchanged, and reported as a decision rather than taken here.
-    expect(idsFor('Na₂CO₃')).toEqual(['flokkur1']);
+  });
+
+  it('accepts only the group-1 row where the anion row settles it by exception (item 50)', () => {
+    // Na₂CO₃, K₂CrO₄, Na₃PO₄ and (NH₄)₂S: the anion row says "óleysanleg" and
+    // lists the cation as an exception. Accepting it is option (b), which was not taken.
+    for (const id of ['Na⁺-CO₃²⁻', 'K⁺-CrO₄²⁻', 'Na⁺-PO₄³⁻', 'NH₄⁺-S²⁻']) {
+      const item = DRILL_ITEMS.find((d) => d.id === id)!;
+      expect(item, id).toBeDefined();
+      const anionRow = SOLUBILITY_RULES.find((r) => covers(r, item.salt.anion.formula))!;
+      expect(anionRow.soluble, `${id}: the anion row's face is the opposite verdict`).toBe(false);
+      expect(anionRow.exceptions, id).toContain(item.salt.cation.formula);
+      expect(
+        decidingRules(item.salt).map((r) => r.id),
+        id
+      ).toEqual(['flokkur1']);
+    }
   });
 });
 

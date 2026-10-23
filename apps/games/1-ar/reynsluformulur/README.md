@@ -11,12 +11,12 @@ independently by the February review and again by `apps/games/1-ar/CURRICULUM_RE
 
 Percent composition in, formula out — the four columns every textbook prints:
 
-| Súla     | What happens                                     |
-| -------- | ------------------------------------------------ |
-| Prósenta | take a 100 g sample, so each percentage is grams |
-| Mól      | divide by the element's molar mass               |
-| Hlutfall | divide every mole count by the smallest          |
-| Vísitala | multiply up until every number is whole          |
+| Súla      | What happens                                     |
+| --------- | ------------------------------------------------ |
+| Prósenta  | take a 100 g sample, so each percentage is grams |
+| Mól       | divide by the element's molar mass               |
+| Hlutfall  | divide every mole count by the smallest          |
+| Lágstafur | multiply up until every number is whole          |
 
 Then the second half: empirical formula plus a measured molar mass gives the molecular formula.
 
@@ -111,11 +111,6 @@ src/__tests__/                86 tests across empirical, problems, feedback-text
 - **Æfa shows `rétt: …` beside each wrong cell and leaves the inputs live**, so a student can submit
   zeros and copy the values back. No score rides on it, but a column then unlocks without being
   worked. Hiding the value until a second wrong try is one option; it is a teaching call.
-- **The subscript column is called `Vísitala`; the textbook says `lágstafur`** (`ch03/m68702`, the
-  empirical-formula module, and 200+ hits across the book). `ordabok.md` has no entry. Not changed.
-  A rename also changes the `Vísitala fyrir …` aria-labels, which `e2e/mobile-game-screens.ts` fills.
-- **The menu's "Lykilskref" uses `n` twice** — `n = m / M` for moles and, two lines down, for the
-  molecular multiplier.
 
 Fixed 2026-09-23, each held by `feedback-text.test.tsx`: Beita's "Þitt n gaf …" line called the
 right formula wrong for a fractional n (1,5 on HO rounded back to H₂O₂ at the measured mass) and now
@@ -125,6 +120,14 @@ label, which got the genitive of `vísitala` and `hlutfall` wrong. The same line
 longer names a formula for an n too large to write (`1e21` printed H₁₂₁O₁₂₁). And "Áfram í Skilja"
 and "Áfram í Æfa" now open the phase they name instead of the menu, as `1-ar/utfellingarhvorf`'s do;
 held by `phase-flow.test.tsx`.
+
+Fixed 2026-10-23, each held by `subscript-word.test.tsx`: the subscript column is `Lágstafur`, the
+textbook's word (`ch03/m68702`, the empirical-formula module), not `Vísitala` (decisions item 13,
+option a) — in Skilja, Æfa, the menu, the `Lágstafur fyrir …` aria-labels and the path in
+`e2e/mobile-game-screens.ts`. The noun moved from feminine to masculine, so Æfa's verdict says
+`Lágstafasúlan` and its hint `Lágstafirnir eru hlutföllin sjálf`. And the menu's "Lykilskref" box no
+longer uses `n` for two quantities (item 47, option a): the moles line reads `mól = massi / mólmassi`,
+leaving `n` to the molecular multiplier, as Beita uses it.
 
 ## On a phone
 

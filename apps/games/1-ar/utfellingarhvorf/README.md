@@ -195,12 +195,11 @@ no Ksp for it — see its README.
   data for twenty compounds if that is ever wanted.
 - **Acetate, bicarbonate and chlorate are in the book's table but not in the ion pool.** Nothing
   needs them yet, and each would need a name ruling before it could be rendered.
-- **Which rule "decides" a group-1 carbonate, chromate, phosphate or sulfide is Siggi's call.**
-  Æfa asks "Hvaða regla ræður því?" and accepts every row whose own statement settles the compound
-  (`decidingRules` in `src/engine/precipitation.ts`) — so NaNO₃ takes the group-1 row or the nitrate
-  row, and KCl and NaF likewise. Until 2026-09-23 only the group-1 row was accepted, and the
-  student who chose the nitrate row was told another rule decided it. Still rejected: the carbonate
-  row for Na₂CO₃ (and the same for K₂CrO₄, Na₃PO₄ and (NH₄)₂S), which reaches the right answer only
-  through its exception clause while the group-1 row settles it directly. BaSO₄ is already graded
-  right through the sulfate row's exception, so there is a case for accepting the carbonate row
-  too; `aefa-rule-grading.test.tsx` pins the current line.
+
+Ruled 2026-10-23 (decisions item 50, option a): **which rule "decides" a group-1 carbonate,
+chromate, phosphate or sulfide.** Æfa asks "Hvaða regla ræður því?" and accepts every row whose own
+statement settles the compound (`decidingRules` in `src/engine/precipitation.ts`) — so NaNO₃ takes
+the group-1 row or the nitrate row, and KCl and NaF likewise. The carbonate row for Na₂CO₃ (and the
+same for K₂CrO₄, Na₃PO₄ and (NH₄)₂S) stays rejected, although BaSO₄ is graded right through the
+sulfate row's exception: that row's face states the opposite verdict, and the drill's point is that
+group 1 always wins. Held by `aefa-rule-grading.test.tsx`, which fails if the anion row is accepted.
