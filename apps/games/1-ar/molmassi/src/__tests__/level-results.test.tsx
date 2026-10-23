@@ -15,8 +15,9 @@ import { DESCRIPTORS, Level3, buildProblem } from '../components/Level3';
  * level now ends with how many the student got right, `N af M rétt`, and the
  * menu shows that per level.
  *
- * Completion is untouched (item 42 is not ruled): Stig 2 still needs six of
- * ten, as it needed 60 of 100 points, and Stig 3 is recorded at any count.
+ * Completion: Stig 2 still needs six of ten, as it needed 60 of 100 points,
+ * and Stig 3 is recorded at any count once the student presses `Ljúka stigi`
+ * (decision 42 (c), held by level3-completion.test.tsx).
  *
  * Queries are scoped to the rendered container (the repo runs `retry: 2`).
  */
@@ -115,6 +116,9 @@ describe('Stig 3 counts right answers', () => {
     }
     expect(container.textContent).toContain('Þú svaraðir 4 af 8 rétt');
     expect(container.textContent).not.toMatch(/%|Árangur/);
+    // Reported from the summary's `Ljúka stigi`, not as it opens (decision 42 (c)).
+    expect(onComplete).not.toHaveBeenCalled();
+    fireEvent.click(ui.getByRole('button', { name: 'Ljúka stigi' }));
     expect(onComplete).toHaveBeenCalledWith(4, 8);
   });
 });

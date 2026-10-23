@@ -110,12 +110,12 @@ function App() {
   }
 
   if (mode === 'level3') {
-    // Stig 3 reports completion as its summary opens, so recording it must not
-    // also leave for the menu: `completeLevel` did, and the summary never showed.
+    // Stig 3 reports completion from its summary's `Ljúka stigi`, as Stig 1
+    // does, so recording it leaves for the menu (decision 42 (c)).
     return (
       <Level3
         onBack={() => setMode('menu')}
-        onComplete={(correct, total) => recordLevel(3, correct, total)}
+        onComplete={(correct, total) => completeLevel(3, correct, total)}
       />
     );
   }

@@ -25,7 +25,7 @@ Levels are not gated; any can be opened from the menu.
 Stig 1 grades at an absolute tolerance by difficulty (0,5 / 1,0 / 2,0 g/mól) and, on a wrong answer,
 `diagnoseMistake` in `Level1.tsx` tries one extra or one missing atom of each element and names the
 likely miscount. Stig 2 and 3 grade at 5 % relative. Stig 2 marks itself complete only at 60 of 100;
-Stig 3 marks itself complete on reaching its summary, whatever the score (see Open).
+Stig 1 and 3 when the student presses `Ljúka stigi` on the summary, at any score.
 A periodic table with atomic masses is available in Stig 1 and 3; it is the student's route to the
 answer, so do not mask it.
 
@@ -92,16 +92,13 @@ src/__tests__/                     breakdown-sums, compound-names, element-atoms
                                    2026-09-23 ionic-particles, level1-teach-and-input,
                                    level2-feedback, level3-summary, name-cases,
                                    notation-examples, periodic-table, wording, and from
-                                   2026-10-23 level3-varied-answers
+                                   2026-10-23 level3-varied-answers, level3-completion
 HARVEST.md                         the 2026-08-27 harvest and the parser defect
 LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 that did not ship
 ```
 
 ## Open
 
-- **Stig 3's completion threshold.** It records the level as complete on reaching the summary,
-  whatever the score — 0 of 8 included — while Stig 2 requires 60 of 100 and Stig 1 a press of
-  `Ljúka stigi`. Whether Stig 3 should have a threshold is a scoring decision; nothing was changed.
 - **Periodic-table legend, two names.** `Eðallofttegundir`: `ordabok.md` says `eðalgas`, the textbook
   prefers `eðallofttegund-` (54 to 25 in `02-mt-output`), so by the resolution order it is Siggi's call. `P-málmar`
   became `Tregir málmar` on 2026-10-02 (decisions item 21), and the plain-nonmetal swatch `Aðrir
@@ -113,6 +110,12 @@ málmleysingjar` (item 35).
 
 **Fixed 2026-10-23 — the mobile-pass decisions.**
 
+- **Stig 3 marked itself complete on reaching its summary, 0 of 8 included** (decision 42, option
+  (c)): `next()` called `onComplete` on the last question. The summary now ends as Stig 1's does,
+  `Reyna aftur` beside `Ljúka stigi` at any score and `Til baka í valmynd` below, behind the same
+  400 ms guard, and only `Ljúka stigi` records the level, with its `N af 8 rétt`, and returns to the
+  menu. A threshold would have made the tick a grade (`level3-completion.test.tsx`;
+  `level3-summary.test.tsx` and `level-results.test.tsx` now press the button).
 - **Stig 3's mass-to-molecules answers were nearly all the same number** (decision 43, option
   (b)). Five of its six problems (36 g H₂O, 88 g CO₂, 117 g NaCl, 34 g NH₃, 64 g O₂) were two moles
   each, so all five came to 1,20 × 10²⁴, and a student who noticed could answer without

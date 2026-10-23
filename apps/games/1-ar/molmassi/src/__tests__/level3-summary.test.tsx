@@ -24,7 +24,7 @@ afterEach(cleanup);
 clockPastNextGuard();
 
 describe('Stig 3 ends on its summary', () => {
-  it('shows the summary after the last question and records the level', () => {
+  it('shows the summary after the last question, recording nothing yet', () => {
     const { container } = render(<App />);
     const ui = within(container);
 
@@ -43,8 +43,9 @@ describe('Stig 3 ends on its summary', () => {
     // `lokið` takes the dative: `Æfingu lokið`, as `Leik lokið`.
     expect(ui.getByRole('heading', { name: 'Æfingu lokið!' })).toBeTruthy();
 
-    // Completion is still recorded as the summary opens, as it was before.
-    expect(JSON.parse(localStorage.getItem(PROGRESS_KEY) ?? '{}').level3Completed).toBe(true);
+    // Reaching the summary no longer records the level: since decision 42 (c)
+    // only its `Ljúka stigi` does, held by level3-completion.test.tsx.
+    expect(JSON.parse(localStorage.getItem(PROGRESS_KEY) ?? '{}').level3Completed).toBeFalsy();
 
     // And the summary's own way back still reaches the menu.
     fireEvent.click(ui.getByRole('button', { name: 'Til baka í valmynd' }));

@@ -91,7 +91,8 @@ src/__tests__/                  App, data, compound-names, name-builder, name-pa
                                 level2-blank-answer, level2-prefix-elision, level3-rule-text,
                                 level3-near-miss, icelandic-text, mobile-interaction,
                                 phone-scroll, level2-icelandic-letters,
-                                level3-prefix-elision, level3-info-leak
+                                level3-prefix-elision, level3-info-leak,
+                                level1-groups-card
 ```
 
 ## Phones: where the page lands and where focus goes (2026-09-24)
@@ -147,6 +148,11 @@ own outside the site header, so focus would otherwise fall to the page.
 - **The menu's `Af hverju nafnakerfið?` card** said `Sama nafn, sama efni — óháð tungumáli`, while
   the game teaches `Natríumklóríð`, not `sodium chloride`. It now reads `Sama kerfi, sama efni — á
   hvaða tungumáli sem er` (decision 41; `App.test.tsx`).
+- **The warm-up's `Mundu:` card** said metals are groups 1, 2 and 3–12 and non-metals 15–18: hydrogen
+  is in group 1, groups 13–14 were missing (Al, Sn and Pb, all used in Levels 2–3, among them), and
+  15–16 hold metals too. It now says where on the table each sits, `vinstra megin og í miðju (hópar
+  1–12, nema vetni)` and `efst til hægri (hópar 14–18, að hluta)`, under the same labels (decision
+  40, option (b); `level1-groups-card.test.tsx`).
 
 ## Fixed 2026-09-23
 
@@ -184,9 +190,5 @@ own outside the site header, so focus would otherwise fall to the page.
 
 ## Open
 
-- **The warm-up's `Mundu:` card** says metals are groups 1, 2 and 3–12 and non-metals 15–18. Hydrogen
-  is in group 1, groups 13–14 are missing (Al, Sn and Pb, all used in Levels 2–3, among them), and
-  15–16 hold metals too. Every warm-up element fits the card, so nothing is graded wrong; how much to
-  simplify is a teaching call.
 - **The i18n question is undecided platform-wide.** Level 3's teaching text and several Level 2
   strings are hardcoded Icelandic beside a full `i18n.ts`; see CLAUDE.md's deferred-work list.
