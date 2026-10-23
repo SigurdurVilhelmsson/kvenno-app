@@ -143,7 +143,7 @@ leave".
 
 **2026-10-23: every item with a clear recommendation was applied as recommended** (Siggi:
 "apply all your recommendations"), each marked `Ruled 2026-10-23` in the decisions doc with what
-was done. Still open, all waiting on Siggi:
+was done. The last three, ruled the same day:
 
 - [x] 51 utfellingarhvorf: the FeCl₃ coagulant sentence. Siggi took the draft, 2026-10-23 (PR #112).
 - [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted.
