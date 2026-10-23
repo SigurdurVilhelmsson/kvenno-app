@@ -145,14 +145,14 @@ test needs the root config's DOM environment.
 - **i18n.** Stig 1–3 use `t()` with `en` and `pl` blocks while Stig 0 is hardcoded Icelandic. That
   split sits inside the platform-wide undecided `useGameI18n` question (see `CLAUDE.md`) rather than
   answering it.
-- **Scoring, Siggi's call (found 2026-09-23).** The levels report on three scales — Stig 0 10 per
-  item, Stig 1–2 100 per item, Stig 3 1 per item (`Level3.tsx` `onComplete(correctCount)`) — and the
-  menu's and completion screen's `Heildarstig` add Stig 1–3 and leave Stig 0 out. Stig 3 offers
-  "Ljúka stigi" only at 5 of 8, and finishing it always opens a screen that says every level is done.
-  Either put every level on one scale (100 per item) or drop points for `x af N rétt`.
-- **Stig 1's "Athuga lausn ✓" does nothing on a wrong attempt.** The live arrows on the
-  concentration indicator are the only feedback; whether to add a line or disable the button is a
-  feedback-design choice.
+
+**Closed.** The three levels' different points scales went with mobile-pass decision 1 (b),
+PR #85: every level reports `N af M rétt`, or completion where it cannot end wrong. Stig 1's silent
+wrong "Athuga lausn" went with decision 60: it now says which way the concentration is off. And on 2026-10-23 (the
+vertical-scroll design's §7.7, settled on Claude's recommendation) Stig 1 stopped moving on by
+itself 2,5 s after a right answer, a timer in a learning phase that took the concept panel away
+half-read: the panel stays until `Næsta verkefni` (`Ljúka stigi` on the last task), which ignores a
+press within 400 ms of appearing. `phone-scroll.test.tsx` holds it.
 
 ## Leftovers
 

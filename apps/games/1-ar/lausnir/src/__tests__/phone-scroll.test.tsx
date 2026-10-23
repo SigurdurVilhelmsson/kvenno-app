@@ -214,6 +214,30 @@ describe('Stig 1', () => {
     expectFeedbackFocused(/Rétt/);
   });
 
+  // Vertical-scroll §7.7, settled 2026-10-23: the concept panel gave way to the next
+  // challenge after 2,5 s by itself, a timer in a learning phase. It now stays until
+  // "Næsta verkefni", which ignores a press within 400 ms of appearing.
+  it('keeps the concept panel until "Næsta verkefni", which a double tap cannot skip to', () => {
+    const { container } = render(<Level1 onComplete={() => {}} onBack={() => {}} />);
+    const ui = within(container);
+    press(ui.getByRole('button', { name: '2' }));
+    press(ui.getByRole('button', { name: /Eykst/ }));
+    press(ui.getByRole('button', { name: 'Athuga spá' }));
+    later();
+    press(ui.getByRole('button', { name: /Áfram í verkefni/ }));
+    press(ui.getByRole('button', { name: '+10' }));
+    press(ui.getByRole('button', { name: /Athuga lausn/ }));
+
+    expect(ui.queryByRole('button', { name: /Athuga lausn/ })).toBeNull();
+    const onward = ui.getByRole('button', { name: /Næsta verkefni/ });
+    press(onward);
+    expect(container.querySelector('.feedback-panel')).not.toBeNull();
+    later();
+    press(onward);
+    expect(container.querySelector('.feedback-panel')).toBeNull();
+    expect(ui.getByRole('heading', { name: 'Hugsaðu fyrst!' })).toBeTruthy();
+  });
+
   // Decisions item 60: a wrong "Athuga lausn" used to do nothing at all.
   it('says which way a wrong "Athuga lausn" is off, and drops it once the beaker changes', () => {
     const { container } = render(<Level1 onComplete={() => {}} onBack={() => {}} />);

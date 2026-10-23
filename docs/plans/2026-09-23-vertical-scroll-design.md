@@ -1358,6 +1358,10 @@ running animations and differ just as much when the base is compared with itself
 
 ### §7 decisions still open for Siggi
 
+**Settled 2026-10-23 on Claude's recommendation** (Siggi: "continue, using your recommendations and
+best judgment"; `docs/REVIEW-QUEUE.md` C1, PR #112): the planned option stands for 1–6 and 9; 7
+changed (Stig 1 now waits for `Næsta verkefni`); 8 was settled by mobile-pass decision 1.
+
 1. equilibrium-shifter feedback: paging pilot, or the scroll that shipped.
 2. dimensional-analysis Stig 2 on phones: (a) hide 'Stuðlar notaðir' in drag mode, (b) hide
    'Strika út', (c) click mode as the touch default — none done.

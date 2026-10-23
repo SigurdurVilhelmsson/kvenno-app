@@ -98,36 +98,46 @@ Nothing in CI can do these. The design's risks section, §7 of
 ### C1. Vertical scrolling: confirm or change (PR #66)
 
 Detail: §7 and the Outcome section of `docs/plans/2026-09-23-vertical-scroll-design.md`. Each item
-shipped with the design's "planned" option.
+shipped with the design's "planned" option. **Settled 2026-10-23 on Claude's recommendation**
+(Siggi: "continue, using your recommendations and best judgment"; PR #112): each planned option is
+kept, except 7, which is changed, and 8, which decision 1 had already settled. Each is reversible.
 
-- [ ] 1. equilibrium-shifter feedback: keep the scroll that shipped, or pilot paging (Svar → Q vs K
-      → Tölur → Rök)?
-- [ ] 2. Einingagreining Stig 2 on phones:
+- [x] 1. equilibrium-shifter feedback: keep the scroll that shipped, or pilot paging (Svar → Q vs K
+      → Tölur → Rök)? Kept: paging invites tapping through the Q vs K and Tölur panes.
+- [x] 2. Einingagreining Stig 2 on phones:
   - (a) hide "Stuðlar notaðir" in drag mode?
   - (b) hide "Strika út"? Moot since 2026-10-23: decision 29 (a) removed the button.
   - (c) make click mode the default on touch?
 
-  None of these is done.
+  None of these is done, and none is wanted: drag stays the default, and the chain stays shown.
 
-- [ ] 3. lotukerfid: keep the empty period-7 row as a 12 px placeholder, or drop it?
-- [ ] 4. iPhone SE (375×548): accept the one or two residual scrolls, or use pinned bars there too?
-- [ ] 5. lewis Stig 2 for SF₆/PCl₅/BF₃: accept one scroll, or change the mechanic to tap-an-atom?
-- [ ] 6. rafeindabygging Stig 2: should desktop also use the phone's side-by-side ↑↓ box notation?
-- [ ] 7. lausnir Stig 1: the 2.5 s auto-advance after a correct answer is a timer in a learning phase.
-      Replace it with a button?
-- [ ] 8. Score, streak and Árangur chips in gas-law and buffer: now smaller on phones. Remove them
-      everywhere? This overlaps C3 item 1.
-- [ ] 9. No focus ring on programmatic focus targets (feedback, headings) at desktop width. Confirm?
+- [x] 3. lotukerfid: keep the empty period-7 row as a 12 px placeholder, or drop it? Kept.
+- [x] 4. iPhone SE (375×548): accept the one or two residual scrolls, or use pinned bars there too?
+      Accepted; the SE is the stretch target.
+- [x] 5. lewis Stig 2 for SF₆/PCl₅/BF₃: accept one scroll, or change the mechanic to tap-an-atom?
+      Accepted; an interaction change for one scroll on three molecules is not worth it.
+- [x] 6. rafeindabygging Stig 2: should desktop also use the phone's side-by-side ↑↓ box notation?
+      No; desktop keeps its layout, as the pass promised.
+- [x] 7. lausnir Stig 1: the 2.5 s auto-advance after a correct answer is a timer in a learning phase.
+      Replace it with a button? Yes: the concept panel stays until `Næsta verkefni` (`Ljúka stigi`
+      on the last task), guarded against a double tap (`phone-scroll.test.tsx`).
+- [x] 8. Score, streak and Árangur chips in gas-law and buffer: now smaller on phones. Remove them
+      everywhere? This overlaps C3 item 1. Settled by item 1 (PR #85): gas-law shows score and
+      streak in Keppnishamur only, and buffer's tiles count progress, not points.
+- [x] 9. No focus ring on programmatic focus targets (feedback, headings) at desktop width. Confirm?
+      Confirmed.
 
 ### C2. Desktop behaviour changes: confirm (PR #66)
 
-Detail: "Deliberate desktop behaviour changes" in the design's Outcome section.
+Detail: "Deliberate desktop behaviour changes" in the design's Outcome section. **All four
+confirmed 2026-10-23 on Claude's recommendation** (PR #112): each is guarded by tests and makes
+desktop safer or more consistent, not different in look.
 
-- [ ] Focus moves at every width to the feedback, the new heading or an opened hint, with no ring.
-- [ ] Enter in an answer field commits, or moves to the next field, in the typed-answer games.
-- [ ] A Næsta, Reyna aftur, Áfram or Ljúka pressed within 400 ms of appearing is ignored, at every
+- [x] Focus moves at every width to the feedback, the new heading or an opened hint, with no ring.
+- [x] Enter in an answer field commits, or moves to the next field, in the typed-answer games.
+- [x] A Næsta, Reyna aftur, Áfram or Ljúka pressed within 400 ms of appearing is ignored, at every
       width.
-- [ ] dimensional-analysis can scroll up to 56 px more on desktop, and the shared helpers jump
+- [x] dimensional-analysis can scroll up to 56 px more on desktop, and the shared helpers jump
       instantly under reduced motion.
 
 ### C3. Content, teaching and terminology rulings: items 1–122 (PR #65)

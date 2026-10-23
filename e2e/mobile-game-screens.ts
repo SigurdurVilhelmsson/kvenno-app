@@ -2577,9 +2577,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         // lausn" answers only a solution that is right.
         answer: [{ clickRole: ['button', '+10'] }],
         verdict: { css: '.feedback-panel' },
-        // No Næsta: after a right answer the next challenge follows by itself
-        // (design §7.7, kept), and this disabled button says so meanwhile.
-        next: { role: 'button', name: 'Sæki næsta verkefni' },
+        // The concept panel stays until Næsta (design §7.7, settled 2026-10-23: it used to
+        // give way to the next challenge after 2,5 s by itself).
+        next: { role: 'button', name: 'Næsta verkefni' },
         together: [
           [
             { css: 'svg[aria-label^="Bikarglas"]' },
