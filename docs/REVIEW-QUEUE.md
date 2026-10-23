@@ -139,7 +139,7 @@ leave".
 - [ ] 1–11 Platform-wide. All eleven are now applied. Items 1, 2 and 9 were applied
       2026-10-03 in every game they name (PR #85); items 3–8, 10 and 11 earlier. Still open:
       item 5's feedback wording is a draft, and its trailing-text strictness was not ruled. Item
-      1's judgement calls are listed below, under "Item 1 as applied".
+      1's judgement calls, below under "Item 1 as applied", were ruled 2026-10-23.
 
 **2026-10-23: every item with a clear recommendation was applied as recommended** (Siggi:
 "apply all your recommendations"), each marked `Ruled 2026-10-23` in the decisions doc with what
@@ -205,35 +205,39 @@ says where. Siggi accepted all of it as written, 2026-10-23 (PR #112).
       `k-gender.test.ts`.
 - [ ] **molmassi Stig 3: NH₃ and O₂ still both come to 2 mól** (43 named three problems).
 
-#### Item 1 as applied (2026-10-03, PR #85): confirm or change
+#### Item 1 as applied (2026-10-03, PR #85): ruled 2026-10-23
 
 Applying item 1 in seventeen games needed calls the ruling did not make. Each is reversible.
+Siggi, 2026-10-23: accept 1, 2, 4, 5, 6 and 8 as applied; 3 and 7 as recommended (PR #112).
 
-- [ ] **Levels that cannot end wrong report completion, not a count** (as item 23 did):
+- [x] **Levels that cannot end wrong report completion, not a count** (as item 23 did):
       `lausnir` Stig 1 (`Þú kláraðir öll 6 verkefnin`) and all three `buffer-recipe-creator`
       levels (`✓ Lokið`). Buffer's Stig 2 and 3 steps can be answered wrong before the student
       moves on, but a retried right answer counts, so a count would always be full.
-- [ ] **An answer the game had already printed does not count after a retry:** `redox-reactions`
+- [x] **An answer the game had already printed does not count after a retry:** `redox-reactions`
       Stig 1, `nafnakerfid` Stig 3, `takmarkandi` Stig 3 (item 54), `organic-nomenclature` Stig 2,
       `hess-law` Stig 1, `ph-titration` Stig 2. The other way out is to hide the answer while a
       retry is on offer, which would let retries count.
-- [ ] **Hints that state the answer still count** (item 2 says hints never change a count):
+- [x] **Hints that state the answer still count** (item 2 says hints never change a count):
       VSEPR Stig 2's second tier (`horn nálægt X`), gas-law's last practice hint,
-      equilibrium-shifter's fourth tier. Count them as a revealed answer instead?
-- [ ] **`redox-reactions` Stig 2 content change:** the diagram labelled `Cl afoxast` from the first
+      equilibrium-shifter's fourth tier. Count them as a revealed answer instead? — 2026-10-23:
+      yes. A right answer after such a hint is not counted, and the verdict says
+      `Rétt, en vísbendingin gaf svarið, svo svarið telst ekki með.`
+- [x] **`redox-reactions` Stig 2 content change:** the diagram labelled `Cl afoxast` from the first
       answer on, so `Hvað afoxast?` was asked under its own answer. The labels now appear after
       the second answer.
-- [ ] **Practice became rounds** in `gas-law-challenge` (13, 6, 4 questions on Stig 1–3) and
+- [x] **Practice became rounds** in `gas-law-challenge` (13, 6, 4 questions on Stig 1–3) and
       `thermodynamics-predictor` (10, 12, 8 on Auðvelt–Erfitt), so there is an end to report
       `N af M rétt` at; the best round is kept, and a round left early saves nothing.
       Keppnishamur keeps its points and now starts every run at 0.
-- [ ] **What is counted:** VSEPR Stig 2 counts its three graded steps per molecule (30), not the
+- [x] **What is counted:** VSEPR Stig 2 counts its three graded steps per molecule (30), not the
       written explanation, which is checked only for length; `organic-nomenclature` Stig 2 keeps
       its two modes' best as one right/total pair.
-- [ ] **Einingagreining Stig 2 and 3 end without `N af M rétt`,** because their mastery gate
+- [x] **Einingagreining Stig 2 and 3 end without `N af M rétt`,** because their mastery gate
       (items 30 and 31) could contradict a count. `molmassi` Stig 2 keeps its 6/10 gate (item 42
-      is unruled).
-- [ ] **Wording to confirm:** `Stigi 3 lokið`, `Þú kláraðir öll 6 verkefnin` (lausnir);
+      is unruled). — 2026-10-23: out of date. Item 31 gave Stig 3 a summary line with the count,
+      and Siggi ruled Stig 2 gets the same; item 42 is ruled (c).
+- [x] **Wording to confirm:** `Stigi 3 lokið`, `Þú kláraðir öll 6 verkefnin` (lausnir);
       `N af 15 skrefum rétt` (takmarkandi); `Stig í [A]:` (kinetics' rate-law rows; questions use
       the book's `stig með tilliti til A`); `Met á Stigi N`, `Keppnismet`, `Æfingu lokið`,
       `Æfa stigið aftur`, `Lærdómshamur, síðasta lota` (gas-law, thermodynamics,
