@@ -26,8 +26,9 @@ import { APPENDIX_D1_ACIDS, APPENDIX_D2_BASES, APPENDIX_D3_KSP } from '@shared/d
 
 /**
  * What kind of constant it is. They are all equilibrium constants; the label says which.
- * `Kf` is a complex ion's formation constant and `Kd` its dissociation constant, `1/Kf`
- * (the book's `myndunarfasti` and `sundrunarfasti`, ch. 15).
+ * `Kf` is a complex ion's formation constant (`myndunarfasti`, ch. 15) and `Kd` the constant
+ * for the same complex coming apart, `1/Kf`. Only the symbol is shown, so no Icelandic noun for
+ * `Kd` is needed; this game's word for dissociation is `klofnun`.
  */
 export type ConstantKind = 'Kc' | 'Ka' | 'Kb' | 'Ksp' | 'Kw' | 'Kf' | 'Kd';
 

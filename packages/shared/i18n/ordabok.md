@@ -113,7 +113,6 @@ complete ionic equation;heildarjónajafna
 complex;flóki
 complex bond;flókatengi
 complex ion;flókajón
-complex-ion dissociation constant;sundrunarfasti
 compound;efnasamband
 concentrated acid/base;megn sýra
 concentrated base;megn basi
