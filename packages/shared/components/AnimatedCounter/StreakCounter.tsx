@@ -108,7 +108,7 @@ export function StreakCounter({ count, className = '' }: StreakCounterProps) {
         ${className}
       `.trim()}
       style={{
-        fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+        fontFamily: 'system-ui, sans-serif',
         fontVariantNumeric: 'tabular-nums',
         ['--streak-icon' as string]: `'${emoji}'`,
       }}

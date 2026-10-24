@@ -7,12 +7,11 @@
  *   @import "../../../../../packages/shared/styles/game-base.css";
  */
 
-/* Fonts — loaded via Google Fonts (inlined by vite-plugin-singlefile) */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
-
-/* Base font for all game content */
+/* The system font, on purpose (see theme.css). A Google Fonts @import here named DM Sans and
+   Plus Jakarta Sans until 2026-10-24; it came after other rules, so the build dropped it, and
+   the games' CSP would have refused it, so no game ever showed either font. */
 * {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 /* Heading font utility */
@@ -20,7 +19,7 @@
 h1,
 h2,
 h3 {
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 /* Kvennaskólinn Brand Color Utilities */
@@ -201,7 +200,7 @@ h3 {
   pointer-events: none;
   position: absolute;
   font-weight: 700;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
 /* --- Gold shimmer sweep (perfect round) --- */

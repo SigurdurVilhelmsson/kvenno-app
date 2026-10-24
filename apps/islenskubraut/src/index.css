@@ -3,7 +3,12 @@
 @source "../../../packages/shared";
 
 /* The two fonts are bundled from @fontsource (imported in main.tsx), not fetched from Google:
-   the site CSP in server/nginx-site.conf allows fonts and stylesheets from 'self' only. */
+   the site CSP in server/nginx-site.conf allows fonts and stylesheets from 'self' only. The
+   shared theme gives the rest of the site the system font, so the names are set here. */
+@theme {
+  --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+}
 
 @utility card-shadow {
   box-shadow:

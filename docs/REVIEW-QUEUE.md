@@ -22,8 +22,8 @@ needs no ruling, only time.
   - `scripts/deploy.sh` does **not** install the nginx config. If you get a 200, copy
     `server/nginx-site.conf` over the live site file, then run
     `sudo nginx -t && sudo systemctl reload nginx`.
-  - Check the live filename first. `README.md` says `sites-available/kvenno` and
-    `docs/DEPLOYMENT.md` says `sites-available/kvenno.app` (see D).
+  - Check the live filename first. Every doc says `sites-available/kvenno.app` since 2026-10-03;
+    the server has not been looked at (D2).
 - [ ] **Phone smoke test.** On a phone, play one question of a few games, e.g. Stilla efnajöfnur,
       Mólhugtakið and Lögmál Hess.
   - Expect question → answer → feedback → Næsta with little or no scrolling.
@@ -215,7 +215,9 @@ says where. Siggi accepted all of it as written, 2026-10-23 (PR #112).
 - [x] **Q reads neuter in places** (`Q er minna`) in jafnvaegisfasti. Siggi: neuter for both K
       and Q, 2026-10-23 (99); the masculine K applied earlier that day is reverted, held by
       `k-gender.test.ts`.
-- [ ] **molmassi Stig 3: NH₃ and O₂ still both come to 2 mól** (43 named three problems).
+- [x] **molmassi Stig 3: NH₃ and O₂ still both come to 2 mól** (43 named three problems). —
+      2026-10-24: O₂ weighs 32 g, 1 mól, so no two of the six share an answer
+      (`level3-varied-answers.test.ts`).
 
 #### Item 1 as applied (2026-10-03, PR #85): ruled 2026-10-23
 
@@ -883,7 +885,7 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 
   See the decisions doc's last section.
 
-- [ ] **The brand fonts never load on landing, lab-reports or the games** (found 2026-10-10, with
+- [x] **The brand fonts never load on landing, lab-reports or the games** (found 2026-10-10, with
       D3). `theme.css` names DM Sans and Plus Jakarta Sans, and `apps/landing/src/index.css`,
       `apps/lab-reports/src/index.css` and `packages/shared/styles/game-base.css` import them from
       Google, but each `@import url(…)` comes after other rules, so the build drops it: the landing
@@ -891,6 +893,10 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       block Google anyway. Íslenskubraut now bundles both from `@fontsource`; doing the same
       elsewhere changes how every page looks, so `desktop-compare` will report every game. The
       alternative is to drop the two names from `theme.css` and keep the system font on purpose.
+      — 2026-10-24, the alternative, since CLAUDE.md's design system says "System font stack":
+      the three Google imports are gone, the shared tokens and `game-base.css` name the system
+      font, and Íslenskubraut sets the two names in its own `index.css` beside the fonts it
+      bundles. No page changes, since none ever loaded them. `system-font.test.ts` holds it.
 
 ### D2. Operations and tooling
 
