@@ -181,13 +181,12 @@ It runs as `www-data` from `/opt/kvenno-server` via `/usr/bin/node dist/index.js
 
 ### API endpoints
 
-| Method | Path                     | Description                                               |
-| ------ | ------------------------ | --------------------------------------------------------- |
-| `GET`  | `/health`                | Health check                                              |
-| `POST` | `/api/process-document`  | DOCX upload, converts to PDF via LibreOffice              |
-| `POST` | `/api/analyze`           | Lab report analysis via Claude (teacher + student modes)  |
-| `POST` | `/api/analyze-2ar`       | 2nd year simplified checklist analysis                    |
-| `GET`  | `/api/islenskubraut/pdf` | Generate teaching card PDF (`?flokkur={id}&stig={level}`) |
+| Method | Path                    | Description                                              |
+| ------ | ----------------------- | -------------------------------------------------------- |
+| `GET`  | `/health`               | Health check                                             |
+| `POST` | `/api/process-document` | DOCX upload, converts to PDF via LibreOffice             |
+| `POST` | `/api/analyze`          | Lab report analysis via Claude (teacher + student modes) |
+| `POST` | `/api/analyze-2ar`      | 2nd year simplified checklist analysis                   |
 
 ## Project Structure
 

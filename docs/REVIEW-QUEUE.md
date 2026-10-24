@@ -1067,13 +1067,15 @@ joins the list of probably-right compounds below.
       card that is not three pages. The button is a plain link with `download`; the app no
       longer calls the backend, and its dev proxy is gone. An e2e test downloads a card through
       the link and fetches all 18, with a missing one answering 404.
-  - [ ] **After the deploy that carries it, install `server/nginx-site.conf`** (`deploy.sh`
-        does not): it adds `location ^~ /islenskubraut/spjold/`, which revalidates the cards
+  - [x] **After the deploy that carries it, install `server/nginx-site.conf`** — done by
+        2026-10-18 (A: the config is installed and all 105 PDFs under `spjold/` answer 200)
+        (`deploy.sh` does not install it): it adds `location ^~ /islenskubraut/spjold/`, which revalidates the cards
         rather than caching them and answers a missing one with 404 instead of the app's
         `index.html`. The download works without it, through the `/islenskubraut/` location.
         Then, on https://kvenno.app/islenskubraut/, download one card and check it opens.
-  - [ ] **Remove `GET /api/islenskubraut/pdf`** once that deploy is live. Nothing in the app
-        calls it now; it stays for one deploy so a page left open across it still downloads.
+  - [x] **Remove `GET /api/islenskubraut/pdf`** once that deploy is live — done 2026-10-24, the
+        PR carrying this entry, with its rate limiter and query type. Nothing in the app had
+        called it since 2026-10-11, and the 2026-10-18 check (A) showed the static cards live.
 - [x] **The preview does not match the PDF.** Done 2026-10-11 (PR for this branch). The tabs
       follow the PDF's pages, `Orðaforði`, `Setningarammar`, `Spurningaspjald`, and the page
       opens on page 1, where it used to open on the question card, the PDF's last page. Each
@@ -1232,5 +1234,11 @@ eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app it
 - [ ] **Voice-tool venv** (`content/islenskubraut/hljod/README.md`): it pins `pip<24.1`, whose
       CA bundle predates the eMudhra fix, so run `pip install -U "certifi>=2026.10.19"` there
       before the next model download; pin `revision=` in `talgerving.py` and `hlustun.py`.
-- [ ] **Small things:** `server_tokens off;` in nginx; `/api/` responses carry nginx's and
-      helmet's headers twice (`X-Frame-Options` both `SAMEORIGIN` and `DENY`).
+- [x] **Small things:** `server_tokens off;` in nginx; `/api/` responses carry nginx's and
+      helmet's headers twice (`X-Frame-Options` both `SAMEORIGIN` and `DENY`). Fixed in
+      `server/nginx-site.conf` 2026-10-24, the PR carrying this entry: `server_tokens off` in both
+      server blocks, and `/api/` hides helmet's five copies (`proxy_hide_header`) so nginx's
+      server-level ones are the only ones sent. `nginx-config.test.ts` holds both.
+  - [ ] **Install the config on the host** (`deploy.sh` does not), then check:
+        `curl -sI https://kvenno.app/ | grep -i '^server'` reads `nginx` with no version, and
+        `curl -sI https://kvenno.app/health | grep -ci '^x-frame-options'` prints 1.

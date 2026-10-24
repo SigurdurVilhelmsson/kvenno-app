@@ -29,12 +29,6 @@ export interface Analyze2arRequestBody {
   userPrompt: string;
 }
 
-/** Query parameters for GET /api/islenskubraut/pdf */
-export interface PdfQueryParams {
-  flokkur?: string;
-  stig?: string;
-}
-
 // ---------------------------------------------------------------------------
 // Anthropic API types
 // ---------------------------------------------------------------------------
