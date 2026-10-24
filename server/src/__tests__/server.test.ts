@@ -7,6 +7,7 @@
 import { describe, it, expect, vi, afterAll, beforeEach, afterEach } from 'vitest';
 import request from 'supertest';
 import type { HealthResponse, ErrorResponse } from '../types/index.js';
+import { bearer, useTestKeys } from './test-auth.js';
 
 // Capture original env so we can restore after tests
 const ORIGINAL_CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
@@ -17,6 +18,8 @@ const ORIGINAL_CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
 process.env.CLAUDE_API_KEY = 'test-key-for-validation-tests';
 
 // Import the Express app (server does not call listen() when imported)
+// The Claude endpoints take a signed-in teacher's ID token (src/lib/auth.ts).
+useTestKeys();
 const { app } = await import('../index.js');
 
 afterAll(() => {
@@ -49,14 +52,17 @@ describe('GET /health', () => {
 // ---------------------------------------------------------------------------
 describe('POST /api/analyze -- input validation', () => {
   it('returns 400 when required fields are missing', async () => {
-    const res = await request(app).post('/api/analyze').send({ content: 'hello' }); // missing systemPrompt and mode
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Authorization', bearer())
+      .send({ content: 'hello' }); // missing systemPrompt and mode
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty('error');
   });
 
   it('returns 400 when mode is invalid', async () => {
-    const res = await request(app).post('/api/analyze').send({
+    const res = await request(app).post('/api/analyze').set('Authorization', bearer()).send({
       content: 'test content',
       systemPrompt: 'test prompt',
       mode: 'hacker', // invalid -- must be "teacher" or "student"
@@ -70,6 +76,7 @@ describe('POST /api/analyze -- input validation', () => {
   it('returns 400 when systemPrompt exceeds 30000 characters', async () => {
     const res = await request(app)
       .post('/api/analyze')
+      .set('Authorization', bearer())
       .send({
         content: 'test',
         systemPrompt: 'x'.repeat(30001),
@@ -87,7 +94,10 @@ describe('POST /api/analyze -- input validation', () => {
 // ---------------------------------------------------------------------------
 describe('POST /api/analyze-2ar -- input validation', () => {
   it('returns 400 when required fields are missing', async () => {
-    const res = await request(app).post('/api/analyze-2ar').send({ systemPrompt: 'hello' }); // missing userPrompt
+    const res = await request(app)
+      .post('/api/analyze-2ar')
+      .set('Authorization', bearer())
+      .send({ systemPrompt: 'hello' }); // missing userPrompt
 
     expect(res.status).toBe(400);
     const body = res.body as ErrorResponse;
@@ -97,6 +107,7 @@ describe('POST /api/analyze-2ar -- input validation', () => {
   it('returns 400 when systemPrompt exceeds 30000 characters', async () => {
     const res = await request(app)
       .post('/api/analyze-2ar')
+      .set('Authorization', bearer())
       .send({
         systemPrompt: 'x'.repeat(30001),
         userPrompt: 'valid prompt',
@@ -110,6 +121,7 @@ describe('POST /api/analyze-2ar -- input validation', () => {
   it('returns 400 when userPrompt exceeds 100000 characters', async () => {
     const res = await request(app)
       .post('/api/analyze-2ar')
+      .set('Authorization', bearer())
       .send({
         systemPrompt: 'valid prompt',
         userPrompt: 'x'.repeat(100001),
@@ -160,7 +172,10 @@ describe('GET /api/islenskubraut/pdf -- input validation', () => {
 // ---------------------------------------------------------------------------
 describe('POST /api/process-document -- input validation', () => {
   it('returns 400 or 500 when no file is uploaded', async () => {
-    const res = await request(app).post('/api/process-document').send();
+    const res = await request(app)
+      .post('/api/process-document')
+      .set('Authorization', bearer())
+      .send();
 
     // The server returns 400 for "No file uploaded" after parsing,
     // or 500 if LibreOffice is not installed. Either is acceptable in
@@ -257,6 +272,7 @@ describe('Security: CORS no-origin rejection in production', () => {
     // A browser always sends Origin on a POST, so a missing one is not a browser.
     const res = await request(app)
       .post('/api/analyze')
+      .set('Authorization', bearer())
       .send({ content: 'x', systemPrompt: 'y', mode: 'teacher' });
 
     // next(new Error('Origin header required')) reaches the Express error handler
@@ -298,7 +314,7 @@ describe('Security: CORS no-origin rejection in production', () => {
 
 describe('Security: /api/analyze mode validation', () => {
   it('rejects mode value "admin"', async () => {
-    const res = await request(app).post('/api/analyze').send({
+    const res = await request(app).post('/api/analyze').set('Authorization', bearer()).send({
       content: 'test content',
       systemPrompt: 'test prompt',
       mode: 'admin',
@@ -310,7 +326,7 @@ describe('Security: /api/analyze mode validation', () => {
   });
 
   it('rejects mode value "root"', async () => {
-    const res = await request(app).post('/api/analyze').send({
+    const res = await request(app).post('/api/analyze').set('Authorization', bearer()).send({
       content: 'test content',
       systemPrompt: 'test prompt',
       mode: 'root',
@@ -322,7 +338,7 @@ describe('Security: /api/analyze mode validation', () => {
   });
 
   it('rejects empty string mode', async () => {
-    const res = await request(app).post('/api/analyze').send({
+    const res = await request(app).post('/api/analyze').set('Authorization', bearer()).send({
       content: 'test content',
       systemPrompt: 'test prompt',
       mode: '',
@@ -332,7 +348,7 @@ describe('Security: /api/analyze mode validation', () => {
   });
 
   it('accepts mode "teacher"', async () => {
-    const res = await request(app).post('/api/analyze').send({
+    const res = await request(app).post('/api/analyze').set('Authorization', bearer()).send({
       content: 'test content',
       systemPrompt: 'test prompt',
       mode: 'teacher',
@@ -343,7 +359,7 @@ describe('Security: /api/analyze mode validation', () => {
   });
 
   it('accepts mode "student"', async () => {
-    const res = await request(app).post('/api/analyze').send({
+    const res = await request(app).post('/api/analyze').set('Authorization', bearer()).send({
       content: 'test content',
       systemPrompt: 'test prompt',
       mode: 'student',
@@ -359,6 +375,7 @@ describe('Security: /api/process-document error responses do not leak paths', ()
     // Send an invalid request to trigger an error
     const res = await request(app)
       .post('/api/process-document')
+      .set('Authorization', bearer())
       .attach('file', Buffer.from('not a real docx'), {
         filename: 'test.docx',
         contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -382,11 +399,15 @@ describe('Security: /api/analyze rejects oversized content (>5MB)', () => {
     // Generate content slightly over 5MB
     const oversizedContent = 'x'.repeat(5 * 1024 * 1024 + 1);
 
-    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-      content: oversizedContent,
-      systemPrompt: 'test prompt',
-      mode: 'teacher',
-    });
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Authorization', bearer())
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: oversizedContent,
+        systemPrompt: 'test prompt',
+        mode: 'teacher',
+      });
 
     // The rate limiter may fire first (429) if many /api/analyze tests
     // have already run. Both 400 (content validation) and 429 (rate limit)
@@ -408,11 +429,15 @@ describe('Security: /api/analyze rejects oversized content (>5MB)', () => {
     // pass, the request proceeds to the API call (which fails with
     // invalid key, returning non-400). This confirms content size
     // checking occurs before the API call.
-    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-      content: 'small content',
-      systemPrompt: 'test prompt',
-      mode: 'teacher',
-    });
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Authorization', bearer())
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'small content',
+        systemPrompt: 'test prompt',
+        mode: 'teacher',
+      });
 
     // Should NOT be a 400 (validation passed), likely 401/500 from API
     if (res.status !== 429) {
@@ -448,11 +473,15 @@ describe('POST /api/analyze -- mock API call tests', () => {
       })
     );
 
-    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-      content: 'Lab report text here',
-      systemPrompt: 'You are a lab report grader.',
-      mode: 'teacher',
-    });
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Authorization', bearer())
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'Lab report text here',
+        systemPrompt: 'You are a lab report grader.',
+        mode: 'teacher',
+      });
 
     // May be rate limited from earlier tests
     if (res.status === 429) return;
@@ -467,11 +496,15 @@ describe('POST /api/analyze -- mock API call tests', () => {
     const abortError = new DOMException('The operation was aborted', 'AbortError');
     vi.spyOn(global, 'fetch').mockRejectedValueOnce(abortError);
 
-    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-      content: 'Lab report text here',
-      systemPrompt: 'You are a lab report grader.',
-      mode: 'teacher',
-    });
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Authorization', bearer())
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'Lab report text here',
+        systemPrompt: 'You are a lab report grader.',
+        mode: 'teacher',
+      });
 
     if (res.status === 429) return;
 
@@ -488,11 +521,15 @@ describe('POST /api/analyze -- mock API call tests', () => {
       })
     );
 
-    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-      content: 'Lab report text here',
-      systemPrompt: 'You are a lab report grader.',
-      mode: 'teacher',
-    });
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Authorization', bearer())
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'Lab report text here',
+        systemPrompt: 'You are a lab report grader.',
+        mode: 'teacher',
+      });
 
     if (res.status === 429) return;
 
@@ -508,11 +545,15 @@ describe('POST /api/analyze -- mock API call tests', () => {
     delete process.env.ANTHROPIC_API_KEY;
 
     try {
-      const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-        content: 'Lab report text here',
-        systemPrompt: 'You are a lab report grader.',
-        mode: 'teacher',
-      });
+      const res = await request(app)
+        .post('/api/analyze')
+        .set('Authorization', bearer())
+        .set('Origin', 'https://kvenno.app')
+        .send({
+          content: 'Lab report text here',
+          systemPrompt: 'You are a lab report grader.',
+          mode: 'teacher',
+        });
 
       if (res.status === 429) return;
 
@@ -557,6 +598,7 @@ describe('POST /api/analyze-2ar -- mock API call tests', () => {
 
     const res = await request(app)
       .post('/api/analyze-2ar')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app')
       .send({
         systemPrompt: 'You are a 2nd year checklist grader.',
@@ -576,6 +618,7 @@ describe('POST /api/analyze-2ar -- mock API call tests', () => {
 
     const res = await request(app)
       .post('/api/analyze-2ar')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app')
       .send({
         systemPrompt: 'You are a 2nd year checklist grader.',
@@ -601,6 +644,7 @@ describe('POST /api/process-document -- mock tests', () => {
   it('rejects non-.docx files with 400', async () => {
     const res = await request(app)
       .post('/api/process-document')
+      .set('Authorization', bearer())
       .attach('file', Buffer.from('plain text content'), {
         filename: 'report.txt',
         contentType: 'text/plain',
@@ -623,6 +667,7 @@ describe('POST /api/process-document -- mock tests', () => {
   it('rejects upload with non-.docx extension even with docx content-type', async () => {
     const res = await request(app)
       .post('/api/process-document')
+      .set('Authorization', bearer())
       .attach('file', Buffer.from('fake docx content'), {
         filename: 'report.pdf',
         contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

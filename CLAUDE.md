@@ -243,6 +243,12 @@ Express backend at `server/` (port 8000):
   to them. Kept for one deploy; its removal is in `docs/REVIEW-QUEUE.md` D3
 - `GET /health` — Health check
 
+**The three `POST` endpoints need a signed-in user since 2026-10-24** (`requireLogin` in `server/src/lib/auth.ts`):
+the lab-reports app sends its MSAL ID token (`apps/lab-reports/src/utils/authToken.ts`) and the
+server verifies it against `AZURE_TENANT_ID` and `AZURE_CLIENT_ID` in `server/.env`, failing closed
+(503) while either is unset. Until then anyone sending the site's `Origin` header could use the
+Claude key (`docs/REVIEW-QUEUE.md` D4).
+
 ## Game Design Philosophy (April 2026 restructure)
 
 Games follow a **teach-before-test** structure:

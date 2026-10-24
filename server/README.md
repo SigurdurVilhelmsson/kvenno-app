@@ -405,9 +405,13 @@ free -h
    sudo chown www-data:www-data /var/www/labreports/server/.env
    ```
 
-4. **Monitor logs** for suspicious activity
+4. **Set `AZURE_TENANT_ID` and `AZURE_CLIENT_ID`** in `.env` (the lab-reports app's tenant and
+   client IDs). The Claude endpoints check every request's Microsoft ID token against them, and
+   refuse every request (503) while either is unset.
 
-5. **Backup regularly**:
+5. **Monitor logs** for suspicious activity
+
+6. **Backup regularly**:
    - Database (if you add one)
    - Environment configuration
    - Application code
@@ -518,7 +522,8 @@ changes and running the TypeScript sources directly — no build step needed.
 # Health check (dev only — production rejects requests with no Origin header)
 curl http://localhost:8000/health
 
-# Test analyze endpoint (requires actual frontend or curl with JSON)
+# Test analyze endpoint. It needs a signed-in user's Microsoft ID token (Authorization: Bearer),
+# or AUTH_DISABLED=true in .env outside production; without either it answers 401.
 curl -X POST http://localhost:8000/api/analyze \
   -H "Content-Type: application/json" \
   -d '{"content":"test","systemPrompt":"test","mode":"teacher"}'

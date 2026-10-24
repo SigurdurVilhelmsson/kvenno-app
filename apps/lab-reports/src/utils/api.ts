@@ -14,6 +14,8 @@ import {
   ExperimentConfig2,
 } from '@/types';
 
+import { authHeaders } from './authToken';
+
 const API_TIMEOUT = 90000; // 90 seconds
 
 // Anthropic API response types
@@ -109,6 +111,8 @@ export const analyzeWithClaude = async (
     );
   }
 
+  // Before the timer starts: signing in again can take longer than the request itself.
+  const auth = await authHeaders();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
 
@@ -118,6 +122,7 @@ export const analyzeWithClaude = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...auth,
       },
       body: JSON.stringify({
         content: messageContent,
@@ -232,6 +237,7 @@ const analyzeWithClaude2 = async (
     );
   }
 
+  const auth = await authHeaders();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
 
@@ -239,7 +245,7 @@ const analyzeWithClaude2 = async (
   try {
     response = await fetch(`${backendEndpoint}/analyze-2ar`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...auth },
       body: JSON.stringify({ systemPrompt, userPrompt }),
       signal: controller.signal,
     });

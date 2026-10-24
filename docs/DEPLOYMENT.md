@@ -203,7 +203,19 @@ CLAUDE_API_KEY=sk-ant-...      # Anthropic API key (ANTHROPIC_API_KEY also accep
 PORT=8000
 NODE_ENV=production
 FRONTEND_URL=https://kvenno.app
+AZURE_TENANT_ID=...            # same value as VITE_AZURE_TENANT_ID
+AZURE_CLIENT_ID=...            # same value as VITE_AZURE_CLIENT_ID
 ```
+
+`AZURE_TENANT_ID` and `AZURE_CLIENT_ID` are **required since 2026-10-24**. The three Claude
+endpoints (`/api/analyze`, `/api/analyze-2ar`, `/api/process-document`) accept only a request that
+carries the signed-in user's Microsoft ID token, and the server checks it against these
+(`server/src/lib/auth.ts`): the signature against the tenant's published keys, `aud` = the client
+ID, `iss` and `tid` = the tenant, and `exp`. With either unset those endpoints answer 503, so a
+host missing them breaks lab reports rather than leaving the Claude key open. The server fetches
+the keys from `login.microsoftonline.com`, so the host needs outbound HTTPS there.
+`AUTH_DISABLED=true` skips the check for local work beside `VITE_BYPASS_AUTH`, and is ignored when
+`NODE_ENV=production`.
 
 `FRONTEND_URL` is load-bearing beyond CORS convenience: in production the server
 **rejects any `Origin` that does not match**, with HTTP 500. It also rejects a
@@ -218,7 +230,9 @@ After deployment:
 - [ ] Chemistry hub: `/efnafraedi/`
 - [ ] Year hubs: `/efnafraedi/{1-ar,2-ar,3-ar,val,f-bekkir}/`
 - [ ] Games load: `/efnafraedi/1-ar/games/molmassi.html`
-- [ ] Lab reports: `/efnafraedi/{2-ar,3-ar}/lab-reports/`
+- [ ] Lab reports: `/efnafraedi/{2-ar,3-ar}/lab-reports/` — sign in and analyse one report.
+      A 503 from `/api/analyze` means `AZURE_TENANT_ID`/`AZURE_CLIENT_ID` are missing from
+      `server/.env`
 - [ ] Íslenskubraut: `/islenskubraut/`
 - [ ] Legacy redirect: `/1-ar/` → `/efnafraedi/1-ar/`
 - [ ] Icelandic characters render correctly

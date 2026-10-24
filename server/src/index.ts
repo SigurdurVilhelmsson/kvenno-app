@@ -13,6 +13,7 @@ import { unlink, readFile, rename } from 'fs/promises';
 import path from 'path';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { requireLogin } from './lib/auth.js';
 import { generatePdf, spjaldFileName } from './lib/islenskubraut-pdf.js';
 import { categoryIds, getCategoryById } from './lib/islenskubraut-data.js';
 import type {
@@ -346,6 +347,7 @@ function parseForm(
 app.post(
   '/api/process-document',
   documentLimiter,
+  requireLogin,
   async (req: Request, res: Response<ProcessDocumentResponse | ErrorResponse>) => {
     let docxPath: string | null = null;
     let pdfPath: string | null = null;
@@ -467,6 +469,7 @@ app.post(
 app.post(
   '/api/analyze',
   analyzeLimiter,
+  requireLogin,
   async (
     req: Request<unknown, unknown, AnalyzeRequestBody>,
     res: Response<AnthropicResponse | ErrorResponse>
@@ -617,6 +620,7 @@ app.post(
 app.post(
   '/api/analyze-2ar',
   analyzeLimiter,
+  requireLogin,
   async (
     req: Request<unknown, unknown, Analyze2arRequestBody>,
     res: Response<AnthropicResponse | ErrorResponse>
@@ -792,6 +796,11 @@ const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process
 if (isDirectRun) {
   app.listen(PORT, '127.0.0.1', () => {
     console.log(`Backend API running on http://127.0.0.1:${PORT}`);
+    if (!process.env.AZURE_TENANT_ID?.trim() || !process.env.AZURE_CLIENT_ID?.trim()) {
+      console.error(
+        '[auth] AZURE_TENANT_ID and AZURE_CLIENT_ID are not set: the lab-report endpoints will answer 503'
+      );
+    }
     if (process.env.NODE_ENV !== 'production') {
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`Allowed origins: ${filteredOrigins.join(', ')}`);
