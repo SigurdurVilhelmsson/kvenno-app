@@ -73,7 +73,7 @@ export function ScorePopup({ points, position, onComplete, className = '' }: Sco
       style={{
         left: position.x,
         top: position.y,
-        fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+        fontFamily: 'system-ui, sans-serif',
         fontWeight: 700,
         textShadow: '0 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 255, 255, 0.5)',
         pointerEvents: 'none',

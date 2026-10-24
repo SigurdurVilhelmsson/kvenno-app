@@ -8,7 +8,8 @@ import { buildProblem, DESCRIPTORS } from '../components/Level3';
  * five came to 1,20 × 10²⁴, and a student who noticed could answer without
  * calculating. Water, CO₂ and NaCl now weigh 27 g, 110 g and 175,5 g: 1,5, 2,5
  * and 3 mól. The answers are still derived from the masses, never written.
- * NH₃ and O₂ were left at 2 mól, as the ruling named only the three.
+ * NH₃ and O₂ were left at 2 mól, as the ruling named only the three, so two
+ * problems still shared one answer; O₂ now weighs 32 g, 1 mól (2026-10-24).
  */
 
 const AVOGADRO = 6.022e23;
@@ -28,15 +29,20 @@ describe('Stig 3 mass-to-particles answers', () => {
     ['H₂O', 1.5],
     ['CO₂', 2.5],
     ['NaCl', 3],
+    ['NH₃', 2],
+    ['O₂', 1],
   ])('%s comes to %s mól', (formula, moles) => {
     const [, problem] = massToParticles.find(([f]) => f === formula)!;
     expect(problem.answer / AVOGADRO).toBeCloseTo(moles, 2);
   });
 
-  it('no answer is shared by more than two problems', () => {
+  it('no two problems share an answer', () => {
     for (const [formula, { answer }] of massToParticles) {
       const sharing = massToParticles.filter(([, p]) => same(p.answer, answer));
-      expect(sharing.length, `${formula}: ${sharing.map(([f]) => f).join(', ')}`).toBeLessThan(3);
+      expect(
+        sharing.map(([f]) => f),
+        formula
+      ).toEqual([formula]);
     }
   });
 

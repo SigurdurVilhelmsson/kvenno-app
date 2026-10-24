@@ -57,8 +57,8 @@ type Desc =
 export const DESCRIPTORS: Desc[] = [
   // mass -> particles (6). Five of the six were 2 mól, so all five came to
   // 1,20 × 10²⁴, and an answer that never changes can be learned without
-  // calculating. Water, CO₂ and NaCl are now 1,5, 2,5 and 3 mól (decision 43 (b));
-  // the answers are still derived.
+  // calculating. Water, CO₂ and NaCl are now 1,5, 2,5 and 3 mól (decision 43 (b)),
+  // and O₂ 1 mól, so no two of the six share an answer; the answers are still derived.
   {
     type: 'mass-to-particles',
     formula: 'H\u2082O',
@@ -92,8 +92,8 @@ export const DESCRIPTORS: Desc[] = [
   {
     type: 'mass-to-particles',
     formula: 'O\u2082',
-    mass: 64,
-    massLabel: '64',
+    mass: 32,
+    massLabel: '32',
   },
   // particles -> mass (4)
   {

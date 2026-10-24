@@ -101,7 +101,9 @@ pnpm check-all            # type-check + lint + format:check — all three pass 
 All apps use the shared Tailwind preset from `packages/shared/styles/tailwind-preset.ts`:
 
 - `kvenno-orange`: `#f36b22` (primary), `#d95a1a` (dark), `#ff8c4d` (light)
-- System font stack
+- System font stack, on purpose: `theme.css` and `game-base.css` name `system-ui`. Only Íslenskubraut
+  shows DM Sans and Plus Jakarta Sans, bundled from `@fontsource` and named in its own `index.css`.
+  No remote stylesheet import, which the CSP refuses (`system-font.test.ts`)
 - Card border-radius: 12px, button border-radius: 8px
 
 ## Shared Components
