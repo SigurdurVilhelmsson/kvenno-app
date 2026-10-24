@@ -14,8 +14,9 @@ import { answerText } from '../utils/gas-calculations';
  *
  * Now a practice round plays every question of its level once and ends with `N af M rétt`.
  * A right answer counts unless the worked solution, which prints the answer, was opened
- * before it was checked; hints never change the count. Keppnishamur keeps its points and
- * streak, starting each run from 0.
+ * before it was checked; hints are free, except the last, which states the answer
+ * (`last-hint-reveals-answer.test.tsx`). Keppnishamur keeps its points and streak, starting
+ * each run from 0.
  *
  * Math.random is pinned to 0, so a round plays its level in the level's own order.
  */
@@ -95,10 +96,12 @@ describe('Æfingahamur', () => {
     fireEvent.click(screen.getByRole('button', { name: /Næsta spurning/ }));
     settle();
 
-    // 4: right after every hint. Counts: a hint never changes a count.
+    // 4: right after every hint but the last. Counts: the earlier tiers are free. This
+    // opened every hint until Siggi ruled on 2026-10-23 that the last, which states the
+    // answer, counts as a revealed answer.
     fireEvent.click(screen.getByRole('button', { name: /Sleppa/ }));
     settle();
-    for (let i = 0; i < level3[3].hints.length; i++) {
+    for (let i = 0; i < level3[3].hints.length - 1; i++) {
       fireEvent.click(screen.getByRole('button', { name: /Vísbending \(H\)/ }));
     }
     expect(container.textContent).not.toMatch(SCORE_TEXT);

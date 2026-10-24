@@ -86,7 +86,7 @@ const questionKey = (eq: Equilibrium, stress: Stress) =>
   `${eq.id}:${stress.type}:${stress.target ?? ''}`;
 
 function App() {
-  const { progress, updateProgress } = useProgress({
+  const { progress, updateProgress, incrementProblems } = useProgress({
     gameId: 'equilibrium-shifter',
     initialProgress: {
       currentLevel: 0,
@@ -110,7 +110,8 @@ function App() {
   const [userPrediction, setUserPrediction] = useState<ShiftDirection | null>(null);
   const [correctShift, setCorrectShift] = useState<ShiftResult | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [, setHintsUsedTier] = useState(0);
+  // The highest hint tier open on the current stress. The fourth states the answer.
+  const [hintsUsedTier, setHintsUsedTier] = useState(0);
   const [hintResetKey, setHintResetKey] = useState(0);
 
   // Stats
@@ -140,8 +141,12 @@ function App() {
   // Lærdómshamur scores nothing (mobile-pass decision 1 (b)); it counts. A sitting ends when
   // the student goes back to the menu, which then shows `N af M rétt`. An answer the game has
   // already shown in this sitting — the same stress on the same equilibrium, tried again
-  // after its explanation — is not counted; a hint never changes the count.
+  // after its explanation — is not counted. Nor is an answer given with the fourth hint tier
+  // open, since that tier states it (Item 1 as applied, call 3, Siggi 2026-10-23); the first
+  // three tiers are free and never change the count (mobile-pass decision 2).
   const [learningRound, setLearningRound] = useState({ correct: 0, total: 0 });
+  // A right answer the fourth tier had given, so the feedback says why it is not counted.
+  const [hintGaveAnswer, setHintGaveAnswer] = useState(false);
   const shownAnswersRef = useRef<Set<string>>(new Set());
   const { progress: lastLearning, updateProgress: saveLearning } = useGameProgress<LearningResult>(
     LEARNING_KEY,
@@ -385,6 +390,7 @@ function App() {
     setUserPrediction(null);
     setShowExplanation(false);
     setHintsUsedTier(0);
+    setHintGaveAnswer(false);
     setHintResetKey((prev) => prev + 1);
     setIsCorrect(null);
   };
@@ -393,7 +399,7 @@ function App() {
   const generateHints = (): TieredHints => {
     if (!currentEquilibrium || !appliedStress) {
       return {
-        topic: 'Le Chatelier meginreglan fjallar um hvernig jafnvægi bregst við álagi.',
+        topic: 'Lögmál Le Chateliers fjallar um hvernig jafnvægi bregst við álagi.',
         strategy: 'Hugsaðu um hvernig kerfið reynir að minnka áhrif álagsins.',
         method: 'Athugaðu hvort álagið eykur eða minnkar magn á hvorri hlið.',
         solution: 'Veldu álag til að sjá vísbendingu.',
@@ -506,6 +512,9 @@ function App() {
     setCorrectShift(shift);
     setUserPrediction(null);
     setShowExplanation(false);
+    // The hints mount with the stress, every tier closed, so a new stress starts unhinted.
+    setHintsUsedTier(0);
+    setHintGaveAnswer(false);
   };
 
   // Make prediction
@@ -523,10 +532,20 @@ function App() {
       const key = questionKey(currentEquilibrium, appliedStress);
       if (shownAnswersRef.current.has(key)) return;
       shownAnswersRef.current.add(key);
+      // The fourth tier printed the answer before it was given, so the answer is one the game
+      // had already shown: not counted, and not a finished problem either.
+      if (hintsUsedTier >= 4) {
+        setHintGaveAnswer(correct);
+        return;
+      }
       setLearningRound((prev) => ({
         correct: prev.correct + (correct ? 1 : 0),
         total: prev.total + 1,
       }));
+      // A counted right answer is a finished problem, and five open Keppnishamur, as its card
+      // promises (mobile-pass decision 101 (a), ruled 2026-10-23). Only Keppnishamur wrote
+      // this count before, so the gate in front of Keppnishamur could never open.
+      if (correct) incrementProblems();
       return;
     }
 
@@ -614,7 +633,7 @@ function App() {
     <div ref={menuRoot} className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 phone:p-3">
         <p className="text-lg text-warm-600 mb-6 text-center phone:text-base phone:mb-3">
-          Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
+          Lærðu lögmál Le Chateliers í gegnum gagnvirkar æfingar
         </p>
 
         {/* Conceptual intro — WHY does Le Chatelier work? */}
@@ -647,8 +666,8 @@ function App() {
           </div>
 
           <p className="text-xs text-indigo-600">
-            <strong>Le Chatelier:</strong> Kerfið bregst við álagi þannig að það dragi úr áhrifum
-            álagsins — það er afleiðing þess að Q ≠ K eftir truflun.
+            <strong>Lögmál Le Chateliers:</strong> Kerfið bregst við álagi þannig að það dragi úr
+            áhrifum álagsins — það er afleiðing þess að Q ≠ K eftir truflun.
           </p>
         </div>
 
@@ -674,7 +693,7 @@ function App() {
               <li>✓ Engin tímatakmörkun</li>
               <li>✓ Ítarlegar útskýringar</li>
               <li>✓ Vísbendingakerfi</li>
-              <li>✓ Veltudæmi</li>
+              <li>✓ Útskýrð svör</li>
             </ul>
           </button>
 
@@ -730,8 +749,8 @@ function App() {
         <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
           <h3 className="font-semibold text-amber-800 mb-2">Af hverju efnajafnvægi?</h3>
           <p className="text-sm text-amber-700">
-            Haber-ferlið framleiðir ammóníak til áburðargerðar og nærir milljarða manna. Le
-            Chatelier meginreglan hjálpar verkfræðingum að hámarka framleiðslu í iðnaði.
+            Haber-ferlið framleiðir ammóníak til áburðargerðar og nærir milljarða manna. Lögmál Le
+            Chateliers hjálpar verkfræðingum að hámarka framleiðslu í iðnaði.
           </p>
         </div>
         <div className="mt-3 text-center text-xs text-warm-500">
@@ -1011,6 +1030,12 @@ function App() {
                       {isCorrect ? '✅ Rétt!' : '❌ Rangt'}
                     </div>
 
+                    {hintGaveAnswer && isCorrect && (
+                      <p className="text-sm text-warm-700 mb-4 phone:mb-3">
+                        Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.
+                      </p>
+                    )}
+
                     <div className="mb-4 phone:mb-3">
                       <div className="font-semibold mb-2 phone:mb-1">Rétt svar:</div>
                       <div className="text-lg phone:text-base">
@@ -1046,7 +1071,7 @@ function App() {
                     )}
 
                     {/* The same comparison in real numbers, where the system
-                      carries a sourced constant. Twenty of the thirty do; the
+                      carries a sourced constant. Twenty-two of the thirty do; the
                       rest show the reasoning above and no figures, rather than
                       figures nobody can source. */}
                     {(gameMode === 'learning' || !isCorrect) &&

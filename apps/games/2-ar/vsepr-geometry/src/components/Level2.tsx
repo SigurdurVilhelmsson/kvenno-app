@@ -327,8 +327,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentStep, setCurrentStep] = useState(0);
   // Right answers to the three graded steps of each molecule, one try each. The written
   // explanation is not counted: it is checked only for length. No score, and the hints
-  // change nothing (decisions 1 and 2).
+  // change nothing (decisions 1 and 2), save the angle hint's second tier, which states the
+  // angle: a right angle after it is not counted, as an answer the game had already shown
+  // (item 1 as applied, call 3, Siggi 2026-10-23).
   const [correctCount, setCorrectCount] = useState(0);
+  const [answerShown, setAnswerShown] = useState(false);
   const [showHint, setShowHint] = useState(false);
   // The angle hint comes in two tiers: a nudge toward the electron geometry first, and the
   // angle itself only if asked for again. One tier used to print the answer (decisions item 71).
@@ -425,9 +428,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     }
 
     setStepResult(correct ? 'correct' : 'incorrect');
+    const shown = step.id === 'angle' && showHint && angleHintTier === 2;
+    setAnswerShown(shown);
 
     if (correct) {
-      if (step.id !== 'explanation') setCorrectCount((prev) => prev + 1);
+      if (step.id !== 'explanation' && !shown) setCorrectCount((prev) => prev + 1);
       if (step.id === 'geometry') {
         setGeometryRevealed(true);
       }
@@ -1325,7 +1330,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 id="vsepr-l2-verdict"
                 className={`font-bold ${stepResult === 'correct' ? 'text-green-700' : 'text-red-700'}`}
               >
-                {stepResult === 'correct' ? 'Rétt!' : 'Rangt — Sjáðu rétt svar hér að ofan'}
+                {stepResult === 'correct'
+                  ? answerShown
+                    ? 'Rétt! Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.'
+                    : 'Rétt!'
+                  : 'Rangt — Sjáðu rétt svar hér að ofan'}
               </div>
             </div>
           )}

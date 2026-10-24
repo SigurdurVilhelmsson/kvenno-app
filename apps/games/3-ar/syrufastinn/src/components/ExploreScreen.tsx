@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   focusTarget,
+  formatScientific,
   isPhone,
   revealSpan,
   usableArea,
@@ -31,14 +32,12 @@ import { kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 
-const sci = (n: number) => {
-  const exp = Math.floor(Math.log10(n));
-  const mant = n / Math.pow(10, exp);
-  const sup = String(exp)
-    .replace('-', '⁻')
-    .replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]);
-  return `${fmt(mant, 2)} × 10${sup}`;
-};
+/**
+ * Two figures, the source's: Appendix D gives every Ka to two, so the column
+ * recovering Ka prints `1,8 × 10⁻⁵` as Beita does, not `1,80 × 10⁻⁵`, and [H⁺]
+ * read from a two-decimal pH carries no more (decision 108).
+ */
+const sci = (n: number) => formatScientific(n, 2);
 
 interface ExploreScreenProps {
   onComplete: () => void;

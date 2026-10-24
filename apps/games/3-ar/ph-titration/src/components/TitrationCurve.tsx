@@ -92,80 +92,24 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           label: `pKa = ${formatDecimal(pKa, 2)}`,
           labelPosition: 'right',
         });
-      } else if (titration.type === 'polyprotic-diprotic') {
-        const pKaValues = [titration.pKa1, titration.pKa2];
-        const regionColors = ['rgba(251, 191, 36, 0.15)', 'rgba(147, 197, 253, 0.15)'];
-        const lineColors = ['#f59e0b', '#3b82f6'];
-
-        pKaValues.forEach((pKa, idx) => {
-          regions.push({
-            yMin: pKa - 1,
-            yMax: pKa + 1,
-            color: regionColors[idx],
-          });
-          horizontalLines.push({
-            y: pKa,
-            color: lineColors[idx],
-            lineDash: [5, 5],
-            label: `pKa${idx + 1} = ${formatDecimal(pKa, 2)}`,
-            labelPosition: 'right',
-          });
-        });
-      } else if (titration.type === 'polyprotic-triprotic') {
-        const pKaValues = [titration.pKa1, titration.pKa2, titration.pKa3!];
-        const regionColors = [
-          'rgba(251, 191, 36, 0.15)',
-          'rgba(147, 197, 253, 0.15)',
-          'rgba(134, 239, 172, 0.15)',
-        ];
-        const lineColors = ['#f59e0b', '#3b82f6', '#22c55e'];
-
-        pKaValues.forEach((pKa, idx) => {
-          regions.push({
-            yMin: pKa - 1,
-            yMax: pKa + 1,
-            color: regionColors[idx],
-          });
-          horizontalLines.push({
-            y: pKa,
-            color: lineColors[idx],
-            lineDash: [5, 5],
-            label: `pKa${idx + 1} = ${formatDecimal(pKa, 2)}`,
-            labelPosition: 'right',
-          });
-        });
       }
     }
 
     // Markers
     const markers: MarkerConfig[] = [];
 
-    // Equivalence point markers
-    if (showEquivalencePoints && titration) {
-      if ('equivalenceVolume' in titration && titration.equivalenceVolume) {
-        // Derived, not the stored equivalencePH: the star has to sit on the
-        // curve drawn beside it (HF's stored 8.08 was 0.11 above it).
-        markers.push({
-          x: titration.equivalenceVolume,
-          y: calculatePH(titration, titration.equivalenceVolume),
-          color: '#22c55e',
-          icon: '⭐',
-          radius: 8,
-          label: 'Jafngildispunktur',
-        });
-      } else if ('equivalenceVolumes' in titration && titration.equivalenceVolumes) {
-        const colors = ['#22c55e', '#3b82f6', '#f59e0b'];
-        titration.equivalenceVolumes.forEach((eqVol, idx) => {
-          markers.push({
-            x: eqVol,
-            y: titration.equivalencePHs[idx],
-            color: colors[idx] || '#22c55e',
-            icon: '⭐',
-            radius: 8,
-            label: `EP${idx + 1}`,
-          });
-        });
-      }
+    // Equivalence point marker
+    if (showEquivalencePoints && titration && titration.equivalenceVolume) {
+      // Derived, not the stored equivalencePH: the star has to sit on the
+      // curve drawn beside it (HF's stored 8.08 was 0.11 above it).
+      markers.push({
+        x: titration.equivalenceVolume,
+        y: calculatePH(titration, titration.equivalenceVolume),
+        color: '#22c55e',
+        icon: '⭐',
+        radius: 8,
+        label: 'Jafngildispunktur',
+      });
     }
 
     // Student's marked equivalence point

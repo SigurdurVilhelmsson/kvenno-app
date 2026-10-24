@@ -16,17 +16,29 @@
  * or in the challenge data it reads.)
  *
  * **Everything here works on the written form, not on a `number`.** That is not
- * fussiness, it is the whole subject: `1200`, `1200.` and `1,200 × 10³` are the
- * same quantity written to two, four and four significant figures, and a
+ * fussiness, it is the whole subject: `1200`, `1200,0` and `1,200 × 10³` are the
+ * same quantity written to two, five and four significant figures, and a
  * JavaScript `number` cannot tell them apart. Parsing to a float first would
  * throw away the thing the student is being asked about.
  *
- * The rules, as the school's course states them:
+ * The rules, as the school's textbook states them (ch01/m68690):
  *
  *  1. every non-zero digit is significant
  *  2. zeros between non-zero digits are significant
  *  3. leading zeros are never significant — they only place the decimal point
- *  4. trailing zeros are significant **only** when a decimal point is written
+ *  4. trailing zeros written after the decimal point are significant. Trailing
+ *     zeros of a whole number are **ambiguous**: they may have been measured or
+ *     may only place the point. Standard form settles it (`1,2 × 10³` is two,
+ *     `1,200 × 10³` four); written plainly, they are assumed not significant.
+ *
+ * **Rule 4 changed on 2026-10-23** (mobile-pass decision 32 (b)). The game used
+ * to teach that a trailing comma makes such zeros count (`1200,` four, `60,`
+ * two). The book does not: it calls them ambiguous and says to assume they do
+ * not count (m68690:47,62). So a comma with no digits after it now changes
+ * nothing — `1200,` is two figures, like `1200`. It is read rather than
+ * refused, because it is a readable number and the value is right; what it
+ * cannot do is claim a precision the book does not recognise, so the grader
+ * never credits it with one.
  */
 
 import type { ScientificEntry } from '@shared/utils';
@@ -76,8 +88,11 @@ export function countSigFigs(literal: string): number {
     throw new RangeError(`Not a written number: ${JSON.stringify(literal)}`);
   }
 
-  const hasPoint = m.includes('.');
-  const digits = m.replace('.', '');
+  // Rule 4: a point with nothing after it (`1200,`) is not a claim about the
+  // trailing zeros. Drop it, so they stay ambiguous and uncounted.
+  const bare = m.endsWith('.') ? m.slice(0, -1) : m;
+  const hasPoint = bare.includes('.');
+  const digits = bare.replace('.', '');
 
   // Rule 3: leading zeros only place the point. `0.00450` -> `450`.
   const withoutLeading = digits.replace(/^0+/, '');
@@ -87,7 +102,8 @@ export function countSigFigs(literal: string): number {
   // Counting the trailing zeros after the point gives exactly that.
   if (withoutLeading === '') return hasPoint ? Math.max(digits.length - 1, 1) : 1;
 
-  // Rule 4: trailing zeros count only when a decimal point is written.
+  // Rule 4: trailing zeros count when digits are written after the point —
+  // `2,50`, `1200,0` — and a whole number's are assumed not to.
   return hasPoint ? withoutLeading.length : withoutLeading.replace(/0+$/, '').length;
 }
 
@@ -122,13 +138,13 @@ function toScientific(exponential: string): string {
  *
  *  - it writes a dot where Icelandic writes a comma, and `1.20e+3` where the
  *    course writes `1,20 × 10³`;
- *  - **some values cannot be written plainly to the asked-for precision
- *    without a trailing comma.** 60,221 to two significant figures is `60` — and
- *    by rule 4 a written `60` claims *one* figure, because its trailing zero has
- *    no decimal comma to make it count. `60,` would claim two, by the same rule,
- *    but a comma with nothing after it is easy to misread; the clear way to
- *    write it is `6,0 × 10¹`, and Stig 0 says so. (Stig 0 grades `60,` correct
- *    all the same: rule 4 is the game's own rule.)
+ *  - **some values cannot be written plainly to the asked-for precision at
+ *    all.** 60,221 to two significant figures is `60` — and by rule 4 a written
+ *    `60` claims *one* figure, because a whole number's trailing zero is
+ *    ambiguous and assumed not to count. The same holds for 1200 to three. The
+ *    book settles the ambiguity with standard form, so the answer is
+ *    `6,0 × 10¹` or `1,20 × 10³`, and Stig 0 says so. (`60,` does not help:
+ *    since decision 32 (b) a trailing comma changes nothing.)
  *
  * So the result is verified before it is returned, and falls back to scientific
  * notation whenever plain decimal would misstate the precision.
@@ -147,7 +163,8 @@ export function roundToSigFigs(value: number, figures: number): string {
   const plain = rounded.toFixed(Math.max(places, 0)).replace('.', ',');
 
   // Prefer plain decimal, but only where reading it back gives the precision
-  // claimed. `1200` does (rule 4 makes it two figures); `60` does not.
+  // claimed. `1200` to two does (rule 4 reads it as two); `60` to two and
+  // `1200` to three do not, and go to standard form.
   if (countSigFigs(plain) === figures) return plain;
   return toScientific(rounded.toExponential(figures - 1));
 }

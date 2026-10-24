@@ -72,7 +72,8 @@ export type WrittenVerdict = 'rett' | 'stafir' | 'veldi' | 'gildi' | 'ogilt';
  * `0,00457`, which is a wrong rounding and the thing this step grades.
  *
  * The significant figures are counted on the digits as written. The power of
- * ten carries none, so `6,0` × 10¹ is two figures, and so is `60,` (rule 4).
+ * ten carries none, so `6,0` × 10¹ is two figures. `60,` is one, like `60`:
+ * since decision 32 (b) a trailing comma changes nothing (rule 4).
  */
 export function checkWritten(
   entry: ScientificEntry,
@@ -477,6 +478,8 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
                   <p className="mt-2">
                     Talan þín er rétt en hún er ekki skrifuð með {roundItem.figures} markverðum
                     stöfum. Núll aftast er ekki skraut — það er hluti af fullyrðingunni um nákvæmni.
+                    {/^[+-]?\d+[.,]$/.test(entry.mantissa.trim()) &&
+                      ' Komma aftast, án tölustafa á eftir, breytir engu (regla 4).'}
                   </p>
                 )}
                 {verdict === 'veldi' && (
@@ -493,18 +496,17 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
                   </p>
                 )}
                 {verdict === 'gildi' && <p className="mt-2">Námundunin sjálf stemmir ekki.</p>}
-                {/* The notation is shown, not named. The old note's word had no
-                    hits in the course's textbook, which itself uses two, and
-                    which one the course uses is an open terminology ruling
-                    (`docs/FEBRUARY-DECISIONS-RECOVERED.md`, item 7). */}
+                {/* Rule 4 as the book frames it (decision 32 (b)): a whole
+                    number's trailing zeros are ambiguous, and standard form
+                    (`staðalform`, decision 33) settles it. */}
                 {roundItem.answer.includes('×') && (
                   <p className="mt-2">
                     Skrifuð sem{' '}
                     <code>
                       {formatDecimal(Number(roundItem.value.toPrecision(roundItem.figures)))}
                     </code>{' '}
-                    yrði talan lesin með færri markverðum stöfum, því núll aftast telja ekki nema
-                    komma sé skrifuð (regla 4). Skýrast er að skrifa hana á staðalformi,{' '}
+                    yrði talan lesin með færri markverðum stöfum, því óvíst er hvort núll aftast í
+                    heilli tölu voru mæld og þá teljast þau ekki (regla 4). Staðalform sker úr:{' '}
                     <code className="whitespace-nowrap">{roundItem.answer}</code>, þar sem allir
                     tölustafirnir framan við <span className="whitespace-nowrap">× 10</span> eru
                     markverðir.

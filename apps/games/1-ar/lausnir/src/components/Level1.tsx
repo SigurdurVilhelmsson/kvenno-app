@@ -349,6 +349,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const hintRef = useRef<HTMLDivElement>(null);
   const conceptRef = useRef<HTMLDivElement>(null);
   const checkRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const missRef = useRef<HTMLDivElement>(null);
   // Bumped on every "Athuga spá", right or wrong: each check moves focus to
   // the feedback, and a second wrong guess replaces the first's text.
@@ -422,7 +423,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   // Focus moves to it, and a phone shows it with the concentration readout
   // above it where both fit.
   useRevealAfterCommit(showConcept, () => ({
-    bottom: checkRef.current,
+    bottom: nextRef.current ?? checkRef.current,
     tops: [
       cardRef.current?.querySelector('[data-concentration-indicator]') ?? null,
       conceptRef.current,
@@ -455,6 +456,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   // A press within 400 ms of "Áfram í verkefni" appearing is dropped, so the
   // second tap of a double tap on "Athuga spá" cannot skip the feedback.
   const armed = useArmedAfter(400, `${currentChallenge}:${predictionComplete}`);
+  // The same guard for "Næsta verkefni" after a right "Athuga lausn".
+  const nextArmed = useArmedAfter(400, `${currentChallenge}:${showConcept}`);
 
   // Handle prediction submission
   const handlePredictionSubmit = () => {
@@ -513,21 +516,23 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const checkAnswer = useCallback(() => {
     if (isCorrect) {
       setCompleted((prev) => [...prev, challenge.id]);
+      // The concept panel stays until the student moves on. It used to give way to the
+      // next challenge after 2,5 s by itself, a timer in a learning phase that took the
+      // panel away half-read (vertical-scroll §7.7, settled 2026-10-23).
       setShowConcept(true);
-
-      // Move to next challenge after delay
-      setTimeout(() => {
-        if (currentChallenge < CHALLENGES.length - 1) {
-          setCurrentChallenge((prev) => prev + 1);
-        } else {
-          setGameComplete(true);
-        }
-      }, 2500);
     } else {
       setMissAt(currentConcentration);
       setMisses((n) => n + 1);
     }
-  }, [isCorrect, challenge.id, currentChallenge, currentConcentration]);
+  }, [isCorrect, challenge.id, currentConcentration]);
+
+  const goToNext = () => {
+    if (currentChallenge < CHALLENGES.length - 1) {
+      setCurrentChallenge((prev) => prev + 1);
+    } else {
+      setGameComplete(true);
+    }
+  };
 
   const missShown = missAt !== null && missAt === currentConcentration && !isCorrect;
 
@@ -990,20 +995,31 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 </button>
               )}
 
-              <button
-                ref={checkRef}
-                onClick={checkAnswer}
-                disabled={showConcept}
-                className={`flex-1 font-bold py-3 px-6 rounded-xl transition-colors phone:min-w-0 phone:px-2 ${
-                  isCorrect && !showConcept
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : showConcept
-                      ? 'bg-warm-300 text-warm-500 cursor-not-allowed'
+              {/* "Athuga lausn" and "Næsta verkefni" are two elements (keyed), and
+                  Næsta ignores a press within 400 ms of appearing. */}
+              {!showConcept ? (
+                <button
+                  key="check"
+                  ref={checkRef}
+                  onClick={checkAnswer}
+                  className={`flex-1 font-bold py-3 px-6 rounded-xl transition-colors phone:min-w-0 phone:px-2 ${
+                    isCorrect
+                      ? 'bg-green-500 hover:bg-green-600 text-white'
                       : 'bg-blue-500 hover:bg-blue-600 text-white'
-                }`}
-              >
-                {showConcept ? 'Sæki næsta verkefni...' : 'Athuga lausn ✓'}
-              </button>
+                  }`}
+                >
+                  Athuga lausn ✓
+                </button>
+              ) : (
+                <button
+                  key="next"
+                  ref={nextRef}
+                  onClick={nextArmed(goToNext)}
+                  className="flex-1 font-bold py-3 px-6 rounded-xl transition-colors phone:min-w-0 phone:px-2 bg-green-600 hover:bg-green-700 text-white"
+                >
+                  {currentChallenge < CHALLENGES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
+                </button>
+              )}
             </div>
           </div>
         )}

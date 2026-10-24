@@ -190,7 +190,7 @@ export const problems: Problem[] = [
     phase: 'beita',
     icon: '🔥',
     context:
-      'Í einum skammti af handspritti eru um 25,0 mL af etanóli. Þegar það brennur myndast koldíoxíð og vatn.',
+      'Í lítilli flösku af handspritti eru um 25,0 mL af etanóli. Þegar það brennur myndast koldíoxíð og vatn.',
     goal: 'massa koldíoxíðs sem myndast við brunann, í grömmum',
     start: quantity(25.0, 'mL', 'C₂H₅OH'),
     startLabel: '25,0',

@@ -260,14 +260,14 @@ funnel;trekt
 galvanic cell;galvaníhlað
 gas;gas
 gas constant;gasfastinn
-Gibbs free energy;Gibbs fríorka
+Gibbs free energy;Gibbs frjáls orka
 glass rod;glerstafur
 graduated cylinder;mæliglas
 graduated pipette;mælipípetta
 ground state;grunnástand
 group;flokkur
 group;hópur
-half equivalance point;hálfgildispunktur
+half-equivalence point;hálfjafngildispunktur
 half reaction;hálfhvarf
 half-cell;hálfker
 half-life;helmingunartími
@@ -586,6 +586,7 @@ strong acid/base;sterk sýra
 strong base;sterkur basi
 structural formula;byggingarformúla
 sublimation;þurrgufun
+subscript;lágstafur
 subshell;undirhvolf
 chemical substance;hreint efni
 substitution;skiptihvarf
@@ -593,6 +594,7 @@ suction flask;sogflaska
 sulfuric acid;brennisteinssýra
 superconductor;ofurleiðari
 supersaturated solution;yfirmettuð lausn
+superscript;hávísir
 surface tension;yfirborðsspenna
 synthesis;samruni
 synthesis reaction;samrunaefnahvarf

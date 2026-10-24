@@ -270,3 +270,27 @@ export function commonIonApproximationIsSafe(
   const fraction = own / concentration;
   return { safe: fraction <= 0.05, fraction };
 }
+
+/** The two slips Æfa can name from a wrong molar solubility (mobile-pass decision 120 (b)). */
+export type SolubilitySlip = 'kvadratrot' | 'gleymdi-fjarkanum';
+
+/**
+ * Which of the topic's two known slips a wrong molar solubility is, if either.
+ *
+ * Only for a salt whose Ksp is 4s³ (a 1:2 or 2:1 salt), where both slips give a number of their
+ * own: `√Ksp` is the 1:1 formula used where it does not apply, and `∛Ksp` is the right root with
+ * the 4 forgotten. Each is called only within 2 % of the entry, the grader's own tolerance, so an
+ * answer that merely lands nearby is not told it made a mistake it did not make. For a 1:1 salt
+ * `√Ksp` is the answer, and nothing is diagnosed.
+ */
+export function solubilitySlip(
+  salt: Pick<Salt, 'ksp' | 'x' | 'y'>,
+  value: number,
+  tolerance = 0.02
+): SolubilitySlip | null {
+  if (salt.x + salt.y !== 3 || !(value > 0)) return null;
+  const near = (target: number) => Math.abs(value - target) / target <= tolerance;
+  if (near(Math.sqrt(salt.ksp))) return 'kvadratrot';
+  if (near(Math.cbrt(salt.ksp))) return 'gleymdi-fjarkanum';
+  return null;
+}

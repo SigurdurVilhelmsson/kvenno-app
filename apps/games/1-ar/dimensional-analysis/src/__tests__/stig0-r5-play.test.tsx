@@ -5,8 +5,9 @@
  * r5 asks for 60,221 to two significant figures, whose printed answer is
  * `6,0 × 10¹`. The shipped grader read that printed answer back with
  * `parseStudentNumber`, which stops at the `×` and returns 6 — so `6,0`, a
- * tenth of the answer, was marked Rétt, while `60,` (two figures by rule 4) and
- * `6,0e1` were marked wrong. A phone's decimal keypad cannot type `×` or `e`,
+ * tenth of the answer, was marked Rétt, while `6,0e1` was marked wrong.
+ * (So was `60,`, then two figures by the game's trailing-comma rule; since
+ * decision 32 (b), 2026-10-23, rule 4 follows the book and `60,` is one.) A phone's decimal keypad cannot type `×` or `e`,
  * so on a phone the only answer the step accepted was the wrong one.
  *
  * Queries are scoped to the rendered container: the repo runs vitest with
@@ -69,11 +70,23 @@ describe('Stig 0, r5 — sixty to two significant figures', () => {
   it.each([
     ['6,0', '1'],
     ['0,60', '2'],
-    ['60,', ''],
   ])('accepts %s × 10^%s, typable on a phone keypad', (digits, power) => {
     const view = playToR5();
     answer(view, digits, power);
     expect(view.getByText('Rétt')).toBeTruthy();
+  });
+
+  it('marks 60, as one figure and says the comma changes nothing', () => {
+    // Decision 32 (b): the book calls a whole number's trailing zeros
+    // ambiguous and assumes they do not count. A comma with nothing after it
+    // does not settle that, so `60,` was correct before and is not now.
+    const view = playToR5();
+    answer(view, '60,', '');
+    expect(view.queryByText('Rétt')).toBeNull();
+    expect(view.getByText(/ekki skrifuð með 2 markverðum stöfum/).textContent).toContain(
+      'Komma aftast, án tölustafa á eftir, breytir engu'
+    );
+    expect(view.queryByText(/Námundunin sjálf stemmir ekki/)).toBeNull();
   });
 
   it('names the precision, not the rounding, when sixty is written to one figure', () => {
@@ -83,16 +96,19 @@ describe('Stig 0, r5 — sixty to two significant figures', () => {
     expect(view.queryByText(/Námundunin sjálf stemmir ekki/)).toBeNull();
   });
 
-  it('says why the printed answer uses a power of ten, without claiming 60, is impossible', () => {
-    // The old note said the number could not be written to two figures
-    // without scientific notation — false once `60,` is graded correct.
+  it('says why the printed answer is in standard form, in the book’s terms', () => {
+    // Rule 4 as the book frames it (decision 32 (b)): the trailing zero of
+    // `60` is ambiguous and so not counted, and standard form settles it. The
+    // note used to say a written comma would make it count.
     const view = playToR5();
     answer(view, '6,0', '1');
     const note = view.getByText(/regla 4/);
     expect(note.textContent).toContain('6,0 × 10¹');
-    expect(note.textContent).not.toMatch(/ekki hægt/);
-    // Nor does it name the notation: the old note's word had no corpus hits,
-    // and which word the course uses is an open ruling, not this file's call.
+    expect(note.textContent).toMatch(/óvíst/);
+    expect(note.textContent).toMatch(/Staðalform sker úr/);
+    expect(note.textContent).not.toMatch(/nema komma sé skrifuð/);
+    // It names the notation by the ruled word, `staðalform` (decision 33), and
+    // not by the coinage the old note used, which had no corpus hits.
     expect(note.textContent).not.toMatch(/veldisrithátt|vísindarithátt/i);
   });
 

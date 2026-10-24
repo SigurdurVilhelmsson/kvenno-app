@@ -18,7 +18,7 @@ import {
   GAS_LAW_INFO,
   RoundResult,
 } from './types';
-import { checkAnswer, calculateError } from './utils/gas-calculations';
+import { checkAnswer, calculateError, hintsOffered } from './utils/gas-calculations';
 
 const DEFAULT_PROGRESS: GasLawProgress = {};
 
@@ -52,8 +52,13 @@ function App() {
   /** The finished round, once its last question is answered. */
   const [roundResult, setRoundResult] = useState<RoundResult | null>(null);
   // Whether the worked solution, which prints the answer, was opened before the answer was
-  // checked. A right answer copied from it is not counted; a hint never changes a count.
+  // checked. A right answer copied from it is not counted. Hints are free, except the last,
+  // which states the answer and so counts as the solution does (Siggi, 2026-10-23).
   const [solutionSeen, setSolutionSeen] = useState(false);
+  // A near miss in practice can be tried again (mobile-pass decision 93 (a)). The feedback
+  // screen has printed the answer by then, so the retry neither counts nor adds a question
+  // to the round: the first answer already did.
+  const [retrying, setRetrying] = useState(false);
 
   // Keppnishamur keeps its points and streak, and only for the run being played.
   const [run, setRun] = useState<GameStats>(NEW_RUN);
@@ -80,6 +85,7 @@ function App() {
     setShowHint(0);
     setShowSolution(false);
     setSolutionSeen(false);
+    setRetrying(false);
     setFeedback(null);
     setValidationError(null);
     setTimeRemaining(mode === 'challenge' ? 90 : null);
@@ -115,6 +121,23 @@ function App() {
       showQuestion(gameMode, selectedLevel, getRandomQuestionForLevel(selectedLevel));
     }
   };
+
+  /** Reyna aftur: the same question again, past the law step, with its hints still open. */
+  const retryQuestion = () => {
+    setUserAnswer('');
+    setShowSolution(false);
+    setFeedback(null);
+    setValidationError(null);
+    setGameStep('solve');
+    setRetrying(true);
+    setScreen('game');
+  };
+
+  /** The last hint tier is open: every question's last hint ends on the answer itself. */
+  const answerHinted =
+    currentQuestion !== null &&
+    currentQuestion.hints.length > 0 &&
+    showHint >= currentQuestion.hints.length;
 
   /** Open or close the worked solution; opening it before answering is remembered. */
   const toggleSolution = (show: boolean) => {
@@ -179,6 +202,7 @@ function App() {
     let isCorrect = false;
     let points = 0;
     let message: string;
+    let nearMiss = false;
 
     if (userNum === null) {
       message = 'Tíminn rann út!';
@@ -192,8 +216,12 @@ function App() {
         }
         message = error < 1 ? 'Fullkomið! Mjög nákvæmt svar! ⭐' : 'Rétt! Innan vikmarka ✓';
       } else {
-        message =
-          error < 5 ? 'Næstum rétt! Reyndu aftur.' : 'Ekki rétt. Athugaðu útreikninga þína.';
+        nearMiss = error < 5;
+        // Practice offers "Reyna aftur" with it; Keppnishamur has no retry, so it does not
+        // tell the student to try again (mobile-pass decision 93 (a) and (b)).
+        if (!nearMiss) message = 'Ekki rétt. Athugaðu útreikninga þína.';
+        else if (gameMode === 'challenge') message = 'Næstum rétt — en utan vikmarka.';
+        else message = 'Næstum rétt! Reyndu aftur.';
       }
     }
 
@@ -214,8 +242,8 @@ function App() {
         },
         challengeBestStreak: Math.max(progress.challengeBestStreak ?? 0, next.bestStreak),
       });
-    } else {
-      const counted = isCorrect && !solutionSeen;
+    } else if (!retrying) {
+      const counted = isCorrect && !solutionSeen && !answerHinted;
       const nextRound = { correct: round.correct + (counted ? 1 : 0), total: round.total + 1 };
       setRound(nextRound);
       if (nextRound.total >= deck.length) {
@@ -235,6 +263,7 @@ function App() {
       correctAnswer: currentQuestion.answer,
       difference: userNum === null ? null : Math.abs(userNum - currentQuestion.answer),
       explanation: currentQuestion.solution.steps.join(' → '),
+      nearMiss,
     });
     setValidationError(null);
     setScreen('feedback');
@@ -311,7 +340,7 @@ function App() {
   }, [screen]);
 
   const getHint = () => {
-    if (!currentQuestion || showHint >= currentQuestion.hints.length) return;
+    if (!currentQuestion || showHint >= hintsOffered(currentQuestion, gameMode)) return;
     setShowHint(showHint + 1);
     setSessionHintsUsed(sessionHintsUsed + 1);
   };
@@ -422,8 +451,11 @@ function App() {
             selectedLevel={selectedLevel}
             roundResult={gameMode === 'practice' ? roundResult : null}
             solutionSeen={gameMode === 'practice' && solutionSeen}
+            answerHinted={gameMode === 'practice' && answerHinted}
+            retried={gameMode === 'practice' && retrying}
             gameMode={gameMode}
             onNext={nextQuestion}
+            onRetry={gameMode === 'practice' && feedback.nearMiss ? retryQuestion : undefined}
             onRestart={() => startRun('practice')}
             onBackToMenu={() => setScreen('menu')}
             rootRef={feedbackRoot}

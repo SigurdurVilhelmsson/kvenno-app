@@ -99,7 +99,9 @@ describe('no answer field shows an answer as its example', () => {
     expectNotAnAnswer(
       'Beita placeholder',
       placeholders(),
-      BEITA_PROBLEMS.map((p) => p.result.extent)
+      // The screen asks for x as a size: a problem that runs backwards has a
+      // negative extent (decision 96 (b)).
+      BEITA_PROBLEMS.map((p) => Math.abs(p.result.extent))
     );
   });
 });

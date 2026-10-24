@@ -73,6 +73,15 @@ describe('the scenario set teaches rather than just works', () => {
     expect(context).not.toMatch(/lotu/);
   });
 
+  it('has sewage works add iron, not remove it', () => {
+    // Decision 51 (2026-10-23): plants add an iron(III) salt as a coagulant, and the hydroxide
+    // carries phosphate down. The sentence used to say iron ions were taken out of the sewage.
+    const context = SCENARIOS.find((s) => s.id === 'fecl3-naoh')!.context;
+    expect(context).toMatch(/bæta járn\(III\)salti í skólpið/);
+    expect(context).toMatch(/fosfat/);
+    expect(context).not.toMatch(/felldar úr skólpi/);
+  });
+
   it('every scenario names where a student meets it', () => {
     for (const s of SCENARIOS) {
       expect(s.context.length, `${s.id} has no context`).toBeGreaterThan(40);

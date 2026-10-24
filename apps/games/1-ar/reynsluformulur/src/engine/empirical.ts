@@ -6,7 +6,7 @@
  *  1. **Prósenta** — take 100 g of the compound, so each percentage is a mass in grams
  *  2. **Mól** — divide each mass by the element's molar mass
  *  3. **Hlutfall** — divide every mole count by the smallest of them
- *  4. **Vísitala** — multiply up until all of them are whole numbers
+ *  4. **Lágstafur** — multiply up until all of them are whole numbers
  *
  * Step 4 is where students lose it, and the February review named the exact
  * failure: _"Students frequently round 1.5 to 2"_

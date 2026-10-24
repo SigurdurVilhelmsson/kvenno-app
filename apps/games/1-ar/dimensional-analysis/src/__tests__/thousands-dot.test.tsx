@@ -53,7 +53,7 @@ describe('Level 2', () => {
         initialProgress={{ problemsCompleted: index, finalAnswersCorrect: 0, mastered: false }}
       />
     );
-    fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
     for (const factor of problem.correctPath) {
       const label = factor.split(' / ').join('');
       fireEvent.click(screen.getAllByRole('button').find((b) => b.textContent === label)!);

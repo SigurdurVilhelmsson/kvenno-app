@@ -164,6 +164,33 @@ describe('the problem set', () => {
     expect(lighterLimits).toContain(false);
   });
 
+  it('lets "pick the smaller mass" pass step 1 at most twice in five', () => {
+    // `vatn`, `magnesiumoxid` and `natriumklorid` all had the lighter mass
+    // limiting, so the grams guess scored 3 of 5 (decision 56 (a)).
+    // `natriumklorid` was re-weighed so the heavier mass, the chlorine, runs out.
+    const lighterLimits = YIELD_PROBLEMS.filter(
+      (p) => p.gramsR1 < p.gramsR2 === (p.result.limitingFormula === p.reaction.reactant1.formula)
+    );
+    expect(lighterLimits.length, lighterLimits.map((p) => p.id).join(', ')).toBeLessThanOrEqual(2);
+    const nacl = by('natriumklorid');
+    expect(nacl.gramsR2).toBeGreaterThan(nacl.gramsR1);
+    expect(nacl.result.limitingFormula).toBe('Cl₂');
+  });
+
+  it("states natriumklorid's figures as the engine derives them", () => {
+    // The context quotes the moles and the times; the masses are the only
+    // givens, so the prose must follow them. It used to say the chlorine was
+    // in excess although it is much heavier, the grams reasoning backwards.
+    const nacl = by('natriumklorid');
+    const comma = (n: number, places: number) => n.toFixed(places).replace('.', ',');
+    expect(nacl.context).toContain(`${comma(nacl.result.molesR2, 2)} mól`);
+    expect(Math.round(nacl.result.molesR1)).toBe(2);
+    expect(nacl.context).toContain('tvö mól');
+    expect(nacl.context).toContain(`${comma(nacl.result.extentR2, 2)} skipti fyrir klórinn`);
+    expect(Math.round(nacl.result.extentR1)).toBe(1);
+    expect(nacl.context).not.toMatch(/umframmagni|miklu þyngra/);
+  });
+
   it('never tells a student the mole count alone decides, on a problem where it does not', () => {
     // `vatn` said the mole count decides, two clauses after printing 2 mol of
     // hydrogen against 1,5 mol of oxygen — where the smaller mole count is the

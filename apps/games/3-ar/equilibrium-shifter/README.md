@@ -27,8 +27,9 @@ streaks are Keppnishamur's only (mobile-pass decision 1 (b)). Lærdómshamur sco
 counts instead: when the student goes back to the menu, it shows the sitting as
 `Lærdómshamur, síðasta lota: N af M rétt`, kept under its own storage key
 (`equilibrium-shifter-laerdomshamur`). The same stress on the same equilibrium, answered again
-after its explanation has shown the answer, is not counted; a hint never changes the count.
-`learning-count.test.tsx` holds this, and that the count writes nothing to `problemsCompleted`.
+after its explanation has shown the answer, is not counted, nor is one given with the fourth hint
+tier open (below). The first three tiers never change the count. `learning-count.test.tsx` holds
+this, and which answers add to `problemsCompleted`.
 
 ## What matters before touching it
 
@@ -49,11 +50,14 @@ no reference temperature or no derivable ΔH leaves K and the mixture unmoved �
 as a catalyst, and the opposite in meaning. `StressOutcome` carries both flags, and
 `numbers-panel.test.tsx` and `numbers.test.ts` hold them apart.
 
-**20 of the 30 systems carry a sourced constant; 10 carry none, each with a written reason.**
+**22 of the 30 systems carry a sourced constant; 8 carry none, each with a written reason.**
 `src/data/constants.ts` takes acids, bases and Ksp from `@shared/data/appendix-d`, gas-phase Kc
-from the ch. 13 citations `jafnvaegisfasti` already carries, and a reaction written backwards
-takes `1/K` rather than a second lookup. `numbers.test.ts` asserts the count of unsourced systems
-is exactly ten, so quietly supplying one fails. Starting mixtures (`STARTING_MIXTURES`) are the
+from the ch. 13 citations `jafnvaegisfasti` already carries, the two complex ions from the
+Icelandic book's appendix K (`m68869`, Siggi's ruling 103, 2026-10-23: Fe³⁺ + SCN⁻ ⇌ FeSCN²⁺ at
+Kf = 8,9 × 10², and the copper ammine written coming apart, so `Kd = 1/Kf`), and a reaction
+written backwards takes `1/K` rather than a second lookup. Appendix K states no temperature, so the
+complex ions' temperature stresses say K moves without saying how far. `numbers.test.ts` asserts
+the count of unsourced systems is exactly eight, so quietly supplying one fails. Starting mixtures (`STARTING_MIXTURES`) are the
 problem, not the answer; every equilibrium mixture shown is computed.
 
 **ΔH is derived, and the stored value is held equal to it.** `derivedEnthalpy` sums the Icelandic
@@ -84,7 +88,7 @@ reaction is `bakhvarf` (id 18 is `Bakhvarf vatnsgashvarfsins`), the buffer syste
 ```
 src/App.tsx                       menu, both modes, feedback and results screens
 src/data/equilibria.ts            the 30 equilibria, with stored ΔH held to the derived value
-src/data/constants.ts             sourced K per system, the ten unsourced reasons, starting mixtures
+src/data/constants.ts             sourced K per system, the eight unsourced reasons, starting mixtures
 src/data/index.ts                 data exports
 src/engine/stress.ts              what a stress does to Q, K and the mixture
 src/utils/le-chatelier.ts         the qualitative shift and its explanations
@@ -93,7 +97,7 @@ src/components/NumbersPanel.tsx   the same comparison in computed numbers
 src/components/ParticleEquilibrium.tsx  particle picture
 src/types.ts, src/i18n.ts, src/styles.css, src/main.tsx
 src/__tests__/                    le-chatelier, numbers, numbers-panel, qk-pressure,
-                                  screen-anchoring, bar-labels, learning-count
+                                  screen-anchoring, bar-labels, learning-count, ruled-names
 ```
 
 **On a phone (2026-09-23).** Everything below `sm` is a phone layout and `sm:`/`md:` restore the
@@ -129,6 +133,44 @@ The shared pieces it depends on: `packages/shared/engine/equilibrium.ts`,
 `packages/shared/data/thermo.ts`, `packages/shared/data/appendix-d.ts`. `MIGRATION-SUMMARY.md` is a
 historical record of the port from the old HTML game and is out of date on most specifics.
 
+## Fixed 2026-10-23: acetic acid's heating stress, and the names
+
+- **Acetic acid offers no temperature stress** (mobile-pass decision 102 (b)). Id 8 stored an
+  unsourced ΔH = +5 kJ/mól and answered heating as a shift, while id 24, the same reaction written
+  with hydronium, stored 0; the literature value is near 0. Id 8's heating stress is gone, and the
+  stored value stays: the book's table of species in water, transcribed 2026-10-23, has no row
+  for CH₃COOH(aq) or CH₃COO⁻(aq), so option (a) has nothing to source it from.
+  `ruled-names.test.ts`.
+- **The names are ruled** (decision 104). Ids 6 and 22 are `Járn-þíósýanatflókajón` and
+  `Kopar-ammóníakflókajón`, and id 22's description says `tenglaskipti`. Id 17 is
+  `Hvarf metans og vatnsgufu`, the textbook's phrase (`ch13/m68801`). Ids 23 and 27, each one
+  reaction, are named for their equations: `Bruni kolefnis í kolmónoxíð` and
+  `Fyrsta klofnunarþrep fosfórsýru`. The principle is `lögmál Le Chateliers` throughout the
+  Icelandic, as the book has it, and the Lærdómshamur card's last bullet reads `Útskýrð svör`.
+  Id 1's name (decision 15), `Snertiferlið` (17) and `Vatnsgashvarfið` (19) were already applied.
+  `ruled-names.test.ts` holds the names, and `icelandic-text.test.ts` bans the old forms.
+
+## Fixed 2026-10-23: the Keppnishamur gate opens
+
+The card promises Keppnishamur opens after five problems in Lærdómshamur, and the menu counts
+them as «Verkefni kláruð», but only the end of a Keppnishamur round wrote that count, so the gate
+in front of Keppnishamur could never open. On 2026-09-19 Siggi ruled that the gate stays; on
+2026-10-23 Siggi ruled what it counts (mobile-pass decision 101 (a)): each right Lærdómshamur answer
+the sitting counts adds one. A repeat the game had already shown, and a wrong answer, add nothing.
+A Keppnishamur round still adds its right answers. `learning-count.test.tsx` plays five right
+answers and opens Keppnishamur.
+
+## Fixed 2026-10-23: the fourth hint tier gives the answer
+
+Item 1 as applied, call 3/7, Siggi 2026-10-23. The fourth tier of Lærdómshamur's hints prints
+`Rétt svar: …` with the explanation, so an answer given with it open is one the game had already
+shown: it is not counted in the sitting's `N af M rétt` and adds nothing to `problemsCompleted`,
+right or wrong. A right one says so under the verdict:
+`Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.` (the sentence `gas-law-challenge`
+uses for its last hint). Tiers 1–3 stay free (decision 2). The tiers close with each new stress,
+so a fourth tier opened on one stress does not reach the next. Keppnishamur has no hints.
+`learning-count.test.tsx` (`does not count an answer the fourth hint tier gave, …`) holds it.
+
 ## Fixed 2026-09-23 (after the phone pass)
 
 Each has a test that fails against the version before it.
@@ -157,27 +199,13 @@ Each has a test that fails against the version before it.
 
 ## Open
 
-- **The Keppnishamur gate cannot be opened.** It requires `progress.problemsCompleted >= 5`
-  (`App.tsx:521-522`), but the only write to `problemsCompleted` is at the end of a challenge round
-  (`App.tsx:427`). Learning mode never updates it, so a new student can never reach challenge
-  mode, and «Framvinda þín: Verkefni kláruð» on the menu stays at 0 however much Lærdómshamur a
-  student plays. The gate itself was already flagged as needing a ruling (a mode gate, outside the
-  2026-08-29 level-gating ruling); it now also needs fixing or removing, whichever the ruling is.
-  The Lærdómshamur count added on 2026-10-03 is kept apart from `problemsCompleted` on purpose, so
-  the gate behaves exactly as before until decision 101 is ruled; its option (a), counting correct
-  Lærdómshamur answers, could read that count.
-- **The ten unsourced systems** would need the Icelandic book's complex-ion formation constants
-  (`m68869`) or another new source — Siggi's call.
-- **Aqueous temperature stresses stay directional.** They have a constant but no derivable ΔH,
-  because `thermo.ts` carries no dissolved ions, so the numbers panel reports K as unknown. Their
-  stored ΔH values are unsourced, and two describe the same chemistry differently: acetic acid is
-  +5 (endothermic, id 8, offered a heating stress) and the acetic-acid buffer is 0 (id 24).
-- **Water-gas naming** — `Vatnsgashvarfið` matches `jafnvaegisfasti`, but that is a spelling
-  harmonisation; the corpus has no hits for either form, so it is Siggi's call.
-- **Names that need a naming ruling.** Id 1 is called `Díköfnunarefnisoxíð`, which names N₂O, not
-  N₂O₄; `1-ar/nafnakerfid` says `Díniturtetroxíð` and the textbook `tvíköfnunarefnistetraoxíð`.
-  Ids 6 and 22 say `komplex` and `ligandskipti` where `ordabok.md` has `flóki`/`flókajón` and
-  `tengill`; id 17's `Gufuumbrot` (steam reforming) has no corpus support; the principle is called
-  `Le Chatelier meginreglan` where the book's one use is `lögmál Le Chateliers`; and the menu's
-  `Veltudæmi` bullet is not a word anyone could source.
+- **The eight unsourced systems** (hemoglobin, the two with nothing on one side of K, five gas
+  reactions the book gives no number for) have no source on the platform. The two complex ions
+  were sourced from `m68869` on 2026-10-23.
+- **Most aqueous temperature stresses stay directional.** `thermo.ts` has carried every (aq) row
+  of the book's `m68865` since 2026-10-23 (Siggi's ruling). That derives ΔH for water's
+  autoionisation (+55,83, was 56) and AgCl dissolving (+65,4, was 65), but the book has no row for
+  the weak acids, ammonia, SCN⁻ or the complex ions in water, so ids 6, 8, 9, 21, 22, 24 and 27
+  keep a stored, unsourced ΔH and the numbers panel reports K as unknown when they are heated. Acetic acid's +5 (id 8) no longer reaches a question (below), but
+  it still disagrees with the 0 stored for the same chemistry as id 24 until a source is ruled on.
 - **i18n is partial** — 7 `t()` calls, the rest hardcoded Icelandic; see `docs/i18n-coverage.md`.

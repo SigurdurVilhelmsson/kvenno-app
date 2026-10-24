@@ -24,8 +24,14 @@ interface FeedbackScreenProps {
   roundResult?: RoundResult | null;
   /** The worked solution was open before this practice answer was checked. */
   solutionSeen?: boolean;
+  /** The last hint, which states the answer, was open when this practice answer was checked. */
+  answerHinted?: boolean;
+  /** This practice answer is a retry, given after this screen printed the answer. */
+  retried?: boolean;
   gameMode: GameMode;
   onNext: () => void;
+  /** Reyna aftur: offered on a near miss in practice only (mobile-pass decision 93 (a)). */
+  onRetry?: () => void;
   /** Play the practice round again, from the end of one. */
   onRestart?: () => void;
   onBackToMenu: () => void;
@@ -40,8 +46,11 @@ export function FeedbackScreen({
   selectedLevel,
   roundResult = null,
   solutionSeen = false,
+  answerHinted = false,
+  retried = false,
   gameMode,
   onNext,
+  onRetry,
   onRestart,
   onBackToMenu,
   rootRef,
@@ -90,6 +99,16 @@ export function FeedbackScreen({
               {solutionSeen && feedback.isCorrect && (
                 <p className="text-sm text-warm-700 mt-1 phone:w-full phone:mt-0.5">
                   Lausnin var opin þegar þú svaraðir, svo svarið telst ekki með.
+                </p>
+              )}
+              {answerHinted && !solutionSeen && !retried && feedback.isCorrect && (
+                <p className="text-sm text-warm-700 mt-1 phone:w-full phone:mt-0.5">
+                  Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.
+                </p>
+              )}
+              {retried && !solutionSeen && feedback.isCorrect && (
+                <p className="text-sm text-warm-700 mt-1 phone:w-full phone:mt-0.5">
+                  Rétta svarið var sýnt áður en þú reyndir aftur, svo svarið telst ekki með.
                 </p>
               )}
             </div>
@@ -220,6 +239,14 @@ export function FeedbackScreen({
             )}
 
             <div className="flex flex-col sm:flex-row gap-3">
+              {onRetry && (
+                <button
+                  onClick={armed(onRetry)}
+                  className="flex-1 py-3 px-6 rounded-lg font-bold border-2 border-kvenno-orange text-kvenno-orange-700 bg-white transition hover:bg-kvenno-orange-50"
+                >
+                  Reyna aftur
+                </button>
+              )}
               {roundResult ? (
                 <button
                   onClick={armed(() => onRestart?.())}

@@ -51,7 +51,7 @@ const CHALLENGES: Challenge[] = [
     name: 'própan',
     formula: 'C₃H₈',
     target: { carbons: 3, bonds: [] }, // all single bonds
-    hint: 'prop = 3 kolefni, an = eintengi',
+    hint: 'próp = 3 kolefni, an = eintengi',
     difficulty: 'easy',
   },
   {
@@ -68,7 +68,7 @@ const CHALLENGES: Challenge[] = [
     name: 'eten',
     formula: 'C₂H₄',
     target: { carbons: 2, bonds: [{ position: 1, type: 'double' }] },
-    hint: 'eth = 2 kolefni, en = tvítengi',
+    hint: 'et = 2 kolefni, en = tvítengi',
     difficulty: 'easy',
   },
   {
@@ -76,7 +76,7 @@ const CHALLENGES: Challenge[] = [
     name: 'própen',
     formula: 'C₃H₆',
     target: { carbons: 3, bonds: [{ position: 1, type: 'double' }] },
-    hint: 'prop = 3 kolefni, en = tvítengi',
+    hint: 'próp = 3 kolefni, en = tvítengi',
     difficulty: 'easy',
   },
   // Medium - Position numbers
@@ -85,7 +85,7 @@ const CHALLENGES: Challenge[] = [
     name: '1-búten',
     formula: 'C₄H₈',
     target: { carbons: 4, bonds: [{ position: 1, type: 'double' }] },
-    hint: '1- = tvítengi á stað 1, but = 4 kolefni',
+    hint: '1- = tvítengi á stað 1, bút = 4 kolefni',
     difficulty: 'medium',
   },
   {
@@ -93,7 +93,7 @@ const CHALLENGES: Challenge[] = [
     name: '2-búten',
     formula: 'C₄H₈',
     target: { carbons: 4, bonds: [{ position: 2, type: 'double' }] },
-    hint: '2- = tvítengi á stað 2, but = 4 kolefni',
+    hint: '2- = tvítengi á stað 2, bút = 4 kolefni',
     difficulty: 'medium',
   },
   // Medium - Alkynes
@@ -102,7 +102,7 @@ const CHALLENGES: Challenge[] = [
     name: 'etýn',
     formula: 'C₂H₂',
     target: { carbons: 2, bonds: [{ position: 1, type: 'triple' }] },
-    hint: 'eth = 2 kolefni, ýn = þrítengi',
+    hint: 'et = 2 kolefni, ýn = þrítengi',
     difficulty: 'medium',
   },
   {
@@ -110,7 +110,7 @@ const CHALLENGES: Challenge[] = [
     name: '1-bútýn',
     formula: 'C₄H₆',
     target: { carbons: 4, bonds: [{ position: 1, type: 'triple' }] },
-    hint: '1- = þrítengi á stað 1, but = 4 kolefni',
+    hint: '1- = þrítengi á stað 1, bút = 4 kolefni',
     difficulty: 'medium',
   },
   // Hard - More complex
@@ -134,7 +134,7 @@ const CHALLENGES: Challenge[] = [
 
 // Misconceptions
 const MISCONCEPTIONS = {
-  carbons: 'Forskeytið segir til um fjölda kolefna: meth=1, eth=2, prop=3, but=4, pent=5, hex=6.',
+  carbons: 'Forskeytið segir til um fjölda kolefna: met=1, et=2, próp=3, bút=4, pent=5, hex=6.',
   suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
   position:
     'Staðsetningartalan segir hvar ómettuð tenging byrjar (t.d. 2-búten = tvítengi milli C2 og C3).',
@@ -622,7 +622,7 @@ export function StructureFromNameChallenge({
             <div>
               <div className="font-bold text-warm-600 mb-1">Forskeyti:</div>
               <div className="grid grid-cols-3 gap-1">
-                {['meth-1', 'eth-2', 'prop-3', 'but-4', 'pent-5', 'hex-6'].map((p) => {
+                {['met-1', 'et-2', 'próp-3', 'bút-4', 'pent-5', 'hex-6'].map((p) => {
                   const [prefix, count] = p.split('-');
                   return (
                     <div

@@ -617,8 +617,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600 phone:text-xl phone:mb-1">
-          {t('levels.level3.name', 'Stilla redox-jöfnur')}
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600 phone:text-lg phone:mb-1">
+          {t('levels.level3.name', 'Stig 3: Stilla redox-jöfnur')}
         </h1>
         <p className="text-center text-warm-600 mb-4 phone:mb-2">
           {t('level3.subtitle', 'Hálfhvarfsaðferðin')}

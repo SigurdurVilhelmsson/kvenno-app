@@ -1,7 +1,15 @@
 import { Indicator } from '../types';
 
 /**
- * Common acid-base indicators used in titrations
+ * Common acid-base indicators used in titrations.
+ *
+ * `description` is shown in Level 2's result, after the choice, never on the
+ * card while choosing (mobile-pass decision 114 (c)). It must agree with the
+ * grader, which accepts an indicator when its range contains the equivalence
+ * pH: methyl orange said it suited a strong acid, which no puzzle here accepts
+ * it for, and phenolphthalein suited every weak acid, which HF (pH 8,0) is not.
+ * Both now state the bound their range sets; `indicator-choice.test.tsx` holds
+ * every description to the grader.
  */
 export const indicators: Indicator[] = [
   {
@@ -10,7 +18,8 @@ export const indicators: Indicator[] = [
     pHRange: [3.1, 4.4],
     colorAcidic: '#ef4444', // Red
     colorBasic: '#f97316', // Orange-yellow
-    description: 'Hentar best við títrun sterkrar sýru',
+    description:
+      'Hentar við títrun veiks basa með sterkri sýru ef pH við jafngildispunkt er 4,4 eða lægra',
   },
   {
     id: 'methyl-red',
@@ -30,11 +39,12 @@ export const indicators: Indicator[] = [
   },
   {
     id: 'phenolphthalein',
-    name: 'Fenólftaleín',
+    name: 'Fenólftalín',
     pHRange: [8.3, 10.0],
     colorAcidic: 'transparent',
     colorBasic: '#ec4899', // Pink
-    description: 'Hentar best við títrun veikrar sýru með sterkum basa',
+    description:
+      'Hentar við títrun veikrar sýru með sterkum basa ef pH við jafngildispunkt er 8,3 eða hærra',
   },
   {
     id: 'thymol-blue',

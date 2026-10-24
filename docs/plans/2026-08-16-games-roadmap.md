@@ -1,6 +1,6 @@
 # Chemistry games roadmap — from here to "sound, accurate, complete"
 
-**Date:** 2026-08-16 · **Status block updated:** 2026-08-27
+**Date:** 2026-08-16 · **Status block updated:** 2026-10-23
 **Goal, verbatim:** "a pedagogically sound games library, accurate and error free, covering the curriculum of my students"
 **Base:** kvenno-app. The old repo `namsbokasafn-leikir` is a quarry, frozen at `379266e`. No new work happens there.
 **Evidence:** `docs/README.md` indexes the three review documents every claim below is drawn from.
@@ -13,20 +13,62 @@ The phase bodies below are the plan as written on 2026-08-16 and are left intact
 behind each ordering stays legible. This block is what has actually happened since. Where the two
 disagree, this block is current.
 
-| Phase                                    | Status                              | Landed                                                                                                                       |
-| ---------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18                 | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header                                      |
-| 1b — the three Tier-0 items with victims | **Done** 2026-08-18                 | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                                               |
-| 2 — Make terminology govern              | **Done** 2026-08-26                 | All six ruled terms applied, plus a test that fails if any returns — `packages/shared/i18n/__tests__/governed-terms.test.ts` |
-| 3 — Harvest the cheap content            | **Done** 2026-08-27                 | PR #34, `claude/phase-3-continuation-1f7fn2`. All four rows; two of the four premises were wrong — see below                 |
-| 4 — Close the pedagogy gaps              | **Unblocked parts done** 2026-08-27 | PR #36, `claude/dev-plan-remaining-b4foz1`. Everything except level gating, which is still a decision — see below            |
-| 5 — Fill the curriculum holes            | Not started, but see below          | —                                                                                                                            |
+| Phase                                    | Status              | Landed                                                                                                                                             |
+| ---------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18 | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header                                                            |
+| 1b — the three Tier-0 items with victims | **Done** 2026-08-18 | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                                                                     |
+| 2 — Make terminology govern              | **Done** 2026-08-26 | All six ruled terms applied, plus a test that fails if any returns — `packages/shared/i18n/__tests__/governed-terms.test.ts`                       |
+| 3 — Harvest the cheap content            | **Done** 2026-08-27 | PR #34, `claude/phase-3-continuation-1f7fn2`. All four rows; two of the four premises were wrong — see below                                       |
+| 4 — Close the pedagogy gaps              | **Done** 2026-08-29 | PR #36, `claude/dev-plan-remaining-b4foz1`, on 2026-08-27; level gating settled 2026-08-29 (not gated, no Level 4) and its 93 dead strings removed |
+| 5 — Fill the curriculum holes            | **Done** 2026-09-22 | All four gaps built, plus Jafnvægisfastinn and percent yield. Merged in PR #62 — see the Phase 5 table below                                       |
+
+### Where it stands (2026-10-23)
+
+**Every phase of this plan is done.** The goal's three words now stand as follows:
+
+- **Accurate:** no known Tier-0 defect is open, and each fixed one has a test. The two live
+  defects that waited on a ruling, items 101 and 109 below, were ruled and fixed on 2026-10-23.
+- **Pedagogically sound:** teach-before-test, free hints, no running score and `N af M rétt` at
+  the end of each level are applied in all 26 games (PR #85, 2026-10-03).
+- **Covering the curriculum:** all four confirmed gaps are built, and the chains are 10, 8 and 8
+  games long.
+
+**Work after this plan, not part of it.** The September phone pass made every game screen
+playable by touch at 360 px and fitted each question loop on one screen (PRs #65, #66, #67;
+design in `2026-09-23-vertical-scroll-design.md`). It also produced 122 content and terminology
+items for you in `2026-09-23-mobile-pass-decisions.md`. Rulings on them were applied from
+2026-09-30 to 2026-10-03 (PRs #70–#86). The desktop comparison has run on every PR since
+2026-10-03 (PR #83). After that, no games work landed until items 101 and 109 on 2026-10-23.
+
+**What is left is rulings and hand checks, not code.** `docs/REVIEW-QUEUE.md` is the live list.
+As of this date:
+
+- **All 122 decision items are ruled** (section C3). On 2026-10-23 every item with a clear
+  recommendation was applied as recommended, and Siggi ruled the rest the same day; 94 (a Gaslögmál
+  Explore screen) was skipped for now. Siggi accepted the drafted wording from that pass as
+  written.
+- **Two were live defects students could hit, both ruled and fixed 2026-10-23:**
+  - **item 101 (a):** `equilibrium-shifter`'s Keppnishamur could never be unlocked, because only
+    Keppnishamur wrote the count its gate reads; right Lærdómshamur answers now count;
+  - **item 109 (c):** `thermodynamics-predictor` printed the ΔG° value and verdict beside the
+    question that asks for them; they now wait for `Athuga svar`, and Keppnishamur's slider is
+    fixed.
+- **Also waiting on you:** confirmations of the phone layout (C1), of the desktop behaviour
+  changes (C2), of the judgement calls made applying item 1 (C3 "Item 1 as applied"). The four
+  glossary entries (C4) were confirmed on 2026-10-23.
+- **No game has been played on a real phone or with a screen reader** (sections A and B). The
+  vertical-scroll design's exit criterion, that you play each game on a phone once, is unmet.
+- **The brand fonts have never loaded** on the games (D1). Fixing it, or dropping the font names,
+  changes every page, so it is your call.
 
 ### Phase 4, as it actually turned out (2026-08-27)
 
-Four of the five items in the Phase 4 body below are done. The fifth, **level gating, is still
-blocked on you** and is untouched — the dead strings for 15 games are still dead, still under two
-different key names. Nothing here decided it either way.
+Four of the five items in the Phase 4 body below were done on 2026-08-27. The fifth, **level
+gating, was settled on 2026-08-29**: levels are not gated, and there is no Level 4. The 93 dead
+gating strings were removed the same day (see the Phase 4 body). `equilibrium-shifter`'s
+Keppnishamur gate is a mode gate, not a level gate. It was ruled on its own: it stays
+(2026-09-19), and counts right Lærdómshamur answers (2026-10-23, item 101 of
+`2026-09-23-mobile-pass-decisions.md`).
 
 | Item                    | Done                                                                                                                                                               |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -34,7 +76,7 @@ different key names. Nothing here decided it either way.
 | The four answer leaks   | B14, B15, B16, B17 all closed, each with a test that plays the real level and asserts on what reaches the screen                                                   |
 | The decimal comma       | All 27 `type="number"` inputs across three years audited, not the two the Year-1 review named. 13 converted; the parser is now `@shared/utils`                     |
 | Misconception slots     | The two games the review names as genuinely bare — Lotukerfið and Stilla efnajöfnur — now diagnose the student's actual answer rather than restating the right one |
-| **Levels gated?**       | **Untouched. Still yours.**                                                                                                                                        |
+| Levels gated?           | Settled 2026-08-29: no. Dead strings removed                                                                                                                       |
 
 **Three live defects were found while doing this, none of them in the reviews' lists.** They matter
 because `docs/README.md` was carrying "No known live defects" at the time:
@@ -279,7 +321,9 @@ Also unplaced: percent yield. ~~significant figures~~ **built 2026-09-19** as a 
 
 ## Decisions only you can make
 
-These block Phase 5 and parts of Phase 4. Four of them will produce contradictions _inside a single curriculum chain_ if made per-game instead of once.
+**All fourteen are answered.** Rulings still open are in `docs/REVIEW-QUEUE.md` section C, not here.
+
+These blocked Phase 5 and parts of Phase 4. Four of them would have produced contradictions _inside a single curriculum chain_ if made per-game instead of once.
 
 1. ~~**Does a Level 4 exist?**~~ **Answered 2026-08-29: no.** Level-4 material from the old repo becomes Apply-phase content. Nothing in the tree referenced a level 4, so there was nothing to strip.
 2. ~~**Are levels gated?**~~ **Answered 2026-08-29: no.** 93 dead gating strings removed; see the Phase 4 note above.

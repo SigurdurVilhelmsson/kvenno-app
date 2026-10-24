@@ -115,7 +115,7 @@ const challenges: Challenge[] = [
     formula: 'CH₃CH₂OH',
     correctAnswer: 'etanól',
     options: ['metanól', 'etanól', 'própanól', 'etanal'],
-    explanation: '2 kolefni (eth-) + alkóhól (-ól) = etanól',
+    explanation: '2 kolefni (et-) + alkóhól (-ól) = etanól',
   },
   {
     id: 5,
@@ -124,7 +124,7 @@ const challenges: Challenge[] = [
     formula: 'CH₃CH₂COOH',
     correctAnswer: 'própansýra',
     options: ['etansýra', 'própansýra', 'própanól', 'própan'],
-    explanation: '3 kolefni (prop-) + karboxýlsýra (-sýra) = própansýra',
+    explanation: '3 kolefni (próp-) + karboxýlsýra (-sýra) = própansýra',
   },
   {
     id: 6,
@@ -133,7 +133,7 @@ const challenges: Challenge[] = [
     formula: 'HCHO',
     correctAnswer: 'metanal',
     options: ['metanal', 'etanal', 'metanól', 'metansýra'],
-    explanation: '1 kolefni (meth-) + aldehýð (-al) = metanal (einnig kallað formaldehýð)',
+    explanation: '1 kolefni (met-) + aldehýð (-al) = metanal (einnig kallað formaldehýð)',
   },
   {
     id: 7,
@@ -142,7 +142,7 @@ const challenges: Challenge[] = [
     formula: 'CH₃COCH₃',
     correctAnswer: 'própanón',
     options: ['etanón', 'própanón', 'própanól', 'própan'],
-    explanation: '3 kolefni (prop-) + ketón (-ón) = própanón (einnig kallað asetón)',
+    explanation: '3 kolefni (próp-) + ketón (-ón) = própanón (einnig kallað asetón)',
   },
 
   // Structure challenges

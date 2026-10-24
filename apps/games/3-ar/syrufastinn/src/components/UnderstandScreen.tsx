@@ -17,6 +17,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import {
+  formatScientific,
   isPhone,
   revealTop,
   usableArea,
@@ -231,10 +232,8 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
               <p className="text-warm-700">
                 Umraðað er þetta venjuleg annars stigs jafna, og hún er alltaf rétt. Fyrir 0,100 M
                 ediksýru gefur hún{' '}
-                <span className="whitespace-nowrap">
-                  x = {s.hExact.toExponential(3).replace('.', ',')} M
-                </span>
-                , sem er pH <strong>{fmt(s.pH, 4)}</strong>.
+                <span className="whitespace-nowrap">x = {formatScientific(s.hExact, 3)} M</span>,
+                sem er pH <strong>{fmt(s.pH, 4)}</strong>.
               </p>
             </div>
           )}

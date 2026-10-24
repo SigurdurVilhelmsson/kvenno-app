@@ -118,7 +118,7 @@ function firstCompoundEntry(column: 'moles' | 'ratio' | 'subscript', element: st
   return String(row[column]).replace('.', ',');
 }
 
-function fillColumn(label: 'Mól' | 'Hlutfall' | 'Vísitala', h: string, o: string) {
+function fillColumn(label: 'Mól' | 'Hlutfall' | 'Lágstafur', h: string, o: string) {
   fireEvent.change(screen.getByLabelText(`${label} fyrir H`), { target: { value: h } });
   fireEvent.change(screen.getByLabelText(`${label} fyrir O`), { target: { value: o } });
 }

@@ -2,8 +2,7 @@
  * Types for pH Titration Master Game
  */
 
-export type TitrationType =
-  'strong-strong' | 'weak-strong' | 'strong-weak' | 'polyprotic-diprotic' | 'polyprotic-triprotic';
+export type TitrationType = 'strong-strong' | 'weak-strong' | 'strong-weak';
 
 export type DifficultyLevel = 'Byrjandi' | 'Miðlungs' | 'Háþróað' | 'Sérfræðingur';
 
@@ -35,27 +34,12 @@ export interface MonoproticTitration {
   pKb?: number | null;
 }
 
-export interface PolyproticTitration {
-  id: number;
-  type: 'polyprotic-diprotic' | 'polyprotic-triprotic';
-  name: string;
-  analyte: ChemicalSpecies & { volume: number };
-  titrant: ChemicalSpecies;
-  equivalenceVolumes: number[];
-  equivalencePHs: number[];
-  initialPH: number;
-  halfEquivalencePHs: number[];
-  bestIndicator: IndicatorType;
-  difficulty: DifficultyLevel;
-  Ka1: number;
-  Ka2: number;
-  Ka3?: number;
-  pKa1: number;
-  pKa2: number;
-  pKa3?: number;
-}
-
-export type Titration = MonoproticTitration | PolyproticTitration;
+/**
+ * Every titration is monoprotic. The polyprotic type, its data and its pH
+ * maths were deleted on 2026-10-23 (mobile-pass decision 115 (a)): nothing
+ * rendered them, and the maths fell to −∞ or NaN on some branches.
+ */
+export type Titration = MonoproticTitration;
 
 export interface Indicator {
   id: IndicatorType;

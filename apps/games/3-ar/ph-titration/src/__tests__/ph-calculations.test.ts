@@ -159,12 +159,13 @@ describe('getPHColor', () => {
   });
 });
 
-// Declared initialPH disagrees with the corrected formula by 0.06-0.14 for these
-// three. Left asserted-as-failing on purpose, pending a teacher decision on the
-// declared values -- the gaps plausibly come from an activity correction or a
-// different Ka rather than from a fresh defect, but that is a guess.
-// Keyed by id, not name: 'HCl + NaOH' is the name of both id 1 and id 3.
-const KNOWN_DISAGREEING = [6, 11, 12]; // HF + NaOH, H2SO3 + NaOH, H2C2O4 + NaOH
+// Declared initialPH disagrees with the corrected formula by 0.06-0.14 for this
+// one. Left asserted-as-failing on purpose, pending a teacher decision on the
+// declared value -- the gap plausibly comes from an activity correction or a
+// different Ka rather than from a fresh defect, but that is a guess. Ids 11 and
+// 12 (H2SO3 and H2C2O4) were listed here too until decision 115 (a) deleted the
+// polyprotic titrations on 2026-10-23.
+const KNOWN_DISAGREEING = [6]; // HF + NaOH
 
 describe('every titration starts where its data says it does', () => {
   it.each(

@@ -238,7 +238,7 @@ reaction sense, so there is no competitor — but one hit is thin evidence and S
 packages/shared/engine/equilibrium.ts   the maths; no React, no Icelandic
                                         (shared with `3-ar/equilibrium-shifter`)
 src/data/reactions.ts       24 reactions, every constant cited to a module
-src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 6 ICE (M) · 4 ICE (atm)
+src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 7 ICE (M) · 4 ICE (atm)
 src/data/coupled.ts         5 coupled: 3 single-rule, then the book's 2 combinations
 src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                             ScientificInput (the `× 10` answer row, with a ± sign button on touch)
@@ -249,9 +249,9 @@ src/__tests__/              159 tests
 
 **The `±` button is what makes the answers typeable on an iPhone.** Every scientific-notation
 answer — Kp, the coupled constant, every Beita extent — is a number field and a power-of-ten field,
-both on the decimal keypad, and on iOS that keypad has no minus key. Nine of the ten Beita extents
-and five of the eight Kp answers have a negative power, so without the button a student on an
-iPhone could not type the power the field asks for — the only way round was to write the whole
+both on the decimal keypad, and on iOS that keypad has no minus key. Ten of the eleven Beita
+extents and five of the eight Kp answers have a negative power, so without the button a student on
+an iPhone could not type the power the field asks for — the only way round was to write the whole
 plain decimal into the number field with a power of 0, which nothing on screen suggests.
 It shows only on touch screens (`pointer-coarse`); a desktop keyboard has a minus key and the
 desktop row is unchanged. `phone-play.test.tsx` plays an answer through it.
@@ -300,22 +300,33 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
 - **No temperature dependence of K itself.** The game states each constant's temperature and never
   varies it. Van 't Hoff now exists, in `3-ar/equilibrium-shifter` and in the shared engine, so this
   is no longer a gap on the platform — but this game does not use it.
-- **The water-gas reaction is named two ways on the platform** and the corpus cannot settle it:
-  `vatnsgashvarf` and `vatnsgas hvarf` both return **zero** hits in the book, so the compound
-  spelling is not the book's to decide. This game says `Vatnsgashvarfið`; `3-ar/equilibrium-shifter`
-  said `Vatnsgas hvarfið` and was harmonised to match, because a genitive compound
-  (`bakhvarf vatnsgashvarfsins`) cannot be split and one of the two had to give. That is a spelling
-  harmonisation, not a ruling — Siggi's to confirm or reverse.
-- **Tengd jafnvægi's first stage has no way out.** Stage two offers a "show the answer" button
-  after a wrong constant; stage one, the operations, offers nothing, so a student who cannot find
-  them can only try combinations until the equation matches. Whether to add the same escape
-  there is a teaching call.
-- **Beita's direction step is not graded, and its answer is always `Áfram`.** Both buttons move on
-  and the next panel states the true direction from Q (`beita-units.test.tsx` documents this), and
-  all ten problems start with no products, so Q = 0 every time. Grading the step, or adding a
-  problem that runs backwards, is a teaching call.
-- **The NH₄Cl problem asks a 5 % question it has no answer to.** Kp = P(NH₃)·P(HCl) has no
-  denominator and both gases start at 0 atm, so the step asks whether x may be dropped from a
-  denominator that does not exist, reports the change as `0,00 %` of a starting pressure of zero,
-  and marks `Nei — það verður að leysa nákvæmlega` wrong. The likely fix is to skip that step where
-  no reactant is in K, but it needs a sentence to replace it, which is wording for Siggi.
+
+**Closed 2026-10-23** (mobile-pass decisions 95, 96, 97, 98 and 99):
+
+- **The NH₄Cl problem no longer asks a 5 % question it has no answer to** (decision 97 (a), Siggi's
+  ruling). Kp = P(NH₃)·P(HCl) has no denominator and both gases start at 0 atm, so the step asked
+  whether x may be dropped from a denominator that does not exist and marked `Nei` wrong. Where no
+  reactant is in K the step is skipped, and the verdict reads
+  `Hér er enginn nefnari — x² = Kp er leyst nákvæmlega og engin nálgun þarf.`
+  `beita-no-denominator.test.tsx` holds it, and holds any future such problem to the sentence.
+
+- **Tengd jafnvægi's first stage has a way out** (decision 95). A wrong `Athuga jöfnuna` now
+  offers `Sýna svarið og halda áfram`, as stage two and Beita do. It sets the givens to the route
+  the data found and opens the constant, so the student still computes K. `coupled-task.test.tsx`
+  holds it.
+- **Beita's direction step is graded, and one problem runs backwards** (decision 96 (a) and (b)).
+  The Q-against-K line opens with `Rétt.` or `Ekki rétt.`; both buttons still move on. The book's
+  Tilraun 2 (`ch13/m68798`, the worked example on predicting the direction, which says it runs
+  backwards) is now a concentration problem, served fifth: the water-gas mixture Æfa's direction
+  task serves second, with K at 800 °C as the game already cites it. On it the change column reads
+  `+x` for the reactants and `−x` for the products, and x is asked for as a size, since the
+  engine's extent is signed. `beita-direction.test.tsx` holds both.
+- **The bromine expression's note** says what K is beside `Kc = [Br₂]` (decision 98):
+  `Vökvinn dettur út og K er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufunarþrýstingurinn.`
+  The decision's wording said `gufuþrýstingurinn`; decision 18 ruled `gufunarþrýstingur`, which
+  `governed-terms.test.ts` enforces, so that word follows the later ruling.
+- **K and Q are neuter throughout** (decision 99, Siggi's ruling): `K örsmátt`, `K svo lítið`,
+  `K stórt`, `Kp örsmátt` and `Stórt Kp` in `src/data/problems.ts`, `K er háð` in Skilja and
+  `coupled.ts`, `K verður lítið`, `K er marklaust`, and `Kc og Kp … tengd` on the menu. A pass
+  earlier the same day had made them masculine, on the recommendation, before the ruling.
+  `k-gender.test.ts` holds it.

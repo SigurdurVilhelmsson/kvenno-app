@@ -72,13 +72,24 @@ const MISCONCEPTIONS: Record<string, string> = {
   extra_step: 'Þú gætir notað of marga stuðla. Reyndu að finna beina leið.',
 };
 
-// Related concepts
-const RELATED_CONCEPTS = [
-  'Umreikningsstuðlar',
-  'Einingar styttast út',
-  'Víddagreining',
-  'Factor-label aðferð',
-];
+// Related concepts. `Factor-label aðferð` was English, and the book calls the
+// method a synonym of `víddagreining`, the chip beside it (decisions item 26 (a)).
+const RELATED_CONCEPTS = ['Umreikningsstuðlar', 'Einingar styttast út', 'Víddagreining'];
+
+/** The share of right answers a run needs to be mastered. */
+const MASTERY_ACCURACY = 0.8;
+
+/** Is a run with `correct` right of `done` mastered? One rule, for the check and the summary. */
+function runMastered(correct: number, done: number): boolean {
+  return done > 0 && correct / done >= MASTERY_ACCURACY;
+}
+
+/** The fewest right answers of `done` that master a run, read off the same rule. */
+function correctNeeded(done: number): number {
+  let needed = 0;
+  while (needed < done && !runMastered(needed, done)) needed++;
+  return needed;
+}
 
 interface Level2Progress {
   problemsCompleted: number;
@@ -373,9 +384,11 @@ export function Level2({
       misconception = dotReadAsDecimalNote(userAnswer);
     }
 
+    // The value the right chain gives, after it (decisions item 28 (a)): a right
+    // chain with a slipped number was told nothing about the number.
     return {
       isCorrect: false,
-      explanation: `Rétta leiðin er: ${problem.correctPath.join(' × ')}`,
+      explanation: `Rétta leiðin er: ${printNumber(problem.startValue)} ${problem.startUnit} × ${problem.correctPath.map((f) => `(${f})`).join(' × ')} = ${printNumber(expectedAnswer)} ${problem.targetUnit}`,
       misconception,
       relatedConcepts: RELATED_CONCEPTS,
       nextSteps: 'Athugaðu hvort einingarnar styttist rétt út í hverju skrefi.',
@@ -418,11 +431,10 @@ export function Level2({
 
     // Check mastery once every problem has been done
     if (newProgress.problemsCompleted >= PROBLEM_COUNT) {
-      const answerAccuracy =
-        newProgress.problemsCompleted > 0
-          ? newProgress.finalAnswersCorrect / newProgress.problemsCompleted
-          : 0;
-      newProgress.mastered = answerAccuracy >= 0.8;
+      newProgress.mastered = runMastered(
+        newProgress.finalAnswersCorrect,
+        newProgress.problemsCompleted
+      );
     }
 
     setProgress(newProgress);
@@ -444,6 +456,21 @@ export function Level2({
   };
 
   if (!problem && !showIntro) return null;
+
+  // The last problem's feedback ends the run, so it says how the run went
+  // before "Ljúka stigi" returns to the menu, as Level 3's does (decisions
+  // item 31; Item 1 as applied, Siggi 2026-10-23). The count and the verdict
+  // read the same two numbers `handleContinue` judges mastery on, so they
+  // cannot disagree.
+  const isLastProblem = currentProblemIndex === PROBLEM_COUNT - 1;
+  const runDone = progress.problemsCompleted + 1;
+  const runSummary = isLastProblem
+    ? `Stigi lokið: ${progress.finalAnswersCorrect} af ${runDone} rétt. ${
+        runMastered(progress.finalAnswersCorrect, runDone)
+          ? 'Þú hefur náð tökum á stiginu.'
+          : `Til að ná tökum á stiginu þarf rétt svar í ${correctNeeded(runDone)} af ${runDone} verkefnum.`
+      }`
+    : null;
 
   // Units for the visualiser. A compound start unit such as km/klst is split
   // across the fraction bar, or its parts could never cancel against a factor.
@@ -649,7 +676,10 @@ export function Level2({
                         onClick={() => setUseDragDrop(!useDragDrop)}
                         className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600"
                       >
-                        {useDragDrop ? '🖱️ Skipta í smella-ham' : '✋ Skipta í draga-ham'}
+                        {/* Named for the layout it switches to. Tapping works in both,
+                            so "click" and "drag" no longer named a difference
+                            (decision 27 (a), 2026-10-23). */}
+                        {useDragDrop ? 'Skipta í hnappalista' : 'Skipta í keðjusmíð'}
                       </button>
                     </div>
                   </div>
@@ -754,7 +784,6 @@ export function Level2({
                   key={`${problem.id}|${chainKey}`}
                   numeratorUnits={numeratorUnits}
                   denominatorUnits={denominatorUnits}
-                  showCancelButton={showCancellationAnimation}
                   enhancedAnimation={true}
                   autoAnimate={showCancellationAnimation}
                 />
@@ -854,6 +883,12 @@ export function Level2({
                     })}
                   </div>
                 </div>
+
+                {runSummary && (
+                  <p className="p-4 bg-white rounded-xl border-2 border-blue-200 font-semibold text-warm-800 text-center phone:p-3">
+                    {runSummary}
+                  </p>
+                )}
               </div>
 
               {/* A separate element from "Athuga", and it ignores a press within

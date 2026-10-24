@@ -132,8 +132,11 @@ describe('the ICE set', () => {
     // trust the comparison mode. A tolerance wide enough to accept a bare 0
     // is B13 again.
     for (const p of ICE_PROBLEMS) {
+      // Signed: the one problem that runs backwards (decision 96 (b)) has a
+      // negative extent, and the screen asks for its size. Half and one and a
+      // half times it are wrong either way.
       const x = p.result.extent;
-      expect(x, p.id).toBeGreaterThan(0);
+      expect(Math.abs(x), p.id).toBeGreaterThan(0);
       expect(Number.isFinite(x), p.id).toBe(true);
       const k = p.reaction.constant!.value;
       const qAt = (guess: number) =>

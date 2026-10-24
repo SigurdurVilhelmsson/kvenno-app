@@ -297,10 +297,10 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
   {
     id: 8,
     type: 'combined',
-    titleIs: 'Samansett verkefni: pH við hálfan jafngildispunkt',
+    titleIs: 'Samansett verkefni: pH við hálfjafngildispunkt',
     title: 'Combined problem: pH at half-equivalence',
     descriptionIs:
-      'Títrun á 30,0 mL af 0,100 M flússýru (HF, pKₐ = 3,17) með 0,100 M NaOH. Hver er pH við hálfan jafngildispunkt?',
+      'Títrun á 30,0 mL af 0,100 M flússýru (HF, pKₐ = 3,17) með 0,100 M NaOH. Hver er pH við hálfjafngildispunkt?',
     description:
       'Titration of 30.0 mL of 0.100 M hydrofluoric acid (HF, pKₐ = 3.17) with 0.100 M NaOH. What is the pH at half-equivalence?',
     givenData: {
@@ -313,13 +313,13 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     correctAnswer: 3.17,
     unit: '',
     tolerance: 0.02,
-    hintIs: 'Við hálfan jafngildispunkt: [HA] = [A⁻]. Hvað verður þá log([A⁻]/[HA])?',
+    hintIs: 'Við hálfjafngildispunkt: [HA] = [A⁻]. Hvað verður þá log([A⁻]/[HA])?',
     hint: 'At half-equivalence: [HA] = [A⁻]. What does log([A⁻]/[HA]) become?',
     explanationIs:
-      'Við hálfan jafngildispunkt, helmingur sýrunnar hefur hvarfast, svo [HA] = [A⁻] og pH = pKₐ.',
+      'Við hálfjafngildispunkt, helmingur sýrunnar hefur hvarfast, svo [HA] = [A⁻] og pH = pKₐ.',
     explanation: 'At half-equivalence, half the acid has reacted, so [HA] = [A⁻] and pH = pKₐ.',
     solutionStepsIs: [
-      'Við hálfan jafngildispunkt: [HF] = [F⁻]',
+      'Við hálfjafngildispunkt: [HF] = [F⁻]',
       'Henderson-Hasselbalch: pH = pKₐ + log([F⁻]/[HF])',
       'pH = pKₐ + log(1) = pKₐ + 0 = pKₐ',
       'pH = 3,17',

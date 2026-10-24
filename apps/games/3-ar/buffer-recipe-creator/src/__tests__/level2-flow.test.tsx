@@ -136,3 +136,15 @@ describe('Stig 2 counts each puzzle once', () => {
     expect(container.textContent).not.toContain(`${LEVEL2_PUZZLES.length + 1} / `);
   });
 });
+
+describe('Stig 2 flask comparison', () => {
+  // Until 2026-10-23 the panel showed the unbuffered flask at pH 2,0 without saying that
+  // 0,01 mól of strong acid had gone into 1 L of each (mobile-pass decision 119).
+  it('says what was added to the two flasks', () => {
+    const { container } = render(<Level2 onComplete={() => {}} onBack={() => {}} />);
+    const caption = within(container).getAllByText(
+      'Eftir að 0,01 mól af sterkri sýru er bætt við 1 L'
+    );
+    expect(caption.length).toBeGreaterThan(0);
+  });
+});

@@ -100,6 +100,9 @@ uses `t()`**, since `en`/`pl` blocks would mean coining Polish chemistry terms a
 - **`leysni` is the word for solubility** (Siggi's ruling, 2026-08-27, 19 occurrences swept here).
   Enforced repo-wide by `governed-terms.test.ts`, with a positive assertion in
   `cooling-scenarios.test.ts`.
+- **Scenario 6's cold soda (fixed 2026-10-23, decision 59 (a)):** its explanation called cold soda
+  `fríðara`, which means prettier. It now reads `Þess vegna helst kalt gos lengur kolsýrt!`;
+  `icelandic-text.test.tsx` holds it.
 
 **Flattened Icelandic was found here on 2026-09-22** — the subtitle and a menu label had lost their
 accents. Fixed, and `packages/shared/i18n/__tests__/no-flattened-icelandic.test.ts` now covers game
@@ -142,16 +145,14 @@ test needs the root config's DOM environment.
 - **i18n.** Stig 1–3 use `t()` with `en` and `pl` blocks while Stig 0 is hardcoded Icelandic. That
   split sits inside the platform-wide undecided `useGameI18n` question (see `CLAUDE.md`) rather than
   answering it.
-- **Scoring, Siggi's call (found 2026-09-23).** The levels report on three scales — Stig 0 10 per
-  item, Stig 1–2 100 per item, Stig 3 1 per item (`Level3.tsx` `onComplete(correctCount)`) — and the
-  menu's and completion screen's `Heildarstig` add Stig 1–3 and leave Stig 0 out. Stig 3 offers
-  "Ljúka stigi" only at 5 of 8, and finishing it always opens a screen that says every level is done.
-  Either put every level on one scale (100 per item) or drop points for `x af N rétt`.
-- **Stig 2 scenario 6's explanation says cold soda is `fríðara`** (prettier). The intended word needs
-  choosing — e.g. `Þess vegna helst kalt gos lengur kolsýrt!` — so it was left.
-- **Stig 1's "Athuga lausn ✓" does nothing on a wrong attempt.** The live arrows on the
-  concentration indicator are the only feedback; whether to add a line or disable the button is a
-  feedback-design choice.
+
+**Closed.** The three levels' different points scales went with mobile-pass decision 1 (b),
+PR #85: every level reports `N af M rétt`, or completion where it cannot end wrong. Stig 1's silent
+wrong "Athuga lausn" went with decision 60: it now says which way the concentration is off. And on 2026-10-23 (the
+vertical-scroll design's §7.7, settled on Claude's recommendation) Stig 1 stopped moving on by
+itself 2,5 s after a right answer, a timer in a learning phase that took the concept panel away
+half-read: the panel stays until `Næsta verkefni` (`Ljúka stigi` on the last task), which ignores a
+press within 400 ms of appearing. `phone-scroll.test.tsx` holds it.
 
 ## Leftovers
 

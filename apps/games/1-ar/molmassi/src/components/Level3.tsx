@@ -55,24 +55,27 @@ type Desc =
     };
 
 export const DESCRIPTORS: Desc[] = [
-  // mass -> particles (6)
+  // mass -> particles (6). Five of the six were 2 mól, so all five came to
+  // 1,20 × 10²⁴, and an answer that never changes can be learned without
+  // calculating. Water, CO₂ and NaCl are now 1,5, 2,5 and 3 mól (decision 43 (b));
+  // the answers are still derived.
   {
     type: 'mass-to-particles',
     formula: 'H\u2082O',
-    mass: 36,
-    massLabel: '36',
+    mass: 27,
+    massLabel: '27',
   },
   {
     type: 'mass-to-particles',
     formula: 'CO\u2082',
-    mass: 88,
-    massLabel: '88',
+    mass: 110,
+    massLabel: '110',
   },
   {
     type: 'mass-to-particles',
     formula: 'NaCl',
-    mass: 117,
-    massLabel: '117',
+    mass: 175.5,
+    massLabel: '175,5',
   },
   {
     type: 'mass-to-particles',
@@ -196,7 +199,7 @@ export function buildProblem(d: Desc): Problem {
       particles,
       steps: [
         `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mól`,
-        `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g styttist út.`,
+        `Skref 2: g → mól (einingagreining)\n  ${d.massLabel} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g styttist út.`,
         `Skref 3: mól → ${particles} (einingagreining)\n  ${formatDecimal(n, 3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${particles}\n  Einingin mól styttist út.`,
       ],
     };
@@ -250,9 +253,9 @@ function withinTolerance(user: number, correct: number): boolean {
 interface Level3Props {
   onBack: () => void;
   /**
-   * Called as the last answer is left and the summary opens. It records the
-   * level and must not navigate: the summary is the screen it leads to, with
-   * its own buttons for trying again and going back.
+   * Called when the student presses `Ljúka stigi` on the summary, at any score,
+   * as Stig 1 does (decision 42 (c)). Reaching the summary records nothing: the
+   * level used to mark itself complete there, 0 of 8 included.
    */
   onComplete: (correct: number, total: number) => void;
   onCorrectAnswer?: () => void;
@@ -320,9 +323,9 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
   const next = () => {
     const ni = idx + 1;
     if (ni >= TOTAL_QUESTIONS) {
-      // Shows the summary below; `onComplete` only records the level.
+      // Shows the summary below. The level is recorded only from its
+      // `Ljúka stigi` button (decision 42 (c)).
       setIdx(ni);
-      onComplete(correctCount, TOTAL_QUESTIONS);
       return;
     }
     setIdx(ni);
@@ -354,20 +357,28 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
           <p className="text-xl font-bold text-warm-800 mb-8">
             Þú svaraðir {correctCount} af {TOTAL_QUESTIONS} rétt
           </p>
-          <div className="space-y-3">
+          {/* Stig 1's three ways on, at any score (decision 42 (c)): only
+              `Ljúka stigi` records the level. */}
+          <div className="flex flex-col min-[360px]:flex-row gap-3 mb-6">
             <button
               onClick={armedResults(retry)}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
             >
               Reyna aftur
             </button>
             <button
-              onClick={armedResults(onBack)}
-              className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 rounded-xl transition-colors"
+              onClick={armedResults(() => onComplete(correctCount, TOTAL_QUESTIONS))}
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
-              Til baka í valmynd
+              Ljúka stigi
             </button>
           </div>
+          <button
+            onClick={armedResults(onBack)}
+            className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
+            Til baka í valmynd
+          </button>
         </div>
       </div>
     );

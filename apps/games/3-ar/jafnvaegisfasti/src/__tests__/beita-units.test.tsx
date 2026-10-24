@@ -29,9 +29,10 @@ afterEach(cleanup);
 /**
  * Commit to a direction, then skip the algebra to the revealed extent.
  *
- * Both direction buttons advance — the screen tells the student which way it
- * really goes afterwards, from Q — and the "show me" escape appears only once
- * an answer has been checked, so the empty check is what opens it.
+ * Both direction buttons advance — the screen says whether the choice was
+ * right and which way it really goes, from Q — and the "show me" escape
+ * appears only once an answer has been checked, so the empty check is what
+ * opens it.
  */
 function revealExtent() {
   fireEvent.click(screen.getByText('Áfram — myndefnin aukast'));
@@ -44,7 +45,10 @@ function openProblem(index: number) {
   render(<BeitaScreen onComplete={() => {}} onBack={() => {}} />);
   for (let i = 0; i < index; i += 1) {
     revealExtent();
-    fireEvent.click(screen.getByText(/nálgunin hefði dugað/i));
+    // NH₄Cl skips the five per cent question (decision 97 (a)), so it is answered only where
+    // it is asked.
+    const rule = screen.queryByText(/nálgunin hefði dugað/i);
+    if (rule) fireEvent.click(rule);
     fireEvent.click(screen.getByText(/Næsta dæmi|Ljúka/));
   }
 }

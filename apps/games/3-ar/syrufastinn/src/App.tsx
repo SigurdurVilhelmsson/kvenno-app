@@ -107,9 +107,9 @@ function App() {
                 Fjórir áfangar
               </h2>
               <p className="mb-6 text-warm-600 phone:order-1 phone:mb-0 phone:mt-4">
-                Þú hefur þegar séð pKa gefinn upp í dæmum — í títrunum og í Henderson-Hasselbalch.
-                Hér kemur talan sjálf: hvaðan hún fæst, af hverju hún breytist ekki með styrknum, og
-                hvers vegna nálgunin sem allir nota heldur næstum alltaf en ekki alveg.
+                Í pH Títrun og Stuðpúðum færðu pKa gefinn upp í dæmum. Hér kemur talan sjálf: hvaðan
+                hún fæst, af hverju hún breytist ekki með styrknum, og hvers vegna nálgunin sem
+                allir nota heldur næstum alltaf en ekki alveg.
               </p>
 
               <div className="grid gap-4 phone:gap-3 phone-land:grid-cols-2">

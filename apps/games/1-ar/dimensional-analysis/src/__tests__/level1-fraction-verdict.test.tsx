@@ -4,8 +4,9 @@
  *
  * The line printed `= {'1 ✓' or '≠ 1'}`, so every fraction that is not 1 read
  * `= ≠ 1` — "equals not-equal-to one" — directly under the fraction bar. It now
- * reads `≠ 1` for a fraction that is not a conversion factor and `= 1 ✓` for
- * one that is. Queries are scoped to this test's container (the repo runs
+ * reads `≠ 1` for a fraction that is not 1, `= 1` in red for a block over
+ * itself, which is 1 but no conversion, and `= 1 ✓` for a conversion factor.
+ * Queries are scoped to this test's container (the repo runs
  * vitest with `retry: 2`).
  */
 
@@ -36,6 +37,24 @@ describe('C2 states its verdict in well-formed notation', () => {
     expect(ui.getByText('≠ 1')).toBeTruthy();
     expect(container.textContent).not.toMatch(/=\s*≠/);
   });
+
+  // Decisions item 25 (a): one block over itself really is 1, just not a
+  // conversion. The line read `≠ 1` directly above the error box's own
+  // `1 L / 1 L = 1,0`, so the screen contradicted itself.
+  it.each([/^1 L$/, /^1000 mL$/, /^0[.,]5 L$/])(
+    'writes = 1, in red and without the tick, under %s over itself',
+    (name) => {
+      const { container } = render(<FactorBuildingChallenge onComplete={noop} onAttempt={noop} />);
+      const ui = within(container);
+      fireEvent.click(ui.getByRole('button', { name }));
+      fireEvent.click(ui.getByRole('button', { name }));
+      expect(ui.getByText('Sömu einingarnar!')).toBeTruthy();
+      const verdict = ui.getByText('= 1');
+      expect(verdict.className).toMatch(/text-red-600/);
+      expect(ui.queryByText('≠ 1')).toBeNull();
+      expect(ui.queryByText('= 1 ✓')).toBeNull();
+    }
+  );
 
   it('writes = 1 ✓ under a conversion factor', () => {
     const { container } = render(<FactorBuildingChallenge onComplete={noop} onAttempt={noop} />);

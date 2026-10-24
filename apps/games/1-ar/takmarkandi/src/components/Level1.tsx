@@ -29,6 +29,15 @@ interface Question {
 
 const TOTAL = 8;
 
+/**
+ * Items per run where the limiting reactant is the one there are more of —
+ * 6 H₂ against 4 O₂, say: H₂ runs out after 3 times, O₂ would last 4. The
+ * feedback says the limiting reactant is not always the one there is less of,
+ * and until 2026-10-23 no item ever showed it (decision 55 (a), February's
+ * `FEBRUARY-DECISIONS-RECOVERED.md:358`).
+ */
+const MORE_NUMEROUS_LIMITING = 3;
+
 /** Pick 8 questions from easy reactions with clear limiting reactants */
 function buildQuestions(): Question[] {
   const easy = REACTIONS.filter((r) => r.difficulty === 'easy');
@@ -40,13 +49,31 @@ function buildQuestions(): Question[] {
   // scored in full without reading a question (CURRICULUM_REVIEW.md:198).
   const firstIsLimiting = shuffleArray(Array.from({ length: TOTAL }, (_, i) => i < TOTAL / 2));
 
+  // The more numerous reactant can be limiting only when its coefficient is
+  // the larger one; in every easy reaction that is the left reactant, so
+  // these items take left-limiting slots and the half-each-way split holds.
+  const leftSlots = firstIsLimiting.flatMap((left, i) => (left ? [i] : []));
+  const switched = new Set(shuffleArray(leftSlots).slice(0, MORE_NUMEROUS_LIMITING));
+  const unequal = pool.filter((r) => r.reactant1.coeff > r.reactant2.coeff);
+  const forSwitched = unequal.slice(0, MORE_NUMEROUS_LIMITING);
+  const rest = pool.filter((r) => !forSwitched.includes(r));
+
+  let nextSwitched = 0;
+  let nextRest = 0;
   for (let i = 0; i < TOTAL; i++) {
-    const reaction = pool[i % pool.length];
+    const isSwitched = switched.has(i);
+    const reaction = isSwitched
+      ? forSwitched[nextSwitched++ % forSwitched.length]
+      : rest[nextRest++ % rest.length];
     const c1 = reaction.reactant1.coeff;
     const c2 = reaction.reactant2.coeff;
 
     let r1Count: number, r2Count: number;
-    if (firstIsLimiting[i]) {
+    if (isSwitched) {
+      // 3 times against 4, with 3·c1 > 4·c2 molecules for a 2:1 reaction.
+      r1Count = c1 * 3;
+      r2Count = c2 * 4;
+    } else if (firstIsLimiting[i]) {
       r1Count = c1 * 2;
       r2Count = c2 * 4;
     } else {
@@ -222,7 +249,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-5 phone:p-4 phone:mb-4">
               <h2 className="font-bold text-blue-800 mb-2">Aðferðin</h2>
               <p className="text-blue-700 mb-3">
-                Deildu fjölda sameinda með stuðlinum — <strong>lægri talan</strong> segir þér hvað
+                Deildu fjölda einda með stuðlinum — <strong>lægri talan</strong> segir þér hvað
                 rennur fyrst út.
               </p>
               <div className="bg-white rounded-lg p-4 font-mono text-sm text-warm-700 space-y-1">
@@ -281,7 +308,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       >
         <div className="text-center mb-3 phone:mb-2">
           <div className="text-2xl font-bold">{reactant.formula}</div>
-          <div className="text-sm text-warm-600">{count} sameindir</div>
+          <div className="text-sm text-warm-600">{count} eindir</div>
           <div className="text-xs text-warm-500">Stuðull: {reactant.coeff}</div>
         </div>
         <div className="flex flex-wrap justify-center gap-1">
@@ -346,7 +373,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             Hvort hvarfefnið eyðist fyrst?
           </h2>
           <p className="text-warm-600 mb-6 phone:mb-3 phone:text-sm phone-land:col-start-1 phone-land:mb-0">
-            Skoðaðu stuðlana og fjölda sameinda. Hvort hvarfefnið mun klárast fyrst?
+            Skoðaðu stuðlana og fjölda einda. Hvort hvarfefnið mun klárast fyrst?
           </p>
 
           <div

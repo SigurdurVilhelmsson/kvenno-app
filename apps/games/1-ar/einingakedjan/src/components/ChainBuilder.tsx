@@ -142,8 +142,8 @@ export function ChainBuilder({
   );
 
   // Shuffled once per prompt, for the same reason as the pool: correctionPrompt
-  // lists the correct fix first in every branch, so in that order a student could
-  // learn to tap the top option without reading any of them.
+  // lists the options in a fixed order per branch, so in that order a student could
+  // learn which place to tap without reading any of them.
   const prompt = useMemo(() => {
     if (mode !== 'correcting') return null;
     const built = correctionPrompt(result, problem.target, [...pool]);
@@ -386,7 +386,11 @@ export function ChainBuilder({
 
   const applyFix = (action: FixAction) => {
     if (action === 'flip' && result.failedSlot !== undefined) flipSlot(result.failedSlot);
-    if (action === 'remove' && result.failedSlot !== undefined) removeSlot(result.failedSlot);
+    if (action === 'remove') {
+      // A broken step is the one to remove; a clean chain that took a wrong turn
+      // loses its last card (decision 61 (a)).
+      removeSlot(result.failedSlot ?? slots.length - 1);
+    }
     // 'addStep' needs no edit — the student goes back and lengthens the chain.
     setMode('building');
     setRevealed(0);

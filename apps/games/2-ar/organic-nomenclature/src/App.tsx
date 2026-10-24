@@ -152,7 +152,7 @@ function App() {
             <h2 className="font-bold text-emerald-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-emerald-900 text-sm">
               <li>
-                ✓ <strong>Forskeyti:</strong> meth-, eth-, prop-, but-, pent-...
+                ✓ <strong>Forskeyti:</strong> met-, et-, próp-, bút-, pent-...
               </li>
               <li>
                 ✓ <strong>Viðskeyti:</strong> -an (eintengi), -en (tvítengi), -ýn (þrítengi)
@@ -307,16 +307,16 @@ function App() {
             <h3 className="font-semibold text-warm-700 mb-2">📋 Forskeyti (kolefnisfjöldi)</h3>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-2 text-sm text-center">
               <div className="bg-white px-1 py-2 sm:p-2 rounded border whitespace-nowrap">
-                <span className="font-bold">1</span> meth-
+                <span className="font-bold">1</span> met-
               </div>
               <div className="bg-white px-1 py-2 sm:p-2 rounded border whitespace-nowrap">
-                <span className="font-bold">2</span> eth-
+                <span className="font-bold">2</span> et-
               </div>
               <div className="bg-white px-1 py-2 sm:p-2 rounded border whitespace-nowrap">
-                <span className="font-bold">3</span> prop-
+                <span className="font-bold">3</span> próp-
               </div>
               <div className="bg-white px-1 py-2 sm:p-2 rounded border whitespace-nowrap">
-                <span className="font-bold">4</span> but-
+                <span className="font-bold">4</span> bút-
               </div>
               <div className="bg-white px-1 py-2 sm:p-2 rounded border whitespace-nowrap">
                 <span className="font-bold">5</span> pent-

@@ -111,6 +111,30 @@ stats take a row of their own; and Könnun's two buttons stack.
 
 ## Fixed
 
+- **Id 17, steam reforming, is `Hvarf metans og vatnsgufu` — 2026-10-23 (decision 110, Siggi's
+  word).** It was `Gufumyndun`, which reads as vapour formation. The name is the textbook's phrase
+  (ch. 13, m68801), as `equilibrium-shifter` already uses. `icelandic-text.test.tsx` holds it.
+- **The Erfitt prompts read as graded tasks — fixed 2026-10-23 (mobile-pass decision 111 (b)).**
+  Ids 23–30 told the student to compute K, use Hess's law or ΔG° = −nFE°, or predict a melting
+  point, under the heading `Áskorun`, while the grader checks only ΔG° and the verdict. The box is
+  now `Til umhugsunar (ekki metið):` and every prompt is a question to think about (drafted
+  wording). Grading them, option (a), waits on ΔG° = −RT ln K returning to the formula card.
+  `icelandic-text.test.tsx` (`the Erfitt prompts`) holds it.
+- **Two names settled — fixed 2026-10-23 (mobile-pass decision 110, in part).** Könnun called the
+  crossover temperature `þveragahitastig` and the game `Umbreytingarhitastig`; both now say
+  `umbreytingarhitastig`. Id 27 `ATP vatnsrofhvarfun` is `Vatnsrof ATP`, built on the glossary's
+  `vatnsrof`. Both are rows in `icelandic-text.test.tsx`.
+- **The answer was on screen before the student answered — fixed 2026-10-23 (mobile-pass
+  decision 109 (c)).** The "Við núverandi hitastig" panel printed the ΔG° asked for and its
+  verdict beside the question, the graph's point at the slider's temperature carried the same ΔG°
+  as its label and the verdict as its colour, and the T_cross box said in green or red which side
+  of T_cross the slider stood. Since the answer is graded at the slider's temperature, a
+  Keppnishamur player could also slide a scenario 3 or 4 problem to T_cross and answer `0` /
+  Jafnvægi. All four now wait for "Athuga svar", and Keppnishamur's slider is fixed at the
+  problem's temperature (`Í keppni er hitastigið fast.`, drafted wording). The substituted line
+  `ΔG° = (ΔH°) - (T)(ΔS°)` stays, ending `= ?`, as the scaffold, and so do the line on the graph
+  and T_cross itself: reading a sign off the line and comparing T with T_cross is the reasoning
+  taught. Könnun keeps the live readout. `answer-hidden.test.tsx` holds it.
 - **Points and streaks are Keppnishamur's only — fixed 2026-10-03 (mobile-pass decision 1 (b)).**
   Score and streak accrued in Æfingarhamur too, and the stored score was never reset, so
   Keppnishamur's "Stig" was a lifetime total including practice and `Hæsta stig` always equalled
@@ -163,31 +187,5 @@ hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`�
 
 ## Open
 
-- **Two stored ΔH° values disagree with what `thermo.ts` derives.** CaCO₃ decomposition (id 12)
-  stores 178 against a derived 191,6, and NO₂ dimerisation (id 21) −57 against −55,3 — the same two
-  divergences `thermo.ts`'s header records for `equilibrium-shifter`. Neither changes a sign, and
-  `thermo.ts` is the Icelandic book, not Brown, so which value is right is not settled. No ΔS° is
-  sourced anywhere on the platform, so the ΔS values are unchecked.
-- **The answer is on screen before the student answers.** The "Við núverandi hitastig" panel
-  (`src/App.tsx:826-846`) prints the computed ΔG° and the verdict beside the question, and the graph
-  marker labels ΔG° at the current T. `REVIEW_TRACKER.md` raised this in iteration 1 and it was
-  never resolved. Removing it removes the live feedback the slider exists for, so it is a design
-  question, not a deletion. Because the student is graded at whatever T the slider is set to, it
-  also lets a Keppnishamur player slide any scenario 3 or 4 problem to the printed T_cross and
-  answer `0` / Jafnvægi for full points.
-- **The Erfitt `advancedTask` prompts are not graded.** Ids 23, 24 and 27 ask for K, 28 for
-  ΔG° = −nFE°, 25 for Hess's law, 29 for a melting point, 30 for an optimum temperature; the grader
-  still checks only ΔG° and the verdict. `ΔG° = −RT ln K` was removed from the formula card for this
-  reason, but the prompts asking for K remain.
-- **Five names are unsettled, so they were left as they are.** The menu's `Gibbs frjálsa orku`:
-  `ordabok.md` says `Gibbs fríorka`, the textbook says `Gibbs frjáls orka` (and `fríork-` has zero
-  corpus hits) — they disagree. The crossover temperature is `þveragahitastig` in Könnun and
-  `Umbreytingarhitastig` (with an English `T_cross`) in the game; neither source names it. And id 16
-  is `Contact aðferðin`, English, where `equilibrium-shifter` says `Snertiaðferð`, a name neither
-  source has. Two more problem names have no source term either: id 17 `Gufumyndun` (steam
-  reforming, CH₄ + H₂O → CO + 3H₂, where the word reads as vapour formation) and id 27
-  `ATP vatnsrofhvarfun` (the glossary has `vatnsrof` for hydrolysis, but not this compound).
-- **Every right Æfingarhamur answer counts, though the live panel above shows the answer.** The
-  counting rule of decision 1 (b) leaves out an answer the game showed first, but the panel is the
-  open design question above ("The answer is on screen before the student answers", mobile-pass
-  decision 109), so until that is ruled the count cannot tell a worked answer from a read one.
+- **No ΔS° is sourced anywhere on the platform**, so the ΔS values are unchecked. (ΔH° comes from
+  `thermo.ts` for the 25 reactions it reaches since decision 9 (a), ids 12 and 21 included.)

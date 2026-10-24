@@ -169,13 +169,22 @@ Each has a test that fails against the version before it.
   four no puzzle currently shows. The contrast of the flask comparison panel, whose grey text sat at about
   1,6 : 1 on a see-through background, is fixed by making the panel opaque.
 
+## Fixed 2026-10-23, mobile-pass decisions 117–119
+
+- **The ammonium buffer keeps the `-m` of `ammóníum`** (decision 117 (a)): `ammóníumstuðpúði` at
+  all nine sites in the data, as every `ammóníum-` word in the textbook writes it (57 hits, no
+  `ammóníu-` stem) and as this game's own `ammóníumklóríð` already did. A platform row in
+  `governed-terms.test.ts` (`buffer / ammonium buffer`) bans the form without it.
+- **The simulator past buffer capacity** (decision 118 (a), the textbook treatment). A used-up
+  component was floored at 0,001 M, so the pH stalled near pKa ± 2 while the water kept falling.
+  Past exhaustion the pH now comes from the excess strong acid or base, or from the weak acid or
+  base left where that sets more H⁺ or OH⁻ (at the point one runs out); while both remain it is
+  Henderson–Hasselbalch, held between those two limits. The curve's marker stops at the edge of
+  the plot. `buffer-capacity-sim.test.tsx` checks 2,87 at exhaustion, 1,30 and 1,00 past it,
+  12,70 on the base side, and a pH that falls at every step.
+- **Stig 2's flask comparison says what was added** (decision 119): a caption, "Eftir að 0,01 mól
+  af sterkri sýru er bætt við 1 L", read from the panel's own props (`level2-flow.test.tsx`).
+
 ## Open
 
-- **`Ammóníustuðpúði`** (8 sites, this game only). The corpus has no `ammóníu-` stem at all — every
-  one of its 57 hits is `ammóníum…` — and neither compound appears in it. `ammóníumstuðpúði` looks
-  right, but it is a coinage question and has not been ruled.
-- **The simulator beyond buffer capacity.** Once added acid or base exceeds a component, the pH is
-  clamped at pKa ± log(C / 0,001) and stops moving, so a buffer appears to hold forever. Showing the
-  excess strong acid or base takes a model choice.
-- **Stig 2's flask comparison does not say what was added** (0,01 mól of strong acid to 1 L), so the
-  unbuffered flask's pH 2,0 comes from nowhere a student can see.
+Nothing at present.

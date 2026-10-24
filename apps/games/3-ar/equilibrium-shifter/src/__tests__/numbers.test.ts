@@ -27,10 +27,26 @@ describe('the sourced constants', () => {
     );
   });
 
-  it('keeps the count of unsourced systems at ten', () => {
+  it('keeps the count of unsourced systems at eight', () => {
     // Asserted so that quietly supplying a missing constant is a failure
-    // rather than an improvement nobody reviewed.
-    expect(Object.keys(WITHOUT_CONSTANT).length).toBe(10);
+    // rather than an improvement nobody reviewed. It was ten until Siggi's
+    // ruling 103 (2026-10-23) sourced the two complex ions from appendix K.
+    expect(Object.keys(WITHOUT_CONSTANT).length).toBe(8);
+  });
+
+  it('takes the two complex ions from the book’s appendix K, as it prints them', () => {
+    // m68869: Fe³⁺ + SCN⁻ ⇌ [Fe(SCN)]²⁺, Kf = 8,9 × 10², and
+    // Cu²⁺ + 4NH₃ ⇌ [Cu(NH₃)₄]²⁺, Kf = 1,7 × 10¹³. The game writes the copper
+    // complex coming apart, so its K is the dissociation constant, 1/Kf.
+    expect(byId(6).equation).toBe('Fe³⁺(aq) + SCN⁻(aq) ⇌ FeSCN²⁺(aq)');
+    expect(CONSTANTS[6]).toMatchObject({ value: 8.9e2, kind: 'Kf' });
+    expect(byId(22).equation).toBe('Cu(NH₃)₄²⁺(aq) ⇌ Cu²⁺(aq) + 4NH₃(aq)');
+    expect(CONSTANTS[22].kind).toBe('Kd');
+    expect(CONSTANTS[22].value * 1.7e13).toBeCloseTo(1, 12);
+    // The appendix states no temperature, and none was invented.
+    expect(CONSTANTS[6].temperatureC).toBeUndefined();
+    expect(CONSTANTS[22].temperatureC).toBeUndefined();
+    expect(CONSTANTS[6].source).toMatch(/viðauki K/);
   });
 
   it('gives every constant a positive finite value and a source', () => {
@@ -126,6 +142,22 @@ describe('the derived enthalpies', () => {
     expect(e.equation).toContain('I₂(g)');
     expect(derivedEnthalpy(e)!).toBeCloseTo(-9.48, 2);
     expect(e.thermodynamics.type).toBe('exothermic');
+  });
+
+  it('derives the two dissolving systems the book’s ions now reach', () => {
+    // The book's (aq) rows were transcribed on 2026-10-23. They reach water's
+    // autoionisation, 0 + (−230,0) − (−285,83), and AgCl dissolving,
+    // 105,6 + (−167,2) − (−127,0); the stored values were 56 and 65.
+    expect(derivedEnthalpy(byId(7))!).toBeCloseTo(55.83, 2);
+    expect(derivedEnthalpy(byId(10))!).toBeCloseTo(65.4, 2);
+  });
+
+  it('still derives nothing for the weak acids, ammonia and the complexes', () => {
+    // The book lists no CH₃COOH(aq), CH₃COO⁻(aq), NH₃(aq), H₂CO₃(aq), H₃PO₄(aq),
+    // SCN⁻(aq) or complex ion, so these keep a stored, unsourced ΔH.
+    for (const id of [6, 8, 9, 21, 22, 24, 27]) {
+      expect(derivedEnthalpy(byId(id)), String(id)).toBeNull();
+    }
   });
 
   it('records where the two books differ, without hiding it', () => {
@@ -251,10 +283,11 @@ describe('applying a stress', () => {
 
   it('knows the new K exactly when it has both a reference temperature and a ΔH', () => {
     // Two things are needed and either can be missing, which is why this is
-    // stated as the conjunction rather than as "has a temperature". The
+    // stated as the conjunction rather than as "has a temperature". Most
     // aqueous systems are the second case: their constants are quoted at
-    // 25 °C, but the formation-enthalpy table carries no dissolved ions, so
-    // there is no ΔH to move K with.
+    // 25 °C, but the book's formation-enthalpy table has no row for the weak
+    // acids, ammonia or the complex ions in water, so there is no ΔH to move K
+    // with.
     let known = 0;
     let missingEnthalpy = 0;
     for (const e of equilibria) {

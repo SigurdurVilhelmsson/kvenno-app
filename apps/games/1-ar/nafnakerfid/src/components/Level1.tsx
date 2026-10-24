@@ -843,7 +843,10 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           )}
 
           {/* Key reminder. The warm-up keeps no tally of right answers: it
-              is practice, not scored for the level (decision 1 (b)). */}
+              is practice, not scored for the level (decision 1 (b)). The
+              groups are where on the table, not a rule: group 1 holds
+              hydrogen and groups 13–16 mix metals and non-metals (decision
+              40 (b)). */}
           <div className="mt-6 bg-warm-50 rounded-xl p-4 phone:mt-3 phone:p-3">
             <h3 className="font-semibold text-warm-700 mb-2 text-sm">
               {t('level1.ui.remember', 'Mundu:')}
@@ -853,13 +856,13 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 <span className="font-bold text-blue-700">
                   {t('level1.ui.metalsGroups', 'Málmar:')}
                 </span>{' '}
-                hópar 1, 2, 3-12
+                vinstra megin og í miðju (hópar 1–12, nema vetni)
               </div>
               <div className="bg-orange-50 p-2 rounded">
                 <span className="font-bold text-orange-700">
                   {t('level1.ui.nonmetalsGroups', 'Málmleysingjar:')}
                 </span>{' '}
-                hópar 15-18
+                efst til hægri (hópar 14–18, að hluta)
               </div>
             </div>
           </div>

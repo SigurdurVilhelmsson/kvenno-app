@@ -27,7 +27,6 @@ describe('COMPOUNDS data integrity', () => {
       expect(compound).toHaveProperty('category');
       expect(compound).toHaveProperty('difficulty');
       expect(compound).toHaveProperty('elements');
-      expect(compound).toHaveProperty('info');
 
       expect(typeof compound.formula).toBe('string');
       expect(typeof compound.name).toBe('string');
@@ -35,11 +34,15 @@ describe('COMPOUNDS data integrity', () => {
       expect(typeof compound.category).toBe('string');
       expect(typeof compound.difficulty).toBe('string');
       expect(Array.isArray(compound.elements)).toBe(true);
-      expect(typeof compound.info).toBe('string');
 
       expect(compound.formula.length).toBeGreaterThan(0);
       expect(compound.name.length).toBeGreaterThan(0);
-      expect(compound.info.length).toBeGreaterThan(0);
+      // Decision 38 (a): `info` became `observable`, shown before the answer,
+      // and `why`, shown after it. Every compound still says something.
+      expect((compound.observable ?? '') + (compound.why ?? '')).not.toBe('');
+      for (const text of [compound.observable, compound.why]) {
+        if (text !== undefined) expect(text.length).toBeGreaterThan(0);
+      }
     }
   });
 

@@ -256,7 +256,7 @@ describe('Stig 2, building a molecule from its name', () => {
 
   it('moves focus to the hint when "Sýna vísbendingu" opens it, not to <body>', () => {
     openBuildHint();
-    expect(focused()?.textContent).toBe('prop = 3 kolefni, an = eintengi');
+    expect(focused()?.textContent).toBe('próp = 3 kolefni, an = eintengi');
   });
 
   it('on a phone, brings the opened hint into view together with Athuga', () => {
@@ -270,7 +270,7 @@ describe('Stig 2, building a molecule from its name', () => {
   it('on desktop, opening the hint moves focus but never the page', () => {
     phone = false;
     openBuildHint();
-    expect(focused()?.textContent).toBe('prop = 3 kolefni, an = eintengi');
+    expect(focused()?.textContent).toBe('próp = 3 kolefni, an = eintengi');
     expect(scrollBy).not.toHaveBeenCalled();
   });
 });
@@ -294,7 +294,8 @@ describe('Stig 1 and 3 quizzes', () => {
     const rendered = render(<Level1 onComplete={vi.fn()} onBack={vi.fn()} />);
     const ui = within(rendered.container);
     fireEvent.click(ui.getByRole('button', { name: 'Næsta →' }));
-    expect(focused()?.textContent).toMatch(/eth-/);
+    // The second card, two carbons: the book's stem `et-` (decision 89), not card one's `met-`.
+    expect(focused()?.textContent).toMatch(/(^|[^m])et-/);
 
     const { ui: quiz } = startLevel1Quiz();
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });

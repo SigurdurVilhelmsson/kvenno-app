@@ -35,13 +35,33 @@ describe('the teaching rules', () => {
     }
   });
 
-  it('rule 4 is illustrated by a pair that differs only in the comma', () => {
+  it('rule 4 is illustrated by a whole number and the same number in standard form', () => {
     // The point of the rule. If this pair ever loses its partner the rule
-    // becomes an assertion rather than a demonstration.
+    // becomes an assertion rather than a demonstration. Decision 32 (b),
+    // 2026-10-23: the book settles a whole number's trailing zeros with
+    // standard form, not with a trailing comma, so the pair is no longer
+    // `1200` / `1200,` (two / four), which the book does not recognise.
     const written = RULES[3].examples.map((e) => e.written);
     expect(written).toContain('1200');
-    expect(written).toContain('1200,');
-    expect(countSigFigs('1200')).not.toBe(countSigFigs('1200,'));
+    expect(written).toContain('1,200 × 10³');
+    expect(countSigFigs('1200')).toBe(2);
+    expect(countSigFigs('1,200 × 10³')).toBe(4);
+  });
+
+  it('rule 4 follows the book: ambiguous, settled by standard form, else not counted', () => {
+    const rule4 = RULES[3];
+    const text = `${rule4.title} ${rule4.body} ${rule4.examples.map((e) => e.why).join(' ')}`;
+    expect(text).toMatch(/óvíst/);
+    expect(text).toMatch(/[Ss]taðalform/);
+    expect(text).toMatch(/telji ekki|teljast ekki/);
+    // No item, example or rule shows a trailing comma: it is not notation the
+    // book uses, and it now counts the same as no comma at all.
+    const shown = [
+      ...RULES.flatMap((r) => r.examples.map((e) => e.written)),
+      ...COUNT_ITEMS.map((i) => i.written),
+      ...ROUND_ITEMS.map((i) => i.answer),
+    ];
+    for (const x of shown) expect(x, x).not.toMatch(/[.,]$/);
   });
 });
 
@@ -61,14 +81,23 @@ describe('counting practice', () => {
     }
   });
 
-  it('carries the 4500 / 4500, pair, which is the whole of rule 4', () => {
+  it('carries the 4500 / 4,500 × 10³ pair, which is the whole of rule 4', () => {
+    // c5 was `4500,`, four by a trailing-comma rule the book does not use; it
+    // is now the standard form that settles the ambiguity (decision 32 (b)).
     const written = COUNT_ITEMS.map((i) => i.written);
     expect(written).toContain('4500');
-    expect(written).toContain('4500,');
+    expect(written).not.toContain('4500,');
     const plain = COUNT_ITEMS.find((i) => i.written === '4500')!;
-    const comma = COUNT_ITEMS.find((i) => i.written === '4500,')!;
+    const standard = COUNT_ITEMS.find((i) => i.id === 'c5')!;
+    expect(standard.written).toBe('4,500 × 10³');
     expect(plain.answer).toBe(2);
-    expect(comma.answer).toBe(4);
+    expect(standard.answer).toBe(4);
+  });
+
+  it('keeps six counting items, which the phone path clicks through', () => {
+    // `e2e/mobile-game-screens.ts` answers each counting item once to reach
+    // the rounding step; changing the count breaks that path.
+    expect(COUNT_ITEMS).toHaveLength(6);
   });
 
   it('names a misconception wherever the wrong answer is diagnosable', () => {
@@ -96,9 +125,9 @@ describe('rounding practice', () => {
     const r3 = ROUND_ITEMS.find((i) => i.id === 'r3')!;
     expect(r3.answer).toBe('2,50'); // dropping the zero understates it
     const r5 = ROUND_ITEMS.find((i) => i.id === 'r5')!;
-    // `60` claims one figure by rule 4; written plainly it needs a trailing
-    // comma, so the printed answer uses the power of ten.
-    expect(r5.answer).toContain('×');
+    // `60` claims one figure by rule 4 and cannot be written plainly to two,
+    // so the printed answer is in standard form.
+    expect(r5.answer).toBe('6,0 × 10¹');
   });
 });
 
@@ -220,10 +249,15 @@ describe('r5 — sixty to two significant figures', () => {
     expect(checkWritten(w('6,0', '1'), r5)).toBe('rett');
     expect(checkWritten(w('6.0', '1'), r5)).toBe('rett');
     expect(checkWritten(w('0,60', '2'), r5)).toBe('rett');
-    // Rule 4, which the game teaches with 1200, and 4500, — a written comma
-    // makes the trailing zero count, so this is two figures and sixty.
-    expect(checkWritten(w('60,'), r5)).toBe('rett');
-    expect(checkWritten(w('60.'), r5)).toBe('rett');
+  });
+
+  it('reads a trailing comma as sixty to one figure, not two (decision 32 (b))', () => {
+    // Until 2026-10-23 the game taught that the comma made the zero count and
+    // graded `60,` correct. The book says a whole number's trailing zeros are
+    // ambiguous and assumed not to count; the comma settles nothing, so the
+    // value is right and the precision is not.
+    expect(checkWritten(w('60,'), r5)).toBe('stafir');
+    expect(checkWritten(w('60.'), r5)).toBe('stafir');
   });
 
   it('accepts e notation typed on a full keyboard', () => {

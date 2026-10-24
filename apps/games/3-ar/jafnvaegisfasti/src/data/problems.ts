@@ -78,7 +78,7 @@ export const EXPRESSION_PROBLEMS: ExpressionProblem[] = [
     reaction: reactionBy('brom'),
     difficulty: 'thung',
     point:
-      'Sama efnið beggja vegna, í sitt hvorum fasa. Vökvinn dettur út og K er einfaldlega gufunarþrýstingurinn.',
+      'Sama efnið beggja vegna, í sitt hvorum fasa. Vökvinn dettur út og K er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufunarþrýstingurinn.',
   },
   {
     id: 'blyklorid',
@@ -266,6 +266,18 @@ const ICE_ORDER: {
     initial: { 'H₂': 1.0, 'I₂': 2.0, HI: 0 },
     context:
       'Ójafnir upphafsstyrkir. Hér er K stórt, svo nálgunin fellur — og það er rétt niðurstaða, ekki villa.',
+  },
+  // The one problem that runs backwards (mobile-pass decision 96 (b)). Every
+  // other problem starts with no products, so Q = 0 and the direction step's
+  // answer was always forward. This is the book's own Tilraun 2 (ch13/m68798,
+  // the worked example on predicting the direction, which says it runs
+  // backwards), the same mixture Æfa's direction task serves second.
+  {
+    reactionId: 'vatnsgas',
+    difficulty: 'mid',
+    initial: { CO: 0.011, 'H₂O': 0.0011, 'CO₂': 0.037, 'H₂': 0.046 },
+    context:
+      'Tilraun 2 úr kennslubókinni. Q er langt yfir K, svo hvarfið gengur afturábak: myndefnin minnka um x og hvarfefnin aukast um x.',
   },
   {
     reactionId: 'no2-n2o4',

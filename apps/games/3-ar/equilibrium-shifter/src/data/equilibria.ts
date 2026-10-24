@@ -174,7 +174,7 @@ export const equilibria: Equilibrium[] = [
     id: 6,
     equation: 'Fe³⁺(aq) + SCN⁻(aq) ⇌ FeSCN²⁺(aq)',
     name: 'Iron Thiocyanate Complex',
-    nameIs: 'Járn-þíósýanatkomplexið',
+    nameIs: 'Járn-þíósýanatflókajón',
     difficulty: 'beginner',
     reactants: [
       { formula: 'Fe³⁺', coefficient: 1, phase: 'aq', display: '🟡⁺' },
@@ -212,7 +212,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'OH⁻', coefficient: 1, phase: 'aq', display: '⊖' },
     ],
     thermodynamics: {
-      deltaH: 56,
+      deltaH: 55.83,
       type: 'endothermic',
     },
     gasMoles: {
@@ -251,10 +251,13 @@ export const equilibria: Equilibrium[] = [
     },
     description: 'Acetic acid, typical weak acid equilibrium.',
     descriptionIs: 'Ediksýra, dæmigert veikt sýrujafnvægi.',
+    // No temperature stress (mobile-pass decision 102 (b)). The stored +5 is
+    // unsourced, id 24 stores 0 for the same chemistry, and the literature
+    // value is near 0, so heating has no direction to grade. Until an aqueous
+    // ΔH source is ruled on, neither system offers one.
     possibleStresses: [
       { type: 'add-reactant', target: 'CH₃COOH' },
       { type: 'add-product', target: 'H⁺' },
-      { type: 'increase-temp', target: null },
     ],
   },
 
@@ -304,7 +307,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'Cl⁻', coefficient: 1, phase: 'aq', display: '🟢⁻' },
     ],
     thermodynamics: {
-      deltaH: 65,
+      deltaH: 65.4,
       type: 'endothermic',
     },
     gasMoles: {
@@ -523,7 +526,7 @@ export const equilibria: Equilibrium[] = [
     id: 17,
     equation: 'CH₄(g) + H₂O(g) ⇌ CO(g) + 3H₂(g)',
     name: 'Steam Reforming',
-    nameIs: 'Gufuumbrot',
+    nameIs: 'Hvarf metans og vatnsgufu',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'CH₄', coefficient: 1, phase: 'g', display: '⚫⚪' },
@@ -685,7 +688,7 @@ export const equilibria: Equilibrium[] = [
     id: 22,
     equation: 'Cu(NH₃)₄²⁺(aq) ⇌ Cu²⁺(aq) + 4NH₃(aq)',
     name: 'Copper Ammonia Complex',
-    nameIs: 'Kopar-ammóníak komplexið',
+    nameIs: 'Kopar-ammóníakflókajón',
     difficulty: 'intermediate',
     reactants: [{ formula: 'Cu(NH₃)₄²⁺', coefficient: 1, phase: 'aq', display: '🔵' }],
     products: [
@@ -701,7 +704,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Deep blue copper-ammonia complex, example of ligand exchange.',
-    descriptionIs: 'Djúpblár koparammóníakkomplexinn, dæmi um ligandskipti.',
+    descriptionIs: 'Djúpblá kopar-ammóníakflókajón, dæmi um tenglaskipti.',
     possibleStresses: [
       { type: 'add-product', target: 'NH₃' },
       { type: 'increase-temp', target: null },
@@ -716,7 +719,7 @@ export const equilibria: Equilibrium[] = [
     id: 23,
     equation: '2C(s) + O₂(g) ⇌ 2CO(g)',
     name: 'Coupled Carbon Equilibria',
-    nameIs: 'Samtengt kolefnishvarf',
+    nameIs: 'Bruni kolefnis í kolmónoxíð',
     difficulty: 'advanced',
     reactants: [
       { formula: 'C', coefficient: 2, phase: 's', display: '⚫' },
@@ -837,7 +840,7 @@ export const equilibria: Equilibrium[] = [
     id: 27,
     equation: 'H₃PO₄(aq) ⇌ H⁺(aq) + H₂PO₄⁻(aq)',
     name: 'Simultaneous Equilibria',
-    nameIs: 'Samhliða jafnvægi',
+    nameIs: 'Fyrsta klofnunarþrep fosfórsýru',
     difficulty: 'advanced',
     reactants: [{ formula: 'H₃PO₄', coefficient: 1, phase: 'aq', display: '🧪' }],
     products: [
@@ -894,7 +897,7 @@ export const equilibria: Equilibrium[] = [
     id: 29,
     equation: 'Hb(aq) + 4O₂(g) ⇌ Hb(O₂)₄(aq)',
     name: 'Le Chatelier in Biology',
-    nameIs: 'Le Chatelier í líffræði',
+    nameIs: 'Lögmál Le Chateliers í líffræði',
     difficulty: 'advanced',
     reactants: [
       { formula: 'Hb', coefficient: 1, phase: 'aq', display: '🔴' },

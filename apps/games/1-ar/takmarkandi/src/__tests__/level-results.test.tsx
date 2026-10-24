@@ -40,13 +40,13 @@ function expectNoPoints(root: HTMLElement) {
 const reactantCards = (root: HTMLElement) =>
   within(root)
     .getAllByRole('button')
-    .filter((b) => /sameind/.test(b.textContent ?? ''));
+    .filter((b) => /\d+ eindir/.test(b.textContent ?? ''));
 
 /** 0 if the left reactant runs out first, 1 if the right one does. */
 function limitingSide(root: HTMLElement): 0 | 1 {
   const [left, right] = reactantCards(root).map((card) => {
     const text = card.textContent ?? '';
-    return Number(text.match(/(\d+) sameind/)![1]) / Number(text.match(/Stu.ull: (\d+)/)![1]);
+    return Number(text.match(/(\d+) eindir/)![1]) / Number(text.match(/Stu.ull: (\d+)/)![1]);
   });
   return left <= right ? 0 : 1;
 }

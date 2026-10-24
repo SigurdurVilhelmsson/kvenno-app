@@ -79,7 +79,12 @@ describe('diagnoseMisconception', () => {
         reaction.reactants.map(() => 1),
         reaction.products.map(() => 1)
       );
-      expect(message, `reaction ${reaction.id}`).toMatch(/Vísitölunum/);
+      // The subscript is a `lágstafur` (decisions item 13, option a); it said
+      // `Vísitölunum … þær`. The noun is masculine, so the pronoun moved with it.
+      expect(message, `reaction ${reaction.id}`).toMatch(
+        /Lágstöfunum \(litlu tölunum\) má aldrei breyta: þeir segja/
+      );
+      expect(message, `reaction ${reaction.id}`).not.toMatch(/vísit[aö]l/i);
     }
   });
 

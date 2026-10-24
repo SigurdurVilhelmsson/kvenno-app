@@ -14,8 +14,8 @@ clockPastNextGuard();
  *
  * - **Stig 2's drag builder** chose the note by which zones were filled, never by what was in
  *   them. With a prefix and an ending placed it always said "prefix" for a short chain and
- *   "position number" for a long one — so eth- + -en for etan was told about prefixes, and
- *   1- + prop- + -en for 1-búten was told about the position number.
+ *   "position number" for a long one — so et- + -en for etan was told about prefixes, and
+ *   1- + próp- + -en for 1-búten was told about the position number.
  * - **Byggja** counted the multiple bonds but never compared their type, so a double bond
  *   where the name asks for a triple (eten built for etýn) was sent to the position note.
  *
@@ -43,7 +43,7 @@ function openNaming() {
   // Molecules 1-5 are etan, bútan, hexan, eten, própen; skip past them with a wrong build
   const skipTo = (molecule: number) => {
     for (let i = 1; i < molecule; i++) {
-      place('meth-', 'zone-prefix');
+      place('met-', 'zone-prefix');
       place('-an', 'zone-suffix');
       check();
       fireEvent.click(ui.getByRole('button', { name: /Halda áfram/ }));
@@ -56,7 +56,7 @@ function openNaming() {
 describe('Stig 2 drag builder: the note names the wrong part', () => {
   it('a wrong ending on a short chain is about the ending, not the prefix', () => {
     const b = openNaming();
-    b.place('eth-', 'zone-prefix');
+    b.place('et-', 'zone-prefix');
     b.place('-en', 'zone-suffix');
     b.check();
     expect(b.text()).toMatch(SUFFIX_NOTE);
@@ -65,7 +65,7 @@ describe('Stig 2 drag builder: the note names the wrong part', () => {
 
   it('a wrong prefix on a short chain is about the prefix', () => {
     const b = openNaming();
-    b.place('prop-', 'zone-prefix');
+    b.place('próp-', 'zone-prefix');
     b.place('-an', 'zone-suffix');
     b.check();
     expect(b.text()).toMatch(PREFIX_NOTE);
@@ -75,7 +75,7 @@ describe('Stig 2 drag builder: the note names the wrong part', () => {
     const b = openNaming();
     b.skipTo(6);
     b.place('1-', 'zone-position');
-    b.place('prop-', 'zone-prefix');
+    b.place('próp-', 'zone-prefix');
     b.place('-en', 'zone-suffix');
     b.check();
     expect(b.text()).toMatch(PREFIX_NOTE);
@@ -86,7 +86,7 @@ describe('Stig 2 drag builder: the note names the wrong part', () => {
     const b = openNaming();
     b.skipTo(6);
     b.place('1-', 'zone-position');
-    b.place('but-', 'zone-prefix');
+    b.place('bút-', 'zone-prefix');
     b.place('-an', 'zone-suffix');
     b.check();
     expect(b.text()).toMatch(SUFFIX_NOTE);
@@ -97,7 +97,7 @@ describe('Stig 2 drag builder: the note names the wrong part', () => {
     const b = openNaming();
     b.skipTo(6);
     b.place('2-', 'zone-position');
-    b.place('but-', 'zone-prefix');
+    b.place('bút-', 'zone-prefix');
     b.place('-en', 'zone-suffix');
     b.check();
     expect(b.text()).toMatch(POSITION_NOTE);

@@ -74,7 +74,7 @@ const WRONG: { form: RegExp; why: string }[] = [
   { form: /efnahvörfin er\b/, why: 'number agreement: efnahvarfinu er lokið' },
   { form: /upphaf-pH/, why: 'the genitive link, as everywhere else here: upphafs-pH' },
   { form: /súrri formi/, why: 'form is neuter: á súru formi' },
-  { form: /fenólftaleín (?:er )?LITLAUS\b/, why: 'fenólftaleín is neuter: litlaust' },
+  { form: /fenólftale?ín (?:er )?LITLAUS\b/, why: 'fenólftalín is neuter: litlaust' },
   { form: /á litlu rúmmálsviðbót/, why: 'viðbót is feminine: á lítilli rúmmálsviðbót' },
   { form: /mólfjöldi sýru og basa jafnt/, why: 'mólfjöldi is masculine: jafn' },
   { form: /titleIs: 'Styrk /, why: 'a title stands in the nominative: Styrkur' },
@@ -89,6 +89,23 @@ const WRONG: { form: RegExp; why: string }[] = [
   {
     form: /(?:\(|hella |Bættu við |mL )títrant\b/,
     why: 'títrantur declines: hella/bæta við títranti, 5 mL títrants, (títrantur)',
+  },
+  // Mobile-pass decision 116, 2026-10-23: the textbook's words where the
+  // glossary was silent or the game wrote another.
+  {
+    form: /fenólftaleín/i,
+    why: 'the textbook spells it fenólftalín (corpus 5 to 3); neuter either way',
+  },
+  { form: /Erlenmeyerkolb/i, why: 'ordabok conical flask and Erlenmeyer flask;keiluflaska' },
+  {
+    form: /\bhálf(?:ur|an|um|s|a|i)? jafngildispunkt|hálfgildispunkt/i,
+    why: 'ordabok half-equivalence point;hálfjafngildispunktur, one word as in the textbook',
+  },
+  {
+    // Every form of the bare noun (vísir, vísi, vísis, vísar, vísa, vísum and the definite ones),
+    // not preceded by a letter, so litvísir and veldisvísir pass. This game has no verb vísa.
+    form: /(?<![A-Za-zÁÉÍÓÚÝÞÆÖÐáéíóúýþæöð])[Vv]ís(?:irinn|inum|isins|arnir|unum|anna|inn|ana|ir|is|ar|um|i|a)(?![A-Za-zÁÉÍÓÚÝÞÆÖÐáéíóúýþæöð])/,
+    why: "ordabok indicator;litvísir, Siggi's ruling 116 (2026-10-23): litvísir, not bare vísir",
   },
 ];
 
@@ -111,7 +128,7 @@ describe('Icelandic text in this game', () => {
   }
 
   it('describes every indicator in Icelandic', () => {
-    // Shown under each indicator in the Level 2 selector. (`best` is left out
+    // Shown in the Level 2 result, under the chosen indicator. (`best` is left out
     // of the list: Icelandic writes it too.)
     for (const { id, description } of indicators) {
       expect(description, id).not.toMatch(

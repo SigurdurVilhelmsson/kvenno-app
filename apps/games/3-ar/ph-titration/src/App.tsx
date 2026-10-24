@@ -167,7 +167,7 @@ function App() {
                 <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center gap-3">
                   <div>
                     <div className="font-bold text-blue-800">Stig 1: Skilningur</div>
-                    <div className="text-sm text-blue-600">Títrunarferlar og vísar</div>
+                    <div className="text-sm text-blue-600">Títrunarferlar og litvísar</div>
                   </div>
                   <div className="font-bold text-blue-700 whitespace-nowrap">{resultLabel(1)}</div>
                 </div>
@@ -201,7 +201,7 @@ function App() {
                     ✓ <strong>Jafngildispunktur:</strong> Hvar öll sýra/basi hefur hvarfast
                   </li>
                   <li>
-                    ✓ <strong>Vísar:</strong> Hvernig velja réttan vísi fyrir hverja títrun
+                    ✓ <strong>Litvísar:</strong> Hvernig velja réttan litvísi fyrir hverja títrun
                   </li>
                   <li>
                     ✓ <strong>Henderson-Hasselbalch:</strong> pH = pKₐ + log([A⁻]/[HA])
@@ -229,7 +229,7 @@ function App() {
           <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
               <p className="text-warm-600 mb-4 phone:mb-3">
-                Lærðu um sýru-basa títranir, títrunarferla og vísa
+                Lærðu um sýru-basa títranir, títrunarferla og litvísa
               </p>
 
               {/* Pedagogical explanation */}
@@ -274,10 +274,10 @@ function App() {
                           </span>
                         )}
                       </div>
-                      <div className="text-sm text-blue-600 mt-1">Títrunarferlar og vísar</div>
+                      <div className="text-sm text-blue-600 mt-1">Títrunarferlar og litvísar</div>
                       <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                         Skildu hvernig títrunarferlar líta út fyrir mismunandi sýru-basa
-                        samsetningar. Lærðu um vísa og litabreytingar.
+                        samsetningar. Lærðu um litvísa og litabreytingar.
                       </div>
                     </div>
                   </div>
@@ -306,8 +306,8 @@ function App() {
                         Gagnvirk títrun í rannsóknarstofu
                       </div>
                       <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Framkvæmdu títrun, veldu réttan vísi og finndu jafngildispunkt. Byggðu upp
-                        færni í rannsóknarstofuvinnu.
+                        Framkvæmdu títrun, veldu réttan litvísi og finndu jafngildispunkt. Byggðu
+                        upp færni í rannsóknarstofuvinnu.
                       </div>
                     </div>
                   </div>

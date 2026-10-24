@@ -6,7 +6,7 @@ import { AefaScreen } from '../components/AefaScreen';
 import { BeitaScreen } from '../components/BeitaScreen';
 import { KannaScreen } from '../components/KannaScreen';
 import { FRACTIONAL_PROBLEMS, MIXING_PROBLEMS, SOLUBILITY_PROBLEMS } from '../data/problems';
-import { SALTS, saltBy } from '../data/salts';
+import { SALTS, SALT_NOTES, saltBy } from '../data/salts';
 import { gradeScientific, molarSolubility } from '../engine/ksp';
 
 /**
@@ -43,6 +43,24 @@ describe('Kanna draws a bar for every solubility it can show', () => {
           expect(width, `${salt.formula} at step ${step}`).toBeLessThanOrEqual(100);
         }
       }
+    }
+  });
+});
+
+describe('Kanna says where the two books disagree', () => {
+  // The four divergence notes in salts.ts were maintainer prose no screen rendered, though
+  // BaSO₄'s says a student checking the Icelandic appendix finds a 14 times different molar
+  // solubility, and Æfa asks for exactly that (mobile-pass decision 121, 2026-10-23).
+  const LINE = 'Íslenska kennslubókin gefur annað gildi — hér er notað gildi Brown.';
+
+  it('on every salt the books disagree about, BaSO₄ among them, and on no other', () => {
+    const { container } = render(<KannaScreen onComplete={() => {}} onBack={() => {}} />);
+    const divergent = SALTS.filter((s) => SALT_NOTES.get(s.formula)?.divergenceNote);
+    expect(divergent.map((s) => s.formula)).toContain('BaSO₄');
+    for (const salt of SALTS) {
+      fireEvent.click(within(container).getByRole('button', { name: salt.formula }));
+      const shown = within(container).queryByText(LINE) !== null;
+      expect(shown, salt.formula).toBe(divergent.includes(salt));
     }
   });
 });
@@ -213,5 +231,59 @@ describe('Æfa’s question reads as a sentence', () => {
       fireEvent.click(within(container).getByText('Athuga'));
       fireEvent.click(within(container).getByRole('button', { name: /Næsta dæmi|Ljúka/ }));
     }
+  });
+});
+
+describe('Æfa names the two slips it can diagnose', () => {
+  // Until 2026-10-23 a √Ksp or a ∛Ksp entered for a 1:2 salt graded `tolustafir` or `baedi`,
+  // whose messages say only that the numbers do not match. The entry now names the slip, as
+  // the misconception (mobile-pass decision 120 (b)).
+  const ORDER = { ledd: 0, mid: 1, thung: 2 } as const;
+  const run = [...SOLUBILITY_PROBLEMS].sort((a, b) => ORDER[a.difficulty] - ORDER[b.difficulty]);
+
+  function answer(container: HTMLElement, value: number) {
+    const entry = asEntry(value);
+    fireEvent.change(within(container).getByLabelText('Tala'), {
+      target: { value: entry.mantissa },
+    });
+    fireEvent.change(within(container).getByLabelText('Veldisvísir'), {
+      target: { value: entry.exponent },
+    });
+    fireEvent.click(within(container).getByText('Athuga'));
+  }
+
+  it('says which root a wrong answer for a 1:2 or 2:1 salt took, and nothing for a 1:1 salt', () => {
+    const { container } = render(<AefaScreen onComplete={() => {}} onBack={() => {}} />);
+    let squareRoots = 0;
+    let cubeRoots = 0;
+    run.forEach((p, i) => {
+      const salt = saltBy(p.formula);
+      const twoToOne = p.direction === 'kspToS' && salt.x + salt.y === 3;
+      // Alternate the two slips across the 1:2 salts, and give √Ksp everywhere else.
+      const cube = twoToOne && i % 2 === 0;
+      answer(container, cube ? Math.cbrt(salt.ksp) : Math.sqrt(salt.ksp));
+      const slip = within(container).queryByText(/^Algeng villa:/)?.parentElement?.textContent;
+      if (!twoToOne) {
+        expect(slip, p.id).toBeUndefined();
+      } else if (cube) {
+        cubeRoots++;
+        expect(slip, p.id).toMatch(/fjarkinn í Ksp = 4s³ gleymdist/);
+      } else {
+        squareRoots++;
+        expect(slip, p.id).toMatch(/kvaðratrótin, sem á aðeins við þegar hlutfallið er 1:1/);
+      }
+      fireEvent.click(within(container).getByRole('button', { name: /Næsta dæmi|Ljúka/ }));
+    });
+    expect(squareRoots).toBeGreaterThan(0);
+    expect(cubeRoots).toBeGreaterThan(0);
+  });
+
+  it('blames neither slip for an answer that is simply wrong', () => {
+    const { container } = render(<AefaScreen onComplete={() => {}} onBack={() => {}} />);
+    run.forEach((p) => {
+      answer(container, p.answer * 1.3);
+      expect(within(container).queryByText(/^Algeng villa:/), p.id).toBeNull();
+      fireEvent.click(within(container).getByRole('button', { name: /Næsta dæmi|Ljúka/ }));
+    });
   });
 });

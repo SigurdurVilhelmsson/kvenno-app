@@ -110,12 +110,12 @@ function App() {
   }
 
   if (mode === 'level3') {
-    // Stig 3 reports completion as its summary opens, so recording it must not
-    // also leave for the menu: `completeLevel` did, and the summary never showed.
+    // Stig 3 reports completion from its summary's `Ljúka stigi`, as Stig 1
+    // does, so recording it leaves for the menu (decision 42 (c)).
     return (
       <Level3
         onBack={() => setMode('menu')}
-        onComplete={(correct, total) => recordLevel(3, correct, total)}
+        onComplete={(correct, total) => completeLevel(3, correct, total)}
       />
     );
   }
@@ -296,7 +296,7 @@ function App() {
             <p className="text-sm text-amber-700">
               Lyfjafræðingar reikna skammta lyfja í mólum. Matvælafræðingar nota mólmassa til að
               skilja efnainnihald. Án mólmassans gætum við ekki umbreytt milli gramma og mólfjölda —
-              undirstaða allrar magnefnafræði.
+              undirstaða allrar hlutfallaefnafræði.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

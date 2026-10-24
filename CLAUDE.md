@@ -376,7 +376,7 @@ Remaining deferred (all need a decision, not code):
 - **`useGameI18n` `t()` — 7 of 20 games are switcher-only.** Those 20 all import the hook and render `LanguageSwitcher`; `1-ar/einingakedjan` (Aug 2026) is the one game that does neither, deliberately — it ships hardcoded Icelandic so it does not add a 21st case to this undecided question. The rest of this entry is unchanged and counts only the original 20: seven have zero `t()` calls of any form and serve hardcoded Icelandic — three Y3 (`gas-law-challenge`, `buffer-recipe-creator`, `thermodynamics-predictor`) and four Y2 (`kinetics`, `lewis-structures`, `organic-nomenclature`, `intermolecular-forces`). Two more are zero in all but name: `ph-titration` and `rafeindabygging` have exactly one call each (`ph-titration`'s is a template literal with a hardcoded Icelandic fallback, `src/components/Level3.tsx:104`, which a `t('` grep misses). `equilibrium-shifter` is partial at 7, so this is not "all of Y3". Per-game counts: `docs/i18n-coverage.md` — the authority; every old-repo game carries the same dead wiring. Conflicts with this file's "Icelandic UI only." **Ruled 2026-10-02 (decisions item 4): the three title-only games (`takmarkandi`, `vsepr-geometry`, `rafeindabygging`) were stripped too, leaving nine games with a switcher, and their Polish keeps its diacritics (`no-flattened-polish.test.ts`).** Whether to finish wiring the nine is still open.
 - **Hess Polish i18n block** — teacher sign-off. Same decision as above.
 - **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability). **Do not generalise this to other games:** several ship an unshuffled array where the answer is positionally predictable, which is a different problem. See `docs/README.md`.
-- **Level 4, and whether levels are gated — SETTLED 2026-08-29, Siggi's ruling: levels are not gated, and there is no Level 4.** The dead gating vocabulary was stripped the same day: 93 strings across 16 files — 84 `locked:` in 14 game `i18n.ts` files (2 levels × 3 languages each), 6 `completeLevel1First`/`completeLevel2First` in `1-ar/nafnakerfid`, and 3 `common.locked` in `packages/shared/hooks/useGameI18n.ts`, which no prior note mentioned. Zero consumers before removal, verified. **The earlier note said the keys sat under `menu.levels.*.locked`; they were at top-level `levels.*.locked`** — grep `locked:` rather than a path if this ever recurs. Level-4 material from the old repo becomes **Apply-phase** content, not a fourth level. **Not covered by this ruling and deliberately left:** `3-ar/equilibrium-shifter/src/App.tsx:419-421` gates _Keppnishamur_, a timed and scored challenge mode, behind 5 completed problems. That is a mode gate, not a level gate, and it is live rather than dead — it needs its own ruling.
+- **Level 4, and whether levels are gated — SETTLED 2026-08-29, Siggi's ruling: levels are not gated, and there is no Level 4.** The dead gating vocabulary was stripped the same day: 93 strings across 16 files — 84 `locked:` in 14 game `i18n.ts` files (2 levels × 3 languages each), 6 `completeLevel1First`/`completeLevel2First` in `1-ar/nafnakerfid`, and 3 `common.locked` in `packages/shared/hooks/useGameI18n.ts`, which no prior note mentioned. Zero consumers before removal, verified. **The earlier note said the keys sat under `menu.levels.*.locked`; they were at top-level `levels.*.locked`** — grep `locked:` rather than a path if this ever recurs. Level-4 material from the old repo becomes **Apply-phase** content, not a fourth level. **Not covered by this ruling and deliberately left:** `3-ar/equilibrium-shifter/src/App.tsx:419-421` gates _Keppnishamur_, a timed and scored challenge mode, behind 5 completed problems. That is a mode gate, not a level gate, and it is live rather than dead. **Ruled separately: it stays (2026-09-19), and counts right Lærdómshamur answers (2026-10-23, decision 101 (a)).**
 
 Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle. **Lost; see below.**
 
@@ -1102,12 +1102,15 @@ significant figures live **inside Einingagreining**, not in a game of their own.
   `Level3.tsx` or the data it reads, and the L3 check is feedback-only —
   `calculateCompositeScore` takes four scores and this is not one of them.
 - **`utils/sigfigs.ts` works on the written string, never on a `number`,** and that is the subject
-  rather than fussiness: `1200`, `1200,` and `1,200 × 10³` are one quantity written to two, four and
-  four significant figures, and a float cannot tell them apart.
+  rather than fussiness: `1200`, `1200,0` and `1,200 × 10³` are one quantity written to two, five
+  and four significant figures, and a float cannot tell them apart. **Rule 4 follows the book since
+  2026-10-23 (decision 32 (b)):** a whole number's trailing zeros are ambiguous, settled by standard
+  form and otherwise not counted, so a trailing comma changes nothing (`1200,` is two, `60,` one).
+  The game used to count them after a comma (`1200,` four).
 - **`roundToSigFigs` verifies its own output and falls back to scientific notation.** A round-trip
   property test found the case: **60,221 to two significant figures cannot be written in plain
-  decimal at all**, because `60` claims one figure by rule 4. It prints `6,0 × 10¹`, and Stig 0 says
-  why. 455 round-trip cases are asserted.
+  decimal at all**, because a whole number's trailing zero does not count (rule 4), so `60` claims
+  one figure. It prints `6,0 × 10¹`, and Stig 0 says why. 455 round-trip cases are asserted.
 - **Grading a written answer compares the value _and_ the figure count.** `2,5` and `2,50` are the
   same number and different answers; checking value alone would accept the exact mistake the step
   exists to correct.
@@ -1381,7 +1384,10 @@ it. What matters platform-wide:
   written backwards takes `1/K` rather than a second lookup — a test asserts the reciprocal pair
   multiplies to 1. The ten without are the complex-ion and hemoglobin systems, the two where K has
   nothing on one side, and five the book puts no number on. **The count is asserted**, so quietly
-  supplying one is a failure rather than an improvement nobody reviewed.
+  supplying one is a failure rather than an improvement nobody reviewed. **Since 2026-10-23 it is
+  22 and 8** (decision 103): the two complex ions take Kf from the Icelandic book's appendix K
+  (`m68869`), Fe³⁺ + SCN⁻ at 8,9 × 10² and the copper ammine as `Kd = 1/Kf`, with no temperature,
+  since the appendix states none.
 - **`packages/shared/data/thermo.ts` is new, and is NOT a second `appendix-d.ts`.** It transcribes
   the **Icelandic** book's `m68865` formation enthalpies, for a quantity Brown's Appendix D does not
   cover — so the 2026-09-19 "Appendix D is authoritative" ruling does not reach it, and nothing in
@@ -1416,10 +1422,13 @@ it. What matters platform-wide:
   names to match. Pinned by a test for the same reason `docs/README.md` pins the four look-alike
   option arrays: so nobody "fixes" it and so it cannot quietly grow.
 
-**Still open here:** the ten systems with no sourced constant would need the Icelandic book's
-complex-ion formation constants (`m68869`), which is a new source and Siggi's call; and the aqueous
-systems have a constant but no derivable ΔH, because the formation table carries no dissolved ions,
-so their temperature stresses stay directional.
+**Still open here:** eight systems carry no constant (hemoglobin, the two with nothing on one side,
+five the book puts no number on); the two complex ions were sourced from `m68869` on 2026-10-23.
+**`thermo.ts` carries every (aq) row of `m68865` since 2026-10-23** (Siggi's ruling), save the two
+garbled mercury rows; it reaches water's autoionisation (+55,83) and AgCl dissolving (+65,4), both
+the same sign as before. The book has no row for the weak acids, ammonia or the complex ions in
+water, so the other aqueous systems keep a stored, unsourced ΔH and stay directional, and acetic
+acid keeps no temperature stress (decision 102 (b)).
 
 **ICE in partial pressures is built — 2026-09-20, in `3-ar/jafnvaegisfasti`.** The last thing the
 engine could do that nothing posed. Four problems in the Beita phase, sourced to ch. 13 like the
@@ -1600,9 +1609,10 @@ specifics — read the README, not them.
   `icelandic-text.test.ts` and a `governed-terms` row. Question 14's mL answer was labelled `L`; fixed the
   same day by `answerUnit`, which takes the unit the question states the variable in, guarded by
   `answer-unit.test.ts`. Numbers formatted on screen moved to `formatDecimal` the same day, guarded by its `decimal-comma.test.ts`.
-- **`3-ar/equilibrium-shifter`'s Keppnishamur can never be unlocked.** The gate needs
-  `problemsCompleted >= 5`, and that count is written only at the end of a challenge round. The
-  mode-gate ruling this file already asked for is now also a fix.
+- **`3-ar/equilibrium-shifter`'s Keppnishamur could never be unlocked — fixed 2026-10-23.** The
+  gate needs `problemsCompleted >= 5`, and that count was written only at the end of a challenge
+  round. Siggi ruled that each counted right Lærdómshamur answer adds one (decision 101 (a)),
+  guarded by `learning-count.test.tsx`.
 - **`3-ar/thermodynamics-predictor` id 25 stored ΔH = −137 kJ/mol for C + ½O₂ → CO — fixed
   2026-09-22.** That was CO's ΔG°f; its ΔH°f is −110,5, so the game showed ΔG° = −163,8 instead of
   −137,2. Now −110,5, guarded by `co-enthalpy.test.ts`, which also checks the game's ΔG° at 298 K
@@ -1695,11 +1705,12 @@ that let this file's own Y3 chain line say `Púfferar` until September.
 | reaction quotient | `hvarfstuðull` | `hvarfkvóti` | **2026-09-20**, and also already governed: `ordabok.md` carried `reaction quotient;hvarfstuðull` while `equilibrium-shifter`'s `QKComparison.tsx` said `hvarfkvóti`. Corpus **48 to 5** — and note _where_ the 5 are: the book uses `hvarfstuðull` throughout its teaching sections (`ch13/m68798`, `ch13/m68801`, including the glossary definition of `jafnvægisfasti`) and slips into `hvarfkvóti` only in its Le Chatelier section, so it disagrees with itself exactly as it does over `nettójónajafna`. Running prose in the section that defines the term wins. **This does not conflict with the `sýrufasti` row's `-fasti` against `-stuðull` argument** — Q is precisely the quantity that is _not_ constant, so the split is what makes the pair legible: `jafnvægisfasti` for K, `hvarfstuðull` for Q. Masculine: `hvarfstuðull` / `hvarfstuðul` / `hvarfstuðli` / `hvarfstuðuls`, def. `hvarfstuðullinn`. The `ordabok.md` headword was `reaction Quotient` with a stray capital and is now lowercase, matching every other entry |
 | reverse reaction | `bakhvarf` (og `framhvarf`) | **`andhverfa`** um efnahvarf | **Taken from the textbook, 2026-09-20**; `ordabok.md` was silent and now carries `forward reaction;framhvarf` and `reverse reaction;bakhvarf`. The pair is the book's own **glossary definition** wording (`ch13/m68797` defines `jafnvægi` and `afturkræft efnahvarf` with it) and its teaching prose across six chapters, **20 hits to 15**; `andhverft hvarf` appears 4 times, all inside end-of-chapter problems in one module. The pair also reads as a pair: `fram-` against `bak-`. Neuter, like `efnahvarf`: `bakhvarf` / `bakhvarf` / `bakhvarfi` / `bakhvarfs`. **This was live, not a precaution** — `3-ar/equilibrium-shifter` said `bakhvarf` in `App.tsx` and `QKComparison.tsx` and `Andhverfa af …` in `NumbersPanel.tsx`, plus two more in its equilibria data, one carrying **English** (`Andhverfa Water Gas Shift hvarfsins`) inside an Icelandic string. **Read the regex before narrowing it:** the ban is the whole word with a single carve-out for a following form of `hlutfall`, because `andhverfu hlutfalli` in `3-ar/gas-law-challenge` is a **different and correct sense** — Boyle's law really is an inverse proportion — and `handhverfa` (enantiomer, ch19) is excluded by the leading word boundary. A first draft matched only `andhverf-` followed by a reaction or `af`, and it missed two of the four shipped sites. **Unrelated and separate:** `umhverfa` is the reciprocal of a **number**, which is what a reversed reaction's K is, and is the book's word in the sentence that states that rule |
 | ideal gas law | `kjörgaslögmálið` | `lofttegundalögmál` (as in `Tilvalin lofttegundalögmál`) | **2026-09-22, not a new ruling** — `ordabok.md` has carried `ideal gas law;kjörgaslögmálið` and `ideal gas;kjörgas` all along, and `3-ar/jafnvaegisfasti` already wrote `kjörgas-`, while `3-ar/gas-law-challenge` said `Tilvalin lofttegundalögmál` at four sites including its Stig 1 heading. Neuter and definite: nom/acc `kjörgaslögmálið`, dat `kjörgaslögmálinu`, gen `kjörgaslögmálsins`. The ban is on the compound, not on `tilvalin`, which is an ordinary adjective |
-| tetrahedron | `ferflötungur` / `ferflötungslaga` | `fjórflötungur` | **2026-09-23, rule 1**: `ordabok.md` gives both (`tetrahedral;ferflötungur`, `tetrahedral;ferflötungslaga`), and so does the book's own glossary — the headword in `ch07/m68742`, the VSEPR module, is `ferflötungur`, whose paragraphs write `fer-` 19 times to 8. **Siggi's to confirm, not blocking:** the corpus overall is 84 `fjór-` to 57 `fer-`, and that module's one inline term marker is `fjórflötunga`. Masculine either way, so the sweep of `vsepr-geometry` and `intermolecular-forces` was a prefix swap |
+| tetrahedron | `ferflötungur` / `ferflötungslaga` | `fjórflötungur` | **2026-09-23, rule 1**: `ordabok.md` gives both (`tetrahedral;ferflötungur`, `tetrahedral;ferflötungslaga`), and so does the book's own glossary — the headword in `ch07/m68742`, the VSEPR module, is `ferflötungur`, whose paragraphs write `fer-` 19 times to 8. **Confirmed by Siggi 2026-10-23**, though the corpus overall is 84 `fjór-` to 57 `fer-`, and that module's one inline term marker is `fjórflötunga`. Masculine either way, so the sweep of `vsepr-geometry` and `intermolecular-forces` was a prefix swap |
 | lone pair | `stakt rafeindapar`, `stök pör` | `einstætt par`, `einstæð pör` | **2026-09-23, from the textbook.** `ordabok.md` gives only the head noun (`lone pair;rafeindapar`); the book defines `[[term:stök rafeindapör]]`, its glossary headword is `stakt rafeindapar`, and before `(rafeinda)par` it writes `stak-` 109 times, `einmana` 23, `einstæð-` never. **The adjective moves every case:** `stakt par`, `stök pör`, `stöku pari`, `stökum pörum`, `stakra para`, `staka parið`. About 130 sites swept in Lewis, VSEPR and IMF, including four button `aria-label`s |
 | mole, as a unit | `mól` — `g/mól`, `kJ/mól`, `J/(mól·K)`, `mól/L` | `mol` in Icelandic text | **2026-09-23, from the textbook**, which never writes the symbol any other way: `kJ/mól` 127 to 0, `g/mól` 79 to 0, a number then `mól` 203 to 0 (count `*-segments.is.md` only — `ch05`'s `(b)`/`(c)`/`(d)` variant copies inflate these). `molmassi` and `equilibrium-shifter` had moved already; about 220 sites swept in the rest, including unit data a game prints (`einingakedjan`'s ratio cards, `gas-law-challenge`'s unit labels). **English and Polish text keep `mol`**, so the test row only reads lines carrying an Icelandic letter |
 | proton | `róteind` | `prótón`, `Fjölprótón-` | `ordabok.md` and the corpus, 241 to 1. Polyprotic acids are `fjölvirk` / `tvívirk` / `þrívirk sýra` (`polyprotic acid;fjölvirk sýra`). A protonated indicator has `tekið við róteind`; do not coin `róteindaform` |
-| noble gas | `eðalgas` | `eðallofttegund` | **2026-09-23, rule 1**: `ordabok.md` (`noble gas;eðalgas`) and the book's own glossary headword (`ch02/m68695`) agree; its paragraphs say `eðallofttegund` 38 to 19 and its inline term marker is `eðallofttegundir` — the book disagreeing with itself, settled as `prósentuheimtur` was. **Siggi's to confirm, not blocking.** `lotukerfid` said both (`Eðalgös` in Stig 1, `eðallofttegundir` in Stig 2) and `molmassi`'s legend the second. **Feminine to NEUTER:** plural `eðalgös`, def. `eðalgösin`, dat. `eðalgösum` — `eðalgösin eru óvirk`. `P-málmar` became `tregir málmar` on 2026-10-02 (decisions item 21) |
+| noble gas | `eðalgas` | `eðallofttegund` | **2026-09-23, rule 1**: `ordabok.md` (`noble gas;eðalgas`) and the book's own glossary headword (`ch02/m68695`) agree; its paragraphs say `eðallofttegund` 38 to 19 and its inline term marker is `eðallofttegundir` — the book disagreeing with itself, settled as `prósentuheimtur` was. **Confirmed by Siggi 2026-10-23.** `lotukerfid` said both (`Eðalgös` in Stig 1, `eðallofttegundir` in Stig 2) and `molmassi`'s legend the second. **Feminine to NEUTER:** plural `eðalgös`, def. `eðalgösin`, dat. `eðalgösum` — `eðalgösin eru óvirk`. `P-málmar` became `tregir málmar` on 2026-10-02 (decisions item 21) |
+| ammonium buffer | `ammóníumstuðpúði` | `ammóníustuðpúði` | **Mobile-pass decision 117 (a), 2026-10-23.** Every `ammóníum-` word in the book keeps the `-m` (57 hits, no `ammóníu-` stem); `buffer-recipe-creator` said `ammóníustuðpúð-` at nine sites. Masculine like `stuðpúði`, so it is spelling only and no ending moves |
 
 **Also given platform rows on 2026-09-23, none a new ruling** — each was already in `ordabok.md` and
 had been fixed inside one game only: `rafeindapar` (the misspelling `rafeindarapar`), `samoka` (it
@@ -1730,8 +1741,9 @@ book always writes them (decision 74); the open form is a platform row. Reaction
 
 **Decision 12, 2026-10-03:** `umreikningsstuðull` (not `umbreytingarstuðull`; same declension) and
 `styttast út` for cancelling units and terms (not `strikast út`; it agrees in number, `einingin
-styttist`, `einingarnar styttast`). `strika út` stays only as the name of the on-screen
-strike-through, Einingagreining's `Strika út` button. Both are platform rows.
+styttist`, `einingarnar styttast`). `strika út` may only name an on-screen
+strike-through; Einingagreining's `Strika út` button, the one example, went with decision 29 (a)
+on 2026-10-23. Both are platform rows.
 
 **Four more on 2026-10-02, Siggi's rulings from the review tracker** (decisions 11, 15, 16, 39):
 `nitur` for nitrogen, not `köfnunarefni` (neuter: `nitur`/`nitri`/`niturs`; compounds take the bare

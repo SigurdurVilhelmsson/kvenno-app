@@ -20,7 +20,7 @@ export function OrientationChallenge({ onComplete, onAttempt }: OrientationChall
   const [selectedFactor, setSelectedFactor] = useState<'wrong' | 'correct' | null>(null);
 
   const handleTryFactor = (type: 'wrong' | 'correct') => {
-    onAttempt();
+    onAttempt(type === 'wrong');
     setSelectedFactor(type);
 
     if (type === 'wrong') {

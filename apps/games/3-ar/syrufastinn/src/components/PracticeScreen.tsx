@@ -20,6 +20,7 @@ import { FeedbackPanel } from '@shared/components';
 import {
   DECIMAL_INPUT_PROPS,
   focusTarget,
+  formatScientific,
   isPhone,
   parseStudentNumber,
   revealSpan,
@@ -37,7 +38,15 @@ import { PH_TOLERANCE, isRelativelyClose, isAbsolutelyClose } from '../engine/gr
 import { solveWeakAcid } from '../engine/ka';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
-const sciText = (n: number) => n.toExponential(2).replace('.', ',');
+/**
+ * x as the student types it, `1,34e-3`: kept only where the screen shows the
+ * answer to type or echoes the one typed. Everything else is printed with
+ * `formatScientific` — Ka at its source's two figures, x at three, the figures
+ * the x step is graded to (decision 108).
+ */
+const typedX = (n: number) => n.toExponential(2).replace('.', ',');
+const kaText = (n: number) => formatScientific(n, 2);
+const xText = (n: number) => formatScientific(n, 3);
 
 interface PracticeScreenProps {
   onComplete: () => void;
@@ -147,7 +156,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
     x: [
       'Forsendan er að x sé hverfandi miðað við C, svo Ka ≈ x² / C.',
       'Umraðað: x = √(Ka · C).',
-      `Hér: x = √(${sciText(problem.acid.ka)} · ${fmt(problem.concentration, 3)}).`,
+      `Hér: x = √(${kaText(problem.acid.ka)} · ${fmt(problem.concentration, 3)}).`,
     ],
     check: [
       'Klofnunarhlutfallið er x deilt með C, gefið upp í prósentum.',
@@ -156,7 +165,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
     ph: [
       'x er styrkur vetnisjóna, [H⁺].',
       'pH = −log₁₀[H⁺].',
-      `Hér: pH = −log₁₀(${sciText(s.hApprox)}).`,
+      `Hér: pH = −log₁₀(${xText(s.hApprox)}).`,
     ],
   };
 
@@ -213,7 +222,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
           <p className="text-warm-800">
             <strong>{fmt(problem.concentration, 3)} M</strong> lausn af{' '}
             <strong>{problem.acid.nameDative}</strong> ({problem.acid.formula}), Ka ={' '}
-            {sciText(problem.acid.ka)}.
+            <span className="whitespace-nowrap">{kaText(problem.acid.ka)}</span>.
           </p>
           <p className="mt-1 text-sm text-warm-600">{problem.acid.context}</p>
         </div>
@@ -228,10 +237,13 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
         {step === 'check' ? (
           <div>
             <p className="mb-3 text-warm-700">
-              Þú fékkst x = {sciText(s.hApprox)} M úr {fmt(problem.concentration, 3)} M lausn.
+              Þú fékkst x = {typedX(s.hApprox)} M úr {fmt(problem.concentration, 3)} M lausn.
               Klofnunarhlutfallið er{' '}
+              {/* x / C, the division of the x printed beside it: the student's
+                  own check, done the book's way (decision 105 (a)). The bar
+                  below and the 5 % verdict keep the exact root's α. */}
               <span className="whitespace-nowrap">
-                {formatPercent(problem.percentDissociated)} %
+                {formatPercent((s.hApprox / problem.concentration) * 100)} %
               </span>
               .
             </p>
@@ -324,11 +336,11 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                       isCorrect: verdict,
                       explanation:
                         step === 'x'
-                          ? `x = √(Ka · C) = √(${sciText(problem.acid.ka)} · ${fmt(
+                          ? `x = √(Ka · C) = √(${kaText(problem.acid.ka)} · ${fmt(
                               problem.concentration,
                               3
-                            )}) = ${sciText(s.hApprox)} M.`
-                          : `pH = −log₁₀(${sciText(s.hApprox)}) = ${fmt(problem.answer, 2)}.`,
+                            )}) = ${typedX(s.hApprox)} M.`
+                          : `pH = −log₁₀(${xText(s.hApprox)}) = ${fmt(problem.answer, 2)}.`,
                       misconception: misconception(),
                     }}
                   />

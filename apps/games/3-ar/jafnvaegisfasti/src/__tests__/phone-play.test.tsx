@@ -13,8 +13,8 @@ import { BEITA_PROBLEMS, KP_PROBLEMS } from '../data/problems';
  *
  * **The sign button matters most.** Every scientific-notation answer here is
  * typed into two fields that
- * raise the decimal keypad, and on an iPhone that keypad has no minus key. Nine
- * of the ten Beita extents and five of the eight Kp answers have a negative
+ * raise the decimal keypad, and on an iPhone that keypad has no minus key. Ten
+ * of the eleven Beita extents and five of the eight Kp answers have a negative
  * power of ten, so without the `±` button a student on an iPhone could type the
  * right digits and not the power the field asks for. These tests play an
  * answer through it.

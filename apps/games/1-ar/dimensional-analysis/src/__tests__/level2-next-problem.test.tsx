@@ -52,7 +52,7 @@ it('never shows the next problem with the previous chain', () => {
       initialProgress={{ problemsCompleted: index, finalAnswersCorrect: 0, mastered: false }}
     />
   );
-  fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
   for (const factor of level2Problems[index].correctPath) {
     fireEvent.click(screen.getAllByRole('button').find((b) => b.textContent === label(factor))!);
   }

@@ -247,6 +247,15 @@ describe('Nafnakerfid App', () => {
     expect(container.textContent).not.toMatch(/90|75/);
   });
 
+  // Decision 41: the card said the names were the same in every language,
+  // while the game teaches Natríumklóríð, not sodium chloride. The system is
+  // shared; the names are not.
+  it('says the naming system, not the name, is shared across languages', () => {
+    const { container } = render(<App />);
+    expect(container.textContent).toContain('Sama kerfi, sama efni — á hvaða tungumáli sem er');
+    expect(container.textContent).not.toContain('óháð tungumáli');
+  });
+
   it('renders the game header with back link to year hub', () => {
     render(<App />);
     const header = screen.getByTestId('game-header');

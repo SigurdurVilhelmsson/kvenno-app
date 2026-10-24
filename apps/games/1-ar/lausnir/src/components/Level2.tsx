@@ -298,7 +298,7 @@ export const SCENARIOS: Scenario[] = [
         text: 'Meira CO₂ leysist upp',
         isCorrect: true,
         explanation:
-          'Rétt! Lofttegundir leysast betur í köldu vatni. Þess vegna er kalt gos fríðara!',
+          'Rétt! Lofttegundir leysast betur í köldu vatni. Þess vegna helst kalt gos lengur kolsýrt!',
       },
       {
         id: 'b',

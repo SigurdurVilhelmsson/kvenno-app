@@ -304,3 +304,52 @@ describe('a chain that stops short is told how many cards it still needs', () =>
     expect(panel.textContent).toContain('þarft tvö hlutföll í viðbót til að komast í g MgO');
   });
 });
+
+describe('after a wrong turn, the shortest repair is the right one (decision 61 (a))', () => {
+  afterEach(() => {
+    cleanup();
+    vi.useRealTimers();
+  });
+
+  it('on screen: B1 down the O₂ distractor is told to remove it, and removing takes it off', () => {
+    // g Mg → mól Mg → mól O₂: the old prompt said add three more cards, which
+    // only works by doubling back through mól Mg, and its "remove" said removal
+    // moved the chain further from the target. Without the last card it is two
+    // from g MgO. The chain is checked by every route in shortest-repair.test.ts;
+    // this is the board doing what the prompt says.
+    vi.useFakeTimers();
+    const view = renderPhase('beita');
+    tapCard(view, ': 24,31 g Mg');
+    press(view, 'Snúa við hlutfalli númer 1');
+    tapCard(view, '2 mól Mg jafngildir 1 mól O₂');
+    press(view, 'Snúa við hlutfalli númer 2');
+    solveOnBeita(view);
+
+    press(view, 'Fjarlægja síðasta hlutfallið');
+    const panel = view.container.querySelector('.border-amber-400') as HTMLElement;
+    expect(panel.textContent).toContain(
+      'Rétt. Síðasta hlutfallið leiddi þig frá markinu. Án þess ertu aftur í mól Mg og þarft aðeins tvö hlutföll í viðbót til að komast í g MgO.'
+    );
+    pastGuard();
+    press(view, 'Laga og reyna aftur');
+
+    // The wrong turn is gone and the first card stays.
+    expect(view.queryByRole('button', { name: 'Fjarlægja hlutfall númer 2' })).toBeNull();
+    expect(view.getByRole('button', { name: 'Fjarlægja hlutfall númer 1' })).toBeTruthy();
+  });
+
+  it('on screen: adding a card there is the long way round, and is not marked right', () => {
+    vi.useFakeTimers();
+    const view = renderPhase('beita');
+    tapCard(view, ': 24,31 g Mg');
+    press(view, 'Snúa við hlutfalli númer 1');
+    tapCard(view, '2 mól Mg jafngildir 1 mól O₂');
+    press(view, 'Snúa við hlutfalli númer 2');
+    solveOnBeita(view);
+
+    press(view, 'Bæta við hlutfalli aftast');
+    const panel = view.container.querySelector('.border-amber-400') as HTMLElement;
+    expect(panel.textContent).toContain('Það gengi upp, en það er lengri leiðin.');
+    expect(within(panel).getByRole('button', { name: 'Velja aftur' })).toBeTruthy();
+  });
+});

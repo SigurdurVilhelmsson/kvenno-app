@@ -4,9 +4,10 @@ import { join } from 'node:path';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { molarMassOf } from '@shared/utils';
+import { formatScientific, molarMassOf } from '@shared/utils';
 
 import { clockPastNextGuard } from './next-guard-clock';
+import { ExploreScreen } from '../components/ExploreScreen';
 import { formatPercent } from '../components/KlofnunBar';
 import { PracticeScreen } from '../components/PracticeScreen';
 import { UnderstandScreen } from '../components/UnderstandScreen';
@@ -141,6 +142,9 @@ describe('Æfa feedback', () => {
     answer(solveWeakAcid(p.acid.ka, p.concentration).hApprox.toExponential(2).replace('.', ','));
     fireEvent.click(screen.getByText('Áfram'));
 
+    // Since decision 105 (a) the sentence prints x_approx / C and the bar the
+    // exact α; for fenól the two agree to the figures printed, so this case
+    // still reads the same number in both places.
     const sentence = screen.getByText(/Klofnunarhlutfallið er/).textContent ?? '';
     expect(sentence).not.toMatch(/0,00 %/);
     expect(sentence).toContain(`${formatPercent(p.percentDissociated)} %`);
@@ -149,10 +153,76 @@ describe('Æfa feedback', () => {
     );
   });
 
+  it('divides the x it prints in the check sentence, and keeps the exact α on the bar', () => {
+    // Decision 105 (a). "x = 1,14e-3 M úr 0,100 M lausn. Klofnunarhlutfallið er
+    // 1,13 %" — the division of what is printed gives 1,14 %. The sentence is the
+    // student's own check, done the book's way; the bar and the verdict keep the
+    // exact root's α. Plays every problem, wrong answers and all, to its check.
+    render(<PracticeScreen onComplete={() => {}} onBack={() => {}} />);
+    let differed = 0;
+    for (const p of PRACTICE_PROBLEMS) {
+      const s = solveWeakAcid(p.acid.ka, p.concentration);
+      answer('5');
+      fireEvent.click(screen.getByText('Áfram')); // to the 5 % check
+      const sentence = screen.getByText(/Klofnunarhlutfallið er/).textContent ?? '';
+      const approx = formatPercent((s.hApprox / p.concentration) * 100);
+      const exact = formatPercent(p.percentDissociated);
+      expect(sentence, p.id).toContain(`er ${approx} %`);
+      expect(screen.getByRole('img').getAttribute('aria-label'), p.id).toContain(
+        `Klofnunarhlutfall ${exact} prósent`
+      );
+      if (approx !== exact) differed += 1;
+      fireEvent.click(screen.getByText('Áfram')); // to pH
+      answer('5');
+      fireEvent.click(screen.getByText(/^(Áfram|Ljúka Æfa)$/));
+    }
+    // Not vacuous: on some problems the two percentages print differently.
+    expect(differed).toBeGreaterThan(0);
+  });
+
   it('never prints a percentage as zero anywhere in Æfa', () => {
     for (const p of PRACTICE_PROBLEMS) {
       expect(formatPercent(p.percentDissociated), p.id).not.toMatch(/^0,0+$/);
     }
+  });
+});
+
+describe('constants as the source gives them', () => {
+  // Decision 108. Æfa printed Ka = 1,80e-5 and Skilja x = 1,333e-3 M, and Kanna's
+  // table 4,90 × 10⁻¹⁰, where Beita prints Ka as Appendix D does, 1,8 × 10⁻⁵.
+  // Only what models the answer to type keeps the e-form.
+  const eForm = /\d,\d+e-?\d/;
+
+  it('Æfa states Ka to two figures, not in e-notation', () => {
+    render(<PracticeScreen onComplete={() => {}} onBack={() => {}} />);
+    const p = PRACTICE_PROBLEMS[0];
+    const statement = screen.getByText(/lausn af/).closest('p')?.textContent ?? '';
+    expect(statement).toContain(`Ka = ${formatScientific(p.acid.ka, 2)}`);
+    expect(found(statement, eForm)).toBeUndefined();
+    fireEvent.click(screen.getByText('Vísbending 1 af 3'));
+    fireEvent.click(screen.getByText('Vísbending 2 af 3'));
+    fireEvent.click(screen.getByText('Vísbending 3 af 3'));
+    const hint = screen.getByText(/^Hér: x =/).textContent ?? '';
+    expect(hint).toContain(formatScientific(p.acid.ka, 2));
+    expect(found(hint, eForm)).toBeUndefined();
+  });
+
+  it('Skilja prints the exact x without e-notation', () => {
+    render(<UnderstandScreen onComplete={() => {}} onBack={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /^3\./ }));
+    const text = document.body.textContent ?? '';
+    expect(found(text, eForm)).toBeUndefined();
+    const ediksyra = MONOPROTIC_ACIDS.find((a) => a.id === 'ediksyra')!;
+    expect(text).toContain(`x = ${formatScientific(solveWeakAcid(ediksyra.ka, 0.1).hExact, 3)} M`);
+  });
+
+  it("Kanna's table recovers Ka to the figures the table gives it", () => {
+    render(<ExploreScreen onComplete={() => {}} onBack={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: '1,000 M' }));
+    const row = screen.getAllByRole('row')[1];
+    const acid = MONOPROTIC_ACIDS.find((a) => row.textContent?.includes(formatScientific(a.ka, 2)));
+    expect(acid, row.textContent ?? '').toBeTruthy();
+    expect(row.textContent).not.toContain(formatScientific(acid!.ka, 3));
   });
 });
 
@@ -271,5 +341,15 @@ describe('the menu', () => {
     const app = sources().find((s) => s.file.endsWith('App.tsx'))!.text;
     expect(found(app, /örfá prósent/)).toBeUndefined();
     expect(app).toMatch(/innan við eitt prósent klofið/);
+  });
+
+  it('does not say pKa was met earlier, in games that come after this one', () => {
+    // Decision 107 (a). pH Títrun and Stuðpúðar follow Sýrufastinn in the chain,
+    // so "Þú hefur þegar séð pKa …" claimed what a student has not done yet.
+    const app = sources().find((s) => s.file.endsWith('App.tsx'))!.text;
+    expect(found(app, /hefur þegar séð pKa/)).toBeUndefined();
+    expect(app).toContain(
+      'Í pH Títrun og Stuðpúðum færðu pKa gefinn upp í dæmum. Hér kemur talan sjálf:'
+    );
   });
 });

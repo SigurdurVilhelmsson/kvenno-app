@@ -3,9 +3,9 @@
  *
  * **Source: the Icelandic textbook's own appendix** —
  * `efnafraedi-2e/02-mt-output/appendices/m68865`, *Staðalvarmafræðilegir
- * eiginleikar fyrir valin efni*, at 298 K. Only the species the games actually
- * need are transcribed; add a row when a game needs one, and do not add a value
- * the book does not give.
+ * eiginleikar fyrir valin efni*, at 298 K. Pure substances are transcribed as the
+ * games need them; add a row when a game needs one, and do not add a value the book
+ * does not give. Species in water are transcribed whole (2026-10-23).
  *
  * **Read this before treating it like `appendix-d.ts`.** That file is Brown's
  * Appendix D, which Siggi ruled authoritative on 2026-09-19 where the two books
@@ -90,11 +90,64 @@ export const FORMATION_ENTHALPY: Record<string, number> = {
   'SO₂(g)': -296.83,
   'SO₃(g)': -395.72,
 
-  // Ions in water. The book tabulates them on the usual convention that
-  // ΔHf°(H⁺, aq) = 0, so only sums of whole formulas mean anything.
+  // The solid AgCl dissolves to Ag⁺ and Cl⁻ in `3-ar/equilibrium-shifter`.
+  'AgCl(s)': -127.0,
+
+  // Species in water: every (aq) row of the book's table, transcribed whole on
+  // 2026-10-23 (Siggi's ruling, after decision 103), in the book's order. The book
+  // tabulates them on the usual convention that ΔHf°(H⁺, aq) = 0, so only sums of
+  // whole formulas mean anything.
+  //
+  // Left out, both mercury rows: the book prints two rows headed Hg²⁺(aq), the first
+  // with no ΔHf° at all, so which value belongs to Hg²⁺ and which to Hg₂²⁺ cannot be
+  // read off the page. No game uses mercury.
+  'Al³⁺(aq)': -531,
+  'Ba²⁺(aq)': -537.6,
+  'Br⁻(aq)': -120.9,
+  'Cd²⁺(aq)': -75.9,
+  'Ca²⁺(aq)': -542.96,
+  'CO₃²⁻(aq)': -677.1,
+  'HCO₃⁻(aq)': -691.11,
+  'Cs⁺(aq)': -248,
   'Cl⁻(aq)': -167.2,
+  'CrO₄²⁻(aq)': -881.2,
+  'Cr₂O₇²⁻(aq)': -1490.3,
+  'Co²⁺(aq)': -67.4,
+  'Co³⁺(aq)': 92,
+  'Cu⁺(aq)': 51.9,
   'Cu²⁺(aq)': 64.77,
+  'F⁻(aq)': -332.6,
+  'H⁺(aq)': 0,
+  'OH⁻(aq)': -230.0,
+  'H₃O⁺(aq)': -285.8,
+  'I⁻(aq)': -55.19,
+  'Fe²⁺(aq)': -89.1,
+  'Fe³⁺(aq)': -48.5,
+  'Pb²⁺(aq)': -1.7,
+  'Li⁺(aq)': -278.5,
+  'Mg²⁺(aq)': -466.9,
+  'Mn²⁺(aq)': -220.8,
+  'MnO₄⁻(aq)': -541.4,
+  'MnO₄²⁻(aq)': -653.0,
+  'Ni²⁺(aq)': -64.0,
+  'NO₃⁻(aq)': -205.0,
+  'NH₄⁺(aq)': -132.5,
+  'HNO₃(aq)': -207.4,
+  'PO₄³⁻(aq)': -1277,
+  'HPO₄²⁻(aq)': -1292.1,
+  // The book prints this row as H₂PO₄²⁻, a misprint: phosphoric acid less one
+  // proton carries one negative charge, which is how every game writes it.
+  'H₂PO₄⁻(aq)': -1296.3,
+  'K⁺(aq)': -252.4,
+  'Rb⁺(aq)': -246,
+  'Ag⁺(aq)': 105.6,
   'Na⁺(aq)': -240.1,
+  'Sr²⁺(aq)': -545.8,
+  'S²⁻(aq)': 41.8,
+  'SO₄²⁻(aq)': -909.3,
+  'S₂O₃²⁻(aq)': -648.5,
+  'HS⁻(aq)': -17.7,
+  'HSO₄⁻(aq)': -885.75,
   'Zn²⁺(aq)': -153.9,
 };
 

@@ -3,7 +3,15 @@ import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from '../App';
-import { POOL, answerCount, check, next, playMolecule, startLevel2 } from './level2-play';
+import {
+  POOL,
+  answerAngle,
+  answerCount,
+  check,
+  next,
+  playMolecule,
+  startLevel2,
+} from './level2-play';
 import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 import { Level3 } from '../components/Level3';
@@ -14,7 +22,8 @@ import { Level3 } from '../components/Level3';
  * multiplier, and the menu and the end screen added the levels up into
  * `Heildarstig`. Now a level counts its right answers, one try each, and
  * reports `N af M rétt` to the menu and the end screen; opening a hint never
- * changes the count (decision 2 (b)). Stig 2 counts its three graded steps per
+ * changes the count (decision 2 (b)), save Stig 2's second angle tier, which states the
+ * answer (item 1 as applied, call 3). Stig 2 counts its three graded steps per
  * molecule and not the written explanation, which is checked only for length.
  *
  * Queries are scoped to each rendered container (the repo runs vitest with
@@ -130,6 +139,46 @@ describe('Stig 2', () => {
     next(ui);
     for (const m of rest) playMolecule(ui, container, m);
     expect(onComplete).toHaveBeenCalledWith(29, 30);
+  });
+});
+
+describe('Stig 2, the angle hint', () => {
+  // Item 1 as applied, call 3 (Siggi 2026-10-23): the second tier states the angle, so a right
+  // angle after it is not counted, as an answer the game had already shown. The first tier only
+  // points at the reasoning, and stays free (decision 2).
+  function playFirstWithHint(tiers: 1 | 2) {
+    const { ui, container, unmount: done, onComplete } = startLevel2();
+    unmount = done;
+    const [first, ...rest] = POOL;
+    answerCount(ui, container, first.bondingPairs, first.lonePairs);
+    next(ui);
+    fireEvent.click(ui.getByRole('button', { name: first.shape }));
+    check(ui);
+    next(ui);
+    fireEvent.click(ui.getByRole('button', { name: 'Sýna vísbendingu' }));
+    if (tiers === 2) fireEvent.click(ui.getByRole('button', { name: 'Sýna nánari vísbendingu' }));
+    answerAngle(ui, container, first.angle);
+    const verdict = container.querySelector('#vsepr-l2-verdict')?.textContent;
+    next(ui);
+    fireEvent.change(container.querySelector('textarea') as HTMLElement, {
+      target: { value: 'Svæði rafeindaþéttleika hrinda hvert öðru eins langt frá og hægt er.' },
+    });
+    check(ui);
+    next(ui);
+    for (const m of rest) playMolecule(ui, container, m);
+    return { verdict, onComplete };
+  }
+
+  it('does not count a right angle after the tier that states it', () => {
+    const { verdict, onComplete } = playFirstWithHint(2);
+    expect(verdict).toBe('Rétt! Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.');
+    expect(onComplete).toHaveBeenCalledWith(29, 30);
+  });
+
+  it('still counts it after the first tier alone', () => {
+    const { verdict, onComplete } = playFirstWithHint(1);
+    expect(verdict).toBe('Rétt!');
+    expect(onComplete).toHaveBeenCalledWith(30, 30);
   });
 });
 

@@ -14,7 +14,7 @@ interface FlaskProps {
 }
 
 /**
- * Erlenmeyer Flask component - displays solution with color changes
+ * Conical flask (keiluflaska) component - displays solution with color changes
  */
 export const Flask: React.FC<FlaskProps> = ({
   pH,
@@ -47,7 +47,7 @@ export const Flask: React.FC<FlaskProps> = ({
         {/* Flask body */}
         <div
           role="img"
-          aria-label={`Erlenmeyerkolbi: pH ${formatDecimal(pH, 2)}, ${formatDecimal(volumeAnalyte + volumeTitrant, 1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
+          aria-label={`Keiluflaska: pH ${formatDecimal(pH, 2)}, ${formatDecimal(volumeAnalyte + volumeTitrant, 1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
           className={`relative w-32 h-36 md:w-60 md:h-52 phone:w-24 phone:h-24 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
           style={{
             background:

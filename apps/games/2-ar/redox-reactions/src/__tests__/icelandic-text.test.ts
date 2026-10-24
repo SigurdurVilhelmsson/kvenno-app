@@ -139,6 +139,29 @@ describe('the redox game’s Icelandic', () => {
     expect(menu.title).toBe(tab?.[1]);
   });
 
+  it('gives Stig 2 and Stig 3 one name each, on the menu, the level and the closing screen', () => {
+    // Decision 84 (2026-10-23): Stig 3 was `Stilla hvörf` on the menu and its own heading,
+    // `Stilla efnajöfnur` on the closing screen and `Stilla redox-jöfnur` in an unused title;
+    // Stig 2 was `Greina hvörf` and `Greina redox`. What is balanced is an equation.
+    const is = gameTranslations.is as unknown as {
+      menu: Record<string, string>;
+      complete: Record<string, string>;
+      levels: Record<string, { name: string; description: string }>;
+    };
+    const names = { 2: 'Stig 2: Greina redox-hvörf', 3: 'Stig 3: Stilla redox-jöfnur' };
+    for (const level of [2, 3] as const) {
+      expect(is.levels[`level${level}`].name).toBe(names[level]);
+      expect(is.complete[`level${level}Name`]).toBe(names[level]);
+      expect(`Stig ${level}: ${is.menu[`level${level}Title`]}`).toBe(names[level]);
+      // The level's own heading falls back to the same name when a key is missing.
+      const component = readFileSync(join(SRC, `components/Level${level}.tsx`), 'utf8');
+      expect(component).toContain(`t('levels.level${level}.name', '${names[level]}')`);
+    }
+    for (const file of files) {
+      expect(readFileSync(file, 'utf8'), file).not.toMatch(/Stilla (redox-)?hvörf|Greina hvörf/);
+    }
+  });
+
   it('writes a Stig 2 back button with the arrow the other levels have', () => {
     const level2 = readFileSync(join(SRC, 'components/Level2.tsx'), 'utf8');
     // The arrow was inside the fallback, and `common.back` exists, so it never showed.

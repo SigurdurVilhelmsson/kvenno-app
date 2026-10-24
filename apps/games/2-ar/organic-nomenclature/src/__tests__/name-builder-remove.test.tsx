@@ -8,7 +8,7 @@ import { Level2 } from '../components/Level2';
  * Stig 2's name builder mirrors the shared DragDropBuilder's zones in its own `zoneState`,
  * which is what the "Nafnið sem þú byggir" preview and the grader both read. It used to
  * update that mirror only on a drop, so a part taken back out — dragged or tapped back to
- * the pool — stayed in the built name: returning `-en` from prop- + -en still showed and
+ * the pool — stayed in the built name: returning `-en` from próp- + -en still showed and
  * graded "própen". Phones made this the common case, because tap-to-place (tap the part, tap
  * the pool) is how a student undoes a choice there.
  *
@@ -39,7 +39,7 @@ describe('Stig 2 name builder: a part taken back out leaves the built name', () 
   it('drops a suffix returned to the pool from the preview', () => {
     const { zone, pool, place, builtName } = openNameBuilder();
 
-    place('prop-', 'zone-prefix');
+    place('próp-', 'zone-prefix');
     place('-en', 'zone-suffix');
     expect(builtName()).toBe('própen');
 
@@ -55,9 +55,9 @@ describe('Stig 2 name builder: a part taken back out leaves the built name', () 
     const { ui, zone, pool, place } = openNameBuilder();
 
     // Build a name, then take the prefix back out before checking.
-    place('prop-', 'zone-prefix');
+    place('próp-', 'zone-prefix');
     place('-an', 'zone-suffix');
-    fireEvent.click(within(zone('zone-prefix')).getByRole('button', { name: 'prop-' }));
+    fireEvent.click(within(zone('zone-prefix')).getByRole('button', { name: 'próp-' }));
     fireEvent.click(pool);
 
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
@@ -68,7 +68,7 @@ describe('Stig 2 name builder: a part taken back out leaves the built name', () 
   it('keeps the swapped-in part when a full zone is replaced', () => {
     const { zone, place, builtName } = openNameBuilder();
 
-    place('prop-', 'zone-prefix');
+    place('próp-', 'zone-prefix');
     place('-en', 'zone-suffix');
     // Placing into a full single-part zone swaps: the old part returns to the pool
     // (onRemove) and the new one lands (onDrop) — the mirror must end on the new one.

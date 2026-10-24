@@ -83,7 +83,7 @@ describe('Level 2', () => {
     expect(document.activeElement?.textContent).toMatch(/Merktu jafngildispunktinn/);
     fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
     wait(400);
-    expect(document.activeElement?.textContent).toBe('Veldu vísi');
+    expect(document.activeElement?.textContent).toBe('Veldu litvísi');
     fireEvent.click(screen.getByRole('button', { name: /Brómþýmólblátt/ }));
     wait(50);
     fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));

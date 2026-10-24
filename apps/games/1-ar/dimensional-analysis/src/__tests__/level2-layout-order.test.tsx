@@ -41,7 +41,7 @@ afterEach(cleanup);
 describe('Level 2 — the chain shows below the controls that build it', () => {
   it('in click mode', () => {
     renderLevel();
-    fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
     const factor = label(level2Problems[0].correctPath[0]);
     const button = screen.getAllByRole('button').find((b) => b.textContent === factor)!;
     fireEvent.click(button);

@@ -2,9 +2,12 @@ import { describe, it, expect } from 'vitest';
 
 import { parseStudentNumber } from '@shared/utils';
 
+import { indicators } from '../data/indicators';
+import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
+import { calculatePH } from '../utils/ph-calculations';
 
 /**
  * Each Level 2 puzzle names a titration twice: in its task sentence, and
@@ -60,5 +63,80 @@ describe('Level 2 puzzles agree with the titration they serve', () => {
 
   it('serves six different titrations', () => {
     expect(new Set(LEVEL2_PUZZLES.map((p) => p.titrationId)).size).toBe(LEVEL2_PUZZLES.length);
+  });
+});
+
+/**
+ * Stig 2 grades the indicator by Stig 1's rule — the colour-change range must
+ * contain the pH at the equivalence point (Stig 1, question 6) — on the pH the
+ * result prints: the curve's own, to one decimal. Mobile-pass decision 113 (a),
+ * 2026-10-23.
+ *
+ * Until then each puzzle listed its indicators by hand, against that rule and
+ * against each other: methyl red was accepted for HCl + NaOH (pH 7), methyl
+ * orange refused there but accepted for HNO₃ + KOH (also pH 7) and for ammonia
+ * (pH 5,3), and phenolphthalein accepted for HF (pH 8,0). Stig 1's own worked
+ * example paired HCl + NaOH with methyl red too.
+ *
+ * The rule is written out here rather than imported, so the test does not
+ * check the grader against itself.
+ */
+function suits(indicatorId: string, pH: number): boolean {
+  const [low, high] = indicators.find((i) => i.id === indicatorId)!.pHRange;
+  return pH >= low && pH <= high;
+}
+
+const printedEquivalencePH = (t: MonoproticTitration) =>
+  Math.round(calculatePH(t, t.equivalenceVolume) * 10) / 10;
+
+/** The indicators a text names, as whole words: þýmólblátt is not brómþýmólblátt. */
+function namedIndicators(text: string): string[] {
+  return indicators
+    .filter(({ name }) => new RegExp(`(?<!\\p{L})${name}`, 'iu').test(text))
+    .map((i) => i.id);
+}
+
+describe("Level 2 grades the indicator by Level 1's rule", () => {
+  it('accepts these indicators, and no others', () => {
+    expect(Object.fromEntries(LEVEL2_PUZZLES.map((p) => [p.id, p.acceptableIndicators]))).toEqual({
+      1: ['bromothymol-blue'], // HCl + NaOH, pH 7,0
+      2: ['phenolphthalein', 'thymol-blue'], // CH₃COOH + NaOH, pH 8,7
+      3: ['bromothymol-blue'], // HNO₃ + KOH, pH 7,0
+      4: ['methyl-red'], // NH₃ + HCl, pH 5,3
+      5: ['thymol-blue'], // HF + NaOH, pH 8,0
+      6: ['phenolphthalein', 'thymol-blue'], // HCOOH + KOH, pH 8,3
+    });
+  });
+
+  it.each(LEVEL2_PUZZLES.map((p) => [p.id, p] as const))(
+    'puzzle %i: accepts exactly the indicators whose range holds the printed pH',
+    (id, puzzle) => {
+      const pH = printedEquivalencePH(titrationOf(id));
+      const suited = indicators.filter((i) => suits(i.id, pH)).map((i) => i.id);
+      expect(suited.length, `pH ${pH}`).toBeGreaterThan(0);
+      expect(puzzle.acceptableIndicators, `pH ${pH}`).toEqual(suited);
+    }
+  );
+
+  it.each(LEVEL2_PUZZLES.map((p) => [p.id, p] as const))(
+    'puzzle %i: the explanation names the accepted indicators, and only those',
+    (_id, puzzle) => {
+      expect(namedIndicators(puzzle.explanationIs)).toEqual(puzzle.acceptableIndicators);
+    }
+  );
+
+  it("Level 1's worked examples obey the rule they teach", () => {
+    const question6 = LEVEL1_CHALLENGES.find((c) => c.id === 6)!;
+    for (const text of [question6.hints.solution, question6.explanationIs]) {
+      const examples = [...text.matchAll(/\(pH ~?(\d+(?:,\d+)?)\) → ([^;.]+)/g)];
+      expect(examples.length, text).toBeGreaterThan(0);
+      for (const [, pH, names] of examples) {
+        const named = namedIndicators(names);
+        expect(named.length, names).toBeGreaterThan(0);
+        for (const indicator of named) {
+          expect(suits(indicator, parseStudentNumber(pH)), `${indicator} at pH ${pH}`).toBe(true);
+        }
+      }
+    }
   });
 });

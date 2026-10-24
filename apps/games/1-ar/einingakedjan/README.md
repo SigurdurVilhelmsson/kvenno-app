@@ -65,12 +65,31 @@ Three things fall out of this for free:
   it. Until 2026-09-23 cards showed `6,02 × 10²³`, `106`, `100,1` and `159,7` while the engine used
   `6,022 × 10²³`, `105,99`, `100,09` and `159,69`, so a hand check of B3 or A4 missed the printed
   answer in the last digit. Computed results still round to four figures (`formatNumber`).
-- **The fix-it question is shuffled.** `correctionPrompt` lists the correct fix first in every
-  branch; `ChainBuilder` shuffles the options once per prompt, as it does the pool and the
-  prediction options.
+- **The fix-it question is shuffled.** `correctionPrompt` lists the options in a fixed order per
+  branch; `ChainBuilder` shuffles them once per prompt, as it does the pool and the prediction
+  options.
 - **A chain that stops short is told how many cards it still needs, counted in its own pool**
   (`stepsToTarget`). Until 2026-09-23 it was always told "eitt hlutfall í viðbót", which was false
   after the first card of every three- and four-step problem, and after any wrong turn.
+- **B4's ethanol is in a small bottle (fixed 2026-10-23, decision 62 (a)).** The scenario put
+  25,0 mL of ethanol in one dose of hand sanitiser, about ten times a pump's worth. It now reads
+  `Í lítilli flösku af handspritti eru um 25,0 mL af etanóli`, every number kept;
+  `problems.test.ts` holds it.
+- **After a wrong turn, the shortest repair counts as right (fixed 2026-10-23, decision 61 (a)).**
+  `correctionPrompt` used to diagnose from the failing step alone: a clean chain that stopped short
+  was always told to add a card, and an upside-down card always told to flip. On B1,
+  `g Mg → mól Mg → mól O₂` was told to add three more cards, which works only by doubling back,
+  and an overshoot (`g MgO → kg MgO`) was told removal moved it away from the target. Now the
+  wrong-unit branch compares `stepsToTarget` from the chain's end with it after dropping the last
+  card, and marks _Fjarlægja síðasta hlutfallið_ right when that is shorter; a tie keeps _Bæta við
+  hlutfalli aftast_ (no shipped pool has one). An upside-down card is worth flipping only if,
+  flipped, it is on a shortest route; otherwise removing it is right, including a card placed after
+  the chain had reached the target. Every explanation is chosen by the same comparison, so
+  `Þá færirðu þig lengra frá markinu`, `keðjan sé of stutt` and `Hlutfallið sjálft er rétt valið`
+  appear only where they are true. Choosing the removal on a clean chain takes its last card off
+  (`ChainBuilder`'s `applyFix`). `shortest-repair.test.ts` plays every Beita distractor, and every
+  broken chain of up to three cards on every problem, against an independent count of the cards
+  left to place; `correction-and-prediction.test.tsx` plays the B1 case on the board.
 
 ## Layout
 
@@ -136,21 +155,8 @@ deliberately. CLAUDE.md's rule is Icelandic-only UI, and the dead-i18n question 
 
 ## Open
 
-All three are Siggi's call; none is built.
+Siggi's call; not built.
 
-- **The fix-it question misdiagnoses a chain that took a wrong turn.** In `engine/chain.ts`,
-  `correctionPrompt`'s `wrong-unit` branch always marks _Bæta við hlutfalli aftast_ correct and
-  tells _Fjarlægja síðasta hlutfallið_ that removing moves the chain further from the target; its
-  `inverted` branch always says the ratio itself is the right one. Both are false when the chain
-  went down a distractor: on B1, `g Mg → mol Mg → mol O₂` is told to add three more cards, which
-  works only by doubling back through `mol Mg`, while removing the last card leaves two to go. An
-  overshoot (`g MgO → kg MgO`) is likewise told removal moves it away, when removal solves it. Every
-  Beita problem carries such a distractor pair. The count itself is now derived and true; which
-  repair to call correct when both lead somewhere — compare the shortest route from the chain's end
-  with the route after removing its last card — and the wording for the new cases are teaching
-  decisions.
-- **B4's scenario puts 25,0 mL of ethanol in one dose of hand sanitiser**, roughly ten times a
-  pump's worth. The numbers work; the picture does not.
 - **A card cannot state its own precision.** `0,1 mol NaOH = 1 L NaOH(aq)` sits directly above its
   source line `0,100 M NaOH`, and water's density prints `1 g = 1 mL`, because a JS number carries
   no trailing zeros — the reason `startLabel` exists. An optional `label` on `EquivalenceSide`,

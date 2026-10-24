@@ -169,17 +169,21 @@ through the shared helpers in `@shared/utils` (`useScreenTop`, `revealSpan`,
   `@shared/utils`); the one change there is focus
   moving to headings, the feedback, the salt card and the new question.
 
+## Fixed 2026-10-23, mobile-pass decisions 120 and 121
+
+- **Æfa names the two slips this topic is known for** (decision 120 (b)). For a 1:2 or 2:1 salt,
+  a molar solubility within 2 % of √Ksp is told it took the square root, which holds only for
+  1:1, and one within 2 % of ∛Ksp that the 4 in Ksp = 4s³ was forgotten. The line sits under the
+  verdict as "Algeng villa", styled as the shared `FeedbackPanel`'s misconception slot; the
+  screen keeps its own feedback card, since its verdicts and focus group are what the tests and
+  the phone loops name. `solubilitySlip` in `engine/ksp.ts` decides it; `ksp.test.ts` holds the
+  engine and `screens.test.tsx` plays both slips, and a plain wrong answer, through the screen.
+- **Kanna says where the two books disagree** (decision 121). Every salt carrying a
+  `divergenceNote` (AgI, Ag₂CrO₄, CaCO₃, BaSO₄) shows "Íslenska kennslubókin gefur annað gildi —
+  hér er notað gildi Brown." under its card; the others do not (`screens.test.tsx`).
+
 ## Open
 
-- **Æfa does not diagnose the two mistakes this topic is known for.** Forgetting the 4 in 4s³
-  grades as `tolustafir` or `baedi` over the pool, and a square root taken for a cube root as
-  `baedi`; both messages then say only that the numbers do not match. Until 2026-09-23 the
-  `veldisvisir` message named both causes — an outcome neither can produce, so the advice was false
-  every time it showed — and that clause was removed. Whether to add a real diagnosis (compare the
-  entry with ∛Ksp and √Ksp and say which mistake it is) is Siggi's call.
-- **The divergence notes in `salts.ts` are never shown.** BaSO₄'s says a student checking the
-  Icelandic appendix gets another answer and that it is worth telling them; nothing renders it.
-  Siggi's call whether students see a line about it.
 - **Selective precipitation is only posed as ordering, not as a separation yield.** "How much of the
   first ion is left when the second starts to come down" is the question a real separation asks, and
   it is not here.

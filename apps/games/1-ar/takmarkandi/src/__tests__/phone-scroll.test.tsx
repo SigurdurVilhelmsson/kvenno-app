@@ -112,7 +112,7 @@ function expectFeedbackFocused() {
 }
 
 const reactantCards = (root: HTMLElement) =>
-  Array.from(root.querySelectorAll('button')).filter((b) => /sameindir/.test(b.textContent ?? ''));
+  Array.from(root.querySelectorAll('button')).filter((b) => /\d+ eindir/.test(b.textContent ?? ''));
 
 describe('Stig 1', () => {
   function start() {

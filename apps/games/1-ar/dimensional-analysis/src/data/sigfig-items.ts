@@ -27,7 +27,14 @@ export interface Rule {
   examples: { written: string; count: number; why: string }[];
 }
 
-/** The four counting rules, as the course states them. */
+/**
+ * The four counting rules, as the course's textbook states them (ch01/m68690).
+ *
+ * Rule 4 follows the book since 2026-10-23 (decision 32 (b)): a whole number's
+ * trailing zeros are ambiguous, settled by standard form or assumed not to
+ * count. It used to say a trailing comma made them count (`1200,` four), which
+ * the book does not.
+ */
 export const RULES: Rule[] = [
   {
     n: 1,
@@ -58,11 +65,15 @@ export const RULES: Rule[] = [
   },
   {
     n: 4,
-    title: 'Núll aftast telja aðeins ef komma er skrifuð',
-    body: 'Þetta er reglan sem mestu skiptir — og sú eina sem breytir merkingu tölunnar eftir því hvernig hún er skrifuð.',
+    title: 'Núll aftast telja ef þau standa á eftir kommu',
+    body: 'Í heilli tölu eins og 1200 er óvíst hvort núllin aftast voru mæld eða segja bara hvar komman stendur. Staðalform sker úr. Sé talan aðeins skrifuð 1200 gerum við ráð fyrir að núllin telji ekki.',
     examples: [
-      { written: '1200', count: 2, why: 'engin komma, svo núllin aftast telja ekki' },
-      { written: '1200,', count: 4, why: 'komman gerir bæði núllin markverð' },
+      { written: '1200', count: 2, why: 'óvíst hvort núllin voru mæld, svo þau teljast ekki' },
+      {
+        written: '1,200 × 10³',
+        count: 4,
+        why: 'á staðalformi telja allir tölustafirnir framan við × 10',
+      },
       { written: '2,50', count: 3, why: 'núllið aftast er á eftir kommu, svo það telur' },
     ],
   },
@@ -85,7 +96,12 @@ const count = (id: string, written: string, rule: number, misconception?: string
   misconception,
 });
 
-/** Counting practice. The pairs are deliberate — same digits, different claim. */
+/**
+ * Counting practice. The pairs are deliberate — same digits, different claim.
+ * c4 and c5 are rule 4's pair: `4500` written plainly, then in standard form,
+ * which is how the book settles the ambiguity (decision 32 (b), 2026-10-23;
+ * c5 was `4500,`, four figures by a trailing-comma rule the book does not use).
+ */
 export const COUNT_ITEMS: CountItem[] = [
   count('c1', '4,56', 1),
   count('c2', '2005', 2, 'Núllin hér eru innilokuð milli 2 og 5, svo þau telja bæði (regla 2).'),
@@ -99,13 +115,13 @@ export const COUNT_ITEMS: CountItem[] = [
     'c4',
     '4500',
     4,
-    'Engin komma er skrifuð, svo núllin aftast telja ekki (regla 4). Berðu þetta saman við 4500, í næstu spurningu.'
+    'Óvíst er hvort núllin aftast voru mæld, svo við gerum ráð fyrir að þau telji ekki (regla 4). Berðu þetta saman við 4,500 × 10³ í næstu spurningu.'
   ),
   count(
     'c5',
-    '4500,',
+    '4,500 × 10³',
     4,
-    'Hér er komma skrifuð, og þá verða bæði núllin aftast markverð (regla 4). Sama talan, önnur fullyrðing um nákvæmni.'
+    'Á staðalformi eru allir tölustafirnir framan við × 10 markverðir, núllin aftast líka (regla 4). Sama talan og 4500, önnur fullyrðing um nákvæmni.'
   ),
   count('c6', '0,02040', 3, 'Núllin fremst telja ekki; núllið á milli og núllið aftast gera það.'),
 ];
@@ -130,8 +146,8 @@ const round = (id: string, value: number, figures: number, context: string): Rou
 /**
  * Writing to a precision. `r3` is the one that teaches the hardest point: the
  * trailing zero is not decoration, and leaving it off understates the answer.
- * `r5` cannot be written plainly to two figures without a trailing comma
- * (rule 4), which is why its printed answer is `6,0 × 10¹`.
+ * `r5` cannot be written plainly to two figures at all — `60` reads as one by
+ * rule 4 — which is why its printed answer is in standard form, `6,0 × 10¹`.
  */
 export const ROUND_ITEMS: RoundItem[] = [
   round('r1', 1234, 2, 'Vogin sýnir 1234 g en hún er aðeins nákvæm upp á tvo markverða stafi.'),

@@ -26,10 +26,14 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
   // Success is reported from the click that reaches 1 L, not from an effect.
   // An effect listing `onComplete` re-ran every time the level re-rendered,
   // and reporting success re-renders the level: a loop.
+  // A press is wrong when it brings the value no closer to 1 L — an overshoot,
+  // a step the wrong way, or a press that does nothing at 0 — so stepping up
+  // 0,1 at a time towards the answer never counts as a wrong try.
   const adjustValue = (delta: number) => {
-    onAttempt();
     setHasAttempted(true);
     const newValue = Number(Math.max(0, rightValue + delta).toFixed(1));
+    const distance = (value: number) => Number(Math.abs(value - 1).toFixed(1));
+    onAttempt(distance(newValue) >= distance(rightValue));
     setRightValue(newValue);
     if (newValue === 1) onComplete();
   };

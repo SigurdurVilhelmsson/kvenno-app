@@ -159,32 +159,34 @@ Stig 3 at 0 points no longer leaves the "Stig lokið" counter at 2/3.
 **Also fixed the same day, guarded by `yield.test.ts`:** the `vatn` review text printed 2 mol of
 hydrogen against 1,5 mol of oxygen and then said the mole count decides which runs out — where the
 reactant with more moles is the limiting one. It now says the mole count divided by the coefficient
-decides, with the two quotients. Only that clause changed; the masses and the rest of the text are
-the third of Siggi's calls below.
+decides, with the two quotients. Only that clause changed.
+
+**Fixed 2026-10-23, Siggi's rulings on the 2026-09-23 decisions:**
+
+- **Decision 55 (a): Stig 1 now poses the item its own misconception text is about.** Three items a
+  run put the limiting reactant on the side with more molecules — 6 H₂ against 4 O₂, 3 times
+  against 4 — drawn from the 2:1 reactions, whose larger coefficient is always on the left, so the
+  half-each-way split still holds (February's fix, `FEBRUARY-DECISIONS-RECOVERED.md:358`).
+  `play-integrity.test.tsx` holds 2–3 such items in every run.
+- **Decision 56 (a): `natriumklorid` was re-weighed, 46 g of Na against 60 g of Cl₂, so the
+  heavier mass is the limiting one.** "Pick the smaller number" now passes step 1 on two problems
+  of five (`vatn`, `magnesiumoxid`), not three. Its context, which said the chlorine was in excess
+  `þótt klórgasið sé miklu þyngra`, now gives the moles and the quotients that make the chlorine
+  limiting. `vatn` keeps its masses: it is the problem where comparing moles alone picks wrong, and
+  `yield.test.ts` guards that lesson. A wrong step-1 pick is now answered by which reactant was
+  picked (`wrongPickMisconception` in `Level3.tsx`): the lighter mass is told a lighter reactant
+  can be in excess, a heavier one with fewer moles to divide by the coefficient, and a heavier one
+  with more moles keeps the old sentence. `yield.test.ts` and `level3-playable.test.tsx` hold it.
+- **Decision 57 (a), B7: Stig 1 and 2 count `eindir`, not `sameindir`.** They counted Mg, Na, K,
+  Ca, Zn and Cu, atoms that react to ionic formula units, as molecules. The neutral `eindir`
+  (`particle;eind`) now covers every particle the two levels count, H₂ and O₂ included, so the
+  word never depends on the species: the reactant cards (`6 eindir`), each ball's accessible name
+  (`Mg eind`, in `Molecule.tsx`), and `fjölda einda` in Stig 1's method and the two levels'
+  questions and feedback. Stig 3 weighs in grams and never named the particles. The `Molecule`
+  component keeps its name, which no student reads. `particle-word.test.tsx` plays both levels and
+  fails on `sameind` in their text or aria-labels.
 
 **Siggi's calls, found in the same pass and deliberately not changed:**
-
-- **Stig 3's per-step "Reyna aftur" follows a feedback panel that prints the answer**, and a retried
-  step scores the full 10. Answering every step wrong, reading `Rétt svar`, and retrying scores
-  150 of 150 — measured by playing the real component. Options: a retried step earns nothing (or
-  less); hide the number while a retry is on offer (the review screen shows it anyway); or drop the
-  retry. Recommendation: score the first attempt only, keep the retry for practice.
-- **Stig 1 never poses the item its own misconception text is about.** The feedback says the
-  limiting reactant is not always the one there is less of, but every generated item has the
-  limiting reactant fewer or tied in molecules, so the case never appears (February's own fix,
-  "include problems where the limiting reactant switches", `FEBRUARY-DECISIONS-RECOVERED.md:358`).
-  Recommendation: for the 2:1 reactions, draw some items like 6 H₂ against 4 O₂ (H₂ limiting, and
-  more numerous).
-- **In 3 of Stig 3's 5 problems the smaller mass is the limiting reactant** (`vatn`, `magnesiumoxid`,
-  `natriumklorid`), so "pick the smaller number" scores 3 of 5 on step 1, against
-  `yieldProblems.ts`'s stated aim. The `vatn` context — "hydrogen runs out first although it is much
-  lighter" — reinforces the grams heuristic rather than breaking it. Only `ammoniak` and `thermit`
-  break it. The step-1 misconception text ("a heavier reactant can well be the one that runs out
-  last") speaks to the student who picked the heavier one, not to one who picked the lighter.
-  Recommendation: re-weigh one or two of the three so the heavier mass is limiting.
-- **B7 is still open here:** Stig 1 and 2 count Mg, Na, K, Ca, Zn and Cu as `sameindir`
-  (molecules), and the `Molecule` component labels each ball `… sameind`. Which word replaces it for
-  atoms and formula units (`eindir`?) is a terminology ruling, not a spelling fix.
 
 - **Percent composition and combustion analysis are the neighbours**, both unbuilt. The book puts
   percent composition in ch. 3 with Mólmassi and Reynsluformúlur, and combustion analysis in

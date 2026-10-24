@@ -67,6 +67,15 @@ export function normaliseMinus(text: string): string | null {
  * that are not groups of three (`1.2.3`). Games whose answers pass 1000 say so
  * when a typed value is exactly a thousandth of the answer (item 5, option d).
  *
+ * **Text after the number is read as a unit, unless it carries the number on**
+ * (2026-10-23, the trailing-text half of item 5, settled on Claude's
+ * recommendation). `4,64 g`, `0,05 M-1s-1` and `25 °C` read as their number,
+ * and a bare trailing comma (`1200,`, which Stig 0 of Einingagreining teaches)
+ * changes nothing. But `8,3 × 10²`, `8,3x10^2`, `1,5·10³`, the hyphen range
+ * `0,8-1,0` and `1,5,2` used to read as their first number, so a right
+ * answer written in standard form was graded as its mantissa; each is `NaN` now,
+ * which the games send back as unreadable rather than grade.
+ *
  * Deliberately not `Intl.NumberFormat`-based: the games also accept scientific
  * notation (`4.2e5`), which a locale parser rejects, and a student switching
  * keyboards may well type a full stop.
@@ -85,8 +94,22 @@ export function parseStudentNumber(input: string): number {
   const number = /^[+-]?[\d.,]*/.exec(signed)![0];
   if (number.includes('.') && number.includes(',')) return Number.NaN;
   if ((number.match(/\./g) ?? []).length > 1) return Number.NaN;
-  return Number.parseFloat(signed.replace(',', '.'));
+  const decimal = signed.replace(',', '.');
+  const read = NUMBER_PREFIX.exec(decimal);
+  if (read && CONTINUES_NUMBER.test(decimal.slice(read[0].length))) return Number.NaN;
+  return Number.parseFloat(decimal);
 }
+
+/** What `parseFloat` reads: a signed decimal with an optional exponent. */
+const NUMBER_PREFIX = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?/;
+
+/**
+ * Text after the number that carries it on rather than naming a unit: a digit or
+ * superscript, a times sign (`×`, `*`, `·`, `⋅`, or an `x` before a digit), a power
+ * (`^`), a sign or slash, or a mark before more digits. A letter, `°` or `%`
+ * starts a unit, and so does nothing at all.
+ */
+const CONTINUES_NUMBER = /^(?:[\d⁰¹²³⁴⁵⁶⁷⁸⁹⁻×*·⋅^+\-/]|[xX](?=[\d⁰¹²³⁴⁵⁶⁷⁸⁹])|[.,](?=\d))/;
 
 /**
  * The book's thousands forms: groups of three after a full stop, then an optional

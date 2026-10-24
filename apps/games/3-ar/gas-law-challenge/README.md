@@ -28,8 +28,8 @@ above (`LEVEL_LAWS`, `src/data/questions.ts`).
 - **Æfingahamur** — no timer, unlimited hints, a "Sýna lausn" panel, and no points or streak. On
   Levels 2 and 3 the student first picks which law applies ("Skref 1: Hvaða lögmál á við?") and is
   told why if wrong. The round ends with `N af M rétt`, and the menu shows each level's best round.
-- **Keppnishamur** — 90 seconds per question, no law-selection step, no solution panel, points, a
-  streak, and a 50-point bonus for answering with more than 60 seconds left. Each run starts from
+- **Keppnishamur** — 90 seconds per question, no law-selection step, no solution panel, every
+  hint but the last (which states the answer), points, a streak, and a 50-point bonus for answering with more than 60 seconds left. Each run starts from
   0; the menu shows the best run on the selected level and the longest streak.
 
 Feedback shows the student's and the correct answer, the step-by-step solution, and an
@@ -38,13 +38,14 @@ Feedback shows the student's and the correct answer, the step-by-step solution, 
 ## Before touching it
 
 - **Points and streaks are Keppnishamur's only** — mobile-pass decision 1 (b), ruled platform-wide.
-  A practice answer counts towards `N af M rétt` when it is right, unless "Sýna lausn" (which prints
-  the answer) was opened before it was checked. Progress saved before the change held one score both
-  modes added to; it is not read, so a level shows no result until a round of it is played again.
+  A practice answer counts towards `N af M rétt` when it is right, unless "Sýna lausn" or the last
+  hint (both print the answer) was open when it was checked, or it is a retry. Progress saved
+  before the change held one score both modes added to; it is not read, so a level shows no result
+  until a round of it is played again.
   `points-in-keppnishamur-only.test.tsx` holds all of this.
 - **Hints cost nothing.** Keppnishamur points come from accuracy only — 100 within tolerance, 150
-  within 1 %, plus the time bonus (`finishQuestion` in `src/App.tsx`); a hint never changes a
-  practice count either. A
+  within 1 %, plus the time bonus (`finishQuestion` in `src/App.tsx`). In practice the earlier
+  hints never change a count; the last one states the answer, so it counts as a revealed answer. A
   phantom "hints cost points" string lived in the old `i18n.ts` and went with it (see
   `docs/README.md`).
 - **The language switcher was stripped on 2026-09-19** — the game had zero `t()` calls, and the
@@ -100,22 +101,36 @@ src/__tests__/simulator-readouts.test.tsx     the simulator shows only what the 
 src/__tests__/challenge-timer-and-keys.test.tsx
 src/__tests__/icelandic-grammar.test.tsx
 src/__tests__/points-in-keppnishamur-only.test.tsx   practice counts, Keppnishamur points
+src/__tests__/near-miss-retry.test.tsx               Reyna aftur in practice, not in Keppnishamur
+src/__tests__/last-hint-reveals-answer.test.tsx      the last hint gives the answer: not counted
 ```
 
 ## Open
 
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle
-  deferred a manipulable pre-game simulator.
-- **"Næstum rétt! Reyndu aftur."** tells a near-miss student to try again, but the feedback
-  screen offers only the next question. Whether practice should allow a retry is a ruling.
-- **In Keppnishamur the last hint is the answer.** Every question's fourth hint ends on the
-  number the grader accepts (`Reiknaðu: V = 3,82 L`), hints cost nothing, and four presses of H
-  take 150 points plus the 50-point time bonus. Whether challenge hints should stop short of the
-  final line is a ruling about the scored mode, not a code fix.
-- **In Æfingahamur the last hint is the answer too, and it still counts.** A hint never changes a
-  count under decision 1 (b), as in `lewis-structures`; only "Sýna lausn" opened first stops a right
-  answer counting. Whether a hint that prints the number should count as a revealed solution is
-  Siggi's call.
+  deferred a manipulable pre-game simulator. Siggi, 2026-10-23 (decision 94): skipped for now.
+
+**Closed 2026-10-23 (Item 1 as applied, call 3/7, Siggi 2026-10-23).** In Æfingahamur the last
+hint states the answer, and a right answer given with it open still counted, so four presses of H
+on every question finished a round with a full count. It now counts as a revealed answer, as "Sýna
+lausn" does: the round's count leaves it out and the feedback says `Síðasta vísbendingin gaf
+svarið, svo svarið telst ekki með.` The earlier hints stay free (decision 2).
+`last-hint-reveals-answer.test.tsx` holds it, and checks that in every question only the last hint
+holds the answer.
+
+**Closed 2026-10-23 (the Keppnishamur follow-up, Siggi: "use your recommendations").** In
+Keppnishamur four presses of H gave the answer and took 150 points plus the 50-point time bonus.
+It now offers every hint but the last, as it already offered no "Sýna lausn"; the hints it does
+offer stay free, so there is no points penalty. `hintsOffered` in `src/utils/gas-calculations.ts`
+sets the limit for the button and the H key alike, and `last-hint-reveals-answer.test.tsx` holds
+both.
+
+**Closed 2026-10-23.** A near miss said "Næstum rétt! Reyndu aftur." on a screen that offered only
+the next question (mobile-pass decision 93). In Æfingahamur it now comes with a `Reyna aftur`
+button (option (a)), which reopens the question past the law step with its hints still open. The
+feedback screen has printed the answer by then, so a right retry does not count and the retry adds
+no question to the round. Keppnishamur has no retry, so there the verdict reads `Næstum rétt — en
+utan vikmarka.` (option (b)). `near-miss-retry.test.tsx` holds both.
 
 **Closed 2026-10-03.** Score, streak and "Besta röð" showed in practice too, and both modes added
 to one saved score. Points now stay in Keppnishamur and practice ends with `N af M rétt` (decision 1

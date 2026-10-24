@@ -11,11 +11,13 @@ clockPastNextGuard();
 /**
  * Every molecule Stig 2 offers in the drag builder must be buildable from the parts it offers.
  *
- * The builder concatenated the chip labels, so `eth-` + `-an` built `ethan`, and the grader,
- * comparing against `etan`, marked it wrong — etan, eten and etýn had no correct build at all,
- * and a student who did everything right on three of the first eight molecules was told
- * "Rangt". The chips still read `eth-`; the built name now takes the stem the answer is
- * spelled with, which is how the textbook and this level's own answer key write it.
+ * The builder concatenated the chip labels, which then read in English roots, so the
+ * two-carbon chip + `-an` built `ethan`, and the grader, comparing against `etan`, marked it
+ * wrong — etan, eten and etýn had no correct build at all, and a student who did everything
+ * right on three of the first eight molecules was told "Rangt". The built name now takes the
+ * stem the answer is spelled with, which is how the textbook and this level's own answer key
+ * write it, and since decision 89 (2026-10-23) the chips show that stem too: `et-`, `próp-`,
+ * `bút-`.
  *
  * The parts for each molecule are written out here rather than derived, so the test does not
  * grade itself. Molecules 13–15 are branched and open in typing mode only, so the walk stops
@@ -27,14 +29,14 @@ const BUILDS: { name: string; parts: [label: string, zone: string][] }[] = [
   {
     name: 'etan',
     parts: [
-      ['eth-', 'zone-prefix'],
+      ['et-', 'zone-prefix'],
       ['-an', 'zone-suffix'],
     ],
   },
   {
     name: 'bútan',
     parts: [
-      ['but-', 'zone-prefix'],
+      ['bút-', 'zone-prefix'],
       ['-an', 'zone-suffix'],
     ],
   },
@@ -48,14 +50,14 @@ const BUILDS: { name: string; parts: [label: string, zone: string][] }[] = [
   {
     name: 'eten',
     parts: [
-      ['eth-', 'zone-prefix'],
+      ['et-', 'zone-prefix'],
       ['-en', 'zone-suffix'],
     ],
   },
   {
     name: 'própen',
     parts: [
-      ['prop-', 'zone-prefix'],
+      ['próp-', 'zone-prefix'],
       ['-en', 'zone-suffix'],
     ],
   },
@@ -63,7 +65,7 @@ const BUILDS: { name: string; parts: [label: string, zone: string][] }[] = [
     name: '1-búten',
     parts: [
       ['1-', 'zone-position'],
-      ['but-', 'zone-prefix'],
+      ['bút-', 'zone-prefix'],
       ['-en', 'zone-suffix'],
     ],
   },
@@ -71,21 +73,21 @@ const BUILDS: { name: string; parts: [label: string, zone: string][] }[] = [
     name: '2-búten',
     parts: [
       ['2-', 'zone-position'],
-      ['but-', 'zone-prefix'],
+      ['bút-', 'zone-prefix'],
       ['-en', 'zone-suffix'],
     ],
   },
   {
     name: 'etýn',
     parts: [
-      ['eth-', 'zone-prefix'],
+      ['et-', 'zone-prefix'],
       ['-ýn', 'zone-suffix'],
     ],
   },
   {
     name: 'própýn',
     parts: [
-      ['prop-', 'zone-prefix'],
+      ['próp-', 'zone-prefix'],
       ['-ýn', 'zone-suffix'],
     ],
   },
@@ -93,7 +95,7 @@ const BUILDS: { name: string; parts: [label: string, zone: string][] }[] = [
     name: '1-bútýn',
     parts: [
       ['1-', 'zone-position'],
-      ['but-', 'zone-prefix'],
+      ['bút-', 'zone-prefix'],
       ['-ýn', 'zone-suffix'],
     ],
   },

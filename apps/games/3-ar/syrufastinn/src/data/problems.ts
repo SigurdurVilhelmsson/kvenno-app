@@ -15,6 +15,8 @@
  *    rule that never fires is a rule nobody believes.
  */
 
+import { formatScientific } from '@shared/utils';
+
 import { ANSWERABLE_PAIRS, MONOPROTIC_ACIDS, type WeakAcid } from './acids';
 import {
   KA_FROM_PH_TOLERANCE,
@@ -55,19 +57,35 @@ function toProblem(acid: WeakAcid, concentration: number): PHProblem {
 const ALL = ANSWERABLE_PAIRS.map(({ acid, concentration }) => toProblem(acid, concentration));
 
 /**
- * Æfa: five problems, all inside the 5 % rule, ordered from the most
+ * Æfa: one problem per acid, all inside the 5 % rule, ordered from the most
  * comfortable margin to the tightest — so the last one is nearly at the line
  * and the check starts to feel like it is doing something before Beita makes it.
+ *
+ * Decision 106 (a) and (b), 2026-10-23. The set used to be "five evenly spaced"
+ * through the sorted pool, which gave three ediksýra problems and ended at
+ * 2,65 %, nowhere near the line. The pairs are named here and every number still
+ * comes from the engine; the import throws on a pair that is not in the pool or
+ * not inside the rule. The last is the tightest valid pair in the pool:
+ * maurasýra at 0,100 M, 4,15 %. (Ka/C decides α, and saltpéturssýrlingur at
+ * 0,25 M and ediksýra at 0,010 M share maurasýra's 1,8 × 10⁻³, so they tie it;
+ * the decision names maurasýra.) `problems.test.ts` holds all of it.
  */
-export const PRACTICE_PROBLEMS: PHProblem[] = ALL.filter((p) => p.approximationValid)
-  .sort((a, b) => a.percentDissociated - b.percentDissociated)
-  .filter((_, i, arr) => {
-    // Five evenly spaced through the sorted set, so the sequence spans the range
-    // rather than clustering at one end.
-    const step = Math.floor(arr.length / 5);
-    return i % Math.max(step, 1) === 0;
-  })
-  .slice(0, 5);
+const PRACTICE_PAIRS: ReadonlyArray<[acidId: string, concentration: number]> = [
+  ['fenol', 1.0],
+  ['vetnissyanid', 0.25],
+  ['propansyra', 0.25],
+  ['ediksyra', 0.1],
+  ['flussyra', 1.0],
+  ['saltpeturssyrlingur', 0.5],
+  ['maurasyra', 0.1],
+];
+
+export const PRACTICE_PROBLEMS: PHProblem[] = PRACTICE_PAIRS.map(([acidId, concentration]) => {
+  const p = ALL.find((q) => q.acid.id === acidId && q.concentration === concentration);
+  if (!p) throw new Error(`Æfa: ${acidId} at ${concentration} M is not an answerable pair`);
+  if (!p.approximationValid) throw new Error(`Æfa: ${p.id} is outside the 5 % rule`);
+  return p;
+}).sort((a, b) => a.percentDissociated - b.percentDissociated);
 
 /** The pairs where the rule fails. Beita's whole point. */
 export const RULE_BREAKING_PROBLEMS: PHProblem[] = ALL.filter((p) => !p.approximationValid).sort(
@@ -234,8 +252,11 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     answer: percentDissociation(ediksyra.ka, 0.1),
     grading: { mode: 'relative', tolerance: PERCENT_RELATIVE_TOLERANCE },
     answerHint: '% af sýrunni',
+    // The sentence is the student's own check, done the book's way, so it divides
+    // the x it prints: x_approx / C, 1,34 %. The graded answer stays the exact α
+    // (1,33 %), which the relative tolerance admits either way. Decision 105 (a).
     explanation:
-      `x = √(Ka · C) = 1,3 × 10⁻³ M og klofnunarhlutfallið er x/C = ${fmt(percentDissociation(ediksyra.ka, 0.1), 2)} %. ` +
+      `x = √(Ka · C) = ${formatScientific(klofnunX, 3)} M og klofnunarhlutfallið er x/C = ${fmt((klofnunX / 0.1) * 100, 2)} %. ` +
       `Til samanburðar klofnar ${fenol.name.toLowerCase()} aðeins ` +
       `${fmt(percentDissociation(fenol.ka, 1.0), 4)} % í 1,0 M lausn — þúsundfalt minna, og samt er sú lausn súr.`,
     // Each number named is the one that mistake produces at 0,100 M. The old text

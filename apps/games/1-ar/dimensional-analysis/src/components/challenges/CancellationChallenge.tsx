@@ -93,8 +93,8 @@ function SingleStepCancellation({
   );
 
   const handleFactorSelect = (idx: number) => {
-    onAttempt();
     const correct = factors[idx].correct;
+    onAttempt(!correct);
     setSelectedFactor(idx);
     setIsCorrect(correct);
     setShowAnimation(true);
@@ -329,9 +329,9 @@ function ChainCancellation({
   const stepFactors = useMemo(() => steps.map((step) => shuffleArray(step.factors)), [steps]);
 
   const handleSelect = (idx: number) => {
-    onAttempt();
-    setSelectedIdx(idx);
     const factor = stepFactors[currentStep][idx];
+    onAttempt(!factor.correct);
+    setSelectedIdx(idx);
     if (factor.correct) {
       setTimeout(() => {
         const newDone = [...stepsDone];

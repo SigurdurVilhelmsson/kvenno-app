@@ -96,6 +96,7 @@ Level 2 and Stig 0), say so in feedback when the typed value is exactly answer/1
 about trailing text in the same ruling. Only the docstring changed: it had claimed a thousands
 space is how Icelandic writes large numbers, and the book never does.
 **Applied 2026-10-02, (b) plus (d):** `parseStudentNumber` reads `1.000.000` and `2.219,2` as thousands, keeps a lone `d.ddd` a decimal, and returns `NaN` for any other mix of the two marks. Einingagreining's Level 2 and Stig 0 say when a typed full stop made the answer exactly a thousandth of the right one. **Still yours:** the wording of that note is a Claude draft (`dotReadAsDecimalNote` in `utils/grading.ts`), and strictness about trailing text was not ruled, so `4,64 g` still reads as 4,64.
+**Settled 2026-10-23 on Claude's recommendation** (Siggi: "continue, using your recommendations and best judgment"): the note's wording stands as drafted. Text after a number is still read as a unit (`4,64 g`, `0,05 M-1s-1`, `25 °C`, and a bare `1200,`), but text that carries the number on is `NaN` instead of its first part: `8,3 × 10²`, `8,3x10^2`, `1,5·10³`, `0,8-1,0`, `1,5,2`. `numbers.test.ts` holds both lists.
 
 **6. English glosses and abbreviations inside Icelandic text.**
 `kinetics` glosses terms in parentheses (`Hvarfhraði (reaction rate)`, `stefna (orientation)` ×3,
@@ -183,6 +184,7 @@ empirical-formula module ch03/m68702, and `neðanskrift` 341 times (ch04/m68709:
 and an `ordabok.md` entry. `lágstafur` is what the book's empirical-formula module uses; either
 is attested. Superscript: `Notaðu tölustafi (1s2) eða hávísa (1s²)`. `vísitala` → `lágstafur` moves
 gender, so it is a rewrite, not a swap.
+**Ruled 2026-10-23:** (a) as recommended: `lágstafur` for subscript and `hávísir` for superscript, now in `ordabok.md`, `reynsluformulur`, `stilla-efnajofnur` and `rafeindabygging`.
 
 **14. `Saltsýra` and `Flússýra` for the pure compounds.**
 `saltsýra` is HCl(aq). `intermolecular-forces` gives HCl the name `Saltsýra` beside the gas's
@@ -296,6 +298,7 @@ calls it on every click, right or wrong, so the hint can open while a student ex
 (C4 says to try both factors). Options: (a) count only wrong selections; (b) keep; (c) drop the
 auto-hint and rely on `Fá meiri hjálp`. **Recommendation:** (a), which matches the on-screen
 promise `Ef þú reynir nokkrum sinnum birtist hjálp`.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **25. Picking the same block twice shows `≠ 1` above `1 L / 1 L = 1,0`.**
 `challenges/FactorBuildingChallenge.tsx` `judge()` (same-unit branch) and the verdict at `:182-188`;
@@ -303,28 +306,33 @@ reachable with 1 L/1 L, 1000 mL/1000 mL and others. The fraction really is 1; it
 conversion. Options: (a) show `= 1` in red and let the existing `Sömu einingarnar!` box explain;
 (b) stop one block filling both slots; (c) accept it. **Recommendation:** (a), perhaps with (b).
 The screen should not state something false.
+**Ruled 2026-10-23:** (a), applied the same day; (b) left out.
 
 **26. The chip `Factor-label aðferð`.**
 English in a related-concepts chip on every Level 2 verdict (`Level2.tsx:52`). The book renders
 the method three ways and calls it a synonym of `víddagreining`, which is the chip beside it.
 Options: (a) drop the chip; (b) `einingabreytingaraðferð`; (c) `þáttamerkingaraðferð`.
 **Recommendation:** (a): no English, no duplicate, no choice between three renderings.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **27. The mode toggle `Skipta í smella-ham` no longer names a difference.**
 Tapping works in both Level 2 modes now, and they share one chain (`Level2.tsx`). Options:
 (a) rename to describe the layouts, e.g. `Skipta í hnappalista` / `Skipta í keðjusmíð`; (b) remove
 click mode; (c) leave. **Recommendation:** (a) or (b), your wording.
+**Ruled 2026-10-23:** (a), Siggi's ruling: `Skipta í hnappalista` / `Skipta í keðjusmíð`, each naming the layout it switches to; the default is unchanged.
 
 **28. A wrong Level 2 answer never shows the right value.**
 The incorrect branch says only `Rétta leiðin er: <factors>` (`Level2.tsx:311-329`), so a right
 chain with a slipped number gets no message about the number. Options: (a) append the value
 (`… = 0,5 g`, via `printNumber`); (b) a misconception line, e.g. `Leiðin er rétt, en talan ekki —
 reiknaðu aftur`; (c) leave. **Recommendation:** (a).
+**Ruled 2026-10-23:** (a), applied the same day: the line shows the start value, each factor and the result.
 
 **29. The `Strika út X` button shows for 1,5 s and vanishes.**
 The auto-animation cancels every pair anyway (`Level2.tsx`, `showCancelButton`). Options: (a) drop
 the button; (b) turn off the auto-run and keep the button until every pair is struck, a hands-on
 step. **Recommendation:** (a), or (b) if you want students to strike units out themselves.
+**Ruled 2026-10-23:** (a), applied the same day: the button is gone.
 
 **30. Level 3 grades explanations by length.**
 The composite (answer 40 %, method 30 %, explanation 20 %, efficiency 10 %) takes method and
@@ -335,11 +343,13 @@ under `Gott!`, a fully correct run with terse explanations fails mastery, and th
 exist, was removed in this pass.) Options: (a) master on the answer alone and keep the explanation
 as ungraded reflection; (b) keep the composite but take method credit only from a correct answer
 or chosen path; (c) keep, and reword the intro. **Recommendation:** (b).
+**Ruled 2026-10-23:** (b), applied the same day. The explanation's 20 % is still by length (option (c) not taken).
 
 **31. Level 3 ends with no summary.**
 `Ljúka stigi` returns straight to the menu (`Level3.tsx` → `App.tsx` `onComplete`), so a student
 who misses mastery is not told why. Levels 1 and 2 have one. **Recommendation:** add a one-line
 summary, after item 30, since mastery depends on it.
+**Ruled 2026-10-23:** applied the same day: one summary line sharing the mastery check (drafted wording, accepted by Siggi 2026-10-23).
 
 **32. Stig 0's rule 4 is not the book's.**
 The game teaches that a trailing comma makes trailing zeros count (`1200,` = 4, `60,` = 2) and
@@ -348,6 +358,7 @@ grades by it (`data/sigfig-items.ts` `RULES[3]`, `COUNT_ITEMS` c5; `utils/sigfig
 significant (ch01/m68690:47,62). Options: (a) keep the game's convention; (b) follow the book,
 changing `countSigFigs`, the rule and c5. **Recommendation:** your call; (b) is small and contained
 if the course follows the book.
+**Ruled 2026-10-23:** (b), Siggi's ruling: rule 4 follows the book. A trailing comma changes nothing (`1200,` is 2, `60,` is 1); c5 is `4,500 × 10³`; the rule text and feedback are drafted wording, accepted by Siggi 2026-10-23.
 
 **33. A word for scientific notation.**
 The game had coined `veldisritháttur` (Stig 0) and `vísindatölustafir` (Level 3), 0 corpus hits
@@ -364,6 +375,7 @@ L3-12 (0,5 mol × 58,5 g/mol, declares 3) and L3-COOK-2 (4 oz × 28,35 g/oz, dec
 measurement or exact is a teaching question. Options: (a) remove `significantFigures` from both;
 (b) give the precision in the prompt (`0,500 mol`, `4,00 oz`); (c) treat the givens as exact.
 **Recommendation:** (b) for L3-12, a lab quantity; (a) for COOK-2.
+**Ruled 2026-10-23:** (b) for L3-12 and (a) for COOK-2, applied the same day.
 
 Also here: the thousands dot (item 5, option (d)) and the conversion-factor term
 (item 12).
@@ -387,12 +399,14 @@ element name for N (item 15), and the flattened Polish block (item 4).
 ignoring case, spaces and parentheses; (c) accept but reply `Rétt — en skrifaðu …` with the
 spelling. **Recommendation:** (c). A phone keyboard types every Icelandic letter, and silent
 acceptance teaches the flattened form.
+**Ruled 2026-10-23:** (c), applied the same day: `Rétt — en skrifaðu …`.
 
 **37. Level 3 accepts only the elided prefix.**
 `naming.ts` makes `tetroxíð` the target over `tetraoxíð` on purpose, but the tray can still offer
 `tetra` and `oxíð` (0,25–0,85 % of trays for N₂O₄, N₂O₅, Cl₂O₇, P₄O₁₀), and a student who builds
 the textbook-valid unelided name is shown the `a` in red. Level 2 already accepts both.
 **Recommendation:** accept both in `handleCheck`, with Level 2's fold.
+**Ruled 2026-10-23:** as recommended, applied the same day.
 
 **38. Level 3's info line gives the answer away before the student builds anything.**
 `compound.info` renders under the formula (`Level3.tsx`, `data/compounds.ts`), and on at least 13
@@ -403,6 +417,7 @@ teach (ammóníum, fosfat, vetniskarbónat, díkrómat) it is the only route. Op
 answer and teach the four ions in the rules panel; (c) keep it as a deliberate hint.
 **Recommendation:** (a), with the four ions added to the `Fjölatóma jónir` line and Fe₃O₄ keeping
 `blanda Fe²⁺ og Fe³⁺` before the answer.
+**Ruled 2026-10-23:** (a), applied the same day; Fe₃O₄ keeps its line before the answer.
 
 **39. `fjölatóma jón` against the glossary's `fjölfrumeinda jón`.**
 About 20 sites say `fjölatóma jón`, and two info lines say `Sameindajón` (`compounds.ts`, Na₂CO₃
@@ -419,11 +434,13 @@ hydrogen, groups 13–14 are missing, 15–16 hold Bi and Po. Nothing is graded 
 ask about Al, Sn and Pb. Options: (a) keep; (b) `vinstra megin og í miðju (hópar 1–12, nema
 vetni)` / `efst til hægri (hópar 14–18, að hluta)`; (c) point to the stair-step line.
 **Recommendation:** (b) or (c).
+**Ruled 2026-10-23:** (b), Siggi's ruling, with the option's wording verbatim.
 
 **41. The menu says IUPAC names are `óháð tungumáli`.**
 `App.tsx` `Af hverju` card: `Sama nafn, sama efni — óháð tungumáli`, while the next screen teaches
 that Natríumklóríð is sodium chloride. **Recommendation:** reword, e.g. `Sama kerfi, sama efni — á
 hvaða tungumáli sem er`.
+**Ruled 2026-10-23:** as recommended, applied the same day.
 
 ### molmassi — Mólhugtakið
 
@@ -432,22 +449,26 @@ hvaða tungumáli sem er`.
 explicit `Ljúka stigi`. Options: (a) keep; (b) a pass threshold like Stig 2; (c) a `Ljúka stigi`
 button at any score, like Stig 1. **Recommendation:** (c) or (a); a threshold would make the tick a
 grade.
+**Ruled 2026-10-23:** (c), Siggi's ruling: Stig 3 completes on `Ljúka stigi` at any score, as Stig 1 does.
 
 **43. Five of Stig 3's six mass-to-particles problems have the same answer.**
 36 g H₂O, 88 g CO₂, 117 g NaCl, 34 g NH₃ and 64 g O₂ are all 2 mol, so all answer 1,20 × 10²⁴
 (`Level3.tsx` `DESCRIPTORS`). Options: (a) leave; (b) vary the masses (27 g H₂O = 1,5 mol, 110 g
 CO₂ = 2,5 mol, 175,5 g NaCl = 3 mol); the answers stay derived. **Recommendation:** (b). An answer
 that never changes can be learned without calculating.
+**Ruled 2026-10-23:** (b), applied the same day: 1,5, 2,5 and 3 mól; NH₃ and O₂ still share 2 mól.
 
 **44. `undirstaða allrar magnefnafræði`.**
 The menu's `Af hverju mólmassi?` card (`App.tsx`). `magnefnafræði` has 0 corpus hits and no
 glossary entry. Options: (a) `hlutfallaefnafræði`, the ruled stoichiometry term, a pure swap;
 (b) `magnbundinnar efnafræði`; (c) leave. **Recommendation:** (a); grams-to-moles opens Brown ch. 3.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **45. Where percent composition goes.**
 Already open in the README: it was planned as a fourth `molmassi` level, which the 2026-08-29
 no-Level-4 ruling rules out. `reynsluformulur`'s README also lists it, with combustion analysis, as
 uncovered. **Recommendation:** none needed now; it is a roadmap item.
+**Ruled 2026-10-23:** as recommended: no change now.
 
 Also here: `Saltsýra` (item 14) and `P-málmar` (item 21).
 
@@ -467,6 +488,7 @@ Options: (a) keep; (b) first wrong try shows which cells and that column's hint,
 which Beita also calls `n`) (`App.tsx`). Options: (a) write the moles line in words, `mól = massi /
 mólmassi`; (b) a new letter for the multiplier, which changes Beita too; (c) keep.
 **Recommendation:** (a), one line.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 Also here: `Vísitala` (item 13).
 
@@ -485,6 +507,7 @@ Only `LEVEL1_CONFIG` has the banner; levels are not gated, so a student can star
 Options: (a) a banner on Stig 2/3 (about 50 px, and the Stig 1 banner already pushes `Athuga` below
 the fold at 360×740); (b) the sentence in the Stig 2/3 menu card descriptions; (c) leave.
 **Recommendation:** (b), which states it before grading at no layout cost.
+**Ruled 2026-10-23:** (b), applied the same day.
 
 Also here: `Vísitölunum` (item 13).
 
@@ -497,20 +520,25 @@ group-1 row, pinned by `aefa-rule-grading.test.tsx`. Options: (a) keep; (b) also
 row, consistent with BaSO₄ graded right through the sulfate row's exception. **Recommendation:**
 (a). The carbonate row's face states the opposite verdict, and the drill's point is that group 1
 always wins. (b) is a one-line change.
+**Ruled 2026-10-23:** (a), keep; a test pins it.
 
 **51. The FeCl₃ + NaOH context frames iron as a pollutant removed from sewage.**
 `data/problems.ts` scenario `fecl3-naoh`: `Þannig eru járnjónir felldar úr skólpi í
 hreinsistöðvum`. Plants add iron(III) as a coagulant, and its hydroxide carries phosphate down;
 removing dissolved iron is mainly a groundwater process. Defensible, not false.
 **Recommendation:** reword, low priority, with your Icelandic for the coagulant wording.
+**Ruled 2026-10-23:** the drafted sentence, applied the same day: `Hreinsistöðvar bæta
+járn(III)salti í skólpið: járnhýdroxíðið sem fellur út tekur fosfat með sér.`
 
 **52. Acetate, bicarbonate and chlorate are in the book's table, not the ion pool.**
 `data/ions.ts`. Adding them needs Icelandic ion names `ordabok.md` does not settle.
 **Recommendation:** leave out until a scenario needs one.
+**Ruled 2026-10-23:** as recommended: left out.
 
 **53. Precipitate colours are named, not drawn.**
 `KannaScreen.tsx` Beaker keeps three neutral states on purpose (a phone in a lit classroom).
 **Recommendation:** keep; the context sentences name the colours.
+**Ruled 2026-10-23:** as recommended: kept.
 
 ### takmarkandi — Takmarkandi hvarfefni
 
@@ -526,6 +554,7 @@ The panel says the limiting reactant is not always the one there is less of (`Le
 but `buildQuestions` never makes the more numerous reactant limiting. February prescribed it
 (`FEBRUARY-DECISIONS-RECOVERED.md:358`) and it was never built. Options: (a) 2–3 such items per
 run, e.g. 6 H₂ against 4 O₂; (b) drop the sentence. **Recommendation:** (a).
+**Ruled 2026-10-23:** (a), applied the same day: three such items per run.
 
 **56. In three of Stig 3's five problems the lighter reactant is limiting.**
 `vatn`, `magnesiumoxid` and `natriumklorid` (`data/yieldProblems.ts`), so "pick the smaller number"
@@ -534,12 +563,14 @@ mix is a design choice. Options: (a) re-weigh one or two so the heavier mass is 
 H₂ against 48 g O₂); everything else is derived; (b) keep the masses, fix only the misconception
 text. **Recommendation:** (a) for at least one, plus a misconception keyed to which reactant the
 student picked; `natriumklorid`'s `þótt klórgasið sé miklu þyngra` goes in the same rewrite.
+**Ruled 2026-10-23:** (a), applied the same day: `natriumklorid` re-weighed, its context rewritten, and a misconception keyed to the pick.
 
 **57. Stig 1–2 call atoms and formula units `sameindir` (B7).**
 Mg, Na, K, Ca, Zn, Cu: `Level1.tsx:257`, `Level2.tsx:235,252`, `Molecule.tsx:15`, and the prose
 `fjölda sameinda` (`CURRICULUM_REVIEW.md:145`). Options: (a) neutral `eindir` throughout;
 (b) `sameindir`, `atóm` or `formúlueiningar` by species, with a particle-kind field in
 `reactions.ts`. **Recommendation:** (b) if you settle `formúlueining`; otherwise (a) for now.
+**Ruled 2026-10-23:** (a), Siggi's ruling: `eindir` throughout Stig 1 and 2, cards, prompts, hints and ball labels.
 
 ### lausnir — Lausnir
 
@@ -555,6 +586,7 @@ closing-screen changes. **Recommendation:** (b), per item 1.
 **59. `Þess vegna er kalt gos fríðara!`**
 `Level2.tsx:295`, the cold-soda explanation; `fríðara` means prettier. Options: (a) `Þess vegna
 helst kalt gos lengur kolsýrt!`; (b) drop the sentence. **Recommendation:** (a).
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **60. Stig 1's `Athuga lausn ✓` does nothing on a wrong concentration.**
 `Level1.tsx` `checkAnswer` (~:426) acts only when correct. Options: (a) one line, e.g. `Ekki alveg
@@ -573,11 +605,13 @@ with it after dropping the last card, and mark "remove" correct when that is sho
 inverted, "flip" only if the flipped card is on a shortest route; (b) keep the grading, make the
 sentences route-neutral; (c) leave. **Recommendation:** (a). The rule (shortest repair wins) and
 the wording are yours.
+**Ruled 2026-10-23:** (a), Siggi's ruling: the repair leaving the fewest cards to place counts; a tie keeps the old answer. The explanations are drafted wording, accepted by Siggi 2026-10-23.
 
 **62. B4 puts 25,0 mL of ethanol in one dose of hand sanitiser.**
 `data/problems.ts` B4; one pump holds about 2 mL. Options: (a) `Í lítilli flösku af handspritti
 eru um 25,0 mL af etanóli`, keeping every number; (b) change the volume and the answer.
 **Recommendation:** (a).
+**Ruled 2026-10-23:** (a), applied the same day.
 
 Also here: the ratio cards' precision (item 10).
 
@@ -672,6 +706,7 @@ linear 180; bent 104,5; trigonal planar 120; trigonal pyramidal 107; tetrahedral
 bipyramidal and see-saw 90, 120, 180; T-shape, octahedral and square planar 90, 180. Every
 written angle must be in the shape's set and every asked-for angle present. **Confirm the sets**
 — the see-saw and T-shape use the ideal bipyramid angles, not SF₄'s and ClF₃'s squeezed ones.
+**Confirmed by Siggi 2026-10-23:** the ideal bipyramid angles stay.
 
 **71. The angle hint and reference table give the answer; Stig 1 pictures show the
 shape asked about.**
@@ -705,6 +740,7 @@ forces in turn. Guarded by `answer-cues.test.tsx`.
 can find. Challenge 3's distractor explanation `Vatn er í raun léttara en margir lífrænir leysar`
 is true per molecule, false per volume. **Recommendation:** retitle 6 `Ediksýra vs. asetaldehýð`
 (a naming call); supply or drop the word in 7; in 3 talk about mass per molecule.
+**Ruled 2026-10-23:** challenge 3 as recommended, applied the same day (mass per molecule). Siggi ruled 6 and 7 the same day: challenge 6 is `Ediksýra eða asetaldehýð` (the scenario's `Edikaldehýð` became `Asetaldehýð` with it), and challenge 7 drops „kagala".
 
 **74. `London kraftar` without a hyphen.**
 About 15 sites; the corpus writes `London-kraftar` (8) or `dreifikraftar` (45), and `ordabok.md`
@@ -752,6 +788,7 @@ leaves that example out, picker button included, until the answer is checked. Gu
 `Level1.tsx` `RELATED_CONCEPTS[2]`, `[5]`, `[6]`; 0 corpus hits, no glossary entry. Challenge 6
 is about path-independence, which `ordabok.md` calls `ástandsfall`. **Recommendation:**
 `Ástandsfall` for 6; delete `Hverfanleiki` from 2 (which already has `Öfug hvörf`) and from 5.
+**Ruled 2026-10-23:** as recommended, applied the same day.
 
 **79. Stig 2's card promises `Útskýrðu rökstuðning.`, and the level has no such step.**
 `App.tsx` and `i18n.ts` `levels.level2.details`. Options: (a) delete the sentence; (b) add a short
@@ -818,6 +855,7 @@ equation, not a reaction. Also `Rafeindir: 2 tapað = 2 öðlast` (`Level3.tsx:4
 agree with `rafeindir`. **Recommendation:** one name per level everywhere, e.g. `Stig 2: Greina
 redox-hvörf`, `Stig 3: Stilla redox-jöfnur`, taken with item 83; the e2e paths
 change too.
+**Ruled 2026-10-23:** as recommended, applied the same day, e2e paths included.
 
 **85. Stig 1 asks `í þessari sameind?` of NaCl, CuSO₄ and Cr₂O₇²⁻.**
 `Level1.tsx:356`: three of ten items are not molecules. Options: (a) `í þessu efnasambandi?` /
@@ -863,6 +901,7 @@ chips, hints and `Útskýring`; `App.tsx`). The book uses `met-`, `et-`, `próp-
 and `utils/naming.ts` already builds names from them. Options: (a) teach the book's stems
 everywhere; (b) keep the international roots and say so; (c) leave. **Recommendation:** (a). It
 changes quiz answers, chips, cards and hints, not the engine.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **90. The menu's three-card explainer contradicts Stig 1.**
 `App.tsx:164-177` defines Stofn as bond type and Viðskeyti as functional group; Stig 1 teaches
@@ -904,10 +943,12 @@ well and stays.
 `App.tsx` `finishQuestion`; the feedback screen offers only `Næsta spurning` and `Valmynd`.
 Options: (a) a `Reyna aftur` button in practice mode; (b) reword to `Næstum rétt — en utan
 vikmarka.`; (c) leave. **Recommendation:** (a) in practice, (b) in Keppnishamur.
+**Ruled 2026-10-23:** (a) in practice and (b) in Keppnishamur, applied the same day. The practice retry does not count, since the feedback has printed the answer (item 1's rule).
 
 **94. There is no Explore phase.**
 The first thing after the menu is a graded question. **Recommendation:** an Explore screen with
 V/T/n sliders driving the existing `GasLawSimulator`; your call on scope.
+**Ruled 2026-10-23:** skipped for now. No Explore screen; revisit later.
 
 Also here: score and streak in practice (item 1) and trailing zeros (item
 10).
@@ -919,12 +960,14 @@ Also here: score and streak in practice (item 1) and trailing zeros (item
 offer `Sýna svarið og halda áfram` after a wrong check; stage one does not. **Recommendation:** the
 same button after a wrong `Athuga jöfnuna`, applying the route and moving on, so the student still
 computes K.
+**Ruled 2026-10-23:** as recommended, applied the same day: `Sýna svarið og halda áfram`.
 
 **96. Beita's direction step is ungraded, and the answer is always forward.**
 Both buttons move on (`BeitaScreen.tsx` ~:180), and all ten problems start with every product at 0
 (`data/problems.ts`). Options: (a) grade it (`Rétt.`/`Ekki rétt.`); (b) add a sourced problem that
 starts with products and runs backwards; (c) leave. **Recommendation:** (a), and (b) if ch. 13 has
 an example.
+**Ruled 2026-10-23:** (a) and (b), applied the same day: the direction step is graded, and the book's Tilraun 2 (ch. 13, m68798) joins Beita as a reverse-direction problem.
 
 **97. The NH₄Cl pressure problem asks a 5 % question with no answer.**
 No reactant in K, both gases start at 0 atm; the screen reports `0,00 % af upphafsþrýstingnum` and
@@ -932,19 +975,23 @@ marks `Nei — það verður að leysa nákvæmlega` wrong, though x² = Kp is e
 ~:290-360). Options: (a) skip the step for such a problem, with one sentence, e.g. `Hér er enginn
 nefnari — x² = Kp er leyst nákvæmlega og engin nálgun þarf.`; (b) accept either; (c) replace the
 problem. **Recommendation:** (a), your wording.
+**Ruled 2026-10-23:** (a), Siggi's ruling, with the item's sentence: the step is skipped where no reactant is in K.
 
 **98. `K er einfaldlega gufuþrýstingurinn` directly under `Kc = [Br₂]`.**
 `data/problems.ts:77-79`. True of Kp, loose beside Kc. **Recommendation:** `Vökvinn dettur út og K
 er einfaldlega styrkur gufunnar — skrifað sem Kp er það gufuþrýstingurinn.`, low priority.
+**Ruled 2026-10-23:** applied the same day, with `gufunarþrýstingurinn` in place of the sentence's `gufuþrýstingurinn`, which item 18 rules out.
 
 **99. K is masculine in some strings and neuter in others.**
 Masculine in Skilja and `coupled.ts` (`K er háður hitastigi`); neuter in the `problems.ts` contexts
 (`K örsmátt`, `Stórt Kp`). The corpus has 2 hits, both masculine. **Recommendation:** masculine
 throughout, on your say-so.
+**Ruled 2026-10-23: neuter for both K and Q** (Siggi), applied the same day; an earlier pass that day had applied the recommended masculine and was reverted. `k-gender.test.ts` holds it.
 
 **100. Two README Open items.**
 ICE before Le Chatelier, where the book puts it after: recommendation keep, since ICE needs only K.
 Temperature dependence of K here: recommendation leave it to `equilibrium-shifter`, which has it.
+**Ruled 2026-10-23:** as recommended: keep ICE before Le Chatelier, and leave K's temperature dependence to `equilibrium-shifter`.
 
 Also here: water-gas naming (item 19) and `gufuþrýstingur` (item 18).
 
@@ -956,18 +1003,28 @@ You ruled the gate stays (2026-09-19), but it can never open: only Keppnishamur 
 card promises `Opnast þegar þú hefur klárað 5 verkefni í lærdómshamri` (`:537`). Options: (a) count
 correct Lærdómshamur answers; (b) count any answered one. **Recommendation:** (a), which keeps the
 card's promise; arguably a fix under the existing ruling.
+**Ruled 2026-10-23: (a).** Applied the same day: each right Lærdómshamur answer the sitting counts
+adds one, so five open Keppnishamur. `learning-count.test.tsx` holds it.
 
 **102. Acetic acid is +5 kJ/mol in one system and 0 in the other.**
 Id 8 stores +5 and answers heating as a shift; id 24, the same reaction written with hydronium,
 stores 0 (`data/equilibria.ts:245,760`). Neither is sourced, and the literature value is near 0.
 Options: (a) source a value for both; (b) drop the heating stress from id 8; (c) leave.
 **Recommendation:** (b) now, (a) when an aqueous ΔH source is ruled on.
+**Ruled 2026-10-23:** (b), applied the same day. The book's (aq) rows were transcribed later that
+day, but they have no CH₃COOH(aq) or CH₃COO⁻(aq), so (a) cannot follow; (b) stands.
 
 **103. Ten systems have no constant, and aqueous temperature stresses stay
 directional.**
 Already open in the README: the complex-ion and hemoglobin systems need the Icelandic book's
 formation constants (m68869), and `thermo.ts` has no dissolved ions. Both are a new source, your
 call. `numbers.test.ts` pins the count at ten.
+**Ruled 2026-10-23:** yes, source them from m68869, applied the same day. Appendix K covers the two
+complex ions: id 6 takes Kf = 8,9 × 10², id 22 (written coming apart) `Kd = 1/Kf`, with Kf = 1,7 × 10¹³. It
+states no temperature, so none is written. Hemoglobin is not in it, so eight systems stay without
+a constant, and the test pins eight. The aqueous ΔH half followed later that day: Siggi said
+transcribe m68865's dissolved species, and `thermo.ts` now carries all 46 readable (aq) rows. They
+derive ids 7 (+55,83) and 10 (+65,4); the weak acids, ammonia and the complexes have no row.
 
 **104. Several equilibrium names need a ruling.**
 `data/equilibria.ts`: id 1 `Díköfnunarefnisoxíð` (item 15); ids 6 and 22 `komplex`
@@ -977,6 +1034,7 @@ jafnvægi`, each naming a single reaction. `App.tsx`: `Le Chatelier meginreglan`
 `lögmál Le Chateliers`) and the menu bullet `Veltudæmi` (`:516`). **Recommendation:** as given in
 parentheses; rename ids 23 and 27 to what their equations show (e.g. `Bruni kolefnis í
 kolmónoxíð`); drop `Veltudæmi` or say `Útskýrð svör`.
+**Ruled 2026-10-23:** as recommended, applied the same day; id 17 is `Hvarf metans og vatnsgufu`, the book's phrase, and the menu bullet is `Útskýrð svör`.
 
 Also here: `Contact Process` (item 17) and water-gas naming (item 19).
 
@@ -988,22 +1046,26 @@ where the division gives 1,14 %; `data/problems.ts:231-236` likewise. Grading us
 on purpose. Options: (a) print x_approx/C in those two sentences, keep the exact α for the bar and
 grading; (b) keep and say it is from the exact root. **Recommendation:** (a); the sentence is the
 student's own check, done the book's way.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **106. Æfa's five problems are not what its comment promises.**
 Three are ediksýra and the last is at 2,65 %, not near the 5 % line (`data/problems.ts:60-72`).
 Options: (a) end at the tightest valid pair (maurasýra 0,1 M, 4,15 %); (b) also one problem per acid;
 (c) keep and fix the comment. **Recommendation:** (a) and (b).
+**Ruled 2026-10-23:** (a) and (b), applied the same day: one pair per acid, seven in all, ending at maurasýra 0,1 M. **Confirmed by Siggi 2026-10-23:** keep seven problems.
 
 **107. The menu says students have already seen pKa in titrations and buffers.**
 `App.tsx:87-91`; both come after this game in the chain. Options: (a) `Í pH Títrun og Stuðpúðum
 færðu pKa gefinn upp í dæmum. Hér kemur talan sjálf: …`; (b) keep, if lab titrations were meant.
 **Recommendation:** (a), unless (b) was the intent.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **108. Æfa and Skilja print constants in e-notation with an extra figure.**
 `Ka = 1,80e-5` (`PracticeScreen.tsx:29-30`), `x = 1,333e-3 M` (`UnderstandScreen.tsx:206`),
 `4,90 × 10⁻¹⁰` (`ExploreScreen.tsx:25-32`), where Kanna and Beita print `1,8 × 10⁻⁵`.
 **Recommendation:** `formatScientific` at the source's figures, keeping the e-form only where it
 models what to type.
+**Ruled 2026-10-23:** as recommended, applied the same day.
 
 ### thermodynamics-predictor — Varmafræði spámaður
 
@@ -1012,6 +1074,11 @@ models what to type.
 player can slide to the printed T_cross and answer 0 / Jafnvægi. Options: (a) keep everything live;
 (b) hide the ΔG° number, verdict and marker label until `Athuga svar`; (c) (b), and lock T in
 Keppnishamur. **Recommendation:** (c). Könnun already exists for live exploration.
+**Ruled 2026-10-23: (c)**, keeping the substituted line and the curve. Applied the same day: the
+ΔG° value, its verdict, the graph's point and the T_cross position line wait for `Athuga svar`;
+the substituted line ends `= ?` in both modes; Keppnishamur's slider is fixed at the problem's
+temperature, with the drafted note `Í keppni er hitastigið fast.` `answer-hidden.test.tsx` holds
+it.
 
 **110. Gibbs free energy, crossover temperature, and two reaction names.**
 `App.tsx:344` `Gibbs frjálsa orku`: `ordabok.md` says `Gibbs fríorka`, the book `frjáls orka`
@@ -1021,12 +1088,14 @@ means vapour formation; id 27 `ATP vatnsrofhvarfun` (the glossary has only `vatn
 **Recommendation:** the book's `frjáls orka`, correcting `ordabok.md`; `Umbreytingarhitastig` on
 both screens; `Vatnsrof ATP` for id 27, built on the glossary word; a word from you for steam
 reforming.
+**Ruled 2026-10-23:** in part, applied the same day: `frjáls orka` in `ordabok.md`, `Umbreytingarhitastig` on both screens, `Vatnsrof ATP` for id 27. Steam reforming is `Hvarf metans og vatnsgufu` (Siggi, the same day), as `equilibrium-shifter` names it.
 
 **111. The Erfitt `Áskorun` prompts are not graded.**
 Ids 23–30 (`data/problems.ts`) ask for K, −nFE°, Hess, melting point and optimum T; the grader
 checks only ΔG° and the verdict. Options: (a) grade them; (b) reword them as optional reflection;
 (c) remove. **Recommendation:** (b) now; (a) for the K prompts only if ΔG° = −RT ln K returns to the
 formula card.
+**Ruled 2026-10-23:** (b), applied the same day, under `Til umhugsunar (ekki metið):` (drafted wording, accepted by Siggi 2026-10-23).
 
 Also here: scoring in practice (item 1), ids 12 and 21 (item 9), and
 `Contact aðferðin` (item 17).
@@ -1039,6 +1108,7 @@ student wrong about methyl orange's colour hears about pH 7. Four matching messa
 unused (`:14-23`). **Recommendation:** map by challenge (ch1 strong–strong, ch2 weak–strong, ch5
 buffer region, ch6 indicator, none for ch3–4). Arguably a fix under the FeedbackPanel rule, as
 `intermolecular-forces`' was.
+**Ruled 2026-10-23:** as recommended, applied the same day.
 
 **113. Level 2 grades indicators inconsistently, and against Level 1's rule.**
 Level 1 ch6 teaches that the range must contain the equivalence pH. Level 2's hand lists
@@ -1047,17 +1117,20 @@ but accept it for P3 (also eq. 7), and accept phenolphthalein for P5 (eq. 8,08).
 by Level 1's rule with the unused `isIndicatorAppropriate` (`data/indicators.ts:68`); (b) the
 real-lab rule, any range inside the steep jump, rewording Level 1 ch6; (c) hand lists that agree.
 **Recommendation:** (a).
+**Ruled 2026-10-23:** (a), applied the same day, against the equivalence pH as printed (one decimal), so HF accepts þýmólblátt only. **Confirmed by Siggi 2026-10-23:** for HF only þýmólblátt counts.
 
 **114. The indicator cards say which titration each suits.**
 `data/indicators.ts` `description`, rendered at `IndicatorSelector.tsx:63`, gives away half the
 Level 2 task and disagrees with the grader. Options: (a) keep; (b) remove; (c) show after the
 result. **Recommendation:** (c).
+**Ruled 2026-10-23:** (c), applied the same day.
 
 **115. Unreachable titrations and polyprotic maths carry wrong data.**
 `data/titrations.ts` ids 3, 4, 8, 10–13 and `utils/ph-calculations.ts:117-232`: non-Appendix-D
 constants (benzoic, H₃PO₄), H₂SO₃ with no Appendix D row, and polyprotic branches that fall to −∞ or
 NaN. Nothing renders them today. Options: (a) delete; (b) correct and test them before anyone wires
 them. **Recommendation:** (a), unless a polyprotic Level 2 puzzle is planned.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **116. Four terms the sources do not settle.**
 Half-equivalence: `hálfur jafngildispunktur` (11 sites); `ordabok.md` says `hálfgildispunktur`
@@ -1066,6 +1139,7 @@ Half-equivalence: `hálfur jafngildispunktur` (11 sites); `ordabok.md` says `há
 `vísir` against `litvísir`: the corpus says `vísar` 35 times. **Recommendation:** the book's
 `hálfjafngildispunktur` (the glossary entry has a typo in its English headword), `keiluflaska`,
 `fenólftalín`, keep `vísir`.
+**Ruled 2026-10-23:** as recommended, applied the same day; `ordabok.md` now has `half-equivalence point;hálfjafngildispunktur`. **Then, the same day, Siggi ruled `litvísir`, as `ordabok.md` says, not bare `vísir`**; swept in `ph-titration`, held by a row in its `icelandic-text.test.ts`.
 
 ### buffer-recipe-creator — Stuðpúðasmíði
 
@@ -1074,16 +1148,19 @@ Half-equivalence: `hálfur jafngildispunktur` (11 sites); `ordabok.md` says `há
 `problems.ts:268`. Every `ammóníum-` word in the book keeps the `-m` (57 hits); no glossary entry.
 Options: (a) `ammóníumstuðpúði`; (b) keep; (c) avoid the compound. **Recommendation:** (a), with a
 governed-terms row.
+**Ruled 2026-10-23:** (a), applied the same day, with a governed-terms row.
 
 **118. Past its capacity, the simulator's pH stops moving.**
 `BufferCapacityVisualization.tsx` floors a used-up component at 0,001 M, so the buffer looks
 limitless while the water keeps falling. Options: (a) past exhaustion, pH from the excess strong
 acid or base; (b) a full charge-balance solve; (c) show `–` once exhausted. **Recommendation:** (a),
 the textbook treatment.
+**Ruled 2026-10-23:** (a), applied the same day.
 
 **119. Stig 2's flask comparison never says what was added.**
 `Level2.tsx:336-342` adds 0,01 mol strong acid to 1 L. **Recommendation:** a one-line caption,
 e.g. `Eftir að 0,01 mól af sterkri sýru er bætt við 1 L`, your wording.
+**Ruled 2026-10-23:** applied the same day: the item's caption, built from the panel's amounts (drafted wording, accepted by Siggi 2026-10-23).
 
 Also here: the hint cost in all three levels (item 2).
 
@@ -1096,15 +1173,18 @@ the 4 in 4s³, taking the wrong root) actually grade `tolustafir` or `baedi`, wh
 (a) move the advice to those two outcomes; (b) diagnose the entry: within 2 % of √Ksp says square
 root, within 2 % of ∛Ksp says the 4 was forgotten; (c) leave. **Recommendation:** (b), which is what
 the misconception slot is for.
+**Ruled 2026-10-23:** (b), applied the same day, as an `Algeng villa:` box in Æfa's own card.
 
 **121. The notes on where the two books disagree are never shown.**
 `data/salts.ts` `divergenceNote` for AgI, Ag₂CrO₄, CaCO₃ and BaSO₄ is maintainer prose no screen
 renders; BaSO₄'s own note says a student checking the Icelandic appendix finds a 14× different
 solubility, and Æfa asks for exactly that. **Recommendation:** one student-facing line in Kanna,
 e.g. `Íslenska kennslubókin gefur annað gildi — hér er notað gildi Brown.`, for BaSO₄ at least.
+**Ruled 2026-10-23:** applied the same day, for every salt with a divergence note.
 
 **122. Selective precipitation is posed only as ordering; no temperature dependence.**
 README Open. **Recommendation:** leave until the Y3 roadmap schedules them.
+**Ruled 2026-10-23:** as recommended: left until the Y3 roadmap schedules them.
 
 ---
 
@@ -1116,18 +1196,22 @@ listed so a ruling can undo them, not because anything waits on them.
 **123. `eðalgas` for noble gas.** Swept in `lotukerfid` and `molmassi` (neuter:
 `eðalgös`), with a governed-terms row. `ordabok.md` and the book's glossary headword (ch02/m68695)
 say `eðalgas`; its running prose says `eðallofttegund` 38 to 19. Same shape as `prósentuheimtur`.
+**Confirmed by Siggi 2026-10-23.**
 
 **124. `ferflötungur` for tetrahedral.** Swept in `vsepr-geometry` and
 `intermolecular-forces`, with a row. `ordabok.md` and the VSEPR module's glossary headword
 (ch07/m68742) agree; the corpus overall is 84 `fjór-` to 57 `fer-`.
+**Confirmed by Siggi 2026-10-23.**
 
 **125. `virknihópur` for functional group** in `organic-nomenclature`, replacing the
 non-word `hóptengi`. `ordabok.md` and the glossary agree; the book's prose mostly writes `virkur
 hópur`. A row banning `hóptengi` could follow.
+**Confirmed by Siggi 2026-10-23.**
 
 **126. Level 2 of `dimensional-analysis` now accepts the right factors in either order.**
 B11 in `CURRICULUM_REVIEW.md:154` ("grades correct work as wrong"). Graded as a multiset, with tests;
 easy to revert if you want step order enforced.
+**Confirmed by Siggi 2026-10-23.**
 
 ---
 

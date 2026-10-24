@@ -147,7 +147,9 @@ export function solubility(salt: Salt): Verdict {
  *
  * An anion row that reaches the verdict only through its exception clause —
  * the carbonate row for Na₂CO₃ — is not added when a row settles the compound
- * directly. Whether that counts is a teaching call, not a table lookup.
+ * directly. Siggi's ruling, 2026-10-23 (decisions item 50, option a): that
+ * row's face states the opposite verdict, and the drill's point is that group 1
+ * always wins.
  */
 export function decidingRules(salt: Salt): SolubilityRule[] {
   const cited = solubility(salt);

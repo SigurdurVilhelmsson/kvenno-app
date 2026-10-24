@@ -50,7 +50,7 @@ const COLUMNS = [
   },
   {
     key: 'subscript',
-    label: 'Vísitala',
+    label: 'Lágstafur',
     caption: 'Margfaldaðu upp þangað til allar tölurnar eru heilar. Þetta er skrefið sem klikkar.',
   },
 ] as const;

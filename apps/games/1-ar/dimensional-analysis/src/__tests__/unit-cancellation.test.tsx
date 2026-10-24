@@ -55,7 +55,7 @@ function renderWithChain(index: number, factors: string[]) {
       initialProgress={{ problemsCompleted: index, finalAnswersCorrect: 0, mastered: false }}
     />
   );
-  fireEvent.click(screen.getByRole('button', { name: /Skipta í smella-ham/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Skipta í hnappalista/ }));
   const panel = () => screen.queryByText('Stuðlar notaðir:')?.parentElement;
   for (const factor of factors) {
     const button = screen
@@ -126,24 +126,39 @@ describe('Level 2 draws the correct chain cancelling to its target unit', () => 
 });
 
 describe('the visualiser on its own', () => {
-  it('cancels one copy per pair when asked a pair at a time', () => {
+  // This pressed a "Strika út" button a pair at a time. The button is gone
+  // (decisions item 29 (a)), so the pairs cancel the one way they still can:
+  // on their own, one after another.
+  it('cancels one copy per pair', () => {
     vi.useFakeTimers();
     // mg·mg·g / g·mg: one mg and the g cancel, one mg is left.
     render(
       <UnitCancellationVisualizer
         numeratorUnits={['mg', 'mg', 'g']}
         denominatorUnits={['g', 'mg']}
-        showCancelButton
+        autoAnimate
       />
     );
-    for (let i = 0; i < 2; i++) {
-      fireEvent.click(screen.getByRole('button', { name: /Strika út/ }));
-      act(() => {
-        vi.advanceTimersByTime(1000);
-      });
-    }
-    expect(screen.queryByRole('button', { name: /Strika út/ })).toBeNull();
+    runAnimation();
     expect(finalUnitShown()).toBe('mg');
+  });
+});
+
+describe('Level 2 offers no "Strika út" button — decisions item 29 (a)', () => {
+  // It showed for the 1,5 s the units cancel on their own and then vanished,
+  // so it asked for a step the animation took anyway.
+  it('shows none while a chain cancels, or after', () => {
+    vi.useFakeTimers();
+    const problem = level2Problems[0];
+    renderWithChain(0, problem.correctPath);
+    expect(screen.queryByRole('button', { name: /Strika út/ })).toBeNull();
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(screen.queryByRole('button', { name: /Strika út/ })).toBeNull();
+    runAnimation();
+    expect(screen.queryByRole('button', { name: /Strika út/ })).toBeNull();
+    expect(finalUnitShown()).toBe(problem.targetUnit.replace(/\s/g, ''));
   });
 });
 

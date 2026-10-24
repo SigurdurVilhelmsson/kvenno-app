@@ -73,7 +73,7 @@ const SOURCES: {
     b: ['Na⁺', 'OH⁻'],
     difficulty: 'mid',
     context:
-      'Rauðbrúnt járn(III)hýdroxíð fellur út sem hlaup. Þannig eru járnjónir felldar úr skólpi í hreinsistöðvum.',
+      'Rauðbrúnt járn(III)hýdroxíð fellur út sem hlaup. Hreinsistöðvar bæta járn(III)salti í skólpið: járnhýdroxíðið sem fellur út tekur fosfat með sér.',
   },
   {
     id: 'cuso4-na2s',

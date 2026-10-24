@@ -108,7 +108,8 @@ export const challenges: Challenge[] = [
         id: 'a',
         text: 'Vatn er þyngra',
         correct: false,
-        explanation: 'Vatn er í raun léttara en margir lífrænir leysar.',
+        explanation:
+          'Vatnssameind er í raun léttari en sameindir lífrænna leysa: 18 g/mól á móti 58 g/mól í asetoni.',
       },
       {
         id: 'b',
@@ -216,9 +217,9 @@ export const challenges: Challenge[] = [
   {
     id: 6,
     type: 'comparison',
-    title: 'Edik vs. edikaldehýð',
+    title: 'Ediksýra eða asetaldehýð',
     scenario:
-      'Ediksýra (CH₃COOH, M=60) hefur suðumark 118°C. Edikaldehýð (CH₃CHO, M=44) hefur suðumark 20°C.',
+      'Ediksýra (CH₃COOH, M=60) hefur suðumark 118°C. Asetaldehýð (CH₃CHO, M=44) hefur suðumark 20°C.',
     question: 'Bæði efni eru skautuð. Af hverju er munurinn svona mikill?',
     options: [
       {
@@ -281,7 +282,7 @@ export const challenges: Challenge[] = [
     ],
     hint: 'Hugsaðu um hvernig H-tengi raðast í kristallinum vs. í vökvanum.',
     conceptNote:
-      'Í ískristallnum er hver vatnssameind í föstu mynstri með 4 H-tengi, sem skapar opna „kagala" formgerð. Í vökva er formgerðin breytilegri og þéttari.',
+      'Í ískristallnum er hver vatnssameind í föstu mynstri með 4 H-tengi, sem skapar opna formgerð. Í vökva er formgerðin breytilegri og þéttari.',
   },
   {
     id: 8,

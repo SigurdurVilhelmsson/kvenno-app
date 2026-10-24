@@ -55,6 +55,9 @@ const NEVER: [RegExp, string][] = [
   [/\(heil tölu\)/, '(heila tölu)'],
   // The genitive plural of `lyf` is `lyfja`, as in `lyfjafræðingar`.
   [/skammta lyfa\b/, 'skammta lyfja'],
+  // Decision 44 (a): no glossary entry and no textbook hit. Grams to moles
+  // opens Brown ch. 3, and the ruled word for stoichiometry is this one.
+  [/magn[e]fnafræð/i, 'hlutfallaefnafræði'],
 ];
 
 describe('wording in the game source', () => {

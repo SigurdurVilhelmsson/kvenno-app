@@ -32,9 +32,9 @@ polyatomic ion, no root for six metals, no elided prefix. `data/naming.ts` now d
 vocabulary once (Greek prefixes, element roots and first-element stems such as `brennisteins-`,
 elided oxides like `dekoxíð`, polyatomic ions, Roman numerals) and `segmentName` decomposes a name
 back into it with backtracking. `utils/nameParts.ts` builds the tray: the name's own morphemes plus
-2, 3 or 4 distractors by difficulty, same kind first. Level 3 grades on exact (case-insensitive)
-string equality against `compound.name`, so a name the parts cannot spell is an unanswerable
-question. The pool is 52 of the 59 compounds; `name-builder.test.ts` pins both numbers.
+2, 3 or 4 distractors by difficulty, same kind first. Level 3 grades on case-insensitive string
+equality against `compound.name`, with only a Greek prefix's last vowel before `oxíð` folded away
+(`utils/nameMatch.ts`), so a name the parts cannot spell is an unanswerable question. The pool is 52 of the 59 compounds; `name-builder.test.ts` pins both numbers.
 
 **Exclusion is declared, not inferred.** `excludeFromNameBuilder` sits on the seven compounds that
 are a single indivisible word — the trivial names (H₂O, NH₃, CH₄) and the four diatomic elements.
@@ -81,6 +81,7 @@ src/i18n.ts                     is/en/pl strings for t()
 src/data/compounds.ts           59 compounds (21 easy, 18 medium, 20 hard)
 src/data/naming.ts              the naming morphemes and segmentName
 src/utils/nameParts.ts          Level 3 tray, distractors, pool selection
+src/utils/nameMatch.ts          the prefix-vowel fold Levels 2 and 3 grade with
 src/utils/dropEarlyClicks.ts    drops a tap on fresh feedback (the second half of a double tap)
 src/components/Level1.tsx       rules, warm-up, quiz (hardcoded examples)
 src/components/Level2.tsx       guided practice, supportLadder (hardcoded examples)
@@ -89,7 +90,9 @@ src/__tests__/                  App, data, compound-names, name-builder, name-pa
                                 level2-no-answer-leak, level3-answerable, level-max-score,
                                 level2-blank-answer, level2-prefix-elision, level3-rule-text,
                                 level3-near-miss, icelandic-text, mobile-interaction,
-                                phone-scroll
+                                phone-scroll, level2-icelandic-letters,
+                                level3-prefix-elision, level3-info-leak,
+                                level1-groups-card
 ```
 
 ## Phones: where the page lands and where focus goes (2026-09-24)
@@ -120,6 +123,36 @@ own outside the site header, so focus would otherwise fall to the page.
   a row (`shortOptions`). Level 2: one-row header, the four types 2 × 2, the hint after the buttons,
   and on a phone on its side the field and its buttons on one row, so the formula stays in view.
   Level 3: counters inline, and the spent tray hidden once answered ("Reyna aftur" brings it back).
+
+## Fixed 2026-10-23 — the mobile-pass decisions
+
+- **Level 2 accepted a name typed without its Icelandic letters in silence** (decision 36, option
+  (c)). `foldLetters` still folds `ó` to `o`, `ð` to `d` and so on, so `Kaliumbromid` is right and
+  counts, but where only that fold makes it match the verdict reads `Rétt — en skrifaðu
+  Kalíumbrómíð`: a phone keyboard types every Icelandic letter, and silent acceptance taught the
+  flattened form. Case, spaces and brackets still never count (`level2-icelandic-letters.test.tsx`).
+- **Level 3 accepted only the elided prefix** (decision 37). The tray can offer `tetra` and `oxíð`
+  beside `tetroxíð` (under 1 % of trays for N₂O₄, N₂O₅, Cl₂O₇ and P₄O₁₀), and the textbook
+  (`ch02/m68698`) accepts both forms, but a student who built `Díniturtetraoxíð` was told they were
+  close and shown the `a` in red. `handleCheck` now folds the prefix vowel with Level 2's fold,
+  which moved to `utils/nameMatch.ts` so both levels share it (`level3-prefix-elision.test.tsx`).
+- **Level 3's info line gave answers away** (decision 38, option (a)). `compound.info` printed under
+  the formula before the student built anything, and on 20 of the 59 compounds it stated the charge
+  or the ion being asked for (`Kóbalt +2` over Co(NO₃)₂; `Ammóníum (NH₄⁺) + Klóríð`, the whole
+  answer, over NH₄Cl). It is split, as `lausnir` split its own: `observable`, shown before the
+  answer, and `why`, shown under it once the name is checked. NaOH and Fe₂O₃ keep a part before
+  (`Sterkur basi`, `Ryð`). The four ions Levels 1–2 never teach, for which the line was the only
+  route — ammóníum, fosfat, vetniskarbónat, díkrómat — are on the rules panel's `Fjölatóma jónir`
+  line, and Fe₃O₄ keeps `blanda Fe²⁺ og Fe³⁺` before the answer, as ruled
+  (`level3-info-leak.test.tsx`).
+- **The menu's `Af hverju nafnakerfið?` card** said `Sama nafn, sama efni — óháð tungumáli`, while
+  the game teaches `Natríumklóríð`, not `sodium chloride`. It now reads `Sama kerfi, sama efni — á
+  hvaða tungumáli sem er` (decision 41; `App.test.tsx`).
+- **The warm-up's `Mundu:` card** said metals are groups 1, 2 and 3–12 and non-metals 15–18: hydrogen
+  is in group 1, groups 13–14 were missing (Al, Sn and Pb, all used in Levels 2–3, among them), and
+  15–16 hold metals too. It now says where on the table each sits, `vinstra megin og í miðju (hópar
+  1–12, nema vetni)` and `efst til hægri (hópar 14–18, að hluta)`, under the same labels (decision
+  40, option (b); `level1-groups-card.test.tsx`).
 
 ## Fixed 2026-09-23
 
@@ -157,31 +190,5 @@ own outside the site header, so focus would otherwise fall to the page.
 
 ## Open
 
-- **Level 2 grades with accents stripped.** `normalizeAnswer` folds `ó` to `o`, `ð` to `d` and so on
-  before comparing, so a name typed without Icelandic characters is marked correct. That may be a
-  deliberate keyboard concession; it is not recorded anywhere as one. (Its prefix-vowel fold is a
-  separate matter and is not open: the textbook accepts both forms.)
-- **Level 3 accepts only the elided prefix.** `data/naming.ts` makes `tetroxíð`, `pentoxíð`,
-  `heptoxíð` and `dekoxíð` single parts, and its comment calls choosing them over `tetra` + `oxíð`
-  the point. But the tray can offer `tetra` and `oxíð` as distractors (rarely: under 1 % of trays
-  for the four elided compounds), and the textbook (`ch02/m68698`) accepts both forms, so a student
-  who builds `Díniturtetraoxíð` is told they were close and shown the `a` in red. Level 2 now accepts
-  both; whether Level 3 should is Siggi's call.
-- **The warm-up's `Mundu:` card** says metals are groups 1, 2 and 3–12 and non-metals 15–18. Hydrogen
-  is in group 1, groups 13–14 are missing (Al, Sn and Pb, all used in Levels 2–3, among them), and
-  15–16 hold metals too. Every warm-up element fits the card, so nothing is graded wrong; how much to
-  simplify is a teaching call.
-- **The menu's `Af hverju nafnakerfið?` card** says `Sama nafn, sama efni — óháð tungumáli`, but the
-  names are not language-independent — the game teaches `Natríumklóríð`, not `sodium chloride`. The
-  system is shared; the names are not. A rewording is Siggi's call.
-- **Level 3's info line gives answers away.** `compound.info` prints under the formula before the
-  student builds anything, and on the variable-charge items it states the charge the Roman numeral
-  encodes (`Járn +3, þrjú nítrat` over Fe(NO₃)₃; likewise Fe₂O₃, Cu₂O, Pb(NO₃)₂, SnO₂, Co(NO₃)₂) and on
-  several ionic items it names the ion (`Ammóníum (NH₄⁺) + Klóríð` is the whole answer for NH₄Cl).
-  Hiding it would also remove the only route to Fe₃O₄'s `(II,III)` and to ions Levels 1–2 never
-  teach (ammóníum, fosfat, vetniskarbónat, díkrómat). Siggi's call.
-- **`fjölatóma jón` against `ordabok.md`.** The game says `fjölatóma jón` throughout, as does the
-  textbook's prose (23 to 2), but `ordabok.md` has `polyatomic ion;fjölfrumeinda jón`; two Level 3
-  info lines say a third word, `Sameindajón`. Siggi's call.
 - **The i18n question is undecided platform-wide.** Level 3's teaching text and several Level 2
   strings are hardcoded Icelandic beside a full `i18n.ts`; see CLAUDE.md's deferred-work list.

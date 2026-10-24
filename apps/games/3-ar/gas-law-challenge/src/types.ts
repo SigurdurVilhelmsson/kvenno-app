@@ -176,6 +176,8 @@ export interface QuestionFeedback {
   correctAnswer: number;
   difference: number | null;
   explanation: string;
+  /** Wrong, but within 5 % of the answer: "Næstum rétt". */
+  nearMiss?: boolean;
 }
 
 // Gas constant

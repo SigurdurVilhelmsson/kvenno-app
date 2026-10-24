@@ -504,7 +504,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                   <div className="font-mono">pH = pKₐ + log([A⁻]/[HA])</div>
                 </div>
                 <div>
-                  <span className="font-semibold">Hálfur jafngildispunktur:</span>
+                  <span className="font-semibold">Hálfjafngildispunktur:</span>
                   <div className="font-mono">pH = pKₐ (þegar [HA] = [A⁻])</div>
                 </div>
               </div>

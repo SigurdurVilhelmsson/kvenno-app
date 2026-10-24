@@ -152,7 +152,7 @@ describe('ph-titration level 2 indicator step below lg', () => {
     act(() => vi.advanceTimersByTime(100));
     expect(scrolled).toHaveBeenCalledTimes(1);
     expect(scrolled.mock.calls[0][0]).toMatchObject({ behavior: 'smooth' });
-    expect(document.activeElement?.textContent).toBe('Veldu vísi');
+    expect(document.activeElement?.textContent).toBe('Veldu litvísi');
   });
 
   it('brings the confirm button up when it appears below the screen', () => {
@@ -162,7 +162,7 @@ describe('ph-titration level 2 indicator step below lg', () => {
     scrolled.mockClear();
 
     HTMLElement.prototype.getBoundingClientRect = () => ({ top: 1950, bottom: 2000 }) as DOMRect;
-    fireEvent.click(screen.getByRole('button', { name: /Fenólftaleín/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Fenólftalín/ }));
     act(() => vi.advanceTimersByTime(50));
 
     // The least move that shows the button's foot: 2000 − the window's height.

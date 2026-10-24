@@ -65,7 +65,13 @@ function playCurrentProblem(problem: (typeof COUPLED_PROBLEMS)[number]) {
   // Stage two only opens if the composed equation really is the target.
   expect(screen.queryByText(/Jafnan stemmir/), `${problem.id}: operations rejected`).not.toBeNull();
 
-  const printed = formatScientific(problem.result.constant!.value, 2);
+  enterConstant(problem.result.constant!.value);
+  fireEvent.click(screen.getByText('Athuga'));
+}
+
+/** Type K as the screen prints it, into the two fields. */
+function enterConstant(value: number) {
+  const printed = formatScientific(value, 2);
   const [digits, power] = printed.split(' × 10');
   fireEvent.change(screen.getByLabelText('Tala'), { target: { value: digits } });
   fireEvent.change(screen.getByLabelText('Veldisvísir'), {
@@ -75,7 +81,6 @@ function playCurrentProblem(problem: (typeof COUPLED_PROBLEMS)[number]) {
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c).toString()),
     },
   });
-  fireEvent.click(screen.getByText('Athuga'));
 }
 
 describe('the coupled-equilibria task', () => {
@@ -101,6 +106,26 @@ describe('the coupled-equilibria task', () => {
     fireEvent.click(screen.getByText('Athuga jöfnuna'));
     expect(screen.queryByText(/Jafnan stemmir/)).toBeNull();
     expect(screen.getByText(/er ekki markjafnan enn/)).toBeTruthy();
+  });
+
+  it('offers a way past a wrong equation that still leaves K to compute', () => {
+    // Mobile-pass decision 95, ruled 2026-10-23. Stage two and Beita offered
+    // "Sýna svarið og halda áfram" after a wrong check; stage one did not, so a
+    // student who could not find the operations could only try combinations.
+    // The same button now applies the route and moves on to the constant,
+    // which the student still has to compute.
+    openCoupledTask();
+    fireEvent.click(screen.getByText('Athuga jöfnuna'));
+    fireEvent.click(screen.getByText('Sýna svarið og halda áfram'));
+
+    expect(screen.getByText(/Jafnan stemmir/)).toBeTruthy();
+    expect(screen.getByLabelText('Tala')).toBeTruthy();
+    expect(screen.queryByText('Næsta dæmi'), 'the constant was given away too').toBeNull();
+
+    // The constant the route gives is accepted.
+    enterConstant(COUPLED_PROBLEMS[0].result.constant!.value);
+    fireEvent.click(screen.getByText('Athuga'));
+    expect(screen.getByText('Næsta dæmi')).toBeTruthy();
   });
 
   it('shows the composed equation changing as the student works', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { WEAK_ACIDS } from '../data/acids';
+import { ANSWERABLE_PAIRS, WEAK_ACIDS } from '../data/acids';
 import {
   APPLY_PROBLEMS,
   PRACTICE_PROBLEMS,
@@ -10,7 +10,7 @@ import {
   exploreSeries,
   gradeApply,
 } from '../data/problems';
-import { referencePH } from '../engine/grade';
+import { percentDissociation, referencePH } from '../engine/grade';
 import { kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
 
 describe('the practice set', () => {
@@ -27,6 +27,38 @@ describe('the practice set', () => {
   it('spans the range rather than clustering at the comfortable end', () => {
     const pcts = PRACTICE_PROBLEMS.map((p) => p.percentDissociated);
     expect(Math.max(...pcts) - Math.min(...pcts)).toBeGreaterThan(1);
+  });
+
+  it('poses one problem per acid, every acid with a pair inside the rule', () => {
+    // Decision 106 (b), 2026-10-23. "Five evenly spaced" through the sorted pool
+    // gave three ediksýra problems out of five.
+    const acids = PRACTICE_PROBLEMS.map((p) => p.acid.id);
+    expect(new Set(acids).size, acids.join(', ')).toBe(acids.length);
+    const eligible = new Set(
+      ANSWERABLE_PAIRS.filter(
+        ({ acid, concentration }) => percentDissociation(acid.ka, concentration) < 5
+      ).map(({ acid }) => acid.id)
+    );
+    expect([...acids].sort()).toEqual([...eligible].sort());
+  });
+
+  it('runs from the most comfortable margin to the tightest pair in the pool', () => {
+    // Decision 106 (a). The comment promised the last problem would be nearly at
+    // the line; it was at 2,65 %. Now it is the tightest valid pair, maurasýra at
+    // 0,100 M (4,15 %). Ka/C decides α, so two other pairs share that ratio and
+    // tie it: compared to a relative 1e-9, not exactly.
+    const pcts = PRACTICE_PROBLEMS.map((p) => p.percentDissociated);
+    expect([...pcts].sort((a, b) => a - b)).toEqual(pcts);
+    const last = PRACTICE_PROBLEMS[PRACTICE_PROBLEMS.length - 1];
+    expect(last.acid.id).toBe('maurasyra');
+    expect(last.concentration).toBe(0.1);
+    const tightest = Math.max(
+      ...ANSWERABLE_PAIRS.map(({ acid, concentration }) =>
+        percentDissociation(acid.ka, concentration)
+      ).filter((pct) => pct < 5)
+    );
+    expect(Math.abs(last.percentDissociated - tightest) / tightest).toBeLessThan(1e-9);
+    expect(last.percentDissociated).toBeGreaterThan(4);
   });
 
   it('quotes the pH the engine quotes, for every problem', () => {
@@ -122,6 +154,19 @@ describe('the apply set', () => {
       expect(gradeApply(p, p.answer / 2), `${p.id} accepts half`).toBe(false);
       expect(gradeApply(p, Number.NaN), `${p.id} accepts NaN`).toBe(false);
     }
+  });
+
+  it('divides the x it prints when it states the klofnunarhlutfall', () => {
+    // Decision 105 (a). The sentence printed 1,3 × 10⁻³ M for x and then the
+    // exact root's 1,33 %, where x/C gives 1,34 %. It is the student's own check,
+    // so it divides the approximate x; the graded answer stays the exact α.
+    const p = APPLY_PROBLEMS.find((q) => q.id === 'apply-klofnun')!;
+    const x = solveWeakAcid(p.acid.ka, p.concentration).hApprox;
+    const shown = ((x / p.concentration) * 100).toFixed(2).replace('.', ',');
+    expect(p.explanation).toContain(`x/C = ${shown} %`);
+    expect(shown).not.toBe(p.answer.toFixed(2).replace('.', ','));
+    expect(p.answer).toBeCloseTo(percentDissociation(p.acid.ka, p.concentration), 12);
+    expect(gradeApply(p, Number(shown.replace(',', '.')))).toBe(true);
   });
 
   it('names a misconception on every rule-breaking problem', () => {

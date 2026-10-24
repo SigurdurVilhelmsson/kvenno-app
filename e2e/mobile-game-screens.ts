@@ -223,7 +223,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 2 — endurgjöf (smella-hamur)',
+      name: 'Stig 2 — endurgjöf (hnappalisti)',
       steps: [
         {
           click: 'Beiting',
@@ -232,7 +232,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Byrja æfingar',
         },
         {
-          click: 'Skipta í smella-ham',
+          click: 'Skipta í hnappalista',
         },
         {
           css: 'button:has(div.text-blue-600)',
@@ -1518,7 +1518,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Æfa — Vísitala rétt, reynsluformúla sýnd',
+      name: 'Æfa — Lágstafur réttur, reynsluformúla sýnd',
       steps: [
         {
           clickRole: ['button', 'Æfa'],
@@ -1554,10 +1554,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Næsta súla'],
         },
         {
-          fill: ['input[aria-label="Vísitala fyrir H"]', '1'],
+          fill: ['input[aria-label="Lágstafur fyrir H"]', '1'],
         },
         {
-          fill: ['input[aria-label="Vísitala fyrir O"]', '1'],
+          fill: ['input[aria-label="Lágstafur fyrir O"]', '1'],
         },
         {
           clickRole: ['button', 'Athuga'],
@@ -2174,11 +2174,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       loop: {
         prompt: { css: '#takmarkandi-l1-equation' },
         // Tapping a reactant is the answer: there is no separate Athuga.
-        action: { css: 'button:has-text("sameindir")' },
+        action: { css: 'button:has-text("eindir")' },
         answer: [],
         verdict: { css: '.feedback-panel' },
         next: { role: 'button', name: 'Næsta spurning' },
-        together: [[{ css: '#takmarkandi-l1-equation' }, { css: 'button:has-text("sameindir")' }]],
+        together: [[{ css: '#takmarkandi-l1-equation' }, { css: 'button:has-text("eindir")' }]],
         viewports: ['android', 'iphone', 'se', 'landscape'],
       },
     },
@@ -2192,7 +2192,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Byrja æfingar',
         },
         {
-          css: 'button:has-text("sameindir")',
+          css: 'button:has-text("eindir")',
         },
         {
           wait: 400,
@@ -2577,9 +2577,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         // lausn" answers only a solution that is right.
         answer: [{ clickRole: ['button', '+10'] }],
         verdict: { css: '.feedback-panel' },
-        // No Næsta: after a right answer the next challenge follows by itself
-        // (design §7.7, kept), and this disabled button says so meanwhile.
-        next: { role: 'button', name: 'Sæki næsta verkefni' },
+        // The concept panel stays until Næsta (design §7.7, settled 2026-10-23: it used to
+        // give way to the next challenge after 2,5 s by itself).
+        next: { role: 'button', name: 'Næsta verkefni' },
         together: [
           [
             { css: 'svg[aria-label^="Bikarglas"]' },
@@ -4917,7 +4917,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         prompt: { css: '[data-item-start]' },
         // Pinned to the bottom of a portrait phone (PIN_USES in mobile-vertical.spec.ts).
         action: { role: 'button', name: 'Athuga svar' },
-        // A wrong name, prop- + -en for etan: the longest feedback.
+        // A wrong name, próp- + -en for etan: the longest feedback.
         answer: [
           { css: '[data-drop-pool] [data-item-id="prefix-prop"]' },
           { css: '[data-zone-id="zone-prefix"]' },
@@ -5103,7 +5103,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — kennsla',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
       ],
     },
@@ -5111,7 +5111,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — leikur',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5131,7 +5131,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — endurgjöf',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5145,7 +5145,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — hálfhvarf stillt',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5174,7 +5174,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — galvaníhlað í gangi',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Greina hvörf'],
+          clickRole: ['button', 'Stig 2: Greina redox-hvörf'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5194,7 +5194,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — kennsla',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
       ],
     },
@@ -5202,7 +5202,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — leikur',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5227,7 +5227,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — endurgjöf (rangt svar)',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -5247,7 +5247,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — skref 4 (margfaldarar)',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+          clickRole: ['button', 'Stig 3: Stilla redox-jöfnur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -7549,8 +7549,8 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
-      // The hardest difficulty adds the 'Áskorun' box, the tallest prompt the game has. At the
-      // SE that costs a third flick to "Athuga svar", the SE residual §5 accepts, so the SE is
+      // The hardest difficulty adds the 'Til umhugsunar' box, the tallest prompt the game has. At
+      // the SE that costs a third flick to "Athuga svar", the SE residual §5 accepts, so the SE is
       // left to the default-difficulty loops above.
       loop: {
         prompt: { css: '[data-item-start]' },

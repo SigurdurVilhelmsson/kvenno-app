@@ -77,7 +77,6 @@ interface UnitCancellationVisualizerProps {
   numeratorUnits: string[];
   denominatorUnits: string[];
   onCancel?: (unit: string) => void;
-  showCancelButton?: boolean;
   /** Enable enhanced animations with strikethrough and connecting lines */
   enhancedAnimation?: boolean;
   /** Start cancelling the matching pairs on their own, one after another */
@@ -93,7 +92,6 @@ export function UnitCancellationVisualizer({
   numeratorUnits,
   denominatorUnits,
   onCancel,
-  showCancelButton = false,
   enhancedAnimation = true,
   autoAnimate = false,
 }: UnitCancellationVisualizerProps) {
@@ -354,16 +352,9 @@ export function UnitCancellationVisualizer({
         </div>
       )}
 
-      {/* Cancel button */}
-      {showCancelButton && hasMatchingUnits && (
-        <button
-          onClick={() => handleCancel(pendingPairs[0])}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-          disabled={cancellingPair !== null}
-        >
-          Strika út {pairs[pendingPairs[0]].unit}
-        </button>
-      )}
+      {/* No "Strika út" button: it showed for the 1,5 s the parent's flag was
+          up and vanished, while the animation cancelled every pair anyway
+          (decisions item 29 (a)). */}
 
       {/* Result preview */}
       {!hasMatchingUnits && numeratorUnits.length > 0 && (

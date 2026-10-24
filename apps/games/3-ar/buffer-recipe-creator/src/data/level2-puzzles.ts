@@ -142,10 +142,10 @@ const SOURCES: Level2PuzzleSource[] = [
   {
     id: 3,
     problemId: 17, // Ammonia pH 9.50
-    taskIs: 'Búðu til ammóníustuðpúða við pH 9,50 úr ammóníumklóríði og ammóníaki.',
+    taskIs: 'Búðu til ammóníumstuðpúða við pH 9,50 úr ammóníumklóríði og ammóníaki.',
     ratioTolerance: 0.1,
     massTolerance: 0.05,
-    topicIs: (p) => `Ammóníustuðpúði virkar við hátt pH með pKa = ${fmt(p.pKa, 2)}.`,
+    topicIs: (p) => `Ammóníumstuðpúði virkar við hátt pH með pKa = ${fmt(p.pKa, 2)}.`,
     noteIs:
       'Athugaðu að ammóníak (NH₃) hefur mjög lágan mólmassa (17 g/mól) svo massinn er lítill.',
   },

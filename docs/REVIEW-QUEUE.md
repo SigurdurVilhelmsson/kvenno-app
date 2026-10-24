@@ -98,36 +98,46 @@ Nothing in CI can do these. The design's risks section, §7 of
 ### C1. Vertical scrolling: confirm or change (PR #66)
 
 Detail: §7 and the Outcome section of `docs/plans/2026-09-23-vertical-scroll-design.md`. Each item
-shipped with the design's "planned" option.
+shipped with the design's "planned" option. **Settled 2026-10-23 on Claude's recommendation**
+(Siggi: "continue, using your recommendations and best judgment"; PR #112): each planned option is
+kept, except 7, which is changed, and 8, which decision 1 had already settled. Each is reversible.
 
-- [ ] 1. equilibrium-shifter feedback: keep the scroll that shipped, or pilot paging (Svar → Q vs K
-      → Tölur → Rök)?
-- [ ] 2. Einingagreining Stig 2 on phones:
+- [x] 1. equilibrium-shifter feedback: keep the scroll that shipped, or pilot paging (Svar → Q vs K
+      → Tölur → Rök)? Kept: paging invites tapping through the Q vs K and Tölur panes.
+- [x] 2. Einingagreining Stig 2 on phones:
   - (a) hide "Stuðlar notaðir" in drag mode?
-  - (b) hide "Strika út"?
+  - (b) hide "Strika út"? Moot since 2026-10-23: decision 29 (a) removed the button.
   - (c) make click mode the default on touch?
 
-  None of these is done.
+  None of these is done, and none is wanted: drag stays the default, and the chain stays shown.
 
-- [ ] 3. lotukerfid: keep the empty period-7 row as a 12 px placeholder, or drop it?
-- [ ] 4. iPhone SE (375×548): accept the one or two residual scrolls, or use pinned bars there too?
-- [ ] 5. lewis Stig 2 for SF₆/PCl₅/BF₃: accept one scroll, or change the mechanic to tap-an-atom?
-- [ ] 6. rafeindabygging Stig 2: should desktop also use the phone's side-by-side ↑↓ box notation?
-- [ ] 7. lausnir Stig 1: the 2.5 s auto-advance after a correct answer is a timer in a learning phase.
-      Replace it with a button?
-- [ ] 8. Score, streak and Árangur chips in gas-law and buffer: now smaller on phones. Remove them
-      everywhere? This overlaps C3 item 1.
-- [ ] 9. No focus ring on programmatic focus targets (feedback, headings) at desktop width. Confirm?
+- [x] 3. lotukerfid: keep the empty period-7 row as a 12 px placeholder, or drop it? Kept.
+- [x] 4. iPhone SE (375×548): accept the one or two residual scrolls, or use pinned bars there too?
+      Accepted; the SE is the stretch target.
+- [x] 5. lewis Stig 2 for SF₆/PCl₅/BF₃: accept one scroll, or change the mechanic to tap-an-atom?
+      Accepted; an interaction change for one scroll on three molecules is not worth it.
+- [x] 6. rafeindabygging Stig 2: should desktop also use the phone's side-by-side ↑↓ box notation?
+      No; desktop keeps its layout, as the pass promised.
+- [x] 7. lausnir Stig 1: the 2.5 s auto-advance after a correct answer is a timer in a learning phase.
+      Replace it with a button? Yes: the concept panel stays until `Næsta verkefni` (`Ljúka stigi`
+      on the last task), guarded against a double tap (`phone-scroll.test.tsx`).
+- [x] 8. Score, streak and Árangur chips in gas-law and buffer: now smaller on phones. Remove them
+      everywhere? This overlaps C3 item 1. Settled by item 1 (PR #85): gas-law shows score and
+      streak in Keppnishamur only, and buffer's tiles count progress, not points.
+- [x] 9. No focus ring on programmatic focus targets (feedback, headings) at desktop width. Confirm?
+      Confirmed.
 
 ### C2. Desktop behaviour changes: confirm (PR #66)
 
-Detail: "Deliberate desktop behaviour changes" in the design's Outcome section.
+Detail: "Deliberate desktop behaviour changes" in the design's Outcome section. **All four
+confirmed 2026-10-23 on Claude's recommendation** (PR #112): each is guarded by tests and makes
+desktop safer or more consistent, not different in look.
 
-- [ ] Focus moves at every width to the feedback, the new heading or an opened hint, with no ring.
-- [ ] Enter in an answer field commits, or moves to the next field, in the typed-answer games.
-- [ ] A Næsta, Reyna aftur, Áfram or Ljúka pressed within 400 ms of appearing is ignored, at every
+- [x] Focus moves at every width to the feedback, the new heading or an opened hint, with no ring.
+- [x] Enter in an answer field commits, or moves to the next field, in the typed-answer games.
+- [x] A Næsta, Reyna aftur, Áfram or Ljúka pressed within 400 ms of appearing is ignored, at every
       width.
-- [ ] dimensional-analysis can scroll up to 56 px more on desktop, and the shared helpers jump
+- [x] dimensional-analysis can scroll up to 56 px more on desktop, and the shared helpers jump
       instantly under reduced motion.
 
 ### C3. Content, teaching and terminology rulings: items 1–122 (PR #65)
@@ -136,74 +146,116 @@ Detail: `docs/plans/2026-09-23-mobile-pass-decisions.md`. Each item gives the de
 lives, the options and a recommendation. Reply by number, e.g. "4 (b), 17 as recommended, 30
 leave".
 
-- [ ] 1–11 Platform-wide. All eleven are now applied. Items 1, 2 and 9 were applied
-      2026-10-03 in every game they name (PR #85); items 3–8, 10 and 11 earlier. Still open:
-      item 5's feedback wording is a draft, and its trailing-text strictness was not ruled. Item
-      1's judgement calls are listed below, under "Item 1 as applied".
-- [ ] 12–21 Terminology that spans games. Item 20 done 2026-10-01 (PRs #72, #73); items 14,
-      15, 16, 17, 18, 19 and 21 done 2026-10-02; item 12 done 2026-10-03 (PR #85). Item 13
-      left.
-- [ ] 22–34 dimensional-analysis. Items 22, 23 and 33 done 2026-10-02.
-- [x] 35 lotukerfid — done 2026-10-02
-- [ ] 36–41 nafnakerfid. Item 39 done 2026-10-02.
-- [ ] 42–45 molmassi
-- [ ] 46–47 reynsluformulur. Item 46 done 2026-10-02.
-- [ ] 48–49 stilla-efnajofnur. Item 48 done 2026-10-02.
-- [ ] 50–53 utfellingarhvorf
-- [ ] 54–57 takmarkandi. Item 54 done 2026-10-03 with item 1 (PR #85).
-- [ ] 58–60 lausnir. Item 58 done 2026-10-03 with item 1 (PR #85). Item 60 done 2026-10-03: a wrong `Athuga lausn` says whether the
-      concentration is too low or too high and points at the readout's arrows. The wording is a
-      Claude draft, yours to change (`Level1.tsx`, the `missShown` block).
-- [ ] 61–62 einingakedjan
-- [ ] 63–64 rafeindabygging. Items 63 and 64 done 2026-10-01.
-- [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
-- [ ] 67–71 vsepr-geometry. All five applied 2026-10-01; confirm 70's angle sets.
-- [ ] 72–74 intermolecular-forces. Items 72 and 74 done 2026-10-01; 73 left.
-- [ ] 75–79 hess-law. Items 75, 76, 77 and 79 done 2026-10-01; 78 left.
-- [x] 80–82 kinetics. Item 82 done 2026-10-01; item 81's `stig efnahvarfs` done 2026-10-03
-      with item 1 (PR #85). Item 80 was applied 2026-10-01.
-- [ ] 83–88 redox-reactions. Items 83, 85, 86, 87 and 88 done 2026-10-01; 84 left.
-- [ ] 89–92 organic-nomenclature. Items 90, 91 and 92 done 2026-10-01; 89 left.
-- [ ] 93–94 gas-law-challenge
-- [ ] 95–100 jafnvaegisfasti
-- [ ] 101–104 equilibrium-shifter. 101 is the Keppnishamur unlock gate, which is live and needs a
-      ruling.
-- [ ] 105–108 syrufastinn
-- [ ] 109–111 thermodynamics-predictor. 109: the live ΔG° panel shows the answer while the
-      question is open.
-- [ ] 112–116 ph-titration
-- [ ] 117–119 buffer-recipe-creator
-- [ ] 120–122 leysnijafnvaegi
+- [x] 1–11 Platform-wide. All eleven are now applied. Items 1, 2 and 9 were applied
+      2026-10-03 in every game they name (PR #85); items 3–8, 10 and 11 earlier. Item 1's
+      judgement calls, below under "Item 1 as applied", were ruled 2026-10-23. Item 5's last two
+      parts were settled on Claude's recommendation 2026-10-23 (PR #112): the drafted note
+      stands, and trailing text that carries a number on (`8,3 × 10²`) is unreadable, not its
+      first part; a unit still reads.
 
-#### Item 1 as applied (2026-10-03, PR #85): confirm or change
+**2026-10-23: every item with a clear recommendation was applied as recommended** (Siggi:
+"apply all your recommendations"), each marked `Ruled 2026-10-23` in the decisions doc with what
+was done. The last three, ruled the same day:
+
+- [x] 51 utfellingarhvorf: the FeCl₃ coagulant sentence. Siggi took the draft, 2026-10-23 (PR #112).
+- [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted.
+- [x] 103 equilibrium-shifter: the systems with no constant. Siggi: source them from `m68869`,
+      2026-10-23 (PR #112). It covers the two complex ions; eight remain with no source.
+
+Done: 12–122. Siggi ruled 27 (a), 32 (b), 40 (b),
+42 (c), 51, 57 (a), 61 (a), 73, 97 (a), 103 and 110's last name on 2026-10-23, applied the same day. Items 45, 50, 52, 53, 100 and 122 were "keep" or "leave", so nothing changed.
+
+#### Drafted wording from 2026-10-23: accepted
+
+The recommendations did not give these words; the agents applying them wrote them. Each file
+says where. Siggi accepted all of it as written, 2026-10-23 (PR #112).
+
+- [x] dimensional-analysis Level 3 summary (31), mastered and not:
+      `Stigi lokið: {n} af {m} rétt. Þú hefur náð tökum á stiginu.` /
+      `… Til að ná tökum á stiginu þarf rétt svar og útskýringu í flestum áskorunum.`
+- [x] nafnakerfid: Level 2 `Rétt — en skrifaðu {nafn}` (36); the rules panel's added line
+      `Einnig ammóníum (NH₄⁺), fosfat (PO₄³⁻), vetniskarbónat (HCO₃⁻) og díkrómat (Cr₂O₇²⁻).` (38).
+- [x] reynsluformulur (13): the column `Lágstafur`, `Ekki alveg — Lágstafasúlan`, and the hint
+      `Lágstafirnir eru hlutföllin sjálf, námunduð að næstu heilu tölu.`;
+      stilla-efnajofnur:
+      `Lágstöfunum (litlu tölunum) má aldrei breyta: þeir segja hvaða efni þetta er.`
+- [x] takmarkandi Stig 3 (56): natriumklorid's new context and the two misconception sentences
+      (`yieldProblems.ts`, `Level3.tsx` `wrongPickMisconception`).
+- [x] intermolecular-forces challenge 3 (73):
+      `Vatnssameind er í raun léttari en sameindir lífrænna leysa: 18 g/mól á móti 58 g/mól í asetoni.`
+- [x] dimensional-analysis Stig 0, rule 4 (32): the rule's title
+      `Núll aftast telja ef þau standa á eftir kommu`, its body, the two examples, the c4/c5
+      misconceptions, the r5 note and the added sentence
+      `Komma aftast, án tölustafa á eftir, breytir engu (regla 4).`
+      (`data/sigfig-items.ts`, `Level0SigFigs.tsx`).
+- [x] einingakedjan (61): the ten repair explanations in `engine/chain.ts` `correctionPrompt`,
+      e.g. `Rétt. Síðasta hlutfallið leiddi þig frá markinu. …`.
+- [x] gas-law (93): `Rétta svarið var sýnt áður en þú reyndir aftur, svo svarið telst ekki með.`
+- [x] jafnvaegisfasti: `Sýna svarið og halda áfram` (95), and the new problem's context (96),
+      `Tilraun 2 úr kennslubókinni. Q er langt yfir K, svo hvarfið gengur afturábak: …`.
+- [x] equilibrium-shifter (104): `Fyrsta klofnunarþrep fosfórsýru` (id 27) and id 22's
+      description `Djúpblá kopar-ammóníakflókajón, dæmi um tenglaskipti.`
+- [x] thermodynamics-predictor (111): `Til umhugsunar (ekki metið):` and the eight reworded
+      prompts (`data/problems.ts`, ids 23–30); (109) `Í keppni er hitastigið fast.`
+- [x] ph-titration (112–114): the question-6 misconception note, the Level 2 explanations naming
+      the accepted indicators, and two indicator descriptions (`indicators.ts`).
+- [x] buffer-recipe-creator (119): the caption
+      `Eftir að {n} mól af sterkri sýru er bætt við {V} L`.
+- [x] leysnijafnvaegi (120): the two `Algeng villa:` sentences for √Ksp and the forgotten 4.
+
+#### Found while applying them
+
+- [x] **syrufastinn Æfa now has seven problems, not five** (106 (b), one per acid read
+      literally). Siggi: keep seven, 2026-10-23.
+- [x] **ph-titration grades indicators against the equivalence pH as printed** (113): unrounded,
+      HF's 7,97 fits no indicator, so HF now accepts þýmólblátt only. Siggi: only þýmólblátt
+      counts, 2026-10-23.
+- [x] **`ordabok.md` says `indicator;litvísir`**, while 116 kept `vísir`. Siggi: `litvísir`,
+      2026-10-23; swept in `ph-titration`, with a row in its `icelandic-text.test.ts`.
+- [x] **Q reads neuter in places** (`Q er minna`) in jafnvaegisfasti. Siggi: neuter for both K
+      and Q, 2026-10-23 (99); the masculine K applied earlier that day is reverted, held by
+      `k-gender.test.ts`.
+- [ ] **molmassi Stig 3: NH₃ and O₂ still both come to 2 mól** (43 named three problems).
+
+#### Item 1 as applied (2026-10-03, PR #85): ruled 2026-10-23
 
 Applying item 1 in seventeen games needed calls the ruling did not make. Each is reversible.
+Siggi, 2026-10-23: accept 1, 2, 4, 5, 6 and 8 as applied; 3 and 7 as recommended (PR #112).
 
-- [ ] **Levels that cannot end wrong report completion, not a count** (as item 23 did):
+- [x] **Levels that cannot end wrong report completion, not a count** (as item 23 did):
       `lausnir` Stig 1 (`Þú kláraðir öll 6 verkefnin`) and all three `buffer-recipe-creator`
       levels (`✓ Lokið`). Buffer's Stig 2 and 3 steps can be answered wrong before the student
       moves on, but a retried right answer counts, so a count would always be full.
-- [ ] **An answer the game had already printed does not count after a retry:** `redox-reactions`
+- [x] **An answer the game had already printed does not count after a retry:** `redox-reactions`
       Stig 1, `nafnakerfid` Stig 3, `takmarkandi` Stig 3 (item 54), `organic-nomenclature` Stig 2,
       `hess-law` Stig 1, `ph-titration` Stig 2. The other way out is to hide the answer while a
       retry is on offer, which would let retries count.
-- [ ] **Hints that state the answer still count** (item 2 says hints never change a count):
+- [x] **Hints that state the answer still count** (item 2 says hints never change a count):
       VSEPR Stig 2's second tier (`horn nálægt X`), gas-law's last practice hint,
-      equilibrium-shifter's fourth tier. Count them as a revealed answer instead?
-- [ ] **`redox-reactions` Stig 2 content change:** the diagram labelled `Cl afoxast` from the first
+      equilibrium-shifter's fourth tier. Count them as a revealed answer instead? — 2026-10-23:
+      yes. A right answer after such a hint is not counted, and the feedback says
+      `Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.` (VSEPR, whose verdict is
+      one line, prefixes `Rétt!`). In equilibrium-shifter a wrong answer after it drops out of
+      the count too, as an answer the game had shown always has there.
+- [x] **Follow-up: gas-law's Keppnishamur hints** gave the answer for full points (call 3 covers
+      practice only). — 2026-10-23, Siggi: "use your recommendations": Keppnishamur offers every
+      hint but the last, as it offers no worked solution; no points penalty
+      (`last-hint-reveals-answer.test.tsx`).
+- [x] **`redox-reactions` Stig 2 content change:** the diagram labelled `Cl afoxast` from the first
       answer on, so `Hvað afoxast?` was asked under its own answer. The labels now appear after
       the second answer.
-- [ ] **Practice became rounds** in `gas-law-challenge` (13, 6, 4 questions on Stig 1–3) and
+- [x] **Practice became rounds** in `gas-law-challenge` (13, 6, 4 questions on Stig 1–3) and
       `thermodynamics-predictor` (10, 12, 8 on Auðvelt–Erfitt), so there is an end to report
       `N af M rétt` at; the best round is kept, and a round left early saves nothing.
       Keppnishamur keeps its points and now starts every run at 0.
-- [ ] **What is counted:** VSEPR Stig 2 counts its three graded steps per molecule (30), not the
+- [x] **What is counted:** VSEPR Stig 2 counts its three graded steps per molecule (30), not the
       written explanation, which is checked only for length; `organic-nomenclature` Stig 2 keeps
       its two modes' best as one right/total pair.
-- [ ] **Einingagreining Stig 2 and 3 end without `N af M rétt`,** because their mastery gate
+- [x] **Einingagreining Stig 2 and 3 end without `N af M rétt`,** because their mastery gate
       (items 30 and 31) could contradict a count. `molmassi` Stig 2 keeps its 6/10 gate (item 42
-      is unruled).
-- [ ] **Wording to confirm:** `Stigi 3 lokið`, `Þú kláraðir öll 6 verkefnin` (lausnir);
+      is unruled). — 2026-10-23: out of date. Item 31 gave Stig 3 a summary line with the count,
+      and Siggi ruled Stig 2 gets the same; item 42 is ruled (c).
+- [x] **Wording to confirm:** `Stigi 3 lokið`, `Þú kláraðir öll 6 verkefnin` (lausnir);
       `N af 15 skrefum rétt` (takmarkandi); `Stig í [A]:` (kinetics' rate-law rows; questions use
       the book's `stig með tilliti til A`); `Met á Stigi N`, `Keppnismet`, `Æfingu lokið`,
       `Æfa stigið aftur`, `Lærdómshamur, síðasta lota` (gas-law, thermodynamics,
@@ -214,10 +266,11 @@ Applying item 1 in seventeen games needed calls the ruling did not make. Each is
 
 Same document, items 123–126. Each is reversible.
 
-- [ ] 123 `eðalgas` for noble gas
-- [ ] 124 `ferflötungur` for tetrahedral
-- [ ] 125 `virknihópur` for functional group
-- [ ] 126 Einingagreining Stig 2 accepts the right factors in either order
+- [x] 123 `eðalgas` for noble gas — confirmed by Siggi 2026-10-23
+- [x] 124 `ferflötungur` for tetrahedral — confirmed by Siggi 2026-10-23
+- [x] 125 `virknihópur` for functional group — confirmed by Siggi 2026-10-23
+- [x] 126 Einingagreining Stig 2 accepts the right factors in either order — confirmed by Siggi
+      2026-10-23
 
 ### C5. Other open rulings recorded in `CLAUDE.md` (older than these PRs)
 
@@ -226,14 +279,21 @@ Same document, items 123–126. Each is reversible.
       before any export goes to a colleague.
 - [x] **molmassi names HCl `Saltsýra`** (a solution) while quoting the compound's molar mass. See
       also C3 item 14. — 2026-10-02: now `Vetnisklóríð`, a gas, and in the molar-volume pool.
-- [ ] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
-jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken.
-- [ ] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
-      C4 items 123 and 124.
+- [x] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
+      jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken. —
+      2026-10-23, kept on Claude's recommendation (PR #112): the book's running prose writes them
+      solid (23 to 8 for `nettójónajafna`), and `ordabok.md` already does.
+- [x] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
+      C4 items 123 and 124, confirmed by Siggi 2026-10-23.
 - [x] **The water-gas reaction's name** (`Vatnsgashvarfið`). The corpus cannot settle it. Same as C3
       item 19. — 2026-10-02: the compound, confirmed; a `governed-terms` row bans the split.
-- [ ] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
-      Icelandic book's complex-ion constants (`m68869`), which is a new source.
+- [x] **equilibrium-shifter's ten systems with no sourced constant.** Sourcing them would need the
+      Icelandic book's complex-ion constants (`m68869`), which is a new source. — 2026-10-23
+      (PR #112): Siggi said yes; it sources the two complex ions. Eight remain, with no source.
+- [x] **equilibrium-shifter's aqueous ΔH.** `thermo.ts` transcribed no dissolved ions, though the
+      book's `m68865` lists them. — 2026-10-23 (PR #112): Siggi said transcribe them; all 46
+      readable (aq) rows are in. They move ids 7 and 10 by under half a kJ, no sign. The book has
+      no row for the weak acids, ammonia or the complexes, so the rest stay unsourced.
 - [x] **3D atom labels** fetch a font from `cdn.jsdelivr.net`. On a network that blocks it, the 3D
       view never finishes loading. Fixing it means bundling a font. — 2026-10-01, PR #71. Worse than
       recorded: the CSP in `server/nginx-site.conf` refuses both that fetch and troika's worker, so
