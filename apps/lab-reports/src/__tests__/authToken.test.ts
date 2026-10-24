@@ -1,5 +1,9 @@
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { authHeaders, NOT_SIGNED_IN, SESSION_EXPIRED } from '../utils/authToken';
+
+// vi.mock and vi.hoisted run before the imports above, whatever their place in the file.
 const msal = vi.hoisted(() => ({
   getActiveAccount: vi.fn(),
   getAllAccounts: vi.fn(),
@@ -18,10 +22,6 @@ vi.mock('@azure/msal-browser', () => ({
     }
   },
 }));
-
-import { InteractionRequiredAuthError } from '@azure/msal-browser';
-
-import { authHeaders, NOT_SIGNED_IN, SESSION_EXPIRED } from '../utils/authToken';
 
 const account = { homeAccountId: 'a' };
 const inSeconds = (s: number) => Math.floor(Date.now() / 1000) + s;

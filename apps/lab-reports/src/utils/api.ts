@@ -1,3 +1,5 @@
+import { authHeaders } from './authToken';
+
 import {
   buildTeacherSystemPrompt,
   buildStudentSystemPrompt,
@@ -13,8 +15,6 @@ import {
   Analysis2Result,
   ExperimentConfig2,
 } from '@/types';
-
-import { authHeaders } from './authToken';
 
 const API_TIMEOUT = 90000; // 90 seconds
 
