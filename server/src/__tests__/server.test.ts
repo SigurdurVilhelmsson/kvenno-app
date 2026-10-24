@@ -134,7 +134,18 @@ describe('POST /api/analyze-2ar -- input validation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Input validation -- GET /api/islenskubraut/pdf
+// The teaching-card PDF route is gone: the build renders every card to a static
+// file under /islenskubraut/spjold/ (REVIEW-QUEUE D3, removed 2026-10-24)
+// ---------------------------------------------------------------------------
+describe('GET /api/islenskubraut/pdf', () => {
+  it('no longer exists', async () => {
+    const res = await request(app).get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1');
+
+    expect(res.status).toBe(404);
+    expect(res.headers['content-type']).not.toMatch(/application\/pdf/);
+  });
+});
+
 // ---------------------------------------------------------------------------
 describe('GET /api/islenskubraut/pdf -- input validation', () => {
   it('returns 400 when query params are missing', async () => {
@@ -280,17 +291,14 @@ describe('Security: CORS no-origin rejection in production', () => {
     expect(res.status).toBe(500);
   });
 
-  // Browsers send no Origin on a same-origin GET, which is exactly what the
-  // Íslenskubraut download button makes. Refusing it returned a 500 for every card
-  // on kvenno.app; the other PDF tests set an Origin a browser never sends here,
-  // which is how that went unnoticed.
+  // Browsers send no Origin on a same-origin GET. Refusing one returned a 500 for
+  // every teaching-card download on kvenno.app while cards came from this server.
   it('allows a same-origin GET without Origin header when NODE_ENV=production', async () => {
     process.env.NODE_ENV = 'production';
 
-    const res = await request(app).get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1');
+    const res = await request(app).get('/health');
 
     expect(res.status).toBe(200);
-    expect(res.headers['content-type']).toBe('application/pdf');
   });
 
   it('still refuses a GET from a foreign Origin when NODE_ENV=production', async () => {
@@ -680,47 +688,6 @@ describe('POST /api/process-document -- mock tests', () => {
     } else {
       expect(res.status).toBe(400);
       expect(res.body.error).toMatch(/\.docx/);
-    }
-  });
-});
-
-// ---------------------------------------------------------------------------
-// GET /api/islenskubraut/pdf -- extended tests
-// ---------------------------------------------------------------------------
-describe('GET /api/islenskubraut/pdf -- extended tests', () => {
-  it('returns PDF content or appropriate error for valid category and stig', async () => {
-    // 'dyr' is a known category, 'A1' is a valid stig level
-    const res = await request(app)
-      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
-      .set('Origin', 'https://kvenno.app');
-
-    // The PDF generation may succeed (returning PDF buffer) or fail
-    // due to missing system dependencies. Either way, it should NOT
-    // return a 400 (validation passed) or 404 (category found).
-    expect(res.status).not.toBe(400);
-    expect(res.status).not.toBe(404);
-
-    if (res.status === 200) {
-      // Verify PDF content-type headers
-      expect(res.headers['content-type']).toMatch(/application\/pdf/);
-      expect(res.headers['content-disposition']).toMatch(/spjald-dyr-A1\.pdf/);
-      // PDF files start with %PDF
-      expect(res.body).toBeInstanceOf(Buffer);
-    } else {
-      // 500 is acceptable if the PDF renderer has issues in the test env
-      expect(res.status).toBe(500);
-    }
-  });
-
-  it('accepts all valid stig levels for an existing category', async () => {
-    for (const stig of ['A1', 'A2', 'B1']) {
-      const res = await request(app)
-        .get(`/api/islenskubraut/pdf?flokkur=matur&stig=${stig}`)
-        .set('Origin', 'https://kvenno.app');
-
-      // Should pass validation (not 400 or 404)
-      expect(res.status).not.toBe(400);
-      expect(res.status).not.toBe(404);
     }
   });
 });

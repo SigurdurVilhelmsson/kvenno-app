@@ -220,7 +220,7 @@ the keys from `login.microsoftonline.com`, so the host needs outbound HTTPS ther
 `FRONTEND_URL` is load-bearing beyond CORS convenience: in production the server
 **rejects any `Origin` that does not match**, with HTTP 500. It also rejects a
 **POST with no `Origin`**; a GET or HEAD with none is allowed, because a browser
-sends none on a same-origin GET, which is what the Íslenskubraut download makes.
+sends none on a same-origin GET.
 
 ## Verification
 

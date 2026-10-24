@@ -139,8 +139,8 @@ describe('the Claude endpoints', () => {
     expect(res.status).toBe(400);
   });
 
-  it('leaves the teaching-card PDFs open: students download them without signing in', async () => {
-    const res = await request(app).get('/api/islenskubraut/pdf');
-    expect(res.status).toBe(400);
+  it('leaves the health check open', async () => {
+    const res = await request(app).get('/health');
+    expect(res.status).toBe(200);
   });
 });

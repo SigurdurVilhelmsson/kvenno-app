@@ -14,15 +14,11 @@ import path from 'path';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { requireLogin } from './lib/auth.js';
-import { generatePdf, spjaldFileName } from './lib/islenskubraut-pdf.js';
-import { categoryIds, getCategoryById } from './lib/islenskubraut-data.js';
 import type {
   AnalyzeRequestBody,
   Analyze2arRequestBody,
-  PdfQueryParams,
   AnthropicResponse,
   HealthResponse,
-  Level,
   ErrorResponse,
   PandocResult,
   ProcessDocumentResponse,
@@ -80,8 +76,8 @@ const filteredOrigins = allowedOrigins.filter((o): o is string => Boolean(o));
 // clients — but only where a browser would have sent one. Browsers send Origin
 // on every cross-origin request and on same-origin requests other than GET and
 // HEAD (the Fetch standard's "serializing a request origin"). The Íslenskubraut
-// download button is a same-origin GET, so it carries none: refusing every
-// origin-less request answered each card download on kvenno.app with a 500.
+// download button, while cards came from this server, was a same-origin GET with
+// none: refusing every origin-less request answered each download with a 500.
 const ORIGINLESS_METHODS = new Set(['GET', 'HEAD']);
 app.use((req: Request, _res: Response, next: NextFunction) => {
   if (
@@ -127,17 +123,6 @@ const analyzeLimiter = rateLimit({
 const documentLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
-});
-
-// A school network usually reaches the internet through one public address, so a
-// whole class downloading teaching cards at once counts as a single client here.
-// 120 a minute covers a class taking a card at each of the three levels together.
-const pdfLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 120,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
@@ -718,65 +703,6 @@ app.post(
     } catch (error: unknown) {
       console.error('Server error (2ar):', error);
       return res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-);
-
-/**
- * API endpoint: Generate Islenskubraut teaching card PDF
- * GET /api/islenskubraut/pdf?flokkur={categoryId}&stig={level}
- */
-app.get(
-  '/api/islenskubraut/pdf',
-  pdfLimiter,
-  async (req: Request<unknown, unknown, unknown, PdfQueryParams>, res: Response) => {
-    try {
-      const { flokkur, stig } = req.query;
-
-      if (!flokkur || !stig) {
-        return res.status(400).json({
-          error: 'Vantar færibreytur: flokkur og stig',
-        });
-      }
-
-      // Validate flokkur against the generated data, not a hand-written list: a third
-      // hardcoded copy of the ids used to live here, so adding a category to both data
-      // files still returned 400 until someone remembered to edit this line too.
-      if (!categoryIds.includes(flokkur)) {
-        return res.status(400).json({
-          error: `Ógildur flokkur: ${flokkur}. Leyfileg gildi: ${categoryIds.join(', ')}`,
-        });
-      }
-
-      const validLevels = ['A1', 'A2', 'B1'];
-      if (!validLevels.includes(stig)) {
-        return res.status(400).json({
-          error: `Ógilt stig: ${stig}. Leyfileg gildi: ${validLevels.join(', ')}`,
-        });
-      }
-
-      const category = getCategoryById(flokkur);
-      if (!category) {
-        return res.status(404).json({
-          error: `Flokkur ekki fundinn: ${flokkur}`,
-        });
-      }
-
-      console.log(`[Islenskubraut PDF] Generating: flokkur=${flokkur}, stig=${stig}`);
-
-      const pdfBuffer = await generatePdf(category, stig);
-
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader(
-        'Content-Disposition',
-        `attachment; filename="${spjaldFileName(flokkur, stig as Level)}"`
-      );
-      res.send(pdfBuffer);
-    } catch (error: unknown) {
-      console.error('[Islenskubraut PDF] Error:', error);
-      return res.status(500).json({
-        error: 'Villa við að búa til PDF',
-      });
     }
   }
 );

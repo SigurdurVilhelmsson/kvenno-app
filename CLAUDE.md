@@ -238,10 +238,10 @@ Express backend at `server/` (port 8000):
 - `POST /api/process-document` — DOCX → PDF conversion (LibreOffice)
 - `POST /api/analyze` — Lab report analysis via Claude API
 - `POST /api/analyze-2ar` — 2nd year simplified checklist analysis
-- `GET /api/islenskubraut/pdf?flokkur={id}&stig={level}` — Generate teaching card PDF. **Unused by
-  the app since 2026-10-11**: the build renders all 18 cards to static files and the button links
-  to them. Kept for one deploy; its removal is in `docs/REVIEW-QUEUE.md` D3
 - `GET /health` — Health check
+
+`GET /api/islenskubraut/pdf` was removed on 2026-10-24: the build renders every card to a static
+file under `/islenskubraut/spjold/`, and the app has linked to those since 2026-10-11.
 
 **The three `POST` endpoints need a signed-in user since 2026-10-24** (`requireLogin` in `server/src/lib/auth.ts`):
 the lab-reports app sends its MSAL ID token (`apps/lab-reports/src/utils/authToken.ts`) and the
@@ -536,8 +536,6 @@ pnpm islenskubraut:build --check   # exit 1 if either is stale (CI-friendly)
 - `server/src/lib/islenskubraut-data.ts` — **generated; never edit by hand**. The Express server
   renders the teaching-card PDFs and must not import the Vite/React app, which is why a second copy
   exists at all
-- `server/src/index.ts` validates the `flokkur` query param against the generated `categoryIds`
-  export, so the PDF route cannot 400 on a category that exists
 
 Both generated files open with an `AUTO-GENERATED FILE — DO NOT EDIT BY HAND` header naming the
 source directory and the regenerate command.
