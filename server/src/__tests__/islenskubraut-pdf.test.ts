@@ -13,7 +13,6 @@ import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { inflateSync } from 'node:zlib';
 import { Document, Page, Text } from '@react-pdf/renderer';
 import { createElement } from 'react';
-import request from 'supertest';
 import {
   LEVELS,
   REVIEW_DAYS,
@@ -70,20 +69,13 @@ function baseFonts(pdf: Buffer): Set<string> {
 }
 
 describe('Íslenskubraut teaching-card PDF', () => {
-  it('downloads through the route without reaching the network', async () => {
-    const { app } = await import('../index.js');
-    const res = await request(app)
-      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
-      .buffer(true)
-      .parse((r, cb) => {
-        const chunks: Buffer[] = [];
-        r.on('data', (c: Buffer) => chunks.push(c));
-        r.on('end', () => cb(null, Buffer.concat(chunks)));
-      });
+  it('renders without reaching the network', async () => {
+    const pdf = await generatePdf(
+      categories.find((c) => c.id === 'dyr')!,
+      'A1'
+    );
 
-    expect(res.status).toBe(200);
-    expect(res.headers['content-type']).toBe('application/pdf');
-    expect((res.body as Buffer).subarray(0, 5).toString()).toBe('%PDF-');
+    expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
     expect(networkRequests).toEqual([]);
   });
 

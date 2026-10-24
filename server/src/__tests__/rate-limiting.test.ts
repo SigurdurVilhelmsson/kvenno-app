@@ -4,7 +4,6 @@
  * The server uses express-rate-limit with per-endpoint configuration:
  * - /api/analyze and /api/analyze-2ar: 10 requests per 60s (analyzeLimiter)
  * - /api/process-document: 20 requests per 60s (documentLimiter)
- * - /api/islenskubraut/pdf: 120 requests per 60s (pdfLimiter)
  *
  * These tests verify rate limiting behavior using the supertest library.
  */
@@ -54,9 +53,10 @@ describe('Rate limiting: allows requests within the limit', () => {
 // Rate limit headers are present in responses
 // ---------------------------------------------------------------------------
 describe('Rate limiting: standard headers', () => {
-  it('includes RateLimit-Limit header on /api/islenskubraut/pdf', async () => {
+  it('includes RateLimit-Limit header on /api/process-document', async () => {
     const res = await request(app)
-      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
+      .post('/api/process-document')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app');
 
     // The server uses standardHeaders: true, which sends RateLimit-* headers
@@ -69,9 +69,10 @@ describe('Rate limiting: standard headers', () => {
     expect(hasStandardHeaders).toBe(true);
   });
 
-  it('includes RateLimit-Remaining header on /api/islenskubraut/pdf', async () => {
+  it('includes RateLimit-Remaining header on /api/process-document', async () => {
     const res = await request(app)
-      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
+      .post('/api/process-document')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app');
 
     const hasRemainingHeader =
@@ -79,14 +80,6 @@ describe('Rate limiting: standard headers', () => {
       res.headers['x-ratelimit-remaining'] !== undefined;
 
     expect(hasRemainingHeader).toBe(true);
-  });
-
-  it('allows 120 PDF downloads a minute per client', async () => {
-    const res = await request(app)
-      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
-      .set('Origin', 'https://kvenno.app');
-
-    expect(Number(res.headers['ratelimit-limit'] ?? res.headers['x-ratelimit-limit'])).toBe(120);
   });
 });
 
