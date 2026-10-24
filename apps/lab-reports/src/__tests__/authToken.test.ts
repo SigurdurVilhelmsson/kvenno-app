@@ -12,7 +12,11 @@ vi.mock('../utils/msalInstance', () => ({ msalInstance: msal }));
 vi.mock('../config/authConfig', () => ({ loginRequest: { scopes: ['User.Read'] } }));
 vi.mock('../utils/authHelpers', () => ({ saveReturnUrl }));
 vi.mock('@azure/msal-browser', () => ({
-  InteractionRequiredAuthError: class InteractionRequiredAuthError extends Error {},
+  InteractionRequiredAuthError: class InteractionRequiredAuthError extends Error {
+    constructor(errorCode?: string) {
+      super(errorCode);
+    }
+  },
 }));
 
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
@@ -71,7 +75,9 @@ describe('authHeaders', () => {
   });
 
   it('signs in again when the session cannot be renewed silently', async () => {
-    msal.acquireTokenSilent.mockRejectedValue(new InteractionRequiredAuthError('expired'));
+    msal.acquireTokenSilent.mockRejectedValue(
+      new InteractionRequiredAuthError('interaction_required', 'expired')
+    );
     await expect(authHeaders()).rejects.toThrow(SESSION_EXPIRED);
     expect(saveReturnUrl).toHaveBeenCalled();
     expect(msal.loginRedirect).toHaveBeenCalledWith({ scopes: ['User.Read'] });
