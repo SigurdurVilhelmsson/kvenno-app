@@ -12,10 +12,14 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 
+import { bearer, useTestKeys } from './test-auth.js';
+
 // Set test API key before importing app
 process.env.CLAUDE_API_KEY = 'test-key-for-rate-limit-tests';
 
 // Import the Express app (server does not call listen() when imported)
+// The Claude endpoints take a signed-in teacher's ID token (src/lib/auth.ts).
+useTestKeys();
 const { app } = await import('../index.js');
 
 // ---------------------------------------------------------------------------
@@ -23,11 +27,15 @@ const { app } = await import('../index.js');
 // ---------------------------------------------------------------------------
 describe('Rate limiting: allows requests within the limit', () => {
   it('allows a single request to /api/analyze', async () => {
-    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-      content: 'test content',
-      systemPrompt: 'test prompt',
-      mode: 'teacher',
-    });
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Authorization', bearer())
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'test content',
+        systemPrompt: 'test prompt',
+        mode: 'teacher',
+      });
 
     // Should not be rate limited (may fail on API call, but not with 429)
     // Note: in shared test runner, earlier tests may have consumed the window.
@@ -90,6 +98,7 @@ describe('Rate limiting: per-endpoint configuration', () => {
     // Make a request to each endpoint to get their rate limit headers
     const analyzeRes = await request(app)
       .post('/api/analyze')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app')
       .send({
         content: 'test',
@@ -99,6 +108,7 @@ describe('Rate limiting: per-endpoint configuration', () => {
 
     const documentRes = await request(app)
       .post('/api/process-document')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app');
 
     // Get the limit values from headers
@@ -129,11 +139,15 @@ describe('Rate limiting: blocks excessive requests', () => {
     const requests = [];
     for (let i = 0; i < 15; i++) {
       requests.push(
-        request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-          content: 'test content',
-          systemPrompt: 'test prompt',
-          mode: 'student',
-        })
+        request(app)
+          .post('/api/analyze')
+          .set('Authorization', bearer())
+          .set('Origin', 'https://kvenno.app')
+          .send({
+            content: 'test content',
+            systemPrompt: 'test prompt',
+            mode: 'student',
+          })
       );
     }
 
@@ -158,11 +172,15 @@ describe('Rate limiting: error response format', () => {
     // Send requests until rate limited
     let rateLimitedResponse = null;
     for (let i = 0; i < 20; i++) {
-      const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
-        content: 'test',
-        systemPrompt: 'test',
-        mode: 'teacher',
-      });
+      const res = await request(app)
+        .post('/api/analyze')
+        .set('Authorization', bearer())
+        .set('Origin', 'https://kvenno.app')
+        .send({
+          content: 'test',
+          systemPrompt: 'test',
+          mode: 'teacher',
+        });
 
       if (res.status === 429) {
         rateLimitedResponse = res;
@@ -192,6 +210,7 @@ describe('Rate limiting: one bucket per client behind nginx', () => {
   const send = (clientIp: string) =>
     request(app)
       .post('/api/analyze')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app')
       .set('X-Forwarded-For', clientIp)
       // An invalid mode is refused with 400 after the limiter has counted it,

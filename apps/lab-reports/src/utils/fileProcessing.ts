@@ -4,6 +4,8 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 import { FileContent } from '@/types';
 
+import { authHeaders } from './authToken';
+
 // Configure PDF.js worker with smart path resolution and CDN fallback
 // Import the worker URL from Vite
 
@@ -153,6 +155,7 @@ const extractFromDocx = async (file: File): Promise<FileContent> => {
     // Send to server for processing
     const response = await fetch(`${API_ENDPOINT}/process-document`, {
       method: 'POST',
+      headers: await authHeaders(),
       body: formData,
     });
 

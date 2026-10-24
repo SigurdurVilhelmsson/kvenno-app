@@ -15,6 +15,8 @@ import { brotliCompressSync, deflateSync, gzipSync } from 'node:zlib';
 import request from 'supertest';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+import { bearer, useTestKeys } from './test-auth.js';
+
 type Call = {
   file: string;
   args: string[];
@@ -43,6 +45,8 @@ vi.mock('child_process', async (importOriginal) => {
 });
 
 process.env.CLAUDE_API_KEY = 'sk-ant-test-must-not-reach-converters';
+// The Claude endpoints take a signed-in teacher's ID token (src/lib/auth.ts).
+useTestKeys();
 const { app } = await import('../index.js');
 
 // supertest serialises a Buffer sent as JSON into {"type":"Buffer",...}; these
@@ -64,6 +68,7 @@ describe('compressed request bodies', () => {
     it(`refuses Content-Encoding: ${encoding} with 415, without decoding it`, async () => {
       const res = await request(app)
         .post('/api/analyze-2ar')
+        .set('Authorization', bearer())
         .set('Origin', 'https://kvenno.app')
         .set('Content-Type', 'application/json')
         .set('Content-Encoding', encoding)
@@ -78,6 +83,7 @@ describe('compressed request bodies', () => {
   it('refuses a compressed urlencoded body too', async () => {
     const res = await request(app)
       .post('/api/analyze-2ar')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Content-Encoding', 'br')
@@ -91,6 +97,7 @@ describe('compressed request bodies', () => {
     for (const encoding of [undefined, 'identity']) {
       const req = request(app)
         .post('/api/analyze-2ar')
+        .set('Authorization', bearer())
         .set('Origin', 'https://kvenno.app')
         .set('Content-Type', 'application/json');
       if (encoding) req.set('Content-Encoding', encoding);
@@ -110,6 +117,7 @@ describe('document converters', () => {
   it('run without the API key in their environment, and pandoc has a timeout', async () => {
     const res = await request(app)
       .post('/api/process-document')
+      .set('Authorization', bearer())
       .set('Origin', 'https://kvenno.app')
       .attach('file', Buffer.from('not really a docx'), { filename: 'skyrsla.docx' });
 

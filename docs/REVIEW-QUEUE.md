@@ -1203,11 +1203,26 @@ eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app it
       Claude key is not inherited; give pandoc a 30 s timeout; `permissions: contents: read` in
       CI; `qs` 6.16.1, `proxy-addr` 2.0.8, `ip-address` 10.7.4. 2026-10-23, the PR carrying this
       entry. The nginx copy of the refusal is a hand step in A.
-- [ ] **The Claude endpoints check no login.** `/api/analyze`, `/api/analyze-2ar` and
-      `/api/process-document` accept anyone who sends `Origin: https://kvenno.app`, so the key is
-      an open Claude Opus proxy (10 requests a minute per IP). The fix is to verify the Microsoft
-      ID token on the server (signature against the tenant's keys, `aud` = the app's client ID,
-      `exp`), with the front end sending it. Needs the Azure IDs in `server/.env`.
+- [x] **The Claude endpoints check no login.** `/api/analyze`, `/api/analyze-2ar` and
+      `/api/process-document` accepted anyone who sent `Origin: https://kvenno.app`, so the key was
+      an open Claude Opus proxy (10 requests a minute per IP). Fixed 2026-10-24, the PR carrying
+      this entry: the lab-reports app sends its MSAL ID token (`utils/authToken.ts`) and the server
+      verifies it (`server/src/lib/auth.ts`: RS256 against the tenant's published keys, `aud` = the
+      client ID, `iss` and `tid` = the tenant, `exp`/`nbf` with five minutes' drift). No new
+      dependency; `auth.test.ts` covers forged, expired, foreign and unsigned tokens.
+  - [ ] **Before deploying it**, add to `server/.env` on the host
+        `AZURE_TENANT_ID=` and `AZURE_CLIENT_ID=`, the same values as `VITE_AZURE_TENANT_ID` and
+        `VITE_AZURE_CLIENT_ID` in `apps/lab-reports/.env`. Without them the server fails closed:
+        lab reports answer 503 for everyone (logged at startup as `[auth] AZURE_TENANT_ID …`).
+  - [ ] **After deploying it**, sign in on `/efnafraedi/2-ar/lab-reports/` and analyse one report
+        (and one `.docx`, which goes through `/api/process-document`). Then
+        `curl -s -o /dev/null -w '%{http_code}\n' -X POST -H 'Origin: https://kvenno.app' -H 'Content-Type: application/json' -d '{}' https://kvenno.app/api/analyze-2ar`
+        should print 401 (it printed 400 before).
+  - [ ] **The two error messages a student may see** were drafted by Claude
+        (`apps/lab-reports/src/utils/authToken.ts`): `Innskráning fannst ekki. Endurhlaðið síðuna
+        og skráið ykkur inn.` and `Innskráningin er útrunnin. Skráið ykkur inn aftur.`; the
+        server's are `Innskráning þarf — skráðu þig inn aftur` (401) and `Innskráning er ekki
+        stillt á þjóninum` (503). Read them once.
 - [ ] **Spend limit and usage alerts on the Anthropic key** (hand, Anthropic Console), and a look
       at usage since November 2025: the older LabReports backend, with no origin check or rate
       limit, probably served the site until the 2026-08-15 switch (commit `2538c79`).
