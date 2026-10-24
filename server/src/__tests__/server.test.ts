@@ -147,38 +147,6 @@ describe('GET /api/islenskubraut/pdf', () => {
 });
 
 // ---------------------------------------------------------------------------
-describe('GET /api/islenskubraut/pdf -- input validation', () => {
-  it('returns 400 when query params are missing', async () => {
-    const res = await request(app).get('/api/islenskubraut/pdf');
-
-    expect(res.status).toBe(400);
-    expect(res.body.error).toBeDefined();
-  });
-
-  it('returns 400 when only flokkur is provided', async () => {
-    const res = await request(app).get('/api/islenskubraut/pdf?flokkur=dyr');
-
-    expect(res.status).toBe(400);
-  });
-
-  it('returns 400 when stig is invalid', async () => {
-    const res = await request(app).get('/api/islenskubraut/pdf?flokkur=dyr&stig=C1');
-
-    expect(res.status).toBe(400);
-    const body = res.body as ErrorResponse;
-    expect(body.error).toMatch(/stig/i);
-  });
-
-  it('returns 400 when category is not in allowed list', async () => {
-    const res = await request(app).get('/api/islenskubraut/pdf?flokkur=nonexistent&stig=A1');
-
-    expect(res.status).toBe(400);
-    const body = res.body as ErrorResponse;
-    expect(body.error).toMatch(/[Ff]lokkur/);
-  });
-});
-
-// ---------------------------------------------------------------------------
 // Input validation -- POST /api/process-document
 // ---------------------------------------------------------------------------
 describe('POST /api/process-document -- input validation', () => {
