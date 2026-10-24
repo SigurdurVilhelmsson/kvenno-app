@@ -70,7 +70,10 @@ function baseFonts(pdf: Buffer): Set<string> {
 
 describe('Íslenskubraut teaching-card PDF', () => {
   it('renders without reaching the network', async () => {
-    const pdf = await generatePdf(categories.find((c) => c.id === 'dyr')!, 'A1');
+    const pdf = await generatePdf(
+      categories.find((c) => c.id === 'dyr')!,
+      'A1'
+    );
 
     expect(pdf.subarray(0, 5).toString()).toBe('%PDF-');
     expect(networkRequests).toEqual([]);
