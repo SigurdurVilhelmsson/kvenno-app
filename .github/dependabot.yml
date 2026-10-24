@@ -1,0 +1,39 @@
+# Weekly dependency update pull requests (added 2026-10-24, docs/REVIEW-QUEUE.md D4).
+#
+# One pull request a week gathers every minor and patch update of an ecosystem, so CI runs once
+# for them all. Each major update gets a pull request of its own, since one may need code
+# changes. Security updates are a separate setting (repo Settings → Code security) and are not
+# held to this schedule.
+#
+# The voice tools' Python setup (content/islenskubraut/hljod/README.md) has no requirements file
+# and pins its versions on purpose, so it is not listed here.
+
+version: 2
+updates:
+  # The whole pnpm workspace: every app, game, package and the server share the root lockfile.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Atlantic/Reykjavik
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: 'chore(deps)'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Atlantic/Reykjavik
+    groups:
+      actions:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: 'chore(ci)'
