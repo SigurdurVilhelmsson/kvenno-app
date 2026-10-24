@@ -20,8 +20,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path aliases */
-    "baseUrl": ".",
+    /* Path aliases. No baseUrl: TypeScript 6 deprecates it, and since 4.1 each path resolves
+       from the tsconfig that declares it, which is what every entry below already assumes. */
     "paths": {
       "@kvenno/shared": ["./packages/shared/index.ts"],
       "@kvenno/shared/*": ["./packages/shared/*"],
