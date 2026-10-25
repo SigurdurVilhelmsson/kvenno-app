@@ -13,6 +13,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    /* The global type packages, named. TypeScript 6 no longer loads every installed @types
+       package by itself (its default is now none), and the tests use Node's (node:fs,
+       __dirname). vite/client declares import.meta.env and the *.css and asset modules, which
+       the games that include only their own src had no route to. server/ and e2e/ set their
+       own. */
+    "types": ["node", "vite/client"],
 
     /* Linting */
     "strict": true,
