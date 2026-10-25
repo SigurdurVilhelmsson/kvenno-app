@@ -21,7 +21,14 @@ export default defineConfig({
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        // The CI runner draws in software, and Firefox sometimes blocks WebGL 2 there
+        // ("AllowWebgl2:false restricts context creation on this system"), so the 3D tests
+        // failed on some runs and not others (docs/REVIEW-QUEUE.md D2). They test the site,
+        // not the runner's graphics, so WebGL is forced on.
+        launchOptions: { firefoxUserPrefs: { 'webgl.force-enabled': true } },
+      },
       // mobile-games.spec.ts tags most of its per-screen paths chromium-only
       // to keep CI time down; Firefox replays a spread-out sample.
       // mobile-vertical.spec.ts does the same: Firefox cannot emulate touch or

@@ -87,7 +87,7 @@ test('vsepr-geometry — loads Three.js once a 3D view is opened', async ({ page
       [
         'No 3D canvas within 20 s.',
         `Still loading: ${await shows('Sæki þrívíddarsýn…')}`,
-        `Load-failure message: ${await shows('Þrívíddarsýn er ekki tiltæk')}`,
+        `Panel error message: ${await shows('Þrívíddarsýn er ekki tiltæk')}`,
         `3D chunks requested: ${heavy.length ? heavy.join(', ') : 'none'}`,
         `Problems: ${problems.length ? problems.join(' | ') : 'none'}`,
       ].join('\n'),

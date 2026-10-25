@@ -353,6 +353,11 @@ The probe itself was kept (it costs ~13 KB). Without it a failed chunk leaves th
 spinning silently: `React.lazy` rejections don't reach Suspense, and the games' only `ErrorBoundary`
 wraps the whole `App`, so an uncaught throw blanks the entire game instead of one panel. Its
 messages are now Icelandic — note `Sæki`, not `Hleð`, since `hleðsla` means electric charge here.
+**A browser that refuses WebGL 2 is the other way the view fails** (found 2026-10-25, Firefox on
+CI): Three.js throws while rendering, so the probe cannot see it. `MoleculeViewer3DLazy` wraps the
+viewer in its own `ErrorBoundary` with a panel message, and `molecule-viewer-3d-error.test.tsx`
+holds it. Playwright's Firefox forces WebGL on (`webgl.force-enabled`), since the runner sometimes
+blocks it.
 
 **3D labels fixed (Oct 2026) — the 3D view could not load under the CSP in `nginx-site.conf`.** The atom
 labels are drei `<Text>`, which is troika-three-text, and it failed twice over
