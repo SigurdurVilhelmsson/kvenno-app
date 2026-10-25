@@ -14,7 +14,7 @@
  *
  * Usage: node scripts/check-lazy-3d.mjs [distDir]
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -62,6 +62,12 @@ for (const game of GAMES) {
   const heavy = [...seen].filter(
     (f) => HEAVY_NAME.test(f) || (existsSync(f) && HEAVY_TEXT.test(readFileSync(f, 'utf8')))
   );
+  // Every chunk the game emits, for reading the layout in a CI log.
+  const chunkDir = join(gamesDir, 'assets', game);
+  const sizes = readdirSync(chunkDir)
+    .filter((f) => f.endsWith('.js'))
+    .map((f) => `${f} (${Math.round(statSync(join(chunkDir, f)).size / 1024)} KB)`);
+  console.log(`  ${game} chunks: ${sizes.join(', ')}`);
   if (heavy.length) {
     failed = true;
     console.error(`❌ ${game} loads Three.js on first page load. It fetches:`);
