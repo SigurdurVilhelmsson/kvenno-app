@@ -20,7 +20,7 @@ import {
   type ComponentRef,
 } from 'react';
 
-import { OrbitControls, Text, Html } from '@react-three/drei';
+import { OrbitControls, Text } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { configureTextBuilder } from 'troika-three-text';
@@ -418,17 +418,21 @@ function MoleculeScene({
 }
 
 /**
- * Loading fallback component
+ * Loading text, laid over the canvas until the scene has drawn.
+ *
+ * It used to sit inside the canvas as drei's `<Html>`, which renders through a React root of its
+ * own. When the scene stopped suspending, drei took that root's node out of the page before
+ * unmounting the root, so every first 3D view threw "Failed to execute 'removeChild' on 'Node'"
+ * (seen on kvenno.app, 2026-10-25). An ordinary element over the canvas has no root of its own.
  */
 // Same wording as MoleculeViewer3DLazy's placeholder ("Sæki", not "Hleð" — see there).
 // Exported for its test only; the barrel still does not re-export this module.
 export function LoadingFallback({ text = 'Sæki þrívíddarsýn…' }: { text?: string }) {
   return (
-    <Html center>
-      {/* drei's Html gives its box no width, so without nowrap the text broke at every space
-          and sat left-aligned on two lines. */}
+    // pointer-events-none: a drag that starts on the text still reaches the canvas.
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
       <div className="text-gray-500 text-sm whitespace-nowrap text-center">{text}</div>
-    </Html>
+    </div>
   );
 }
 
@@ -562,11 +566,11 @@ export function MoleculeViewer3D({
       ref={wrapperRef}
       tabIndex={0}
       role="application"
-      // Busy until the scene has drawn. The canvas itself appears at once and the
-      // loading text inside it a moment later, so neither says the view is ready.
+      // Busy until the scene has drawn. The canvas appears at once, so it does not say the
+      // view is ready; the loading text over it shows for exactly as long as this is true.
       aria-busy={!sceneReady}
       aria-label="Þrívíð sameindasýn — nota örvatakka til að snúa, + / − til að súma, R til að núllstilla"
-      className={`molecule-viewer-3d focus-visible:outline-3 focus-visible:outline focus-visible:outline-blue-500 focus-visible:outline-offset-2 ${className}`}
+      className={`molecule-viewer-3d relative focus-visible:outline-3 focus-visible:outline focus-visible:outline-blue-500 focus-visible:outline-offset-2 ${className}`}
       style={{
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
@@ -583,7 +587,7 @@ export function MoleculeViewer3D({
         camera={{ position: cameraPosition, fov: 50 }}
         style={{ background: backgroundColor }}
       >
-        <Suspense fallback={loadingFallback || <LoadingFallback />}>
+        <Suspense fallback={null}>
           <MoleculeScene
             molecule={molecule}
             style={style}
@@ -608,6 +612,7 @@ export function MoleculeViewer3D({
           maxDistance={15}
         />
       </Canvas>
+      {!sceneReady && (loadingFallback || <LoadingFallback />)}
     </div>
   );
 }

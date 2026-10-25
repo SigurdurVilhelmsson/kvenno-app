@@ -40,7 +40,7 @@ export interface MoleculeViewer3DProps {
   backgroundColor?: string;
   /** Additional CSS classes */
   className?: string;
-  /** Loading placeholder content */
+  /** Shown over the canvas until the scene has drawn: ordinary page content, not a three.js object */
   loadingFallback?: React.ReactNode;
 }
 

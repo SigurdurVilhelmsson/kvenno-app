@@ -359,6 +359,12 @@ viewer in its own `ErrorBoundary` with a panel message, and `molecule-viewer-3d-
 holds it. Playwright's Firefox forces WebGL on (`webgl.force-enabled`), since the runner sometimes
 blocks it, and on runs where it has no GL driver at all the lazy-load test accepts that panel, in
 Firefox only and only after the browser logged that it could not create a WebGL context.
+**The loading text is not drei `<Html>` since 2026-10-25.** `<Html>` renders through a React root
+of its own, and when the scene stopped suspending drei removed that root's node before unmounting
+it, so every first 3D view threw "removeChild … not a child of this node" (found on the live site).
+`LoadingFallback` is now an ordinary overlay in the viewer's wrapper, shown while `aria-busy` is
+true, and the canvas's own Suspense fallback is `null`. `molecule-viewer-3d-loading.test.tsx`
+fails if `<Html>` comes back.
 
 **3D labels fixed (Oct 2026) — the 3D view could not load under the CSP in `nginx-site.conf`.** The atom
 labels are drei `<Text>`, which is troika-three-text, and it failed twice over
@@ -380,7 +386,7 @@ because `createGameViteConfig`'s `assetFileNames` sends them there, beside the h
 stylesheet.
 
 **The other 3D tests could not see this**: they waited for a `<canvas>`, which appears at once, with
-the loading text drawn inside it for good. The viewer now sets `aria-busy` until its scene has
+the loading text showing for good. The viewer now sets `aria-busy` until its scene has
 mounted, and `e2e/threejs-labels.spec.ts` waits for that, serving the CSP lifted from
 `nginx-site.conf` and refusing every off-site request. It fails against no fix and against each
 half of the fix alone. **Wait on `aria-busy`, not on the canvas,** in any new 3D test.
