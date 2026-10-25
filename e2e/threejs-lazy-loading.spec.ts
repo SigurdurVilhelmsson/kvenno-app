@@ -42,7 +42,7 @@ for (const game of THREE_D_GAMES) {
   });
 }
 
-test('vsepr-geometry — loads Three.js once a 3D view is opened', async ({ page }) => {
+test('vsepr-geometry — loads Three.js once a 3D view is opened', async ({ page, browserName }) => {
   const requested: string[] = [];
   page.on('request', (r) => requested.push(r.url()));
   // Firefox has failed this test now and then (docs/REVIEW-QUEUE.md D2), and the run's artifact
@@ -78,16 +78,31 @@ test('vsepr-geometry — loads Three.js once a 3D view is opened', async ({ page
 
   // A <canvas> is the observable proof the viewer mounted, and it can only
   // appear after the deferred chunk has loaded and executed.
+  //
+  // On some CI runs Firefox has no working GL driver at all ("Exhausted GL driver options"), so no
+  // WebGL context can exist and Three.js cannot draw. The viewer then shows its panel message for
+  // a browser that cannot draw 3D, which also renders only after the deferred chunk has run. That
+  // is accepted in Firefox alone, and only when the browser said it could not create a context;
+  // Chromium must draw a canvas.
+  const canvas = page.locator('canvas').first();
+  const noWebGL = page.getByText('Þessi vafri getur ekki birt þrívíddarsýn á þessari tölvu.');
   try {
-    await expect(page.locator('canvas').first()).toBeVisible({ timeout: 20000 });
+    await expect(canvas.or(noWebGL).first()).toBeVisible({ timeout: 20000 });
+    if (await noWebGL.isVisible()) {
+      expect(browserName, 'a canvas, outside Firefox').toBe('firefox');
+      expect(
+        problems.some((p) => p.includes('WebGL context could not be created')),
+        'the browser saying it could not create a WebGL context'
+      ).toBe(true);
+    }
   } catch (err) {
     const heavy = requested.filter((u) => HEAVY_CHUNK.test(u));
     const shows = async (text: string) => (await page.getByText(text).count()) > 0;
     throw new Error(
       [
-        'No 3D canvas within 20 s.',
+        'No 3D canvas within 20 s, or no sign that WebGL itself was missing.',
         `Still loading: ${await shows('Sæki þrívíddarsýn…')}`,
-        `Load-failure message: ${await shows('Þrívíddarsýn er ekki tiltæk')}`,
+        `Panel error message: ${await shows('Þrívíddarsýn er ekki tiltæk')}`,
         `3D chunks requested: ${heavy.length ? heavy.join(', ') : 'none'}`,
         `Problems: ${problems.length ? problems.join(' | ') : 'none'}`,
       ].join('\n'),
