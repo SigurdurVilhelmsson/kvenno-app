@@ -16,6 +16,8 @@
 
 import { lazy, Suspense, useState, useEffect } from 'react';
 
+import { ErrorBoundary } from '../ErrorBoundary';
+
 import type { MoleculeViewer3DProps } from './types';
 
 // Lazy load the actual 3D viewer component
@@ -60,10 +62,24 @@ function DefaultLoadingPlaceholder({
   );
 }
 
+/** Why the 3D view is missing: its code did not arrive, or the browser could not draw it. */
+const ERROR_DETAIL = {
+  load: 'Ekki tókst að sækja þrívíddarsýnina. Athugaðu nettenginguna.',
+  render: 'Þessi vafri getur ekki birt þrívíddarsýn á þessari tölvu.',
+} as const;
+
 /**
- * Error fallback when Three.js fails to load
+ * Error fallback when the 3D view cannot be shown
  */
-function ErrorFallback({ width, height }: { width?: string | number; height?: string | number }) {
+function ErrorFallback({
+  width,
+  height,
+  reason,
+}: {
+  width?: string | number;
+  height?: string | number;
+  reason: keyof typeof ERROR_DETAIL;
+}) {
   return (
     <div
       className="
@@ -82,9 +98,7 @@ function ErrorFallback({ width, height }: { width?: string | number; height?: st
       <div className="text-center p-4">
         <span className="block text-amber-500 text-lg mb-2">⚠</span>
         <span className="block">Þrívíddarsýn er ekki tiltæk</span>
-        <span className="block text-xs text-gray-400 mt-1">
-          Ekki tókst að sækja þrívíddarsýnina. Athugaðu nettenginguna.
-        </span>
+        <span className="block text-xs text-gray-400 mt-1">{ERROR_DETAIL[reason]}</span>
       </div>
     </div>
   );
@@ -140,19 +154,26 @@ export function MoleculeViewer3DLazy(props: MoleculeViewer3DProps) {
   }, []);
 
   if (hasError) {
-    return <ErrorFallback width={props.width} height={props.height} />;
+    return <ErrorFallback width={props.width} height={props.height} reason="load" />;
   }
 
+  // A browser that cannot create a WebGL 2 context (blocked graphics drivers, an old school
+  // machine) makes Three.js throw while rendering. Caught here, it costs the panel; uncaught,
+  // it reaches the game's one ErrorBoundary and replaces the whole game with an error page.
   return (
-    <Suspense
-      fallback={
-        props.loadingFallback || (
-          <DefaultLoadingPlaceholder width={props.width} height={props.height} />
-        )
-      }
+    <ErrorBoundary
+      fallback={<ErrorFallback width={props.width} height={props.height} reason="render" />}
     >
-      <MoleculeViewer3DComponent {...props} />
-    </Suspense>
+      <Suspense
+        fallback={
+          props.loadingFallback || (
+            <DefaultLoadingPlaceholder width={props.width} height={props.height} />
+          )
+        }
+      >
+        <MoleculeViewer3DComponent {...props} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 
