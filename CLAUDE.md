@@ -336,6 +336,14 @@ The game HTML is not year-cached, so it names the current files. Single-file gam
 their entry and stylesheet are inlined and the names never reach the server. `scripts/build-games.mjs` clears `assets/<game>/` before each build, since
 `emptyOutDir: false` would otherwise accumulate stale hashed chunks.
 `e2e/threejs-lazy-loading.spec.ts` guards the boundary — verified to fail when cause 1 is reintroduced.
+**A third cause, found 2026-10-25: the bundler's own chunking.** Rolldown places modules the entry
+shares with the deferred viewer wherever it likes, and a change that only removed drei's `<Html>`
+from the viewer folded React into the Three.js chunk, so Lewis loaded Three.js on every page open.
+`createGameViteConfig` now gives React (`react`, `react-dom`, `scheduler`) a `codeSplitting` group of
+its own in split games, which also makes Rolldown emit a separate `rolldown-runtime` chunk.
+`scripts/check-lazy-3d.mjs` runs inside `pnpm build` and fails it if any chunk a first page load
+fetches holds Three.js, printing every game's chunks and what it fetches, so CI's Build job catches
+this in a minute rather than the E2E job in thirty.
 
 **drei barrel follow-up (Aug 2026):** deferred payload halved again, 2601 KB → 1004 KB per game.
 
