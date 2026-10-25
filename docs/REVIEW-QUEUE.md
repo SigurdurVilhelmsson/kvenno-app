@@ -900,6 +900,15 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 
 ### D2. Operations and tooling
 
+- [ ] **A flaky Firefox test of the 3D view** (found 2026-10-24, Dependabot PR #118):
+      `e2e/threejs-lazy-loading.spec.ts` › `vsepr-geometry — loads Three.js once a 3D view is
+      opened` failed in Firefox on two runs in a row, its retry included (no `<canvas>` within
+      20 s), and passed on the third with no change to the dependencies. That group raised three
+      0.183 → 0.186, @react-three/fiber 9.7 → 9.8 and Playwright 1.62 → 1.64 (Firefox 157). The
+      group was merged green. If it fails again, read the run's `e2e-test-results` artifact (the
+      page snapshot says whether the viewer threw or only loaded slowly) rather than re-running;
+      the 3D stack and Playwright now update in their own Dependabot groups, so the next failure
+      names one of them.
 - [x] **`deploy.sh` never installs `server/nginx-site.conf`.** Either document the manual step in
       `docs/DEPLOYMENT.md`, or add an opt-in step to the script. Documented 2026-10-02 (PR #82).
 - [ ] **The docs disagree on the nginx site filename:** `README.md` says `kvenno`,
