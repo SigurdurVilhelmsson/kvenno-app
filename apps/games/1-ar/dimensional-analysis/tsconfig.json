@@ -1,8 +1,6 @@
 {
   "extends": "../../../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "./dist"
-  },
+  "compilerOptions": {},
   "include": ["src", "../../../../packages/shared/**/*"],
   "exclude": [
     "../../../../packages/shared/components/MoleculeViewer3D/**/*",
