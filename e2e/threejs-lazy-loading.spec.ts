@@ -45,6 +45,16 @@ for (const game of THREE_D_GAMES) {
 test('vsepr-geometry — loads Three.js once a 3D view is opened', async ({ page }) => {
   const requested: string[] = [];
   page.on('request', (r) => requested.push(r.url()));
+  // Firefox has failed this test now and then (docs/REVIEW-QUEUE.md D2), and the run's artifact
+  // cannot always be opened, so a failure says in the log itself what the page did.
+  const problems: string[] = [];
+  page.on('pageerror', (e) => problems.push(`page error: ${e.message}`));
+  page.on('console', (m) => {
+    if (m.type() === 'error') problems.push(`console: ${m.text()}`);
+  });
+  page.on('requestfailed', (r) =>
+    problems.push(`request failed: ${r.url()} (${r.failure()?.errorText})`)
+  );
 
   await page.goto('/efnafraedi/2-ar/games/vsepr-geometry.html');
   await page.waitForLoadState('networkidle');
@@ -68,6 +78,21 @@ test('vsepr-geometry — loads Three.js once a 3D view is opened', async ({ page
 
   // A <canvas> is the observable proof the viewer mounted, and it can only
   // appear after the deferred chunk has loaded and executed.
-  await expect(page.locator('canvas').first()).toBeVisible({ timeout: 20000 });
+  try {
+    await expect(page.locator('canvas').first()).toBeVisible({ timeout: 20000 });
+  } catch (err) {
+    const heavy = requested.filter((u) => HEAVY_CHUNK.test(u));
+    const shows = async (text: string) => (await page.getByText(text).count()) > 0;
+    throw new Error(
+      [
+        'No 3D canvas within 20 s.',
+        `Still loading: ${await shows('Sæki þrívíddarsýn…')}`,
+        `Load-failure message: ${await shows('Þrívíddarsýn er ekki tiltæk')}`,
+        `3D chunks requested: ${heavy.length ? heavy.join(', ') : 'none'}`,
+        `Problems: ${problems.length ? problems.join(' | ') : 'none'}`,
+      ].join('\n'),
+      { cause: err }
+    );
+  }
   expect(requested.filter((u) => HEAVY_CHUNK.test(u)).length).toBeGreaterThan(0);
 });
