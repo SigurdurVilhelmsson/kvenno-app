@@ -1246,7 +1246,7 @@ eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app it
       opened. `.github/dependabot.yml` added 2026-10-24, the PR carrying this entry: a weekly
       pull request each for the pnpm workspace and the GitHub Actions, minor and patch updates
       grouped, every major update on its own.
-  - [ ] **Turn on Dependabot alerts and security updates** (hand, repo Settings → Code security),
-        and read any open alerts there. The config file covers version updates only; alerts are
+  - [x] **Turn on Dependabot alerts and security updates** (hand, repo Settings → Code security)
+        — done 2026-10-24 by Siggi. Read any open alerts there. The config file covers version updates only; alerts are
         not visible from a cloud session. If the first npm pull request fails to update the
         lockfile, Dependabot may not yet support pnpm 12 (`packageManager` in `package.json`).

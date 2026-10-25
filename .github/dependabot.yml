@@ -19,7 +19,18 @@ updates:
       time: '06:00'
       timezone: Atlantic/Reykjavik
     open-pull-requests-limit: 5
+    # A package joins the first group that matches it, so the two narrow groups come first.
     groups:
+      # The 3D viewer's stack moves together, and apart from everything else: its updates are
+      # the ones the Three.js end-to-end tests exist for, and a failure there should name them.
+      three-d:
+        patterns: ['three', '@types/three', '@react-three/*']
+        update-types: [minor, patch]
+      # Playwright brings its own browser builds, so an update can change what the end-to-end
+      # tests see without any change to the site.
+      playwright:
+        patterns: ['@playwright/*', 'playwright', '@axe-core/playwright']
+        update-types: [minor, patch]
       minor-and-patch:
         update-types: [minor, patch]
     commit-message:
