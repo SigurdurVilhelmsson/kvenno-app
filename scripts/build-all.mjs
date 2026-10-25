@@ -95,6 +95,14 @@ if (!skipGames) {
     console.error('   ❌ Games build failed:', error.message);
     process.exit(1);
   }
+  // The bundler decides which chunk each shared module lands in, and one move can put Three.js
+  // on a 3D game's first page load. Always shown, since it names what each game fetches.
+  try {
+    execSync(`node scripts/check-lazy-3d.mjs "${distDir}"`, { cwd: rootDir, stdio: 'inherit' });
+  } catch {
+    console.error('   ❌ A 3D game loads Three.js before its 3D view opens (see above)');
+    process.exit(1);
+  }
 }
 
 // Step 3: Build lab reports (2x with different base paths)
