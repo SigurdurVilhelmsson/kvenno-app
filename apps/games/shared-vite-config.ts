@@ -82,6 +82,23 @@ export function createGameViteConfig({
           // every other game in the year, so a flat `assets/` would mix them and
           // make stale-chunk cleanup impossible to scope.
           chunkFileNames: `assets/${gameName}/[name]-[hash].js`,
+          // React gets a chunk of its own in a split game. Left to itself, Rolldown puts modules
+          // the entry shares with the deferred 3D code in whichever chunk it likes, and on
+          // 2026-10-25 it folded React and its runtime into the Three.js chunk, so Lewis loaded
+          // Three.js on every page open. A group also makes Rolldown emit its runtime as a chunk
+          // of its own. scripts/check-lazy-3d.mjs fails the build if Three.js comes back.
+          ...(singleFile
+            ? {}
+            : {
+                codeSplitting: {
+                  groups: [
+                    {
+                      name: 'react',
+                      test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+                    },
+                  ],
+                },
+              }),
         },
       },
     },

@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
  *
  * The atom labels are drei `<Text>` (troika-three-text), and both ways it broke
  * were invisible to the other 3D tests, which only check that a <canvas>
- * appears — it does, with "Sæki þrívíddarsýn…" drawn inside it for good:
+ * appears — it does, with "Sæki þrívíddarsýn…" over it for good:
  *
  * - With no font given, troika fetched per-character font data from
  *   cdn.jsdelivr.net, which the games' `connect-src 'self'` refuses.
