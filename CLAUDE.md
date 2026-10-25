@@ -357,7 +357,8 @@ messages are now Icelandic — note `Sæki`, not `Hleð`, since `hleðsla` means
 CI): Three.js throws while rendering, so the probe cannot see it. `MoleculeViewer3DLazy` wraps the
 viewer in its own `ErrorBoundary` with a panel message, and `molecule-viewer-3d-error.test.tsx`
 holds it. Playwright's Firefox forces WebGL on (`webgl.force-enabled`), since the runner sometimes
-blocks it.
+blocks it, and on runs where it has no GL driver at all the lazy-load test accepts that panel, in
+Firefox only and only after the browser logged that it could not create a WebGL context.
 
 **3D labels fixed (Oct 2026) — the 3D view could not load under the CSP in `nginx-site.conf`.** The atom
 labels are drei `<Text>`, which is troika-three-text, and it failed twice over

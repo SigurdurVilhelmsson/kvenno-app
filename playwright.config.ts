@@ -23,10 +23,10 @@ export default defineConfig({
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
-        // The CI runner draws in software, and Firefox sometimes blocks WebGL 2 there
-        // ("AllowWebgl2:false restricts context creation on this system"), so the 3D tests
-        // failed on some runs and not others (docs/REVIEW-QUEUE.md D2). They test the site,
-        // not the runner's graphics, so WebGL is forced on.
+        // The CI runner has no GPU, and Firefox sometimes blocks WebGL 2 there ("AllowWebgl2:false
+        // restricts context creation on this system"), so WebGL is forced on. On other runs it
+        // finds no GL driver at all, which no setting fixes: the lazy-load test accepts the
+        // viewer's no-WebGL panel in that case (docs/REVIEW-QUEUE.md D2).
         launchOptions: { firefoxUserPrefs: { 'webgl.force-enabled': true } },
       },
       // mobile-games.spec.ts tags most of its per-screen paths chromium-only

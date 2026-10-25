@@ -906,12 +906,14 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
       the test now writes what the page did into its failure (PR #125), and that showed the cause.
       The runner's Firefox sometimes refused a WebGL 2 context ("AllowWebgl2:false restricts
       context creation on this system"). Three.js then threw, and the throw reached the game's
-      only `ErrorBoundary`, which replaced the whole game with its error page. Fixed two ways:
-      Playwright's Firefox forces WebGL on (`webgl.force-enabled`, `playwright.config.ts`), and
-      `MoleculeViewer3DLazy` catches a render failure in its own panel
-      (`molecule-viewer-3d-error.test.tsx`). That second fix is for students too: a school
-      computer whose browser blocks WebGL lost the whole VSEPR, Lewis or IMF game, not just the
-      3D view.
+      only `ErrorBoundary`, which replaced the whole game with its error page.
+      `MoleculeViewer3DLazy` now catches a render failure in its own panel
+      (`molecule-viewer-3d-error.test.tsx`, PR #126), which is for students too: a school computer
+      whose browser blocks WebGL lost the whole VSEPR, Lewis or IMF game, not just the 3D view.
+      Playwright's Firefox forces WebGL on (`webgl.force-enabled`), which clears the block, but on
+      other runs it finds no GL driver at all ("Exhausted GL driver options"). There the test
+      accepts the viewer's no-WebGL panel, in Firefox only and only when the browser logged that
+      it could not create a WebGL context; Chromium must still draw a canvas.
   - [ ] **Siggi: the wording of the new panel message.** Under `Þrívíddarsýn er ekki tiltæk` it
         reads `Þessi vafri getur ekki birt þrívíddarsýn á þessari tölvu.` (`ERROR_DETAIL` in
         `MoleculeViewer3DLazy.tsx`), drafted by Claude.
