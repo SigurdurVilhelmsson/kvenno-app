@@ -22,8 +22,8 @@ needs no ruling, only time.
   - `scripts/deploy.sh` does **not** install the nginx config. If you get a 200, copy
     `server/nginx-site.conf` over the live site file, then run
     `sudo nginx -t && sudo systemctl reload nginx`.
-  - Check the live filename first. Every doc says `sites-available/kvenno.app` since 2026-10-03;
-    the server has not been looked at (D2).
+  - The live file is `/etc/nginx/sites-available/kvenno.app` (Siggi, 2026-10-25), as every doc
+    says.
 - [ ] **Phone smoke test.** On a phone, play one question of a few games, e.g. Stilla efnajöfnur,
       Mólhugtakið and Lögmál Hess.
   - Expect question → answer → feedback → Næsta with little or no scrolling.
@@ -919,11 +919,11 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
         `MoleculeViewer3DLazy.tsx`), drafted by Claude.
 - [x] **`deploy.sh` never installs `server/nginx-site.conf`.** Either document the manual step in
       `docs/DEPLOYMENT.md`, or add an opt-in step to the script. Documented 2026-10-02 (PR #82).
-- [ ] **The docs disagree on the nginx site filename:** `README.md` says `kvenno`,
+- [x] **The docs disagree on the nginx site filename:** `README.md` says `kvenno`,
       `docs/DEPLOYMENT.md` says `kvenno.app`. Fix them to match whatever the server actually uses.
       2026-10-03: `README.md` now says `kvenno.app`, as `server/nginx-site.conf`'s own header,
-      `server/README.md` and `docs/DEPLOYMENT.md` do. Nobody has looked at the server, so tick
-      this when the A-section redirect check reads the live filename.
+      `server/README.md` and `docs/DEPLOYMENT.md` do. — 2026-10-25: the server's file is
+      `kvenno.app`, Siggi confirmed, so every doc is right.
 - [x] **The three 3D games' unhashed `{game}.js`/`{game}.css` are cached for a year.** Hash them,
       or give them a short cache header. Hashed 2026-10-02 (PR #82), under `assets/{game}/`.
 - [x] **pnpm 9.15 → current:** 12.8.1, 2026-09-29, PR #69. It needed `allowBuilds` for esbuild
