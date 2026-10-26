@@ -15,7 +15,7 @@
     "@azure/msal-react": "^5.7.3",
     "@kvenno/shared": "workspace:*",
     "lucide-react": "^1.61.0",
-    "pdfjs-dist": "5.5.207",
+    "pdfjs-dist": "6.4.299",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.4"
