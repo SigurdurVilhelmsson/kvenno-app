@@ -322,6 +322,19 @@ const STEPS: Step[] = [
 /** The steps a molecule is counted on: all but the written explanation. */
 const GRADED_STEPS = STEPS.filter((s) => s.id !== 'explanation').length;
 
+/** A typed count as a whole number, or NaN for anything else (blank, `2.5`, `2,5`). */
+export function wholeCount(text: string): number {
+  const value = Number(text.trim());
+  return text.trim() !== '' && Number.isInteger(value) ? value : NaN;
+}
+
+/** The explanation step accepts any answer of at least this many characters. */
+export const MIN_EXPLANATION_LENGTH = 10;
+
+export function explanationLongEnough(text: string): boolean {
+  return text.trim().length >= MIN_EXPLANATION_LENGTH;
+}
+
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentMolecule, setCurrentMolecule] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -414,17 +427,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     let correct = false;
 
     if (step.id === 'count') {
+      // A count is a whole number: parseInt read `2.5` as 2 and marked it right (found
+      // 2026-11-02; Lewis-formúlur's Stig 1 had the same fix).
       correct =
-        parseInt(bondingPairsAnswer, 10) === molecule.bondingPairs &&
-        parseInt(lonePairsAnswer, 10) === molecule.lonePairs;
+        wholeCount(bondingPairsAnswer) === molecule.bondingPairs &&
+        wholeCount(lonePairsAnswer) === molecule.lonePairs;
     } else if (step.id === 'geometry') {
       correct = selectedGeometry === molecule.correctGeometryId;
     } else if (step.id === 'angle') {
       // Approximate answers within ±2°, read with the decimal comma
       correct = gradeBondAngle(selectedAngle, molecule.bondAngle, molecule.correctGeometryId);
     } else if (step.id === 'explanation') {
-      // Always correct for explanation step - it's about learning
-      correct = explanation.length > 20;
+      // Any explanation long enough to check is accepted - it's about learning, and it is not
+      // counted. Athuga turns on at the same length, so a 10–20 character answer no longer shows
+      // Rangt after the button allowed it (found 2026-11-02).
+      correct = explanationLongEnough(explanation);
     }
 
     setStepResult(correct ? 'correct' : 'incorrect');
@@ -471,7 +488,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     (step.id === 'count' && (!bondingPairsAnswer || !lonePairsAnswer)) ||
     (step.id === 'geometry' && !selectedGeometry) ||
     (step.id === 'angle' && !selectedAngle) ||
-    (step.id === 'explanation' && explanation.length < 10);
+    (step.id === 'explanation' && !explanationLongEnough(explanation));
   // Enter in an answer field checks it, as the button would.
   const checkOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter' || stepResult !== null || checkDisabled) return;
