@@ -174,7 +174,7 @@ export const PUZZLES: Puzzle[] = [
       { equationId: 'eq1', reverse: false, multiply: 1 },
       { equationId: 'eq2', reverse: false, multiply: 1 },
     ],
-    hint: 'NO er millistig. Leggðu saman til að NO styttist út.',
+    hint: 'NO er milliefni. Leggðu saman til að NO styttist út.',
     explanation: 'Jöfnur 1 + 2: NO styttist út. 90,3 + (-57,1) = 33,2 kJ',
   },
   {

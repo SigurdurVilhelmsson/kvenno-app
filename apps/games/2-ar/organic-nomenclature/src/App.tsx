@@ -63,12 +63,7 @@ function App() {
         : null,
   });
 
-  const applyLevelResult = (
-    level: 1 | 2 | 3,
-    correct: number,
-    total: number,
-    next: ActiveLevel
-  ) => {
+  const applyLevelResult = (level: 1 | 2 | 3, correct: number, total: number) => {
     const key = `level${level}` as const;
     // The best run is kept as a pair. Stig 2's two modes have different lengths, so the
     // larger count alone could be read against the other mode's total ("10 af 8 rétt").
@@ -80,15 +75,21 @@ function App() {
       [`${key}Completed`]: true,
       ...(better ? { [`${key}Correct`]: correct, [`${key}Total`]: total } : {}),
     } as Partial<Progress>);
-    setActiveLevel(next);
+    // The closing screen says every level is done, so it opens only when the level just
+    // finished completes the set. Levels are not gated, and finishing Stig 3 first used to
+    // open it over levels never played (found 2026-11-02, as in Millisameindakraftar).
+    const allDone = ([1, 2, 3] as const).every(
+      (n) => n === level || progress[`level${n}Completed`]
+    );
+    setActiveLevel(allDone ? 'complete' : 'menu');
   };
 
   const handleLevel1Complete = (correct: number, total: number) =>
-    applyLevelResult(1, correct, total, 'menu');
+    applyLevelResult(1, correct, total);
   const handleLevel2Complete = (correct: number, total: number) =>
-    applyLevelResult(2, correct, total, 'menu');
+    applyLevelResult(2, correct, total);
   const handleLevel3Complete = (correct: number, total: number) =>
-    applyLevelResult(3, correct, total, 'complete');
+    applyLevelResult(3, correct, total);
 
   /** "6 af 8 rétt", or "Lokið" for a level finished before counts were kept. */
   const resultLabel = (level: 1 | 2 | 3): string => {

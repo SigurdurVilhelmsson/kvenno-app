@@ -148,30 +148,25 @@ DOM environment.
 
 ## Open
 
-Found 2026-11-02, not yet fixed:
+Found 2026-11-02, a ruling for Siggi (`docs/REVIEW-QUEUE.md` C21):
 
-- **CO₂ and SO₂ are drawn with single bonds.** `geometryToMolecule` hard-codes `'single'` and
-  `vseprToMolecule` defaults to it (`utils/vseprConverter.ts`), and neither caller passes a bond
-  type, so Stig 1's linear and three-domain bent pictures (CO₂, SO₂) and Stig 2's CO₂ show O–C–O in
-  2D and 3D. The shared renderers draw double bonds when asked; the Lewis game, one node earlier,
-  teaches O=C=O.
-- **A non-whole count is graded right.** Stig 2's count step compares `parseInt(…, 10)`
-  (`components/Level2.tsx`, `checkStep`), so `2.5` passes as 2 — the defect Lewis Stig 1 fixed.
-- **A short explanation is marked "Rangt".** Athuga is enabled at 10 characters but the step needs
-  more than 20, so a 15-character answer shows `Rangt — Sjáðu rétt svar hér að ofan`. It is never
-  counted, but a student reads it.
 - **Stig 3 question 4 (SF₆) still gives d-orbitals as the reason**, in its hint
   (`Þetta krefst d-svigrúma.`) and explanation, and writes `3. röð` where the game elsewhere says
   `3. lotu`.
   Decision 7 reached Stig 2 only; whether it reaches the sp³d / sp³d² hybridization model is
   Siggi's call.
-- **`Þríhyrnd` labels trigonal planar** on the menu's shape table (`App.tsx`) and in Stig 3's
-  hybridization diagram and table, where the levels say `Þríhyrningslaga flatt`, the glossary's
-  form.
 
 Also open, tracked elsewhere: the hand checks in `docs/REVIEW-QUEUE.md` B, and the no-WebGL panel's
 wording (D2), shared by the three 3D games. The level screens build their own `← Til baka` and the
 completion screen keeps its 🏆 and no `Header`; C6's chrome ruling covered Lewis only.
+
+**Fixed 2026-11-02**, found writing this file: CO₂ and SO₂ were drawn with single bonds; they
+are now O=C=O and, as Lewis-formúlur's first vokmynd, O=S–O (`MULTIPLE_BONDS` in
+`utils/vseprConverter.ts`, `vseprConverter.test.ts`). Stig 2's count step read `2.5` as 2 and
+its explanation step marked a 10–20 character answer `Rangt` after Athuga allowed it
+(`wholeCount`, `explanationLongEnough`, `level2-grading.test.tsx`). The menu and Stig 3 said
+`Þríhyrnd` for trigonal planar; they say `Þríhyrningslaga flatt`, and `icelandic-text.test.ts`
+bans the bare form.
 
 **Closed.** Decisions 1, 6, 7 (Stig 2), 8 (`klíptu eða skrunaðu`), 20, 67, 68, 69, 70 and 71 are
 applied, and the bond-angle scale (D1) is fixed. The three-domain bent card was once reported as a

@@ -62,6 +62,8 @@ const BANNED: { pattern: RegExp; why: string }[] = [
     pattern: /Hverfanleiki|Ferlisstuðul/,
     why: 'coined chips, in no glossary or the book; path-independence is ástandsfall (item 78)',
   },
+  // Found 2026-11-02 in Stig 2 puzzle 4's hint; Hvarfhraði bans it too.
+  { pattern: /millistig/i, why: 'milliefni (ordabok: intermediate;milliefni)' },
 ];
 
 function sourceFiles(dir: string): string[] {

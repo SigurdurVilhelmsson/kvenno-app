@@ -138,13 +138,6 @@ config's DOM environment.
 
 ## Open
 
-- **Finishing Stig 3 always opens the closing screen** — found 2026-11-02, not yet fixed.
-  `handleLevel3Complete` in `src/App.tsx` goes to `'complete'` whatever else is done, so a student
-  who starts with Stig 3 is told `Þú hefur lokið öllum stigum!`, with `Lokið` beside the two levels
-  never opened (`resultLabel` shows `Lokið` for any level with no count). Levels are not gated
-  (ruling 2026-08-29). `2-ar/intermolecular-forces` had the same defect and fixed it by opening the
-  screen only when the level completes the set (its `completion-screen.test.tsx`). No test here
-  starts with Stig 3: `level-results.test.tsx`'s last case finishes it with the other two done.
 - **The old repo's `Level4.tsx` for this game was never carried over** (`ORPHANED_GAMES_ASSESSMENT.md`
   :33). Under the 2026-08-29 ruling there is no Level 4, so any of it would come in as Apply-phase
   content, rebuilt rather than restored.
@@ -154,7 +147,9 @@ config's DOM environment.
 
 **Closed.** The April review cycle's deferred items for this game are done: branched molecules in
 Stig 2 (above), touch for the drag builder (the shared component's, CLAUDE.md), and the move to
-`useGameProgress` (`apps/games/2-ar/REVIEW_TRACKER.md`).
+`useGameProgress` (`apps/games/2-ar/REVIEW_TRACKER.md`). The closing screen opened after Stig 3 whatever else was played (found and fixed
+2026-11-02): it now opens only when the level just finished completes the set, as in
+Millisameindakraftar, held by `completion-screen.test.tsx`.
 
 ## Leftovers
 

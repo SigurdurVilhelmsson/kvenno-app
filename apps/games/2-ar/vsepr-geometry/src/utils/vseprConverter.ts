@@ -31,6 +31,24 @@ export interface VSEPRMolecule {
 }
 
 /**
+ * The bonds to draw from the central atom, in the order the surrounding atoms are listed, for the
+ * molecules whose bonds are not all single. Every other molecule here is drawn with single bonds.
+ *
+ * CO₂ is O=C=O. SO₂ is drawn as the first of the two vokmyndir Lewis-formúlur teaches for it, one
+ * double bond and one single (`FormalChargeExample.tsx`), so the two games show the same molecule.
+ * Until 2026-11-02 every bond was single, so both were drawn as if O–C–O.
+ */
+export const MULTIPLE_BONDS: Record<string, readonly BondType[]> = {
+  'CO₂': ['double', 'double'],
+  'SO₂': ['double', 'single'],
+};
+
+/** The bond to the `index`-th surrounding atom of `formula`. */
+function bondTypeFor(formula: string, index: number): BondType {
+  return MULTIPLE_BONDS[formula]?.[index] ?? 'single';
+}
+
+/**
  * Map VSEPR geometry IDs to AnimatedMolecule geometry types
  */
 const GEOMETRY_MAP: Record<string, MolecularGeometry | undefined> = {
@@ -107,7 +125,7 @@ function parseFormula(
 /**
  * Convert a VSEPR molecule to AnimatedMolecule Molecule format
  */
-export function vseprToMolecule(vsepr: VSEPRMolecule, bondType: BondType = 'single'): Molecule {
+export function vseprToMolecule(vsepr: VSEPRMolecule, bondType?: BondType): Molecule {
   const atoms: MoleculeAtom[] = [];
   const bonds: MoleculeBond[] = [];
 
@@ -136,7 +154,7 @@ export function vseprToMolecule(vsepr: VSEPRMolecule, bondType: BondType = 'sing
       bonds.push({
         from: centralId,
         to: atomId,
-        type: bondType,
+        type: bondType ?? bondTypeFor(vsepr.formula, atomIndex),
       });
       atomIndex++;
     }
@@ -188,7 +206,7 @@ export function geometryToMolecule(geo: VSEPRGeometry): Molecule {
       bonds.push({
         from: centralId,
         to: atomId,
-        type: 'single',
+        type: bondTypeFor(geo.example, atomIndex),
       });
       atomIndex++;
     }

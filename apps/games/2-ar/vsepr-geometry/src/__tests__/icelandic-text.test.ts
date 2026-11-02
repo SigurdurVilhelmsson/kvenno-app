@@ -76,6 +76,9 @@ describe('vsepr-geometry text', () => {
     ['tvöfald (not a form of tvöfaldur)', /\btvöfald\b/i],
     ['tvöfalt tengingar', /tvöfalt tengingar/],
     ['þríhyrnd sléttu lögun', /þríhyrnd sléttu lögun/],
+    // Found 2026-11-02 in the menu's shape table and Stig 3's hybridization table, where Stig 1
+    // and 2 say þríhyrningslaga flatt. The bipyramid keeps þríhyrndur.
+    ['bare þríhyrnd for trigonal planar', /\bþríhyrnd\b(?!ur)/i],
     ['brennisteinið', /brennisteinið/],
     ['Þú vantar', /Þú vantar/],
     ['fasti efnið', /fasti efnið/],

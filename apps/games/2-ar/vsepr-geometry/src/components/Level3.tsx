@@ -485,7 +485,7 @@ const HYBRIDIZATION_CONFIGS: Record<
   { label: string; orbitals: string; angle: string; shape: string }
 > = {
   2: { label: 'sp', orbitals: '1s + 1p', angle: '180°', shape: 'Línuleg' },
-  3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrnd' },
+  3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrningslaga flatt' },
   4: { label: 'sp³', orbitals: '1s + 3p', angle: '109,5°', shape: 'Ferflötungur' },
   5: {
     label: 'sp³d',
@@ -1093,7 +1093,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <tr className="border-t">
                   <td className="p-2">3</td>
                   <td className="hybridization-sp2">sp²</td>
-                  <td>Þríhyrnd</td>
+                  <td>Þríhyrningslaga flatt</td>
                 </tr>
                 <tr className="border-t">
                   <td className="p-2">4</td>

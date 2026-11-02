@@ -196,7 +196,11 @@ describe('the menu and the end screen', () => {
         level1Completed: true,
         level1Correct: 5,
         level1Total: 6,
-        level2Completed: false,
+        // Stig 2 done too: the end screen opens only when Stig 3 completes the set
+        // (completion-screen.test.tsx).
+        level2Completed: true,
+        level2Correct: 4,
+        level2Total: 6,
         level3Completed: false,
       })
     );
@@ -213,6 +217,7 @@ describe('the menu and the end screen', () => {
     expect(screen.getByRole('heading', { name: 'Til hamingju!' })).toBeTruthy();
     const text = document.body.textContent ?? '';
     expect(text).toContain('5 af 6 rétt');
+    expect(text).toContain('4 af 6 rétt');
     expect(text).toContain(`${n - 1} af ${n} rétt`);
     expectNoRunningScore('end screen');
   });

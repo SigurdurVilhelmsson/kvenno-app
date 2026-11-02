@@ -184,15 +184,11 @@ environment: `pnpm exec vitest run apps/games/3-ar/ph-titration`.
   at 0,150 M and Ka 6,8 × 10⁻⁴ gives 2,00. `ph-calculations.test.ts` pins it with `it.fails`
   "pending a teacher decision on the declared value". It is not in `docs/REVIEW-QUEUE.md`, and no
   screen shows `initialPH` — only the test reads it — so no student meets the gap.
-- **The end screen says `Þú hefur lokið öllum stigum!` after Stig 3 whatever else was played** —
-  found 2026-11-02, not yet fixed. Levels are not gated and Stig 3 always routes there
-  (`App.tsx:115`, `:162`); the list below the heading shows `Ekki lokið` for a level never played,
-  so the page contradicts itself.
 
 **Closed.** Running scores went with decision 1 (b), PR #85. The hint penalties went on
 2026-08-26. The Y3 review cycle's items for this game — no teaching before Stig 1's questions, and an
 undisclosed Stig 2 tolerance — are fixed by the intro card and the `Leyfilegt svigrúm` line. The
-switcher question was settled for this game by stripping it (2026-09-19).
+switcher question was settled for this game by stripping it (2026-09-19). The closing screen opened after Stig 3 whatever else was played (found and fixed 2026-11-02): it now opens only when the level just finished completes the set, as in Millisameindakraftar, held by `completion-screen.test.tsx`.
 
 ## Leftovers
 
