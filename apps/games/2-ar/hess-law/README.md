@@ -129,12 +129,6 @@ environment.
 
 ## Open
 
-- **The closing screen claims a run that did not happen (found 2026-11-02, not yet fixed).**
-  `handleLevel3Complete` in `App.tsx` always opens `Þú hefur lokið öllum stigum!`, so a student who
-  starts on Stig 3 — allowed, since levels are not gated — is congratulated on all three, and
-  `resultLabel` prints `Lokið` for a level never played, since it cannot tell "not played" from
-  "saved before counts". `2-ar/kinetics` and `1-ar/lausnir` fixed the same thing (kinetics'
-  `app-complete.test.tsx`); `level-results.test.tsx` here currently expects the old behaviour.
 - **i18n.** This is one of the nine games that keep a `LanguageSwitcher` (in the menu header), and
   whether to finish wiring them is the platform-wide open `useGameI18n` question (`CLAUDE.md`,
   "Remaining deferred"; `docs/i18n-coverage.md`). Here the switcher changes only Stig 3's play
@@ -144,12 +138,8 @@ environment.
   English, wrong in Polish, which writes a comma (mobile-pass decision 4 noted both). The Polish
   block itself is still waiting for teacher sign-off (`CLAUDE.md`, "Hess Polish i18n block").
 
-- **`millistig` for an intermediate (found 2026-11-02, not yet fixed).** Stig 2 puzzle 4's hint
-  says `NO er millistig` (`data/puzzles.ts:177`); `ordabok.md` gives `intermediate;milliefni`, and
-  `2-ar/kinetics` bans `millistig` in its own screen-text test.
-
 **Closed.** The hint penalty (2026-08-26), the formation-enthalpy source (decision 9), the running
-score (decision 1 (b)), and decisions 75–79, all above.
+score (decision 1 (b)), and decisions 75–79, all above. The closing screen opened after Stig 3 whatever else was played (found and fixed 2026-11-02): it now opens only when the level just finished completes the set, as in Millisameindakraftar, held by `completion-screen.test.tsx`. Stig 2 puzzle 4's hint called NO a `millistig`; it says `milliefni` since 2026-11-02, and `icelandic-text.test.ts` bans the other word.
 
 ## Leftovers
 

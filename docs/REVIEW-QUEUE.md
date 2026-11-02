@@ -830,7 +830,7 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
 Each is recorded in the game's README under `## Open`, with file and line.
 
 - [ ] **Einingagreining Stig 3's intro, two sentences.** `Veldu fæstu skrefin — styttri leiðir gefa
-    nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedback says
+  nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedback says
       `Allar leiðirnar hér gefa sama svarið`, and Stig 0 teaches that exact factors limit nothing.
       `lengd skiptir ekki máli` (`:452-453`) is untrue too: `scoreExplanation` credits by length.
       Reword, or change the scoring?
@@ -853,26 +853,27 @@ Each is recorded in the game's README under `## Open`, with file and line.
 
 From the vertical-scroll design's §7 and the mobile-pass decisions' last section.
 
-- [ ] **Found writing the game READMEs (2026-11-02, PR #137)**, each under its README's `## Open`:
-  - [ ] **Closing screen after Stig 3 whatever else was played:** `Þú hefur lokið öllum stigum!`
+- [x] **Found writing the game READMEs (2026-11-02, PR #137)**. All six fixed 2026-11-02, in the PR
+      after #137; each README now lists its fix under `## Open` as fixed:
+  - [x] **Closing screen after Stig 3 whatever else was played:** `Þú hefur lokið öllum stigum!`
         and `Lokið` for an unplayed level, in pH Títrun, Lögmál Hess and Lífræn nafnagift
         (`handleLevel3Complete` always routes to `'complete'`). Lausnir, Hvarfhraði and
         Millisameindakraftar were fixed with an all-done check; copy theirs. Other games
         unchecked.
-  - [ ] **VSEPR draws CO₂ and SO₂ with single bonds:** `geometryToMolecule` always uses
+  - [x] **VSEPR draws CO₂ and SO₂ with single bonds:** `geometryToMolecule` always uses
         `'single'` and no caller passes `'double'` (`utils/vseprConverter.ts`).
-  - [ ] **VSEPR Stig 2:** the pair counts are graded with `parseInt`, so `2,5` counts as 2
+  - [x] **VSEPR Stig 2:** the pair counts are graded with `parseInt`, so `2,5` counts as 2
         (`Level2.tsx:418-419`); an explanation of 10–20 characters enables Athuga and then shows
         Rangt (`:427`, `:474`).
-  - [ ] **Rafeindabygging Stig 2's label and placeholder are oxygen's configuration**
+  - [x] **Rafeindabygging Stig 2's label and placeholder are oxygen's configuration**
         (`1s2 2s2 2p4`, `Level2.tsx:307,314`), one of the eight answers it asks for; the menu card
         says the same (`App.tsx:245`).
-  - [ ] **Terms:** Lögmál Hess Stig 2 puzzle 4's hint says `millistig` (`data/puzzles.ts:177`;
+  - [x] **Terms:** Lögmál Hess Stig 2 puzzle 4's hint says `millistig` (`data/puzzles.ts:177`;
         `ordabok.md` gives `milliefni`), and so does Einingagreining's `Level3.tsx:227`, with
         the wrong gender (`margar`); VSEPR says `Þríhyrnd` for trigonal planar in three places
         (`App.tsx:336`, `Level3.tsx:488`, `:1096`) where Stig 1 and 2 use
         `þríhyrningslaga flatt`.
-  - [ ] **Millisameindakraftar Stig 3 keeps the English `vs` in three titles**
+  - [x] **Millisameindakraftar Stig 3 keeps the English `vs` in three titles**
         (`Level3.tsx:27`, `:141`, `:365`), which decision 73 removed from challenge 6.
 - [x] **Lab reports pinned the PDF.js worker to a typed version**, `5.5.207` in
       `apps/lab-reports/src/utils/fileProcessing.ts`. Production builds sit under a subpath and so

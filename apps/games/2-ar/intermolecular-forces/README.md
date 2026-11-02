@@ -163,9 +163,6 @@ config's DOM environment.
 
 ## Open
 
-- **Three Stig 3 titles still say `vs`** (challenges 1, 4 and 10: `Etanól vs Dímetýleter`,
-  `n-Oktan vs. 2,2,3,3-Tetrametýlbútan`, `HF vs. H₂O`), though decision 73 retitled challenge 6
-  partly because `vs.` is English. Found 2026-11-02, not ruled; challenge 6's own title uses `eða`.
 - **The 3D view's no-WebGL panel wording** is drafted by Claude and waits on Siggi
   (`docs/REVIEW-QUEUE.md` D2, the flaky Firefox item). It is shared with Lewis and VSEPR.
 - **The old repo's `Level4.tsx` for this game was never carried over** (`ORPHANED_GAMES_ASSESSMENT.md`
@@ -173,6 +170,11 @@ config's DOM environment.
   content, rebuilt rather than restored.
 - **The IMF → Lífræn nafnagift link** (functional groups and properties) was planned in February
   and never built (`docs/FEBRUARY-DECISIONS-RECOVERED.md`, "Cross-game integration").
+
+**Fixed 2026-11-02**, found writing this file: three Stig 3 titles and four hints kept the English
+`vs`. The titles follow decision 73's `Ediksýra eða asetaldehýð` (`Etanól eða dímetýleter`,
+`n-Oktan eða 2,2,3,3-tetrametýlbútan`, `HF eða H₂O`), the hints say `og` or `á móti`, and
+`icelandic-text.test.tsx` bans `vs`.
 
 **Closed.** The 2026-04 review cycle's "ForceStrengthAnimation is never rendered" flag was wrong
 (iteration 2 says so in `apps/games/2-ar/REVIEW_TRACKER.md`): Stig 1's teaching page renders it.

@@ -134,16 +134,16 @@ There are no side files. Run the tests from the repo root:
 
 ## Open
 
-- **Stig 2 prints the oxygen answer while asking for oxygen** (found 2026-11-02, not yet fixed).
-  The input's label reads `Sláðu inn rafeindaskipan (t.d. 1s2 2s2 2p4):` and its placeholder
-  `1s2 2s2 2p4...` (`Level2.tsx:307,314`) on every element, and O (`1s² 2s² 2p⁴`) is the fourth.
-  The menu card's `t.d. 1s² 2s² 2p⁴ fyrir súrefni` (`App.tsx:245`) and the intro's worked example
-  are oxygen too. `redox-reactions` fixed the same shape in its Stig 3 placeholder.
 - **The bridge to Lewis is not built.** February's spec had five levels; this game builds three.
   Energy ordering (why 4s fills before 3d) is a teaching panel in Stig 2 with no practice, and the
   s/p/d/f blocks → valence electrons → Lewis dot symbols level, the reason the game sits before
   Lewis-formúlur, does not exist. Tracked only in `docs/FEBRUARY-DECISIONS-RECOVERED.md` (the
   five-level table, and "Then finish `rafeindabygging`").
+
+**Fixed 2026-11-02**, found writing this file: Stig 2's input label, placeholder and format note,
+and the menu card, gave oxygen's configuration as the example while oxygen is one of the answers.
+The example is boron now (`1s2 2s2 2p1`), held by `example-not-an-answer.test.tsx`; the intro's
+worked example of oxygen is teaching and unchanged.
 
 ## Leftovers
 
