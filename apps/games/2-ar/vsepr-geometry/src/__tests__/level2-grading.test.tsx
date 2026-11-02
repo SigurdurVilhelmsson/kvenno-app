@@ -2,7 +2,6 @@
 import { fireEvent } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
-
 import { answerAngle, answerCount, check, next, POOL, startLevel2 } from './level2-play';
 import { clockPastNextGuard } from './next-guard-clock';
 import { explanationLongEnough, MIN_EXPLANATION_LENGTH, wholeCount } from '../components/Level2';
