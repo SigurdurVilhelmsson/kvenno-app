@@ -1245,8 +1245,9 @@ eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app it
         `apps/lab-reports/src/config/paused.ts` shows only `components/Paused.tsx`, with no sign-in,
         and the year hubs' cards read `Í hléi` instead of `✓ Í notkun`. Set it to false to bring the
         old app back.
-  - [ ] **Siggi: the page's wording**, drafted by Claude: `Verkfærið er í hléi á meðan það er
-    endurgert. Það verður tekið aftur í notkun á næstu önn.`, and `Í hléi` on the hub cards.
+  - [x] **Siggi: the page's wording**, drafted by Claude: `Verkfærið er í hléi á meðan það er
+endurgert. Það verður tekið aftur í notkun á næstu önn.`, and `Í hléi` on the hub cards. — 2026-11-02:
+        Siggi: fine as it is.
   - [ ] **Before deploying it**, add to `server/.env` on the host
         `AZURE_TENANT_ID=` and `AZURE_CLIENT_ID=`, the same values as `VITE_AZURE_TENANT_ID` and
         `VITE_AZURE_CLIENT_ID` in `apps/lab-reports/.env`. Without them the server fails closed:
