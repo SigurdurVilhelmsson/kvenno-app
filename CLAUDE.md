@@ -1661,8 +1661,17 @@ of the decimal-comma pass, added 2026-09-22. Four games now print every number a
 a comma, each guarded by its own `decimal-comma.test.ts`: `3-ar/buffer-recipe-creator`,
 `3-ar/gas-law-challenge`, `1-ar/molmassi` (which also lost its float noise — HCl's molar mass had
 shown as `36.458000000000006 g` — and prints Avogadro-scale values through `formatScientific`) and
-`1-ar/lausnir`. Other games were not audited for this; use `formatDecimal` rather than a local
-`fmt` when you find one.
+`1-ar/lausnir`. **Every game was audited on 2026-11-02, and none shows a decimal point.** Nine
+games carry a `decimal-comma.test.ts` by now (the four above, plus `lotukerfid`, `jafnvaegisfasti`,
+`leysnijafnvaegi`, `ph-titration` and `thermodynamics-predictor`); the rest print through a local
+`fmt` that swaps the comma in, or print no decimals. Replaying every path in
+`e2e/mobile-game-screens.ts` found 1 554 decimals on screen across 20 games, all with a comma, and
+`e2e/mobile-games.spec.ts` now fails on any screen whose text has a full stop between two digits.
+The one trap found was latent: molmassi's moles-of-atoms worked solution printed the raw `mass`,
+whole numbers today, and now prints `massLabel`. English fields (`hintsEn`, `…En`, the `en`
+blocks) keep their full stop, and so do factor strings the data tests multiply out
+(`dimensional-analysis`' `1 míla / 1.609 km`, printed through `withDecimalComma`). Use
+`formatDecimal` rather than a new local `fmt`.
 
 Reported by the audit and recorded in the READMEs, not independently re-verified: ungoverned
 terms in `thermodynamics-predictor` (enthalpy loanword in t-spelling, four names for entropy).

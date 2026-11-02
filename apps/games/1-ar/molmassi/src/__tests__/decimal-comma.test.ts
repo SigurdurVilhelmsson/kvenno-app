@@ -96,6 +96,21 @@ describe('decimal comma', () => {
     }
   });
 
+  it('a Stig 3 problem with a decimal mass still prints it with a comma', () => {
+    // Every mass in the pool happens to be whole except NaCl's 175,5, which is a
+    // mass-to-particles problem. The moles-of-atoms worked solution printed the
+    // raw `mass` rather than `massLabel`, so the next decimal mass added to that
+    // type would have shown `12.5 g` (found 2026-11-02). Give every descriptor a
+    // decimal mass and check each worked solution.
+    for (const d of DESCRIPTORS) {
+      if (!('mass' in d)) continue;
+      const problem = buildProblem({ ...d, mass: 12.5, massLabel: '12,5' });
+      for (const text of [problem.question, ...problem.steps]) {
+        expect(text, `${d.type} ${d.formula}`).not.toMatch(DECIMAL_POINT);
+      }
+    }
+  });
+
   it('components format numbers through formatDecimal, not toFixed', () => {
     // `toFixed` writes a full stop. Nothing in these components needs one:
     // none of them draws SVG geometry from a formatted number.

@@ -10,7 +10,9 @@ import { runStep } from './screen-steps';
  * pass: for each game, one agent fixed the phone layout and a second replayed
  * every path from a fresh load and confirmed it ends on the screen it names.
  * This spec replays them and asserts the one thing a phone student cannot work
- * around — the page scrolling sideways, which hides the edge of every row.
+ * around — the page scrolling sideways, which hides the edge of every row —
+ * and, since every screen is already open, that no number on it is written
+ * with a decimal point (see `decimalPoints`).
  *
  * The step semantics (screen-steps.ts) must stay identical to the harness the
  * paths were verified with: `click` is a button, then a link, then any text
@@ -38,6 +40,20 @@ function horizontalOverflow(page: Page): Promise<number> {
   );
 }
 
+/**
+ * Every number on screen, with its context, that is written with a decimal
+ * point. Icelandic writes `2,5`, and the games print through `formatDecimal`;
+ * a full stop between two digits means one slipped past it. Checked on the
+ * text a student sees, so it catches what a source scan cannot: a raw number
+ * dropped into a sentence. All ~290 paths showed none on 2026-11-02 (1 554
+ * decimals across 20 games, each with a comma).
+ */
+function decimalPoints(page: Page): Promise<string[]> {
+  return page.evaluate(() =>
+    [...document.body.innerText.matchAll(/.{0,30}\d\.\d.{0,30}/g)].map((m) => m[0])
+  );
+}
+
 test.describe('Games at phone width', () => {
   test.describe.configure({ mode: 'parallel' });
   test.use({ viewport: PHONE });
@@ -54,6 +70,7 @@ test.describe('Games at phone width', () => {
         await horizontalOverflow(page),
         `Horizontal overflow on ${game} menu`
       ).toBeLessThanOrEqual(1);
+      expect(await decimalPoints(page), `Decimal point on ${game} menu`).toEqual([]);
 
       const back = await page
         .locator('header a')
@@ -79,6 +96,7 @@ test.describe('Games at phone width', () => {
           await horizontalOverflow(page),
           `Horizontal overflow on ${game} — ${screen.name}`
         ).toBeLessThanOrEqual(1);
+        expect(await decimalPoints(page), `Decimal point on ${game} — ${screen.name}`).toEqual([]);
       });
     }
   }
