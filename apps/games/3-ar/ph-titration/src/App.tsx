@@ -92,27 +92,28 @@ function App() {
     if (el) focusTarget(el);
   }, []);
 
-  const applyLevelResult = (
-    level: 1 | 2 | 3,
-    correct: number,
-    total: number,
-    nextScreen: ActiveLevel
-  ) => {
+  const applyLevelResult = (level: 1 | 2 | 3, correct: number, total: number) => {
     const key = `level${level}` as const;
     updateProgress({
       [`${key}Completed`]: true,
       [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
       [`${key}Total`]: total,
     } as Partial<Progress>);
-    setActiveLevel(nextScreen);
+    // The closing screen says every level is done, so it opens only when the level just
+    // finished completes the set. Levels are not gated, and finishing Stig 3 first used to
+    // open it over levels never played (found 2026-11-02, as in Millisameindakraftar).
+    const allDone = ([1, 2, 3] as const).every(
+      (n) => n === level || progress[`level${n}Completed`]
+    );
+    setActiveLevel(allDone ? 'complete' : 'menu');
   };
 
   const handleLevel1Complete = (correct: number, total: number) =>
-    applyLevelResult(1, correct, total, 'menu');
+    applyLevelResult(1, correct, total);
   const handleLevel2Complete = (correct: number, total: number) =>
-    applyLevelResult(2, correct, total, 'menu');
+    applyLevelResult(2, correct, total);
   const handleLevel3Complete = (correct: number, total: number) =>
-    applyLevelResult(3, correct, total, 'complete');
+    applyLevelResult(3, correct, total);
 
   /**
    * "6 af 8 rétt", or "Lokið" for a level finished before counts were kept.
