@@ -825,12 +825,55 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
       so on that row.
 - [ ] **Run the deploy check in A first**, so that every link on the page opens.
 
+### C21. Found writing the game READMEs (2026-11-02, PR #137)
+
+Each is recorded in the game's README under `## Open`, with file and line.
+
+- [ ] **Einingagreining Stig 3's intro, two sentences.** `Veldu fæstu skrefin — styttri leiðir gefa
+    nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedback says
+      `Allar leiðirnar hér gefa sama svarið`, and Stig 0 teaches that exact factors limit nothing.
+      `lengd skiptir ekki máli` (`:452-453`) is untrue too: `scoreExplanation` credits by length.
+      Reword, or change the scoring?
+- [ ] **Hints that state the answer still count in Oxun og afoxun and Lewis-formúlur.** The
+      2026-10-23 ruling (C3: such a hint counts as a revealed answer) reached VSEPR, gas-law and
+      equilibrium-shifter only. Redox Stig 3's one hint gives the electron counts on all six
+      problems and the multiplier on five; Stig 1's hint gives the oxidation number on three of ten;
+      Lewis Stig 1's fourth tier is the worked solution. Extend the ruling to them?
+- [ ] **VSEPR Stig 3 still explains SF₆'s expanded octet with d-orbitals** (`Level3.tsx:166`);
+      decision 7 was applied to Stig 2 only. Same model in Stig 3?
+- [ ] **pH Títrun's HF `initialPH` is 2,08 where √(Ka·C) gives 2,00.** Pinned by an `it.fails`
+      test "pending a teacher decision". No screen shows it.
+- [ ] **Hvarfhraði, decision 80** (the Maxwell–Boltzmann tail and the catalyst demo copying the
+      sliders only on mount) has no ruling in the decisions document and the code is unchanged,
+      while C3 above reads "Done: 12–122". Rule it, or record why it is done.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
 
 From the vertical-scroll design's §7 and the mobile-pass decisions' last section.
 
+- [ ] **Found writing the game READMEs (2026-11-02, PR #137)**, each under its README's `## Open`:
+  - [ ] **Closing screen after Stig 3 whatever else was played:** `Þú hefur lokið öllum stigum!`
+        and `Lokið` for an unplayed level, in pH Títrun, Lögmál Hess and Lífræn nafnagift
+        (`handleLevel3Complete` always routes to `'complete'`). Lausnir, Hvarfhraði and
+        Millisameindakraftar were fixed with an all-done check; copy theirs. Other games
+        unchecked.
+  - [ ] **VSEPR draws CO₂ and SO₂ with single bonds:** `geometryToMolecule` always uses
+        `'single'` and no caller passes `'double'` (`utils/vseprConverter.ts`).
+  - [ ] **VSEPR Stig 2:** the pair counts are graded with `parseInt`, so `2,5` counts as 2
+        (`Level2.tsx:418-419`); an explanation of 10–20 characters enables Athuga and then shows
+        Rangt (`:427`, `:474`).
+  - [ ] **Rafeindabygging Stig 2's label and placeholder are oxygen's configuration**
+        (`1s2 2s2 2p4`, `Level2.tsx:307,314`), one of the eight answers it asks for; the menu card
+        says the same (`App.tsx:245`).
+  - [ ] **Terms:** Lögmál Hess Stig 2 puzzle 4's hint says `millistig` (`data/puzzles.ts:177`;
+        `ordabok.md` gives `milliefni`), and so does Einingagreining's `Level3.tsx:227`, with
+        the wrong gender (`margar`); VSEPR says `Þríhyrnd` for trigonal planar in three places
+        (`App.tsx:336`, `Level3.tsx:488`, `:1096`) where Stig 1 and 2 use
+        `þríhyrningslaga flatt`.
+  - [ ] **Millisameindakraftar Stig 3 keeps the English `vs` in three titles**
+        (`Level3.tsx:27`, `:141`, `:365`), which decision 73 removed from challenge 6.
 - [x] **Lab reports pinned the PDF.js worker to a typed version**, `5.5.207` in
       `apps/lab-reports/src/utils/fileProcessing.ts`. Production builds sit under a subpath and so
       always load the worker from cdnjs at that version; the worker refuses a library of any other
