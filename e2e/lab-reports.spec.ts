@@ -1,6 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Lab Reports — 2nd Year', () => {
+  // Paused until its rewrite (Siggi, 2026-11-02): apps/lab-reports/src/config/paused.ts.
+  test('says the tool is paused and links back to the 2-ar hub', async ({ page }) => {
+    await page.goto('/efnafraedi/2-ar/lab-reports/');
+    await expect(page.getByRole('heading', { level: 1, name: 'Tilraunarskýrslur' })).toBeVisible();
+    await expect(page.getByText(/Verkfærið er í hléi/)).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Til baka' })).toHaveAttribute(
+      'href',
+      '/efnafraedi/2-ar/'
+    );
+  });
+
   test('loads the 2-ar lab reports page', async ({ page }) => {
     await page.goto('/efnafraedi/2-ar/lab-reports/');
 
@@ -43,6 +54,17 @@ test.describe('Lab Reports — 2nd Year', () => {
 });
 
 test.describe('Lab Reports — 3rd Year', () => {
+  // Paused until its rewrite (Siggi, 2026-11-02): apps/lab-reports/src/config/paused.ts.
+  test('says the tool is paused and links back to the 3-ar hub', async ({ page }) => {
+    await page.goto('/efnafraedi/3-ar/lab-reports/');
+    await expect(page.getByRole('heading', { level: 1, name: 'Tilraunarskýrslur' })).toBeVisible();
+    await expect(page.getByText(/Verkfærið er í hléi/)).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Til baka' })).toHaveAttribute(
+      'href',
+      '/efnafraedi/3-ar/'
+    );
+  });
+
   test('loads the 3-ar lab reports page', async ({ page }) => {
     await page.goto('/efnafraedi/3-ar/lab-reports/');
 

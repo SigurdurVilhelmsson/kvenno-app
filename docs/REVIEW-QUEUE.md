@@ -1241,6 +1241,12 @@ eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app it
     need not be reachable until then. It is deployed without the two settings below, so the backend
     answers 503 to every analysis (checked 2026-11-02) and the Claude key cannot be used. That is
     the intended state while paused; the three items below wait for the rewrite.
+  - [x] **Both builds say so** (2026-11-02, PR #134): `LAB_REPORTS_PAUSED` in
+        `apps/lab-reports/src/config/paused.ts` shows only `components/Paused.tsx`, with no sign-in,
+        and the year hubs' cards read `Í hléi` instead of `✓ Í notkun`. Set it to false to bring the
+        old app back.
+  - [ ] **Siggi: the page's wording**, drafted by Claude: `Verkfærið er í hléi á meðan það er
+    endurgert. Það verður tekið aftur í notkun á næstu önn.`, and `Í hléi` on the hub cards.
   - [ ] **Before deploying it**, add to `server/.env` on the host
         `AZURE_TENANT_ID=` and `AZURE_CLIENT_ID=`, the same values as `VITE_AZURE_TENANT_ID` and
         `VITE_AZURE_CLIENT_ID` in `apps/lab-reports/.env`. Without them the server fails closed:

@@ -79,8 +79,8 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Forrit fyrir nemendur til að skrifa og skila inn tilraunaskýrslum. Fáðu endurgjöf frá gervigreind og sendu til kennarans þegar tilbúið.',
         href: '/efnafraedi/2-ar/lab-reports/',
-        status: '\u2713 Í notkun',
-        active: true,
+        // Paused until its rewrite (Siggi, 2026-11-02); the page says so too.
+        status: 'Í hléi',
       },
       {
         title: 'AI Efnafræðikennari',
@@ -124,8 +124,8 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Forrit fyrir nemendur til að skrifa og skila inn tilraunaskýrslum. Fáðu endurgjöf frá gervigreind og sendu til kennarans þegar tilbúið.',
         href: '/efnafraedi/3-ar/lab-reports/',
-        status: '\u2713 Í notkun',
-        active: true,
+        // Paused until its rewrite (Siggi, 2026-11-02); the page says so too.
+        status: 'Í hléi',
       },
       {
         title: 'AI Efnafræðikennari',

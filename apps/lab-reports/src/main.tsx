@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthCallback } from './components/AuthCallback';
 import { AuthGuard } from './components/AuthGuard';
 import { Landing } from './components/Landing';
+import { Paused } from './components/Paused';
+import { LAB_REPORTS_PAUSED } from './config/paused';
 import { StudentPage } from './pages/StudentPage';
 import { Teacher2Page } from './pages/Teacher2Page';
 import { TeacherPage } from './pages/TeacherPage';
@@ -74,13 +76,22 @@ function App() {
   );
 }
 
-// Initialize MSAL before rendering
-initializeMsal().then(() => {
+if (LAB_REPORTS_PAUSED) {
+  // No sign-in while paused: the page only says so.
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-      <MsalProvider instance={msalInstance}>
-        <App />
-      </MsalProvider>
+      <Paused />
     </React.StrictMode>
   );
-});
+} else {
+  // Initialize MSAL before rendering
+  initializeMsal().then(() => {
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+      <React.StrictMode>
+        <MsalProvider instance={msalInstance}>
+          <App />
+        </MsalProvider>
+      </React.StrictMode>
+    );
+  });
+}
