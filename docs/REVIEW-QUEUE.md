@@ -282,7 +282,7 @@ Same document, items 123–126. Each is reversible.
 - [x] **molmassi names HCl `Saltsýra`** (a solution) while quoting the compound's molar mass. See
       also C3 item 14. — 2026-10-02: now `Vetnisklóríð`, a gas, and in the molar-volume pool.
 - [x] **Two-word vs solid spellings.** `nettójónajafna` against the book's glossary `nettó
-      jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken. —
+jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms were taken. —
       2026-10-23, kept on Claude's recommendation (PR #112): the book's running prose writes them
       solid (23 to 8 for `nettójónajafna`), and `ordabok.md` already does.
 - [x] **Two glossary forms whose paragraphs disagree:** `ferflötungur` and `eðalgas`. These are
@@ -831,6 +831,14 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
 
 From the vertical-scroll design's §7 and the mobile-pass decisions' last section.
 
+- [x] **Lab reports pinned the PDF.js worker to a typed version**, `5.5.207` in
+      `apps/lab-reports/src/utils/fileProcessing.ts`. Production builds sit under a subpath and so
+      always load the worker from cdnjs at that version; the worker refuses a library of any other
+      version, so merging the pdfjs-dist 6 bump (#133) would have broken every PDF upload, with CI
+      green. Found 2026-11-02 reviewing #133; the URL now takes `pdfjsLib.version`, held by
+      `pdf-worker-version.test.ts`.
+  - [ ] **Siggi: after merging #133 and deploying**, upload one PDF to lab reports (on hold with
+        lab reports, see D4). v6 also needs Chrome 125 or Safari 18 (iOS/iPadOS 18) to read PDFs.
 - [x] **The phone bottom bar's active item failed contrast**: brand orange on orange-50 is 2.9:1,
       under the 4.5:1 that 12 px text needs. Found 2026-10-16 by the first axe check run at 360 px
       (the Íslenskubraut recordings' e2e test); every earlier axe check ran at desktop width,
@@ -902,7 +910,7 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 
 - [x] **A flaky Firefox test of the 3D view** (found 2026-10-24, Dependabot PR #118):
       `e2e/threejs-lazy-loading.spec.ts` › `vsepr-geometry — loads Three.js once a 3D view is
-      opened` found no `<canvas>` in Firefox on five of seven runs, `main` included. — 2026-10-25:
+opened` found no `<canvas>` in Firefox on five of seven runs, `main` included. — 2026-10-25:
       the test now writes what the page did into its failure (PR #125), and that showed the cause.
       The runner's Firefox sometimes refused a WebGL 2 context ("AllowWebgl2:false restricts
       context creation on this system"). Three.js then threw, and the throw reached the game's
@@ -1229,6 +1237,16 @@ eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app it
       verifies it (`server/src/lib/auth.ts`: RS256 against the tenant's published keys, `aud` = the
       client ID, `iss` and `tid` = the tenant, `exp`/`nbf` with five minutes' drift). No new
       dependency; `auth.test.ts` covers forged, expired, foreign and unsigned tokens.
+  - **On hold, 2026-11-02 (Siggi): lab reports is paused pending a rewrite for next semester** and
+    need not be reachable until then. It is deployed without the two settings below, so the backend
+    answers 503 to every analysis (checked 2026-11-02) and the Claude key cannot be used. That is
+    the intended state while paused; the three items below wait for the rewrite.
+  - [x] **Both builds say so** (2026-11-02, PR #134): `LAB_REPORTS_PAUSED` in
+        `apps/lab-reports/src/config/paused.ts` shows only `components/Paused.tsx`, with no sign-in,
+        and the year hubs' cards read `Í hléi` instead of `✓ Í notkun`. Set it to false to bring the
+        old app back.
+  - [ ] **Siggi: the page's wording**, drafted by Claude: `Verkfærið er í hléi á meðan það er
+    endurgert. Það verður tekið aftur í notkun á næstu önn.`, and `Í hléi` on the hub cards.
   - [ ] **Before deploying it**, add to `server/.env` on the host
         `AZURE_TENANT_ID=` and `AZURE_CLIENT_ID=`, the same values as `VITE_AZURE_TENANT_ID` and
         `VITE_AZURE_CLIENT_ID` in `apps/lab-reports/.env`. Without them the server fails closed:
@@ -1239,9 +1257,9 @@ eMudhra CA keys). Its report went to Siggi, not into the repo; the kvenno-app it
         should print 401 (it printed 400 before).
   - [ ] **The two error messages a student may see** were drafted by Claude
         (`apps/lab-reports/src/utils/authToken.ts`): `Innskráning fannst ekki. Endurhlaðið síðuna
-        og skráið ykkur inn.` and `Innskráningin er útrunnin. Skráið ykkur inn aftur.`; the
+og skráið ykkur inn.` and `Innskráningin er útrunnin. Skráið ykkur inn aftur.`; the
         server's are `Innskráning þarf — skráðu þig inn aftur` (401) and `Innskráning er ekki
-        stillt á þjóninum` (503). Read them once.
+stillt á þjóninum` (503). Read them once.
 - [ ] **Spend limit and usage alerts on the Anthropic key** (hand, Anthropic Console), and a look
       at usage since November 2025: the older LabReports backend, with no origin check or rate
       limit, probably served the site until the 2026-08-15 switch (commit `2538c79`).

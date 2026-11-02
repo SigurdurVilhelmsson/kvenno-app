@@ -37,12 +37,14 @@ const getWorkerUrl = (): string => {
 };
 
 /**
- * Get CDN worker URL as fallback
- * Uses exact version match for compatibility
+ * Get CDN worker URL as fallback.
+ *
+ * The worker refuses to run for a library of any other version, so the version comes from the
+ * library itself. It was a hand-typed string, which a pdfjs-dist bump would have left behind,
+ * breaking every PDF upload in production (subpath builds always use this URL).
  */
-const getCdnWorkerUrl = (): string => {
-  // Use cdnjs with exact version matching pdfjs-dist (5.5.207)
-  const version = '5.5.207';
+export const getCdnWorkerUrl = (): string => {
+  const version = pdfjsLib.version;
   const cdnUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.mjs`;
   if (import.meta.env.DEV) console.log('[PDF.js] CDN worker URL prepared:', cdnUrl);
   return cdnUrl;
