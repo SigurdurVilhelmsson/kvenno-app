@@ -242,7 +242,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
             <div className="bg-warm-50 p-3 rounded-lg text-sm text-warm-700">
               <strong>Skrifaðu svona:</strong> 1s2 eða 1s² — bæði virka. Hafðu bil milli
-              undirhvolfa: 1s2 2s2 2p4
+              undirhvolfa: 1s2 2s2 2p1 (bór)
             </div>
 
             <button
@@ -304,14 +304,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               htmlFor="config-input"
               className="block text-sm font-medium text-warm-700 mb-2 phone:mb-1"
             >
-              Sláðu inn rafeindaskipan (t.d. 1s2 2s2 2p4):
+              Sláðu inn rafeindaskipan (t.d. bór: 1s2 2s2 2p1):
             </label>
             <input
               id="config-input"
               type="text"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              placeholder="1s2 2s2 2p4..."
+              placeholder="t.d. 1s2 2s2 2p1"
               autoCapitalize="none"
               autoCorrect="off"
               autoComplete="off"

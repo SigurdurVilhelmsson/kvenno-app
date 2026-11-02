@@ -242,7 +242,7 @@ function App() {
                     Fylltu í svigrúm samkvæmt Aufbau og Hund
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                    Skrifaðu rafeindaskipan frumefna (t.d. 1s² 2s² 2p⁴ fyrir súrefni).
+                    Skrifaðu rafeindaskipan frumefna (t.d. 1s² 2s² 2p¹ fyrir bór).
                   </div>
                 </div>
               </div>
