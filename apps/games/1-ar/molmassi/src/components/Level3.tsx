@@ -234,7 +234,7 @@ export function buildProblem(d: Desc): Problem {
     particles,
     steps: [
       `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 2)} g/mól`,
-      `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 2)} g) = ${formatDecimal(n, 3)} mól ${c.formula}\n  Einingin g styttist út.`,
+      `Skref 2: g → mól (einingagreining)\n  ${d.massLabel} g × (1 mól / ${formatDecimal(M, 2)} g) = ${formatDecimal(n, 3)} mól ${c.formula}\n  Einingin g styttist út.`,
       `Skref 3: Nota hlutfallið úr efnaformúlunni\n  Í hverju móli af ${c.formula} eru ${d.atomCount} mól af ${d.element}\n  ${formatDecimal(n, 3)} mól ${c.formula} × (${d.atomCount} mól ${d.element} / 1 mól ${c.formula}) = ${formatDecimal(nAtom, 2)} mól ${d.element}`,
     ],
   };
