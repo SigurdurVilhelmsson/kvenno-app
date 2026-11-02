@@ -24,7 +24,7 @@ export const challenges: Challenge[] = [
   {
     id: 1,
     type: 'comparison',
-    title: 'Etanól vs Dímetýleter',
+    title: 'Etanól eða dímetýleter',
     scenario:
       'Etanól (CH₃CH₂OH) og dímetýleter (CH₃OCH₃) hafa bæði sömu sameindaformúlu: C₂H₆O og sama mólmassa (46 g/mól).',
     question: 'Af hverju hefur etanól MIKLU hærra suðumark (78°C) en dímetýleter (-24°C)?',
@@ -138,7 +138,7 @@ export const challenges: Challenge[] = [
   {
     id: 4,
     type: 'multi_factor',
-    title: 'n-Oktan vs. 2,2,3,3-Tetrametýlbútan',
+    title: 'n-Oktan eða 2,2,3,3-tetrametýlbútan',
     scenario:
       'Báðar sameindir hafa formúlu C₈H₁₈ og mólmassa 114 g/mól. n-Oktan er löng keðja, 2,2,3,3-tetrametýlbútan er „kúlulaga".',
     question: 'Hvor hefur hærra suðumark?',
@@ -243,7 +243,7 @@ export const challenges: Challenge[] = [
         explanation: 'Sýrustig hefur ekki bein áhrif á suðumark.',
       },
     ],
-    hint: 'Skoðaðu formúlurnar: -COOH vs. -CHO. Hvor hefur H bundið við O?',
+    hint: 'Skoðaðu formúlurnar: -COOH og -CHO. Hvor hefur H bundið við O?',
     conceptNote:
       'Karboxýlsýrur (-COOH) mynda vetnistengi vegna O-H hópsins. Aldehýð (-CHO) er skautað en getur aðeins tekið við H-tengi, ekki gefið.',
   },
@@ -280,7 +280,7 @@ export const challenges: Challenge[] = [
         explanation: 'Það sem skiptir máli er munurinn á eðlismassa vökva og fasts efnis.',
       },
     ],
-    hint: 'Hugsaðu um hvernig H-tengi raðast í kristallinum vs. í vökvanum.',
+    hint: 'Hugsaðu um hvernig H-tengi raðast í kristallinum og hvernig í vökvanum.',
     conceptNote:
       'Í ískristallnum er hver vatnssameind í föstu mynstri með 4 H-tengi, sem skapar opna formgerð. Í vökva er formgerðin breytilegri og þéttari.',
   },
@@ -362,7 +362,7 @@ export const challenges: Challenge[] = [
   {
     id: 10,
     type: 'comparison',
-    title: 'HF vs. H₂O',
+    title: 'HF eða H₂O',
     scenario: 'HF (M=20) hefur suðumark 20°C. H₂O (M=18) hefur suðumark 100°C.',
     question: 'Flúor er rafneikvæðara en súrefni, en vatn hefur mun hærra suðumark. Af hverju?',
     options: [
@@ -377,7 +377,7 @@ export const challenges: Challenge[] = [
         id: 'b',
         text: 'Vatn er þyngra',
         correct: false,
-        explanation: 'Vatn er í raun léttara (18 vs 20 g/mól).',
+        explanation: 'Vatn er í raun léttara (18 á móti 20 g/mól).',
       },
       {
         id: 'c',
@@ -394,7 +394,7 @@ export const challenges: Challenge[] = [
     ],
     hint: 'Teldu: Hversu mörg H-tengi getur hver sameind myndað?',
     conceptNote:
-      'Styrkur H-tengja skiptir máli, en FJÖLDI þeirra skiptir líka máli. Vatn getur myndað tvöfalt fleiri H-tengi en HF (4 vs 2) og þetta vinnur yfir að hvert HF-tengi sé sterkara.',
+      'Styrkur H-tengja skiptir máli, en FJÖLDI þeirra skiptir líka máli. Vatn getur myndað tvöfalt fleiri H-tengi en HF (4 á móti 2) og þetta vinnur yfir að hvert HF-tengi sé sterkara.',
   },
 ];
 

@@ -333,7 +333,7 @@ function App() {
               </div>
               <div className="bg-white p-2 rounded border text-center">
                 <div className="text-lg mb-1">△</div>
-                <div className="font-bold text-warm-800">Þríhyrnd</div>
+                <div className="font-bold text-warm-800">Þríhyrningslaga flatt</div>
                 <div className="text-xs text-warm-500">120°</div>
               </div>
               <div className="bg-white p-2 rounded border text-center">

@@ -79,6 +79,9 @@ const BANNED: [RegExp, string][] = [
   [/saltsýr/i, 'HCl here is the pure compound, vetnisklóríð; saltsýra is the solution'],
   [/flússýr/i, 'HF here is the pure compound, vetnisflúoríð; flússýra is the solution'],
   [/gufuþrýsting/i, 'vapour pressure is gufunarþrýstingur'],
+  // Found 2026-11-02 in three Stig 3 titles and four hints; decision 73 retitled challenge 6
+  // `Ediksýra eða asetaldehýð` partly because vs. is English.
+  [/\bvs\b/, 'the English vs (eða, og or á móti)'],
 ];
 
 // Næsta ignores a press within 400 ms of appearing; these tests press it at once.

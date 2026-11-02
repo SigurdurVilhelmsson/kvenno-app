@@ -224,7 +224,7 @@ export function Level3({
         'Byrjaðu með upphafsgildinu og spyrðu þig: Hvaða stuðlar myndu breyta því í lokagildið?',
       error_analysis:
         'Athugaðu hvort stuðullinn sé snúinn rétt - einingin sem á að hverfa þarf að vera í nefnara.',
-      efficiency: 'Leitaðu að beinum stuðlum í stað þess að fara í gegnum margar millistig.',
+      efficiency: 'Leitaðu að beinum stuðlum í stað þess að fara í gegnum mörg millistig.',
       synthesis:
         'Byrjaðu á að margfalda rúmmál með eðlismassa til að fá massa, síðan umbreyttu einingum.',
       real_world: 'Umbreyttu öllum gildum í sömu einingar áður en þú reiknar fjölda skammta.',
