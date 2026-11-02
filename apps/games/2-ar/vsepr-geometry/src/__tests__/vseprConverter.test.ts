@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import {
   vseprToMolecule,
   geometryToMolecule,
+  MULTIPLE_BONDS,
   type VSEPRMolecule,
   type VSEPRGeometry,
 } from '../utils/vseprConverter';
@@ -219,8 +220,8 @@ describe('geometryToMolecule', () => {
     expect(molecule.geometry).toBe('linear');
     expect(molecule.atoms).toHaveLength(3);
     expect(molecule.bonds).toHaveLength(2);
-    // geometryToMolecule always uses single bonds
-    expect(molecule.bonds.every((b) => b.type === 'single')).toBe(true);
+    // CO₂ is O=C=O (it was drawn single until 2026-11-02; see 'multiple bonds' below)
+    expect(molecule.bonds.every((b) => b.type === 'double')).toBe(true);
   });
 
   it('preserves lone pairs from geometry definition', () => {
@@ -303,6 +304,53 @@ describe('the central atom of a formula that starts with hydrogen', () => {
       });
       expect(molecule.atoms[0].symbol, formula).toBe(central);
       expect(molecule.bonds, formula).toHaveLength(count);
+    }
+  });
+});
+
+/**
+ * Every bond was drawn single until 2026-11-02, so CO₂ (Stig 1's linear card, Stig 2) and SO₂ (Stig
+ * 1's bent card) showed as O–C–O and O–S–O in 2D and 3D. No screen passes a bond type, so the
+ * converter must know them itself.
+ */
+describe('multiple bonds', () => {
+  const geometry = (id: string, example: string, bondingPairs: number, lonePairs: number) =>
+    geometryToMolecule({ id, example, bondingPairs, lonePairs });
+
+  it('draws CO₂ as O=C=O without being told', () => {
+    const fromVsepr = vseprToMolecule({
+      formula: 'CO₂',
+      centralAtom: 'C',
+      bondingPairs: 2,
+      lonePairs: 0,
+      electronDomains: 2,
+      correctGeometryId: 'linear',
+    });
+    expect(fromVsepr.bonds.map((b) => b.type)).toEqual(['double', 'double']);
+    expect(geometry('linear', 'CO₂', 2, 0).bonds.map((b) => b.type)).toEqual(['double', 'double']);
+  });
+
+  it('draws SO₂ as the first vokmynd Lewis-formúlur teaches: one double, one single', () => {
+    expect(geometry('bent-3', 'SO₂', 2, 1).bonds.map((b) => b.type)).toEqual(['double', 'single']);
+  });
+
+  it('keeps single bonds for every other molecule', () => {
+    for (const [example, pairs, lone] of [
+      ['CH₄', 4, 0],
+      ['NH₃', 3, 1],
+      ['H₂O', 2, 2],
+      ['BF₃', 3, 0],
+      ['PCl₅', 5, 0],
+      ['SF₆', 6, 0],
+    ] as const) {
+      const types = geometry('x', example, pairs, lone).bonds.map((b) => b.type);
+      expect(types, example).toEqual(Array(pairs).fill('single'));
+    }
+  });
+
+  it('lists one bond per surrounding atom for each molecule in the table', () => {
+    for (const [formula, bonds] of Object.entries(MULTIPLE_BONDS)) {
+      expect(geometry('x', formula, bonds.length, 0).bonds, formula).toHaveLength(bonds.length);
     }
   });
 });
