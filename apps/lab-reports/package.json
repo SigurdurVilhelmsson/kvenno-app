@@ -11,22 +11,22 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@azure/msal-browser": "^5.26.0",
-    "@azure/msal-react": "^5.7.3",
+    "@azure/msal-browser": "^5.28.0",
+    "@azure/msal-react": "^5.8.0",
     "@kvenno/shared": "workspace:*",
-    "lucide-react": "^1.61.0",
-    "pdfjs-dist": "6.4.299",
+    "lucide-react": "^1.70.0",
+    "pdfjs-dist": "6.5.438",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.4"
+    "react-router-dom": "^7.18.5"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "tailwindcss": "^4.3.3",
+    "@vitejs/plugin-react": "^6.2.1",
+    "tailwindcss": "^4.3.4",
     "typescript": "^6.0.3",
-    "vite": "^8.3.5"
+    "vite": "^8.3.6"
   }
 }
