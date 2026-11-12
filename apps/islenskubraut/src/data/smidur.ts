@@ -896,7 +896,16 @@ export const smidur: Record<string, SmidurLevel[]> = {
         {
           frame: 'Maður borðar það ___.',
           question: 'Hvenær er þetta notað?',
-          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+          ],
           sentences: [
             [
               [
@@ -1007,6 +1016,122 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
               ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'veturna.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'sumrin.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'um',
+                  changed: false,
+                },
+                {
+                  word: 'helgar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'virkum',
+                  changed: false,
+                },
+                {
+                  word: 'dögum.',
+                  changed: false,
+                },
+              ],
             ],
             [
               [
@@ -1093,6 +1218,98 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
               ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'veturna.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'sumrin.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'um',
+                  changed: false,
+                },
+                {
+                  word: 'helgar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'virkum',
+                  changed: false,
+                },
+                {
+                  word: 'dögum.',
+                  changed: false,
+                },
+              ],
             ],
             [
               [
@@ -1176,6 +1393,98 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 },
                 {
                   word: 'alltaf.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'veturna.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'sumrin.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'um',
+                  changed: false,
+                },
+                {
+                  word: 'helgar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'á',
+                  changed: false,
+                },
+                {
+                  word: 'virkum',
+                  changed: false,
+                },
+                {
+                  word: 'dögum.',
                   changed: false,
                 },
               ],
@@ -5231,9 +5540,27 @@ export const smidur: Record<string, SmidurLevel[]> = {
           person: false,
         },
         {
+          text: 'peysa',
+          gender: 'kvk',
+          number: 'ET',
+          person: false,
+        },
+        {
+          text: 'skyrta',
+          gender: 'kvk',
+          number: 'ET',
+          person: false,
+        },
+        {
           text: 'buxur',
           gender: 'kvk',
           number: 'FT',
+          person: false,
+        },
+        {
+          text: 'pils',
+          gender: 'hk',
+          number: 'ET',
           person: false,
         },
         {
@@ -5243,9 +5570,27 @@ export const smidur: Record<string, SmidurLevel[]> = {
           person: false,
         },
         {
+          text: 'úlpa',
+          gender: 'kvk',
+          number: 'ET',
+          person: false,
+        },
+        {
+          text: 'sokkar',
+          gender: 'kk',
+          number: 'FT',
+          person: false,
+        },
+        {
           text: 'skór',
           gender: 'kk',
           number: 'FT',
+          person: false,
+        },
+        {
+          text: 'húfa',
+          gender: 'kvk',
+          number: 'ET',
           person: false,
         },
       ],
@@ -5267,6 +5612,38 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 },
                 {
                   word: 'bolur.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Þetta',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'peysa.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Þetta',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'skyrta.',
                   changed: false,
                 },
               ],
@@ -5303,7 +5680,60 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
+                  word: 'pils.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Þetta',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
                   word: 'jakki.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Þetta',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'úlpa.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Þetta',
+                  changed: false,
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'sokkar.',
                   changed: false,
                 },
               ],
@@ -5329,12 +5759,28 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 },
               ],
             ],
+            [
+              [
+                {
+                  word: 'Þetta',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'húfa.',
+                  changed: false,
+                },
+              ],
+            ],
           ],
         },
         {
           frame: 'Það er ___.',
           question: 'Hvernig lítur það út?',
-          options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt'],
+          options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt', 'gult', 'bleikt', 'brúnt'],
           sentences: [
             [
               [
@@ -5470,6 +5916,523 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   },
                   lemma: 'b6b013d4116e7ea449808e200b9ce564',
                   choices: ['hvítur', 'hvít', 'hvítt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'gulur.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gulur',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulur', 'gul', 'gult'],
+                },
+              ],
+              [
+                {
+                  word: 'Hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'bleikur.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleikur',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikur', 'bleik', 'bleikt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'brúnn.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brúnn',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnn', 'brún', 'brúnt'],
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'rauð.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauð',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauður', 'rauð', 'rautt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'blá.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'blá',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['blár', 'blá', 'blátt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'græn.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'græn',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænn', 'græn', 'grænt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'svört.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svört',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartur', 'svört', 'svart'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'hvít.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvít',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítur', 'hvít', 'hvítt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'gul.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gul',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulur', 'gul', 'gult'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'bleik.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleik',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikur', 'bleik', 'bleikt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'brún.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brún',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnn', 'brún', 'brúnt'],
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'rauð.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauð',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauður', 'rauð', 'rautt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'blá.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'blá',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['blár', 'blá', 'blátt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'græn.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'græn',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænn', 'græn', 'grænt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'svört.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svört',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartur', 'svört', 'svart'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'hvít.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvít',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítur', 'hvít', 'hvítt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'gul.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gul',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulur', 'gul', 'gult'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'bleik.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleik',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikur', 'bleik', 'bleikt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'brún.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brún',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnn', 'brún', 'brúnt'],
                 },
               ],
             ],
@@ -5634,6 +6597,216 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   choices: ['hvítir', 'hvítar', 'hvít'],
                 },
               ],
+              [
+                {
+                  word: 'Þær',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'gular.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gular',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulir', 'gular', 'gul'],
+                },
+              ],
+              [
+                {
+                  word: 'Þær',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'bleikar.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleikar',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikir', 'bleikar', 'bleik'],
+                },
+              ],
+              [
+                {
+                  word: 'Þær',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þær',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'brúnar.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brúnar',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnir', 'brúnar', 'brún'],
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'rautt.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'blátt.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'grænt.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'svart.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'hvítt.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'gult.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'bleikt.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'brúnt.',
+                  changed: false,
+                },
+              ],
             ],
             [
               [
@@ -5769,6 +6942,305 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   },
                   lemma: 'b6b013d4116e7ea449808e200b9ce564',
                   choices: ['hvítur', 'hvít', 'hvítt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'gulur.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gulur',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulur', 'gul', 'gult'],
+                },
+              ],
+              [
+                {
+                  word: 'Hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'bleikur.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleikur',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikur', 'bleik', 'bleikt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'brúnn.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brúnn',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnn', 'brún', 'brúnt'],
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'rauð.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauð',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauður', 'rauð', 'rautt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'blá.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'blá',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['blár', 'blá', 'blátt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'græn.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'græn',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænn', 'græn', 'grænt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'svört.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svört',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartur', 'svört', 'svart'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'hvít.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvít',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítur', 'hvít', 'hvítt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'gul.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gul',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulur', 'gul', 'gult'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'bleik.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleik',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikur', 'bleik', 'bleikt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'brún.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brún',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnn', 'brún', 'brúnt'],
                 },
               ],
             ],
@@ -5933,6 +7405,578 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   choices: ['hvítir', 'hvítar', 'hvít'],
                 },
               ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'gulir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gulir',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulir', 'gular', 'gul'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'bleikir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleikir',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikir', 'bleikar', 'bleik'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'brúnir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brúnir',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnir', 'brúnar', 'brún'],
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'rauðir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauðir',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauðir', 'rauðar', 'rauð'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'bláir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'bláir',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['bláir', 'bláar', 'blá'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'grænir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'grænir',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænir', 'grænar', 'græn'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'svartir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svartir',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartir', 'svartar', 'svört'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'hvítir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvítir',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítir', 'hvítar', 'hvít'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'gulir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gulir',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulir', 'gular', 'gul'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'bleikir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleikir',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikir', 'bleikar', 'bleik'],
+                },
+              ],
+              [
+                {
+                  word: 'Þeir',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'þeir',
+                  },
+                },
+                {
+                  word: 'eru',
+                  changed: true,
+                  why: {
+                    kind: 'sögn',
+                    from: 'er',
+                    to: 'eru',
+                  },
+                },
+                {
+                  word: 'brúnir.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brúnir',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnir', 'brúnar', 'brún'],
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'rauð.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'rautt',
+                    to: 'rauð',
+                  },
+                  lemma: '796fb80ee05b5a2a0a2c2e0cc6268121',
+                  choices: ['rauður', 'rauð', 'rautt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'blá.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'blátt',
+                    to: 'blá',
+                  },
+                  lemma: '31dc39020a2f5c6f0eab32860ce9846d',
+                  choices: ['blár', 'blá', 'blátt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'græn.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'grænt',
+                    to: 'græn',
+                  },
+                  lemma: '822554fe7c405d599bd0268af19d3f14',
+                  choices: ['grænn', 'græn', 'grænt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'svört.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'svart',
+                    to: 'svört',
+                  },
+                  lemma: 'cdea3bfdb358092fcd4dfa49413dfc03',
+                  choices: ['svartur', 'svört', 'svart'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'hvít.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'hvítt',
+                    to: 'hvít',
+                  },
+                  lemma: 'b6b013d4116e7ea449808e200b9ce564',
+                  choices: ['hvítur', 'hvít', 'hvítt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'gul.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'gult',
+                    to: 'gul',
+                  },
+                  lemma: '91b371b0819a596df98a81273ac10c9e',
+                  choices: ['gulur', 'gul', 'gult'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'bleik.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'bleikt',
+                    to: 'bleik',
+                  },
+                  lemma: '472025748462916539c76cc6dc938cc1',
+                  choices: ['bleikur', 'bleik', 'bleikt'],
+                },
+              ],
+              [
+                {
+                  word: 'Hún',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'NF',
+                    from: 'það',
+                    to: 'hún',
+                  },
+                },
+                {
+                  word: 'er',
+                  changed: false,
+                },
+                {
+                  word: 'brún.',
+                  changed: true,
+                  why: {
+                    kind: 'samræmi',
+                    from: 'brúnt',
+                    to: 'brún',
+                  },
+                  lemma: '903ef920ef490ac59814e5f2b93725d4',
+                  choices: ['brúnn', 'brún', 'brúnt'],
+                },
+              ],
             ],
           ],
         },
@@ -6030,6 +8074,162 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'inni.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'úti.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'skólanum.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'inni.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'úti.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'skólanum.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
                   word: 'þær',
                   changed: true,
                   why: {
@@ -6086,6 +8286,66 @@ export const smidur: Record<string, SmidurLevel[]> = {
                     from: 'það',
                     to: 'þær',
                   },
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'skólanum.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'inni.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'úti.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
                 },
                 {
                   word: 'í',
@@ -6186,6 +8446,84 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'inni.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'úti.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'skólanum.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
                   word: 'þá',
                   changed: true,
                   why: {
@@ -6241,6 +8579,162 @@ export const smidur: Record<string, SmidurLevel[]> = {
                     case: 'ÞF',
                     from: 'það',
                     to: 'þá',
+                  },
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'skólanum.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'þá',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þá',
+                  },
+                },
+                {
+                  word: 'inni.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'þá',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þá',
+                  },
+                },
+                {
+                  word: 'úti.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'þá',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'þá',
+                  },
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'skólanum.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'inni.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
+                  },
+                },
+                {
+                  word: 'úti.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'notar',
+                  changed: false,
+                },
+                {
+                  word: 'hana',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hana',
                   },
                 },
                 {
@@ -6276,6 +8770,28 @@ export const smidur: Record<string, SmidurLevel[]> = {
             {
               case: 'EF',
               forms: ['blás', 'blárrar', 'blás'],
+            },
+          ],
+        },
+        '472025748462916539c76cc6dc938cc1': {
+          ord: 'bleikur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['bleikur', 'bleik', 'bleikt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['bleikan', 'bleika', 'bleikt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['bleikum', 'bleikri', 'bleiku'],
+            },
+            {
+              case: 'EF',
+              forms: ['bleiks', 'bleikrar', 'bleiks'],
             },
           ],
         },
@@ -6320,6 +8836,50 @@ export const smidur: Record<string, SmidurLevel[]> = {
             {
               case: 'EF',
               forms: ['græns', 'grænnar', 'græns'],
+            },
+          ],
+        },
+        '903ef920ef490ac59814e5f2b93725d4': {
+          ord: 'brúnn',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['brúnn', 'brún', 'brúnt'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['brúnan', 'brúna', 'brúnt'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['brúnum', 'brúnni', 'brúnu'],
+            },
+            {
+              case: 'EF',
+              forms: ['brúns', 'brúnnar', 'brúns'],
+            },
+          ],
+        },
+        '91b371b0819a596df98a81273ac10c9e': {
+          ord: 'gulur',
+          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
+          rows: [
+            {
+              case: 'NF',
+              forms: ['gulur', 'gul', 'gult'],
+            },
+            {
+              case: 'ÞF',
+              forms: ['gulan', 'gula', 'gult'],
+            },
+            {
+              case: 'ÞGF',
+              forms: ['gulum', 'gulri', 'gulu'],
+            },
+            {
+              case: 'EF',
+              forms: ['guls', 'gulrar', 'guls'],
             },
           ],
         },

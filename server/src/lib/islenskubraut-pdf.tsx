@@ -527,7 +527,15 @@ export function createOrdalistiDocument(category: Category, level: Level): React
   const groups = newWordsAt(category, level);
   // A short list gets taller rows, so there is room to write; a long one still fits one page.
   const lines = groups.reduce((n, g) => n + g.words.length + 0.75, 0);
-  const rowHeight = Math.min(24, Math.max(13.5, 600 / lines));
+  // Past about forty rows (Klæðnaður and Matur at A1, since every colour and garment moved there)
+  // the words step down a size so the list still fits.
+  const dense = lines > 40;
+  const rowHeight = Math.min(24, Math.max(dense ? 11 : 13.5, 600 / lines));
+  const wordSize = dense ? { fontSize: 9.5, lineHeight: 1.1, paddingBottom: 1 } : {};
+  // A box with its margin is 14 pt tall and the writing line 12.5, more than a dense row, so
+  // both shrink with it.
+  const boxSize = dense ? { width: 9, height: 9, margin: 1 } : {};
+  const ownSize = dense ? { height: 9, marginBottom: 1.5 } : {};
   const footer = (
     <Text style={styles.footer}>
       {`Íslenskubraut — Kvennaskólinn í Reykjavík — ${category.name} ${level} — orðalisti`}
@@ -562,11 +570,11 @@ export function createOrdalistiDocument(category: Category, level: Level): React
             <Text style={listStyles.group}>{g.question}</Text>
             {g.words.map((w) => (
               <View key={w} style={{ ...listStyles.row, minHeight: rowHeight }} wrap={false}>
-                <Text style={{ ...listStyles.word, color: category.color }}>{w}</Text>
-                <View style={listStyles.own} />
+                <Text style={{ ...listStyles.word, ...wordSize, color: category.color }}>{w}</Text>
+                <View style={{ ...listStyles.own, ...ownSize }} />
                 <View style={listStyles.days}>
                   {REVIEW_DAYS.map((d) => (
-                    <View key={d} style={listStyles.box} />
+                    <View key={d} style={{ ...listStyles.box, ...boxSize }} />
                   ))}
                 </View>
               </View>

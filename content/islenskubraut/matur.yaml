@@ -146,6 +146,8 @@ guidingQuestions:
         - grænt
         - gult
         - hvítt
+        - brúnt
+        - appelsínugult
       A2:
         - rautt
         - grænt
@@ -207,8 +209,6 @@ guidingQuestions:
       A1:
         - mjúkt
         - hart
-        - slétt
-        - gróft
       A2:
         - mjúkt
         - hart
@@ -370,6 +370,10 @@ guidingQuestions:
         - á daginn
         - á kvöldin
         - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
       A2:
         - á morgnana
         - á daginn

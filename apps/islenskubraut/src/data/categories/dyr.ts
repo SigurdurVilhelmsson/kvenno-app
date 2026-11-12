@@ -199,7 +199,7 @@ export const dyr: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['mjúkt', 'hart', 'slétt', 'gróft'],
+          options: ['mjúkt', 'hart'],
         },
         {
           level: 'A2',
@@ -404,7 +404,15 @@ export const dyr: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+          ],
         },
         {
           level: 'A2',

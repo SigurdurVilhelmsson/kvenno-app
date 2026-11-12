@@ -865,20 +865,19 @@ basic words within it start later. A check against Cambridge's CEFR-graded Engli
 card by card, is `docs/research/islenskubraut-stig/README.md`. It takes ÍFÚ 1–2 as A1 and ÍFÚ 3–4
 as A2, which the 2008 curriculum does not state.
 
-- [ ] **Read each card's Orðaforði at A1, A2 and B1 and move the words that are at the wrong
-      level** (`/islenskubraut/yfirferd` links each card at each level).
-- [ ] **Skólinn departs from the curriculum on purpose:** ÍFÚ 4 puts school books, equipment and
-      subjects at A2 for adult learners; the card keeps the basic ones at A1 for students. Keep?
-      (Cambridge's young learners' lists put school things at Pre A1.)
-- [ ] **Five words the English lists put at A1 and the curriculum at A2** stay at A2: `trefill`,
-      `með skegg`, `sjúkrahús`, `í fjöllunum`, `fræg`. Move them to A1?
-- [ ] **The Spurningaspjald's answers, four recommendations from the same review, not applied:**
-      all colours at A1 (ÍFÚ 2), all ten basic garments at A1, the seasons and `um helgar` at A1
-      (ÍFÚ 1 time words; the English lists put the seasons at A2), and `slétt`/`gróft` out of A1.
-      The first draft also moved Lögun to A2; the CEFR check reversed that for `kringlótt` and
-      `ferkantað`, which are A1 in English.
-      Each changes A1 chips, so it needs pictogram entries and Polish glosses too. Detail in the
-      research file.
+**Siggi ruled on 2026-11-12** (project thread):
+
+- [x] ÍFÚ 1–2 is A1 and ÍFÚ 3–4 is A2. Right.
+- [x] Skólinn keeps its basic school words at A1, against ÍFÚ 4. Keep.
+- [x] `trefill`, `með skegg`, `sjúkrahús`, `í fjöllunum` and `fræg`, which the English lists put at
+      A1, stay at A2.
+- [x] The Spurningaspjald's answers, applied: every colour at A1 (`gult`, `bleikt`, `brúnt`,
+      `appelsínugult`), all ten basic garments at A1 with `hanskar` and `trefill` at A2, the seasons,
+      `um helgar` and `á virkum dögum` at A1, and `slétt` and `gróft` moved from A1 to A2. The new A1
+      chips have `myndir.yaml` entries with a search word and no picture yet; their Polish glosses
+      already existed. Lögun is unchanged.
+- [ ] **The Icelandic teacher's final approval** of the Orðaforði and the moved answers, card by
+      card at A1, A2 and B1 (`/islenskubraut/yfirferd` links each card at each level).
 
 ## D. Work that needs no ruling
 

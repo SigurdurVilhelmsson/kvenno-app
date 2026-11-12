@@ -170,8 +170,6 @@ guidingQuestions:
       A1:
         - mjúkt
         - hart
-        - slétt
-        - gróft
       A2:
         - mjúkt
         - hart
@@ -339,6 +337,9 @@ guidingQuestions:
         - á daginn
         - á kvöldin
         - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
       A2:
         - á morgnana
         - á daginn
