@@ -10,12 +10,35 @@
 
 /** `myndir[categoryId][chip]` is the ARASAAC number of an approved picture for that chip. */
 export const myndir: Record<string, Record<string, number>> = {
-  dyr: {},
-  matur: {},
-  farartaeki: {},
-  manneskja: {},
-  stadir: {},
-  klaednadur: {},
+  dyr: {
+    'á veturna': 35583,
+  },
+  matur: {
+    appelsínugult: 2624,
+    'á veturna': 35583,
+    brúnt: 5076,
+    gult: 38269,
+  },
+  farartaeki: {
+    'á veturna': 35583,
+  },
+  manneskja: {
+    'á veturna': 35583,
+  },
+  stadir: {
+    'á veturna': 35583,
+  },
+  klaednadur: {
+    'á veturna': 35583,
+    bleikt: 37584,
+    brúnt: 5076,
+    gult: 38269,
+    peysa: 2436,
+    pils: 2391,
+    skyrta: 13640,
+    sokkar: 2298,
+    úlpa: 27978,
+  },
   skolinn: {},
 };
 
