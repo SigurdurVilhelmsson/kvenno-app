@@ -64,13 +64,15 @@ test.describe('Islenskubraut — Category grid', () => {
 });
 
 test.describe('Islenskubraut — Teaching card page navigation', () => {
-  test('category grid shows exactly 6 category cards', async ({ page }) => {
+  // Six published cards and the draft Skólinn, which is on the grid while the drafts are live
+  // (`DROG_BIRT` in apps/islenskubraut/src/birting.ts, Siggi 2026-11-12). Back to 6 when it is off.
+  test('category grid shows exactly 7 category cards', async ({ page }) => {
     await page.goto('/islenskubraut/');
     await page.waitForLoadState('networkidle');
 
     // Each category is rendered as an <a> card linking to /islenskubraut/spjald/:id
     const categoryLinks = page.locator('a[href*="/islenskubraut/spjald/"]');
-    await expect(categoryLinks).toHaveCount(6);
+    await expect(categoryLinks).toHaveCount(7);
   });
 
   test('clicking Matur og drykkur navigates to teaching card page with correct URL', async ({
