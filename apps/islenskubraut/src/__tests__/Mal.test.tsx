@@ -6,6 +6,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { lookupWord } from '../components/Mal';
 import { SpjaldPage } from '../pages/SpjaldPage';
 
+// The site shows drafts to everyone while `DROG_BIRT` is on (src/birting.ts); these tests hold
+// what it does once the switch is off again. `drog-live.test.tsx` holds the live behaviour.
+vi.mock('../birting', () => ({ DROG_BIRT: false }));
+
 // One approved language with a gloss for every Dýr A1 chip it needs here, and one draft.
 vi.mock('../data/glossur', () => ({
   glossur: [

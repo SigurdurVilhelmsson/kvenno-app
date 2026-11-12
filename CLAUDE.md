@@ -530,6 +530,14 @@ games were migrated; the design's Outcome section has the before→after per gam
 
 ### Íslenskubraut content
 
+**The drafts are live, 2026-11-12 (Siggi's call, while the site is not in use).**
+`DROG_BIRT = true` in `apps/islenskubraut/src/birting.ts` shows every draft to everyone, unmarked,
+except a recording heard as `rangt`; `useDrog()` in `src/drog.ts` gives a page `show` and
+`marks`, and `?drog` still marks drafts for a reviewer. Every "only approved" or "only once
+confirmed" rule below describes the site with the switch off, which the tests hold by mocking
+`../birting`; `drog-live.test.tsx` holds it on. Approval is still recorded only in the YAML and on
+`/islenskubraut/yfirferd`. Turn it off before the site goes into use (`docs/REVIEW-QUEUE.md` A).
+
 **Edit `content/islenskubraut/*.yaml` only.** Those seven files are the source of truth. Both
 TypeScript copies are generated from them and must never be hand-edited. The editing workflow —
 directly, or by spreadsheet — is written up for a human in

@@ -4,6 +4,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { DrogContext, HljodCredit, Hlusta } from '../components/Hlusta';
 
+// The site shows drafts to everyone while `DROG_BIRT` is on (src/birting.ts); these tests hold
+// what it does once the switch is off again. `drog-live.test.tsx` holds the live behaviour.
+vi.mock('../birting', () => ({ DROG_BIRT: false }));
+
 // One approved recording and one draft.
 vi.mock('../data/hljod', () => ({
   HLJOD_VOICE: 'Rödd C, CC BY 4.0',

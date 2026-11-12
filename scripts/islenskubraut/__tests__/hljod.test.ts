@@ -111,8 +111,14 @@ describe('the manifest', () => {
     const m = readHljod({ voice: 'Rödd', clips: { feldur: 'rangt', hali: false } });
     expect(m.clips.get('feldur')).toBe(false);
     expect([...m.rejected]).toEqual(['feldur']);
+    // Marked, so a recording heard as wrong stays silent while the drafts are live.
     expect(clipsForApp(texts, m, hasFile).feldur).toEqual({
       file: clipName('feldur'),
+      approved: false,
+      rejected: true,
+    });
+    expect(clipsForApp(texts, m, hasFile).hali).toEqual({
+      file: clipName('hali'),
       approved: false,
     });
   });

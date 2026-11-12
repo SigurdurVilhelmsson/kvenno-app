@@ -1,16 +1,15 @@
-import { useSearchParams } from 'react-router-dom';
-
 import { Container } from '@kvenno/shared/components';
 
 import { CategoryCard } from '../components/CategoryCard';
 import { categories } from '../data';
+import { useDrog } from '../drog';
 
 export function Home() {
   // A new category stays off the grid until a teacher has read it (`draft:` in its YAML); its
-  // page works at its address, and `?drog` shows it here.
-  const [searchParams] = useSearchParams();
-  const drafts = searchParams.has('drog');
-  const shown = categories.filter((c) => !c.draft || drafts);
+  // page works at its address, and `?drog` shows it here. While the drafts are live
+  // (`DROG_BIRT`) it is on the grid for everyone.
+  const { show } = useDrog();
+  const shown = categories.filter((c) => !c.draft || show);
   return (
     <Container className="py-10 sm:py-16">
       {/* Hero section */}

@@ -7,9 +7,14 @@ import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
 import { SmidurPage } from '../pages/SmidurPage';
 
+// The site shows drafts to everyone while `DROG_BIRT` is on (src/birting.ts); these tests hold
+// what it does once the switch is off again. `drog-live.test.tsx` holds the live behaviour.
+vi.mock('../birting', () => ({ DROG_BIRT: false }));
+
 // As if a teacher had approved two pictures for Föt og klæðnaður and none elsewhere.
 vi.mock('../data/myndir', () => ({
   myndir: { klaednadur: { buxur: 101, rautt: 102 } },
+  myndirDrog: { klaednadur: { buxur: 101, rautt: 102, peysa: 103 } },
   ARASAAC_CREDIT: 'Myndtáknin eru eign ríkisstjórnar Aragóníu … ARASAAC …',
 }));
 vi.mock('@kvenno/shared/components', () => ({

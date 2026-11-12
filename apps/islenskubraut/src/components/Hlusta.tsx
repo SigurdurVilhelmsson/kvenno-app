@@ -1,12 +1,21 @@
 import { createContext, useContext } from 'react';
 
-import { HLJOD_VOICE, hljod } from '../data/hljod';
+import { DROG_BIRT } from '../birting';
+import { HLJOD_VOICE, hljod, type Hljod } from '../data/hljod';
 
 /**
  * Whether draft recordings play too: on the card page opened with `?drog` (`SpjaldPage`), and on
  * the teachers' listening page (`YfirferdHljod`). Anywhere else only approved recordings play.
  */
 export const DrogContext = createContext(false);
+
+/**
+ * Whether a recording may play: approved; any, under `?drog` or on the listening page; or, while
+ * the drafts are live (`DROG_BIRT`), any a teacher has not heard as wrong.
+ */
+function mayPlay(clip: Hljod, drafts: boolean): boolean {
+  return clip.approved || drafts || (DROG_BIRT && !clip.rejected);
+}
 
 /**
  * The recording of a text as printed, if it may play here: approved, or a draft under `?drog`.
@@ -17,14 +26,14 @@ export const DrogContext = createContext(false);
 export function useClip(text: string): string | undefined {
   const drafts = useContext(DrogContext);
   const clip = hljod[text];
-  if (!clip || !(clip.approved || drafts)) return undefined;
+  if (!clip || !mayPlay(clip, drafts)) return undefined;
   return `${import.meta.env.BASE_URL}hljod/${clip.file}${clip.v ? `?v=${clip.v}` : ''}`;
 }
 
 /** Whether any of these texts has a recording that may play here, for the credit line. */
 export function useAnyClip(texts: string[]): boolean {
   const drafts = useContext(DrogContext);
-  return texts.some((t) => hljod[t] && (hljod[t].approved || drafts));
+  return texts.some((t) => hljod[t] && mayPlay(hljod[t], drafts));
 }
 
 // One recording at a time: a second tap stops the first rather than talking over it.

@@ -10,6 +10,8 @@ export interface Hljod {
   file: string;
   /** A person has listened to it and agrees. */
   approved: boolean;
+  /** A teacher heard it as wrong (`rangt`): it never plays for students, drafts live or not. */
+  rejected?: boolean;
   /**
    * The version of its audio, put in its address (`?v=`), so a browser fetches a recording made
    * again rather than replaying a copy it kept of the old one.

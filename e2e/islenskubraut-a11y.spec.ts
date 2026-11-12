@@ -209,11 +209,13 @@ for (const fonts of ['web', 'fallback'] as const) {
   }
 }
 
-// A draft category is left off the home page, and shown there under ?drog (C19).
-test('the home page leaves out a draft category except under ?drog', async ({ page }) => {
+// A draft category is on the home page while the drafts are live (`DROG_BIRT` in
+// apps/islenskubraut/src/birting.ts, Siggi 2026-11-12), and under ?drog always (C19). With the
+// switch off it is left out without ?drog, which the unit tests in App.test.tsx hold.
+test('the home page shows the draft category while the drafts are live', async ({ page }) => {
   await page.goto('/islenskubraut/');
   await expect(page.getByRole('link', { name: /Dýr/ })).toBeVisible();
-  await expect(page.getByRole('link', { name: /Skólinn/ })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /Skólinn/ })).toBeVisible();
   await page.goto('/islenskubraut/?drog');
   await expect(page.getByRole('link', { name: /Skólinn/ })).toBeVisible();
   await expectNoViolations(page, 'heimasíða með drögum');

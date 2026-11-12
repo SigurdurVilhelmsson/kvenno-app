@@ -12,6 +12,15 @@ and #67 shipped the mobile pass, the vertical-scroll rollout and the jafna-jofnu
 Sections A and B are checks someone has to do by hand. C is rulings for Siggi. D is work that
 needs no ruling, only time.
 
+**Íslenskubraut's drafts are live (2026-11-12, Siggi's call).** While the site is not in use,
+`DROG_BIRT` in `apps/islenskubraut/src/birting.ts` shows every draft to everyone: Skólinn on the
+grid, the guessing games, talk-to-write and can-do sheets, the sentence builders, every recording
+not heard as wrong, the links, the Polish glosses and every chosen picture with a file. The site
+does not mark them; `?drog` still does. **Nothing below is approved by this.** What a teacher has
+approved is still the YAML flags (`approved`, `confirmed`, `draft`, `hljod.yaml`) and the review
+page's states, and the C items stay open. **Set `DROG_BIRT` to `false` before the site goes into
+use** (below, in A).
+
 ---
 
 ## A. After the 2026-09-29 deploy
@@ -74,6 +83,9 @@ needs no ruling, only time.
   - If it still fails, read `journalctl -u kvenno-backend -n 50` on the host first. A failing
     download that never reaches the backend points at the live nginx config: check it has the
     `/api/` location from `server/nginx-site.conf`, which `deploy.sh` does not install.
+
+- [ ] **Before Íslenskubraut goes into use, set `DROG_BIRT` to `false`** in
+      `apps/islenskubraut/src/birting.ts`, so students see approved content only again (2026-11-12).
 
 ## B. Device and accessibility checks (never run)
 

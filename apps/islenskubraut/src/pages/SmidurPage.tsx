@@ -8,6 +8,7 @@ import { Aefing, WhyList } from '../components/Malfraedi';
 import { ArasaacCredit, Pictogram, hasPictures, pictureFor } from '../components/Pictogram';
 import { getCategoryById } from '../data';
 import { getSmidur, type SmidurSubject } from '../data/smidur';
+import { useDrog } from '../drog';
 
 const GENDER: Record<SmidurSubject['gender'], string> = {
   kk: 'karlkyn',
@@ -28,6 +29,8 @@ export function SmidurPage() {
   const { flokkur } = useParams<{ flokkur: string }>();
   const category = getCategoryById(flokkur || '');
   const data = category ? getSmidur(category.id, 'A1') : undefined;
+  // The "Drög" note shows to a reviewer (`?drog`) only, now that the drafts are live.
+  const { marks } = useDrog();
   const fits = (frameAt: number, subjectAt: number) =>
     !data?.frames[frameAt].except?.includes(data.subjects[subjectAt].text);
   const [subjectIndex, setSubjectIndex] = useState(0);
@@ -101,7 +104,7 @@ export function SmidurPage() {
         <p className="text-warm-600">Veldu orð og setningaramma og sjáðu setninguna verða til.</p>
       </div>
 
-      {!data.confirmed && (
+      {!data.confirmed && marks && (
         <p
           role="note"
           className="mb-8 rounded-xl border border-warm-300 bg-warm-100 px-4 py-3 text-sm text-warm-800"

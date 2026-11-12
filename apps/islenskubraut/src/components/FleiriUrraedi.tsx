@@ -25,11 +25,15 @@ export function FleiriUrraedi({
   categoryId,
   level,
   drafts = false,
+  marks = drafts,
   className = '',
 }: {
   categoryId: string;
   level: Level;
+  /** Show the links not yet approved. */
   drafts?: boolean;
+  /** Mark which links are not yet approved (`?drog`); off while the drafts are simply live. */
+  marks?: boolean;
   className?: string;
 }) {
   const links = linksFor(categoryId, level, drafts);
@@ -43,12 +47,12 @@ export function FleiriUrraedi({
       >
         Fleiri úrræði
       </h2>
-      {drafts && (
+      {marks && (
         <p
           role="note"
           className="mb-4 rounded-xl border border-warm-300 bg-warm-100 px-4 py-3 text-sm text-warm-800"
         >
-          Drög: tenglar merktir „drög“ hafa ekki verið samþykktir og sjást ekki á síðunni.
+          Drög: tenglar merktir „drög“ hafa ekki verið samþykktir.
         </p>
       )}
       <div className="space-y-6">
@@ -67,7 +71,7 @@ export function FleiriUrraedi({
                     >
                       {t.name}
                     </a>
-                    {drafts && !t.approved && (
+                    {marks && !t.approved && (
                       <span className="ml-2 text-xs font-semibold text-warm-600">(drög)</span>
                     )}
                     <p className="text-sm text-warm-600">{t.description}</p>

@@ -117,14 +117,18 @@ export function allEntries(myndir) {
   ];
 }
 
-/** The approved pictures students see, per category and chip: `{dyr: {feldur: 1234}}`. */
-export function approvedPictures(myndir, categories) {
+/**
+ * The approved pictures students see, per category and chip: `{dyr: {feldur: 1234}}`. With
+ * `hasFile`, every chosen picture whose file is there instead, approved or not, for while the
+ * drafts are live (`DROG_BIRT` in the app).
+ */
+export function approvedPictures(myndir, categories, hasFile) {
   const out = {};
   for (const [id, words] of chipsByCategory(categories)) {
     const map = {};
     for (const word of [...words].sort((a, b) => a.localeCompare(b, 'is'))) {
       const entry = entryFor(myndir, id, word);
-      if (entry?.approved) map[word] = entry.id;
+      if (hasFile ? entry?.id != null && hasFile(entry.id) : entry?.approved) map[word] = entry.id;
     }
     out[id] = map;
   }
