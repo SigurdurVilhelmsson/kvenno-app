@@ -8,11 +8,13 @@ for language learners and AAC. `myndir.yaml` holds the pairings.
 
     pnpm islenskubraut:myndir --fetch    # search ARASAAC, choose the best match, download it
     pnpm islenskubraut:myndir            # check, offline, and rewrite the review sheet
+    pnpm islenskubraut:myndir --fetch --words "peysa,á veturna"   # search for these chips only
 
 1. `--fetch` searches ARASAAC (in English) for every chip with no `id`, writes the best match into
    `myndir.yaml`, keeps the other matches in `frambod.json`, and saves each chosen picture as
-   `apps/islenskubraut/public/myndir/<id>.png`. ARASAAC is not reachable from a cloud session, so
-   this runs on your own machine, as `pnpm islenskubraut:bin --fetch` does.
+   `apps/islenskubraut/public/myndir/<id>.png`. `--words` limits the search to the chips named.
+   ARASAAC is reachable from a cloud session whose environment allows the network (it was on
+   2026-11-12); otherwise run this on your own machine.
 2. Open `islenskubraut-myndir-yfirlit.html` (in the repo root, not committed). Each chip shows the
    chosen picture and up to six others ARASAAC found, with their numbers.
 3. Where a better picture is there, put its number in `id`. Where none fits, change `search`,
