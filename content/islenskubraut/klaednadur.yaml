@@ -19,6 +19,9 @@ subCategories:
       - húfa
       - hanskar
       - trefill
+    startsAt:
+      hanskar: A2
+      trefill: A2
   - id: s2
     name: Litur
     options:
@@ -56,6 +59,8 @@ subCategories:
       - allt árið
       - þegar rignir
       - við sérstök tilefni
+    startsAt:
+      við sérstök tilefni: A2
   - id: s6
     name: Á hvaða líkamshluta
     options:
@@ -64,6 +69,9 @@ subCategories:
       - á neðri hluta líkamans
       - á fótunum
       - á höndunum
+    startsAt:
+      á efri hluta líkamans: A2
+      á neðri hluta líkamans: A2
 sentenceFrames:
   - id: f1
     level: A1

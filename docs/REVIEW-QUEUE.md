@@ -385,7 +385,7 @@ person, now 5 (D3). These two need a ruling.
 ### C8. Íslenskubraut levels (2026-10-09)
 
 From a review of the app on 2026-10-09. The levels differ less than they look: the vocabulary
-page is the same at A1, A2 and B1, and A2 and B1 mostly add more words of the same kind. The
+page was the same at A1, A2 and B1 (until 2026-11-12, C22), and A2 and B1 mostly add more words of the same kind. The
 proposal below keeps A2 and B1 and splits A1 into steps, each a different card with a new
 language function rather than a longer list:
 
@@ -830,7 +830,7 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
 Each is recorded in the game's README under `## Open`, with file and line.
 
 - [ ] **Einingagreining Stig 3's intro, two sentences.** `Veldu fæstu skrefin — styttri leiðir gefa
-  nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedback says
+nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedback says
       `Allar leiðirnar hér gefa sama svarið`, and Stig 0 teaches that exact factors limit nothing.
       `lengd skiptir ekki máli` (`:452-453`) is untrue too: `scoreExplanation` credits by length.
       Reword, or change the scoring?
@@ -846,6 +846,39 @@ Each is recorded in the game's README under `## Open`, with file and line.
 - [ ] **Hvarfhraði, decision 80** (the Maxwell–Boltzmann tail and the catalyst demo copying the
       sliders only on mount) has no ruling in the decisions document and the code is unchanged,
       while C3 above reads "Done: 12–122". Rule it, or record why it is done.
+
+### C22. The Orðaforði page's word levels (2026-11-12)
+
+The Orðaforði page, the card's first page on the web and in print, showed the same words at A1,
+A2 and B1: its word groups (`subCategories` in the YAML) had no level. Each word now has a
+starting level, `startsAt` under its group (A1 when unlisted), and the page shows the words up to
+the level chosen. A group with no word yet at a level is left out at that level. The spreadsheet
+carries the level in the `stig` column of each `Valkostur` row.
+
+**The levels were drafted by Claude against the official curricula**, _Íslenska fyrir útlendinga_
+2008 (A1–A2) and 2011 (B1–B2), supplied by Siggi on 2026-11-12. Neither lists words by level, so
+each group goes where the curricula put its topic (colours, clothing, food, jobs and daily
+activities at A1; holidays, emergency services, geography and travel at A2), and only the less
+basic words within it start later. A check against Cambridge's CEFR-graded English word lists
+(there is no Icelandic one) then moved six words to A1 (`flýgur`, `syndir`, `hleypur`, `mótorhjól`,
+`lest`, `leikvöllur`), so 166 of the 233 words start at A1, 63 at A2 and 4 at B1. The reasoning,
+card by card, is `docs/research/islenskubraut-stig/README.md`. It takes ÍFÚ 1–2 as A1 and ÍFÚ 3–4
+as A2, which the 2008 curriculum does not state.
+
+- [ ] **Read each card's Orðaforði at A1, A2 and B1 and move the words that are at the wrong
+      level** (`/islenskubraut/yfirferd` links each card at each level).
+- [ ] **Skólinn departs from the curriculum on purpose:** ÍFÚ 4 puts school books, equipment and
+      subjects at A2 for adult learners; the card keeps the basic ones at A1 for students. Keep?
+      (Cambridge's young learners' lists put school things at Pre A1.)
+- [ ] **Five words the English lists put at A1 and the curriculum at A2** stay at A2: `trefill`,
+      `með skegg`, `sjúkrahús`, `í fjöllunum`, `fræg`. Move them to A1?
+- [ ] **The Spurningaspjald's answers, four recommendations from the same review, not applied:**
+      all colours at A1 (ÍFÚ 2), all ten basic garments at A1, the seasons and `um helgar` at A1
+      (ÍFÚ 1 time words; the English lists put the seasons at A2), and `slétt`/`gróft` out of A1.
+      The first draft also moved Lögun to A2; the CEFR check reversed that for `kringlótt` and
+      `ferkantað`, which are A1 in English.
+      Each changes A1 chips, so it needs pictogram entries and Polish glosses too. Detail in the
+      research file.
 
 ## D. Work that needs no ruling
 

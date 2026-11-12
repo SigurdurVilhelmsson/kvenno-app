@@ -185,4 +185,27 @@ describe('fromRows', () => {
     rows.push({ lykill: '', gerd: '', stig: '', samhengi: '', islenska: '', athugasemd: '' });
     expect(fromRows('manneskja', rows, category)).toEqual(category);
   });
+
+  it("carries each word's starting level in the stig column, both ways", () => {
+    const leveled = {
+      ...category,
+      subCategories: [
+        { name: 'Aldur', options: ['barn', 'unglingur'], startsAt: { unglingur: 'A2' } },
+      ],
+    };
+    const options = toRows(leveled).filter((r) => r.gerd === 'Valkostur');
+    expect(options.map((r) => r.stig)).toEqual(['A1', 'A2']);
+    expect(fromRows('manneskja', toRows(leveled), leveled)).toEqual(leveled);
+    // A blank stig, as on a row a reviewer typed in, starts at A1.
+    const blank = toRows(leveled).map((r) => (r.gerd === 'Valkostur' ? { ...r, stig: '' } : r));
+    expect(fromRows('manneskja', blank, leveled).subCategories[0]).toEqual({
+      name: 'Aldur',
+      options: ['barn', 'unglingur'],
+    });
+  });
+
+  it('throws on a word whose stig is not a level', () => {
+    const rows = toRows(category).map((r) => (r.islenska === 'barn' ? { ...r, stig: 'C1' } : r));
+    expect(() => fromRows('manneskja', rows, category)).toThrow(/"barn" has stig "C1"/);
+  });
 });

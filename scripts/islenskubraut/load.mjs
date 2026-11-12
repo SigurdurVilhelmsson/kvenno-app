@@ -61,7 +61,30 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
     checkString(s.name, `${id}.${s.id}.name`);
     assert(Array.isArray(s.options) && s.options.length > 0, `${id}.${s.id}.options is empty`);
     s.options.forEach((o, i) => checkString(o, `${id}.${s.id}.options[${i}]`));
-    return { name: s.name, options: s.options };
+    // The Orðaforði page shows a word from its starting level on, as the Spurningaspjald's
+    // answers grow from level to level. A word not listed starts at A1. Until Nov 2026 the
+    // groups had no level at all, so the page was the same at A1, A2 and B1.
+    const startsAt = s.startsAt ?? {};
+    assert(
+      startsAt && typeof startsAt === 'object' && !Array.isArray(startsAt),
+      `${id}.${s.id}.startsAt must be a map of word to level`
+    );
+    for (const [word, level] of Object.entries(startsAt)) {
+      assert(s.options.includes(word), `${id}.${s.id}.startsAt: "${word}" is not in its options`);
+      assert(
+        level === 'A2' || level === 'B1',
+        `${id}.${s.id}.startsAt.${word} is "${level}": write A2 or B1, and leave an A1 word out`
+      );
+    }
+    // In the options' order, so the YAML and a spreadsheet round trip write it the same way.
+    const ordered = Object.fromEntries(
+      s.options.filter((o) => o in startsAt).map((o) => [o, startsAt[o]])
+    );
+    return {
+      name: s.name,
+      options: s.options,
+      ...(Object.keys(ordered).length > 0 ? { startsAt: ordered } : {}),
+    };
   });
 
   const sentenceFrames = (doc.sentenceFrames ?? []).map((f) => {

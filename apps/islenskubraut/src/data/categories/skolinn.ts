@@ -28,18 +28,38 @@ export const skolinn: Category = {
         'reiknivél',
         'taska',
       ],
+      startsAt: {
+        stílabók: 'A2',
+        strokleður: 'A2',
+        reglustika: 'A2',
+        reiknivél: 'A2',
+      },
     },
     {
       name: 'Staðir',
       options: ['skólastofa', 'bókasafn', 'matsalur', 'íþróttasalur', 'gangur', 'skrifstofa'],
+      startsAt: {
+        matsalur: 'A2',
+        gangur: 'A2',
+        skrifstofa: 'A2',
+      },
     },
     {
       name: 'Fólk',
       options: ['kennari', 'nemandi', 'skólastjóri', 'námsráðgjafi', 'bekkjarfélagi'],
+      startsAt: {
+        skólastjóri: 'A2',
+        námsráðgjafi: 'A2',
+        bekkjarfélagi: 'A2',
+      },
     },
     {
       name: 'Fög',
       options: ['íslenska', 'stærðfræði', 'enska', 'saga', 'náttúrufræði', 'íþróttir'],
+      startsAt: {
+        saga: 'A2',
+        náttúrufræði: 'A2',
+      },
     },
     {
       name: 'Fyrirmæli',
@@ -53,6 +73,12 @@ export const skolinn: Category = {
         'berðu saman',
         'útskýrðu',
       ],
+      startsAt: {
+        'merktu við': 'A2',
+        lýstu: 'A2',
+        'berðu saman': 'A2',
+        útskýrðu: 'A2',
+      },
     },
   ],
   sentenceFrames: [

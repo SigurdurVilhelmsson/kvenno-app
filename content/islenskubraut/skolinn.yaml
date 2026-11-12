@@ -17,6 +17,11 @@ subCategories:
       - reglustika
       - reiknivél
       - taska
+    startsAt:
+      stílabók: A2
+      strokleður: A2
+      reglustika: A2
+      reiknivél: A2
   - id: s2
     name: Staðir
     options:
@@ -26,6 +31,10 @@ subCategories:
       - íþróttasalur
       - gangur
       - skrifstofa
+    startsAt:
+      matsalur: A2
+      gangur: A2
+      skrifstofa: A2
   - id: s3
     name: Fólk
     options:
@@ -34,6 +43,10 @@ subCategories:
       - skólastjóri
       - námsráðgjafi
       - bekkjarfélagi
+    startsAt:
+      skólastjóri: A2
+      námsráðgjafi: A2
+      bekkjarfélagi: A2
   - id: s4
     name: Fög
     options:
@@ -43,6 +56,9 @@ subCategories:
       - saga
       - náttúrufræði
       - íþróttir
+    startsAt:
+      saga: A2
+      náttúrufræði: A2
   - id: s5
     name: Fyrirmæli
     options:
@@ -54,6 +70,11 @@ subCategories:
       - lýstu
       - berðu saman
       - útskýrðu
+    startsAt:
+      merktu við: A2
+      lýstu: A2
+      berðu saman: A2
+      útskýrðu: A2
 sentenceFrames:
   - id: f1
     level: A1

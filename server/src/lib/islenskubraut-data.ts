@@ -22,10 +22,19 @@ export const categories: Category[] = [
       {
         name: 'Líffræðilegur flokkur',
         options: ['spendýr', 'fugl', 'fiskur', 'skriðdýr', 'froskdýr', 'skordýr'],
+        startsAt: {
+          spendýr: 'A2',
+          skriðdýr: 'B1',
+          froskdýr: 'B1',
+          skordýr: 'A2',
+        },
       },
       {
         name: 'Búsvæði',
         options: ['á landi', 'í vatni', 'í lofti', 'á landi og í vatni'],
+        startsAt: {
+          'á landi og í vatni': 'A2',
+        },
       },
       {
         name: 'Útlit',
@@ -39,6 +48,10 @@ export const categories: Category[] = [
           'fjóra fætur',
           'tvo fætur',
         ],
+        startsAt: {
+          gogg: 'A2',
+          horn: 'A2',
+        },
       },
       {
         name: 'Hreyfing',
@@ -51,6 +64,11 @@ export const categories: Category[] = [
       {
         name: 'Fæða',
         options: ['plöntur (grasæta)', 'kjöt (kjötæta)', 'bæði (alæta)'],
+        startsAt: {
+          'plöntur (grasæta)': 'A2',
+          'kjöt (kjötæta)': 'A2',
+          'bæði (alæta)': 'A2',
+        },
       },
     ],
     sentenceFrames: [
@@ -525,18 +543,35 @@ export const categories: Category[] = [
           'brauð/korn',
           'drykkur',
         ],
+        startsAt: {
+          mjólkurvara: 'A2',
+        },
       },
       {
         name: 'Bragð',
         options: ['sætt', 'salt', 'súrt', 'beiskt', 'kryddað/sterkt'],
+        startsAt: {
+          'kryddað/sterkt': 'A2',
+        },
       },
       {
         name: 'Áferð/form',
         options: ['mjúkt', 'hart', 'fljótandi', 'þurrt'],
+        startsAt: {
+          fljótandi: 'A2',
+          þurrt: 'A2',
+        },
       },
       {
         name: 'Undirbúningur',
         options: ['hrátt', 'soðið', 'steikt', 'bakað', 'heitt', 'kalt', 'frosið'],
+        startsAt: {
+          hrátt: 'A2',
+          soðið: 'A2',
+          steikt: 'A2',
+          bakað: 'A2',
+          frosið: 'A2',
+        },
       },
       {
         name: 'Hvar',
@@ -551,6 +586,9 @@ export const categories: Category[] = [
           'sem millimál',
           'alltaf/hvenær sem er',
         ],
+        startsAt: {
+          'sem millimál': 'A2',
+        },
       },
     ],
     sentenceFrames: [
@@ -1069,10 +1107,17 @@ export const categories: Category[] = [
           'sleði',
           'hlaupahjól',
         ],
+        startsAt: {
+          sleði: 'A2',
+          hlaupahjól: 'A2',
+        },
       },
       {
         name: 'Hvar fer það',
         options: ['á landi', 'á sjó/vatni', 'í lofti', 'á snjó'],
+        startsAt: {
+          'á snjó': 'A2',
+        },
       },
       {
         name: 'Stærð',
@@ -1081,10 +1126,19 @@ export const categories: Category[] = [
       {
         name: 'Eiginleikar',
         options: ['hjól', 'ekki hjól', 'með vél', 'án vélar', 'hraðskreitt', 'hægfara'],
+        startsAt: {
+          'með vél': 'A2',
+          'án vélar': 'A2',
+          hraðskreitt: 'A2',
+          hægfara: 'A2',
+        },
       },
       {
         name: 'Hvenær notað',
         options: ['á veturna', 'á sumrin', 'allt árið', 'í sérstökum tilfellum'],
+        startsAt: {
+          'í sérstökum tilfellum': 'B1',
+        },
       },
       {
         name: 'Fjöldi farþega',
@@ -1548,10 +1602,19 @@ export const categories: Category[] = [
       {
         name: 'Staða',
         options: ['á lífi', 'látin/látinn', 'skálduð persóna'],
+        startsAt: {
+          'á lífi': 'A2',
+          'látin/látinn': 'A2',
+          'skálduð persóna': 'B1',
+        },
       },
       {
         name: 'Frægð',
         options: ['fræg/frægur', 'ekki fræg/frægur'],
+        startsAt: {
+          'fræg/frægur': 'A2',
+          'ekki fræg/frægur': 'A2',
+        },
       },
       {
         name: 'Starf/hlutverk',
@@ -1567,10 +1630,17 @@ export const categories: Category[] = [
           'kokkur',
           'listamaður',
         ],
+        startsAt: {
+          stjórnmálamaður: 'A2',
+          listamaður: 'A2',
+        },
       },
       {
         name: 'Aldur',
         options: ['barn', 'unglingur', 'fullorðin/fullorðinn', 'öldruð/aldraður'],
+        startsAt: {
+          'öldruð/aldraður': 'A2',
+        },
       },
       {
         name: 'Útlit',
@@ -1587,10 +1657,19 @@ export const categories: Category[] = [
           'með skegg',
           'án skeggs',
         ],
+        startsAt: {
+          'sköllótt/sköllóttur': 'A2',
+          'án gleraugna': 'A2',
+          'með skegg': 'A2',
+          'án skeggs': 'A2',
+        },
       },
       {
         name: 'Athafnir',
         options: ['vinnur', 'lærir', 'syngur', 'spilar', 'ferðast', 'eldar', 'les', 'teiknar'],
+        startsAt: {
+          ferðast: 'A2',
+        },
       },
     ],
     sentenceFrames: [
@@ -1908,6 +1987,11 @@ export const categories: Category[] = [
           'sundlaug',
           'leikvöllur',
         ],
+        startsAt: {
+          sjúkrahús: 'A2',
+          safn: 'A2',
+          kirkja: 'A2',
+        },
       },
       {
         name: 'Staðsetning',
@@ -1918,6 +2002,10 @@ export const categories: Category[] = [
           'við sjóinn',
           'í fjöllunum',
         ],
+        startsAt: {
+          'í úthverfi': 'A2',
+          'í fjöllunum': 'A2',
+        },
       },
       {
         name: 'Stærð',
@@ -2390,6 +2478,10 @@ export const categories: Category[] = [
           'hanskar',
           'trefill',
         ],
+        startsAt: {
+          hanskar: 'A2',
+          trefill: 'A2',
+        },
       },
       {
         name: 'Litur',
@@ -2424,6 +2516,9 @@ export const categories: Category[] = [
       {
         name: 'Hvenær',
         options: ['á veturna', 'á sumrin', 'allt árið', 'þegar rignir', 'við sérstök tilefni'],
+        startsAt: {
+          'við sérstök tilefni': 'A2',
+        },
       },
       {
         name: 'Á hvaða líkamshluta',
@@ -2434,6 +2529,10 @@ export const categories: Category[] = [
           'á fótunum',
           'á höndunum',
         ],
+        startsAt: {
+          'á efri hluta líkamans': 'A2',
+          'á neðri hluta líkamans': 'A2',
+        },
       },
     ],
     sentenceFrames: [
@@ -2926,18 +3025,38 @@ export const categories: Category[] = [
           'reiknivél',
           'taska',
         ],
+        startsAt: {
+          stílabók: 'A2',
+          strokleður: 'A2',
+          reglustika: 'A2',
+          reiknivél: 'A2',
+        },
       },
       {
         name: 'Staðir',
         options: ['skólastofa', 'bókasafn', 'matsalur', 'íþróttasalur', 'gangur', 'skrifstofa'],
+        startsAt: {
+          matsalur: 'A2',
+          gangur: 'A2',
+          skrifstofa: 'A2',
+        },
       },
       {
         name: 'Fólk',
         options: ['kennari', 'nemandi', 'skólastjóri', 'námsráðgjafi', 'bekkjarfélagi'],
+        startsAt: {
+          skólastjóri: 'A2',
+          námsráðgjafi: 'A2',
+          bekkjarfélagi: 'A2',
+        },
       },
       {
         name: 'Fög',
         options: ['íslenska', 'stærðfræði', 'enska', 'saga', 'náttúrufræði', 'íþróttir'],
+        startsAt: {
+          saga: 'A2',
+          náttúrufræði: 'A2',
+        },
       },
       {
         name: 'Fyrirmæli',
@@ -2951,6 +3070,12 @@ export const categories: Category[] = [
           'berðu saman',
           'útskýrðu',
         ],
+        startsAt: {
+          'merktu við': 'A2',
+          lýstu: 'A2',
+          'berðu saman': 'A2',
+          útskýrðu: 'A2',
+        },
       },
     ],
     sentenceFrames: [

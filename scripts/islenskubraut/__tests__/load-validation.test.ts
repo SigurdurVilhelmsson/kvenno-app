@@ -125,6 +125,34 @@ subCategories:
     expect(() => loadCategory('prufa', target)).toThrow(/prufa\.s1\.options is empty/);
   });
 
+  it.each([
+    ['a word not in its options', 'hvalur: A2', /startsAt: "hvalur" is not in its options/],
+    ['A1, which is the default', 'fugl: A1', /startsAt\.fugl is "A1": write A2 or B1/],
+    ['a level that does not exist', 'fugl: C1', /startsAt\.fugl is "C1"/],
+  ])('throws on a startsAt naming %s', (_, entry, message) => {
+    const target = makeDir();
+    write(
+      target,
+      'prufa.yaml',
+      `id: prufa
+name: Prufa
+description: Lýsing á prufuflokki.
+color: "#123456"
+icon: 🧪
+subCategories:
+  - id: s1
+    name: Tegund
+    options:
+      - fiskur
+      - fugl
+    startsAt:
+      ${entry}
+`
+    );
+
+    expect(() => loadCategory('prufa', target)).toThrow(message);
+  });
+
   it('throws on an unknown level key', () => {
     const target = makeDir();
     write(

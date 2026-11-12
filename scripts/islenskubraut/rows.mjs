@@ -26,8 +26,11 @@ export function toRows(category) {
   category.subCategories.forEach((sub, i) => {
     const id = `${category.id}.s${i + 1}`;
     rows.push(row(`${id}.name`, 'Undirflokkur', '', '', sub.name));
+    // The level a word first shows on the Orðaforði page.
     for (const option of sub.options)
-      rows.push(row(`${id}.options`, 'Valkostur', '', sub.name, option));
+      rows.push(
+        row(`${id}.options`, 'Valkostur', sub.startsAt?.[option] ?? 'A1', sub.name, option)
+      );
   });
 
   category.sentenceFrames.forEach((frame, i) => {
@@ -67,6 +70,25 @@ function require1(groups, key) {
   const g = groups.get(key);
   if (!g || g.length === 0) throw new Error(`islenskubraut: ${key} has no rows`);
   return g[0].islenska;
+}
+
+/** A word group, each word's \`stig\` its starting level: blank or A1 starts at A1. */
+function subCategoryFrom(groups, key) {
+  const optionsKey = key.replace(/\.name$/, '.options');
+  const options = requireMany(groups, optionsKey);
+  const startsAt = {};
+  for (const r of groups.get(optionsKey)) {
+    const stig = (r.stig ?? '').trim();
+    if (stig === '' || stig === 'A1') continue;
+    if (!LEVELS.includes(stig))
+      throw new Error(`islenskubraut: ${optionsKey} "${r.islenska}" has stig "${stig}"`);
+    startsAt[r.islenska] = stig;
+  }
+  return {
+    name: require1(groups, key),
+    options,
+    ...(Object.keys(startsAt).length > 0 ? { startsAt } : {}),
+  };
 }
 
 function requireMany(groups, key) {
@@ -134,10 +156,7 @@ export function fromRows(categoryId, rows, base) {
   return {
     ...base,
     description: require1(groups, `${categoryId}.description`),
-    subCategories: subKeys.map((key) => ({
-      name: require1(groups, key),
-      options: requireMany(groups, key.replace(/\.name$/, '.options')),
-    })),
+    subCategories: subKeys.map((key) => subCategoryFrom(groups, key)),
     sentenceFrames: frameKeys.map((key) => ({
       level: groups.get(key)[0].stig,
       frames: requireMany(groups, key),

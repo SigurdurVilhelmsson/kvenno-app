@@ -28,10 +28,19 @@ export const stadir: Category = {
         'sundlaug',
         'leikvöllur',
       ],
+      startsAt: {
+        sjúkrahús: 'A2',
+        safn: 'A2',
+        kirkja: 'A2',
+      },
     },
     {
       name: 'Staðsetning',
       options: ['í bænum/borginni', 'í úthverfi', 'á landi/sveitinni', 'við sjóinn', 'í fjöllunum'],
+      startsAt: {
+        'í úthverfi': 'A2',
+        'í fjöllunum': 'A2',
+      },
     },
     {
       name: 'Stærð',

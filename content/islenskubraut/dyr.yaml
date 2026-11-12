@@ -19,6 +19,11 @@ subCategories:
       - skriðdýr
       - froskdýr
       - skordýr
+    startsAt:
+      spendýr: A2
+      skriðdýr: B1
+      froskdýr: B1
+      skordýr: A2
   - id: s3
     name: Búsvæði
     options:
@@ -26,6 +31,8 @@ subCategories:
       - í vatni
       - í lofti
       - á landi og í vatni
+    startsAt:
+      á landi og í vatni: A2
   - id: s4
     name: Útlit
     options:
@@ -37,6 +44,9 @@ subCategories:
       - horn
       - fjóra fætur
       - tvo fætur
+    startsAt:
+      gogg: A2
+      horn: A2
   - id: s5
     name: Hreyfing
     options:
@@ -56,6 +66,10 @@ subCategories:
       - plöntur (grasæta)
       - kjöt (kjötæta)
       - bæði (alæta)
+    startsAt:
+      plöntur (grasæta): A2
+      kjöt (kjötæta): A2
+      bæði (alæta): A2
 sentenceFrames:
   - id: f1
     level: A1

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import ReactPDF, { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import type { ReactElement, ReactNode } from 'react';
 import type { Category, GuidingQuestion, Level } from '../types/index.js';
+import { wordsAt } from '../types/islenskubraut.js';
 
 /**
  * Noto Sans, bundled in `server/fonts/` (@fontsource/noto-sans 5.3.0 — SIL Open Font
@@ -350,21 +351,25 @@ export function createSpjaldDocument(category: Category, level: Level): ReactEle
           <Text style={styles.frontHeaderText}>{category.name.toUpperCase()}</Text>
           <LevelBadge level={level} color={category.color} />
         </View>
-        {category.subCategories.map((sub, index) => (
-          <View key={index} style={styles.subCategoryBox} wrap={false}>
-            {/* The full colour, not a faded one: white text on 80 % fell below 4.5:1. */}
-            <View style={{ ...styles.subCategoryHeader, backgroundColor: category.color }}>
-              <Text style={styles.subCategoryHeaderText}>{sub.name}</Text>
+        {/* Each group shows the words up to this level; a group with none yet is left out. */}
+        {category.subCategories
+          .map((sub) => ({ name: sub.name, options: wordsAt(sub, level) }))
+          .filter((sub) => sub.options.length > 0)
+          .map((sub, index) => (
+            <View key={index} style={styles.subCategoryBox} wrap={false}>
+              {/* The full colour, not a faded one: white text on 80 % fell below 4.5:1. */}
+              <View style={{ ...styles.subCategoryHeader, backgroundColor: category.color }}>
+                <Text style={styles.subCategoryHeaderText}>{sub.name}</Text>
+              </View>
+              <View style={styles.subCategoryBody}>
+                {sub.options.map((option, i) => (
+                  <View key={i} style={vocabTag}>
+                    <Text style={{ ...styles.vocabText, color: category.color }}>{option}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
-            <View style={styles.subCategoryBody}>
-              {sub.options.map((option, i) => (
-                <View key={i} style={vocabTag}>
-                  <Text style={{ ...styles.vocabText, color: category.color }}>{option}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        ))}
+          ))}
         {footer}
       </Page>
 

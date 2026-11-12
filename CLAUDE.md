@@ -548,7 +548,13 @@ pnpm islenskubraut:build --check   # exit 1 if either is stale (CI-friendly)
   page only, never printed on the card students handle. Each question declares its role: a
   main question has a `label` (`Útlit`), a coloured context box has `context: hvar|hvenaer|hver|notagildi`,
   never both; until Oct 2026 both renderers inferred it from the question's emoji. The four
-  colours are `CONTEXT_COLORS` in `scripts/islenskubraut/load.mjs`
+  colours are `CONTEXT_COLORS` in `scripts/islenskubraut/load.mjs`. **Each Orðaforði word has a
+  starting level** (`startsAt` under its group, A1 when unlisted; `wordsAt` in the generated
+  `types.ts`), so that page grows from A1 to B1 as the Spurningaspjald does. Until 2026-11-12 the
+  groups had no level and the page was the same at every level; the levels were drafted by
+  Claude against the _Íslenska fyrir útlendinga_ curricula (2008, 2011), which level topics and
+  functions rather than words, and await a teacher (`docs/research/islenskubraut-stig/`,
+  `docs/REVIEW-QUEUE.md` C22)
 - `apps/islenskubraut/src/data/categories/*.ts` — **generated; never edit by hand**
 - `apps/islenskubraut/src/data/types.ts` and `server/src/types/islenskubraut.ts` — **generated,
   identical; never edit by hand**. `renderTypes()` in `scripts/islenskubraut/render.mjs` is the

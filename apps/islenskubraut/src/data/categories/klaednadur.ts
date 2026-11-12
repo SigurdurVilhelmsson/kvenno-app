@@ -30,6 +30,10 @@ export const klaednadur: Category = {
         'hanskar',
         'trefill',
       ],
+      startsAt: {
+        hanskar: 'A2',
+        trefill: 'A2',
+      },
     },
     {
       name: 'Litur',
@@ -64,6 +68,9 @@ export const klaednadur: Category = {
     {
       name: 'Hvenær',
       options: ['á veturna', 'á sumrin', 'allt árið', 'þegar rignir', 'við sérstök tilefni'],
+      startsAt: {
+        'við sérstök tilefni': 'A2',
+      },
     },
     {
       name: 'Á hvaða líkamshluta',
@@ -74,6 +81,10 @@ export const klaednadur: Category = {
         'á fótunum',
         'á höndunum',
       ],
+      startsAt: {
+        'á efri hluta líkamans': 'A2',
+        'á neðri hluta líkamans': 'A2',
+      },
     },
   ],
   sentenceFrames: [

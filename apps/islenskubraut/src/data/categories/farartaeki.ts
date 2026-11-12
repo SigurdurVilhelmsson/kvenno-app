@@ -27,10 +27,17 @@ export const farartaeki: Category = {
         'sleði',
         'hlaupahjól',
       ],
+      startsAt: {
+        sleði: 'A2',
+        hlaupahjól: 'A2',
+      },
     },
     {
       name: 'Hvar fer það',
       options: ['á landi', 'á sjó/vatni', 'í lofti', 'á snjó'],
+      startsAt: {
+        'á snjó': 'A2',
+      },
     },
     {
       name: 'Stærð',
@@ -39,10 +46,19 @@ export const farartaeki: Category = {
     {
       name: 'Eiginleikar',
       options: ['hjól', 'ekki hjól', 'með vél', 'án vélar', 'hraðskreitt', 'hægfara'],
+      startsAt: {
+        'með vél': 'A2',
+        'án vélar': 'A2',
+        hraðskreitt: 'A2',
+        hægfara: 'A2',
+      },
     },
     {
       name: 'Hvenær notað',
       options: ['á veturna', 'á sumrin', 'allt árið', 'í sérstökum tilfellum'],
+      startsAt: {
+        'í sérstökum tilfellum': 'B1',
+      },
     },
     {
       name: 'Fjöldi farþega',

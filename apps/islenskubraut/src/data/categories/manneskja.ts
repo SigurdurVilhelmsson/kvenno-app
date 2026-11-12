@@ -17,10 +17,19 @@ export const manneskja: Category = {
     {
       name: 'Staða',
       options: ['á lífi', 'látin/látinn', 'skálduð persóna'],
+      startsAt: {
+        'á lífi': 'A2',
+        'látin/látinn': 'A2',
+        'skálduð persóna': 'B1',
+      },
     },
     {
       name: 'Frægð',
       options: ['fræg/frægur', 'ekki fræg/frægur'],
+      startsAt: {
+        'fræg/frægur': 'A2',
+        'ekki fræg/frægur': 'A2',
+      },
     },
     {
       name: 'Starf/hlutverk',
@@ -36,10 +45,17 @@ export const manneskja: Category = {
         'kokkur',
         'listamaður',
       ],
+      startsAt: {
+        stjórnmálamaður: 'A2',
+        listamaður: 'A2',
+      },
     },
     {
       name: 'Aldur',
       options: ['barn', 'unglingur', 'fullorðin/fullorðinn', 'öldruð/aldraður'],
+      startsAt: {
+        'öldruð/aldraður': 'A2',
+      },
     },
     {
       name: 'Útlit',
@@ -56,10 +72,19 @@ export const manneskja: Category = {
         'með skegg',
         'án skeggs',
       ],
+      startsAt: {
+        'sköllótt/sköllóttur': 'A2',
+        'án gleraugna': 'A2',
+        'með skegg': 'A2',
+        'án skeggs': 'A2',
+      },
     },
     {
       name: 'Athafnir',
       options: ['vinnur', 'lærir', 'syngur', 'spilar', 'ferðast', 'eldar', 'les', 'teiknar'],
+      startsAt: {
+        ferðast: 'A2',
+      },
     },
   ],
   sentenceFrames: [

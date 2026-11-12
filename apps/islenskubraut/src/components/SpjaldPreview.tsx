@@ -1,6 +1,6 @@
 import { Hlusta } from './Hlusta';
 import { Sheet } from './Sheet';
-import { Category, Level } from '../data/types';
+import { Category, Level, wordsAt } from '../data/types';
 
 interface SpjaldPreviewProps {
   category: Category;
@@ -14,32 +14,36 @@ export function SpjaldPreview({ category, level, view }: SpjaldPreviewProps) {
     return (
       <Sheet category={category} level={level} page="Orðaforði" testId="spjald-ordafordi">
         <div className="space-y-2.5">
-          {category.subCategories.map((sub, index) => (
-            <div key={index} className="rounded-xl border border-gray-200 overflow-hidden">
-              <div
-                className="px-3 py-1.5 text-xs font-bold text-white uppercase tracking-wider"
-                style={{ backgroundColor: category.color }}
-              >
-                {sub.name}
+          {/* Each group shows the words up to this level; a group with none yet is left out. */}
+          {category.subCategories
+            .map((sub) => ({ name: sub.name, options: wordsAt(sub, level) }))
+            .filter((sub) => sub.options.length > 0)
+            .map((sub, index) => (
+              <div key={index} className="rounded-xl border border-gray-200 overflow-hidden">
+                <div
+                  className="px-3 py-1.5 text-xs font-bold text-white uppercase tracking-wider"
+                  style={{ backgroundColor: category.color }}
+                >
+                  {sub.name}
+                </div>
+                <div className="px-3 py-2 flex flex-wrap gap-1.5">
+                  {sub.options.map((option, optIndex) => (
+                    <span
+                      key={optIndex}
+                      className="inline-block px-2 py-0.5 rounded-md text-sm font-medium border"
+                      style={{
+                        borderColor: category.color + '40',
+                        color: category.color,
+                        backgroundColor: category.color + '08',
+                      }}
+                    >
+                      {option}
+                      <Hlusta text={option} color={category.color} />
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="px-3 py-2 flex flex-wrap gap-1.5">
-                {sub.options.map((option, optIndex) => (
-                  <span
-                    key={optIndex}
-                    className="inline-block px-2 py-0.5 rounded-md text-sm font-medium border"
-                    style={{
-                      borderColor: category.color + '40',
-                      color: category.color,
-                      backgroundColor: category.color + '08',
-                    }}
-                  >
-                    {option}
-                    <Hlusta text={option} color={category.color} />
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </Sheet>
     );
