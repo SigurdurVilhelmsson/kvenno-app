@@ -11,8 +11,8 @@ subCategories:
       - látin/látinn
       - skálduð persóna
     startsAt:
-      á lífi: B1
-      látin/látinn: B1
+      á lífi: A2
+      látin/látinn: A2
       skálduð persóna: B1
   - id: s2
     name: Frægð
@@ -36,8 +36,8 @@ subCategories:
       - kokkur
       - listamaður
     startsAt:
-      söngvari: B1
-      læknir: A2
+      stjórnmálamaður: A2
+      listamaður: A2
   - id: s4
     name: Aldur
     options:
@@ -46,7 +46,6 @@ subCategories:
       - fullorðin/fullorðinn
       - öldruð/aldraður
     startsAt:
-      unglingur: A2
       öldruð/aldraður: A2
   - id: s5
     name: Útlit
@@ -63,11 +62,10 @@ subCategories:
       - með skegg
       - án skeggs
     startsAt:
-      sköllótt/sköllóttur: B1
-      með gleraugu: A2
+      sköllótt/sköllóttur: A2
       án gleraugna: A2
-      með skegg: B1
-      án skeggs: B1
+      með skegg: A2
+      án skeggs: A2
   - id: s6
     name: Athafnir
     options:
@@ -80,7 +78,7 @@ subCategories:
       - les
       - teiknar
     startsAt:
-      syngur: A2
+      ferðast: A2
 sentenceFrames:
   - id: f1
     level: A1

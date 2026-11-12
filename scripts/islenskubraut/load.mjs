@@ -76,10 +76,14 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
         `${id}.${s.id}.startsAt.${word} is "${level}": write A2 or B1, and leave an A1 word out`
       );
     }
+    // In the options' order, so the YAML and a spreadsheet round trip write it the same way.
+    const ordered = Object.fromEntries(
+      s.options.filter((o) => o in startsAt).map((o) => [o, startsAt[o]])
+    );
     return {
       name: s.name,
       options: s.options,
-      ...(Object.keys(startsAt).length > 0 ? { startsAt } : {}),
+      ...(Object.keys(ordered).length > 0 ? { startsAt: ordered } : {}),
     };
   });
 

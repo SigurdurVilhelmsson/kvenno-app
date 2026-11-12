@@ -855,21 +855,23 @@ starting level, `startsAt` under its group (A1 when unlisted), and the page show
 the level chosen. A group with no word yet at a level is left out at that level. The spreadsheet
 carries the level in the `stig` column of each `Valkostur` row.
 
-**The levels were drafted by Claude**, by one rule: a word starts at the first level whose
-Spurningaspjald answers, sentence frames or worked example use it (by BÍN lemma, so `gogg`
-matches `goggur`). Of the 233 words, 140 start at A1, 73 at A2 and 20 at B1. A word the card
-never uses stays at A1, so it shows at every level as before; that is Dýr's `Stærð`, most of its
-`Búsvæði` and `Fæða`, and most of Klæðnaður's colours.
+**The levels were drafted by Claude against the official curricula**, _Íslenska fyrir útlendinga_
+2008 (A1–A2) and 2011 (B1–B2), supplied by Siggi on 2026-11-12. Neither lists words by level, so
+each group goes where the curricula put its topic (colours, clothing, food, jobs and daily
+activities at A1; holidays, emergency services, geography and travel at A2), and only the less
+basic words within it start later. Of the 233 words, 160 start at A1, 69 at A2 and 4 at B1. The
+reasoning, card by card, is `docs/research/islenskubraut-stig/README.md`. It takes ÍFÚ 1–2 as A1
+and ÍFÚ 3–4 as A2, which the 2008 curriculum does not state.
 
 - [ ] **Read each card's Orðaforði at A1, A2 and B1 and move the words that are at the wrong
-      level** (`/islenskubraut/yfirferd` links each card at each level). The rule cannot tell a
-      word a beginner needs from one the card happens to use late. It splits groups oddly:
-      Dýr's `syndir` starts at A2 because the A2 example says it, while `flýgur` and `hleypur`
-      wait for B1, and `gulur`, `bleikur` and `brúnn` start at A2 while the other colours are
-      at A1 only because no answer names them. Manneskja's `Staða` starts at B1 as a whole
-      group.
-- [ ] **Should a word the card never uses start at A1?** The alternative is B1, which shortens A1
-      further but hides words such as the colours from beginners.
+      level** (`/islenskubraut/yfirferd` links each card at each level).
+- [ ] **Skólinn departs from the curriculum on purpose:** ÍFÚ 4 puts school books, equipment and
+      subjects at A2 for adult learners; the card keeps the basic ones at A1 for students. Keep?
+- [ ] **The Spurningaspjald's answers, four recommendations from the same review, not applied:**
+      all colours at A1 (ÍFÚ 2), all ten basic garments at A1, the seasons and `um helgar` at A1
+      (ÍFÚ 1 time words), and Lögun moved to A2 with only `mjúkt`/`hart` left from Áferð at A1.
+      Each changes A1 chips, so it needs pictogram entries and Polish glosses too. Detail in the
+      research file.
 
 ## D. Work that needs no ruling
 

@@ -16,10 +16,7 @@ subCategories:
       - brauð/korn
       - drykkur
     startsAt:
-      fiskur: A2
       mjólkurvara: A2
-      sælgæti: A2
-      brauð/korn: A2
   - id: s2
     name: Bragð
     options:
@@ -38,6 +35,7 @@ subCategories:
       - fljótandi
       - þurrt
     startsAt:
+      fljótandi: A2
       þurrt: A2
   - id: s4
     name: Undirbúningur
@@ -51,9 +49,10 @@ subCategories:
       - frosið
     startsAt:
       hrátt: A2
+      soðið: A2
+      steikt: A2
       bakað: A2
-      heitt: A2
-      kalt: A2
+      frosið: A2
   - id: s5
     name: Hvar
     options:
@@ -70,7 +69,7 @@ subCategories:
       - sem millimál
       - alltaf/hvenær sem er
     startsAt:
-      sem millimál: B1
+      sem millimál: A2
 sentenceFrames:
   - id: f1
     level: A1

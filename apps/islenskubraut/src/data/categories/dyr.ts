@@ -23,18 +23,15 @@ export const dyr: Category = {
       options: ['spendýr', 'fugl', 'fiskur', 'skriðdýr', 'froskdýr', 'skordýr'],
       startsAt: {
         spendýr: 'A2',
-        fugl: 'A2',
-        fiskur: 'A2',
         skriðdýr: 'B1',
         froskdýr: 'B1',
-        skordýr: 'B1',
+        skordýr: 'A2',
       },
     },
     {
       name: 'Búsvæði',
       options: ['á landi', 'í vatni', 'í lofti', 'á landi og í vatni'],
       startsAt: {
-        'í vatni': 'A2',
         'á landi og í vatni': 'A2',
       },
     },
@@ -44,17 +41,15 @@ export const dyr: Category = {
       startsAt: {
         gogg: 'A2',
         horn: 'A2',
-        'fjóra fætur': 'A2',
-        'tvo fætur': 'A2',
       },
     },
     {
       name: 'Hreyfing',
       options: ['flýgur', 'syndir', 'hleypur'],
       startsAt: {
-        flýgur: 'B1',
+        flýgur: 'A2',
         syndir: 'A2',
-        hleypur: 'B1',
+        hleypur: 'A2',
       },
     },
     {
@@ -66,6 +61,8 @@ export const dyr: Category = {
       options: ['plöntur (grasæta)', 'kjöt (kjötæta)', 'bæði (alæta)'],
       startsAt: {
         'plöntur (grasæta)': 'A2',
+        'kjöt (kjötæta)': 'A2',
+        'bæði (alæta)': 'A2',
       },
     },
   ],

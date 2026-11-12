@@ -552,7 +552,9 @@ pnpm islenskubraut:build --check   # exit 1 if either is stale (CI-friendly)
   starting level** (`startsAt` under its group, A1 when unlisted; `wordsAt` in the generated
   `types.ts`), so that page grows from A1 to B1 as the Spurningaspjald does. Until 2026-11-12 the
   groups had no level and the page was the same at every level; the levels were drafted by
-  Claude from each card's own answers and await a teacher (`docs/REVIEW-QUEUE.md` C22)
+  Claude against the _Íslenska fyrir útlendinga_ curricula (2008, 2011), which level topics and
+  functions rather than words, and await a teacher (`docs/research/islenskubraut-stig/`,
+  `docs/REVIEW-QUEUE.md` C22)
 - `apps/islenskubraut/src/data/categories/*.ts` — **generated; never edit by hand**
 - `apps/islenskubraut/src/data/types.ts` and `server/src/types/islenskubraut.ts` — **generated,
   identical; never edit by hand**. `renderTypes()` in `scripts/islenskubraut/render.mjs` is the

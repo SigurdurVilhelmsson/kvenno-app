@@ -29,9 +29,7 @@ export const stadir: Category = {
         'leikvöllur',
       ],
       startsAt: {
-        íbúð: 'A2',
         sjúkrahús: 'A2',
-        veitingastaður: 'A2',
         safn: 'A2',
         kirkja: 'A2',
         leikvöllur: 'A2',
@@ -52,11 +50,6 @@ export const stadir: Category = {
     {
       name: 'Hvað gerir maður þar',
       options: ['borðar', 'verslar', 'syndir', 'lærir', 'vinnur', 'sefur', 'leikur sér'],
-      startsAt: {
-        syndir: 'A2',
-        vinnur: 'A2',
-        'leikur sér': 'B1',
-      },
     },
   ],
   sentenceFrames: [

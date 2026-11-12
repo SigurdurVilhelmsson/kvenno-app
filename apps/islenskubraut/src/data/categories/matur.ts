@@ -27,10 +27,7 @@ export const matur: Category = {
         'drykkur',
       ],
       startsAt: {
-        fiskur: 'A2',
         mjólkurvara: 'A2',
-        sælgæti: 'A2',
-        'brauð/korn': 'A2',
       },
     },
     {
@@ -44,6 +41,7 @@ export const matur: Category = {
       name: 'Áferð/form',
       options: ['mjúkt', 'hart', 'fljótandi', 'þurrt'],
       startsAt: {
+        fljótandi: 'A2',
         þurrt: 'A2',
       },
     },
@@ -52,9 +50,10 @@ export const matur: Category = {
       options: ['hrátt', 'soðið', 'steikt', 'bakað', 'heitt', 'kalt', 'frosið'],
       startsAt: {
         hrátt: 'A2',
+        soðið: 'A2',
+        steikt: 'A2',
         bakað: 'A2',
-        heitt: 'A2',
-        kalt: 'A2',
+        frosið: 'A2',
       },
     },
     {
@@ -71,7 +70,7 @@ export const matur: Category = {
         'alltaf/hvenær sem er',
       ],
       startsAt: {
-        'sem millimál': 'B1',
+        'sem millimál': 'A2',
       },
     },
   ],

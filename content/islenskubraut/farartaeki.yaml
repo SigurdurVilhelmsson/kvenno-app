@@ -20,7 +20,7 @@ subCategories:
       mótorhjól: A2
       lest: A2
       sleði: A2
-      hlaupahjól: B1
+      hlaupahjól: A2
   - id: s2
     name: Hvar fer það
     options:
@@ -28,6 +28,8 @@ subCategories:
       - á sjó/vatni
       - í lofti
       - á snjó
+    startsAt:
+      á snjó: A2
   - id: s3
     name: Stærð
     options:
@@ -44,6 +46,11 @@ subCategories:
       - án vélar
       - hraðskreitt
       - hægfara
+    startsAt:
+      með vél: A2
+      án vélar: A2
+      hraðskreitt: A2
+      hægfara: A2
   - id: s5
     name: Hvenær notað
     options:
@@ -52,8 +59,6 @@ subCategories:
       - allt árið
       - í sérstökum tilfellum
     startsAt:
-      á veturna: A2
-      á sumrin: A2
       í sérstökum tilfellum: B1
   - id: s6
     name: Fjöldi farþega
@@ -61,8 +66,6 @@ subCategories:
       - einn
       - fáir
       - margir
-    startsAt:
-      margir: B1
 sentenceFrames:
   - id: f1
     level: A1
