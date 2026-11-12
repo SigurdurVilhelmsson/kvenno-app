@@ -381,7 +381,16 @@ export const stadir: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+          ],
         },
         {
           level: 'A2',

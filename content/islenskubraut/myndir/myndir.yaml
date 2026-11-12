@@ -33,8 +33,6 @@ words:
   # Áferð og form
   mjúkt: { search: soft }
   hart: { search: hard }
-  slétt: { search: smooth }
-  gróft: { search: rough }
   kringlótt: { search: round }
   ferkantað: { search: square }
   ílangt: { search: long }
@@ -50,6 +48,9 @@ words:
   rautt: { search: red }
   grænt: { search: green }
   gult: { search: yellow }
+  bleikt: { search: pink }
+  brúnt: { search: brown }
+  appelsínugult: { search: orange colour }
   hvítt: { search: white }
   blátt: { search: blue }
   svart: { search: black }
@@ -143,6 +144,12 @@ words:
   buxur: { search: trousers }
   jakki: { search: jacket }
   skór: { search: shoes }
+  peysa: { search: sweater }
+  skyrta: { search: shirt }
+  pils: { search: skirt }
+  úlpa: { search: winter coat }
+  sokkar: { search: socks }
+  húfa: { search: woolly hat }
   til að hlýja sér: { search: warm }
   til að verja sig: { search: protect }
   til að líta vel út: { search: elegant }
@@ -159,6 +166,10 @@ words:
   á daginn: { search: day }
   á kvöldin: { search: evening }
   alltaf: { search: always }
+  á veturna: { search: winter }
+  á sumrin: { search: summer }
+  um helgar: { search: weekend }
+  á virkum dögum: { search: weekday }
 
   # Skólinn (draft category, REVIEW-QUEUE C19)
   bók: { search: book }

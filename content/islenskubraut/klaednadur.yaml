@@ -112,9 +112,15 @@ guidingQuestions:
     answers:
       A1:
         - bolur
+        - peysa
+        - skyrta
         - buxur
+        - pils
         - jakki
+        - úlpa
+        - sokkar
         - skór
+        - húfa
       A2:
         - bolur
         - peysa
@@ -150,6 +156,9 @@ guidingQuestions:
         - grænt
         - svart
         - hvítt
+        - gult
+        - bleikt
+        - brúnt
       A2:
         - rautt
         - blátt
@@ -182,8 +191,6 @@ guidingQuestions:
       A1:
         - mjúkt
         - hart
-        - slétt
-        - gróft
       A2:
         - mjúkt
         - hart
@@ -352,6 +359,10 @@ guidingQuestions:
         - á daginn
         - á kvöldin
         - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
       A2:
         - á morgnana
         - á daginn
@@ -396,3 +407,6 @@ builder:
         agree:
           það: ÞF
         words: Hvar er hægt að nota þetta?
+    lemmas:
+      bleikt: bleikur
+      húfa: húfa

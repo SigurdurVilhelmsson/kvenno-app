@@ -114,10 +114,6 @@ export const giskaleikur: Record<string, Giskaleikur> = {
               chips: ['feldur', 'hali'],
             },
             {
-              question: 'Hvernig finnst það við snertingu?',
-              chips: ['slétt'],
-            },
-            {
               question: 'Hvaða hljóð gefur það frá sér?',
               chips: ['hátt'],
             },
@@ -166,6 +162,10 @@ export const giskaleikur: Record<string, Giskaleikur> = {
               question: 'Hvar er hægt að finna þetta?',
               chips: ['á bæ', 'úti'],
             },
+            {
+              question: 'Hvenær sést þetta?',
+              chips: ['á sumrin'],
+            },
           ],
         },
         {
@@ -213,10 +213,6 @@ export const giskaleikur: Record<string, Giskaleikur> = {
               chips: ['hreistur', 'hali'],
             },
             {
-              question: 'Hvernig finnst það við snertingu?',
-              chips: ['slétt'],
-            },
-            {
               question: 'Hvaða hljóð gefur það frá sér?',
               chips: ['þögult'],
             },
@@ -256,6 +252,10 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             {
               question: 'Hvar er hægt að finna þetta?',
               chips: ['úti'],
+            },
+            {
+              question: 'Hvenær sést þetta?',
+              chips: ['á sumrin'],
             },
           ],
         },
@@ -896,7 +896,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvernig finnst það við snertingu?',
-              chips: ['hart', 'slétt'],
+              chips: ['hart'],
             },
             {
               question: 'Hvernig lyktar af því?',
@@ -982,7 +982,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvernig finnst það við snertingu?',
-              chips: ['hart', 'gróft'],
+              chips: ['hart'],
             },
             {
               question: 'Hvar er hægt að finna þetta?',
@@ -996,6 +996,10 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             {
               question: 'Hvers konar matur er þetta?',
               chips: ['grænmeti'],
+            },
+            {
+              question: 'Hvernig lítur það út?',
+              chips: ['appelsínugult'],
             },
             {
               question: 'Hvernig bragðast það?',
@@ -1044,7 +1048,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvernig finnst það við snertingu?',
-              chips: ['mjúkt', 'slétt'],
+              chips: ['mjúkt'],
             },
             {
               question: 'Hvaða lögun hefur það?',
@@ -1103,6 +1107,10 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             {
               question: 'Hvers konar matur er þetta?',
               chips: ['drykkur'],
+            },
+            {
+              question: 'Hvernig lítur það út?',
+              chips: ['brúnt'],
             },
             {
               question: 'Hvernig bragðast það?',
@@ -1867,7 +1875,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvenær er þetta notað?',
-              chips: ['á morgnana'],
+              chips: ['á morgnana', 'á virkum dögum'],
             },
           ],
         },
@@ -1897,6 +1905,10 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             {
               question: 'Hvar er hægt að nota/finna þetta?',
               chips: ['á götunni'],
+            },
+            {
+              question: 'Hvenær er þetta notað?',
+              chips: ['á sumrin'],
             },
           ],
         },
@@ -2567,7 +2579,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvenær er hún/hann virk/virkur?',
-              chips: ['á morgnana'],
+              chips: ['á morgnana', 'á virkum dögum'],
             },
           ],
         },
@@ -2592,7 +2604,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvenær er hún/hann virk/virkur?',
-              chips: ['á morgnana'],
+              chips: ['á morgnana', 'á virkum dögum'],
             },
           ],
         },
@@ -2642,7 +2654,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvenær er hún/hann virk/virkur?',
-              chips: ['á kvöldin'],
+              chips: ['á kvöldin', 'um helgar'],
             },
           ],
         },
@@ -2663,7 +2675,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvenær er hún/hann virk/virkur?',
-              chips: ['á daginn'],
+              chips: ['á daginn', 'um helgar'],
             },
           ],
         },
@@ -3149,7 +3161,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvenær er þetta notað?',
-              chips: ['á morgnana'],
+              chips: ['á morgnana', 'á virkum dögum'],
             },
           ],
         },
@@ -3207,7 +3219,7 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             },
             {
               question: 'Hvenær er þetta notað?',
-              chips: ['á morgnana'],
+              chips: ['á morgnana', 'um helgar'],
             },
           ],
         },
@@ -3758,6 +3770,10 @@ export const giskaleikur: Record<string, Giskaleikur> = {
               question: 'Hvar er hægt að nota þetta?',
               chips: ['inni'],
             },
+            {
+              question: 'Hvenær er þetta notað?',
+              chips: ['á sumrin'],
+            },
           ],
         },
         {
@@ -3766,10 +3782,6 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             {
               question: 'Hvernig lítur það út?',
               chips: ['blátt'],
-            },
-            {
-              question: 'Hvernig finnst það við snertingu?',
-              chips: ['gróft'],
             },
             {
               question: 'Úr hverju er það gert?',
@@ -3799,10 +3811,6 @@ export const giskaleikur: Record<string, Giskaleikur> = {
             {
               question: 'Hvernig lítur það út?',
               chips: ['svart'],
-            },
-            {
-              question: 'Hvernig finnst það við snertingu?',
-              chips: ['slétt'],
             },
             {
               question: 'Úr hverju er það gert?',

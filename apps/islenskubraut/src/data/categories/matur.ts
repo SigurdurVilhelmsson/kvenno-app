@@ -178,7 +178,7 @@ export const matur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['rautt', 'grænt', 'gult', 'hvítt'],
+          options: ['rautt', 'grænt', 'gult', 'hvítt', 'brúnt', 'appelsínugult'],
         },
         {
           level: 'A2',
@@ -241,7 +241,7 @@ export const matur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['mjúkt', 'hart', 'slétt', 'gróft'],
+          options: ['mjúkt', 'hart'],
         },
         {
           level: 'A2',
@@ -449,7 +449,16 @@ export const matur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+          ],
         },
         {
           level: 'A2',
@@ -535,7 +544,16 @@ export const matur: Category = {
           ],
           blank: {
             words: 'Hvenær er þetta notað?',
-            options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+            options: [
+              'á morgnana',
+              'á daginn',
+              'á kvöldin',
+              'alltaf',
+              'á veturna',
+              'á sumrin',
+              'um helgar',
+              'á virkum dögum',
+            ],
             form: 'as-is',
           },
           except: ['drykkur'],

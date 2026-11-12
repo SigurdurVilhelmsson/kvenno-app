@@ -1040,11 +1040,6 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'dyr',
-        level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'dyr',
         level: 'A2',
         where: 'Hvernig finnst það við snertingu?',
       },
@@ -1055,22 +1050,12 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'matur',
-        level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
         level: 'A2',
         where: 'Hvernig finnst það við snertingu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
         where: 'Hvernig finnst það við snertingu?',
       },
       {
@@ -1095,11 +1080,6 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'dyr',
-        level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'dyr',
         level: 'A2',
         where: 'Hvernig finnst það við snertingu?',
       },
@@ -1110,22 +1090,12 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'matur',
-        level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
         level: 'A2',
         where: 'Hvernig finnst það við snertingu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
         where: 'Hvernig finnst það við snertingu?',
       },
       {
@@ -3715,6 +3685,11 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'dyr',
+        level: 'A1',
+        where: 'Hvenær sést þetta?',
+      },
+      {
+        category: 'dyr',
         level: 'A2',
         where: 'Hvenær sést þetta?',
       },
@@ -3722,6 +3697,11 @@ export const hlustun: HlustunClip[] = [
         category: 'dyr',
         level: 'B1',
         where: 'Hvenær sést þetta?',
+      },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
       },
       {
         category: 'matur',
@@ -3740,6 +3720,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'farartaeki',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'farartaeki',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
@@ -3750,6 +3735,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'manneskja',
+        level: 'A1',
+        where: 'Hvenær er hún/hann virk/virkur?',
+      },
+      {
+        category: 'manneskja',
         level: 'A2',
         where: 'Hvenær er hún/hann virk/virkur?',
       },
@@ -3757,6 +3747,11 @@ export const hlustun: HlustunClip[] = [
         category: 'manneskja',
         level: 'B1',
         where: 'Hvenær er hún/hann virk/virkur?',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
       },
       {
         category: 'stadir',
@@ -3772,6 +3767,11 @@ export const hlustun: HlustunClip[] = [
         category: 'klaednadur',
         level: null,
         where: 'Hvenær',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
       },
       {
         category: 'klaednadur',
@@ -3795,6 +3795,11 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'dyr',
+        level: 'A1',
+        where: 'Hvenær sést þetta?',
+      },
+      {
+        category: 'dyr',
         level: 'A2',
         where: 'Hvenær sést þetta?',
       },
@@ -3802,6 +3807,11 @@ export const hlustun: HlustunClip[] = [
         category: 'dyr',
         level: 'B1',
         where: 'Hvenær sést þetta?',
+      },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
       },
       {
         category: 'matur',
@@ -3820,6 +3830,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'farartaeki',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'farartaeki',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
@@ -3830,6 +3845,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'manneskja',
+        level: 'A1',
+        where: 'Hvenær er hún/hann virk/virkur?',
+      },
+      {
+        category: 'manneskja',
         level: 'A2',
         where: 'Hvenær er hún/hann virk/virkur?',
       },
@@ -3837,6 +3857,11 @@ export const hlustun: HlustunClip[] = [
         category: 'manneskja',
         level: 'B1',
         where: 'Hvenær er hún/hann virk/virkur?',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
       },
       {
         category: 'stadir',
@@ -3852,6 +3877,11 @@ export const hlustun: HlustunClip[] = [
         category: 'klaednadur',
         level: null,
         where: 'Hvenær',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
       },
       {
         category: 'klaednadur',
@@ -3875,6 +3905,11 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'dyr',
+        level: 'A1',
+        where: 'Hvenær sést þetta?',
+      },
+      {
+        category: 'dyr',
         level: 'A2',
         where: 'Hvenær sést þetta?',
       },
@@ -3885,6 +3920,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'matur',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
@@ -3895,6 +3935,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'farartaeki',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'farartaeki',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
@@ -3905,6 +3950,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'manneskja',
+        level: 'A1',
+        where: 'Hvenær er hún/hann virk/virkur?',
+      },
+      {
+        category: 'manneskja',
         level: 'A2',
         where: 'Hvenær er hún/hann virk/virkur?',
       },
@@ -3915,12 +3965,22 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'stadir',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'stadir',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
       {
         category: 'stadir',
         level: 'B1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
         where: 'Hvenær er þetta notað?',
       },
       {
@@ -5318,6 +5378,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvernig lítur það út?',
+      },
+      {
+        category: 'klaednadur',
         level: 'A2',
         where: 'Hvernig lítur það út?',
       },
@@ -5378,12 +5443,22 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'matur',
+        level: 'A1',
+        where: 'Hvernig lítur það út?',
+      },
+      {
+        category: 'matur',
         level: 'A2',
         where: 'Hvernig lítur það út?',
       },
       {
         category: 'matur',
         level: 'B1',
+        where: 'Hvernig lítur það út?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
         where: 'Hvernig lítur það út?',
       },
       {
@@ -5406,6 +5481,11 @@ export const hlustun: HlustunClip[] = [
     v: '8e897b86e522',
     approved: false,
     places: [
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvernig lítur það út?',
+      },
       {
         category: 'matur',
         level: 'A2',
@@ -6053,6 +6133,11 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'matur',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
@@ -6063,6 +6148,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'farartaeki',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'farartaeki',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
@@ -6073,6 +6163,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'manneskja',
+        level: 'A1',
+        where: 'Hvenær er hún/hann virk/virkur?',
+      },
+      {
+        category: 'manneskja',
         level: 'A2',
         where: 'Hvenær er hún/hann virk/virkur?',
       },
@@ -6083,12 +6178,22 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'stadir',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'stadir',
         level: 'A2',
         where: 'Hvenær er þetta notað?',
       },
       {
         category: 'stadir',
         level: 'B1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
         where: 'Hvenær er þetta notað?',
       },
       {
@@ -10100,6 +10205,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvers konar klæðnaður er þetta?',
+      },
+      {
+        category: 'klaednadur',
         level: 'A2',
         where: 'Hvers konar klæðnaður er þetta?',
       },
@@ -10122,6 +10232,11 @@ export const hlustun: HlustunClip[] = [
         category: 'klaednadur',
         level: null,
         where: 'Tegund',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvers konar klæðnaður er þetta?',
       },
       {
         category: 'klaednadur',
@@ -10180,6 +10295,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvers konar klæðnaður er þetta?',
+      },
+      {
+        category: 'klaednadur',
         level: 'A2',
         where: 'Hvers konar klæðnaður er þetta?',
       },
@@ -10235,6 +10355,11 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvers konar klæðnaður er þetta?',
+      },
+      {
+        category: 'klaednadur',
         level: 'A2',
         where: 'Hvers konar klæðnaður er þetta?',
       },
@@ -10257,6 +10382,11 @@ export const hlustun: HlustunClip[] = [
         category: 'klaednadur',
         level: null,
         where: 'Tegund',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvers konar klæðnaður er þetta?',
       },
       {
         category: 'klaednadur',
@@ -10312,6 +10442,11 @@ export const hlustun: HlustunClip[] = [
         category: 'klaednadur',
         level: null,
         where: 'Tegund',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvers konar klæðnaður er þetta?',
       },
       {
         category: 'klaednadur',
@@ -10899,6 +11034,11 @@ export const hlustun: HlustunClip[] = [
     v: 'e10e077b02b7',
     approved: false,
     places: [
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvernig lítur það út?',
+      },
       {
         category: 'klaednadur',
         level: 'A2',

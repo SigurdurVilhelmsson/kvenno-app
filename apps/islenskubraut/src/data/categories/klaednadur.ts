@@ -150,7 +150,18 @@ export const klaednadur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['bolur', 'buxur', 'jakki', 'skór'],
+          options: [
+            'bolur',
+            'peysa',
+            'skyrta',
+            'buxur',
+            'pils',
+            'jakki',
+            'úlpa',
+            'sokkar',
+            'skór',
+            'húfa',
+          ],
         },
         {
           level: 'A2',
@@ -193,7 +204,7 @@ export const klaednadur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt'],
+          options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt', 'gult', 'bleikt', 'brúnt'],
         },
         {
           level: 'A2',
@@ -236,7 +247,7 @@ export const klaednadur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['mjúkt', 'hart', 'slétt', 'gróft'],
+          options: ['mjúkt', 'hart'],
         },
         {
           level: 'A2',
@@ -461,7 +472,16 @@ export const klaednadur: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+          ],
         },
         {
           level: 'A2',
@@ -504,7 +524,18 @@ export const klaednadur: Category = {
       subject: {
         kind: 'words',
         words: 'Hvers konar klæðnaður er þetta?',
-        options: ['bolur', 'buxur', 'jakki', 'skór'],
+        options: [
+          'bolur',
+          'peysa',
+          'skyrta',
+          'buxur',
+          'pils',
+          'jakki',
+          'úlpa',
+          'sokkar',
+          'skór',
+          'húfa',
+        ],
         plural: ['skór'],
       },
       frames: [
@@ -534,7 +565,7 @@ export const klaednadur: Category = {
           ],
           blank: {
             words: 'Hvernig lítur það út?',
-            options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt'],
+            options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt', 'gult', 'bleikt', 'brúnt'],
             form: 'agree',
           },
         },
@@ -553,6 +584,10 @@ export const klaednadur: Category = {
           },
         },
       ],
+      lemmas: {
+        bleikt: 'bleikur',
+        húfa: 'húfa',
+      },
     },
   ],
 };

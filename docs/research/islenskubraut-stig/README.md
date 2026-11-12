@@ -78,13 +78,16 @@ moved six words earlier, the count is 166 words at A1, 63 from A2 and 4 from B1,
 | Klæðnaður | Every garment but two, every colour in both numbers (ÍFÚ 2: _fatnaður, litir_; `buxur`, `skór` and `sokkar` are plural, so A1 needs the plural colours); `þegar rignir` (weather); the body-part phrases.                     | `hanskar`, `trefill` (ÍFÚ 4, _viðeigandi klæðnaður_), `við sérstök tilefni` (ÍFÚ 3, holidays), and the two longer phrases `á efri/neðri hluta líkamans`: A2.                                                                                                                            |
 | Skólinn   | Unchanged.                                                                                                                                                                                                                    | Unchanged: the basic things, places, people, subjects and instructions at A1, the rest at A2. **This departs from the curriculum on purpose:** ÍFÚ 4 puts school books, equipment and subjects at A2, because its learners are parents. For a student, they are the first words needed. |
 
-## The Spurningaspjald's answers: four recommendations, not applied
+## The Spurningaspjald's answers: four recommendations
 
-_Items 3 and 4 were revised after the CEFR check; see the section after this one._
+_Items 3 and 4 were revised after the CEFR check; see the section after this one. **Siggi ruled on
+2026-11-12 and the answers now follow his ruling:** items 1 and 2 as written, item 3 with the
+seasons, `um helgar` and `á virkum dögum` at A1, and item 4 only as far as `slétt` and `gróft`, which
+moved to A2. Lögun is unchanged. It all waits for the Icelandic teacher's final approval._
 
 The question card's answer lists are levelled in the YAML and printed. Changing them also touches
 the A1 pictograms (`myndir/myndir.yaml` needs an entry for every A1 chip), the Polish glosses, the
-recordings and the guessing games, so these are recommendations for Siggi and not part of the PR.
+recordings and the guessing games, so they were left for Siggi's ruling.
 
 1. **Colours.** The Útlit questions on Matur and Klæðnaður offer four or five colours at A1 and add
    `gult`, `bleikt`, `brúnt` (and `appelsínugult` on Matur) at A2. The curriculum puts colours together at
