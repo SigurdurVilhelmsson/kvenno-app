@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { Container } from '@kvenno/shared/components';
 
+import { DROG_BIRT } from '../birting';
 import { categories } from '../data';
 import { egget } from '../data/egget';
 import { giskaleikur } from '../data/giskaleikur';
@@ -85,7 +86,7 @@ function rows(category: Category): Row[] {
     out.push({
       item: 'smidur',
       state: builder.confirmed ? 'staðfest' : 'drög',
-      links: [{ label: 'Opna A1', href: `/smidur/${id}`, internal: true }],
+      links: [{ label: 'Opna A1', href: `/smidur/${id}?drog`, internal: true }],
       hint: 'Eru setningarnar réttar með öllum orðum? Breyttu orðin eru undirstrikuð.',
     });
   }
@@ -140,13 +141,22 @@ export function Yfirferd() {
     <Container className="py-8 sm:py-12">
       <h1 className="font-heading text-2xl sm:text-3xl font-bold text-warm-900 mb-4">Yfirferð</h1>
       <div className="max-w-2xl space-y-3 text-warm-800 mb-8">
-        <p>
-          Hér er allt á Íslenskubraut sem bíður þess að kennari fari yfir það. Ekkert sem merkt er
-          „drög“ birtist nemendum fyrr en búið er að staðfesta það, nema hvað upptökur, tenglar og
-          tungumál undir „Á þínu máli“ birtast eitt og eitt, um leið og hvert þeirra er samþykkt.
-          Það sem merkt er „birt nemendum“ sjá nemendur nú þegar. Engin síða sem nemendur sjá vísar
-          hingað.
-        </p>
+        {DROG_BIRT ? (
+          <p>
+            Hér er allt á Íslenskubraut sem bíður þess að kennari fari yfir það. Á meðan vefurinn er
+            ekki kominn í notkun birtist allt efnið á síðunni, drögin líka, nema upptökur sem
+            merktar hafa verið rangar. Hér sést hvað er enn „drög“ og hvað hefur verið staðfest; á
+            síðunni sjálfri er það ekki merkt. Engin síða sem nemendur sjá vísar hingað.
+          </p>
+        ) : (
+          <p>
+            Hér er allt á Íslenskubraut sem bíður þess að kennari fari yfir það. Ekkert sem merkt er
+            „drög“ birtist nemendum fyrr en búið er að staðfesta það, nema hvað upptökur, tenglar og
+            tungumál undir „Á þínu máli“ birtast eitt og eitt, um leið og hvert þeirra er samþykkt.
+            Það sem merkt er „birt nemendum“ sjá nemendur nú þegar. Engin síða sem nemendur sjá
+            vísar hingað.
+          </p>
+        )}
         <ol className="list-decimal pl-6 space-y-1">
           <li>
             Opnaðu hvert atriði. Hlekkirnir sýna drögin eins og nemandi myndi sjá þau, og

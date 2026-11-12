@@ -282,7 +282,7 @@ export function getSmidur(categoryId: string, level: Level): SmidurLevel | undef
  * The approved pictograms for the A1 chips, per category and chip, as ARASAAC numbers. The
  * pictures themselves are in `apps/islenskubraut/public/myndir/<id>.png`.
  */
-export function renderMyndir(pictures) {
+export function renderMyndir(pictures, chosen = pictures) {
   return `${WARNING}
 //
 // Source of the pictures: ARASAAC (https://arasaac.org), CC BY-NC-SA 4.0. ${'`CREDIT`'} in
@@ -290,6 +290,12 @@ export function renderMyndir(pictures) {
 
 /** \`myndir[categoryId][chip]\` is the ARASAAC number of an approved picture for that chip. */
 export const myndir: Record<string, Record<string, number>> = ${literal(pictures)};
+
+/**
+ * Every chosen picture with its file, approved or not, shown while the drafts are live
+ * (\`DROG_BIRT\` in \`src/birting.ts\`).
+ */
+export const myndirDrog: Record<string, Record<string, number>> = ${literal(chosen)};
 
 export const ARASAAC_CREDIT = ${JSON.stringify(CREDIT)};
 `;
@@ -424,6 +430,8 @@ export interface Hljod {
   file: string;
   /** A person has listened to it and agrees. */
   approved: boolean;
+  /** A teacher heard it as wrong (\`rangt\`): it never plays for students, drafts live or not. */
+  rejected?: boolean;
   /**
    * The version of its audio, put in its address (\`?v=\`), so a browser fetches a recording made
    * again rather than replaying a copy it kept of the old one.

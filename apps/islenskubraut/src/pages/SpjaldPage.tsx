@@ -24,6 +24,7 @@ import { egget } from '../data/egget';
 import { giskaleikur } from '../data/giskaleikur';
 import { texti } from '../data/texti';
 import { Category, Level } from '../data/types';
+import { useDrog } from '../drog';
 
 type ViewTab = 'spurningaspjald' | 'ordafordi' | 'setningarammar';
 
@@ -53,7 +54,8 @@ export function SpjaldPage() {
       },
       { replace: true }
     );
-  const drafts = searchParams.has('drog');
+  // Drafts show while they are live (`DROG_BIRT`) or under `?drog`; only `?drog` marks them.
+  const { show: drafts, marks } = useDrog();
   const [mal, setMal] = useMal(drafts);
   const [activeTab, setActiveTab] = useState<ViewTab>(TABS[0].id);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -132,7 +134,7 @@ export function SpjaldPage() {
           <h1 className="font-heading text-2xl font-bold">{category.name}</h1>
         </div>
         <p className="text-warm-600">{category.description}</p>
-        {category.draft && (
+        {category.draft && marks && (
           <p
             role="note"
             className="mt-4 rounded-xl border border-warm-300 bg-warm-100 px-4 py-3 text-sm text-warm-800"
@@ -157,13 +159,13 @@ export function SpjaldPage() {
           labelledBy="erfidleikastig"
         />
         <div className="mt-4">
-          <MalPicker drafts={drafts} value={mal} onChange={setMal} />
+          <MalPicker drafts={drafts} marks={marks} value={mal} onChange={setMal} />
         </div>
       </div>
 
       {/* The card and its word list; the guessing game (C13), the talk-to-write sheet (C14), the
-          can-do sheet (C16) and the sentence builder (C9) once a teacher has confirmed them, all but
-          the builder also under ?drog */}
+          can-do sheet (C16) and the sentence builder (C9) once a teacher has confirmed them, or
+          while drafts show */}
       <div className="mb-10 flex flex-wrap items-center gap-4">
         <DownloadButton categoryId={category.id} level={level} color={category.color} />
         <WordListButton categoryId={category.id} level={level} color={category.color} />
@@ -177,7 +179,7 @@ export function SpjaldPage() {
           <EggetButton categoryId={category.id} level={level} color={category.color} />
         )}
         {/* Read off the category's tags, not the sentences, which load only with their page. */}
-        {category.builder?.some((b) => b.level === level && b.confirmed) && (
+        {category.builder?.some((b) => b.level === level && (b.confirmed || drafts)) && (
           <Link
             to={`/smidur/${category.id}`}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 text-warm-900 hover:bg-warm-100 transition-colors"
@@ -232,8 +234,9 @@ export function SpjaldPage() {
         tabIndex={0}
         className="max-w-lg mx-auto"
       >
-        {/* Recordings play when approved, and as drafts under ?drog (REVIEW-QUEUE C15). */}
-        <DrogContext.Provider value={drafts}>
+        {/* Recordings play when approved, every one under ?drog, and while the drafts are live
+            every one not heard as wrong (REVIEW-QUEUE C15). */}
+        <DrogContext.Provider value={marks}>
           <MalContext.Provider value={mal}>
             {activeTab === 'spurningaspjald' && (
               <SpurningaSpjald category={category} level={level} />
@@ -253,6 +256,7 @@ export function SpjaldPage() {
         categoryId={category.id}
         level={level}
         drafts={drafts}
+        marks={marks}
         className="max-w-lg mx-auto mt-12"
       />
     </Container>

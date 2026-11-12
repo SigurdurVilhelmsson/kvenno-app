@@ -8,6 +8,10 @@ import { getCategoryById } from '../data';
 import { SmidurPage } from '../pages/SmidurPage';
 import { SpjaldPage } from '../pages/SpjaldPage';
 
+// The site shows drafts to everyone while `DROG_BIRT` is on (src/birting.ts); these tests hold
+// what it does once the switch is off again. `drog-live.test.tsx` holds the live behaviour.
+vi.mock('../birting', () => ({ DROG_BIRT: false }));
+
 expect.extend(toHaveNoViolations);
 
 vi.mock('@kvenno/shared/components', () => ({

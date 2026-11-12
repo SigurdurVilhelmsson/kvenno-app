@@ -294,7 +294,13 @@ const outputs = [
   [SPA_TYPES, renderTypes()],
   [SERVER_TYPES, renderTypes()],
   [SPA_SMIDUR, renderSmidur(smidur)],
-  [SPA_MYNDIR, renderMyndir(approvedPictures(myndir, categories))],
+  [
+    SPA_MYNDIR,
+    renderMyndir(
+      approvedPictures(myndir, categories),
+      approvedPictures(myndir, categories, (id) => existsSync(resolve(PICTURE_DIR, `${id}.png`)))
+    ),
+  ],
   [SPA_TENGLAR, renderTenglar(tenglar)],
   [SERVER_GISKA, renderGiskaleikurServer(games)],
   [SPA_GISKA, renderGiskaleikurApp(games)],

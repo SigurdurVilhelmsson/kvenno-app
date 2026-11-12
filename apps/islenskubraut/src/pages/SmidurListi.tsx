@@ -49,7 +49,7 @@ export function SmidurListi() {
             </p>
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
               <Link
-                to={`/smidur/${category.id}`}
+                to={`/smidur/${category.id}?drog`}
                 className="font-semibold text-warm-900 underline hover:text-warm-600"
               >
                 Opna setningasmið

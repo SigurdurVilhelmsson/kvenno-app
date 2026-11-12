@@ -210,7 +210,8 @@ export function clipsForApp(texts, manifest, hasFile, version = () => undefined)
       continue;
     }
     const v = version(file);
-    out[text] = { file, approved, ...(v ? { v } : {}) };
+    const rejected = manifest.rejected?.has(text);
+    out[text] = { file, approved, ...(rejected ? { rejected } : {}), ...(v ? { v } : {}) };
   }
   return out;
 }

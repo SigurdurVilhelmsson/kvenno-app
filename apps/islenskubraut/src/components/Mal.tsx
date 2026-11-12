@@ -47,10 +47,14 @@ export function useMal(drafts: boolean): [Glossur | null, (code: string) => void
 /** The picker, shown only when some language is offered. */
 export function MalPicker({
   drafts,
+  marks = drafts,
   value,
   onChange,
 }: {
+  /** Offer the languages not yet approved. */
   drafts: boolean;
+  /** Mark them `(drög)` (`?drog`); off while the drafts are simply live. */
+  marks?: boolean;
   value: Glossur | null;
   onChange: (code: string) => void;
 }) {
@@ -68,7 +72,7 @@ export function MalPicker({
         {offered.map((g) => (
           <option key={g.code} value={g.code} lang={g.code}>
             {g.name}
-            {g.approved ? '' : ' (drög)'}
+            {g.approved || !marks ? '' : ' (drög)'}
           </option>
         ))}
       </select>

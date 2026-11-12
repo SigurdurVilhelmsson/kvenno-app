@@ -1,15 +1,19 @@
-import { ARASAAC_CREDIT, myndir } from '../data/myndir';
+import { DROG_BIRT } from '../birting';
+import { ARASAAC_CREDIT, myndir, myndirDrog } from '../data/myndir';
 
 /**
  * ARASAAC pictograms on the A1 chips (REVIEW-QUEUE D3, C10). Only pictures a person has
- * approved are in `myndir`, so a chip with none shows its word alone.
+ * approved are in `myndir`, so a chip with none shows its word alone; while the drafts are live
+ * (`DROG_BIRT`), every chosen picture with a file is shown (`myndirDrog`).
  */
+const shown = DROG_BIRT ? myndirDrog : myndir;
+
 export function pictureFor(categoryId: string, chip: string): number | undefined {
-  return myndir[categoryId]?.[chip];
+  return shown[categoryId]?.[chip];
 }
 
 export function hasPictures(categoryId: string): boolean {
-  return Object.keys(myndir[categoryId] ?? {}).length > 0;
+  return Object.keys(shown[categoryId] ?? {}).length > 0;
 }
 
 /**

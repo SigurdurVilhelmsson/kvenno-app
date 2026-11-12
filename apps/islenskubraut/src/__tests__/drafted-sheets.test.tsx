@@ -5,6 +5,10 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { SpjaldPage } from '../pages/SpjaldPage';
 
+// The site shows drafts to everyone while `DROG_BIRT` is on (src/birting.ts); these tests hold
+// what it does once the switch is off again. `drog-live.test.tsx` holds the live behaviour.
+vi.mock('../birting', () => ({ DROG_BIRT: false }));
+
 // The guessing game, the talk-to-write sheet and the can-do sheet are drafted, and a teacher
 // confirms each one per category. Here each has one confirmed category, one draft, and none for
 // the rest.

@@ -33,7 +33,7 @@ describe('the list of sentence builders', () => {
       expect(item.getByRole('heading').textContent).toBe(category.name);
       expect(
         item.getByRole('link', { name: `Opna setningasmið: ${category.name}` }).getAttribute('href')
-      ).toBe(`/smidur/${category.id}`);
+      ).toBe(`/smidur/${category.id}?drog`);
       const confirmed = category.builder!.find((b) => b.level === 'A1')!.confirmed;
       expect(items[i].textContent).toContain(confirmed ? 'staðfest' : 'drög');
     });

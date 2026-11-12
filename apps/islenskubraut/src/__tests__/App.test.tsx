@@ -8,6 +8,10 @@ import { PAGES } from '../components/Sheet';
 import { categories, getCategoryById } from '../data';
 import { Home } from '../pages/Home';
 
+// The site shows drafts to everyone while `DROG_BIRT` is on (src/birting.ts); these tests hold
+// what it does once the switch is off again. `drog-live.test.tsx` holds the live behaviour.
+vi.mock('../birting', () => ({ DROG_BIRT: false }));
+
 // Mock shared components to avoid pulling in heavy dependency chains (react-three/fiber)
 vi.mock('@kvenno/shared/components', () => ({
   Header: ({ title, activeTrack }: { title?: string; activeTrack?: string }) => (

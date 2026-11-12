@@ -19,5 +19,19 @@ export const myndir: Record<string, Record<string, number>> = {
   skolinn: {},
 };
 
+/**
+ * Every chosen picture with its file, approved or not, shown while the drafts are live
+ * (`DROG_BIRT` in `src/birting.ts`).
+ */
+export const myndirDrog: Record<string, Record<string, number>> = {
+  dyr: {},
+  matur: {},
+  farartaeki: {},
+  manneskja: {},
+  stadir: {},
+  klaednadur: {},
+  skolinn: {},
+};
+
 export const ARASAAC_CREDIT =
   'Myndtáknin eru eign ríkisstjórnar Aragóníu og gerð af Sergio Palao fyrir ARASAAC (https://arasaac.org), sem dreifir þeim með Creative Commons-leyfinu BY-NC-SA.';
