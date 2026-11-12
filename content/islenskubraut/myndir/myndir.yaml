@@ -149,7 +149,7 @@ words:
   pils: { search: skirt, id: 2391, approved: true }
   úlpa: { search: winter coat, id: 27978, approved: true }
   sokkar: { search: socks, id: 2298, approved: true }
-  húfa: { search: knitted hat, id: 36985 }
+  húfa: { search: knitted hat, id: 39395, approved: true }
   til að hlýja sér: { search: warm }
   til að verja sig: { search: protect }
   til að líta vel út: { search: elegant }
@@ -167,9 +167,9 @@ words:
   á kvöldin: { search: evening }
   alltaf: { search: always }
   á veturna: { search: winter, id: 35583, approved: true }
-  á sumrin: { search: summer holiday, id: 2420 }
-  um helgar: { search: weekend calendar, id: 3175 }
-  á virkum dögum: { search: weekday calendar, id: 3175 }
+  á sumrin: { search: summer holiday, id: 2826, approved: true }
+  um helgar: { search: free time, id: 11653 }
+  á virkum dögum: { search: weekday calendar, id: 6624, approved: true }
 
   # Skólinn (draft category, REVIEW-QUEUE C19)
   bók: { search: book }
