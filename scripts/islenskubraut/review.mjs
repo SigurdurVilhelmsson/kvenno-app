@@ -139,6 +139,7 @@ export function toYamlShape(category) {
       id: `s${i + 1}`,
       name: s.name,
       options: s.options,
+      ...(s.startsAt ? { startsAt: s.startsAt } : {}),
     })),
     sentenceFrames: category.sentenceFrames.map((f, i) => ({
       id: `f${i + 1}`,
@@ -205,7 +206,10 @@ function flatten(category) {
   const out = new Map();
   out.set(`${category.id}.description`, [category.description]);
   category.subCategories.forEach((s, i) =>
-    out.set(`${category.id}.s${i + 1}`, [s.name, ...s.options])
+    out.set(`${category.id}.s${i + 1}`, [
+      s.name,
+      ...s.options.map((o) => (s.startsAt?.[o] ? `${o} (${s.startsAt[o]})` : o)),
+    ])
   );
   category.sentenceFrames.forEach((f, i) => out.set(`${category.id}.f${i + 1}`, f.frames));
   for (const e of category.examples) out.set(`${category.id}.examples.${e.level}`, [e.text]);

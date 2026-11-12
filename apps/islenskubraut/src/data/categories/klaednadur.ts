@@ -30,6 +30,15 @@ export const klaednadur: Category = {
         'hanskar',
         'trefill',
       ],
+      startsAt: {
+        peysa: 'A2',
+        skyrta: 'A2',
+        pils: 'A2',
+        sokkar: 'A2',
+        húfa: 'A2',
+        hanskar: 'B1',
+        trefill: 'B1',
+      },
     },
     {
       name: 'Litur',
@@ -43,6 +52,11 @@ export const klaednadur: Category = {
         'bleikur/bleik/bleikt',
         'brúnn/brún/brúnt',
       ],
+      startsAt: {
+        'gulur/gul/gult': 'A2',
+        'bleikur/bleik/bleikt': 'A2',
+        'brúnn/brún/brúnt': 'A2',
+      },
     },
     {
       name: 'Litur í fleirtölu',
@@ -56,6 +70,11 @@ export const klaednadur: Category = {
         'bleikir/bleikar',
         'brúnir/brúnar',
       ],
+      startsAt: {
+        'gulir/gular': 'A2',
+        'bleikir/bleikar': 'A2',
+        'brúnir/brúnar': 'A2',
+      },
     },
     {
       name: 'Efni',
@@ -64,6 +83,11 @@ export const klaednadur: Category = {
     {
       name: 'Hvenær',
       options: ['á veturna', 'á sumrin', 'allt árið', 'þegar rignir', 'við sérstök tilefni'],
+      startsAt: {
+        'á veturna': 'A2',
+        'á sumrin': 'A2',
+        'við sérstök tilefni': 'B1',
+      },
     },
     {
       name: 'Á hvaða líkamshluta',

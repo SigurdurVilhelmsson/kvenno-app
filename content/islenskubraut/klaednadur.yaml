@@ -19,6 +19,14 @@ subCategories:
       - húfa
       - hanskar
       - trefill
+    startsAt:
+      peysa: A2
+      skyrta: A2
+      pils: A2
+      sokkar: A2
+      húfa: A2
+      hanskar: B1
+      trefill: B1
   - id: s2
     name: Litur
     options:
@@ -30,6 +38,10 @@ subCategories:
       - hvítur/hvít/hvítt
       - bleikur/bleik/bleikt
       - brúnn/brún/brúnt
+    startsAt:
+      gulur/gul/gult: A2
+      bleikur/bleik/bleikt: A2
+      brúnn/brún/brúnt: A2
   - id: s3
     name: Litur í fleirtölu
     options:
@@ -41,6 +53,10 @@ subCategories:
       - hvítir/hvítar
       - bleikir/bleikar
       - brúnir/brúnar
+    startsAt:
+      gulir/gular: A2
+      bleikir/bleikar: A2
+      brúnir/brúnar: A2
   - id: s4
     name: Efni
     options:
@@ -56,6 +72,10 @@ subCategories:
       - allt árið
       - þegar rignir
       - við sérstök tilefni
+    startsAt:
+      á veturna: A2
+      á sumrin: A2
+      við sérstök tilefni: B1
   - id: s6
     name: Á hvaða líkamshluta
     options:

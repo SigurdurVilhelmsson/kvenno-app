@@ -28,6 +28,22 @@ The printed cards are rendered from the same data on every build, into
 `dist/islenskubraut/spjold/`. To look at them after an edit, run `pnpm islenskubraut:spjold` and
 open `apps/islenskubraut/public/spjold/`. It refuses a card that runs onto a fourth page.
 
+**The Orðaforði page shows each word from its starting level on.** A word starts at A1 unless
+its group lists it under `startsAt`:
+
+```yaml
+- id: s4
+  name: Útlit
+  options:
+    - feld
+    - gogg
+  startsAt:
+    gogg: A2
+```
+
+Here A1 shows `feld`, and A2 and B1 show both. Write only A2 or B1 there; a word left out starts at
+A1. In the spreadsheet the level is the `stig` of each `Valkostur` row.
+
 Adding a whole new category needs one more edit: `CATEGORY_ORDER` in
 `scripts/islenskubraut/load.mjs` (the taught order, deliberately not alphabetical). Omitting it is
 caught by the test suite, but as a deep-equality failure that does not say "you forgot to

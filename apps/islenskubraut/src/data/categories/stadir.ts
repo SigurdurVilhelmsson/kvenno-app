@@ -28,10 +28,22 @@ export const stadir: Category = {
         'sundlaug',
         'leikvöllur',
       ],
+      startsAt: {
+        íbúð: 'A2',
+        sjúkrahús: 'A2',
+        veitingastaður: 'A2',
+        safn: 'A2',
+        kirkja: 'A2',
+        leikvöllur: 'A2',
+      },
     },
     {
       name: 'Staðsetning',
       options: ['í bænum/borginni', 'í úthverfi', 'á landi/sveitinni', 'við sjóinn', 'í fjöllunum'],
+      startsAt: {
+        'í úthverfi': 'A2',
+        'í fjöllunum': 'A2',
+      },
     },
     {
       name: 'Stærð',
@@ -40,6 +52,11 @@ export const stadir: Category = {
     {
       name: 'Hvað gerir maður þar',
       options: ['borðar', 'verslar', 'syndir', 'lærir', 'vinnur', 'sefur', 'leikur sér'],
+      startsAt: {
+        syndir: 'A2',
+        vinnur: 'A2',
+        'leikur sér': 'B1',
+      },
     },
   ],
   sentenceFrames: [

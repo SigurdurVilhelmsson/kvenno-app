@@ -27,6 +27,12 @@ export const farartaeki: Category = {
         'sleði',
         'hlaupahjól',
       ],
+      startsAt: {
+        mótorhjól: 'A2',
+        lest: 'A2',
+        sleði: 'A2',
+        hlaupahjól: 'B1',
+      },
     },
     {
       name: 'Hvar fer það',
@@ -43,10 +49,18 @@ export const farartaeki: Category = {
     {
       name: 'Hvenær notað',
       options: ['á veturna', 'á sumrin', 'allt árið', 'í sérstökum tilfellum'],
+      startsAt: {
+        'á veturna': 'A2',
+        'á sumrin': 'A2',
+        'í sérstökum tilfellum': 'B1',
+      },
     },
     {
       name: 'Fjöldi farþega',
       options: ['einn', 'fáir', 'margir'],
+      startsAt: {
+        margir: 'B1',
+      },
     },
   ],
   sentenceFrames: [

@@ -9,7 +9,18 @@ export type Level = 'A1' | 'A2' | 'B1';
 
 export interface SubCategory {
   name: string;
+  /** Every word in the group, in the order the Orðaforði page prints them. */
   options: string[];
+  /** The level a word first appears at, for each word that does not start at A1. */
+  startsAt?: Record<string, Level>;
+}
+
+const LEVEL_ORDER: Level[] = ['A1', 'A2', 'B1'];
+
+/** The group's words that the Orðaforði page prints at `level`: those starting at it or below. */
+export function wordsAt(sub: SubCategory, level: Level): string[] {
+  const at = LEVEL_ORDER.indexOf(level);
+  return sub.options.filter((o) => LEVEL_ORDER.indexOf(sub.startsAt?.[o] ?? 'A1') <= at);
 }
 
 export interface SentenceFrame {

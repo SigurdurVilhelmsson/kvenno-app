@@ -26,18 +26,36 @@ export const matur: Category = {
         'brauð/korn',
         'drykkur',
       ],
+      startsAt: {
+        fiskur: 'A2',
+        mjólkurvara: 'A2',
+        sælgæti: 'A2',
+        'brauð/korn': 'A2',
+      },
     },
     {
       name: 'Bragð',
       options: ['sætt', 'salt', 'súrt', 'beiskt', 'kryddað/sterkt'],
+      startsAt: {
+        'kryddað/sterkt': 'A2',
+      },
     },
     {
       name: 'Áferð/form',
       options: ['mjúkt', 'hart', 'fljótandi', 'þurrt'],
+      startsAt: {
+        þurrt: 'A2',
+      },
     },
     {
       name: 'Undirbúningur',
       options: ['hrátt', 'soðið', 'steikt', 'bakað', 'heitt', 'kalt', 'frosið'],
+      startsAt: {
+        hrátt: 'A2',
+        bakað: 'A2',
+        heitt: 'A2',
+        kalt: 'A2',
+      },
     },
     {
       name: 'Hvar',
@@ -52,6 +70,9 @@ export const matur: Category = {
         'sem millimál',
         'alltaf/hvenær sem er',
       ],
+      startsAt: {
+        'sem millimál': 'B1',
+      },
     },
   ],
   sentenceFrames: [

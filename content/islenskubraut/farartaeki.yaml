@@ -16,6 +16,11 @@ subCategories:
       - skip/bátur
       - sleði
       - hlaupahjól
+    startsAt:
+      mótorhjól: A2
+      lest: A2
+      sleði: A2
+      hlaupahjól: B1
   - id: s2
     name: Hvar fer það
     options:
@@ -46,12 +51,18 @@ subCategories:
       - á sumrin
       - allt árið
       - í sérstökum tilfellum
+    startsAt:
+      á veturna: A2
+      á sumrin: A2
+      í sérstökum tilfellum: B1
   - id: s6
     name: Fjöldi farþega
     options:
       - einn
       - fáir
       - margir
+    startsAt:
+      margir: B1
 sentenceFrames:
   - id: f1
     level: A1

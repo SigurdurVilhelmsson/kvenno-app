@@ -385,7 +385,7 @@ person, now 5 (D3). These two need a ruling.
 ### C8. Íslenskubraut levels (2026-10-09)
 
 From a review of the app on 2026-10-09. The levels differ less than they look: the vocabulary
-page is the same at A1, A2 and B1, and A2 and B1 mostly add more words of the same kind. The
+page was the same at A1, A2 and B1 (until 2026-11-12, C22), and A2 and B1 mostly add more words of the same kind. The
 proposal below keeps A2 and B1 and splits A1 into steps, each a different card with a new
 language function rather than a longer list:
 
@@ -830,7 +830,7 @@ workbook carries only the card text, not the PDFs, recordings, builder or links.
 Each is recorded in the game's README under `## Open`, with file and line.
 
 - [ ] **Einingagreining Stig 3's intro, two sentences.** `Veldu fæstu skrefin — styttri leiðir gefa
-  nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedback says
+nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedback says
       `Allar leiðirnar hér gefa sama svarið`, and Stig 0 teaches that exact factors limit nothing.
       `lengd skiptir ekki máli` (`:452-453`) is untrue too: `scoreExplanation` credits by length.
       Reword, or change the scoring?
@@ -846,6 +846,30 @@ Each is recorded in the game's README under `## Open`, with file and line.
 - [ ] **Hvarfhraði, decision 80** (the Maxwell–Boltzmann tail and the catalyst demo copying the
       sliders only on mount) has no ruling in the decisions document and the code is unchanged,
       while C3 above reads "Done: 12–122". Rule it, or record why it is done.
+
+### C22. The Orðaforði page's word levels (2026-11-12)
+
+The Orðaforði page, the card's first page on the web and in print, showed the same words at A1,
+A2 and B1: its word groups (`subCategories` in the YAML) had no level. Each word now has a
+starting level, `startsAt` under its group (A1 when unlisted), and the page shows the words up to
+the level chosen. A group with no word yet at a level is left out at that level. The spreadsheet
+carries the level in the `stig` column of each `Valkostur` row.
+
+**The levels were drafted by Claude**, by one rule: a word starts at the first level whose
+Spurningaspjald answers, sentence frames or worked example use it (by BÍN lemma, so `gogg`
+matches `goggur`). Of the 233 words, 140 start at A1, 73 at A2 and 20 at B1. A word the card
+never uses stays at A1, so it shows at every level as before; that is Dýr's `Stærð`, most of its
+`Búsvæði` and `Fæða`, and most of Klæðnaður's colours.
+
+- [ ] **Read each card's Orðaforði at A1, A2 and B1 and move the words that are at the wrong
+      level** (`/islenskubraut/yfirferd` links each card at each level). The rule cannot tell a
+      word a beginner needs from one the card happens to use late. It splits groups oddly:
+      Dýr's `syndir` starts at A2 because the A2 example says it, while `flýgur` and `hleypur`
+      wait for B1, and `gulur`, `bleikur` and `brúnn` start at A2 while the other colours are
+      at A1 only because no answer names them. Manneskja's `Staða` starts at B1 as a whole
+      group.
+- [ ] **Should a word the card never uses start at A1?** The alternative is B1, which shortens A1
+      further but hides words such as the colours from beginners.
 
 ## D. Work that needs no ruling
 

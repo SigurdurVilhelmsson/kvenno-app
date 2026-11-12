@@ -15,6 +15,11 @@ subCategories:
       - sælgæti
       - brauð/korn
       - drykkur
+    startsAt:
+      fiskur: A2
+      mjólkurvara: A2
+      sælgæti: A2
+      brauð/korn: A2
   - id: s2
     name: Bragð
     options:
@@ -23,6 +28,8 @@ subCategories:
       - súrt
       - beiskt
       - kryddað/sterkt
+    startsAt:
+      kryddað/sterkt: A2
   - id: s3
     name: Áferð/form
     options:
@@ -30,6 +37,8 @@ subCategories:
       - hart
       - fljótandi
       - þurrt
+    startsAt:
+      þurrt: A2
   - id: s4
     name: Undirbúningur
     options:
@@ -40,6 +49,11 @@ subCategories:
       - heitt
       - kalt
       - frosið
+    startsAt:
+      hrátt: A2
+      bakað: A2
+      heitt: A2
+      kalt: A2
   - id: s5
     name: Hvar
     options:
@@ -55,6 +69,8 @@ subCategories:
       - í kvöldmat
       - sem millimál
       - alltaf/hvenær sem er
+    startsAt:
+      sem millimál: B1
 sentenceFrames:
   - id: f1
     level: A1
