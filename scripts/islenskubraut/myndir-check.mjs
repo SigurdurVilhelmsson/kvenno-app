@@ -6,6 +6,8 @@
  *   pnpm islenskubraut:myndir            # offline: check myndir.yaml against the cards
  *   pnpm islenskubraut:myndir --fetch    # search ARASAAC for chips with no picture, download
  *                                        # every chosen picture not saved yet, then check
+ *   pnpm islenskubraut:myndir --fetch --words "peysa,á veturna"
+ *                                        # the same, but search only for the chips named
  *
  * Both write `islenskubraut-myndir-yfirlit.html` (gitignored), the sheet a person approves from.
  * Exits 1 when the map and the cards disagree or an approved picture is missing its file, and 2
@@ -36,6 +38,22 @@ const SHEET_FILE = resolve(ROOT, 'islenskubraut-myndir-yfirlit.html');
 const DELAY_MS = Number(process.env.MYNDIR_DELAY_MS ?? 150);
 
 const fetching = process.argv.includes('--fetch');
+// `--words a,b` limits the search to those chips, so a few new ones can be fetched without
+// choosing a picture for every other chip that has none yet.
+const wordsArg = process.argv.indexOf('--words');
+const only =
+  wordsArg === -1
+    ? null
+    : new Set(
+        (process.argv[wordsArg + 1] ?? '')
+          .split(',')
+          .map((w) => w.trim())
+          .filter(Boolean)
+      );
+if (only && only.size === 0) {
+  console.error('--words needs a comma-separated list of chips');
+  process.exit(1);
+}
 
 // Node's fetch ignores HTTPS_PROXY unless NODE_USE_ENV_PROXY is set; see bin-check.mjs.
 if (fetching && process.env.HTTPS_PROXY && !process.env.NODE_USE_ENV_PROXY) {
@@ -52,6 +70,14 @@ const picturePath = (id) => resolve(PICTURE_DIR, `${id}.png`);
 // The YAML is edited by hand, so it is rewritten as a document: comments and layout survive.
 const doc = parseDocument(readFileSync(MAP_FILE, 'utf8'));
 let myndir = readMyndir(doc.toJS());
+if (only) {
+  const known = new Set(allEntries(myndir).map((e) => e.word));
+  const unknown = [...only].filter((w) => !known.has(w));
+  if (unknown.length) {
+    console.error(`--words names chips with no entry in myndir.yaml: ${unknown.join(', ')}`);
+    process.exit(1);
+  }
+}
 const candidates = existsSync(CANDIDATES_FILE)
   ? JSON.parse(readFileSync(CANDIDATES_FILE, 'utf8'))
   : {};
@@ -60,7 +86,7 @@ if (fetching) {
   let searched = 0;
   let chosen = 0;
   for (const entry of allEntries(myndir)) {
-    if (entry.id !== null) continue;
+    if (entry.id !== null || (only && !only.has(entry.word))) continue;
     if (!candidates[entry.search]) {
       candidates[entry.search] = await searchPictograms(entry.search);
       searched += 1;

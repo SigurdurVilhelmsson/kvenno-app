@@ -47,10 +47,10 @@ words:
   # Litir
   rautt: { search: red }
   grænt: { search: green }
-  gult: { search: yellow }
-  bleikt: { search: pink }
-  brúnt: { search: brown }
-  appelsínugult: { search: orange colour }
+  gult: { search: yellow, id: 2648 }
+  bleikt: { search: pink, id: 2807 }
+  brúnt: { search: brown, id: 2923 }
+  appelsínugult: { search: orange colour, id: 2888 }
   hvítt: { search: white }
   blátt: { search: blue }
   svart: { search: black }
@@ -144,12 +144,12 @@ words:
   buxur: { search: trousers }
   jakki: { search: jacket }
   skór: { search: shoes }
-  peysa: { search: sweater }
-  skyrta: { search: shirt }
-  pils: { search: skirt }
-  úlpa: { search: winter coat }
-  sokkar: { search: socks }
-  húfa: { search: woolly hat }
+  peysa: { search: sweater, id: 2436 }
+  skyrta: { search: shirt, id: 13640 }
+  pils: { search: skirt, id: 2391 }
+  úlpa: { search: winter coat, id: 27978 }
+  sokkar: { search: socks, id: 2298 }
+  húfa: { search: woolly hat, id: 36985 }
   til að hlýja sér: { search: warm }
   til að verja sig: { search: protect }
   til að líta vel út: { search: elegant }
@@ -166,10 +166,10 @@ words:
   á daginn: { search: day }
   á kvöldin: { search: evening }
   alltaf: { search: always }
-  á veturna: { search: winter }
-  á sumrin: { search: summer }
-  um helgar: { search: weekend }
-  á virkum dögum: { search: weekday }
+  á veturna: { search: winter, id: 5493 }
+  á sumrin: { search: summer, id: 5604 }
+  um helgar: { search: weekend, id: 32396 }
+  á virkum dögum: { search: weekday, id: 37372 }
 
   # Skólinn (draft category, REVIEW-QUEUE C19)
   bók: { search: book }
