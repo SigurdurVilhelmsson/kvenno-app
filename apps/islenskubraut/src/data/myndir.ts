@@ -13,6 +13,7 @@ export const myndir: Record<string, Record<string, number>> = {
   dyr: {
     'á sumrin': 2826,
     'á veturna': 35583,
+    'um helgar': 11653,
   },
   matur: {
     appelsínugult: 2624,
@@ -21,21 +22,25 @@ export const myndir: Record<string, Record<string, number>> = {
     'á virkum dögum': 6624,
     brúnt: 5076,
     gult: 38269,
+    'um helgar': 11653,
   },
   farartaeki: {
     'á sumrin': 2826,
     'á veturna': 35583,
     'á virkum dögum': 6624,
+    'um helgar': 11653,
   },
   manneskja: {
     'á sumrin': 2826,
     'á veturna': 35583,
     'á virkum dögum': 6624,
+    'um helgar': 11653,
   },
   stadir: {
     'á sumrin': 2826,
     'á veturna': 35583,
     'á virkum dögum': 6624,
+    'um helgar': 11653,
   },
   klaednadur: {
     'á sumrin': 2826,
@@ -49,6 +54,7 @@ export const myndir: Record<string, Record<string, number>> = {
     pils: 2391,
     skyrta: 13640,
     sokkar: 2298,
+    'um helgar': 11653,
     úlpa: 27978,
   },
   skolinn: {},

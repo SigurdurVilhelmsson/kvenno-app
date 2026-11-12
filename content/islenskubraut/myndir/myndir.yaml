@@ -168,7 +168,7 @@ words:
   alltaf: { search: always }
   á veturna: { search: winter, id: 35583, approved: true }
   á sumrin: { search: summer holiday, id: 2826, approved: true }
-  um helgar: { search: free time, id: 11653 }
+  um helgar: { search: free time, id: 11653, approved: true }
   á virkum dögum: { search: weekday calendar, id: 6624, approved: true }
 
   # Skólinn (draft category, REVIEW-QUEUE C19)
