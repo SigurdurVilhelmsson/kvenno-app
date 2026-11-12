@@ -32,7 +32,6 @@ export const stadir: Category = {
         sjúkrahús: 'A2',
         safn: 'A2',
         kirkja: 'A2',
-        leikvöllur: 'A2',
       },
     },
     {

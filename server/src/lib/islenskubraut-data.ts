@@ -56,11 +56,6 @@ export const categories: Category[] = [
       {
         name: 'Hreyfing',
         options: ['flýgur', 'syndir', 'hleypur'],
-        startsAt: {
-          flýgur: 'A2',
-          syndir: 'A2',
-          hleypur: 'A2',
-        },
       },
       {
         name: 'Stærð',
@@ -1113,8 +1108,6 @@ export const categories: Category[] = [
           'hlaupahjól',
         ],
         startsAt: {
-          mótorhjól: 'A2',
-          lest: 'A2',
           sleði: 'A2',
           hlaupahjól: 'A2',
         },
@@ -1998,7 +1991,6 @@ export const categories: Category[] = [
           sjúkrahús: 'A2',
           safn: 'A2',
           kirkja: 'A2',
-          leikvöllur: 'A2',
         },
       },
       {

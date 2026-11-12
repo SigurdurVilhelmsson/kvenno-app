@@ -53,10 +53,6 @@ subCategories:
       - flýgur
       - syndir
       - hleypur
-    startsAt:
-      flýgur: A2
-      syndir: A2
-      hleypur: A2
   - id: s6
     name: Stærð
     options:

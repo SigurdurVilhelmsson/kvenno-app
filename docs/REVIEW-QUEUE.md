@@ -859,17 +859,24 @@ carries the level in the `stig` column of each `Valkostur` row.
 2008 (A1–A2) and 2011 (B1–B2), supplied by Siggi on 2026-11-12. Neither lists words by level, so
 each group goes where the curricula put its topic (colours, clothing, food, jobs and daily
 activities at A1; holidays, emergency services, geography and travel at A2), and only the less
-basic words within it start later. Of the 233 words, 160 start at A1, 69 at A2 and 4 at B1. The
-reasoning, card by card, is `docs/research/islenskubraut-stig/README.md`. It takes ÍFÚ 1–2 as A1
-and ÍFÚ 3–4 as A2, which the 2008 curriculum does not state.
+basic words within it start later. A check against Cambridge's CEFR-graded English word lists
+(there is no Icelandic one) then moved six words to A1 (`flýgur`, `syndir`, `hleypur`, `mótorhjól`,
+`lest`, `leikvöllur`), so 166 of the 233 words start at A1, 63 at A2 and 4 at B1. The reasoning,
+card by card, is `docs/research/islenskubraut-stig/README.md`. It takes ÍFÚ 1–2 as A1 and ÍFÚ 3–4
+as A2, which the 2008 curriculum does not state.
 
 - [ ] **Read each card's Orðaforði at A1, A2 and B1 and move the words that are at the wrong
       level** (`/islenskubraut/yfirferd` links each card at each level).
 - [ ] **Skólinn departs from the curriculum on purpose:** ÍFÚ 4 puts school books, equipment and
       subjects at A2 for adult learners; the card keeps the basic ones at A1 for students. Keep?
+      (Cambridge's young learners' lists put school things at Pre A1.)
+- [ ] **Five words the English lists put at A1 and the curriculum at A2** stay at A2: `trefill`,
+      `með skegg`, `sjúkrahús`, `í fjöllunum`, `fræg`. Move them to A1?
 - [ ] **The Spurningaspjald's answers, four recommendations from the same review, not applied:**
       all colours at A1 (ÍFÚ 2), all ten basic garments at A1, the seasons and `um helgar` at A1
-      (ÍFÚ 1 time words), and Lögun moved to A2 with only `mjúkt`/`hart` left from Áferð at A1.
+      (ÍFÚ 1 time words; the English lists put the seasons at A2), and `slétt`/`gróft` out of A1.
+      The first draft also moved Lögun to A2; the CEFR check reversed that for `kringlótt` and
+      `ferkantað`, which are A1 in English.
       Each changes A1 chips, so it needs pictogram entries and Polish glosses too. Detail in the
       research file.
 

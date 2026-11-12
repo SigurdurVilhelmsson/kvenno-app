@@ -28,8 +28,6 @@ export const farartaeki: Category = {
         'hlaupahjól',
       ],
       startsAt: {
-        mótorhjól: 'A2',
-        lest: 'A2',
         sleði: 'A2',
         hlaupahjól: 'A2',
       },

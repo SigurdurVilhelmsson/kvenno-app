@@ -46,11 +46,6 @@ export const dyr: Category = {
     {
       name: 'Hreyfing',
       options: ['flýgur', 'syndir', 'hleypur'],
-      startsAt: {
-        flýgur: 'A2',
-        syndir: 'A2',
-        hleypur: 'A2',
-      },
     },
     {
       name: 'Stærð',
