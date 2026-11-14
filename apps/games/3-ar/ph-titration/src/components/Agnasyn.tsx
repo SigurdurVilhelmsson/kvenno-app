@@ -263,7 +263,7 @@ export function Agnasyn({ onBack }: AgnasynProps) {
               <li key={k} className="flex items-center gap-1">
                 <ParticleGlyph kind={k} />
                 {PARTICLE_LABEL[k]}
-                {k === 'Na' && ' (áhorfendajón)'}
+                {k === 'Na' && ' (meðjón)'}
               </li>
             ))}
             <li className="flex items-center gap-1">

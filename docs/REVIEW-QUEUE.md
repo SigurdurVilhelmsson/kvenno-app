@@ -900,7 +900,7 @@ stored. Every number on it is computed from the game's own `calculateWeakStrongP
 in the game's README.
 
 - [ ] **The Icelandic wording**, drafted by Claude (`src/data/agnasyn-steps.tsx`). Terms are the
-      glossary's or the book's: `áhorfendajón`, `heildarjónajafna`, `nettójónajafna`, `samoka basi`,
+      glossary's or the book's, with `meðjón` for spectator ion (Siggi, 2026-11-14), `heildarjónajafna`, `nettójónajafna`, `samoka basi`,
       `hálfjafngildispunktur` and `basajónun asetats`, the book's phrase at the equivalence point.
 - [ ] **Two exaggerated pairs**: at the start one CH₃COO⁻ and one H₃O⁺ are drawn where the true
       amount is 0,27 of a particle, and at the equivalence point one CH₃COOH and one OH⁻ where it is

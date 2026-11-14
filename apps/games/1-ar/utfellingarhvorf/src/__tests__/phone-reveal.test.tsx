@@ -294,7 +294,7 @@ describe('Skilja', () => {
     later();
     fireEvent.click(next());
     fireEvent.click(next());
-    expect(screen.queryByText(/Þær heita áhorfendajónir/)).toBeNull();
+    expect(screen.queryByText(/Þær heita meðjónir/)).toBeNull();
   });
 
   it('"Áfram í Æfa" is its own button, and ignores a press as it appears', () => {

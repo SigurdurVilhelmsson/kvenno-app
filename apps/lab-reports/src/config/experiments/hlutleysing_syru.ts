@@ -126,7 +126,7 @@ export const hlutleysing_syru: ExperimentConfig = {
         '0': 'Missing or describes only this specific experiment with no general theory',
       },
       criteria: {
-        good: 'Skilgreining á sýrum og bösum (Brønsted-Lowry: prótónugjafi/þegi), tilsvarandi sýra og basi (conjugate pairs) ÚTSKÝRT, tengsl pH og [H⁺] / [OH⁻], gaslíkingin PV=nRT útskýrð með hverju hvert strik stendur fyrir, áhorfsjónir (spectator ions), nýtni (percent yield). Notar ALMENN dæmi. Efnahvarfsjafnan MÁ vera til staðar EN ekki mæld gildi úr tilrauninni. ENGIR útreikningar með tölum hér. Góð málsgreinaskipting.',
+        good: 'Skilgreining á sýrum og bösum (Brønsted-Lowry: prótónugjafi/þegi), tilsvarandi sýra og basi (conjugate pairs) ÚTSKÝRT, tengsl pH og [H⁺] / [OH⁻], gaslíkingin PV=nRT útskýrð með hverju hvert strik stendur fyrir, meðjónir (spectator ions), nýtni (percent yield). Notar ALMENN dæmi. Efnahvarfsjafnan MÁ vera til staðar EN ekki mæld gildi úr tilrauninni. ENGIR útreikningar með tölum hér. Góð málsgreinaskipting.',
         needsImprovement:
           'Nefnir hugtök en ÚTSKÝRIR EKKI hvernig þau virka, eða hefur of miklar tilvísanir í mælingar úr tilrauninni, eða vantar málsgreinaskiptingu',
         unsatisfactory:
@@ -195,11 +195,11 @@ export const hlutleysing_syru: ExperimentConfig = {
         '0-1': 'Minimal: Very little content, or calculations in wrong section with nothing here',
       },
       criteria: {
-        good: 'ALLIR útreikningar HÉRNA: (1) Massi NaHCO₃ fyrir 0,05 mól, (2) Rúmmál blöðru (kúlujafna), (3) Mólfjöldi CO₂ með gaslíkingu, (4) Fræðilegt magn CO₂ (theoretical yield), (5) Nýtni (percent yield), (6) [H⁺] og [OH⁻] úr pH fyrir og eftir. ALLAR athuganir: pH fyrir og eftir, mælingar á blöðru. Efnajafna MÆÐ merktum sýru/basa/tilsvarandi pörum. Útskýring á áhorfsjónum (Na⁺). GÓÐ UPPSETNING með bilum milli niðurstaðna.',
+        good: 'ALLIR útreikningar HÉRNA: (1) Massi NaHCO₃ fyrir 0,05 mól, (2) Rúmmál blöðru (kúlujafna), (3) Mólfjöldi CO₂ með gaslíkingu, (4) Fræðilegt magn CO₂ (theoretical yield), (5) Nýtni (percent yield), (6) [H⁺] og [OH⁻] úr pH fyrir og eftir. ALLAR athuganir: pH fyrir og eftir, mælingar á blöðru. Efnajafna MÆÐ merktum sýru/basa/tilsvarandi pörum. Útskýring á meðjónum (Na⁺). GÓÐ UPPSETNING með bilum milli niðurstaðna.',
         needsImprovement:
           'Flestar niðurstöður til staðar en vantar 1-2 útreikninga, eða útskýringar eru ófullnægjandi, eða vantar merkingar á sýru/basa, eða vantar skil milli niðurstaðna',
         unsatisfactory:
-          'Vantar marga útreikninga eða þeir eru í röngum kafla, eða vantar pH mælingar, eða vantar efnajöfnur, eða vantar umfjöllun um áhorfsjónir',
+          'Vantar marga útreikninga eða þeir eru í röngum kafla, eða vantar pH mælingar, eða vantar efnajöfnur, eða vantar umfjöllun um meðjónir',
       },
       specialNote:
         'FORMATTING REQUIREMENT (CHECK FIRST): Results MUST have clear visual separation - at minimum a line break between each calculation section and between observations. If all results run together in a "wall of text" without breaks, MAXIMUM score is 10/12 regardless of content quality. This is a HARD CAP. --- CHECK COMPLETENESS AND DEPTH: (1) MUST have ALL calculations with complete work shown: (a) Mass of NaHCO₃: n = 0,05 mol, M = 84 g/mol, m = n × M, (b) Balloon volume: V = 4πr³/3 (must add 450 mL for gas in bottle), (c) Moles CO₂: Using PV = nRT with correct units (P in Pa or atm, V in m³ or L, R = 8.314 J/(mol·K) or 0.0821 L·atm/(mol·K), T in K), (d) Theoretical yield from limiting reactant (NaHCO₃), (e) Percent yield = (actual/theoretical) × 100%, (f) [H⁺] = 10^(-pH) and [OH⁻] = 10^(pH-14) for BOTH before and after. (2) MUST have observations: pH before and after, balloon diameter/circumference, atmospheric pressure used. (3) MUST have balanced chemical equation WITH labels showing: which is acid, which is base, conjugate acid, conjugate base. (4) MUST explain why Na⁺ is spectator ion (does not participate in reaction). (5) MUST identify what the unstable intermediate (H₂CO₃) decomposes into (H₂O and CO₂). (6) Table for pH/[H⁺]/[OH⁻] values is good but not required. (7) Accept colloquial language if calculations are correct. (8) Check for blank spaces ("__") - deduct if present.',
@@ -275,11 +275,11 @@ export const hlutleysing_syru: ExperimentConfig = {
   evaluationNotes: [
     `EFNAFRÆÐILEG NÁKVÆMNI - MIKILVÆGT:
 • CH₃COOH er veik sýra (ediksýra), HCO₃⁻ er basi
-• Na⁺ er áhorfsjón (spectator ion) og tekur ekki þátt í hvarfinu
+• Na⁺ er meðjón (spectator ion) og tekur ekki þátt í hvarfinu
 • H₂CO₃ er óstöðugt milliefni sem brotnar niður í H₂O og CO₂
 • Brønsted-Lowry: sýra gefur próton (H⁺), basi tekur við próton`,
     `TÉKKLISTI:
-Fræðikafli: Brønsted-Lowry skilgreining, tilsvarandi sýru-basa pör, pH/pOH tengsl, PV=nRT, áhorfsjónir, nýtni
+Fræðikafli: Brønsted-Lowry skilgreining, tilsvarandi sýru-basa pör, pH/pOH tengsl, PV=nRT, meðjónir, nýtni
 Tæki og efni: Nemandi VERÐUR að telja upp öll tæki og efni
 Framkvæmd: Ef nemandi vísar í vinnuseðil er það GOTT
 Niðurstöður: Allir útreikningar (massi NaHCO₃, rúmmál blöðru, mólfjöldi CO₂, nýtni, [H⁺]/[OH⁻])

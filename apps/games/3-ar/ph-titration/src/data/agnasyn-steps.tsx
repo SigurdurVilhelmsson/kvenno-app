@@ -133,9 +133,9 @@ export const STEPS: Step[] = [
           jónast að fullu í vatni: hver NaOH-eining verður að einni Na⁺-jón og einni OH⁻-jón.
         </p>
         <p>
-          <strong>Na⁺ er áhorfendajón.</strong> Hún hvarfast hvorki við ediksýru, asetatjónir né
-          vatn og hefur engin áhrif á pH. Hún er samt í lausninni, ein Na⁺ fyrir hverja OH⁻ sem bætt
-          er við, og er því sýnd í daufum gráum lit héðan í frá.
+          <strong>Na⁺ er meðjón.</strong> Hún hvarfast hvorki við ediksýru, asetatjónir né vatn og
+          hefur engin áhrif á pH. Hún er samt í lausninni, ein Na⁺ fyrir hverja OH⁻ sem bætt er við,
+          og er því sýnd í daufum gráum lit héðan í frá.
         </p>
       </>
     ),

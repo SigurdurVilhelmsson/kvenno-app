@@ -14,7 +14,7 @@
  *
  *  1. **Sameindajafna** — the salts as written, balanced
  *  2. **Heildarjónajafna** — every soluble ionic species split into its ions
- *  3. **Nettójónajafna** — the áhorfendajónir struck out
+ *  3. **Nettójónajafna** — the meðjónir struck out
  *
  * Step 3 is subtraction, not a new fact, which is why nothing is stored: the
  * net ionic equation *is* the complete ionic equation minus what appears
@@ -363,7 +363,7 @@ function totals(terms: Term[]): Map<string, number> {
 }
 
 /**
- * The áhorfendajónir: species present in the same amount and the same form on
+ * The meðjónir: species present in the same amount and the same form on
  * both sides.
  *
  * "Same amount" is the part students skip. An ion that appears twice on the
