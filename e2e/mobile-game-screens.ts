@@ -5570,6 +5570,39 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Agnasýn, the particle view (2026-11-14): its first scene, the scene with the NaOH
+    // dissolving above the flask, the equivalence point and the slider.
+    {
+      name: 'Agnasýn — upphaf',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — NaOH leysist upp',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', 'Næsta skref'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — jafngildispunktur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '6. Jafngildispunktur'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '8. Kannaðu sjálf/ur'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Stig 1 — kynning',
       steps: [

@@ -10,7 +10,8 @@ cites Brown et al., ch. 17.
 
 ## Structure
 
-Three levels, none gated, each opened from a card on the menu. Finishing Stig 3 goes to an end
+**Agnasýn** (2026-11-14), the first card on the menu, is the Explore phase: one titration shown
+three ways at once, then three levels. Three levels, none gated, each opened from a card on the menu. Finishing Stig 3 goes to an end
 screen; finishing Stig 1 or 2 returns to the menu.
 
 | Stig | Menu name              | What it asks                                                                                                                                          |
@@ -38,6 +39,36 @@ No level shows a running score. Each reports `N af M rétt` to the menu, which s
 level's card; a level finished under the old points format shows `Lokið` (`resultLabel`,
 `App.tsx:121-126`). Progress is in localStorage under `ph-titration-progress`, keeping the best count
 per level. There is no timed or competitive mode.
+
+## Agnasýn
+
+25,0 mL of 0,100 M ediksýra titrated with 0,100 M NaOH: titration 5 in `data/titrations.ts` and the
+textbook's ch. 14 worked example (equivalence at pH 8,72). Seven scenes, then a slider:
+ediksýra í vatni, NaOH leysist upp (Na⁺ named a spectator and drawn faded from then on), OH⁻
+hvarfast við ediksýru (full ionic and net ionic equations), hálfjafngildispunktur, stuðpúðinn
+tæmist, jafngildispunktur (basajónun asetats, Kb, why pH > 7), eftir jafngildispunkt, and
+Kannaðu sjálf/ur. Each scene drips in its NaOH from the last one's volume, so the particles, the
+pH readout and the curve move together. Nothing is graded or stored.
+
+- **Every number comes from the game's own curve.** `utils/agnasyn.ts` takes the pH from
+  `calculateWeakStrongPH` and the species from that pH, so this screen cannot disagree with Stig 2.
+  The scene texts compute what they print (`data/agnasyn-steps.tsx`).
+- **The particles are amounts on a fixed scale**, 8 per mmól: 20 for the acid, and one Na⁺ and one
+  OH⁻ per 1,25 mL of NaOH. Two species are far under one particle at the two volumes whose scenes
+  are about them, the ionised acid at the start (0,27) and acetate's OH⁻ at the equivalence point
+  (0,002). Exactly there one pair is drawn with a dashed ring and a note says it is exaggerated;
+  every other count is the amount rounded. `agnasyn.test.ts` holds that the rounded amounts equal
+  the counts drawn.
+- **The equilibria are drawn as dynamic**: at those two volumes the pair recombines and another
+  molecule ionises every few seconds (`flicker` in `utils/particles.ts`).
+- **Henderson-Hasselbalch is printed with the particle counts** (`log(5/15)`, `log(10/10)`), and
+  agrees with the curve to two decimals except at half-equivalence, where the ICE root is 0,0005
+  above pKₐ and the meter shows 4,75. The scene says so (C23 in `docs/REVIEW-QUEUE.md`).
+- `utils/particles.ts` is pure apart from a random source passed in; `agnasyn.test.ts` drips a
+  whole titration through it and drags a slider at random, checking the counts after each move.
+  `agnasyn-screen.test.tsx` walks every scene with reduced motion. With reduced motion the view
+  does not drift and every change is made at once.
+- The moving SVGs carry `data-live` for `desktop-compare`.
 
 ## What matters before touching it
 
@@ -153,6 +184,13 @@ such material would become Apply content inside the existing levels.
 
 ```
 src/App.tsx                       menu, level routing, end screen, progress (ph-titration-progress)
+src/components/Agnasyn.tsx        Agnasýn: scenes, playback, slider, readouts
+src/components/ParticleBeaker.tsx Agnasýn's flask: particles, frame loop
+src/components/ProgressCurve.tsx  Agnasýn's curve, drawn as far as the NaOH added
+src/components/NaOHDissolve.tsx   Agnasýn's NaOH(s) → Na⁺ + OH⁻ loop
+src/data/agnasyn-steps.tsx        Agnasýn's seven scenes
+src/utils/agnasyn.ts              Agnasýn's chemistry and particle counts
+src/utils/particles.ts            Agnasýn's particle system
 src/types.ts                      Titration, Indicator and the difficulty/indicator unions
 src/components/Level1.tsx         Stig 1: intro card, 6 questions, TitrationCurvePreview
 src/components/Level2.tsx         Stig 2: pour, mark, choose, result
