@@ -6,12 +6,19 @@ import App from '../App';
 import { Level1 } from '../components/Level1';
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
-import { indicators } from '../data/indicators';
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
+import {
+  answer,
+  chooseIndicator,
+  concentrationFrom,
+  pour,
+  recordEndpoint,
+  stockMolarity,
+} from './level2-driver';
 
 /**
  * No running score inside a level, and a count of right answers at its end
@@ -70,24 +77,16 @@ function playLevel1(right: (i: number) => boolean) {
   return onComplete;
 }
 
-/** One submission on the current Stig 2 puzzle: right, or with the volume far off. */
+/** One submission on the current Stig 2 puzzle: right, or with the endpoint far off. */
 function submitLevel2(puzzleIndex: number, right: boolean) {
   const puzzle = LEVEL2_PUZZLES[puzzleIndex];
   const t = getTitrationById(puzzle.titrationId) as MonoproticTitration;
-  const add5 = screen.getByRole('button', { name: /^Bæta við 5 mL/ });
-  for (let i = 0; i <= Math.ceil(t.equivalenceVolume / 5); i++) fireEvent.click(add5);
+  chooseIndicator(puzzle.acceptableIndicators[0]);
   expectNoRunningScore(`Stig 2, puzzle ${puzzle.id}`);
-  fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
-  settle();
-  fireEvent.change(screen.getByRole('slider', { name: 'Jafngildisrúmmál' }), {
-    target: { value: right ? String(t.equivalenceVolume) : '0' },
-  });
-  fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
-  settle();
-  const name = indicators.find((ind) => ind.id === puzzle.acceptableIndicators[0])!.name;
-  fireEvent.click(screen.getByRole('button', { name: new RegExp(name) }));
-  fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
-  settle();
+  const endpoint = right ? Math.round(t.equivalenceVolume * 20) / 20 : 5;
+  pour(endpoint);
+  recordEndpoint();
+  answer(concentrationFrom(t, endpoint));
   expect(document.getElementById('ph-l2-verdict')?.textContent).toBe(
     right ? '✓ Rétt!' : '✗ Ekki rétt'
   );
@@ -132,7 +131,7 @@ describe('Stig 1 counts right answers', () => {
 describe('Stig 2 counts puzzles solved before the answer was shown', () => {
   it('counts a first-try solve once, and a solve after the result not at all', () => {
     const onComplete = vi.fn();
-    render(<Level2 onComplete={onComplete} onBack={() => {}} />);
+    render(<Level2 onComplete={onComplete} onBack={() => {}} drawMolarity={stockMolarity} />);
 
     // Puzzle 1: right first time — counts.
     submitLevel2(0, true);
@@ -220,5 +219,39 @@ describe('the menu and the end screen', () => {
     expect(text).toContain('4 af 6 rétt');
     expect(text).toContain(`${n - 1} af ${n} rétt`);
     expectNoRunningScore('end screen');
+  });
+});
+
+describe('the end screen celebrates only a good result', () => {
+  function finishWith(level1Correct: number, level2Correct: number) {
+    localStorage.setItem(
+      'ph-titration-progress',
+      JSON.stringify({
+        level1Completed: true,
+        level1Correct,
+        level1Total: 6,
+        level2Completed: true,
+        level2Correct,
+        level2Total: 6,
+        level3Completed: false,
+      })
+    );
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Stig 3: Útreikningar/ }));
+    settle();
+    answerLevel3(() => true);
+    settle();
+  }
+
+  it('says Til hamingju with four in five right', () => {
+    finishWith(6, 6);
+    expect(screen.getByRole('heading', { name: 'Til hamingju!' })).toBeTruthy();
+  });
+
+  it('does not congratulate a student with few right', () => {
+    finishWith(0, 0);
+    expect(screen.queryByRole('heading', { name: 'Til hamingju!' })).toBeNull();
+    expect(screen.getByRole('heading', { name: 'Samantekt' })).toBeTruthy();
+    expect(document.body.textContent).not.toContain('🏆');
   });
 });

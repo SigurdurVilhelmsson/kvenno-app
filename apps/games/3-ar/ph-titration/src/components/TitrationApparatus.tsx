@@ -16,6 +16,8 @@ interface TitrationApparatusProps {
   selectedIndicator: string | null;
   /** True while titrant is running: a drop falls from the tip. */
   isPouring?: boolean;
+  /** True before an indicator is in: the solution shows no colour at all. */
+  colourless?: boolean;
 }
 
 // Geometry, in viewBox units (160 × 430). The burette stands on the stand's
@@ -69,6 +71,7 @@ export const TitrationApparatus: React.FC<TitrationApparatusProps> = ({
   pH,
   selectedIndicator,
   isPouring = false,
+  colourless: noIndicator = false,
 }) => {
   const id = useId().replace(/:/g, '');
   const delivered = Math.min(Math.max(volumeAdded, 0), maxVolume);
@@ -79,9 +82,11 @@ export const TitrationApparatus: React.FC<TitrationApparatusProps> = ({
   const level = Math.min(totalVolume / FLASK_CAPACITY, 0.92);
   const liquidTop = FLASK_BOTTOM - level * (FLASK_BOTTOM - SHOULDER_Y);
 
-  const solutionColor = selectedIndicator
-    ? getIndicatorColor(selectedIndicator, pH)
-    : getPHColor(pH);
+  const solutionColor = noIndicator
+    ? 'transparent'
+    : selectedIndicator
+      ? getIndicatorColor(selectedIndicator, pH)
+      : getPHColor(pH);
   const colourless = solutionColor === 'transparent';
 
   const tubeL = BURETTE_X - TUBE_W / 2;

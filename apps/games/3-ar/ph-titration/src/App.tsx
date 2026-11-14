@@ -11,6 +11,8 @@ import { Level3 } from './components/Level3';
 
 /** Exit duration of each screen's FadePresence. */
 const SCREEN_FADE_MS = 200;
+/** The share of answers right, across the levels, that the end screen celebrates. */
+const CELEBRATE_SHARE = 0.8;
 
 type ActiveLevel = 'menu' | 'agnasyn' | 'level1' | 'level2' | 'level3' | 'complete';
 
@@ -131,6 +133,19 @@ function App() {
     return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
   };
 
+  // The end screen celebrates only a result worth it: four in five right
+  // across the levels. It said "Til hamingju!" under a trophy to a student
+  // with 0 af 6 on every level.
+  const counts = ([1, 2, 3] as const).map((level) => [
+    progress[`level${level}Correct`],
+    progress[`level${level}Total`],
+  ]);
+  const allCounted = counts.every(([c, t]) => c !== undefined && t);
+  const rightShare = allCounted
+    ? counts.reduce((sum, [c]) => sum + c!, 0) / counts.reduce((sum, [, t]) => sum + t!, 0)
+    : 0;
+  const celebrate = rightShare >= CELEBRATE_SHARE;
+
   const levelsCompleted = [
     progress.level1Completed,
     progress.level2Completed,
@@ -163,14 +178,23 @@ function App() {
                 ref={completeRoot}
                 className="text-3xl md:text-4xl font-bold text-center mb-6 text-purple-600"
               >
-                Til hamingju!
+                {celebrate ? 'Til hamingju!' : 'Samantekt'}
               </h1>
 
               <div className="text-center mb-8">
-                <div className="text-6xl mb-4">🏆</div>
+                {celebrate && (
+                  <div className="text-6xl mb-4" aria-hidden="true">
+                    🏆
+                  </div>
+                )}
                 <div className="text-2xl font-bold text-warm-800 mb-2">
                   Þú hefur lokið öllum stigum!
                 </div>
+                {!celebrate && (
+                  <p className="text-warm-700">
+                    Farðu aftur í stigin þar sem fátt var rétt. Þau eru alltaf opin.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-4 mb-8">
@@ -215,9 +239,6 @@ function App() {
                   </li>
                   <li>
                     ✓ <strong>Henderson-Hasselbalch:</strong> pH = pKₐ + log([A⁻]/[HA])
-                  </li>
-                  <li>
-                    ✓ <strong>Fjölvirkar sýrur:</strong> Margir jafngildispunktar fyrir H₂SO₃, H₃PO₄
                   </li>
                 </ul>
               </div>
@@ -435,9 +456,6 @@ function App() {
                   <p>
                     <strong>Stuðpúðasvæði:</strong>{' '}
                     <span className="whitespace-nowrap">pH = pKₐ ± 1</span>
-                  </p>
-                  <p>
-                    <strong>Fjölvirkar sýrur:</strong> Margir jafngildispunktar fyrir H₂SO₃, H₃PO₄
                   </p>
                 </div>
               </div>

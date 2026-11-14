@@ -9,6 +9,8 @@ interface IndicatorSelectorProps {
   selectedIndicator: IndicatorType | null;
   onSelect: (indicator: IndicatorType) => void;
   disabled?: boolean;
+  /** A line under the heading, e.g. what the choice is for. */
+  intro?: React.ReactNode;
 }
 
 /**
@@ -18,12 +20,14 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
   selectedIndicator,
   onSelect,
   disabled = false,
+  intro,
 }) => {
   return (
     <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-warm-200 phone:p-2">
       <h3 className="text-lg font-bold text-warm-800 mb-3 phone:text-base phone:mb-2">
         Veldu litvísi
       </h3>
+      {intro && <p className="text-sm text-warm-700 mb-3 phone:mb-2">{intro}</p>}
       {/* Two columns on a phone on its side. */}
       <div className="grid grid-cols-1 gap-2 phone:gap-1.5 phone-land:grid-cols-2">
         {indicators.map((indicator) => (
@@ -31,6 +35,7 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
             key={indicator.id}
             onClick={() => onSelect(indicator.id)}
             disabled={disabled}
+            aria-pressed={selectedIndicator === indicator.id}
             className={`p-3 phone:p-2 rounded-lg border-2 text-left transition-all ${
               selectedIndicator === indicator.id
                 ? 'border-orange-500 bg-orange-50 shadow-md'
@@ -50,17 +55,21 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
                   <div
                     className="w-6 h-6 rounded border border-warm-400"
                     style={{ backgroundColor: indicator.colorAcidic }}
-                    aria-label="Litur í súrri lausn"
+                    aria-hidden="true"
                   />
-                  <span className="text-[10px] max-lg:text-xs text-warm-600 mt-0.5">Súr</span>
+                  <span className="text-[10px] max-lg:text-xs text-warm-600 mt-0.5">
+                    Súr<span className="sr-only">: {indicator.colorAcidicName}</span>
+                  </span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div
                     className="w-6 h-6 rounded border border-warm-400"
                     style={{ backgroundColor: indicator.colorBasic }}
-                    aria-label="Litur í basískri lausn"
+                    aria-hidden="true"
                   />
-                  <span className="text-[10px] max-lg:text-xs text-warm-600 mt-0.5">Basísk</span>
+                  <span className="text-[10px] max-lg:text-xs text-warm-600 mt-0.5">
+                    Basísk<span className="sr-only">: {indicator.colorBasicName}</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -69,17 +78,6 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
           </button>
         ))}
       </div>
-
-      {/* On a phone the chosen card's own highlight says the same thing, so the
-          line is kept for screen readers only: the cards carry no pressed
-          state, and this is what tells a screen reader which one is chosen. */}
-      {selectedIndicator && (
-        <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded phone:sr-only">
-          <p className="text-xs text-green-800 font-semibold">
-            ✓ Valinn: {indicators.find((i) => i.id === selectedIndicator)?.name}
-          </p>
-        </div>
-      )}
     </div>
   );
 };

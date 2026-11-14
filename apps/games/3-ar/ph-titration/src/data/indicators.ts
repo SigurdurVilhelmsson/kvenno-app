@@ -16,6 +16,8 @@ export const indicators: Indicator[] = [
     pHRange: [3.1, 4.4],
     colorAcidic: '#ef4444', // Red
     colorBasic: '#facc15', // Yellow: red below 3,1, orange through its range, yellow above 4,4
+    colorAcidicName: 'rauð',
+    colorBasicName: 'gul',
     description:
       'Hentar við títrun veiks basa með sterkri sýru ef pH við jafngildispunkt er 4,4 eða lægra',
   },
@@ -25,6 +27,8 @@ export const indicators: Indicator[] = [
     pHRange: [4.4, 6.2],
     colorAcidic: '#dc2626', // Red
     colorBasic: '#fbbf24', // Yellow
+    colorAcidicName: 'rauð',
+    colorBasicName: 'gul',
     description:
       'Hentar við títrun veiks basa með sterkri sýru, og líka sterkrar sýru með sterkum basa',
   },
@@ -34,6 +38,8 @@ export const indicators: Indicator[] = [
     pHRange: [6.0, 7.6],
     colorAcidic: '#fbbf24', // Yellow
     colorBasic: '#3b82f6', // Blue
+    colorAcidicName: 'gul',
+    colorBasicName: 'blá',
     description: 'Hentar best við títrun sterkrar sýru með sterkum basa',
   },
   {
@@ -42,6 +48,8 @@ export const indicators: Indicator[] = [
     pHRange: [8.3, 10.0],
     colorAcidic: 'transparent',
     colorBasic: '#ec4899', // Pink
+    colorAcidicName: 'litlaus',
+    colorBasicName: 'bleik',
     description:
       'Hentar við títrun veikrar sýru með sterkum basa, og líka sterkrar sýru með sterkum basa',
   },
@@ -51,6 +59,8 @@ export const indicators: Indicator[] = [
     pHRange: [8.0, 9.6],
     colorAcidic: '#fbbf24', // Yellow
     colorBasic: '#3b82f6', // Blue
+    colorAcidicName: 'gul',
+    colorBasicName: 'blá',
     description: 'Annar kostur við títrun veikrar sýru með sterkum basa',
   },
 ];

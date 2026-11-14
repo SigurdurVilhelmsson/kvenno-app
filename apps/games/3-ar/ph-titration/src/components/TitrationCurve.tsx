@@ -20,6 +20,8 @@ interface TitrationCurveProps {
   titration: Titration | null;
   showEquivalencePoints?: boolean;
   markedVolume?: number | null;
+  /** The marked point's label. */
+  markedLabel?: string;
   /** Maximum width (px). The curve shrinks to fit narrower containers. */
   width?: number;
   height?: number;
@@ -35,6 +37,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
   titration,
   showEquivalencePoints = false,
   markedVolume = null,
+  markedLabel = 'Þitt val',
   width: maxWidth = 600,
   height = 400,
 }) => {
@@ -126,7 +129,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
         color: '#f36b22',
         icon: '◆',
         radius: 10,
-        label: 'Þitt val',
+        label: markedLabel,
       });
     }
 
@@ -135,7 +138,15 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
       currentVolume > 0 ? { x: currentVolume, y: currentPH } : undefined;
 
     return { series, regions, horizontalLines, markers, currentPoint };
-  }, [curveData, currentVolume, currentPH, titration, showEquivalencePoints, markedVolume]);
+  }, [
+    curveData,
+    currentVolume,
+    currentPH,
+    titration,
+    showEquivalencePoints,
+    markedVolume,
+    markedLabel,
+  ]);
 
   return (
     <div ref={containerRef} style={{ width: '100%', maxWidth }}>

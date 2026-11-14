@@ -5694,7 +5694,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 2 — títrun',
+      name: 'Stig 2 — velja litvísi',
       steps: [
         {
           clickRole: ['button', 'Stig 2: Framkvæmd'],
@@ -5703,7 +5703,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
         {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
+          clickRole: ['button', 'Brómþýmólblátt'],
         },
         {
           clickRole: ['button', 'Sýna vísbendingu'],
@@ -5714,10 +5714,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 2 — merkja jafngildispunkt',
+      name: 'Stig 2 — títrun',
       steps: [
         {
           clickRole: ['button', 'Stig 2: Framkvæmd'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Brómþýmólblátt'],
+        },
+        {
+          clickRole: ['button', 'Staðfesta val'],
         },
         {
           wait: 400,
@@ -5727,18 +5736,6 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'merkja jafngildispunkt'],
         },
         {
           wait: 400,
@@ -5746,7 +5743,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 2 — velja vísi',
+      name: 'Stig 2 — reikna styrk',
       steps: [
         {
           clickRole: ['button', 'Stig 2: Framkvæmd'],
@@ -5755,47 +5752,48 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
         {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
+          clickRole: ['button', 'Brómþýmólblátt'],
         },
         {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'merkja jafngildispunkt'],
+          clickRole: ['button', 'Staðfesta val'],
         },
         {
           wait: 400,
         },
         {
-          clickRole: ['button', 'Staðfesta:'],
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
         },
         {
-          clickRole: ['button', 'Brómþýmólblátt'],
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'skrá endapunkt'],
         },
         {
           wait: 400,
         },
       ],
-      // Stig 2's commit is the indicator: the steps pour, mark and choose one, and the
-      // list (the stage's [data-item-start]) is what the screen opens at. Not held on the
-      // SE or in landscape: there the five indicators and Staðfesta val are taller than the
-      // screen, so the list's heading scrolls off when the chosen one and the button are
-      // brought on screen together. The §6.2.10 landscape check still runs.
+      // Stig 2's commit is the concentration worked out from the endpoint: the steps
+      // choose the litvísir, pour and record the endpoint, and the calculation's heading
+      // (its [data-item-start]) is what the screen opens at. The endpoint reading the
+      // answer is worked from sits within a keyboard's height of the field.
       loop: {
         prompt: { css: '[data-item-start]' },
-        action: { role: 'button', name: 'Staðfesta val' },
-        answer: [],
+        action: { role: 'button', name: 'Staðfesta svar' },
+        answer: [{ fill: ['#ph-l2-concentration', '999'] }],
         verdict: { css: '#ph-l2-verdict' },
         next: { role: 'button', name: 'Næsta' },
+        together: [[{ text: 'Endapunktur:' }, { css: '#ph-l2-concentration' }]],
+        typed: true,
       },
     },
     {
@@ -5808,31 +5806,40 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
         {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'Bæta við 5 mL títrant'],
-        },
-        {
-          clickRole: ['button', 'merkja jafngildispunkt'],
-        },
-        {
-          clickRole: ['button', 'Staðfesta:'],
-        },
-        {
           clickRole: ['button', 'Brómþýmólblátt'],
         },
         {
           clickRole: ['button', 'Staðfesta val'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'Bæta við 5 mL títrant'],
+        },
+        {
+          clickRole: ['button', 'skrá endapunkt'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          fill: ['#ph-l2-concentration', '0,1'],
+        },
+        {
+          clickRole: ['button', 'Staðfesta svar'],
         },
         {
           wait: 500,

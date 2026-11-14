@@ -396,7 +396,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 misconception: isCorrect ? undefined : MISCONCEPTION_BY_CHALLENGE[challenge.id],
                 relatedConcepts: TITRATION_RELATED,
                 nextSteps: isCorrect
-                  ? 'Frábært! Þú skilur títrunarferla vel.'
+                  ? 'Rétt. Haltu áfram í næstu spurningu.'
                   : NEXT_STEP_BY_TYPE[challenge.type],
               }}
               config={{

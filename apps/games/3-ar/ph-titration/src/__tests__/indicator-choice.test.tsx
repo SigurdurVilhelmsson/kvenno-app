@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { parseStudentNumber } from '@shared/utils';
 
+import { answer, chooseIndicator, pour, recordEndpoint, stockMolarity } from './level2-driver';
 import { Level2 } from '../components/Level2';
 import { indicators } from '../data/indicators';
 import { LEVEL2_PUZZLES, printedEquivalencePH } from '../data/level2-puzzles';
@@ -38,28 +39,35 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const settle = () => act(() => vi.advanceTimersByTime(400));
-
 const shown = (text: string) => (document.body.textContent ?? '').includes(text);
+
+describe('Stig 2 indicator cards', () => {
+  it('say which is chosen, and name their colours, to a screen reader', () => {
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
+    const card = screen.getByRole('button', { name: /^Fenólftalín/ });
+    expect(card.getAttribute('aria-pressed')).toBe('false');
+    expect(card.textContent).toContain('Súr: litlaus');
+    expect(card.textContent).toContain('Basísk: bleik');
+    fireEvent.click(card);
+    expect(screen.getByRole('button', { name: /^Fenólftalín/ }).getAttribute('aria-pressed')).toBe(
+      'true'
+    );
+  });
+});
 
 describe('Stig 2 indicator descriptions', () => {
   it('are hidden while choosing and shown for the chosen one after the result', () => {
-    render(<Level2 onComplete={() => {}} onBack={() => {}} />);
-    const add5 = screen.getByRole('button', { name: /^Bæta við 5 mL/ });
-    fireEvent.click(add5);
-    fireEvent.click(add5);
-    fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
-    settle();
-    fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
-    settle();
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
 
     // The list is on screen to choose from, with no description on any card.
-    expect(screen.getByRole('button', { name: /Metýlrautt/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^Metýlrautt/ })).toBeTruthy();
     for (const { id, description } of indicators) expect(shown(description), id).toBe(false);
 
-    fireEvent.click(screen.getByRole('button', { name: /Metýlrautt/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
-    settle();
+    chooseIndicator('methyl-red');
+    for (const { id, description } of indicators) expect(shown(description), id).toBe(false);
+    pour(25);
+    recordEndpoint();
+    answer('0,100');
 
     for (const { id, description } of indicators) {
       expect(shown(description), id).toBe(id === 'methyl-red');

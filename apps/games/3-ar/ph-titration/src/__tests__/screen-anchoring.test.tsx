@@ -3,6 +3,7 @@ import { render, screen, fireEvent, cleanup, act } from '@testing-library/react'
 import { describe, it, expect, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 import App from '../App';
+import { stockMolarity } from './level2-driver';
 import { Level1 } from '../components/Level1';
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
@@ -74,24 +75,26 @@ describe('Level 1', () => {
 });
 
 describe('Level 2', () => {
-  it('focuses the result, named by its verdict, after Staðfesta val', () => {
-    render(<Level2 onComplete={() => {}} onBack={() => {}} />);
-    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrants' });
-    for (let i = 0; i < 5; i++) fireEvent.click(add5);
-    fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
-    wait(50);
-    expect(document.activeElement?.textContent).toMatch(/Merktu jafngildispunktinn/);
-    fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
-    wait(400);
-    expect(document.activeElement?.textContent).toBe('Veldu litvísi');
-    fireEvent.click(screen.getByRole('button', { name: /Brómþýmólblátt/ }));
-    wait(50);
+  it('moves focus through the bench, the calculation and the result', () => {
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
+    fireEvent.click(screen.getByRole('button', { name: /^Brómþýmólblátt/ }));
     fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
     wait(300);
+    // The list has gone: focus is on the first pour control, not on <body>.
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('Bæta við 0,05 mL títrants');
+    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrants' });
+    for (let i = 0; i < 5; i++) fireEvent.click(add5);
+    fireEvent.click(screen.getByRole('button', { name: /skrá endapunkt/ }));
+    wait(300);
+    expect(document.activeElement?.textContent).toBe('Reiknaðu styrk sýrunnar');
+    fireEvent.change(screen.getByLabelText(/^Styrkur/), { target: { value: '0,100' } });
+    wait(400);
+    fireEvent.click(screen.getByRole('button', { name: 'Staðfesta svar' }));
+    wait(400);
     const focused = document.activeElement as HTMLElement;
     expect(focused.getAttribute('role')).toBe('group');
     const label = document.getElementById(focused.getAttribute('aria-labelledby')!);
-    expect(label?.textContent).toMatch(/Rétt!|Ekki rétt/);
+    expect(label?.textContent).toBe('✓ Rétt!');
   });
 });
 

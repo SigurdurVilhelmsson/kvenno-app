@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react';
+import { useState, useRef, useEffect, useCallback, useLayoutEffect, useMemo } from 'react';
 
 import { Presence } from '@shared/components';
 import {
   focusTarget,
   formatDecimal,
-  isPhone,
+  parseStudentNumber,
   revealSpan,
   revealTop,
   useArmedAfter,
@@ -18,7 +18,17 @@ import { IndicatorSelector } from './IndicatorSelector';
 import { TitrationApparatus } from './TitrationApparatus';
 import { TitrationCurve } from './TitrationCurve';
 import { indicators } from '../data/indicators';
-import { colourChangeWindow, ENDPOINT_WINDOW_ML, LEVEL2_PUZZLES } from '../data/level2-puzzles';
+import {
+  acceptableIndicatorsFor,
+  colourChangeWindow,
+  CONCENTRATION_TOLERANCE,
+  ENDPOINT_WINDOW_ML,
+  LEVEL2_PUZZLES,
+  formatMolarity,
+  molarityFromEndpoint,
+  randomMolarity,
+  sampleOf,
+} from '../data/level2-puzzles';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration, IndicatorType } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
@@ -27,28 +37,39 @@ interface Level2Props {
   /** How many of the problems were answered right. Hints never change it. */
   onComplete: (correct: number, total: number) => void;
   onBack: () => void;
+  /**
+   * Draws the sample's concentration for a puzzle. Random by default, so a
+   * classmate's answer does not carry over; tests pass a fixed one.
+   */
+  drawMolarity?: (base: MonoproticTitration) => number;
 }
 
-/** Exit duration of the marking panel's Presence. */
-const MARKING_EXIT_MS = 250;
-
-/** Exit duration of the other Presences here (the pour controls, the hint, Staðfesta val). */
+/** Exit duration of the Presences here (the indicator list, the pour controls, the hint). */
 const PANEL_EXIT_MS = 250;
 
-/** Below lg the indicator list is stacked under the apparatus. */
-const isBelowLg = () =>
-  typeof window.matchMedia === 'function' && !window.matchMedia('(min-width: 1024px)').matches;
+type Phase = 'choose' | 'titrating' | 'calculate' | 'result';
 
-export function Level2({ onComplete, onBack }: Level2Props) {
+/**
+ * Stig 2 runs as a titration in the lab does (2026-11-14, Siggi's go-ahead):
+ * choose the litvísir, titrate until it changes colour and read the burette
+ * (the endpoint), then work out the sample's concentration, which the task
+ * does not give. Until then the concentration was printed, so the titration
+ * found nothing, and the litvísir was picked after pouring, from a flask that
+ * had shown a rainbow of pH colours, so no endpoint was ever seen.
+ *
+ * A puzzle is right when the endpoint is within the puzzle's tolerance of the
+ * equivalence volume, the litvísir changes colour there (Siggi's rule,
+ * `acceptableIndicatorsFor`), and the concentration follows from the
+ * student's own endpoint.
+ */
+export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Level2Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   // Puzzles solved, counted flat: the hint never changes it, and there is no
-  // running score on screen (mobile-pass decisions 1 (b) and 2 (b)). It used to
-  // be 100 points a puzzle, shown as "Stig: N" in the header.
+  // running score on screen (mobile-pass decisions 1 (b) and 2 (b)).
   const [correctCount, setCorrectCount] = useState(0);
   // Whether this puzzle's result has been shown. The result prints the
-  // equivalence volume and the explanation names the good indicators, so a
-  // "Reyna aftur" after it is answered with the answer on screen and does not
-  // count. Before this a retry after a right answer paid its points again.
+  // equivalence volume, the concentration and the good indicators, so a
+  // "Reyna aftur" after it does not count.
   const [answerShown, setAnswerShown] = useState(false);
   const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
@@ -56,86 +77,104 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [attempt, setAttempt] = useState(0);
   const phone = useIsPhone();
 
-  // Titration state
   const [volumeAdded, setVolumeAdded] = useState(0);
   const [selectedIndicator, setSelectedIndicator] = useState<IndicatorType | null>(null);
   const [isPouring, setIsPouring] = useState(false);
   const [isSwirling, setIsSwirling] = useState(false);
-  const [curveData, setCurveData] = useState<{ volume: number; pH: number }[]>([]);
 
-  // UI state
   const [showHint, setShowHint] = useState(false);
-  const [phase, setPhase] = useState<'titrating' | 'marking' | 'select-indicator' | 'result'>(
-    'titrating'
-  );
-  const [submittedVolume, setSubmittedVolume] = useState<number | null>(null);
-  const [markedVolume, setMarkedVolume] = useState<number>(0);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [indicatorCorrect, setIndicatorCorrect] = useState(false);
-
-  // The indicator list is where the student is working from choosing an
-  // indicator until the next puzzle: the item's start (`data-item-start`)
-  // moves to it for those two stages and back to the titration's name after.
-  const indicatorStage = phase === 'select-indicator' || phase === 'result';
+  const [phase, setPhase] = useState<Phase>('choose');
+  const [endpoint, setEndpoint] = useState<number | null>(null);
+  const [answer, setAnswer] = useState('');
+  const [verdict, setVerdict] = useState({
+    endpoint: false,
+    indicator: false,
+    concentration: false,
+  });
+  const isCorrect = verdict.endpoint && verdict.indicator && verdict.concentration;
 
   const puzzle = LEVEL2_PUZZLES[currentIndex];
-  const titration = getTitrationById(puzzle.titrationId) as MonoproticTitration | null;
+  const base = getTitrationById(puzzle.titrationId) as MonoproticTitration | undefined;
 
-  // Calculate current pH
+  // A new sample for each puzzle and each "Reyna aftur".
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- drawn once per puzzle and attempt, on purpose
+  const molarity = useMemo(() => (base ? drawMolarity(base) : 0), [currentIndex, attempt]);
+  const titration = useMemo(
+    () => (base ? sampleOf(base, molarity) : null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the sample follows the drawn molarity
+    [base?.id, molarity]
+  );
+  const acceptable = useMemo(
+    () => (titration ? acceptableIndicatorsFor(titration) : []),
+    [titration]
+  );
+  const curveData = useMemo(
+    () => (titration ? generateTitrationCurve(titration, 60) : []),
+    [titration]
+  );
+
   const currentPH = titration ? calculatePH(titration, volumeAdded) : 7;
 
-  // Generate curve data for current titration
-  useEffect(() => {
-    if (titration) {
-      const fullCurve = generateTitrationCurve(titration, 60);
-      setCurveData(fullCurve);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only regenerate curve when titration ID changes
-  }, [titration?.id]);
-
-  // Reset state when changing puzzles
+  // Reset when the puzzle changes.
   useEffect(() => {
     setVolumeAdded(0);
     setSelectedIndicator(null);
-    setPhase('titrating');
+    setPhase('choose');
     setShowHint(false);
-    setSubmittedVolume(null);
-    setMarkedVolume(0);
-    setIsCorrect(false);
-    setIndicatorCorrect(false);
+    setEndpoint(null);
+    setAnswer('');
     setAnswerShown(false);
   }, [currentIndex]);
 
-  // The level heading takes focus as the level mounts (the menu button that
-  // opened it has gone).
+  // The level heading takes focus as the level mounts.
   const headingRef = useRef<HTMLHeadingElement>(null);
   useLayoutEffect(() => {
     focusTarget(headingRef.current);
   }, []);
 
-  // "Næsta" and "Reyna aftur" start the puzzle again at the level's top when
-  // that top has scrolled above the screen, and focus the titration's name
-  // (`data-item-start`). It did this at every width before it moved to the
-  // shared helper, so it still does (`anyWidth`).
+  // "Næsta" and "Reyna aftur" start the puzzle again at the level's top and
+  // focus the indicator list's heading (`data-item-start`).
   const levelRef = useItemTop<HTMLDivElement>(`${currentIndex}:${attempt}`, { anyWidth: true });
 
-  // Marking (design P10): on a phone the curve comes to the top with the
-  // marking panel under it, once the pour controls above it have left; focus
-  // goes to the panel's heading at every width.
-  const curveRef = useRef<HTMLDivElement>(null);
+  // After "Staðfesta val" the list leaves and the pour controls take its
+  // place: focus goes to the first of them, and on a phone the bench comes up.
+  const benchRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (phase !== 'marking') return;
-    revealTop(curveRef.current, { always: true, afterExit: PANEL_EXIT_MS });
-  }, [phase]);
-  // The panel mounts a render after the phase changes (Presence), so its
-  // heading is focused as it attaches.
-  const markingHeadingRef = useCallback((el: HTMLDivElement | null) => {
-    if (el) focusTarget(el);
+    if (phase !== 'titrating') return;
+    const timer = window.setTimeout(() => {
+      revealTop(benchRef.current);
+      focusTarget(controlsRef.current?.querySelector('button'));
+    }, PANEL_EXIT_MS);
+    return () => window.clearTimeout(timer);
+  }, [phase, attempt]);
+
+  // At 320 px and in landscape the list is taller than the screen: once a
+  // litvísir is picked, bring "Staðfesta val" up with the list's heading and
+  // the chosen card where they fit (phone only, as `revealSpan` is).
+  const chooseRef = useRef<HTMLDivElement>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (phase !== 'choose' || !selectedIndicator) return;
+    const list = chooseRef.current;
+    revealSpan(confirmRef.current, [
+      list?.querySelector('h3') ?? null,
+      list?.querySelector('[aria-pressed="true"]') ?? null,
+    ]);
+  }, [phase, selectedIndicator]);
+
+  // "Skrá endapunkt" opens the calculation: its heading takes focus as it
+  // mounts and, on a phone, the panel comes to the top once the pour controls
+  // have gone. Done as the heading mounts, since the panel's Presence mounts
+  // it a frame after the phase changes.
+  const calcRef = useRef<HTMLDivElement>(null);
+  const calcHeadingRef = useCallback((el: HTMLHeadingElement | null) => {
+    if (!el) return;
+    focusTarget(el);
+    revealTop(el.parentElement, { afterExit: PANEL_EXIT_MS, always: true });
   }, []);
 
-  // The result: on a phone the verdict through "Næsta" where it fits, else the
-  // verdict at the top, once "Staðfesta val" and the hint above it have left.
-  // Focus goes to the result, not to "Næsta" (P3).
+  // The result: focus goes to it, not to "Næsta" (P3).
   const resultRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   useRevealAfterCommit(
@@ -143,19 +182,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     () => ({ bottom: nextRef.current, tops: [resultRef.current], focus: resultRef.current }),
     { afterExit: PANEL_EXIT_MS + 50 }
   );
-  // Opening the hint replaces its button with the hint, which dropped focus to
-  // <body> (P3.5): bring the hint into view on a phone and move focus to it.
-  // The hint renders in one place or the other, never both, so one ref serves.
   const hintRef = useRef<HTMLDivElement>(null);
   useRevealAfterCommit(showHint, () => ({
     bottom: hintRef.current,
     tops: [hintRef.current],
     focus: hintRef.current,
   }));
-  // A double tap on "Staðfesta val" must not press what the result puts there.
+  // A double tap on a commit must not press what replaces it.
   const armed = useArmedAfter(400, `${currentIndex}:${attempt}:${phase}`);
 
-  // Check completion
   useEffect(() => {
     if (completed >= LEVEL2_PUZZLES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
@@ -166,112 +201,48 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   // Pouring interval
   useEffect(() => {
     if (!isPouring || !titration) return;
-
     const interval = setInterval(() => {
-      setVolumeAdded((prev) => {
-        const newVolume = Math.min(prev + 0.1, 60);
-        return Math.round(newVolume * 100) / 100;
-      });
+      setVolumeAdded((prev) => Math.round(Math.min(prev + 0.1, 60) * 100) / 100);
       setIsSwirling(true);
     }, 50);
-
     return () => {
       clearInterval(interval);
       setIsSwirling(false);
     };
   }, [isPouring, titration]);
 
-  const handleAddDrop = useCallback(() => {
+  const pour = (ml: number, swirlMs: number) => {
     if (phase !== 'titrating') return;
-    setVolumeAdded((prev) => {
-      const newVolume = Math.min(prev + 0.05, 60);
-      return Math.round(newVolume * 1000) / 1000;
-    });
+    setVolumeAdded((prev) => Math.round(Math.min(prev + ml, 60) * 1000) / 1000);
     setIsSwirling(true);
-    setTimeout(() => setIsSwirling(false), 200);
-  }, [phase]);
-
-  const handleAdd1mL = useCallback(() => {
-    if (phase !== 'titrating') return;
-    setVolumeAdded((prev) => {
-      const newVolume = Math.min(prev + 1, 60);
-      return Math.round(newVolume * 100) / 100;
-    });
-    setIsSwirling(true);
-    setTimeout(() => setIsSwirling(false), 300);
-  }, [phase]);
-
-  const handleAdd5mL = useCallback(() => {
-    if (phase !== 'titrating') return;
-    setVolumeAdded((prev) => {
-      const newVolume = Math.min(prev + 5, 60);
-      return Math.round(newVolume * 100) / 100;
-    });
-    setIsSwirling(true);
-    setTimeout(() => setIsSwirling(false), 500);
-  }, [phase]);
-
-  const handleEnterMarking = () => {
-    if (!titration) return;
-    // Default marker to midpoint of added volume range
-    setMarkedVolume(Math.round((volumeAdded / 2) * 10) / 10);
-    setPhase('marking');
+    setTimeout(() => setIsSwirling(false), swirlMs);
   };
 
-  // Touch cannot place a range thumb to 0.1 mL, so the marking step also
-  // takes ±0.1 mL nudges (the arrow keys already do this on a keyboard).
-  const nudgeMarkedVolume = (delta: number) => {
-    setMarkedVolume((prev) =>
-      Math.min(volumeAdded, Math.max(0, Math.round((prev + delta) * 10) / 10))
-    );
+  const handleConfirmIndicator = () => {
+    if (selectedIndicator) setPhase('titrating');
   };
 
-  // "← Til baka" from marking reopens the pour controls, which took focus's
-  // place: focus goes to the first of them, and on a phone the controls come
-  // on screen with the curve under them.
-  const controlsRef = useRef<HTMLDivElement>(null);
-  const backToTitrating = useRef(false);
-  const handleBackToTitrating = () => {
-    backToTitrating.current = true;
-    setPhase('titrating');
-  };
-  useEffect(() => {
-    if (phase !== 'titrating' || !backToTitrating.current) return;
-    backToTitrating.current = false;
-    // The controls mount a render later (Presence) and the marking panel
-    // leaves over MARKING_EXIT_MS, so both wait for it.
-    const timer = window.setTimeout(() => {
-      revealSpan(curveRef.current, [controlsRef.current]);
-      focusTarget(controlsRef.current?.querySelector('button'));
-    }, MARKING_EXIT_MS);
-    return () => window.clearTimeout(timer);
-  }, [phase]);
-
-  const handleSubmitMarkedVolume = () => {
-    if (!titration) return;
-    setSubmittedVolume(markedVolume);
-    setPhase('select-indicator');
+  const handleRecordEndpoint = () => {
+    setIsPouring(false);
+    setEndpoint(volumeAdded);
+    setPhase('calculate');
   };
 
-  const handleIndicatorSelect = (indicator: IndicatorType) => {
-    if (phase === 'select-indicator') {
-      setSelectedIndicator(indicator);
-    }
-  };
-
-  const handleSubmitIndicator = () => {
-    if (!titration || submittedVolume === null || !selectedIndicator) return;
-
-    const equivalenceVolume = titration.equivalenceVolume;
-    const volumeError = Math.abs(submittedVolume - equivalenceVolume);
-    const volumeCorrect = volumeError <= puzzle.volumeTolerance;
-    const indicatorOk = puzzle.acceptableIndicators.includes(selectedIndicator);
-
-    setIsCorrect(volumeCorrect && indicatorOk);
-    setIndicatorCorrect(indicatorOk);
+  const handleSubmitAnswer = () => {
+    if (!titration || endpoint === null || !selectedIndicator) return;
+    const value = parseStudentNumber(answer);
+    if (!Number.isFinite(value)) return;
+    const fromEndpoint = molarityFromEndpoint(titration, endpoint);
+    const next = {
+      endpoint: Math.abs(endpoint - titration.equivalenceVolume) <= puzzle.volumeTolerance + 1e-9,
+      indicator: acceptable.includes(selectedIndicator),
+      concentration: Math.abs(value - fromEndpoint) <= CONCENTRATION_TOLERANCE * fromEndpoint,
+    };
+    setVerdict(next);
     setPhase('result');
-
-    if (volumeCorrect && indicatorOk && !answerShown) setCorrectCount((prev) => prev + 1);
+    if (next.endpoint && next.indicator && next.concentration && !answerShown) {
+      setCorrectCount((prev) => prev + 1);
+    }
     setAnswerShown(true);
   };
 
@@ -284,57 +255,19 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const handleNext = () => {
     setCompleted((prev) => prev + 1);
-
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
-      // In the same render as the new puzzle, not a render later in the reset
-      // effect, so the titration's name is the item start "Næsta" focuses.
-      setPhase('titrating');
+      setPhase('choose');
     }
   };
 
-  // Below lg the indicator list sits under the apparatus, off screen on a
-  // phone, so confirming the marked volume looked like it did nothing. The
-  // scroll waits out the marking panel's exit: that panel sits above the list,
-  // and scrolling while it was still in the page left the top of the list
-  // 200-300 px above the screen once it unmounted (at 320 px and in landscape).
-  // Focus moves to the list's heading at every width.
-  const indicatorRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (phase !== 'select-indicator') return;
-    const timer = window.setTimeout(() => {
-      if (isBelowLg()) revealTop(indicatorRef.current, { anyWidth: true, always: true });
-      focusTarget(indicatorRef.current?.querySelector('h3'));
-    }, MARKING_EXIT_MS + 50);
-    return () => window.clearTimeout(timer);
-  }, [phase]);
-
-  // The confirm button appears under the list once an indicator is picked. At
-  // 320 px and in landscape the list is taller than the screen, so bring the
-  // button up instead of leaving it below the fold (the least move, as it
-  // always was below lg).
-  // On a phone it waits out the button's own entry (it rises into place) and
-  // keeps the list's heading on screen with it where both fit.
-  const revealConfirmIndicator = useCallback((el: HTMLButtonElement | null) => {
-    if (!el) return;
-    if (isPhone()) {
-      const list = indicatorRef.current;
-      revealSpan(el, [list?.querySelector('h3'), list?.querySelector('button.border-orange-500')], {
-        afterExit: PANEL_EXIT_MS,
-      });
-    } else if (isBelowLg()) {
-      revealSpan(el, [], { anyWidth: true, gap: 0 });
-    }
-  }, []);
-
+  // A new sample, from the start: the result printed this one's answers.
   const handleReset = () => {
     setVolumeAdded(0);
     setSelectedIndicator(null);
-    setPhase('titrating');
-    setSubmittedVolume(null);
-    setMarkedVolume(0);
-    setIsCorrect(false);
-    setIndicatorCorrect(false);
+    setPhase('choose');
+    setEndpoint(null);
+    setAnswer('');
     setAttempt((prev) => prev + 1);
   };
 
@@ -342,11 +275,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     return <div className="p-8 text-center text-red-600">Villa: Títrun fannst ekki</div>;
   }
 
-  // The hint and the stage bar sit at the foot of the right-hand column. On a
-  // phone that column comes after the whole bench, so they are rendered in
-  // the task card instead (never in both places).
+  const chosen = indicators.find((i) => i.id === selectedIndicator);
+  const fromEndpoint = endpoint !== null ? molarityFromEndpoint(titration, endpoint) : null;
+  const sampleWord = titration.type === 'strong-weak' ? 'basans' : 'sýrunnar';
+
   const hint = (
-    <Presence show={phase !== 'result'} exitDuration={250}>
+    <Presence show={phase !== 'result'} exitDuration={PANEL_EXIT_MS}>
       {showHint ? (
         <div
           ref={hintRef}
@@ -366,38 +300,38 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     </Presence>
   );
 
+  const STAGES: [Phase, string][] = [
+    ['choose', 'Litvísir'],
+    ['titrating', 'Títra'],
+    ['calculate', 'Reikna'],
+    ['result', 'Niðurstaða'],
+  ];
+  const stageIndex = STAGES.findIndex(([p]) => p === phase);
   const phaseBar = (
     <div className="bg-warm-100 rounded-xl p-3 phone:px-2 phone:py-1.5">
       <div className="text-xs text-warm-500 mb-2 phone:sr-only">Framvinda:</div>
       <div className="flex gap-2">
-        <div
-          className={`flex-1 h-2 rounded ${phase === 'titrating' ? 'bg-blue-500' : 'bg-blue-200'}`}
-        />
-        <div
-          className={`flex-1 h-2 rounded ${phase === 'marking' ? 'bg-orange-500' : phase === 'select-indicator' || phase === 'result' ? 'bg-orange-200' : 'bg-warm-300'}`}
-        />
-        <div
-          className={`flex-1 h-2 rounded ${phase === 'select-indicator' ? 'bg-amber-500' : phase === 'result' ? 'bg-amber-200' : 'bg-warm-300'}`}
-        />
-        <div
-          className={`flex-1 h-2 rounded ${phase === 'result' ? 'bg-green-500' : 'bg-warm-300'}`}
-        />
+        {STAGES.map(([p], i) => (
+          <div
+            key={p}
+            className={`flex-1 h-2 rounded ${i === stageIndex ? 'bg-green-500' : i < stageIndex ? 'bg-green-200' : 'bg-warm-300'}`}
+          />
+        ))}
       </div>
       <div className="flex justify-between text-xs text-warm-600 mt-1">
-        <span>Títra</span>
-        <span>Merkja</span>
-        <span>Litvísi</span>
-        <span>Niðurstaða</span>
+        {STAGES.map(([p, label]) => (
+          <span key={p}>{label}</span>
+        ))}
       </div>
     </div>
   );
 
+  const endpointOk = verdict.endpoint;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8 phone:px-3 phone:py-3">
       <div ref={levelRef} className="max-w-7xl mx-auto scroll-mt-4 phone:scroll-mt-3">
-        {/* Header. On a phone it folds to one row (design P4): Til baka, the
-            title, the question counter, with the progress bar under them. Til baka
-            comes first in the DOM as well as on screen. */}
+        {/* Header. On a phone it folds to one row (design P4). */}
         <div className="bg-white rounded-2xl shadow-xl p-4 mb-4 phone:flex phone:flex-wrap phone:items-center phone:gap-x-1.5 phone:px-2.5 phone:py-2 phone:mb-3">
           <div className="flex justify-between items-center phone:contents">
             <button
@@ -420,7 +354,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             🧪 Stig 2: Gagnvirk títrun
           </h1>
 
-          {/* Progress bar */}
           <div className="w-full bg-warm-200 rounded-full h-2 mt-3 phone:order-4 phone:basis-full phone:mt-1.5 phone:h-1.5">
             <div
               className="bg-green-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
@@ -436,31 +369,30 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {puzzle.id}
             </span>
             <div className="flex-1">
-              <h2
-                data-item-start={indicatorStage ? undefined : ''}
-                className="text-lg font-bold text-green-800 mb-1 phone:text-base phone:mb-0.5"
-              >
+              <h2 className="text-lg font-bold text-green-800 mb-1 phone:text-base phone:mb-0.5">
                 {titration.name}
               </h2>
               <p className="text-green-900">{puzzle.taskIs}</p>
-              {/* The names are nominative, so they stand after the colon rather
-                  than after "af", which would need them in the dative. */}
+              {/* The names are nominative, so they stand after the colon. */}
               <p className="text-sm text-green-700 mt-2 phone:mt-1">
                 <span className="font-semibold">Sýni:</span> {titration.analyte.name} (
                 {titration.analyte.formula}),{' '}
                 <span className="whitespace-nowrap">
                   {formatDecimal(titration.analyte.volume, 1)} mL
                 </span>
-                ,{' '}
-                <span className="whitespace-nowrap">
-                  {formatDecimal(titration.analyte.molarity, 3)} M
-                </span>
+                , <span className="whitespace-nowrap">styrkur óþekktur</span>
                 <br />
                 <span className="font-semibold">Títrantur:</span> {titration.titrant.name} (
                 {titration.titrant.formula}),{' '}
                 <span className="whitespace-nowrap">
                   {formatDecimal(titration.titrant.molarity, 3)} M
                 </span>
+                {chosen && phase !== 'choose' && (
+                  <>
+                    <br />
+                    <span className="font-semibold">Litvísir:</span> {chosen.name}
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -472,29 +404,48 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           )}
         </div>
 
-        {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Left: Apparatus */}
-          {/* On a phone on its side: the bench | the curve and the marking
-              panel (auto-placed into the second column). */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-3 md:p-4 phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-4 phone-land:items-start">
+          {/* Left: the indicator, the bench, the curve and the calculation */}
+          <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-3 md:p-4">
+            {/* Stage 1: the indicator goes in first, as in the lab. */}
+            <Presence show={phase === 'choose'} exitDuration={PANEL_EXIT_MS}>
+              <div ref={chooseRef} className="mb-4 phone:mb-3">
+                <div data-item-start="" className="scroll-mt-4 phone:scroll-mt-3">
+                  <IndicatorSelector
+                    selectedIndicator={selectedIndicator}
+                    onSelect={setSelectedIndicator}
+                    intro="Litvísirinn fer í flöskuna áður en þú títrar. Þú stöðvar þegar hann skiptir um lit."
+                  />
+                </div>
+                <button
+                  ref={confirmRef}
+                  onClick={handleConfirmIndicator}
+                  disabled={!selectedIndicator}
+                  className="mt-3 w-full px-6 py-3 phone:py-2.5 bg-orange-500 hover:bg-orange-600 disabled:bg-warm-300 disabled:cursor-not-allowed text-white rounded-xl font-bold"
+                >
+                  Staðfesta val →
+                </button>
+              </div>
+            </Presence>
+
             {/* The bench: the apparatus, with the readings beside it and the
-                pour controls under the readings (under both below md, so the
-                curve stays near while pouring). */}
-            <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 md:items-start md:gap-x-8 phone:gap-x-3 phone:gap-y-3 phone-land:row-span-3">
+                pour controls under the readings (under both below md). */}
+            <div
+              ref={benchRef}
+              className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 md:items-start md:gap-x-8 phone:gap-x-3 phone:gap-y-3 scroll-mt-4 phone:scroll-mt-3"
+            >
               <div className="flex justify-center">
                 <TitrationApparatus
                   volumeAdded={volumeAdded}
                   maxVolume={60}
                   volumeAnalyte={titration.analyte.volume}
                   pH={currentPH}
-                  selectedIndicator={selectedIndicator}
+                  selectedIndicator={phase === 'choose' ? null : selectedIndicator}
+                  colourless={phase === 'choose'}
                   isPouring={isPouring || isSwirling}
                 />
               </div>
 
-              {/* From md the readings and the controls are one column beside
-                  the apparatus; below md the controls run under both. */}
               <div className="contents md:flex md:flex-col md:gap-6 md:pt-4">
                 <BenchReadings
                   volumeAdded={volumeAdded}
@@ -502,36 +453,34 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   pH={currentPH}
                 />
 
-                {/* Controls */}
                 <div className="col-span-2 empty:hidden">
-                  <Presence show={phase === 'titrating'} exitDuration={250}>
+                  <Presence show={phase === 'titrating'} exitDuration={PANEL_EXIT_MS}>
                     <div ref={controlsRef} className="space-y-2">
                       <div className="flex gap-2">
                         <button
-                          onClick={handleAddDrop}
+                          onClick={() => pour(0.05, 200)}
                           aria-label="Bæta við 0,05 mL títrants"
                           className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                         >
                           +0,05 mL
                         </button>
                         <button
-                          onClick={handleAdd1mL}
+                          onClick={() => pour(1, 300)}
                           aria-label="Bæta við 1 mL títrants"
                           className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                         >
                           +1 mL
                         </button>
                         <button
-                          onClick={handleAdd5mL}
+                          onClick={() => pour(5, 500)}
                           aria-label="Bæta við 5 mL títrants"
                           className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                         >
                           +5 mL
                         </button>
                       </div>
-                      {/* Pointer events cover mouse, touch and pen in one path. The
-                      touch handlers this replaced had no touchcancel, so a hold
-                      the browser cancelled kept pouring to 60 mL. */}
+                      {/* Pointer events cover mouse, touch and pen in one path,
+                          and pointercancel stops a hold the browser cancelled. */}
                       <button
                         onPointerDown={() => setIsPouring(true)}
                         onPointerUp={() => setIsPouring(false)}
@@ -545,9 +494,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           }
                         }}
                         onKeyUp={(e) => {
-                          if (e.code === 'Space' || e.code === 'Enter') {
-                            setIsPouring(false);
-                          }
+                          if (e.code === 'Space' || e.code === 'Enter') setIsPouring(false);
                         }}
                         onBlur={() => setIsPouring(false)}
                         aria-label="Halda inni til að hella títranti samfellt"
@@ -555,158 +502,119 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       >
                         Halda inni til að hella
                       </button>
+                      <p className="text-sm text-indigo-800 bg-indigo-50 border border-indigo-200 rounded-lg p-2">
+                        Bættu við títranti þar til liturinn í flöskunni breytist og helst. Farðu
+                        dropa fyrir dropa (+0,05 mL) þegar nálgast. Lestu þá af búrettunni: það er
+                        endapunkturinn.{' '}
+                        <span className="whitespace-nowrap">
+                          Leyfilegt svigrúm: ±{formatDecimal(puzzle.volumeTolerance, 1)} mL
+                        </span>{' '}
+                        frá jafngildispunktinum.
+                      </p>
+                      <button
+                        onClick={handleRecordEndpoint}
+                        disabled={volumeAdded <= 0}
+                        className="w-full px-6 py-3 phone:py-2.5 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 disabled:cursor-not-allowed text-white rounded-xl font-bold"
+                      >
+                        Liturinn breyttist — skrá endapunkt
+                      </button>
                     </div>
                   </Presence>
                 </div>
               </div>
             </div>
 
-            {/* Titration Curve */}
-            <div ref={curveRef} className="mt-6 phone:mt-3 phone-land:mt-0">
+            {/* The curve a pH meter in the flask would draw, as far as poured. */}
+            <div className="mt-6 phone:mt-3">
               <TitrationCurve
                 curveData={curveData.filter((p) => p.volume <= volumeAdded)}
                 currentVolume={volumeAdded}
                 currentPH={currentPH}
                 titration={titration}
                 showEquivalencePoints={phase === 'result'}
-                markedVolume={
-                  phase === 'marking' || phase === 'select-indicator' || phase === 'result'
-                    ? markedVolume
-                    : null
-                }
+                markedVolume={phase === 'calculate' || phase === 'result' ? endpoint : null}
+                markedLabel="Endapunktur"
                 width={600}
                 height={300}
               />
             </div>
 
-            {/* Transition to marking */}
-            <Presence show={phase === 'titrating' && volumeAdded >= 5} exitDuration={250}>
-              <div className="mt-4 phone:mt-3">
-                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-3 phone:p-2 phone:mb-2">
-                  <p className="text-sm text-indigo-800">
-                    <strong>Leiðbeiningar:</strong> Bættu við títranti þar til þú sérð{' '}
-                    <strong>snögga pH-breytingu</strong> á ferilnum (brattur halli). Smelltu síðan á
-                    hnappinn til að merkja jafngildispunktinn.
-                  </p>
-                </div>
-                <div className="flex justify-center">
-                  <button
-                    onClick={handleEnterMarking}
-                    className="px-6 py-3 phone:py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold"
-                  >
-                    Títrun lokið — merkja jafngildispunkt →
-                  </button>
-                </div>
-              </div>
-            </Presence>
-
-            {/* Marking phase: slider to identify equivalence point */}
-            <Presence show={phase === 'marking'} exitDuration={MARKING_EXIT_MS}>
-              <div className="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4 phone:mt-3 phone:p-3">
-                <div ref={markingHeadingRef} className="font-bold text-orange-800 mb-2 phone:mb-1">
-                  📍 Merktu jafngildispunktinn á ferilnum
-                </div>
-                <p className="text-sm text-orange-700 mb-1">
-                  Dragðu sleðann þangað sem pH-ferillinn breytist mest (brattasti hluti ferilsins).
-                  Þetta er jafngildispunkturinn — þar sem mólfjöldi sýru = mólfjöldi basa.
-                </p>
-                <p className="text-xs text-orange-600 mb-4 phone:mb-2">
-                  Leyfilegt svigrúm: ±{formatDecimal(puzzle.volumeTolerance, 1)} mL.
-                </p>
-                <div className="space-y-3 phone:space-y-2">
+            {/* Stage 3: the concentration from the endpoint. */}
+            <Presence
+              show={phase === 'calculate' || phase === 'result'}
+              exitDuration={PANEL_EXIT_MS}
+            >
+              <div
+                ref={calcRef}
+                className="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4 phone:mt-3 phone:p-3 scroll-mt-4 phone:scroll-mt-3"
+              >
+                <h3
+                  ref={calcHeadingRef}
+                  tabIndex={-1}
+                  data-item-start={phase === 'calculate' || phase === 'result' ? '' : undefined}
+                  className="font-bold text-orange-800 mb-2 phone:mb-1 focus:outline-none"
+                >
+                  Reiknaðu styrk {sampleWord}
+                </h3>
+                <ul className="text-sm text-orange-900 mb-3 space-y-0.5 phone:mb-2">
+                  <li>
+                    Endapunktur:{' '}
+                    <strong>{endpoint !== null ? formatDecimal(endpoint, 2) : '?'} mL</strong> af{' '}
+                    {formatDecimal(titration.titrant.molarity, 3)} M {titration.titrant.formula}
+                  </li>
+                  <li>
+                    Sýni: {formatDecimal(titration.analyte.volume, 1)} mL af{' '}
+                    {titration.analyte.formula}
+                  </li>
+                  <li>Hvarfið gengur 1:1.</li>
+                </ul>
+                <label
+                  htmlFor="ph-l2-concentration"
+                  className="block text-sm font-semibold text-orange-800 mb-1"
+                >
+                  Styrkur {titration.analyte.formula} (M):
+                </label>
+                <div className="flex gap-2 phone:flex-wrap">
                   <input
-                    type="range"
-                    min={0}
-                    max={volumeAdded}
-                    step={0.1}
-                    value={markedVolume}
-                    onChange={(e) => setMarkedVolume(parseFloat(e.target.value))}
-                    aria-label="Jafngildisrúmmál"
-                    aria-valuetext={`${formatDecimal(markedVolume, 1)} mL`}
-                    className="w-full accent-orange-500 pointer-coarse:h-11"
+                    id="ph-l2-concentration"
+                    type="text"
+                    inputMode="decimal"
+                    autoComplete="off"
+                    enterKeyHint="done"
+                    value={answer}
+                    disabled={phase !== 'calculate'}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSubmitAnswer();
+                    }}
+                    placeholder="t.d. 0,0950"
+                    className="flex-1 min-w-0 phone:basis-24 px-4 py-3 phone:px-3 phone:py-2 border-2 border-warm-300 rounded-xl text-lg font-mono focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
                   />
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center px-4 py-3 phone:px-3 phone:py-2 bg-warm-100 rounded-xl font-semibold text-warm-700">
+                    M
+                  </span>
+                  {phase === 'calculate' && (
                     <button
-                      onClick={() => nudgeMarkedVolume(-0.1)}
-                      aria-label="Minnka um 0,1 mL"
-                      className="hidden pointer-coarse:flex shrink-0 items-center justify-center min-w-11 min-h-11 px-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg font-bold"
+                      onClick={armed(handleSubmitAnswer)}
+                      className="px-6 py-3 phone:grow phone:py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
                     >
-                      −0,1
+                      Staðfesta svar
                     </button>
-                    <div className="flex-1 min-w-0 text-center">
-                      <span className="font-mono text-xl font-bold text-orange-800 whitespace-nowrap">
-                        {formatDecimal(markedVolume, 1)} mL
-                      </span>
-                      <span className="text-sm text-orange-600 ml-2 whitespace-nowrap">
-                        (pH ≈{' '}
-                        {titration ? formatDecimal(calculatePH(titration, markedVolume), 1) : '?'})
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => nudgeMarkedVolume(0.1)}
-                      aria-label="Auka um 0,1 mL"
-                      className="hidden pointer-coarse:flex shrink-0 items-center justify-center min-w-11 min-h-11 px-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg font-bold"
-                    >
-                      +0,1
-                    </button>
-                  </div>
-                  {/* Wraps below ~340 px: "Staðfesta:" alone is wider than
-                      what the back button leaves at 320 px. */}
-                  <div className="flex flex-wrap gap-3">
-                    <button
-                      onClick={handleBackToTitrating}
-                      className="shrink-0 whitespace-nowrap px-4 py-2 pointer-coarse:py-3 bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg font-medium"
-                    >
-                      ← Til baka
-                    </button>
-                    <button
-                      onClick={handleSubmitMarkedVolume}
-                      className="flex-1 px-6 py-3 phone:py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
-                    >
-                      Staðfesta: {formatDecimal(markedVolume, 1)} mL →
-                    </button>
-                  </div>
+                  )}
                 </div>
+                <p className="text-xs text-warm-600 mt-1">
+                  Skekkjumörk: ±{formatDecimal(CONCENTRATION_TOLERANCE * 100, 0)}% af því sem þinn
+                  endapunktur gefur.
+                </p>
               </div>
             </Presence>
           </div>
 
-          {/* Right: Indicator selector and info */}
+          {/* Right: hint, stage bar and result */}
           <div className="space-y-4">
-            {/* Indicator selector */}
-            {/* Before its stage the list is a greyed preview; on a phone it is
-                not shown until then, and after it the result names the choice
-                (design P10). */}
-            <div
-              ref={indicatorRef}
-              data-item-start={indicatorStage ? '' : undefined}
-              className={`scroll-mt-4 phone:scroll-mt-3 ${phase === 'select-indicator' ? '' : 'opacity-50 phone:hidden'}`}
-            >
-              <IndicatorSelector
-                selectedIndicator={selectedIndicator}
-                onSelect={handleIndicatorSelect}
-                disabled={phase !== 'select-indicator'}
-              />
-            </div>
-
-            {/* Submit indicator button */}
-            <Presence show={phase === 'select-indicator' && !!selectedIndicator} exitDuration={250}>
-              <button
-                ref={revealConfirmIndicator}
-                onClick={handleSubmitIndicator}
-                className="w-full px-6 py-3 phone:py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
-              >
-                Staðfesta val →
-              </button>
-            </Presence>
-
-            {/* Hint (on a phone it is in the task card instead) */}
             {!phone && hint}
 
-            {/* Result feedback */}
-            <Presence show={phase === 'result' && submittedVolume !== null} exitDuration={250}>
-              {/* The feedback region focus moves to after the check (P3), named
-                  by its verdict. */}
+            <Presence show={phase === 'result'} exitDuration={PANEL_EXIT_MS}>
               <div
                 ref={resultRef}
                 tabIndex={-1}
@@ -723,73 +631,62 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
                 <div className="text-sm space-y-2">
                   <div>
-                    <span className="font-semibold">Þitt rúmmál:</span>{' '}
-                    {submittedVolume !== null ? formatDecimal(submittedVolume, 2) : '?'} mL
+                    <span className="font-semibold">Þinn endapunktur:</span>{' '}
+                    {endpoint !== null ? formatDecimal(endpoint, 2) : '?'} mL
                     <br />
                     <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
                     {formatDecimal(titration.equivalenceVolume, 2)} mL
                     <br />
-                    <span
-                      className={
-                        submittedVolume !== null &&
-                        Math.abs(submittedVolume - titration.equivalenceVolume) <=
-                          puzzle.volumeTolerance
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      }
-                    >
-                      Skekkja: ±
-                      {submittedVolume !== null
-                        ? formatDecimal(Math.abs(submittedVolume - titration.equivalenceVolume), 2)
+                    <span className={endpointOk ? 'text-green-600' : 'text-red-600'}>
+                      Skekkja:{' '}
+                      {endpoint !== null
+                        ? formatDecimal(Math.abs(endpoint - titration.equivalenceVolume), 2)
                         : '?'}{' '}
-                      mL
-                      {submittedVolume !== null &&
-                      Math.abs(submittedVolume - titration.equivalenceVolume) <=
-                        puzzle.volumeTolerance
-                        ? ' ✓'
-                        : ' ✗'}
+                      mL (leyfilegt ±{formatDecimal(puzzle.volumeTolerance, 1)}){' '}
+                      {endpointOk ? '✓' : '✗'}
                     </span>
                   </div>
 
                   <div>
-                    <span className="font-semibold">Þinn litvísir:</span>{' '}
-                    {indicators.find((i) => i.id === selectedIndicator)?.name}
+                    <span className="font-semibold">Þinn litvísir:</span> {chosen?.name}
                     <br />
-                    <span className={indicatorCorrect ? 'text-green-600' : 'text-red-600'}>
-                      {indicatorCorrect ? '✓ Góður litvísir' : '✗ Ekki besti litvísirinn'}
+                    <span className={verdict.indicator ? 'text-green-600' : 'text-red-600'}>
+                      {verdict.indicator ? '✓ Góður litvísir' : '✗ Ekki góður litvísir hér'}
                     </span>
-                    {/* Which titration the indicator suits: shown only now, after
-                        the result, since on the choice it gave half the answer
-                        away (mobile-pass decision 114 (c)). */}
                     <br />
-                    <span className="text-xs italic text-warm-600">
-                      {indicators.find((i) => i.id === selectedIndicator)?.description}
+                    <span className="text-xs italic text-warm-600">{chosen?.description}</span>
+                  </div>
+
+                  <div>
+                    <span className="font-semibold">Þinn styrkur:</span> {answer} M
+                    <br />
+                    <span className="font-semibold">Út frá þínum endapunkti:</span>{' '}
+                    {fromEndpoint !== null ? formatMolarity(fromEndpoint) : '?'} M{' '}
+                    <span className={verdict.concentration ? 'text-green-600' : 'text-red-600'}>
+                      {verdict.concentration ? '✓' : '✗'}
                     </span>
+                    <br />
+                    <span className="font-semibold">Raunverulegur styrkur:</span>{' '}
+                    {formatMolarity(molarity)} M
                   </div>
                 </div>
 
-                {/* Endpoint vs equivalence teaching */}
-                {selectedIndicator && (
+                {chosen && (
                   <div className="mt-3 bg-purple-50 border border-purple-200 rounded-lg p-3 text-sm phone:p-2">
                     <div className="font-bold text-purple-800 mb-1">
                       Jafngildispunktur ≠ Endapunktur
                     </div>
                     <div className="text-purple-700">
-                      {/* The pH is derived, as the flask's and the marking readout's
-                          are, so all three agree at the same volume. */}
                       <strong>Jafngildispunktur:</strong>{' '}
-                      {formatDecimal(titration.equivalenceVolume, 1)} mL (pH{' '}
+                      {formatDecimal(titration.equivalenceVolume, 2)} mL (pH{' '}
                       {formatDecimal(calculatePH(titration, titration.equivalenceVolume), 1)}) — þar
                       sem mólfjöldi sýru = mólfjöldi basa.
                       <br />
-                      <strong>Endapunktur:</strong> þar sem litvísirinn breytir um lit.{' '}
-                      {indicators.find((i) => i.id === selectedIndicator)?.name} breytist við pH{' '}
-                      {indicators
-                        .find((i) => i.id === selectedIndicator)
-                        ?.pHRange.map((pH) => formatDecimal(pH, 1))
-                        .join('–')}
-                      , sem þessi ferill nær milli{' '}
-                      {colourChangeWindow(puzzle.titrationId, selectedIndicator)
+                      <strong>Endapunktur:</strong> þar sem litvísirinn skiptir um lit.{' '}
+                      {chosen.name} breytist við pH{' '}
+                      {chosen.pHRange.map((pH) => formatDecimal(pH, 1)).join('–')}, sem þessi ferill
+                      nær milli{' '}
+                      {colourChangeWindow(titration, chosen.id)
                         .map((dv) => formatDecimal(titration.equivalenceVolume + dv, 2))
                         .join(' og ')}{' '}
                       mL.
@@ -807,8 +704,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   {puzzle.explanationIs}
                 </div>
 
-                {/* Separate from "Staðfesta val", and each drops a press within
-                    400 ms of appearing. */}
                 <div className="mt-4 flex gap-2 phone:mt-3">
                   <button
                     key="retry"
@@ -829,7 +724,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </div>
             </Presence>
 
-            {/* Phase indicator (on a phone it is in the task card instead) */}
             {!phone && phaseBar}
           </div>
         </div>
