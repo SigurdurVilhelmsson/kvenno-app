@@ -276,9 +276,16 @@ export const equilibria: Equilibrium[] = [
       { formula: 'NH₄⁺', coefficient: 1, phase: 'aq', display: '🔷⁺' },
       { formula: 'OH⁻', coefficient: 1, phase: 'aq', display: '⊖' },
     ],
+    // Unsourced: the book's table of species in water has no NH₃(aq) row. The game
+    // stored −3 (exothermic) until 2026-11-14, but standard tables give
+    // −132,51 − 229,99 − (−80,29 − 285,83) = +3,6 kJ/mól, and Kb rises with
+    // temperature, so both temperature stresses were graded backwards. Like
+    // acetic acid (decision 102 (b)) it now offers none: the value is small, has
+    // no source the platform uses, and so has no direction a student can be
+    // marked on.
     thermodynamics: {
-      deltaH: -3,
-      type: 'exothermic',
+      deltaH: 3.6,
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
@@ -289,8 +296,6 @@ export const equilibria: Equilibrium[] = [
     possibleStresses: [
       { type: 'add-reactant', target: 'NH₃' },
       { type: 'add-product', target: 'OH⁻' },
-      { type: 'increase-temp', target: null },
-      { type: 'decrease-temp', target: null },
     ],
   },
 
@@ -298,8 +303,8 @@ export const equilibria: Equilibrium[] = [
   {
     id: 10,
     equation: 'AgCl(s) ⇌ Ag⁺(aq) + Cl⁻(aq)',
-    name: 'Silver Chloride Precipitation',
-    nameIs: 'Útfelling silfurklóríðs',
+    name: 'Silver Chloride Solubility',
+    nameIs: 'Leysni silfurklóríðs',
     difficulty: 'beginner',
     reactants: [{ formula: 'AgCl', coefficient: 1, phase: 's', display: '🔘' }],
     products: [
@@ -847,9 +852,15 @@ export const equilibria: Equilibrium[] = [
       { formula: 'H⁺', coefficient: 1, phase: 'aq', display: '⊕' },
       { formula: 'H₂PO₄⁻', coefficient: 1, phase: 'aq', display: '🧪⁻' },
     ],
+    // Unsourced, like id 9: the book has no H₃PO₄(aq) row. The game stored +5
+    // (endothermic) until 2026-11-14, but standard tables give
+    // −1296,29 − (−1288,34) = −7,95 kJ/mól, and pKa₁ rises with temperature, so
+    // heating was graded backwards. It offers no temperature stress now
+    // (the treatment decision 102 (b) gave acetic acid), and gains removing H⁺,
+    // so it still has two stresses.
     thermodynamics: {
-      deltaH: 5,
-      type: 'endothermic',
+      deltaH: -7.95,
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 0,
@@ -859,7 +870,7 @@ export const equilibria: Equilibrium[] = [
     descriptionIs: 'Þrepaskipt klofnun fosfórsýru.',
     possibleStresses: [
       { type: 'add-product', target: 'H⁺' },
-      { type: 'increase-temp', target: null },
+      { type: 'remove-product', target: 'H⁺' },
     ],
   },
 
@@ -895,21 +906,26 @@ export const equilibria: Equilibrium[] = [
   // Equilibrium 29: Le Chatelier in Biology
   {
     id: 29,
-    equation: 'Hb(aq) + 4O₂(g) ⇌ Hb(O₂)₄(aq)',
+    equation: 'Hb(aq) + 4O₂(aq) ⇌ Hb(O₂)₄(aq)',
     name: 'Le Chatelier in Biology',
     nameIs: 'Lögmál Le Chateliers í líffræði',
     difficulty: 'advanced',
     reactants: [
       { formula: 'Hb', coefficient: 1, phase: 'aq', display: '🔴' },
-      { formula: 'O₂', coefficient: 4, phase: 'g', display: '🔴' },
+      { formula: 'O₂', coefficient: 4, phase: 'aq', display: '🔴' },
     ],
     products: [{ formula: 'Hb(O₂)₄', coefficient: 1, phase: 'aq', display: '🔴💧' }],
     thermodynamics: {
       deltaH: -50,
       type: 'exothermic',
     },
+    // Oxygen in blood is dissolved, so it is O₂(aq) and there is no gas to
+    // compress: until 2026-11-14 it was O₂(g) and offered a pressure stress that
+    // worked through "4 mol of gas against 0". The partial pressure of oxygen in
+    // the lungs reaches the blood as its concentration, which is what adding and
+    // removing O₂ already ask about.
     gasMoles: {
-      reactants: 4,
+      reactants: 0,
       products: 0,
     },
     description: 'Hemoglobin binding oxygen in blood.',
@@ -918,7 +934,6 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-reactant', target: 'O₂' },
       { type: 'remove-reactant', target: 'O₂' },
       { type: 'increase-temp', target: null },
-      { type: 'increase-pressure', target: null },
     ],
   },
 

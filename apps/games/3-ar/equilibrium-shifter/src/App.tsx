@@ -38,6 +38,7 @@ import {
   ShiftResult,
   DifficultyLevel,
 } from './types';
+import { methodHint } from './utils/hints';
 import { calculateShift, getStressDescriptionIs } from './utils/le-chatelier';
 import './styles.css';
 
@@ -409,8 +410,6 @@ function App() {
     const eq = currentEquilibrium;
     const stress = appliedStress;
     const isExothermic = eq.thermodynamics.type === 'exothermic';
-    const moreGasOnRight = (eq.gasMoles?.products || 0) > (eq.gasMoles?.reactants || 0);
-    const moreGasOnLeft = (eq.gasMoles?.reactants || 0) > (eq.gasMoles?.products || 0);
 
     // Topic hint - general concept area
     let topic: string;
@@ -447,43 +446,7 @@ function App() {
       strategy = 'Að fjarlægja efni veldur hliðrun Í ÁTTINA að þeirri hlið.';
     }
 
-    // Method hint - specific technique/formula
-    let method = '';
-    if (stress.type === 'increase-temp') {
-      method = isExothermic
-        ? 'Útvermið hvarf: Varmi er „myndefni". Meiri varmi → hliðrun til vinstri.'
-        : 'Innvermið hvarf: Varmi er „hvarfefni". Meiri varmi → hliðrun til hægri.';
-    } else if (stress.type === 'decrease-temp') {
-      method = isExothermic
-        ? 'Útvermið hvarf: Minni varmi → hliðrun til hægri til að framleiða varma.'
-        : 'Innvermið hvarf: Minni varmi → hliðrun til vinstri.';
-    } else if (stress.type === 'increase-pressure') {
-      if (moreGasOnRight) {
-        method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Myndefni: ${eq.gasMoles?.products} mól gas. Hliðrun til vinstri (færri mól).`;
-      } else if (moreGasOnLeft) {
-        method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Myndefni: ${eq.gasMoles?.products} mól gas. Hliðrun til hægri (færri mól).`;
-      } else {
-        method = `Hvarfefni: ${eq.gasMoles?.reactants || 0} mól gas. Myndefni: ${eq.gasMoles?.products || 0} mól gas. Jafnt → engin hliðrun.`;
-      }
-    } else if (stress.type === 'decrease-pressure') {
-      if (moreGasOnRight) {
-        method = `Myndefni hafa fleiri mól gas (${eq.gasMoles?.products}). Hliðrun til hægri.`;
-      } else if (moreGasOnLeft) {
-        method = `Hvarfefni hafa fleiri mól gas (${eq.gasMoles?.reactants}). Hliðrun til vinstri.`;
-      } else {
-        method = `Jafnt magn gass beggja megin → engin hliðrun.`;
-      }
-    } else if (stress.type === 'add-catalyst') {
-      method = 'Hvati breytir EKKI jafnvæginu - aðeins hraða til að ná því.';
-    } else if (stress.type === 'add-reactant') {
-      method = `Bætt við hvarfefni (${stress.target}). Kerfið eyðir því → hliðrun til hægri.`;
-    } else if (stress.type === 'add-product') {
-      method = `Bætt við myndefni (${stress.target}). Kerfið eyðir því → hliðrun til vinstri.`;
-    } else if (stress.type === 'remove-reactant') {
-      method = `Hvarfefni fjarlægt (${stress.target}). Kerfið bætir upp → hliðrun til vinstri.`;
-    } else if (stress.type === 'remove-product') {
-      method = `Myndefni fjarlægt (${stress.target}). Kerfið bætir upp → hliðrun til hægri.`;
-    }
+    const method = methodHint(eq, stress);
 
     // Solution hint - full worked answer
     let solution: string;

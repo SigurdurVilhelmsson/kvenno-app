@@ -133,6 +133,29 @@ The shared pieces it depends on: `packages/shared/engine/equilibrium.ts`,
 `packages/shared/data/thermo.ts`, `packages/shared/data/appendix-d.ts`. `MIGRATION-SUMMARY.md` is a
 historical record of the port from the old HTML game and is out of date on most specifics.
 
+## Fixed 2026-11-14: two temperature answers backwards, and a hint that gave the answer
+
+From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
+
+- **Ammonia in water (id 9) and phosphoric acid (id 27) offer no temperature stress**, as acetic
+  acid does not. Id 9 stored ΔH = −3 kJ/mól and id 27 +5, and standard tables give the opposite
+  sign for both (+3,6 and −7,95; Kb and pKa₁ both rise with temperature), so the game graded both
+  of id 9's temperature stresses and id 27's heating backwards. The book has no row for either, so
+  no value can be sourced; the stored numbers now carry the standard-table sign, with a comment
+  saying where it came from. Id 27 gained "remove H⁺" so it still has two stresses.
+- **The «Aðferð» hint tier no longer names the direction.** It ended every stress with the answer
+  ("Hliðrun til hægri (færri mól)", "Kerfið eyðir því → hliðrun til vinstri") while only the
+  solution tier counts as giving it away. It now says how to decide (count gas moles, write heat
+  into the equation, which side the species stands on). `utils/hints.ts`, held by `hints.test.ts`
+  for every stress the game offers.
+- **Hemoglobin binds O₂(aq)**, not O₂(g), and offers no pressure stress: there is no gas in blood
+  to compress.
+- **Id 10 is `Leysni silfurklóríðs`**: its equation is the dissolving, not a precipitation.
+- **The hub card says `lögmál Le Chateliers`**, which this game's own text test already required.
+- **Not changed: id 24 keeps H₃O⁺.** It is written with hydronium on purpose, beside id 8 with a
+  bare proton (`numbers.test.ts`). Siggi's H⁺ ruling of 2026-11-14 was for Agnasýn; whether it
+  reaches this pair is a question for him.
+
 ## Fixed 2026-10-23: acetic acid's heating stress, and the names
 
 - **Acetic acid offers no temperature stress** (mobile-pass decision 102 (b)). Id 8 stored an
@@ -206,6 +229,6 @@ Each has a test that fails against the version before it.
   of the book's `m68865` since 2026-10-23 (Siggi's ruling). That derives ΔH for water's
   autoionisation (+55,83, was 56) and AgCl dissolving (+65,4, was 65), but the book has no row for
   the weak acids, ammonia, SCN⁻ or the complex ions in water, so ids 6, 8, 9, 21, 22, 24 and 27
-  keep a stored, unsourced ΔH and the numbers panel reports K as unknown when they are heated. Acetic acid's +5 (id 8) no longer reaches a question (below), but
+  keep a stored, unsourced ΔH (8, 9, 24 and 27 offer no temperature stress) and the numbers panel reports K as unknown when they are heated. Acetic acid's +5 (id 8) no longer reaches a question (below), but
   it still disagrees with the 0 stored for the same chemistry as id 24 until a source is ruled on.
 - **i18n is partial** — 7 `t()` calls, the rest hardcoded Icelandic; see `docs/i18n-coverage.md`.
