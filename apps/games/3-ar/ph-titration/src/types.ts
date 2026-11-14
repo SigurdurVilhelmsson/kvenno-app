@@ -47,5 +47,8 @@ export interface Indicator {
   pHRange: [number, number];
   colorAcidic: string;
   colorBasic: string;
+  /** The colours in words, agreeing with `lausn`, for screen readers. */
+  colorAcidicName: string;
+  colorBasicName: string;
   description: string;
 }

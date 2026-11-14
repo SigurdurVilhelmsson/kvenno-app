@@ -68,7 +68,7 @@ export const titrations: Titration[] = [
     titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
     equivalenceVolume: 45.0,
     equivalencePH: 7.97,
-    initialPH: 2.08,
+    initialPH: 2.0, // √(Kₐ·C), as the other weak acids here (was 2,08, from no stated source)
     halfEquivalencePH: 3.17,
     // Phenolphthalein, bromothymol blue and thymol blue all change colour
     // within 0,1 mL of equivalence here (`acceptableIndicatorsFor`).

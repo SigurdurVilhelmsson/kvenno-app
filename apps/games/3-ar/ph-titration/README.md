@@ -16,34 +16,54 @@ screen; finishing Stig 1 or 2 returns to the menu.
 
 | Stig | Menu name              | What it asks                                                                                                                                          |
 | ---- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | `Stig 1: Skilningur`   | A teaching card ("Títrun — um hvað snýst þetta?"), then 6 multiple-choice questions: 2 match a curve, 2 read an indicator colour, 2 on curve features |
-| 2    | `Stig 2: Framkvæmd`    | 6 titrations at the bench: pour from the búretta, mark the equivalence volume on the curve, then pick one of 5 litvísar                               |
-| 3    | `Stig 3: Útreikningar` | 8 calculations: 2 concentration, 1 volume, 2 polyprotic, 2 Henderson-Hasselbalch, 1 pH at hálfjafngildispunktur                                       |
+| 1    | `Stig 1: Skilningur`   | A teaching card ("Títrun — um hvað snýst þetta?"), then 7 multiple-choice questions: 3 match a curve, 2 read an indicator colour, 2 on curve features |
+| 2    | `Stig 2: Framkvæmd`    | 6 titrations at the bench: choose a litvísir, titrate a sample of unknown concentration to its colour change, then work the concentration out         |
+| 3    | `Stig 3: Útreikningar` | 11 calculations: 2 concentration, 1 volume, 2 polyprotic, 1 Henderson-Hasselbalch ratio, 1 hálfjafngildispunktur, 4 points on one titration curve     |
 
 - **Stig 1** (`data/level1-challenges.ts`) shuffles each question's options and re-letters them a,
   b, c… by position. Hints are the shared four-tier `HintSystem`. Each question is answered once.
-- **Stig 2** (`data/level2-puzzles.ts`) pours by +0,05 / +1 / +5 mL or by holding a button, up to
-  60 mL, and draws the curve only as far as the student has poured. Marking uses a range slider in
-  0,1 mL steps, with ±0,1 mL nudge buttons on touch; the panel states the tolerance up front
-  (`Leyfilegt svigrúm: ±0,5 mL`, 1,0 until 2026-11-14). A puzzle is right when the marked volume is
-  within 0,5 mL of the equivalence volume **and** the litvísir is acceptable. The result prints the equivalence volume and
-  the acceptable litvísar, so a `Reyna aftur` after it does not count (`answerShown`).
+  Question 1 (2026-11-14) offers three small unlabelled curves drawn from the game's own
+  titrations (`MiniCurve`), so the student reads the shape; each option's description is for a
+  screen reader until the result, then shown. It offered three text descriptions before. Question
+  7 is a weak base with a strong acid, NH₃ + HCl: the curve falls, equivalence is below 7, and the
+  litvísir is metýlrautt, the one Stig 2 accepts there (`level1-previews.test.tsx` holds that).
+- **Stig 2** (`data/level2-puzzles.ts`) runs as a titration in the lab does (2026-11-14, Siggi's
+  go-ahead, closing the bench-order item in `docs/REVIEW-QUEUE.md`). Each puzzle draws its sample's
+  concentration at random within ±20 % of the stored one, to three figures, keeping equivalence
+  between 10 and 50 mL (`randomMolarity`, `concentrationRange`, `sampleOf`); the task says
+  `styrkur óþekktur`. The student chooses a litvísir first, pours by +0,05 / +1 / +5 mL or by holding
+  a button while the flask shows only that litvísir's colour, records the endpoint when it changes
+  (the búretta reading), and calculates the concentration. A puzzle is right when the endpoint is
+  within ±0,2 mL of equivalence (stated with the pour controls), the litvísir is acceptable, and the
+  concentration is within 2 % of what **the student's own endpoint** gives (`molarityFromEndpoint`).
+  The curve is still drawn alongside as far as poured. The result prints the true concentration,
+  the equivalence volume and the acceptable litvísar, so a `Reyna aftur` (a new sample) after it
+  does not count (`answerShown`). Until then the concentration was printed, so the titration found
+  nothing, and the litvísir was picked after pouring from a flask that had shown pH colours, so no
+  endpoint was ever seen. `level2-puzzles.test.ts` holds that the accepted litvísar are the same
+  anywhere in the concentration range. Tests pass `drawMolarity` to fix the sample
+  (`__tests__/level2-driver.ts` plays a puzzle through the buttons).
 - **Stig 2's bench** is one SVG, `TitrationApparatus.tsx` (2026-11-14): a stand, the búretta
   clamped to it reading 0 mL at the top and draining as titrant runs, and the keiluflaska under its
   tip on a white tile. `BenchReadings.tsx` beside it lists the búretta reading, the volume in the
   flask, pH and `Eðli`, which follows the pH as printed. Until then a búretta and a flask stood side
   by side, the búretta's scale upside down and filling as it delivered, the flask with no outline.
-  The flask takes the chosen litvísir's colour, which now passes through its range rather than
-  jumping (`getIndicatorColor`), and a universal-indicator colour before one is chosen.
-- **Stig 3** (`data/level3-challenges.ts`) grades at a 2 % **relative** tolerance, and the two pH
-  answers (6 and 8) at an absolute ±0,02 (`isAnswerCorrect`, 2026-11-14; ±2 % of a pH was ±0,1).
-  `Gefið` and `Rétt svar` print to the data's significant figures (`answerDecimals`). Problem 8 gives
+  The flask takes the chosen litvísir's colour, which passes through its range rather than
+  jumping (`getIndicatorColor`), and is colourless before one goes in.
+- **Stig 3** (`data/level3-challenges.ts`) grades at a 2 % **relative** tolerance, and the five pH
+  answers (7 to 11) at an absolute ±0,02 (`isAnswerCorrect`, 2026-11-14; ±2 % of a pH was ±0,1).
+  `Gefið` and `Rétt svar` print to the data's significant figures (`answerDecimals`). Problem 7 gives
   Kₐ and a volume, so the student finds the hálfjafngildispunktur and pKₐ; it used to print the
   answer as the pKₐ in the question. The field is `type="text"` +
   `inputMode="decimal"` read through `parseStudentNumber`, so the decimal comma works. The result
   shows the correct answer, the explanation, and a `Sýna útreikningsgang` button for the worked
   steps. A reference panel (`Uppflettitöflur`: a pKₐ table and the key equations) sits under the
-  card, closed on a phone (`PhoneDisclosure`).
+  card, closed on a phone (`PhoneDisclosure`). Problems 8 to 11 (2026-11-14) walk one
+  titration, 25,0 mL of 0,100 M ediksýra with 0,100 M NaOH, the flask Stig 2 and Agnasýn draw: the
+  initial pH, pH after 10,0 mL, at equivalence and after 30,0 mL. Each carries `fromCurve`, and
+  `level3-grading.test.ts` holds its answer to the game's own `calculatePH` there. The buffer-only
+  Henderson-Hasselbalch problem (0,15 M ediksýra, 0,20 M asetat) went then, Siggi leaving it to
+  judgement: the 10,0 mL problem asks the same thing inside a titration.
 
 No level shows a running score. Each reports `N af M rétt` to the menu, which shows it on the
 level's card; a level finished under the old points format shows `Lokið` (`resultLabel`,
@@ -91,8 +111,8 @@ pH readout and the curve move together. Nothing is graded or stored.
 - **The `/1000` defect (fixed 2026-08-18, Phase 1):** `utils/ph-calculations.ts` divided a molarity
   already in mol/L by 1000, so 0,100 M ediksýra started at pH 4,37 instead of the game's own 2,87,
   and every weak-acid curve started about 1,5 units off. `ph-calculations.test.ts` asserts that every
-  titration starts at its declared `initialPH` — except HF, id 6, which still disagrees and is
-  pinned with `it.fails` (see Open).
+  titration starts at its declared `initialPH`. HF's stored 2,08 disagreed with √(Ka·C) and was
+  pinned with `it.fails` until 2026-11-14, when it became 2,00 like the other weak acids'.
 - **The buffer region no longer uses Henderson-Hasselbalch from the first drop (2026-09-23).** It
   diverges there: one 0,05 mL drop took HF from pH 2,00 to 0,21. It now solves the buffer's ICE table
   (`conjugatePairIon`). `ph-calculations.test.ts` steps every titration in 0,05 mL drops over 60 mL
@@ -140,7 +160,7 @@ pH readout and the curve move together. Nothing is graded or stored.
 - **The equivalence star is derived** (`TitrationCurve.tsx`): it sits at `calculatePH` of the
   equivalence volume, not at the stored `equivalencePH`, which for HF was 0,11 above the curve.
 - **Touch:** the hold-to-pour button uses pointer events and stops on `pointercancel` (it once poured
-  on to 60 mL when the browser cancelled a hold), and the marking step has the ±0,1 mL nudges.
+  on to 60 mL when the browser cancelled a hold).
   `touch-controls.test.tsx`.
 - **`TitrationCurve` shrinks to its container** through a `ResizeObserver` (Aug 2026 deferred-work
   pass), capped at 600 px wide with a 240 px minimum height. jsdom has no `ResizeObserver`, which is
@@ -211,8 +231,8 @@ src/utils/particles.ts            Agnasýn's particle system
 src/types.ts                      Titration, Indicator and the difficulty/indicator unions
 src/components/Level1.tsx         Stig 1: intro card, 6 questions, TitrationCurvePreview (shown
                                     with the result on a "which curve" question, never on 3, 4, 6)
-src/components/Level2.tsx         Stig 2: pour, mark, choose, result
-src/components/Level3.tsx         Stig 3: 8 problems, the Uppflettitöflur panel
+src/components/Level2.tsx         Stig 2: choose, titrate, calculate, result
+src/components/Level3.tsx         Stig 3: 11 problems, the Uppflettitöflur panel
 src/components/TitrationApparatus.tsx  Stig 2 bench: stand, búretta, keiluflaska (one SVG)
 src/components/BenchReadings.tsx  Stig 2 readings beside it; phCharacter
 src/components/IndicatorSelector.tsx  Stig 2 list of 5 litvísar, no descriptions
@@ -236,10 +256,14 @@ environment: `pnpm exec vitest run apps/games/3-ar/ph-titration`.
 
 ## Open
 
-- **HF's stored `initialPH` disagrees with its own curve.** `data/titrations.ts` says 2,08; √(Ka·C)
-  at 0,150 M and Ka 6,8 × 10⁻⁴ gives 2,00. `ph-calculations.test.ts` pins it with `it.fails`
-  "pending a teacher decision on the declared value". It is not in `docs/REVIEW-QUEUE.md`, and no
-  screen shows `initialPH` — only the test reads it — so no student meets the gap.
+Nothing open in Stig 2 since 2026-11-14.
+
+**Also fixed 2026-11-14:** the end screen says `Til hamingju!` under a trophy only with four in five
+answers right across the levels (`CELEBRATE_SHARE`), and `Samantekt` otherwise; Stig 1 no longer
+tells a student after one right answer that they understand titration curves; the end screen and
+the formula card stopped claiming polyprotic acids, which no level titrates; the litvísir cards
+carry `aria-pressed` and name their colours to a screen reader; and `calculatePH` throws on a
+titration with no Ka or pKa instead of inventing 1 × 10⁻⁵ or 9,0.
 
 **Closed.** Running scores went with decision 1 (b), PR #85. The hint penalties went on
 2026-08-26. The Y3 review cycle's items for this game — no teaching before Stig 1's questions, and an
@@ -258,9 +282,6 @@ Not recorded anywhere else; found while writing this file.
   (HF said 8,08 and formic acid 8,35 against 7,97 and 8,28).
 - **Stig 3 problems 4 and 5 carry an `equivalencePointIndex`** that nothing reads (their
   `titrationId`s, naming the deleted polyprotic titrations, went on 2026-11-14).
-- **`Level1.tsx`'s `TitrationCurvePreview`** has a `strong-weak` branch (which would draw the
-  weak-acid curve) that no question uses. Its hand-built default curve went on 2026-11-14: question
-  6 has no `curveType` and was drawing it, marker off the line, which this file said no question
-  did. Each level also keeps a `setHintsUsed` counter whose value is never read.
-- **A stale comment in `ph-calculations.test.ts`** says "These three do NOT agree" above the
-  `it.fails` block, which now pins one titration.
+- **Each level keeps a `setHintsUsed` counter whose value is never read.** (`TitrationCurvePreview`'s
+  `strong-weak` branch drew the weak-acid curve until question 7 needed it; it draws NH₃ + HCl since
+  2026-11-14.)

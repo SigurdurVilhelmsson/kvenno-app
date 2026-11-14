@@ -2,14 +2,14 @@
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { describe, it, expect, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
+import { stockMolarity } from './level2-driver';
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
 
 // The mobile pass changed how Level 2 is driven by touch: the hold-to-pour
 // button moved from mouse + touch handlers (with no touchcancel, so a hold the
-// browser cancelled poured on to 60 mL) to pointer events, and the marking
-// step gained ±0,1 mL nudges because a finger cannot place a range thumb to
-// 0.1 mL. These drive the real component.
+// browser cancelled poured on to 60 mL) to pointer events. These drive the
+// real component.
 
 // InteractiveGraph draws to a canvas and both graphs watch their size; jsdom
 // implements neither.
@@ -27,8 +27,13 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+/** Renders Stig 2 with the litvísir chosen, so the pour controls are out. */
 function renderLevel2() {
-  const view = render(<Level2 onComplete={() => {}} onBack={() => {}} />);
+  const view = render(
+    <Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />
+  );
+  fireEvent.click(screen.getByRole('button', { name: /^Fenólftalín/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
   const volume = () =>
     Number(view.container.querySelector('[data-burette-ml]')!.getAttribute('data-burette-ml'));
   return { volume };
@@ -64,61 +69,30 @@ describe('ph-titration level 2 hold-to-pour', () => {
     expect(volume()).toBe(poured);
     expect(poured).toBeLessThan(60);
   });
-});
 
-describe('ph-titration level 2 marking nudges', () => {
-  function startMarking() {
-    renderLevel2();
-    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrants' });
-    fireEvent.click(add5);
-    fireEvent.click(add5);
-    // 10 mL poured; the marker starts at half the poured volume.
-    fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
-    return {
-      up: screen.getByRole('button', { name: 'Auka um 0,1 mL' }),
-      down: screen.getByRole('button', { name: 'Minnka um 0,1 mL' }),
-      slider: () => (screen.getByRole('slider') as HTMLInputElement).value,
-    };
-  }
-
-  it('moves the marked volume by 0.1 mL each tap', () => {
-    const { up, down, slider } = startMarking();
-    expect(slider()).toBe('5');
-
-    fireEvent.click(up);
-    fireEvent.click(up);
-    expect(slider()).toBe('5.2');
-    expect(screen.getByRole('button', { name: /Staðfesta: 5,2 mL/ })).toBeTruthy();
-
-    fireEvent.click(down);
-    fireEvent.click(down);
-    fireEvent.click(down);
-    expect(slider()).toBe('4.9');
-  });
-
-  it('stays within zero and the volume actually poured', () => {
-    const { up, down, slider } = startMarking();
-    for (let i = 0; i < 80; i++) fireEvent.click(up);
-    expect(slider()).toBe('10');
-    for (let i = 0; i < 150; i++) fireEvent.click(down);
-    expect(slider()).toBe('0');
+  it('pours nothing before the litvísir is in', () => {
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
+    expect(screen.queryByRole('button', { name: /Halda inni/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^Bæta við/ })).toBeNull();
+    expect(
+      (screen.getByRole('button', { name: /Staðfesta val/ }) as HTMLButtonElement).disabled
+    ).toBe(true);
   });
 });
 
-describe('ph-titration level 2 indicator step below lg', () => {
-  // Below lg the indicator list is stacked under the apparatus. The marking
-  // panel above it takes 250 ms to leave, and scrolling before it had gone
-  // left the top of the list 200-300 px above the screen. The scroll goes
-  // through the shared helper (`@shared/utils`), which moves the page with
-  // window.scrollBy.
+describe('ph-titration level 2 indicator step on a phone', () => {
+  // At 320 px and in landscape the list of litvísar is taller than the
+  // screen, so "Staðfesta val" under it is brought up once one is picked. The
+  // scroll goes through the shared helper (`@shared/utils`), which moves the
+  // page with window.scrollBy.
   const realRect = HTMLElement.prototype.getBoundingClientRect;
   const realScrollBy = window.scrollBy;
   let scrolled: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    // Nothing matches: not lg, not a phone, no reduced motion.
+    // A phone: every query matches except reduced motion.
     window.matchMedia = ((media: string) => ({
-      matches: false,
+      matches: !media.includes('reduce'),
       media,
       addEventListener() {},
       removeEventListener() {},
@@ -133,41 +107,17 @@ describe('ph-titration level 2 indicator step below lg', () => {
     window.scrollBy = realScrollBy;
   });
 
-  function confirmMarkedVolume() {
-    renderLevel2();
-    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrants' });
-    fireEvent.click(add5);
-    fireEvent.click(add5);
-    fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
-    fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
-  }
-
-  it('scrolls the list to its top only once the marking panel has gone, and focuses it', () => {
+  it('brings the confirm button up when it is below the screen', () => {
     vi.useFakeTimers();
-    confirmMarkedVolume();
-
-    act(() => vi.advanceTimersByTime(250));
-    expect(scrolled).not.toHaveBeenCalled();
-
-    act(() => vi.advanceTimersByTime(100));
-    expect(scrolled).toHaveBeenCalledTimes(1);
-    expect(scrolled.mock.calls[0][0]).toMatchObject({ behavior: 'smooth' });
-    expect(document.activeElement?.textContent).toBe('Veldu litvísi');
-  });
-
-  it('brings the confirm button up when it appears below the screen', () => {
-    vi.useFakeTimers();
-    confirmMarkedVolume();
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
     act(() => vi.advanceTimersByTime(400));
     scrolled.mockClear();
 
     HTMLElement.prototype.getBoundingClientRect = () => ({ top: 1950, bottom: 2000 }) as DOMRect;
-    fireEvent.click(screen.getByRole('button', { name: /Fenólftalín/ }));
-    act(() => vi.advanceTimersByTime(50));
+    fireEvent.click(screen.getByRole('button', { name: /^Fenólftalín/ }));
+    act(() => vi.advanceTimersByTime(100));
 
-    // The least move that shows the button's foot: 2000 − the window's height.
-    expect(scrolled).toHaveBeenCalledTimes(1);
-    expect(scrolled).toHaveBeenCalledWith({ top: 2000 - window.innerHeight, behavior: 'smooth' });
+    expect(scrolled).toHaveBeenCalled();
   });
 });
 

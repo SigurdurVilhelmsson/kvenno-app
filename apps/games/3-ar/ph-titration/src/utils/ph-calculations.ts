@@ -149,8 +149,12 @@ export function calculatePH(titration: Titration, volumeAdded: number): number {
         titration.titrant.molarity
       );
 
+    // A missing constant throws rather than falling back to a made-up one
+    // (Kₐ 1 × 10⁻⁵, pKₐ 9,0 until 2026-11-14): a constant with no Appendix D row
+    // does not ship.
     case 'weak-strong': {
-      const Ka = titration.Ka || 1e-5;
+      const Ka = titration.Ka;
+      if (!Ka) throw new Error(`${titration.name}: no Ka`);
       return calculateWeakStrongPH(
         titration.analyte.volume,
         titration.analyte.molarity,
@@ -161,7 +165,8 @@ export function calculatePH(titration: Titration, volumeAdded: number): number {
     }
 
     case 'strong-weak': {
-      const pKa = titration.pKa || 9.0;
+      const pKa = titration.pKa;
+      if (!pKa) throw new Error(`${titration.name}: no pKa`);
       return calculateStrongWeakPH(
         titration.analyte.volume,
         titration.analyte.molarity,

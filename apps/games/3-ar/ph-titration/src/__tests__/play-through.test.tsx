@@ -10,6 +10,16 @@ import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
+import {
+  answer,
+  chooseIndicator,
+  concentrationFrom,
+  next,
+  playPuzzle,
+  pour,
+  recordEndpoint,
+  stockMolarity,
+} from './level2-driver';
 
 /**
  * Plays every question of every level through the real components and checks
@@ -91,7 +101,7 @@ describe('Level 1 played through', () => {
       expectNoDecimalPoint(`question ${n}`);
       expectCounterWithin(LEVEL1_CHALLENGES.length, `question ${n}`);
 
-      fireEvent.click(container.querySelector('div.space-y-3 > button')!);
+      fireEvent.click(container.querySelector('[data-options] > button')!);
       fireEvent.click(screen.getByRole('button', { name: 'Staðfesta' }));
       settle();
       expectNoDecimalPoint(`question ${n} feedback`);
@@ -105,67 +115,66 @@ describe('Level 1 played through', () => {
 
 describe('Level 2 played through', () => {
   it('shows no decimal point and never counts past the last puzzle', () => {
-    render(<Level2 onComplete={() => {}} onBack={() => {}} />);
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
 
     for (let n = 1; n <= LEVEL2_PUZZLES.length; n++) {
-      const add5 = screen.getByRole('button', { name: /^Bæta við 5 mL/ });
-      fireEvent.click(add5);
-      fireEvent.click(add5);
-      fireEvent.click(screen.getByRole('button', { name: /Bæta við 0,05 mL/ }));
+      const puzzle = LEVEL2_PUZZLES[n - 1];
+      expectNoDecimalPoint(`puzzle ${n} choosing`);
+      expectCounterWithin(LEVEL2_PUZZLES.length, `puzzle ${n}`);
+      chooseIndicator(puzzle.acceptableIndicators[0]);
+      const t = getTitrationById(puzzle.titrationId) as MonoproticTitration;
+      pour(Math.round(t.equivalenceVolume * 20) / 20);
       settle();
       expectNoDecimalPoint(`puzzle ${n} titrating`);
-      expectCounterWithin(LEVEL2_PUZZLES.length, `puzzle ${n}`);
-
-      fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
-      settle();
-      expectNoDecimalPoint(`puzzle ${n} marking`);
-
-      fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
-      settle();
-      fireEvent.click(screen.getByRole('button', { name: /Fenólftalín/ }));
-      fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
-      settle();
+      recordEndpoint();
+      expectNoDecimalPoint(`puzzle ${n} calculating`);
+      answer(concentrationFrom(t, Math.round(t.equivalenceVolume * 20) / 20));
       expectNoDecimalPoint(`puzzle ${n} result`);
+      expect(screen.getByText('✓ Rétt!')).toBeTruthy();
 
-      fireEvent.click(screen.getByRole('button', { name: /Næsta →|Ljúka →/ }));
-      settle();
+      next();
       expectCounterWithin(LEVEL2_PUZZLES.length, `after puzzle ${n}`);
     }
   });
 });
 
-describe('Level 2 result agrees with the marking readout', () => {
-  // The marking step prints the pH at the marked volume from the same model as
-  // the flask; the result then named the equivalence point from a stored
-  // number. For HF they disagreed on the same screen: marked at 45,0 mL the
-  // readout said pH 8,0 (and the flask 7,97) while the result said pH 8,1.
-  it('names the pH the student saw when marking the equivalence volume', () => {
-    render(<Level2 onComplete={() => {}} onBack={() => {}} />);
+describe("Level 2 grades the concentration on the student's own endpoint", () => {
+  // A student who stops 0,15 mL past equivalence (inside the tolerance) and
+  // works the concentration out correctly from that reading is right: the
+  // calculation is graded on what they read, not on the hidden answer.
+  it('accepts the concentration from an endpoint inside the tolerance', () => {
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
+    playPuzzle(1, 'phenolphthalein', 0.15);
+    expect(screen.getByText('✓ Rétt!')).toBeTruthy();
+  });
 
-    for (const puzzle of LEVEL2_PUZZLES) {
-      const t = getTitrationById(puzzle.titrationId) as MonoproticTitration;
-      const add5 = screen.getByRole('button', { name: /^Bæta við 5 mL/ });
-      for (let i = 0; i <= Math.ceil(t.equivalenceVolume / 5); i++) fireEvent.click(add5);
-      fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
-      settle();
-      fireEvent.change(screen.getByRole('slider', { name: 'Jafngildisrúmmál' }), {
-        target: { value: String(t.equivalenceVolume) },
-      });
-      const marked = document.body.textContent!.match(/\(pH ≈ ([\d,]+)\)/)![1];
+  it("rejects the true concentration when the student's endpoint gives another", () => {
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
+    const t = getTitrationById(1) as MonoproticTitration;
+    chooseIndicator('phenolphthalein');
+    pour(t.equivalenceVolume + 0.15);
+    recordEndpoint();
+    // 25,15 mL gives 0,1006 M; 0,0980 M is more than 2 % from it.
+    answer('0,0980');
+    expect(screen.getByText('✗ Ekki rétt')).toBeTruthy();
+  });
 
-      fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
-      settle();
-      fireEvent.click(screen.getByRole('button', { name: /Fenólftalín/ }));
-      fireEvent.click(screen.getByRole('button', { name: /Staðfesta val/ }));
-      settle();
-      const stated = document.body.textContent!.match(
-        /Jafngildispunktur:\s*[\d,]+ mL \(pH ([\d,]+)\)/
-      )![1];
-      expect(stated, `puzzle ${puzzle.id} (${t.name})`).toBe(marked);
-
-      fireEvent.click(screen.getByRole('button', { name: /Næsta →|Ljúka →/ }));
-      settle();
-    }
+  it('draws the sample once and does not print its concentration', () => {
+    const drawn: number[] = [];
+    render(
+      <Level2
+        onComplete={() => {}}
+        onBack={() => {}}
+        drawMolarity={(b) => {
+          const m = b.analyte.molarity * 1.1;
+          drawn.push(m);
+          return m;
+        }}
+      />
+    );
+    expect(drawn.length).toBe(1);
+    expect(document.body.textContent).toContain('styrkur óþekktur');
+    expect(document.body.textContent).not.toContain('0,110');
   });
 });
 
@@ -188,5 +197,13 @@ describe('Level 3 played through', () => {
       settle();
       expectCounterWithin(LEVEL3_CHALLENGES.length, `after problem ${n}`);
     }
+  });
+});
+
+describe('Level 2 states its tolerance before the student titrates', () => {
+  it('shows the endpoint tolerance with the pour controls', () => {
+    render(<Level2 onComplete={() => {}} onBack={() => {}} drawMolarity={stockMolarity} />);
+    chooseIndicator('phenolphthalein');
+    expect(document.body.textContent).toContain('Leyfilegt svigrúm: ±0,2 mL');
   });
 });

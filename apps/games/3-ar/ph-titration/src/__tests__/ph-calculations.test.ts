@@ -159,33 +159,13 @@ describe('getPHColor', () => {
   });
 });
 
-// Declared initialPH disagrees with the corrected formula by 0.06-0.14 for this
-// one. Left asserted-as-failing on purpose, pending a teacher decision on the
-// declared value -- the gap plausibly comes from an activity correction or a
-// different Ka rather than from a fresh defect, but that is a guess. Ids 11 and
-// 12 (H2SO3 and H2C2O4) were listed here too until decision 115 (a) deleted the
-// polyprotic titrations on 2026-10-23.
-const KNOWN_DISAGREEING = [6]; // HF + NaOH
-
 describe('every titration starts where its data says it does', () => {
-  it.each(
-    titrations
-      .filter((t) => !KNOWN_DISAGREEING.includes(t.id))
-      .map((t) => [`${t.id} ${t.name}`, t] as const)
-  )('%s starts at its declared initialPH', (_label, t) => {
-    expect(calculatePH(t, 0)).toBeCloseTo(t.initialPH, 1);
-  });
-
-  // These three do NOT agree. `it.fails` pins that: if a later edit reconciles the
-  // data with the formula, this case goes red and the comment above gets revisited,
-  // rather than the disagreement quietly disappearing.
-  it.fails.each(
-    titrations
-      .filter((t) => KNOWN_DISAGREEING.includes(t.id))
-      .map((t) => [`${t.id} ${t.name}`, t] as const)
-  )('%s does not yet start at its declared initialPH', (_label, t) => {
-    expect(calculatePH(t, 0)).toBeCloseTo(t.initialPH, 1);
-  });
+  it.each(titrations.map((t) => [`${t.id} ${t.name}`, t] as const))(
+    '%s starts at its declared initialPH',
+    (_label, t) => {
+      expect(calculatePH(t, 0)).toBeCloseTo(t.initialPH, 1);
+    }
+  );
 });
 
 // Titrant only ever pushes the pH one way: base up, acid down. Until 2026-09-23
@@ -216,5 +196,20 @@ describe('the pH moves only with the titrant', () => {
     for (const t of monoprotic.filter((m) => m.type !== 'strong-strong')) {
       expect(calculatePH(t, t.equivalenceVolume / 2), `${t.id}`).toBeCloseTo(t.pKa!, 1);
     }
+  });
+});
+
+describe('calculatePH refuses a titration with no constant', () => {
+  // It used to invent one (Kₐ 1 × 10⁻⁵ for a weak acid, pKₐ 9,0 for a weak
+  // base), so a titration missing its constant drew a plausible, wrong curve.
+  const weak = titrations.find((t) => t.type === 'weak-strong') as MonoproticTitration;
+  const base = titrations.find((t) => t.type === 'strong-weak') as MonoproticTitration;
+
+  it('throws for a weak acid with no Ka', () => {
+    expect(() => calculatePH({ ...weak, Ka: null } as never, 5)).toThrow(/no Ka/);
+  });
+
+  it('throws for a weak base with no pKa', () => {
+    expect(() => calculatePH({ ...base, pKa: null } as never, 5)).toThrow(/no pKa/);
   });
 });

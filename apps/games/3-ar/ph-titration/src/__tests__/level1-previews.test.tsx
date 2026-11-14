@@ -3,7 +3,11 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Level1 } from '../components/Level1';
+import { indicators } from '../data/indicators';
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
+import { acceptableIndicatorsFor } from '../data/level2-puzzles';
+import { titrations } from '../data/titrations';
+import type { MonoproticTitration } from '../types';
 
 /**
  * Stig 1 draws a question's curve only where the curve does not answer it.
@@ -68,5 +72,45 @@ describe('Stig 1 curve previews', () => {
     expect(option.getAttribute('aria-pressed')).toBe('false');
     fireEvent.click(option);
     expect(option.getAttribute('aria-pressed')).toBe('true');
+  });
+});
+
+describe('Stig 1 question 1 shows three unlabelled curves', () => {
+  it('draws each option as a curve and names it only to a screen reader until the result', () => {
+    const { container } = render(<Level1 onComplete={() => {}} onBack={() => {}} />);
+    fireEvent.click(screen.getByText(/Byrja æfingu/));
+    const options = [...container.querySelectorAll('[data-options] > button')];
+    expect(options).toHaveLength(3);
+    for (const option of options) {
+      expect(option.querySelector('svg[aria-hidden="true"]')).toBeTruthy();
+      expect(option.querySelector('.sr-only')?.textContent).toMatch(/pH byrjar/);
+    }
+  });
+});
+
+describe('Stig 1 question 7, a weak base titrated with a strong acid', () => {
+  it("names the litvísir Stig 2 accepts for NH₃ + HCl, and the curve's falling shape", () => {
+    const q = LEVEL1_CHALLENGES.find((c) => c.id === 7)!;
+    const right = q.options!.find((o) => o.isCorrect)!;
+    expect(right.labelIs).toMatch(/lækkar/);
+    expect(right.labelIs).toMatch(/undir pH 7/);
+    const nh3 = titrations.find((t) => t.type === 'strong-weak')!;
+    const accepted = acceptableIndicatorsFor(nh3 as MonoproticTitration);
+    const named = indicators.filter((i) =>
+      right.labelIs.toLowerCase().includes(i.name.toLowerCase())
+    );
+    expect(named.map((i) => i.id)).toEqual(['methyl-red']);
+    expect(accepted).toContain('methyl-red');
+    for (const wrong of q.options!.filter((o) => !o.isCorrect)) {
+      const n = indicators.filter((i) =>
+        wrong.labelIs.toLowerCase().includes(i.name.toLowerCase())
+      );
+      // A wrong option is wrong by its curve or its litvísir, never right on both.
+      expect(
+        wrong.labelIs.includes('undir pH 7') &&
+          wrong.labelIs.includes('lækkar') &&
+          n.every((i) => accepted.includes(i.id))
+      ).toBe(false);
+    }
   });
 });

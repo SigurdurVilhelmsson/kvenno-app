@@ -174,6 +174,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     polyprotic: 'Fjölvirk sýra',
     'henderson-hasselbalch': 'H-H jafna',
     combined: 'Samansett',
+    'titration-curve': 'Títrunarferill',
   };
 
   const getChallengeTypeLabel = (type: string): string => challengeTypeLabels[type] || type;
@@ -190,6 +191,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         return 'bg-purple-500';
       case 'combined':
         return 'bg-red-500';
+      case 'titration-curve':
+        return 'bg-teal-600';
       default:
         return 'bg-warm-500';
     }
@@ -273,6 +276,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <div>
                   <span className="font-semibold">Styrkur títrants:</span>{' '}
                   {formatDecimal(challenge.givenData.titrantMolarity, 3)} M
+                </div>
+              )}
+              {challenge.givenData.titrantAdded && (
+                <div>
+                  <span className="font-semibold">Títrant bætt við:</span>{' '}
+                  {formatDecimal(challenge.givenData.titrantAdded, 1)} mL
                 </div>
               )}
               {challenge.givenData.equivalenceVolume && (

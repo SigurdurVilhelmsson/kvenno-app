@@ -2,7 +2,13 @@
 
 export interface Level3Challenge {
   id: number;
-  type: 'find-concentration' | 'find-volume' | 'polyprotic' | 'henderson-hasselbalch' | 'combined';
+  type:
+    | 'find-concentration'
+    | 'find-volume'
+    | 'polyprotic'
+    | 'henderson-hasselbalch'
+    | 'combined'
+    | 'titration-curve';
   titleIs: string;
   title: string;
   descriptionIs: string;
@@ -18,6 +24,8 @@ export interface Level3Challenge {
     pKa?: number;
     /** Kₐ, printed in scientific notation, for a problem that asks for pKₐ from it. */
     Ka?: number;
+    /** Titrant poured so far, mL, for a problem at one point of a titration. */
+    titrantAdded?: number;
     acidConcentration?: number;
     baseConcentration?: number;
     formula?: string;
@@ -38,6 +46,13 @@ export interface Level3Challenge {
 
   // For polyprotic
   equivalencePointIndex?: number;
+
+  /**
+   * A point on a titration the game draws: the answer is that titration's
+   * `calculatePH` at this volume, rounded, and `level3-grading.test.ts` holds
+   * it there, so a problem cannot disagree with the curve Stig 2 shows.
+   */
+  fromCurve?: { titrationId: number; volume: number };
 
   hintIs: string;
   hint: string;
@@ -233,46 +248,9 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     ],
   },
 
-  // === HENDERSON-HASSELBALCH PROBLEMS ===
+  // === HENDERSON-HASSELBALCH PROBLEM ===
   {
     id: 6,
-    type: 'henderson-hasselbalch',
-    titleIs: 'Henderson-Hasselbalch: Finndu pH',
-    title: 'Henderson-Hasselbalch: Find pH',
-    descriptionIs:
-      'Stuðpúðalausn inniheldur 0,15 M ediksýru (CH₃COOH) og 0,20 M natríumasetat (CH₃COONa). pKₐ = 4,74. Hver er pH stuðpúðans?',
-    description:
-      'A buffer contains 0.15 M acetic acid (CH₃COOH) and 0.20 M sodium acetate (CH₃COONa). pKₐ = 4.74. What is the buffer pH?',
-    givenData: {
-      acidConcentration: 0.15,
-      baseConcentration: 0.2,
-      pKa: 4.74,
-      formula: 'pH = pKₐ + log([A⁻]/[HA])',
-    },
-    correctAnswer: 4.86,
-    answerDecimals: 2,
-    unit: '',
-    tolerance: 0.02,
-    absoluteTolerance: 0.02,
-    hintIs: 'Henderson-Hasselbalch jafnan: pH = pKₐ + log([samoka basi]/[veik sýra])',
-    hint: 'Henderson-Hasselbalch equation: pH = pKₐ + log([conjugate base]/[weak acid])',
-    explanationIs: 'Settu gildin inn í Henderson-Hasselbalch jöfnuna og reiknaðu.',
-    explanation: 'Substitute the values into the Henderson-Hasselbalch equation and calculate.',
-    solutionStepsIs: [
-      'pH = pKₐ + log([A⁻]/[HA])',
-      'pH = 4,74 + log(0,20/0,15)',
-      'pH = 4,74 + log(1,33)',
-      'pH = 4,74 + 0,12 = 4,86',
-    ],
-    solutionSteps: [
-      'pH = pKₐ + log([A⁻]/[HA])',
-      'pH = 4.74 + log(0.20/0.15)',
-      'pH = 4.74 + log(1.33)',
-      'pH = 4.74 + 0.12 = 4.86',
-    ],
-  },
-  {
-    id: 7,
     type: 'henderson-hasselbalch',
     titleIs: 'Henderson-Hasselbalch: Finndu hlutfall',
     title: 'Henderson-Hasselbalch: Find ratio',
@@ -310,7 +288,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
 
   // === COMBINED PROBLEM ===
   {
-    id: 8,
+    id: 7,
     type: 'combined',
     titleIs: 'Samansett verkefni: pH við hálfjafngildispunkt',
     title: 'Combined problem: pH at half-equivalence',
@@ -348,6 +326,180 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       '15.0 mL is half of that: half-equivalence, 1.50 mmol HF and 1.50 mmol F⁻',
       'pH = pKₐ + log([F⁻]/[HF]) = pKₐ + log(1) = pKₐ',
       'pKₐ = −log(6.8 × 10⁻⁴) = 3.17, so pH = 3.17',
+    ],
+  },
+
+  // === ONE TITRATION, FOUR POINTS ON ITS CURVE (2026-11-14) ===
+  {
+    id: 8,
+    type: 'titration-curve',
+    titleIs: 'Títrunarferill 1/4: upphafs-pH',
+    title: 'Titration curve 1/4: initial pH',
+    descriptionIs:
+      'Títrun á 25,0 mL af 0,100 M ediksýru (CH₃COOH, Kₐ = 1,8 × 10⁻⁵) með 0,100 M NaOH. Hvert er pH áður en nokkru NaOH er bætt við?',
+    description:
+      'Titration of 25.0 mL of 0.100 M acetic acid (CH₃COOH, Kₐ = 1.8 × 10⁻⁵) with 0.100 M NaOH. What is the pH before any NaOH is added?',
+    givenData: {
+      analyteVolume: 25.0,
+      analyteMolarity: 0.1,
+      titrantMolarity: 0.1,
+      Ka: 1.8e-5,
+      formula: 'CH₃COOH + NaOH → CH₃COONa + H₂O',
+    },
+    fromCurve: { titrationId: 5, volume: 0 },
+    correctAnswer: 2.87,
+    answerDecimals: 2,
+    unit: '',
+    tolerance: 0.02,
+    absoluteTolerance: 0.02,
+    hintIs:
+      'Aðeins veika sýran er í flöskunni. Notaðu Kₐ = [H⁺]²/C og athugaðu að [H⁺] sé lítið miðað við C.',
+    hint: 'Only the weak acid is in the flask. Use Kₐ = [H⁺]²/C and check that [H⁺] is small next to C.',
+    explanationIs:
+      'Í upphafi er aðeins veik sýra í flöskunni, svo [H⁺] ≈ √(Kₐ·C). Hún klofnar um 1,3 %, langt undir 5 %, svo nálgunin stenst.',
+    explanation:
+      'At the start only the weak acid is in the flask, so [H⁺] ≈ √(Kₐ·C). It dissociates by 1.3 %, well under 5 %, so the approximation holds.',
+    solutionStepsIs: [
+      '[H⁺] ≈ √(Kₐ·C) = √(1,8 × 10⁻⁵ × 0,100) = 1,34 × 10⁻³ M',
+      '1,34 × 10⁻³ / 0,100 = 1,3 %, undir 5 %: nálgunin stenst',
+      'pH = −log(1,34 × 10⁻³) = 2,87',
+    ],
+    solutionSteps: [
+      '[H⁺] ≈ √(Kₐ·C) = √(1.8 × 10⁻⁵ × 0.100) = 1.34 × 10⁻³ M',
+      '1.34 × 10⁻³ / 0.100 = 1.3 %, under 5 %: the approximation holds',
+      'pH = −log(1.34 × 10⁻³) = 2.87',
+    ],
+  },
+  {
+    id: 9,
+    type: 'titration-curve',
+    titleIs: 'Títrunarferill 2/4: pH á stuðpúðasvæðinu',
+    title: 'Titration curve 2/4: pH in the buffer region',
+    descriptionIs:
+      'Títrun á 25,0 mL af 0,100 M ediksýru (CH₃COOH, Kₐ = 1,8 × 10⁻⁵) með 0,100 M NaOH. Hvert er pH eftir að 10,0 mL af NaOH hefur verið bætt við?',
+    description:
+      'Titration of 25.0 mL of 0.100 M acetic acid (CH₃COOH, Kₐ = 1.8 × 10⁻⁵) with 0.100 M NaOH. What is the pH after 10.0 mL of NaOH has been added?',
+    givenData: {
+      analyteVolume: 25.0,
+      analyteMolarity: 0.1,
+      titrantMolarity: 0.1,
+      Ka: 1.8e-5,
+      titrantAdded: 10.0,
+      formula: 'CH₃COOH + NaOH → CH₃COONa + H₂O',
+    },
+    fromCurve: { titrationId: 5, volume: 10 },
+    correctAnswer: 4.57,
+    answerDecimals: 2,
+    unit: '',
+    tolerance: 0.02,
+    absoluteTolerance: 0.02,
+    hintIs:
+      'Reiknaðu mólfjölda: hvað er eftir af sýrunni og hve mikið asetat hefur myndast? Þá er lausnin stuðpúði.',
+    hint: 'Work in moles: how much acid is left and how much acetate has formed? Then the solution is a buffer.',
+    explanationIs:
+      'OH⁻ hvarfast að fullu við ediksýruna, svo eftir eru 1,50 mmól CH₃COOH og 1,00 mmól CH₃COO⁻. Rúmmálið styttist út úr hlutfallinu, svo Henderson-Hasselbalch gefur pH beint.',
+    explanation:
+      'OH⁻ reacts completely with the acetic acid, leaving 1.50 mmol CH₃COOH and 1.00 mmol CH₃COO⁻. The volume cancels from the ratio, so Henderson-Hasselbalch gives the pH directly.',
+    solutionStepsIs: [
+      'n(CH₃COOH) í upphafi = 0,100 M × 25,0 mL = 2,50 mmól',
+      'n(OH⁻) = 0,100 M × 10,0 mL = 1,00 mmól',
+      'Eftir hvarfið: 1,50 mmól CH₃COOH og 1,00 mmól CH₃COO⁻',
+      'pKₐ = −log(1,8 × 10⁻⁵) = 4,745',
+      'pH = 4,745 + log(1,00 / 1,50) = 4,745 − 0,176 = 4,57',
+    ],
+    solutionSteps: [
+      'n(CH₃COOH) at the start = 0.100 M × 25.0 mL = 2.50 mmol',
+      'n(OH⁻) = 0.100 M × 10.0 mL = 1.00 mmol',
+      'After the reaction: 1.50 mmol CH₃COOH and 1.00 mmol CH₃COO⁻',
+      'pKₐ = −log(1.8 × 10⁻⁵) = 4.745',
+      'pH = 4.745 + log(1.00 / 1.50) = 4.745 − 0.176 = 4.57',
+    ],
+  },
+  {
+    id: 10,
+    type: 'titration-curve',
+    titleIs: 'Títrunarferill 3/4: pH við jafngildispunkt',
+    title: 'Titration curve 3/4: pH at equivalence',
+    descriptionIs:
+      'Títrun á 25,0 mL af 0,100 M ediksýru (CH₃COOH, Kₐ = 1,8 × 10⁻⁵) með 0,100 M NaOH. Hvert er pH við jafngildispunktinn?',
+    description:
+      'Titration of 25.0 mL of 0.100 M acetic acid (CH₃COOH, Kₐ = 1.8 × 10⁻⁵) with 0.100 M NaOH. What is the pH at the equivalence point?',
+    givenData: {
+      analyteVolume: 25.0,
+      analyteMolarity: 0.1,
+      titrantMolarity: 0.1,
+      Ka: 1.8e-5,
+      formula: 'CH₃COOH + NaOH → CH₃COONa + H₂O',
+    },
+    fromCurve: { titrationId: 5, volume: 25 },
+    correctAnswer: 8.72,
+    answerDecimals: 2,
+    unit: '',
+    tolerance: 0.02,
+    absoluteTolerance: 0.02,
+    hintIs:
+      'Finndu fyrst jafngildisrúmmálið. Þar er öll sýran orðin að asetatjónum, sem eru veikur basi: Kb = Kw/Kₐ.',
+    hint: 'First find the equivalence volume. There all the acid has become acetate ions, a weak base: Kb = Kw/Kₐ.',
+    explanationIs:
+      'Við jafngildispunkt er öll ediksýran orðin að CH₃COO⁻, sem tekur við róteind frá vatni og myndar OH⁻. Því er pH yfir 7.',
+    explanation:
+      'At equivalence all the acetic acid has become CH₃COO⁻, which takes a proton from water and forms OH⁻. So the pH is above 7.',
+    solutionStepsIs: [
+      'Jafngildisrúmmál = 2,50 mmól / 0,100 M = 25,0 mL',
+      '[CH₃COO⁻] = 2,50 mmól / 50,0 mL = 0,0500 M',
+      'Kb = Kw / Kₐ = 1,0 × 10⁻¹⁴ / 1,8 × 10⁻⁵ = 5,6 × 10⁻¹⁰',
+      '[OH⁻] ≈ √(Kb·C) = √(5,6 × 10⁻¹⁰ × 0,0500) = 5,3 × 10⁻⁶ M',
+      'pOH = 5,28, svo pH = 14,00 − 5,28 = 8,72',
+    ],
+    solutionSteps: [
+      'Equivalence volume = 2.50 mmol / 0.100 M = 25.0 mL',
+      '[CH₃COO⁻] = 2.50 mmol / 50.0 mL = 0.0500 M',
+      'Kb = Kw / Kₐ = 1.0 × 10⁻¹⁴ / 1.8 × 10⁻⁵ = 5.6 × 10⁻¹⁰',
+      '[OH⁻] ≈ √(Kb·C) = √(5.6 × 10⁻¹⁰ × 0.0500) = 5.3 × 10⁻⁶ M',
+      'pOH = 5.28, so pH = 14.00 − 5.28 = 8.72',
+    ],
+  },
+  {
+    id: 11,
+    type: 'titration-curve',
+    titleIs: 'Títrunarferill 4/4: pH eftir jafngildispunkt',
+    title: 'Titration curve 4/4: pH past equivalence',
+    descriptionIs:
+      'Títrun á 25,0 mL af 0,100 M ediksýru (CH₃COOH, Kₐ = 1,8 × 10⁻⁵) með 0,100 M NaOH. Hvert er pH eftir að 30,0 mL af NaOH hefur verið bætt við?',
+    description:
+      'Titration of 25.0 mL of 0.100 M acetic acid (CH₃COOH, Kₐ = 1.8 × 10⁻⁵) with 0.100 M NaOH. What is the pH after 30.0 mL of NaOH has been added?',
+    givenData: {
+      analyteVolume: 25.0,
+      analyteMolarity: 0.1,
+      titrantMolarity: 0.1,
+      Ka: 1.8e-5,
+      titrantAdded: 30.0,
+      formula: 'CH₃COOH + NaOH → CH₃COONa + H₂O',
+    },
+    fromCurve: { titrationId: 5, volume: 30 },
+    correctAnswer: 11.96,
+    answerDecimals: 2,
+    unit: '',
+    tolerance: 0.02,
+    absoluteTolerance: 0.02,
+    hintIs:
+      'Hve mikið OH⁻ er umfram það sem sýran notaði? Asetatjónin bætir svo litlu við að hún skiptir ekki máli.',
+    hint: 'How much OH⁻ is left over beyond what the acid used? The acetate ion adds too little to matter.',
+    explanationIs:
+      'Eftir jafngildispunkt ræður umframmagn OH⁻ pH. Asetatjónin myndar um 10⁻⁵ M OH⁻, sem hverfur við hliðina á 9 × 10⁻³ M.',
+    explanation:
+      'Past equivalence the excess OH⁻ sets the pH. The acetate ion makes about 10⁻⁵ M OH⁻, which vanishes beside 9 × 10⁻³ M.',
+    solutionStepsIs: [
+      'n(OH⁻) = 0,100 M × 30,0 mL = 3,00 mmól',
+      'Umfram: 3,00 − 2,50 = 0,50 mmól OH⁻ í 55,0 mL',
+      '[OH⁻] = 0,50 mmól / 55,0 mL = 9,09 × 10⁻³ M',
+      'pOH = 2,04, svo pH = 14,00 − 2,04 = 11,96',
+    ],
+    solutionSteps: [
+      'n(OH⁻) = 0.100 M × 30.0 mL = 3.00 mmol',
+      'Excess: 3.00 − 2.50 = 0.50 mmol OH⁻ in 55.0 mL',
+      '[OH⁻] = 0.50 mmol / 55.0 mL = 9.09 × 10⁻³ M',
+      'pOH = 2.04, so pH = 14.00 − 2.04 = 11.96',
     ],
   },
 ];

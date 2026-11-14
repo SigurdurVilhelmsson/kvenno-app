@@ -14,6 +14,11 @@ export interface Level1Challenge {
     labelIs: string;
     label: string;
     isCorrect: boolean;
+    /**
+     * A curve to draw as the option, unlabelled: the student reads the shape.
+     * `labelIs` then describes it to a screen reader, and shows after the result.
+     */
+    curve?: 'strong-strong' | 'weak-strong' | 'strong-weak';
   }[];
 
   // For visual elements
@@ -31,26 +36,29 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     id: 1,
     type: 'match-curve',
     questionIs:
-      'Hvaða títrunarferill sýnir títrun á STERKRI SÝRU með sterkum basa (t.d. HCl + NaOH)?',
-    question: 'Which titration curve shows STRONG ACID + strong base (e.g., HCl + NaOH)?',
+      'Hver þessara ferla sýnir títrun á STERKRI SÝRU með sterkum basa (t.d. HCl + NaOH)?',
+    question: 'Which of these curves shows STRONG ACID + strong base (e.g., HCl + NaOH)?',
     options: [
       {
         id: 'A',
         labelIs: 'pH byrjar lágt (~1), stígur hægt, skarpt stökk við pH 7, helst hátt',
         label: 'pH starts low (~1), rises slowly, sharp jump at pH 7, stays high',
         isCorrect: true,
+        curve: 'strong-strong',
       },
       {
         id: 'B',
         labelIs: 'pH byrjar lágt (~3), stuðpúðasvæði, stökk yfir pH 7, endar hátt',
         label: 'pH starts low (~3), buffer region, jump above pH 7, ends high',
         isCorrect: false,
+        curve: 'weak-strong',
       },
       {
         id: 'C',
-        labelIs: 'pH byrjar hátt (~13), lækkar hægt, stökk niður, endar lágt',
-        label: 'pH starts high (~13), decreases slowly, sharp drop, ends low',
+        labelIs: 'pH byrjar hátt (~11), lækkar hægt, stökk niður, endar lágt',
+        label: 'pH starts high (~11), decreases slowly, sharp drop, ends low',
         isCorrect: false,
+        curve: 'strong-weak',
       },
     ],
     curveType: 'strong-strong',
@@ -285,5 +293,52 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       'Góður litvísir skiptir um lit á bratta kafla ferilsins, svo endapunkturinn fellur innan dropa frá jafngildispunktinum. Hjá sterkri sýru og sterkum basa nær sá kafli frá pH 4 upp í 10, svo nokkrir litvísar duga: HCl + NaOH (pH 7) → brómþýmólblátt, metýlrautt eða fenólftalín. Hjá veikri sýru er hann styttri og ofar: CH₃COOH + NaOH (pH 8,7) → fenólftalín.',
     explanation:
       'A good indicator changes colour on the steep part of the curve, so the endpoint falls within a drop of equivalence. For a strong acid with a strong base that part runs from pH 4 to 10, so several indicators work: HCl + NaOH (pH 7) → bromothymol blue, methyl red or phenolphthalein. For a weak acid it is shorter and higher: CH₃COOH + NaOH (pH 8.7) → phenolphthalein.',
+  },
+  {
+    id: 7,
+    type: 'match-curve',
+    questionIs:
+      'Ammóníak (NH₃, veikur basi) er títrað með saltsýru (HCl). Hvaða lýsing passar við ferilinn og litvísinn?',
+    question:
+      'Ammonia (NH₃, a weak base) is titrated with hydrochloric acid (HCl). Which description fits the curve and the indicator?',
+    options: [
+      {
+        id: 'A',
+        labelIs: 'pH byrjar um 11 og lækkar; jafngildispunktur undir pH 7 (~5,3); metýlrautt',
+        label: 'pH starts near 11 and falls; equivalence below pH 7 (~5.3); methyl red',
+        isCorrect: true,
+      },
+      {
+        id: 'B',
+        labelIs: 'pH byrjar um 11 og lækkar; jafngildispunktur við pH 7; brómþýmólblátt',
+        label: 'pH starts near 11 and falls; equivalence at pH 7; bromothymol blue',
+        isCorrect: false,
+      },
+      {
+        id: 'C',
+        labelIs: 'pH byrjar um 11 og lækkar; jafngildispunktur yfir pH 7 (~8,7); fenólftalín',
+        label: 'pH starts near 11 and falls; equivalence above pH 7 (~8.7); phenolphthalein',
+        isCorrect: false,
+      },
+      {
+        id: 'D',
+        labelIs: 'pH byrjar lágt og hækkar; jafngildispunktur undir pH 7 (~5,3); metýlrautt',
+        label: 'pH starts low and rises; equivalence below pH 7 (~5.3); methyl red',
+        isCorrect: false,
+      },
+    ],
+    curveType: 'strong-weak',
+    hints: {
+      topic: 'Þetta snýst um títrun veiks basa með sterkri sýru.',
+      strategy: 'Hvað er í flöskunni í upphafi, og hvað er eftir í henni við jafngildispunkt?',
+      method:
+        'Sýru er bætt í basa, svo pH lækkar. Við jafngildispunkt er NH₄⁺ eftir, sem er veik sýra. Veldu svo litvísi sem skiptir um lit á bratta kaflanum.',
+      solution:
+        'pH byrjar hátt og lækkar; NH₄⁺ gerir lausnina súra við jafngildispunkt (pH ~5,3), og metýlrautt (pH 4,4–6,2) skiptir um lit þar.',
+    },
+    explanationIs:
+      'Í upphafi er aðeins veikur basi í flöskunni, svo pH er um 11, og það lækkar þegar sýrunni er bætt við. Við jafngildispunkt er allt NH₃ orðið að NH₄⁺, sem er veik sýra, svo pH er undir 7 (~5,3). Metýlrautt (pH 4,4–6,2) skiptir um lit innan við 0,1 mL frá jafngildispunktinum; brómþýmólblátt og fenólftalín skipta of snemma.',
+    explanation:
+      'At the start only the weak base is in the flask, so the pH is near 11, and it falls as acid is added. At equivalence all the NH₃ has become NH₄⁺, a weak acid, so the pH is below 7 (~5.3). Methyl red (pH 4.4–6.2) changes colour within 0.1 mL of equivalence; bromothymol blue and phenolphthalein change too early.',
   },
 ];

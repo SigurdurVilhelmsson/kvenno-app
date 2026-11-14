@@ -4,7 +4,16 @@ import { parseStudentNumber } from '@shared/utils';
 
 import { indicators } from '../data/indicators';
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
-import { colourChangeWindow, LEVEL2_PUZZLES } from '../data/level2-puzzles';
+import {
+  acceptableIndicatorsFor,
+  colourChangeWindow,
+  concentrationRange,
+  formatMolarity,
+  LEVEL2_PUZZLES,
+  molarityFromEndpoint,
+  randomMolarity,
+  sampleOf,
+} from '../data/level2-puzzles';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
 import { calculatePH } from '../utils/ph-calculations';
@@ -40,15 +49,16 @@ describe('Level 2 puzzles agree with the titration they serve', () => {
     (id, puzzle) => {
       const t = titrationOf(id);
       const match = puzzle.taskIs.match(
-        new RegExp(`Títraðu ${NUMBER} mL af ${NUMBER} M .+? með ${NUMBER} M (\\S+?)[.!]`)
+        new RegExp(`Títraðu ${NUMBER} mL af .+? af óþekktum styrk með ${NUMBER} M (\\S+?)[.!]`)
       );
       expect(match, `puzzle ${id}: "${puzzle.taskIs}"`).not.toBeNull();
-      const [, volume, analyteM, titrantM, titrant] = match!;
+      const [, volume, titrantM, titrant] = match!;
 
       expect(parseStudentNumber(volume), 'analyte volume').toBe(t.analyte.volume);
-      expect(parseStudentNumber(analyteM), 'analyte molarity').toBe(t.analyte.molarity);
       expect(parseStudentNumber(titrantM), 'titrant molarity').toBe(t.titrant.molarity);
       expect(titrant, 'titrant').toBe(t.titrant.formula);
+      // The sample's concentration is what the student finds: never given.
+      expect(puzzle.taskIs.match(/ M /g)?.length, 'only the titrant has a molarity').toBe(1);
       expect(puzzle.taskIs, 'analyte formula').toContain(t.analyte.formula);
     }
   );
@@ -148,5 +158,51 @@ describe('Level 2 accepts an indicator that changes colour at equivalence', () =
         }
       }
     }
+  });
+});
+
+/**
+ * Each puzzle draws its sample's concentration at random (2026-11-14), so the
+ * student has something to find. The draw must not change the puzzle: the
+ * indicators accepted are the same anywhere in the range, and the burette
+ * always reaches equivalence.
+ */
+describe('Stig 2 samples of unknown concentration', () => {
+  it.each(LEVEL2_PUZZLES.map((p) => [p.id, p] as const))(
+    'puzzle %i: accepts the same indicators across the whole range',
+    (_id, puzzle) => {
+      const [lo, hi] = concentrationRange(puzzle.titrationId);
+      for (let k = 0; k <= 10; k++) {
+        const sample = sampleOf(puzzle.titrationId, lo + ((hi - lo) * k) / 10);
+        expect(acceptableIndicatorsFor(sample), `at ${sample.analyte.molarity} M`).toEqual(
+          puzzle.acceptableIndicators
+        );
+      }
+    }
+  );
+
+  it.each(LEVEL2_PUZZLES.map((p) => [p.id, p] as const))(
+    'puzzle %i: every draw is reachable on the 60 mL burette, to three figures',
+    (_id, puzzle) => {
+      const [lo, hi] = concentrationRange(puzzle.titrationId);
+      for (const r of [0, 0.25, 0.5, 0.75, 0.999]) {
+        const m = randomMolarity(puzzle.titrationId, () => r);
+        // Rounding to three figures may step just past an end of the range.
+        expect(m).toBeGreaterThanOrEqual(lo * 0.995);
+        expect(m).toBeLessThanOrEqual(hi * 1.005);
+        expect(Number(m.toPrecision(3))).toBe(m);
+        const sample = sampleOf(puzzle.titrationId, m);
+        expect(sample.equivalenceVolume).toBeGreaterThanOrEqual(9.95);
+        expect(sample.equivalenceVolume).toBeLessThanOrEqual(50.5);
+        expect(molarityFromEndpoint(sample, sample.equivalenceVolume)).toBeCloseTo(m, 10);
+      }
+    }
+  );
+
+  it('prints a molarity to three significant figures with a comma', () => {
+    expect(formatMolarity(0.096)).toBe('0,0960');
+    expect(formatMolarity(0.12)).toBe('0,120');
+    expect(formatMolarity(0.10062)).toBe('0,101');
+    expect(formatMolarity(0.0499)).toBe('0,0499');
   });
 });

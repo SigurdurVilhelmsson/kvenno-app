@@ -43,6 +43,7 @@ const EXPECTED: Record<number, string | null> = {
   4: null,
   5: 'stuðpúðasvæðið þar sem pH breytist hægt',
   6: 'Litvísirinn þarf að skipta um lit þar sem ferillinn er brattastur',
+  7: 'Veikur basi + sterk sýra gefur pH < 7 við jafngildi',
 };
 
 /** The text of the `Algeng villa:` note on screen, or null when there is none. */
