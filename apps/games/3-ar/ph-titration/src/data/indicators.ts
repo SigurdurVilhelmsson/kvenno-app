@@ -5,11 +5,9 @@ import { Indicator } from '../types';
  *
  * `description` is shown in Level 2's result, after the choice, never on the
  * card while choosing (mobile-pass decision 114 (c)). It must agree with the
- * grader, which accepts an indicator when its range contains the equivalence
- * pH: methyl orange said it suited a strong acid, which no puzzle here accepts
- * it for, and phenolphthalein suited every weak acid, which HF (pH 8,0) is not.
- * Both now state the bound their range sets; `indicator-choice.test.tsx` holds
- * every description to the grader.
+ * grader, which accepts an indicator whose colour change falls within 0,1 mL
+ * of equivalence on the curve (`acceptableIndicatorsFor`, 2026-11-14):
+ * `indicator-choice.test.tsx` holds every description to it.
  */
 export const indicators: Indicator[] = [
   {
@@ -27,7 +25,8 @@ export const indicators: Indicator[] = [
     pHRange: [4.4, 6.2],
     colorAcidic: '#dc2626', // Red
     colorBasic: '#fbbf24', // Yellow
-    description: 'Hentar vel við títrun veiks basa með sterkri sýru',
+    description:
+      'Hentar við títrun veiks basa með sterkri sýru, og líka sterkrar sýru með sterkum basa',
   },
   {
     id: 'bromothymol-blue',
@@ -44,7 +43,7 @@ export const indicators: Indicator[] = [
     colorAcidic: 'transparent',
     colorBasic: '#ec4899', // Pink
     description:
-      'Hentar við títrun veikrar sýru með sterkum basa ef pH við jafngildispunkt er 8,3 eða hærra',
+      'Hentar við títrun veikrar sýru með sterkum basa, og líka sterkrar sýru með sterkum basa',
   },
   {
     id: 'thymol-blue',
@@ -91,15 +90,4 @@ export function getIndicatorColor(indicatorId: string, pH: number): string {
 
   const from = indicator.colorAcidic === 'transparent' ? '#ffffff' : indicator.colorAcidic;
   return mix(from, indicator.colorBasic, (pH - lowPH) / (highPH - lowPH));
-}
-
-/**
- * Check if an indicator is appropriate for a titration
- */
-export function isIndicatorAppropriate(indicatorId: string, equivalencePH: number): boolean {
-  const indicator = indicators.find((ind) => ind.id === indicatorId);
-  if (!indicator) return false;
-
-  const [lowPH, highPH] = indicator.pHRange;
-  return equivalencePH >= lowPH && equivalencePH <= highPH;
 }

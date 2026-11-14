@@ -18,7 +18,7 @@ import { IndicatorSelector } from './IndicatorSelector';
 import { TitrationApparatus } from './TitrationApparatus';
 import { TitrationCurve } from './TitrationCurve';
 import { indicators } from '../data/indicators';
-import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
+import { colourChangeWindow, ENDPOINT_WINDOW_ML, LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration, IndicatorType } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
@@ -782,15 +782,23 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       {formatDecimal(calculatePH(titration, titration.equivalenceVolume), 1)}) — þar
                       sem mólfjöldi sýru = mólfjöldi basa.
                       <br />
-                      <strong>Endapunktur:</strong> þar sem litvísirinn breytir um lit (
+                      <strong>Endapunktur:</strong> þar sem litvísirinn breytir um lit.{' '}
                       {indicators.find((i) => i.id === selectedIndicator)?.name} breytist við pH{' '}
                       {indicators
                         .find((i) => i.id === selectedIndicator)
                         ?.pHRange.map((pH) => formatDecimal(pH, 1))
                         .join('–')}
-                      ).
+                      , sem þessi ferill nær milli{' '}
+                      {colourChangeWindow(puzzle.titrationId, selectedIndicator)
+                        .map((dv) => formatDecimal(titration.equivalenceVolume + dv, 2))
+                        .join(' og ')}{' '}
+                      mL.
                       <br />
-                      Góður litvísir hefur endapunkt nálægt jafngildispunktinum.
+                      Góður litvísir skiptir um lit innan við {formatDecimal(
+                        ENDPOINT_WINDOW_ML,
+                        1
+                      )}{' '}
+                      mL frá jafngildispunktinum.
                     </div>
                   </div>
                 )}

@@ -111,7 +111,7 @@ pH readout and the curve move together. Nothing is graded or stored.
   one per Stig 2 puzzle. `titration-data.test.ts` holds that the bank equals the puzzles' titrations,
   that none is polyprotic, that every Ka and Kb is an Appendix D row
   (`packages/shared/data/appendix-d.ts`), that each curve is a finite number everywhere on the
-  búretta, and that each `bestIndicator` obeys Level 1's rule.
+  búretta, and that each `bestIndicator` is one Stig 2 accepts.
 - **Stig 3's pKₐ table (`Level3.tsx:457`) is the student's route to the answer.** Six of its nine
   values once came from another book; all nine now round Appendix D's constants (HF 3,17; HCOOH
   3,74; CH₃COOH 4,74; H₂CO₃ 6,37 and 10,25; H₃PO₄ 2,12, 7,21 and 12,38; NH₄⁺ 9,26). **No test reads
@@ -124,12 +124,15 @@ pH readout and the curve move together. Nothing is graded or stored.
   different titration from the one drawn and graded (puzzle 2 asked for ediksýra and served a
   strong-acid curve). `level2-puzzles.test.ts` parses each sentence and compares it with the
   titration.
-- **The acceptable litvísar are derived, not listed (decision 113 (a), 2026-10-23).**
-  `acceptableIndicatorsFor` takes every litvísir whose range contains the equivalence pH **as
-  printed**, to one decimal, and throws on import if none does. The hand lists had broken that rule
-  and disagreed with each other. HF's curve reaches 7,97, printed 8,0, so it accepts þýmólblátt
-  only — Siggi confirmed that, 2026-10-23. `level2-puzzles.test.ts` pins the accepted set per
-  puzzle, and that each explanation names exactly the accepted ones.
+- **The acceptable litvísar are derived, not listed.** `acceptableIndicatorsFor` takes every
+  litvísir whose whole colour change falls within 0,1 mL of the equivalence volume on the curve
+  (`colourChangeWindow`), and throws on import if none does. That is the textbook's rule
+  (`ch14/m68809`), proposed 2026-11-14 and awaiting Siggi's ruling (`docs/REVIEW-QUEUE.md`); it
+  replaced decision 113 (a) of 2026-10-23, which took the litvísar whose range contains the
+  equivalence pH as printed, and so refused fenólftalín for HCl + NaOH and accepted only
+  þýmólblátt for HF. The result now says where on the curve the chosen litvísir changes colour.
+  `level2-puzzles.test.ts` pins the accepted set per puzzle, walks the curve itself to check it, and
+  checks that each explanation names exactly the accepted ones.
 - **The litvísir cards no longer say which titration each suits (decision 114 (c)).** That answered
   half the task in the list a student chooses from. The description now shows after the result,
   beside the verdict, and was reworded where it contradicted the grader. `indicator-choice.test.tsx`

@@ -248,8 +248,9 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     options: [
       {
         id: 'A',
-        labelIs: 'Litabreytingasvið litvísisins þarf að innihalda pH við jafngildispunkt',
-        label: "The indicator's color change range must contain the equivalence point pH",
+        labelIs:
+          'Litvísirinn þarf að skipta um lit á bratta kafla ferilsins, við jafngildispunktinn',
+        label: 'The indicator must change colour on the steep part of the curve, at equivalence',
         isCorrect: true,
       },
       {
@@ -275,12 +276,14 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       topic: 'Þetta snýst um val á litvísi fyrir títrun.',
       strategy:
         'Jafngildispunktur er ekki alltaf við pH 7. Veldu litvísi sem breytir lit við jafngildispunktinn.',
-      method: 'Litabreytingasvið litvísisins verður að innihalda pH við jafngildispunkt.',
-      solution: 'HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH 8,7) → fenólftalín.',
+      method:
+        'Við jafngildispunktinn er ferillinn nær lóðréttur: einn dropi breytir pH um nokkrar einingar. Litvísir sem skiptir um lit einhvers staðar á þeim kafla sýnir jafngildispunktinn upp á dropa.',
+      solution:
+        'HCl + NaOH (pH 7) → brómþýmólblátt, metýlrautt eða fenólftalín; CH₃COOH + NaOH (pH 8,7) → fenólftalín.',
     },
     explanationIs:
-      'Besti litvísirinn hefur litabreytingasvið sem inniheldur jafngildispunkt títrunarinnar. T.d.: HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH 8,7) → fenólftalín.',
+      'Góður litvísir skiptir um lit á bratta kafla ferilsins, svo endapunkturinn fellur innan dropa frá jafngildispunktinum. Hjá sterkri sýru og sterkum basa nær sá kafli frá pH 4 upp í 10, svo nokkrir litvísar duga: HCl + NaOH (pH 7) → brómþýmólblátt, metýlrautt eða fenólftalín. Hjá veikri sýru er hann styttri og ofar: CH₃COOH + NaOH (pH 8,7) → fenólftalín.',
     explanation:
-      "The best indicator has a color change range containing the titration's equivalence point. E.g.: HCl + NaOH (pH 7) → bromothymol blue; CH₃COOH + NaOH (pH 8.7) → phenolphthalein.",
+      'A good indicator changes colour on the steep part of the curve, so the endpoint falls within a drop of equivalence. For a strong acid with a strong base that part runs from pH 4 to 10, so several indicators work: HCl + NaOH (pH 7) → bromothymol blue, methyl red or phenolphthalein. For a weak acid it is shorter and higher: CH₃COOH + NaOH (pH 8.7) → phenolphthalein.',
   },
 ];

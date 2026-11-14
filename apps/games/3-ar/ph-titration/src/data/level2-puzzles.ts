@@ -1,6 +1,6 @@
 // Level 2: Interactive titration puzzles
 
-import { indicators, isIndicatorAppropriate } from './indicators';
+import { indicators } from './indicators';
 import { getTitrationById } from './titrations';
 import type { IndicatorType } from '../types';
 import { calculatePH } from '../utils/ph-calculations';
@@ -41,20 +41,62 @@ export function printedEquivalencePH(titrationId: number): number {
 }
 
 /**
- * Every indicator whose colour-change range contains the equivalence pH —
- * Level 1's rule (question 6), through `isIndicatorAppropriate`. Mobile-pass
- * decision 113 (a), 2026-10-23. Until then each puzzle listed its indicators
- * by hand, and the lists broke that rule and disagreed with each other: methyl
- * red was accepted for HCl + NaOH (pH 7), methyl orange refused for it and
- * accepted for HNO₃ + KOH (also pH 7) and for ammonia (pH 5,3), and
- * phenolphthalein accepted for HF (pH 8,0). A titration no indicator suits
- * throws here, on import, rather than ship a puzzle nobody can answer.
+ * How close to the equivalence volume an indicator's whole colour change must
+ * fall, in mL: about two drops. A drop from a burette is about 0,05 mL.
+ */
+export const ENDPOINT_WINDOW_ML = 0.1;
+
+/** The volume at which the titration's pH reaches `target`, by bisection (pH is monotonic in volume). */
+function volumeAtPH(titrationId: number, target: number): number {
+  const titration = getTitrationById(titrationId)!;
+  const rising = calculatePH(titration, 60) > calculatePH(titration, 0);
+  let lo = 0;
+  let hi = 60;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (calculatePH(titration, mid) < target === rising) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/**
+ * Where an indicator changes colour on this titration's curve, in mL from the
+ * equivalence volume: from where the pH enters its range to where it leaves.
+ */
+export function colourChangeWindow(titrationId: number, indicatorId: string): [number, number] {
+  const titration = getTitrationById(titrationId);
+  const indicator = indicators.find((i) => i.id === indicatorId);
+  if (!titration || !indicator) throw new Error(`no titration ${titrationId} or ${indicatorId}`);
+  const [a, b] = indicator.pHRange.map(
+    (pH) => volumeAtPH(titrationId, pH) - titration.equivalenceVolume
+  );
+  return [Math.min(a, b), Math.max(a, b)];
+}
+
+/**
+ * Every indicator whose whole colour change falls within ENDPOINT_WINDOW_ML of
+ * the equivalence volume on the curve: where the curve is that steep, the
+ * endpoint is the equivalence point to a drop or two. That is the textbook's
+ * rule (ch. 14, m68809): any of methyl red, bromothymol blue and
+ * phenolphthalein for a strong acid with a strong base, phenolphthalein for a
+ * weak acid. Proposed 2026-11-14 for Siggi's ruling (docs/REVIEW-QUEUE.md),
+ * replacing decision 113 (a), which
+ * accepted an indicator only if its range contained the equivalence pH and so
+ * marked phenolphthalein wrong for HCl + NaOH, which changes colour within
+ * 0,05 mL of it. Before 113 (a) each puzzle listed its indicators by hand,
+ * inconsistently. A titration no indicator suits throws here, on import,
+ * rather than ship a puzzle nobody can answer.
  */
 export function acceptableIndicatorsFor(titrationId: number): IndicatorType[] {
-  const pH = printedEquivalencePH(titrationId);
-  const suited = indicators.filter((i) => isIndicatorAppropriate(i.id, pH)).map((i) => i.id);
+  const suited = indicators
+    .filter((i) => {
+      const [from, to] = colourChangeWindow(titrationId, i.id);
+      return from >= -ENDPOINT_WINDOW_ML && to <= ENDPOINT_WINDOW_ML;
+    })
+    .map((i) => i.id);
   if (suited.length === 0) {
-    throw new Error(`titration ${titrationId}: no indicator's range contains pH ${pH}`);
+    throw new Error(`titration ${titrationId}: no indicator changes colour at equivalence`);
   }
   return suited;
 }
@@ -68,12 +110,12 @@ const PUZZLES: Level2PuzzleData[] = [
     task: 'Titrate 25.0 mL of 0.100 M HCl with 0.100 M NaOH. Find the equivalence point and select an appropriate indicator.',
     volumeTolerance: 0.5,
     hintIs:
-      'Fyrir sterka sýru + sterkan basa er jafngildispunktur við pH = 7. Veldu litvísi með litabreytingasvið sem inniheldur pH 7.',
-    hint: 'For strong acid + strong base, equivalence point is at pH = 7. Choose an indicator whose color change range contains pH 7.',
+      'Fyrir sterka sýru + sterkan basa er jafngildispunktur við pH = 7, og ferillinn er nær lóðréttur þar. Veldu litvísi sem skiptir um lit einhvers staðar á lóðrétta kaflanum.',
+    hint: 'For strong acid + strong base, equivalence point is at pH = 7, and the curve is nearly vertical there. Choose an indicator that changes colour somewhere on the vertical part.',
     explanationIs:
-      'HCl + NaOH gefur NaCl + H₂O. Saltið NaCl er hlutlaust, svo jafngildispunktur er við pH = 7. Brómþýmólblátt (pH 6,0-7,6) er góður litvísir.',
+      'HCl + NaOH gefur NaCl + H₂O. Saltið NaCl er hlutlaust, svo jafngildispunktur er við pH = 7. Ferillinn fer nær lóðrétt frá pH 4 upp í 10, svo metýlrautt, brómþýmólblátt, fenólftalín og þýmólblátt skipta öll um lit innan við 0,1 mL frá jafngildispunktinum.',
     explanation:
-      'HCl + NaOH produces NaCl + H₂O. The salt NaCl is neutral, so equivalence point is at pH = 7. Bromothymol blue (pH 6.0-7.6) is a good indicator.',
+      'HCl + NaOH produces NaCl + H₂O. The salt NaCl is neutral, so equivalence point is at pH = 7. The curve rises nearly vertically from pH 4 to 10, so methyl red, bromothymol blue, phenolphthalein and thymol blue all change colour within 0.1 mL of equivalence.',
   },
   {
     id: 2,
@@ -99,9 +141,9 @@ const PUZZLES: Level2PuzzleData[] = [
     hintIs: 'Þetta er títrun sterkrar sýru með sterkum basa, svipað og HCl + NaOH.',
     hint: 'This is a strong acid + strong base titration, similar to HCl + NaOH.',
     explanationIs:
-      'HNO₃ + KOH gefur KNO₃ + H₂O. Eins og öll sterk-sterk títrun, er jafngildispunktur við pH = 7. Brómþýmólblátt (pH 6,0-7,6) er góður litvísir.',
+      'HNO₃ + KOH gefur KNO₃ + H₂O. Eins og í allri títrun sterkrar sýru með sterkum basa er jafngildispunktur við pH = 7 og ferillinn nær lóðréttur þar. Metýlrautt, brómþýmólblátt, fenólftalín og þýmólblátt skipta öll um lit innan við 0,1 mL frá jafngildispunktinum.',
     explanation:
-      'HNO₃ + KOH produces KNO₃ + H₂O. Like all strong-strong titrations, equivalence point is at pH = 7. Bromothymol blue (pH 6.0-7.6) is a good indicator.',
+      'HNO₃ + KOH produces KNO₃ + H₂O. Like all strong-strong titrations, equivalence point is at pH = 7 and the curve is nearly vertical there. Methyl red, bromothymol blue, phenolphthalein and thymol blue all change colour within 0.1 mL of equivalence.',
   },
   {
     id: 4,
@@ -127,9 +169,9 @@ const PUZZLES: Level2PuzzleData[] = [
     hintIs: 'HF er veik sýra þó hún sé halógenvetnissýra. Jafngildispunktur verður yfir pH 7.',
     hint: 'HF is a weak acid despite being a halogen acid. Equivalence point will be above pH 7.',
     explanationIs:
-      'HF + NaOH gefur NaF. Flúoríðjónin (F⁻) er veikur basi (samoka basi HF), svo lausnin verður basísk við jafngildispunkt. pKₐ(HF) ≈ 3,17. Við jafngildispunkt er pH um 8,0, svo þýmólblátt (pH 8,0-9,6) er góður litvísir.',
+      'HF + NaOH gefur NaF. Flúoríðjónin (F⁻) er veikur basi (samoka basi HF), svo lausnin verður basísk við jafngildispunkt. pKₐ(HF) ≈ 3,17. Við jafngildispunkt er pH um 8,0 og ferillinn brattur, svo brómþýmólblátt, fenólftalín og þýmólblátt skipta öll um lit innan við 0,1 mL frá honum.',
     explanation:
-      'HF + NaOH produces NaF. The fluoride ion (F⁻) is a weak base (conjugate base of HF), so solution becomes basic at equivalence. pKₐ(HF) ≈ 3.17. At equivalence the pH is about 8.0, so thymol blue (pH 8.0-9.6) is a good indicator.',
+      'HF + NaOH produces NaF. The fluoride ion (F⁻) is a weak base (conjugate base of HF), so solution becomes basic at equivalence. pKₐ(HF) ≈ 3.17. At equivalence the pH is about 8.0 and the curve is steep, so bromothymol blue, phenolphthalein and thymol blue all change colour within 0.1 mL of it.',
   },
   {
     id: 6,

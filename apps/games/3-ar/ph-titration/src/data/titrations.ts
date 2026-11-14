@@ -70,8 +70,8 @@ export const titrations: Titration[] = [
     equivalencePH: 7.97,
     initialPH: 2.08,
     halfEquivalencePH: 3.17,
-    // Not phenolphthalein, whose range starts at 8,3: the curve reaches pH
-    // 7,97 here, printed 8,0 (decision 113 (a)).
+    // Phenolphthalein, bromothymol blue and thymol blue all change colour
+    // within 0,1 mL of equivalence here (`acceptableIndicatorsFor`).
     bestIndicator: 'thymol-blue',
     difficulty: 'Miðlungs',
     Ka: 6.8e-4,

@@ -21,9 +21,9 @@ const TITRATION_MISCONCEPTIONS = {
     'Sterk sýra + sterkur basi gefur pH = 7 við jafngildi vegna þess að salt og vatn myndast.',
   weak_strong:
     'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoka basinn er eftir.',
-  // Level 1's rule, as question 6 states it and Level 2 grades it (decision 113 (a)).
+  // Level 1's rule, as question 6 states it and Level 2 grades it (2026-11-14).
   indicator:
-    'Litabreytingasvið litvísisins þarf að innihalda pH við jafngildi, ekki endilega pH = 7.',
+    'Litvísirinn þarf að skipta um lit þar sem ferillinn er brattastur, við jafngildispunktinn, ekki endilega við pH 7.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
 };
 
