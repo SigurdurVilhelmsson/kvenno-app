@@ -258,7 +258,7 @@ const ICE_ORDER: {
     difficulty: 'mid',
     initial: { 'N₂': 0.781, 'O₂': 0.21, NO: 0 },
     context:
-      'Loft við 2000 °C. Styrkirnir eru hlutföll andrúmsloftsins, og K er svo lítið að nituroxíðið verður hverfandi — sem er einmitt af hverju það myndast bara í vélum og eldingum.',
+      'Loft við 2000 °C. Styrkirnir eru í sama hlutfalli og nitur og súrefni í andrúmsloftinu (raunverulegt loft við þennan hita er miklu þynnra), en jafnmörg mól gass eru hvorum megin, svo hlutfallið sem verður að NO er það sama. K er svo lítið að nituroxíðið verður hverfandi — sem er einmitt af hverju það myndast bara í vélum og eldingum.',
   },
   {
     reactionId: 'vetnisjodid',

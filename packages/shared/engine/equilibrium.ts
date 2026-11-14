@@ -422,19 +422,26 @@ export function approximateExtent(reaction: Reaction, initial: Amounts, k: numbe
 }
 
 /**
- * The largest fractional change the extent imposes on any reactant.
+ * The largest fractional change the extent imposes on any species it consumes.
  *
  * This is the quantity the five per cent rule tests. It is taken over every
- * reactant rather than the smallest one alone, because it is the reactant that
- * runs down fastest in proportion — not the one present in the smallest
+ * consumed species rather than the smallest one alone, because it is the one
+ * that runs down fastest in proportion — not the one present in the smallest
  * amount — that breaks the assumption.
+ *
+ * **Which side is consumed depends on the direction.** A negative extent runs
+ * the reaction backwards and uses up the products, so those are measured. Until
+ * 2026-11-14 this always measured the reactants, which a backward run *forms*:
+ * the water-gas problem that starts with Q > K reported a change of 1846 % of a
+ * starting amount that was the thing growing.
  */
 export function largestRelativeChange(
   reaction: Reaction,
   initial: Amounts,
   extent: number
 ): number {
-  return activeReactants(reaction).reduce((worst, s) => {
+  const consumed = extent < 0 ? activeProducts(reaction) : activeReactants(reaction);
+  return consumed.reduce((worst, s) => {
     const start = initial[s.formula];
     if (start === 0) return Number.POSITIVE_INFINITY;
     return Math.max(worst, Math.abs(s.coefficient * extent) / start);
