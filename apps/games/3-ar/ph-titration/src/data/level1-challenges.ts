@@ -36,7 +36,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     options: [
       {
         id: 'A',
-        labelIs: 'pH byrjar lágt (~1), stígur hægt, skarpt stökk við pH 7, heldur hátt',
+        labelIs: 'pH byrjar lágt (~1), stígur hægt, skarpt stökk við pH 7, helst hátt',
         label: 'pH starts low (~1), rises slowly, sharp jump at pH 7, stays high',
         isCorrect: true,
       },
@@ -109,9 +109,9 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
         'Stuðpúðasvæði + jafngildispunktur yfir pH 7 eru lykileinkenni veikrar sýru + sterks basa.',
     },
     explanationIs:
-      'Veik sýra + sterkur basi hefur: 1) Hærra upphafs-pH (3-5) vegna þess að sýran jónast aðeins að hluta, 2) Stuðpúðasvæði við hálfjafngildispunkt þar sem pH ≈ pKₐ, 3) Jafngildispunkt YFIR pH 7 vegna þess að samoka basinn (t.d. CH₃COO⁻) er basískur.',
+      'Veik sýra + sterkur basi hefur: 1) Hærra upphafs-pH (t.d. 2,87 í 0,100 M ediksýru) vegna þess að sýran jónast aðeins að hluta, 2) Stuðpúðasvæði við hálfjafngildispunkt þar sem pH ≈ pKₐ, 3) Jafngildispunkt YFIR pH 7 vegna þess að samoka basinn (t.d. CH₃COO⁻) er basískur.',
     explanation:
-      'Weak acid + strong base has: 1) Higher initial pH (3-5) due to partial dissociation, 2) Buffer region at half-equivalence where pH ≈ pKₐ, 3) Equivalence point ABOVE pH 7 because conjugate base (e.g., CH₃COO⁻) is basic.',
+      'Weak acid + strong base has: 1) Higher initial pH (e.g. 2.87 in 0.100 M acetic acid) due to partial dissociation, 2) Buffer region at half-equivalence where pH ≈ pKₐ, 3) Equivalence point ABOVE pH 7 because conjugate base (e.g., CH₃COO⁻) is basic.',
   },
   {
     id: 3,
@@ -143,23 +143,23 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um litbreytingasvið litvísa og pH gildi.',
+      topic: 'Þetta snýst um litabreytingasvið litvísa og pH gildi.',
       strategy: 'Fenólftalín breytir lit YFIR pH 8,3. Berðu saman við pH 7.',
       method: 'Ef pH < 8,3, þá er fenólftalín á súru formi → litlaust.',
       solution: 'pH 7 < 8,3, svo fenólftalín er LITLAUST við jafngildispunkt HCl + NaOH.',
     },
     explanationIs:
-      'Við pH 7 (jafngildispunktur HCl + NaOH) er fenólftalín LITLAUST vegna þess að pH < 8,3. Þetta þýðir að fenólftalín er EKKI góður litvísir fyrir títrun sterkrar sýru með sterkum basa!',
+      'Við pH 7 (jafngildispunktur HCl + NaOH) er fenólftalín LITLAUST vegna þess að pH < 8,3. Það kemur ekki að sök: ferillinn er nær lóðréttur við jafngildispunktinn, svo brot úr dropa í viðbót lyftir pH upp fyrir 8,3 og lausnin verður bleik. Fenólftalín hentar því við títrun sterkrar sýru með sterkum basa, eins og metýlrautt og brómþýmólblátt.',
     explanation:
-      'At pH 7 (HCl + NaOH equivalence point), phenolphthalein is COLORLESS because pH < 8.3. This means phenolphthalein is NOT a good indicator for strong acid + strong base titration!',
+      'At pH 7 (HCl + NaOH equivalence point), phenolphthalein is COLORLESS because pH < 8.3. That does not matter: the curve is nearly vertical at equivalence, so a fraction of a drop more takes the pH above 8.3 and the solution turns pink. Phenolphthalein works for a strong acid with a strong base, as do methyl red and bromothymol blue.',
   },
   {
     id: 4,
     type: 'predict-color',
     questionIs:
-      'Metýlappelsínugult breytir lit frá rauðu í appelsínugult við pH 3,1-4,4. Hvaða lit sýnir það við pH 2?',
+      'Metýlappelsínugult breytir lit frá rauðu í gult við pH 3,1–4,4. Hvaða lit sýnir það við pH 2?',
     question:
-      'Methyl orange changes from red to orange at pH 3.1-4.4. What color does it show at pH 2?',
+      'Methyl orange changes from red to yellow at pH 3.1-4.4. What color does it show at pH 2?',
     pH: 2.0,
     indicatorId: 'methyl-orange',
     options: [
@@ -183,9 +183,9 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um litbreytingasvið metýlappelsínuguls.',
+      topic: 'Þetta snýst um litabreytingasvið metýlappelsínuguls.',
       strategy:
-        'pH 2 er UNDIR litbreytingarsviðinu (3,1-4,4). Hvaða lit hefur litvísirinn í súrri lausn?',
+        'pH 2 er UNDIR litabreytingasviðinu (3,1-4,4). Hvaða lit hefur litvísirinn í súrri lausn?',
       method:
         'Metýlappelsínugult er rautt undir pH 3,1, appelsínugult á milli, og gult yfir pH 4,4.',
       solution: 'pH 2 < 3,1, svo metýlappelsínugult er RAUTT.',
@@ -248,7 +248,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     options: [
       {
         id: 'A',
-        labelIs: 'Litbreytingasvið litvísisins þarf að innihalda pH við jafngildispunkt',
+        labelIs: 'Litabreytingasvið litvísisins þarf að innihalda pH við jafngildispunkt',
         label: "The indicator's color change range must contain the equivalence point pH",
         isCorrect: true,
       },
@@ -266,7 +266,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
       {
         id: 'D',
-        labelIs: 'Litbreytingasvið litvísisins þarf að vera við pH 7',
+        labelIs: 'Litabreytingasvið litvísisins þarf að vera við pH 7',
         label: "The indicator's color change range must be at pH 7",
         isCorrect: false,
       },
@@ -275,12 +275,12 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       topic: 'Þetta snýst um val á litvísi fyrir títrun.',
       strategy:
         'Jafngildispunktur er ekki alltaf við pH 7. Veldu litvísi sem breytir lit við jafngildispunktinn.',
-      method: 'Litbreytingasvið litvísisins verður að innihalda pH við jafngildispunkt.',
-      solution: 'HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH ~9) → fenólftalín.',
+      method: 'Litabreytingasvið litvísisins verður að innihalda pH við jafngildispunkt.',
+      solution: 'HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH 8,7) → fenólftalín.',
     },
     explanationIs:
-      'Besti litvísirinn hefur litbreytingasvið sem inniheldur jafngildispunkt títrunarinnar. T.d.: HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH ~9) → fenólftalín.',
+      'Besti litvísirinn hefur litabreytingasvið sem inniheldur jafngildispunkt títrunarinnar. T.d.: HCl + NaOH (pH 7) → brómþýmólblátt; CH₃COOH + NaOH (pH 8,7) → fenólftalín.',
     explanation:
-      "The best indicator has a color change range containing the titration's equivalence point. E.g.: HCl + NaOH (pH 7) → bromothymol blue; CH₃COOH + NaOH (pH ~9) → phenolphthalein.",
+      "The best indicator has a color change range containing the titration's equivalence point. E.g.: HCl + NaOH (pH 7) → bromothymol blue; CH₃COOH + NaOH (pH 8.7) → phenolphthalein.",
   },
 ];

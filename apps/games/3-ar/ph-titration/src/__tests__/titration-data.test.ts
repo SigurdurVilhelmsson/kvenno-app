@@ -77,3 +77,15 @@ describe('the titration bank', () => {
     }
   );
 });
+
+// The stored equivalencePH is the value the game's own curve reaches there.
+// HF said 8,08 and formic acid 8,35 while the curves drawn beside them reached
+// 7,97 and 8,28 (fixed 2026-11-14).
+describe('stored equivalence pH', () => {
+  it.each(titrations.map((t) => [t.name, t] as const))(
+    '%s stores the pH its curve reaches at equivalence',
+    (_name, t) => {
+      expect(calculatePH(t, t.equivalenceVolume)).toBeCloseTo(t.equivalencePH, 1);
+    }
+  );
+});

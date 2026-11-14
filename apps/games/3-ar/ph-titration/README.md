@@ -25,11 +25,21 @@ screen; finishing Stig 1 or 2 returns to the menu.
 - **Stig 2** (`data/level2-puzzles.ts`) pours by +0,05 / +1 / +5 mL or by holding a button, up to
   60 mL, and draws the curve only as far as the student has poured. Marking uses a range slider in
   0,1 mL steps, with ±0,1 mL nudge buttons on touch; the panel states the tolerance up front
-  (`Leyfilegt svigrúm: ±1,0 mL`). A puzzle is right when the marked volume is within 1,0 mL of the
-  equivalence volume **and** the litvísir is acceptable. The result prints the equivalence volume and
+  (`Leyfilegt svigrúm: ±0,5 mL`, 1,0 until 2026-11-14). A puzzle is right when the marked volume is
+  within 0,5 mL of the equivalence volume **and** the litvísir is acceptable. The result prints the equivalence volume and
   the acceptable litvísar, so a `Reyna aftur` after it does not count (`answerShown`).
-- **Stig 3** (`data/level3-challenges.ts`) grades at a 2 % **relative** tolerance on every problem,
-  pH answers included (`Level3.tsx`, `handleSubmit`). The field is `type="text"` +
+- **Stig 2's bench** is one SVG, `TitrationApparatus.tsx` (2026-11-14): a stand, the búretta
+  clamped to it reading 0 mL at the top and draining as titrant runs, and the keiluflaska under its
+  tip on a white tile. `BenchReadings.tsx` beside it lists the búretta reading, the volume in the
+  flask, pH and `Eðli`, which follows the pH as printed. Until then a búretta and a flask stood side
+  by side, the búretta's scale upside down and filling as it delivered, the flask with no outline.
+  The flask takes the chosen litvísir's colour, which now passes through its range rather than
+  jumping (`getIndicatorColor`), and a universal-indicator colour before one is chosen.
+- **Stig 3** (`data/level3-challenges.ts`) grades at a 2 % **relative** tolerance, and the two pH
+  answers (6 and 8) at an absolute ±0,02 (`isAnswerCorrect`, 2026-11-14; ±2 % of a pH was ±0,1).
+  `Gefið` and `Rétt svar` print to the data's significant figures (`answerDecimals`). Problem 8 gives
+  Kₐ and a volume, so the student finds the hálfjafngildispunktur and pKₐ; it used to print the
+  answer as the pKₐ in the question. The field is `type="text"` +
   `inputMode="decimal"` read through `parseStudentNumber`, so the decimal comma works. The result
   shows the correct answer, the explanation, and a `Sýna útreikningsgang` button for the worked
   steps. A reference panel (`Uppflettitöflur`: a pKₐ table and the key equations) sits under the
@@ -196,11 +206,12 @@ src/data/agnasyn-steps.tsx        Agnasýn's seven scenes
 src/utils/agnasyn.ts              Agnasýn's chemistry and particle counts
 src/utils/particles.ts            Agnasýn's particle system
 src/types.ts                      Titration, Indicator and the difficulty/indicator unions
-src/components/Level1.tsx         Stig 1: intro card, 6 questions, TitrationCurvePreview
+src/components/Level1.tsx         Stig 1: intro card, 6 questions, TitrationCurvePreview (shown
+                                    with the result on a "which curve" question, never on 3, 4, 6)
 src/components/Level2.tsx         Stig 2: pour, mark, choose, result
 src/components/Level3.tsx         Stig 3: 8 problems, the Uppflettitöflur panel
-src/components/Burette.tsx        Stig 2 búretta (role=meter)
-src/components/Flask.tsx          Stig 2 flask, coloured by litvísir or pH
+src/components/TitrationApparatus.tsx  Stig 2 bench: stand, búretta, keiluflaska (one SVG)
+src/components/BenchReadings.tsx  Stig 2 readings beside it; phCharacter
 src/components/IndicatorSelector.tsx  Stig 2 list of 5 litvísar, no descriptions
 src/components/TitrationCurve.tsx Stig 2 curve on InteractiveGraph, ResizeObserver
 src/components/PHMeter.tsx        imported by nothing (see Leftovers)
@@ -240,12 +251,13 @@ Not recorded anywhere else; found while writing this file.
 - **Unused data and helpers:** `getTitrationsByDifficulty` and `getRandomTitration` in
   `data/titrations.ts` are never called. Each titration's `equivalencePH`, `halfEquivalencePH` and
   `difficulty` are read by no component (the curve derives its own values), and `initialPH` only by
-  the test above.
-- **Stig 3 problems 4 and 5 carry `titrationId: 11` and `13` and an `equivalencePointIndex`**
-  (`data/level3-challenges.ts:170-171`, `:206-207`) — the deleted polyprotic titrations. Nothing
-  reads either field.
+  the test above. `equivalencePH` is held to the curve by `titration-data.test.ts` since 2026-11-14
+  (HF said 8,08 and formic acid 8,35 against 7,97 and 8,28).
+- **Stig 3 problems 4 and 5 carry an `equivalencePointIndex`** that nothing reads (their
+  `titrationId`s, naming the deleted polyprotic titrations, went on 2026-11-14).
 - **`Level1.tsx`'s `TitrationCurvePreview`** has a `strong-weak` branch (which would draw the
-  weak-acid curve) and a hand-built default curve; no question uses either. Each level also keeps a
-  `setHintsUsed` counter whose value is never read.
+  weak-acid curve) that no question uses. Its hand-built default curve went on 2026-11-14: question
+  6 has no `curveType` and was drawing it, marker off the line, which this file said no question
+  did. Each level also keeps a `setHintsUsed` counter whose value is never read.
 - **A stale comment in `ph-calculations.test.ts`** says "These three do NOT agree" above the
   `it.fails` block, which now pins one titration.

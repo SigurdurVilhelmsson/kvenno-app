@@ -23,7 +23,7 @@ const TITRATION_MISCONCEPTIONS = {
     'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoka basinn er eftir.',
   // Level 1's rule, as question 6 states it and Level 2 grades it (decision 113 (a)).
   indicator:
-    'Litbreytingasvið litvísisins þarf að innihalda pH við jafngildi, ekki endilega pH = 7.',
+    'Litabreytingasvið litvísisins þarf að innihalda pH við jafngildi, ekki endilega pH = 7.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
 };
 
@@ -40,6 +40,18 @@ const MISCONCEPTION_BY_CHALLENGE: Partial<Record<number, string>> = {
   2: TITRATION_MISCONCEPTIONS.weak_strong,
   5: TITRATION_MISCONCEPTIONS.buffer_region,
   6: TITRATION_MISCONCEPTIONS.indicator,
+};
+
+/**
+ * What a wrong answer suggests next, by question type. It said "Skoðaðu
+ * ferilinn" after every wrong answer, including the colour questions, which
+ * show no curve.
+ */
+const NEXT_STEP_BY_TYPE: Record<string, string> = {
+  'match-curve': 'Skoðaðu ferilinn: hvar byrjar pH og hvar er jafngildispunkturinn?',
+  'curve-feature': 'Skoðaðu ferilinn og athugaðu hvar pH breytist mest og hvar minnst.',
+  'predict-color': 'Berðu pH-gildið saman við litabreytingasvið litvísisins.',
+  'find-equivalence': 'Skoðaðu ferilinn og athugaðu hvar pH breytist mest.',
 };
 
 /** Exit duration of the hint panel's Presence, which leaves as the feedback enters. */
@@ -293,12 +305,19 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 {challenge.questionIs}
               </p>
 
-              {/* Curve visualization for relevant challenges */}
-              {(challenge.type === 'match-curve' || challenge.type === 'curve-feature') && (
-                <div className="mb-6 phone:mb-3 phone-land:mb-0">
-                  <TitrationCurvePreview curveType={challenge.curveType} />
-                </div>
-              )}
+              {/* The curve a question is about. A "which curve" question
+                  shows it only with the result, since the curve answers it:
+                  question 1 drew the strong-acid curve with its equivalence
+                  point marked at pH 7 beside the options describing it. A
+                  question with no curve of its own draws none (question 6
+                  used to get a made-up curve). */}
+              {challenge.curveType &&
+                (challenge.type === 'curve-feature' ||
+                  (challenge.type === 'match-curve' && showResult)) && (
+                  <div className="mb-6 phone:mb-3 phone-land:mb-0">
+                    <TitrationCurvePreview curveType={challenge.curveType} />
+                  </div>
+                )}
             </div>
 
             {/* Options */}
@@ -328,6 +347,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     key={option.id}
                     onClick={() => handleOptionSelect(option.id)}
                     disabled={showResult}
+                    aria-pressed={isSelected}
                     className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${bgColor} ${borderColor} ${
                       showResult ? 'cursor-default' : 'cursor-pointer'
                     }`}
@@ -377,7 +397,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 relatedConcepts: TITRATION_RELATED,
                 nextSteps: isCorrect
                   ? 'Frábært! Þú skilur títrunarferla vel.'
-                  : 'Skoðaðu ferilinn og athugaðu hvar pH breytist mest.',
+                  : NEXT_STEP_BY_TYPE[challenge.type],
               }}
               config={{
                 showExplanation: true,
@@ -447,11 +467,7 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
       equivVolume = weakStrongTitration.equivalenceVolume;
       equivPH = calculatePH(weakStrongTitration, equivVolume);
     } else {
-      // Default strong-strong curve
-      curveData = Array.from({ length: 51 }, (_, i) => ({
-        volume: i,
-        pH: i < 24 ? 1 + (i / 24) * 2 : i < 26 ? 3 + (i - 24) * 2 : 11 + (i - 26) * 0.1,
-      }));
+      curveData = [];
     }
 
     const dataPoints: DataPoint[] = curveData.map((pt) => ({ x: pt.volume, y: pt.pH }));

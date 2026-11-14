@@ -4,6 +4,7 @@ import { PhoneDisclosure, Presence } from '@shared/components';
 import {
   focusTarget,
   formatDecimal,
+  formatScientific,
   parseStudentNumber,
   useArmedAfter,
   useIsPhone,
@@ -11,7 +12,7 @@ import {
   useRevealAfterCommit,
 } from '@shared/utils';
 
-import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
+import { isAnswerCorrect, LEVEL3_CHALLENGES } from '../data/level3-challenges';
 
 /** Exit duration of the hint and submit Presences, which leave as the result enters. */
 const ANSWER_EXIT_MS = 250;
@@ -106,9 +107,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     const numericAnswer = parseStudentNumber(userAnswer);
     if (isNaN(numericAnswer)) return;
 
-    const relativeError =
-      Math.abs(numericAnswer - challenge.correctAnswer) / challenge.correctAnswer;
-    const correct = relativeError <= challenge.tolerance;
+    const correct = isAnswerCorrect(challenge, numericAnswer);
 
     setIsCorrect(correct);
     setShowResult(true);
@@ -261,48 +260,55 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               {challenge.givenData.analyteVolume && (
                 <div>
                   <span className="font-semibold">Rúmmál sýnis:</span>{' '}
-                  {formatDecimal(challenge.givenData.analyteVolume)} mL
+                  {formatDecimal(challenge.givenData.analyteVolume, 1)} mL
                 </div>
               )}
               {challenge.givenData.analyteMolarity && (
                 <div>
                   <span className="font-semibold">Styrkur sýnis:</span>{' '}
-                  {formatDecimal(challenge.givenData.analyteMolarity)} M
+                  {formatDecimal(challenge.givenData.analyteMolarity, 3)} M
                 </div>
               )}
               {challenge.givenData.titrantMolarity && (
                 <div>
                   <span className="font-semibold">Styrkur títrants:</span>{' '}
-                  {formatDecimal(challenge.givenData.titrantMolarity)} M
+                  {formatDecimal(challenge.givenData.titrantMolarity, 3)} M
                 </div>
               )}
               {challenge.givenData.equivalenceVolume && (
                 <div>
                   <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
-                  {formatDecimal(challenge.givenData.equivalenceVolume)} mL
+                  {formatDecimal(challenge.givenData.equivalenceVolume, 1)} mL
                 </div>
               )}
               {challenge.givenData.pKa && (
                 <div>
                   <span className="font-semibold">pKₐ:</span>{' '}
-                  {formatDecimal(challenge.givenData.pKa)}
+                  {formatDecimal(challenge.givenData.pKa, 2)}
+                </div>
+              )}
+              {challenge.givenData.Ka && (
+                <div>
+                  <span className="font-semibold">Kₐ:</span>{' '}
+                  {formatScientific(challenge.givenData.Ka, 2)}
                 </div>
               )}
               {challenge.givenData.pH && (
                 <div>
-                  <span className="font-semibold">pH:</span> {formatDecimal(challenge.givenData.pH)}
+                  <span className="font-semibold">pH:</span>{' '}
+                  {formatDecimal(challenge.givenData.pH, 2)}
                 </div>
               )}
               {challenge.givenData.acidConcentration && (
                 <div>
                   <span className="font-semibold">[Sýra]:</span>{' '}
-                  {formatDecimal(challenge.givenData.acidConcentration)} M
+                  {formatDecimal(challenge.givenData.acidConcentration, 2)} M
                 </div>
               )}
               {challenge.givenData.baseConcentration && (
                 <div>
                   <span className="font-semibold">[Basi]:</span>{' '}
-                  {formatDecimal(challenge.givenData.baseConcentration)} M
+                  {formatDecimal(challenge.givenData.baseConcentration, 2)} M
                 </div>
               )}
             </div>
@@ -353,7 +359,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               {phone && <div className="grow">{submit}</div>}
             </div>
             <p className="text-xs text-warm-500 mt-1">
-              Skekkjumörk: ±{formatDecimal(challenge.tolerance * 100, 0)}%
+              Skekkjumörk:{' '}
+              {challenge.absoluteTolerance !== undefined
+                ? `±${formatDecimal(challenge.absoluteTolerance, 2)}`
+                : `±${formatDecimal(challenge.tolerance * 100, 0)}%`}
             </p>
           </div>
 
@@ -401,7 +410,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <span className="font-semibold">Þitt svar:</span> {userAnswer} {challenge.unit}
                 <br />
                 <span className="font-semibold">Rétt svar:</span>{' '}
-                {formatDecimal(challenge.correctAnswer)} {challenge.unit}
+                {formatDecimal(challenge.correctAnswer, challenge.answerDecimals)} {challenge.unit}
               </div>
 
               <p className={`text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
@@ -498,6 +507,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <div>
                   <span className="font-semibold">Títrun:</span>
                   <div className="font-mono">M₁V₁ = M₂V₂</div>
+                  <div className="text-xs">
+                    Aðeins þegar hvarfahlutfallið er 1:1. Annars: n(basi) = hlutfall × n(sýra).
+                  </div>
                 </div>
                 <div>
                   <span className="font-semibold">Henderson-Hasselbalch:</span>

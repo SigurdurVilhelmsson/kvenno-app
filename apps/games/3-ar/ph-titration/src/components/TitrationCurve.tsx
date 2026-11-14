@@ -77,7 +77,10 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
     const horizontalLines: HorizontalLineConfig[] = [];
 
     if (titration) {
-      if (titration.type === 'weak-strong' && titration.pKa) {
+      // Both one-weak-partner titrations have a buffer: HA/A⁻ for a weak acid,
+      // NH₄⁺/NH₃ for ammonia, centred on the weak partner's pKₐ. Only the weak
+      // acid's was drawn.
+      if ((titration.type === 'weak-strong' || titration.type === 'strong-weak') && titration.pKa) {
         const pKa = titration.pKa;
         regions.push({
           yMin: pKa - 1,
@@ -89,7 +92,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           y: pKa,
           color: '#f59e0b',
           lineDash: [5, 5],
-          label: `pKa = ${formatDecimal(pKa, 2)}`,
+          label: `pKₐ = ${formatDecimal(pKa, 2)}`,
           labelPosition: 'right',
         });
       }
@@ -114,14 +117,12 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
 
     // Student's marked equivalence point
     if (markedVolume != null) {
-      const closestPt = curveData.reduce(
-        (best, pt) =>
-          Math.abs(pt.volume - markedVolume) < Math.abs(best.volume - markedVolume) ? pt : best,
-        curveData[0] || { volume: 0, pH: 7 }
-      );
+      // At the marked volume itself, not the nearest point of the drawn curve,
+      // which is sampled every 0,5 mL: the diamond moved in half-millilitre
+      // jumps while the slider moved by 0,1.
       markers.push({
-        x: closestPt.volume,
-        y: closestPt.pH,
+        x: markedVolume,
+        y: titration ? calculatePH(titration, markedVolume) : 7,
         color: '#f36b22',
         icon: '◆',
         radius: 10,

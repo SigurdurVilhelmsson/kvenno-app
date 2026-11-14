@@ -10,7 +10,12 @@ export interface Level2Puzzle {
   titrationId: number; // Reference to titrations.ts
   taskIs: string;
   task: string;
-  volumeTolerance: number; // Acceptable error in mL
+  /**
+   * Acceptable error in mL. 0,5 since 2026-11-14: it was 1,0, two whole
+   * millilitres of window on a curve whose steep part is a few drops wide,
+   * marked with a slider that moves by 0,1.
+   */
+  volumeTolerance: number;
   /** Derived by Level 1's rule, never listed by hand: see `acceptableIndicatorsFor`. */
   acceptableIndicators: IndicatorType[];
   hintIs: string;
@@ -61,9 +66,9 @@ const PUZZLES: Level2PuzzleData[] = [
     taskIs:
       'Títraðu 25,0 mL af 0,100 M HCl með 0,100 M NaOH. Finndu jafngildispunktinn og veldu viðeigandi litvísi.',
     task: 'Titrate 25.0 mL of 0.100 M HCl with 0.100 M NaOH. Find the equivalence point and select an appropriate indicator.',
-    volumeTolerance: 1.0,
+    volumeTolerance: 0.5,
     hintIs:
-      'Fyrir sterka sýru + sterkan basa er jafngildispunktur við pH = 7. Veldu litvísi með litbreytingasvið sem inniheldur pH 7.',
+      'Fyrir sterka sýru + sterkan basa er jafngildispunktur við pH = 7. Veldu litvísi með litabreytingasvið sem inniheldur pH 7.',
     hint: 'For strong acid + strong base, equivalence point is at pH = 7. Choose an indicator whose color change range contains pH 7.',
     explanationIs:
       'HCl + NaOH gefur NaCl + H₂O. Saltið NaCl er hlutlaust, svo jafngildispunktur er við pH = 7. Brómþýmólblátt (pH 6,0-7,6) er góður litvísir.',
@@ -76,7 +81,7 @@ const PUZZLES: Level2PuzzleData[] = [
     taskIs:
       'Títraðu 25,0 mL af 0,100 M ediksýru (CH₃COOH) með 0,100 M NaOH. Athugaðu að jafngildispunktur er EKKI við pH 7!',
     task: 'Titrate 25.0 mL of 0.100 M acetic acid (CH₃COOH) with 0.100 M NaOH. Note that equivalence point is NOT at pH 7!',
-    volumeTolerance: 1.0,
+    volumeTolerance: 0.5,
     hintIs:
       'Veik sýra + sterkur basi myndar basískan samoka basa við jafngildispunkt. pH verður hærra en 7.',
     hint: 'Weak acid + strong base forms basic conjugate base at equivalence. pH will be higher than 7.',
@@ -90,7 +95,7 @@ const PUZZLES: Level2PuzzleData[] = [
     titrationId: 2, // HNO₃ + KOH
     taskIs: 'Títraðu 30,0 mL af 0,050 M saltpéturssýru (HNO₃) með 0,100 M KOH.',
     task: 'Titrate 30.0 mL of 0.050 M nitric acid (HNO₃) with 0.100 M KOH.',
-    volumeTolerance: 1.0,
+    volumeTolerance: 0.5,
     hintIs: 'Þetta er títrun sterkrar sýru með sterkum basa, svipað og HCl + NaOH.',
     hint: 'This is a strong acid + strong base titration, similar to HCl + NaOH.',
     explanationIs:
@@ -104,7 +109,7 @@ const PUZZLES: Level2PuzzleData[] = [
     taskIs:
       'Títraðu 25,0 mL af 0,100 M ammóníaki (NH₃) með 0,100 M HCl. Þetta er veikur basi + sterk sýra!',
     task: 'Titrate 25.0 mL of 0.100 M ammonia (NH₃) with 0.100 M HCl. This is weak base + strong acid!',
-    volumeTolerance: 1.0,
+    volumeTolerance: 0.5,
     hintIs:
       'Veikur basi + sterk sýra myndar súra samoka sýru við jafngildispunkt. pH verður lægra en 7.',
     hint: 'Weak base + strong acid forms acidic conjugate acid at equivalence. pH will be lower than 7.',
@@ -118,7 +123,7 @@ const PUZZLES: Level2PuzzleData[] = [
     titrationId: 6, // HF + NaOH
     taskIs: 'Títraðu 30,0 mL af 0,150 M flússýru (HF) með 0,100 M NaOH. HF er veik sýra.',
     task: 'Titrate 30.0 mL of 0.150 M hydrofluoric acid (HF) with 0.100 M NaOH. HF is a weak acid.',
-    volumeTolerance: 1.0,
+    volumeTolerance: 0.5,
     hintIs: 'HF er veik sýra þó hún sé halógenvetnissýra. Jafngildispunktur verður yfir pH 7.',
     hint: 'HF is a weak acid despite being a halogen acid. Equivalence point will be above pH 7.',
     explanationIs:
@@ -131,7 +136,7 @@ const PUZZLES: Level2PuzzleData[] = [
     titrationId: 7, // HCOOH + KOH (formic acid)
     taskIs: 'Títraðu 20,0 mL af 0,200 M maurasýru (HCOOH) með 0,100 M KOH.',
     task: 'Titrate 20.0 mL of 0.200 M formic acid (HCOOH) with 0.100 M KOH.',
-    volumeTolerance: 1.0,
+    volumeTolerance: 0.5,
     hintIs: 'Maurasýra er veik sýra eins og ediksýra. Jafngildispunktur verður yfir pH 7.',
     hint: 'Formic acid is a weak acid like acetic acid. Equivalence point will be above pH 7.',
     explanationIs:

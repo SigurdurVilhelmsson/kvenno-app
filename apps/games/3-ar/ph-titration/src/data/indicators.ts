@@ -17,7 +17,7 @@ export const indicators: Indicator[] = [
     name: 'Metýlappelsínugult',
     pHRange: [3.1, 4.4],
     colorAcidic: '#ef4444', // Red
-    colorBasic: '#f97316', // Orange-yellow
+    colorBasic: '#facc15', // Yellow: red below 3,1, orange through its range, yellow above 4,4
     description:
       'Hentar við títrun veiks basa með sterkri sýru ef pH við jafngildispunkt er 4,4 eða lægra',
   },
@@ -56,8 +56,29 @@ export const indicators: Indicator[] = [
   },
 ];
 
+const hexToRgb = (hex: string): [number, number, number] => {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+
+/** A colour `t` of the way from `a` to `b`, as #rrggbb. */
+function mix(a: string, b: string, t: number): string {
+  const ca = hexToRgb(a);
+  const cb = hexToRgb(b);
+  return (
+    '#' +
+    ca
+      .map((v, i) => Math.round(v + (cb[i] - v) * t))
+      .map((v) => v.toString(16).padStart(2, '0'))
+      .join('')
+  );
+}
+
 /**
- * Get indicator color based on current pH
+ * The indicator's colour at this pH. Inside its range the colour passes from
+ * the acidic to the basic one, so methyl orange is orange half way and
+ * phenolphthalein turns faintly pink at 8,3. It used to jump straight to the
+ * basic colour at the bottom of the range.
  */
 export function getIndicatorColor(indicatorId: string, pH: number): string {
   const indicator = indicators.find((ind) => ind.id === indicatorId);
@@ -68,8 +89,8 @@ export function getIndicatorColor(indicatorId: string, pH: number): string {
   if (pH < lowPH) return indicator.colorAcidic;
   if (pH > highPH) return indicator.colorBasic;
 
-  // Transition zone - mix colors (simplified - use basic color in transition)
-  return indicator.colorBasic;
+  const from = indicator.colorAcidic === 'transparent' ? '#ffffff' : indicator.colorAcidic;
+  return mix(from, indicator.colorBasic, (pH - lowPH) / (highPH - lowPH));
 }
 
 /**

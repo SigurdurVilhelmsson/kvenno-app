@@ -67,7 +67,7 @@ export const titrations: Titration[] = [
     analyte: { formula: 'HF', volume: 30.0, molarity: 0.15, name: 'Flússýra' },
     titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
     equivalenceVolume: 45.0,
-    equivalencePH: 8.08,
+    equivalencePH: 7.97,
     initialPH: 2.08,
     halfEquivalencePH: 3.17,
     // Not phenolphthalein, whose range starts at 8,3: the curve reaches pH
@@ -84,7 +84,7 @@ export const titrations: Titration[] = [
     analyte: { formula: 'HCOOH', volume: 20.0, molarity: 0.2, name: 'Maurasýra' },
     titrant: { formula: 'KOH', molarity: 0.1, name: 'Kalíumhýdroxíð' },
     equivalenceVolume: 40.0,
-    equivalencePH: 8.35,
+    equivalencePH: 8.28,
     initialPH: 2.22,
     halfEquivalencePH: 3.74,
     bestIndicator: 'phenolphthalein',
