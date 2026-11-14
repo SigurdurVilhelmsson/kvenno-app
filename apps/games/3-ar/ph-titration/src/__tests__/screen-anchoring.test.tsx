@@ -37,7 +37,7 @@ describe('Level 1', () => {
   function answerFirst(container: HTMLElement) {
     fireEvent.click(screen.getByText(/Byrja æfingu/));
     wait(50);
-    fireEvent.click(container.querySelector('div.space-y-3 > button')!);
+    fireEvent.click(container.querySelector('[data-options] > button')!);
     const check = screen.getByRole('button', { name: 'Staðfesta' });
     fireEvent.click(check);
     return check;

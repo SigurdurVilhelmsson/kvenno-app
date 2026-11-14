@@ -16,12 +16,17 @@ screen; finishing Stig 1 or 2 returns to the menu.
 
 | Stig | Menu name              | What it asks                                                                                                                                          |
 | ---- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | `Stig 1: Skilningur`   | A teaching card ("Títrun — um hvað snýst þetta?"), then 6 multiple-choice questions: 2 match a curve, 2 read an indicator colour, 2 on curve features |
+| 1    | `Stig 1: Skilningur`   | A teaching card ("Títrun — um hvað snýst þetta?"), then 7 multiple-choice questions: 3 match a curve, 2 read an indicator colour, 2 on curve features |
 | 2    | `Stig 2: Framkvæmd`    | 6 titrations at the bench: choose a litvísir, titrate a sample of unknown concentration to its colour change, then work the concentration out         |
-| 3    | `Stig 3: Útreikningar` | 8 calculations: 2 concentration, 1 volume, 2 polyprotic, 2 Henderson-Hasselbalch, 1 pH at hálfjafngildispunktur                                       |
+| 3    | `Stig 3: Útreikningar` | 11 calculations: 2 concentration, 1 volume, 2 polyprotic, 1 Henderson-Hasselbalch ratio, 1 hálfjafngildispunktur, 4 points on one titration curve     |
 
 - **Stig 1** (`data/level1-challenges.ts`) shuffles each question's options and re-letters them a,
   b, c… by position. Hints are the shared four-tier `HintSystem`. Each question is answered once.
+  Question 1 (2026-11-14) offers three small unlabelled curves drawn from the game's own
+  titrations (`MiniCurve`), so the student reads the shape; each option's description is for a
+  screen reader until the result, then shown. It offered three text descriptions before. Question
+  7 is a weak base with a strong acid, NH₃ + HCl: the curve falls, equivalence is below 7, and the
+  litvísir is metýlrautt, the one Stig 2 accepts there (`level1-previews.test.tsx` holds that).
 - **Stig 2** (`data/level2-puzzles.ts`) runs as a titration in the lab does (2026-11-14, Siggi's
   go-ahead, closing the bench-order item in `docs/REVIEW-QUEUE.md`). Each puzzle draws its sample's
   concentration at random within ±20 % of the stored one, to three figures, keeping equivalence
@@ -45,15 +50,20 @@ screen; finishing Stig 1 or 2 returns to the menu.
   by side, the búretta's scale upside down and filling as it delivered, the flask with no outline.
   The flask takes the chosen litvísir's colour, which passes through its range rather than
   jumping (`getIndicatorColor`), and is colourless before one goes in.
-- **Stig 3** (`data/level3-challenges.ts`) grades at a 2 % **relative** tolerance, and the two pH
-  answers (6 and 8) at an absolute ±0,02 (`isAnswerCorrect`, 2026-11-14; ±2 % of a pH was ±0,1).
-  `Gefið` and `Rétt svar` print to the data's significant figures (`answerDecimals`). Problem 8 gives
+- **Stig 3** (`data/level3-challenges.ts`) grades at a 2 % **relative** tolerance, and the five pH
+  answers (7 to 11) at an absolute ±0,02 (`isAnswerCorrect`, 2026-11-14; ±2 % of a pH was ±0,1).
+  `Gefið` and `Rétt svar` print to the data's significant figures (`answerDecimals`). Problem 7 gives
   Kₐ and a volume, so the student finds the hálfjafngildispunktur and pKₐ; it used to print the
   answer as the pKₐ in the question. The field is `type="text"` +
   `inputMode="decimal"` read through `parseStudentNumber`, so the decimal comma works. The result
   shows the correct answer, the explanation, and a `Sýna útreikningsgang` button for the worked
   steps. A reference panel (`Uppflettitöflur`: a pKₐ table and the key equations) sits under the
-  card, closed on a phone (`PhoneDisclosure`).
+  card, closed on a phone (`PhoneDisclosure`). Problems 8 to 11 (2026-11-14) walk one
+  titration, 25,0 mL of 0,100 M ediksýra with 0,100 M NaOH, the flask Stig 2 and Agnasýn draw: the
+  initial pH, pH after 10,0 mL, at equivalence and after 30,0 mL. Each carries `fromCurve`, and
+  `level3-grading.test.ts` holds its answer to the game's own `calculatePH` there. The buffer-only
+  Henderson-Hasselbalch problem (0,15 M ediksýra, 0,20 M asetat) went then, Siggi leaving it to
+  judgement: the 10,0 mL problem asks the same thing inside a titration.
 
 No level shows a running score. Each reports `N af M rétt` to the menu, which shows it on the
 level's card; a level finished under the old points format shows `Lokið` (`resultLabel`,
@@ -222,7 +232,7 @@ src/types.ts                      Titration, Indicator and the difficulty/indica
 src/components/Level1.tsx         Stig 1: intro card, 6 questions, TitrationCurvePreview (shown
                                     with the result on a "which curve" question, never on 3, 4, 6)
 src/components/Level2.tsx         Stig 2: choose, titrate, calculate, result
-src/components/Level3.tsx         Stig 3: 8 problems, the Uppflettitöflur panel
+src/components/Level3.tsx         Stig 3: 11 problems, the Uppflettitöflur panel
 src/components/TitrationApparatus.tsx  Stig 2 bench: stand, búretta, keiluflaska (one SVG)
 src/components/BenchReadings.tsx  Stig 2 readings beside it; phCharacter
 src/components/IndicatorSelector.tsx  Stig 2 list of 5 litvísar, no descriptions
@@ -272,9 +282,6 @@ Not recorded anywhere else; found while writing this file.
   (HF said 8,08 and formic acid 8,35 against 7,97 and 8,28).
 - **Stig 3 problems 4 and 5 carry an `equivalencePointIndex`** that nothing reads (their
   `titrationId`s, naming the deleted polyprotic titrations, went on 2026-11-14).
-- **`Level1.tsx`'s `TitrationCurvePreview`** has a `strong-weak` branch (which would draw the
-  weak-acid curve) that no question uses. Its hand-built default curve went on 2026-11-14: question
-  6 has no `curveType` and was drawing it, marker off the line, which this file said no question
-  did. Each level also keeps a `setHintsUsed` counter whose value is never read.
-- **A stale comment in `ph-calculations.test.ts`** says "These three do NOT agree" above the
-  `it.fails` block, which now pins one titration.
+- **Each level keeps a `setHintsUsed` counter whose value is never read.** (`TitrationCurvePreview`'s
+  `strong-weak` branch drew the weak-acid curve until question 7 needed it; it draws NH₃ + HCl since
+  2026-11-14.)

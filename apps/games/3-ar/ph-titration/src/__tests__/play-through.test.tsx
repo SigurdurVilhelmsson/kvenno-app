@@ -101,7 +101,7 @@ describe('Level 1 played through', () => {
       expectNoDecimalPoint(`question ${n}`);
       expectCounterWithin(LEVEL1_CHALLENGES.length, `question ${n}`);
 
-      fireEvent.click(container.querySelector('div.space-y-3 > button')!);
+      fireEvent.click(container.querySelector('[data-options] > button')!);
       fireEvent.click(screen.getByRole('button', { name: 'Staðfesta' }));
       settle();
       expectNoDecimalPoint(`question ${n} feedback`);

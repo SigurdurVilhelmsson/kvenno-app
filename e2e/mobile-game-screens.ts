@@ -5637,7 +5637,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       loop: {
         prompt: { css: '[data-item-start]' },
         action: { role: 'button', name: 'Staðfesta' },
-        answer: [{ css: 'div.space-y-3 > button' }],
+        answer: [{ css: '[data-options] > button' }],
         verdict: { css: '.feedback-panel p' },
         next: { role: 'button', name: 'Næsta' },
         viewports: ['android', 'iphone', 'se'],
@@ -5683,7 +5683,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
         {
-          css: 'div.space-y-3 > button',
+          css: '[data-options] > button',
         },
         {
           clickRole: ['button', 'Staðfesta'],

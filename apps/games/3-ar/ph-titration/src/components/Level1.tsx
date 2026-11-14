@@ -24,6 +24,8 @@ const TITRATION_MISCONCEPTIONS = {
   // Level 1's rule, as question 6 states it and Level 2 grades it (2026-11-14).
   indicator:
     'Litvísirinn þarf að skipta um lit þar sem ferillinn er brattastur, við jafngildispunktinn, ekki endilega við pH 7.',
+  weak_base:
+    'Veikur basi + sterk sýra gefur pH < 7 við jafngildi vegna þess að samoka sýran (NH₄⁺) er eftir.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
 };
 
@@ -40,6 +42,7 @@ const MISCONCEPTION_BY_CHALLENGE: Partial<Record<number, string>> = {
   2: TITRATION_MISCONCEPTIONS.weak_strong,
   5: TITRATION_MISCONCEPTIONS.buffer_region,
   6: TITRATION_MISCONCEPTIONS.indicator,
+  7: TITRATION_MISCONCEPTIONS.weak_base,
 };
 
 /**
@@ -73,6 +76,14 @@ const strongStrongTitration = titrations.find(
 const weakStrongTitration = titrations.find(
   (t): t is MonoproticTitration => t.type === 'weak-strong'
 );
+const strongWeakTitration = titrations.find(
+  (t): t is MonoproticTitration => t.type === 'strong-weak'
+);
+const TITRATION_BY_CURVE: Record<string, MonoproticTitration | undefined> = {
+  'strong-strong': strongStrongTitration,
+  'weak-strong': weakStrongTitration,
+  'strong-weak': strongWeakTitration,
+};
 
 export function Level1({ onComplete, onBack }: Level1Props) {
   const [showIntro, setShowIntro] = useState(true);
@@ -321,7 +332,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
 
             {/* Options */}
-            <div ref={optionsRef} className="space-y-3 phone:space-y-2">
+            <div
+              ref={optionsRef}
+              data-options=""
+              className={
+                shuffledOptions.some((o) => o.curve)
+                  ? 'grid grid-cols-3 gap-2 sm:gap-3'
+                  : 'space-y-3 phone:space-y-2'
+              }
+            >
               {shuffledOptions.map((option) => {
                 const isSelected = selectedOption === option.id;
                 const isOptionCorrect = option.isCorrect;
@@ -352,14 +371,30 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       showResult ? 'cursor-default' : 'cursor-pointer'
                     }`}
                   >
-                    <div className="flex items-start gap-3">
-                      <span
-                        className={`font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}
-                      >
-                        {option.id}.
-                      </span>
-                      <span className="text-warm-800">{option.labelIs}</span>
-                    </div>
+                    {option.curve ? (
+                      // A curve to read, unlabelled. Its description is for a
+                      // screen reader until the result, then for everyone.
+                      <div className="flex flex-col items-center gap-1">
+                        <span
+                          className={`self-start font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}
+                        >
+                          {option.id}.
+                        </span>
+                        <MiniCurve curveType={option.curve} />
+                        <span className={showResult ? 'text-xs text-warm-800' : 'sr-only'}>
+                          {option.labelIs}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-start gap-3">
+                        <span
+                          className={`font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}
+                        >
+                          {option.id}.
+                        </span>
+                        <span className="text-warm-800">{option.labelIs}</span>
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -455,17 +490,11 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
     let equivVolume = 25;
     let equivPH = 7;
 
-    if (curveType === 'strong-strong' && strongStrongTitration) {
-      curveData = generateTitrationCurve(strongStrongTitration, 50);
-      equivVolume = strongStrongTitration.equivalenceVolume;
-      equivPH = calculatePH(strongStrongTitration, equivVolume);
-    } else if (
-      (curveType === 'weak-strong' || curveType === 'strong-weak') &&
-      weakStrongTitration
-    ) {
-      curveData = generateTitrationCurve(weakStrongTitration, 50);
-      equivVolume = weakStrongTitration.equivalenceVolume;
-      equivPH = calculatePH(weakStrongTitration, equivVolume);
+    const titration = curveType ? TITRATION_BY_CURVE[curveType] : undefined;
+    if (titration) {
+      curveData = generateTitrationCurve(titration, 50);
+      equivVolume = titration.equivalenceVolume;
+      equivPH = calculatePH(titration, equivVolume);
     } else {
       curveData = [];
     }
@@ -511,5 +540,32 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
         ariaLabel="Títrunarferill"
       />
     </div>
+  );
+}
+
+/**
+ * A small curve drawn as an answer option: axes, a dashed pH 7 line and the
+ * curve, with no labels, so the student reads the shape (2026-11-14). The
+ * titration is the game's own, so it is the curve Stig 2 draws.
+ */
+function MiniCurve({ curveType }: { curveType: string }) {
+  const path = useMemo(() => {
+    const titration = TITRATION_BY_CURVE[curveType];
+    if (!titration) return '';
+    const x = (v: number) => 6 + (v / 50) * 90;
+    const y = (pH: number) => 66 - (pH / 14) * 62;
+    return generateTitrationCurve(titration, 50)
+      .map(
+        (p, i) =>
+          `${i ? 'L' : 'M'} ${Math.round(x(p.volume) * 10) / 10} ${Math.round(y(p.pH) * 10) / 10}`
+      )
+      .join(' ');
+  }, [curveType]);
+  return (
+    <svg viewBox="0 0 100 70" aria-hidden="true" className="w-full max-w-[9rem]">
+      <path d="M 6 4 L 6 66 L 96 66" fill="none" stroke="#94a3b8" strokeWidth={1} />
+      <line x1={6} x2={96} y1={35} y2={35} stroke="#cbd5e1" strokeDasharray="3 3" />
+      <path d={path} fill="none" stroke="#3b82f6" strokeWidth={2} strokeLinejoin="round" />
+    </svg>
   );
 }
