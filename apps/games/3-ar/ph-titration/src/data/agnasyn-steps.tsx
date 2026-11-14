@@ -90,9 +90,9 @@ export const STEPS: Step[] = [
     volume: 0,
     drip: false,
     equations: [
-      <Eq left="CH₃COOH(aq) + H₂O(l)" arrow="⇌" right="CH₃COO⁻(aq) + H₃O⁺(aq)" />,
+      <Eq left="CH₃COOH(aq)" arrow="⇌" right="CH₃COO⁻(aq) + H⁺(aq)" />,
       <>
-        K<sub>a</sub> = <span className="whitespace-nowrap">[CH₃COO⁻][H₃O⁺] / [CH₃COOH]</span>{' '}
+        K<sub>a</sub> = <span className="whitespace-nowrap">[CH₃COO⁻][H⁺] / [CH₃COOH]</span>{' '}
         <span className="whitespace-nowrap">= {sci(KA)}</span>
       </>,
     ],
@@ -101,8 +101,9 @@ export const STEPS: Step[] = [
         <p>
           Í keiluflöskunni eru {formatDecimal(V_ACID, 1)} mL af {formatDecimal(C_ACID, 3)} M
           ediksýru. Ediksýra er veik sýra: aðeins um {formatDecimal(percentIonised(), 1)} %
-          sameindanna gefa vatni róteind, svo langflestar agnirnar eru óklofnar CH₃COOH-sameindir.
-          Jafnvægið liggur langt til vinstri, eins og lítið K<sub>a</sub> segir til um.
+          sameindanna klofna í CH₃COO⁻ og H⁺, svo langflestar agnirnar eru óklofnar
+          CH₃COOH-sameindir. Jafnvægið liggur langt til vinstri, eins og lítið K<sub>a</sub> segir
+          til um.
         </p>
         <p>
           Jafnvægið er virkt: sameindir klofna og jónir sameinast aftur í sífellu, en hlutföllin
@@ -115,8 +116,8 @@ export const STEPS: Step[] = [
     ),
     note: (
       <>
-        Í réttu hlutfalli væri aðeins {formatDecimal(trueMinorParticles(0), 2)} af H₃O⁺-jón á móti
-        20 sameindum, sem sæist ekki. Við sýnum eina CH₃COO⁻ og eina H₃O⁺ með strikahring.
+        Í réttu hlutfalli væri aðeins {formatDecimal(trueMinorParticles(0), 2)} af H⁺-jón á móti 20
+        sameindum, sem sæist ekki. Við sýnum eina CH₃COO⁻ og eina H⁺ með strikahring.
       </>
     ),
   },
@@ -169,7 +170,7 @@ export const STEPS: Step[] = [
         <p>
           OH⁻ er sterkur basi og tekur róteind af CH₃COOH. Hvarfið gengur nær alveg til enda (K = K
           <sub>a</sub>/K<sub>w</sub> = {sci(KA / KW)}), svo hver OH⁻ sem bætt er við breytir einni
-          CH₃COOH í eina CH₃COO⁻. Þær fáu H₃O⁺-jónir sem voru í lausninni hverfa líka.
+          CH₃COOH í eina CH₃COO⁻. Þær fáu H⁺-jónir sem voru í lausninni hverfa líka.
         </p>
         <p>
           Nú eru bæði CH₃COOH og samoka basi hennar, CH₃COO⁻, í lausninni í mælanlegu magni: lausnin

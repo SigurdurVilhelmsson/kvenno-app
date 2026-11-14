@@ -68,6 +68,8 @@ pH readout and the curve move together. Nothing is graded or stored.
   whole titration through it and drags a slider at random, checking the counts after each move.
   `agnasyn-screen.test.tsx` walks every scene with reduced motion. With reduced motion the view
   does not drift and every change is made at once.
+- **H⁺, not H₃O⁺** (Siggi, 2026-11-14): his students know the shorter form, so the ionisation is
+  written CH₃COOH ⇌ CH₃COO⁻ + H⁺. Only this screen; the levels are unchanged.
 - The moving SVGs carry `data-live` for `desktop-compare`.
 
 ## What matters before touching it

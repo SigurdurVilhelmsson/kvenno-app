@@ -145,7 +145,7 @@ export function Agnasyn({ onBack }: AgnasynProps) {
 
   const beakerLabel =
     `Agnirnar í lausninni eftir ${formatDecimal(volume, 2)} mL af NaOH: ` +
-    `${drawn.HA} CH₃COOH, ${drawn.A} CH₃COO⁻, ${drawn.H3O} H₃O⁺, ${drawn.OH} OH⁻ og ${drawn.Na} Na⁺.` +
+    `${drawn.HA} CH₃COOH, ${drawn.A} CH₃COO⁻, ${drawn.H3O} H⁺, ${drawn.OH} OH⁻ og ${drawn.Na} Na⁺.` +
     (exaggerated ? ' Ein jón er ýkt, svo hún sjáist.' : '');
 
   return (

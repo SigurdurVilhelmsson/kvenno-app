@@ -145,7 +145,7 @@ function pick<T>(items: T[], rng: () => number): T | undefined {
  * The counts the system is heading for once every swim in progress arrives,
  * with the exaggerated pairs taken back: a flagged CH₃COO⁻ counts as the
  * CH₃COOH it came from and a flagged CH₃COOH as its CH₃COO⁻; the flagged
- * H₃O⁺ or OH⁻ counts as nothing.
+ * H⁺ or OH⁻ counts as nothing.
  */
 export function realCounts(sys: System): Omit<ParticleCounts, 'flag'> {
   const c = { HA: 0, A: 0, H3O: 0, OH: 0, Na: 0 };

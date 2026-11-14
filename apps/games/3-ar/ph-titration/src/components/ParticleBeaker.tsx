@@ -40,7 +40,7 @@ const STYLE: Record<
 > = {
   HA: { fill: '#93c5fd', stroke: '#1d4ed8', text: 'HA', label: 'CH₃COOH', textColor: '#1e3a8a' },
   A: { fill: '#86efac', stroke: '#15803d', text: 'A⁻', label: 'CH₃COO⁻', textColor: '#14532d' },
-  H3O: { fill: '#fca5a5', stroke: '#b91c1c', text: '+', label: 'H₃O⁺', textColor: '#7f1d1d' },
+  H3O: { fill: '#fca5a5', stroke: '#b91c1c', text: '+', label: 'H⁺', textColor: '#7f1d1d' },
   OH: { fill: '#c4b5fd', stroke: '#6d28d9', text: '−', label: 'OH⁻', textColor: '#3b0764' },
   Na: { fill: '#e7e5e4', stroke: '#78716c', text: '+', label: 'Na⁺', textColor: '#57534e' },
   H2O: { fill: '#e0f2fe', stroke: '#7dd3fc', text: '', label: 'H₂O', textColor: '#0369a1' },

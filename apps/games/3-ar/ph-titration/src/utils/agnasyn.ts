@@ -7,7 +7,7 @@
  *
  * The pH comes from `calculateWeakStrongPH`, the same function that draws every
  * curve in this game, so the particle view cannot disagree with Stig 2. The
- * species follow from that pH: [CH₃COO⁻] = C·Kₐ / (Kₐ + [H₃O⁺]).
+ * species follow from that pH: [CH₃COO⁻] = C·Kₐ / (Kₐ + [H⁺]).
  *
  * The particle counts are the amounts on a fixed scale, 8 particles per mmól,
  * so the 2,50 mmól of acid are 20 particles and each 1,25 mL of NaOH is one
@@ -85,7 +85,7 @@ export function speciesAt(v: number): Species {
 
 /**
  * The exaggerated pair at the two volumes where the minor species matter:
- * `ion` is CH₃COOH → CH₃COO⁻ + H₃O⁺ at the start, `hyd` is
+ * `ion` is CH₃COOH → CH₃COO⁻ + H⁺ at the start, `hyd` is
  * CH₃COO⁻ + H₂O → CH₃COOH + OH⁻ at the equivalence point.
  */
 export type FlagPair = 'ion' | 'hyd' | null;
@@ -128,7 +128,7 @@ export function particleCountsAt(v: number): ParticleCounts {
 
 /**
  * What the drawn counts are once the flagged pair is drawn: at the start one
- * CH₃COOH is shown as CH₃COO⁻ beside one H₃O⁺, at the equivalence point one
+ * CH₃COOH is shown as CH₃COO⁻ beside one H⁺, at the equivalence point one
  * CH₃COO⁻ as CH₃COOH beside one OH⁻.
  */
 export function drawnCounts(c: ParticleCounts): Omit<ParticleCounts, 'flag'> {
@@ -143,7 +143,7 @@ export function trueMinorParticles(v: number): number {
   return (isEquivalence(v) ? s.mmol.OH : s.mmol.H3O) * PARTICLES_PER_MMOL;
 }
 
-/** Percent of the acid ionised at the start, [H₃O⁺]/C. */
+/** Percent of the acid ionised at the start, [H⁺]/C. */
 export function percentIonised(): number {
   return (speciesAt(0).conc.H3O / C_ACID) * 100;
 }
