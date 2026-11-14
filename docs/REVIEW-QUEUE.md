@@ -855,13 +855,12 @@ nákvæmari niðurstöður.` (`Level3.tsx:434`) is wrong: the level's own feedba
       decision 7 was applied to Stig 2 only. Same model in Stig 3?
 - [ ] **pH Títrun's HF `initialPH` is 2,08 where √(Ka·C) gives 2,00.** Pinned by an `it.fails`
       test "pending a teacher decision". No screen shows it.
-- [ ] **pH Títrun: which litvísar Stig 2 accepts** (2026-11-14 review). Decision 113 (a) accepts
+- [x] **pH Títrun: which litvísar Stig 2 accepts** (2026-11-14 review). Decision 113 (a) accepts
       one whose range contains the equivalence pH, so phenolphthalein is wrong for HCl + NaOH. The
       textbook (`ch14/m68809`) says methyl red, bromothymol blue or phenolphthalein all work there,
       because the curve is vertical: on the game's own curve phenolphthalein changes within 0,05 mL
       of equivalence. Recommended: accept a litvísir whose colour change falls within about 0,1 mL
-      of equivalence on the curve. Asked in the 2026-11-14 thread; the PR applying it keeps it in a
-      commit of its own.
+      of equivalence on the curve. **Ruled 2026-11-14 by Siggi: that rule**, applied in PR #148.
 - [ ] **pH Títrun Stig 2, the bench's order** (2026-11-14 review, not changed). The litvísir is
       chosen after titrating, so the flask shows a universal-indicator colour while pouring and the
       choice is never seen to work; and every task states the sample's concentration, so the

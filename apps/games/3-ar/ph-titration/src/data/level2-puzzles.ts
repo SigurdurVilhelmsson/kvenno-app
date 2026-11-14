@@ -80,7 +80,7 @@ export function colourChangeWindow(titrationId: number, indicatorId: string): [n
  * endpoint is the equivalence point to a drop or two. That is the textbook's
  * rule (ch. 14, m68809): any of methyl red, bromothymol blue and
  * phenolphthalein for a strong acid with a strong base, phenolphthalein for a
- * weak acid. Proposed 2026-11-14 for Siggi's ruling (docs/REVIEW-QUEUE.md),
+ * weak acid. Siggi's ruling, 2026-11-14,
  * replacing decision 113 (a), which
  * accepted an indicator only if its range contained the equivalence pH and so
  * marked phenolphthalein wrong for HCl + NaOH, which changes colour within

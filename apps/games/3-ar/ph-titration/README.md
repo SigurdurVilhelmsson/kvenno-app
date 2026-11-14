@@ -127,7 +127,7 @@ pH readout and the curve move together. Nothing is graded or stored.
 - **The acceptable litvísar are derived, not listed.** `acceptableIndicatorsFor` takes every
   litvísir whose whole colour change falls within 0,1 mL of the equivalence volume on the curve
   (`colourChangeWindow`), and throws on import if none does. That is the textbook's rule
-  (`ch14/m68809`), proposed 2026-11-14 and awaiting Siggi's ruling (`docs/REVIEW-QUEUE.md`); it
+  (`ch14/m68809`), ruled by Siggi on 2026-11-14; it
   replaced decision 113 (a) of 2026-10-23, which took the litvísar whose range contains the
   equivalence pH as printed, and so refused fenólftalín for HCl + NaOH and accepted only
   þýmólblátt for HF. The result now says where on the curve the chosen litvísir changes colour.

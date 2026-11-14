@@ -69,7 +69,7 @@ describe('Level 2 puzzles agree with the titration they serve', () => {
 /**
  * Stig 2 accepts an indicator whose whole colour change falls within 0,1 mL of
  * the equivalence volume on the titration's curve: the textbook's rule (ch. 14,
- * m68809), proposed 2026-11-14 to replace decision 113 (a), which accepted only
+ * m68809), Siggi's ruling of 2026-11-14, replacing decision 113 (a), which accepted only
  * an indicator whose range contained the equivalence pH and so marked
  * phenolphthalein wrong for HCl + NaOH.
  *
