@@ -671,6 +671,23 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
                   </div>
                 </div>
 
+                <div className="mt-4 flex gap-2 phone:mt-3">
+                  <button
+                    key="retry"
+                    onClick={armed(handleReset)}
+                    className="flex-1 px-4 py-2 pointer-coarse:py-3 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
+                  >
+                    Reyna aftur
+                  </button>
+                  <button
+                    key="next"
+                    ref={nextRef}
+                    onClick={armed(handleNext)}
+                    className="flex-1 px-4 py-2 pointer-coarse:py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
+                  >
+                    {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta →' : 'Ljúka →'}
+                  </button>
+                </div>
                 {chosen && (
                   <div className="mt-3 bg-purple-50 border border-purple-200 rounded-lg p-3 text-sm phone:p-2">
                     <div className="font-bold text-purple-800 mb-1">
@@ -702,24 +719,6 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
 
                 <div className={`mt-3 text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
                   {puzzle.explanationIs}
-                </div>
-
-                <div className="mt-4 flex gap-2 phone:mt-3">
-                  <button
-                    key="retry"
-                    onClick={armed(handleReset)}
-                    className="flex-1 px-4 py-2 pointer-coarse:py-3 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
-                  >
-                    Reyna aftur
-                  </button>
-                  <button
-                    key="next"
-                    ref={nextRef}
-                    onClick={armed(handleNext)}
-                    className="flex-1 px-4 py-2 pointer-coarse:py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
-                  >
-                    {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta →' : 'Ljúka →'}
-                  </button>
                 </div>
               </div>
             </Presence>
