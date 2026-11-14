@@ -58,7 +58,9 @@ function answer(right: boolean) {
     target: { value: right ? formatRounded(deltaG, 1) : '99999' },
   });
   fireEvent.click(
-    screen.getByRole('radio', { name: right ? VERDICT[getSpontaneity(deltaG)] : /Jafnvægi/ })
+    screen.getByRole('radio', {
+      name: right ? VERDICT[getSpontaneity(deltaG, problem.deltaH)] : /Jafnvægi/,
+    })
   );
   fireEvent.click(screen.getByRole('button', { name: 'Athuga svar' }));
 }

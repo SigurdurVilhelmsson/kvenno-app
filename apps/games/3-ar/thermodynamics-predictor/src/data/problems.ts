@@ -199,7 +199,9 @@ export const PROBLEMS: ProblemsData = {
       reaction: 'PCl₅(g) → PCl₃(g) + Cl₂(g)',
       name: 'Niðurbrot PCl₅',
       deltaH: 87.9,
-      deltaS: 140,
+      // The book's S° (m68865): 311,78 + 223,1 − 364,4. It was 140 until 2026-11-14,
+      // which put the crossover at 628 K instead of 516 K.
+      deltaS: 170.5,
       defaultTemp: 500,
       scenario: 4,
       difficulty: 'Miðlungs',

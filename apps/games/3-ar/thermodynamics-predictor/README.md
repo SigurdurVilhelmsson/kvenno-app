@@ -185,7 +185,24 @@ hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`�
     is in neither the glossary nor the textbook (the book writes `tvíliðun NO₂` for this very
     reaction), and the menu's promise of `vísbendingar` in a mode that has no hints.
 
+## Fixed 2026-11-14: PCl₅'s entropy and the equilibrium band
+
+From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
+
+- **ΔS° comes from the book where it can.** The appendix that gives ΔHf° (`m68865`) also gives
+  S°; `thermo.ts` now carries `STANDARD_ENTROPY` for the species this game writes. Every stored
+  ΔS° agreed within rounding except PCl₅ → PCl₃ + Cl₂, stored 140 where the book gives 170,5,
+  which moves its crossover from 628 K to 516 K. At its default 500 K it is still not
+  spontaneous (ΔG° = +2,7 kJ/mol).
+- **"Jafnvægi" now means close to the crossover temperature.** It was |ΔG°| < 1 kJ/mol whatever
+  the reaction, which for freezing water covered 228–318 K, so ice at −45 °C was graded as at
+  equilibrium. The band is half a per cent of |ΔH°|, at most 1 kJ/mol, which is the same as
+  being within half a per cent of T_cross (`equilibriumBand`).
+
 ## Open
 
-- **No ΔS° is sourced anywhere on the platform**, so the ΔS values are unchecked. (ΔH° comes from
-  `thermo.ts` for the 25 reactions it reaches since decision 9 (a), ids 12 and 21 included.)
+- **ΔS° is checked against the book since 2026-11-14** (`STANDARD_ENTROPY` in `thermo.ts`, the
+  S° column of `m68865`; `standard-entropy.test.ts`). Six are out of its reach: ice (twice),
+  glucose, the protein, ATP, and CaCO₃, whose row in the book disagrees with itself, so its 161
+  is unsourced. Photosynthesis's −210 is about −255 by standard tables (glucose is not in the
+  book).

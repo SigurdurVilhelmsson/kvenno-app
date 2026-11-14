@@ -151,6 +151,56 @@ export const FORMATION_ENTHALPY: Record<string, number> = {
   'Zn²⁺(aq)': -153.9,
 };
 
+/**
+ * Standard molar entropies S°, in J/(mol·K) at 298 K, from the same appendix (`m68865`,
+ * its last column). Transcribed 2026-11-14 for the species
+ * `3-ar/thermodynamics-predictor` writes, so its ΔS° can be checked against the book as its
+ * ΔH° is. Keyed as `FORMATION_ENTHALPY` is. Species in water are on the same convention,
+ * S°(H⁺, aq) = 0, which is why an ion can be negative.
+ *
+ * **Left out: CaCO₃(s).** The book's row (ΔHf° −1220,0, ΔGf° −1081,4, S° 110,0) does not
+ * agree with itself: for CaCO₃ → CaO + CO₂ its ΔG° is 83,7 kJ/mol where its ΔH° − TΔS° is
+ * 149,3. Every other reaction the game poses agrees within 2,1 kJ/mol. So no S° is taken
+ * from that row; the game keeps its own ΔS° there.
+ */
+export const STANDARD_ENTROPY: Record<string, number> = {
+  'Br₂(g)': 245.5,
+  'Br₂(l)': 152.23,
+  'C(s)': 5.74,
+  'C(s, demantur)': 2.38,
+  'CaO(s)': 38.1,
+  'CH₄(g)': 186.3,
+  'Cl₂(g)': 223.1,
+  'CO(g)': 197.7,
+  'CO₂(g)': 213.8,
+  'Cu(s)': 33.15,
+  'Fe(s)': 27.3,
+  'Fe₂O₃(s)': 87.4,
+  'H₂(g)': 130.7,
+  'H₂O(g)': 188.8,
+  'H₂O(l)': 70.0,
+  'H₂O₂(l)': 109.6,
+  'HCl(g)': 186.9,
+  'N₂(g)': 191.6,
+  'N₂O₄(g)': 304.4,
+  'NaCl(s)': 72.1,
+  'NH₃(g)': 192.8,
+  'NH₄Cl(s)': 94.6,
+  'NO(g)': 210.8,
+  'NO₂(g)': 240.1,
+  'O₂(g)': 205.2,
+  'O₃(g)': 238.9,
+  'PCl₃(g)': 311.78,
+  'PCl₅(g)': 364.4,
+  'SO₂(g)': 248.2,
+  'SO₃(g)': 256.76,
+  'Zn(s)': 41.6,
+  'Cl⁻(aq)': 56.5,
+  'Cu²⁺(aq)': -99.6,
+  'Na⁺(aq)': 59.0,
+  'Zn²⁺(aq)': -112.1,
+};
+
 /** The gas constant in kJ/(mol·K), to match the kJ/mol of the table above. */
 export const R_KJ = 0.0083145;
 
