@@ -258,8 +258,8 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               Byggðu nettójónajöfnuna.
             </p>
             <p className="mb-4 text-sm text-warm-600 phone:mb-2">
-              Veldu jónirnar sem taka raunverulega þátt og settu réttan stuðul á hverja.
-              Áhorfendajónirnar skilurðu eftir á núlli.
+              Veldu jónirnar sem taka raunverulega þátt og settu réttan stuðul á hverja. Meðjónirnar
+              skilurðu eftir á núlli.
             </p>
 
             {/* On a phone two ions to a row, so the four rows are two; on a
@@ -336,14 +336,13 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 </p>
                 <p className="font-mono text-sm text-warm-900">{renderEquation(reaction.net)}</p>
                 <p className="mt-2 text-sm text-warm-700">
-                  Áhorfendajónir: {reaction.spectators.map((s) => s.formula).join(', ')}
+                  Meðjónir: {reaction.spectators.map((s) => s.formula).join(', ')}
                 </p>
               </>
             ) : (
               <p className="text-sm text-warm-800">
                 Bæði möguleg efni — {reaction.products.map((p) => p.formula).join(' og ')} — eru
-                leysanleg, svo allar fjórar jónirnar eru áhorfendajónir og engin nettójónajafna er
-                til.
+                leysanleg, svo allar fjórar jónirnar eru meðjónir og engin nettójónajafna er til.
               </p>
             )}
 

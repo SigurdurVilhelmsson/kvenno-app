@@ -167,8 +167,7 @@ function App() {
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
                     <span>
-                      Að skrifa heildarjónajöfnu og stytta út áhorfendajónirnar til að fá
-                      nettójónajöfnuna
+                      Að skrifa heildarjónajöfnu og stytta út meðjónirnar til að fá nettójónajöfnuna
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
