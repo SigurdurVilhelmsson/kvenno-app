@@ -16,6 +16,8 @@ export interface Level3Challenge {
     equivalenceVolume?: number;
     pH?: number;
     pKa?: number;
+    /** Kₐ, printed in scientific notation, for a problem that asks for pKₐ from it. */
+    Ka?: number;
     acidConcentration?: number;
     baseConcentration?: number;
     formula?: string;
@@ -25,9 +27,16 @@ export interface Level3Challenge {
   correctAnswer: number;
   unit: string;
   tolerance: number; // Relative tolerance (e.g., 0.02 = ±2%)
+  /**
+   * An absolute tolerance, which replaces `tolerance` where it is set. A pH is
+   * a logarithm, so ±2 % of it is ±0,1 near pH 5 and means nothing chemically;
+   * pH answers are graded at ±0,02, as `3-ar/syrufastinn` grades them.
+   */
+  absoluteTolerance?: number;
+  /** Decimals the answer is printed to, so "Rétt svar" keeps its significant figures. */
+  answerDecimals: number;
 
   // For polyprotic
-  titrationId?: number;
   equivalencePointIndex?: number;
 
   hintIs: string;
@@ -58,6 +67,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       formula: 'HCl + NaOH → NaCl + H₂O',
     },
     correctAnswer: 0.13,
+    answerDecimals: 3,
     unit: 'M',
     tolerance: 0.02,
     hintIs:
@@ -68,12 +78,12 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     solutionStepsIs: [
       'n(NaOH) = M × V = 0,100 mól/L × 0,0325 L = 0,00325 mól',
       'n(HCl) = n(NaOH) = 0,00325 mól (1:1 hlutfall)',
-      'M(HCl) = n / V = 0,00325 mól / 0,025 L = 0,130 M',
+      'M(HCl) = n / V = 0,00325 mól / 0,0250 L = 0,130 M',
     ],
     solutionSteps: [
       'n(NaOH) = M × V = 0.100 mol/L × 0.0325 L = 0.00325 mol',
       'n(HCl) = n(NaOH) = 0.00325 mol (1:1 ratio)',
-      'M(HCl) = n / V = 0.00325 mol / 0.025 L = 0.130 M',
+      'M(HCl) = n / V = 0.00325 mol / 0.0250 L = 0.130 M',
     ],
   },
   {
@@ -92,6 +102,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       formula: 'CH₃COOH + NaOH → CH₃COONa + H₂O',
     },
     correctAnswer: 0.084,
+    answerDecimals: 4,
     unit: 'M',
     tolerance: 0.02,
     hintIs:
@@ -102,14 +113,14 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     explanation:
       'Whether the acid is strong or weak, moles of acid and base are equal at equivalence.',
     solutionStepsIs: [
-      'n(NaOH) = 0,150 mól/L × 0,028 L = 0,0042 mól',
-      'n(CH₃COOH) = n(NaOH) = 0,0042 mól',
-      'M(CH₃COOH) = 0,0042 mól / 0,050 L = 0,084 M',
+      'n(NaOH) = 0,150 mól/L × 0,0280 L = 0,00420 mól',
+      'n(CH₃COOH) = n(NaOH) = 0,00420 mól (1:1 hlutfall)',
+      'M(CH₃COOH) = 0,00420 mól / 0,0500 L = 0,0840 M',
     ],
     solutionSteps: [
-      'n(NaOH) = 0.150 mol/L × 0.028 L = 0.0042 mol',
-      'n(CH₃COOH) = n(NaOH) = 0.0042 mol',
-      'M(CH₃COOH) = 0.0042 mol / 0.050 L = 0.084 M',
+      'n(NaOH) = 0.150 mol/L × 0.0280 L = 0.00420 mol',
+      'n(CH₃COOH) = n(NaOH) = 0.00420 mol (1:1 ratio)',
+      'M(CH₃COOH) = 0.00420 mol / 0.0500 L = 0.0840 M',
     ],
   },
 
@@ -130,6 +141,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       formula: 'HNO₃ + NaOH → NaNO₃ + H₂O',
     },
     correctAnswer: 21.0,
+    answerDecimals: 1,
     unit: 'mL',
     tolerance: 0.02,
     hintIs: 'M₁V₁ = M₂V₂ fyrir 1:1 hvarfahlutfall. Leystu fyrir V₂.',
@@ -165,9 +177,9 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       formula: 'H₂SO₃ + 2NaOH → Na₂SO₃ + 2H₂O',
     },
     correctAnswer: 40.0,
+    answerDecimals: 1,
     unit: 'mL',
     tolerance: 0.02,
-    titrationId: 11,
     equivalencePointIndex: 2,
     hintIs:
       'Tvívirk sýra gefur 2 mól H⁺ fyrir hvert mól sýru. Við annan jafngildispunkt hafa bæði H⁺ hvarfast.',
@@ -201,11 +213,11 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       formula: 'H₃PO₄ + NaOH → NaH₂PO₄ + H₂O (1. jafngildispunktur)',
     },
     correctAnswer: 20.0,
+    answerDecimals: 1,
     unit: 'mL',
     tolerance: 0.02,
-    titrationId: 13,
     equivalencePointIndex: 1,
-    hintIs: 'Við fyrsta jafngildispunkt, hefur aðeins eitt H⁺ hvarfast. Hlutfallið er 1:1.',
+    hintIs: 'Við fyrsta jafngildispunkt hefur aðeins eitt H⁺ hvarfast. Hlutfallið er 1:1.',
     hint: 'At first equivalence, only one H⁺ has reacted. The ratio is 1:1.',
     explanationIs: 'Við fyrsta jafngildispunkt: n(NaOH) = n(H₃PO₄) þar sem eitt H⁺ hlutleysist.',
     explanation: 'At first equivalence: n(NaOH) = n(H₃PO₄) since one H⁺ is neutralized.',
@@ -238,8 +250,10 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       formula: 'pH = pKₐ + log([A⁻]/[HA])',
     },
     correctAnswer: 4.86,
+    answerDecimals: 2,
     unit: '',
     tolerance: 0.02,
+    absoluteTolerance: 0.02,
     hintIs: 'Henderson-Hasselbalch jafnan: pH = pKₐ + log([samoka basi]/[veik sýra])',
     hint: 'Henderson-Hasselbalch equation: pH = pKₐ + log([conjugate base]/[weak acid])',
     explanationIs: 'Settu gildin inn í Henderson-Hasselbalch jöfnuna og reiknaðu.',
@@ -272,6 +286,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
       formula: 'pH = pKₐ + log([NH₃]/[NH₄⁺])',
     },
     correctAnswer: 1.74,
+    answerDecimals: 2,
     unit: '',
     tolerance: 0.02,
     hintIs:
@@ -300,35 +315,51 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     titleIs: 'Samansett verkefni: pH við hálfjafngildispunkt',
     title: 'Combined problem: pH at half-equivalence',
     descriptionIs:
-      'Títrun á 30,0 mL af 0,100 M flússýru (HF, pKₐ = 3,17) með 0,100 M NaOH. Hver er pH við hálfjafngildispunkt?',
+      'Títrun á 30,0 mL af 0,100 M flússýru (HF, Kₐ = 6,8 × 10⁻⁴) með 0,100 M NaOH. Hvert er pH þegar 15,0 mL af NaOH hefur verið bætt við?',
     description:
-      'Titration of 30.0 mL of 0.100 M hydrofluoric acid (HF, pKₐ = 3.17) with 0.100 M NaOH. What is the pH at half-equivalence?',
+      'Titration of 30.0 mL of 0.100 M hydrofluoric acid (HF, Kₐ = 6.8 × 10⁻⁴) with 0.100 M NaOH. What is the pH after 15.0 mL of NaOH has been added?',
     givenData: {
       analyteVolume: 30.0,
       analyteMolarity: 0.1,
       titrantMolarity: 0.1,
-      pKa: 3.17,
+      Ka: 6.8e-4,
       formula: 'HF + NaOH → NaF + H₂O',
     },
     correctAnswer: 3.17,
+    answerDecimals: 2,
     unit: '',
     tolerance: 0.02,
-    hintIs: 'Við hálfjafngildispunkt: [HA] = [A⁻]. Hvað verður þá log([A⁻]/[HA])?',
-    hint: 'At half-equivalence: [HA] = [A⁻]. What does log([A⁻]/[HA]) become?',
+    absoluteTolerance: 0.02,
+    hintIs:
+      'Finndu fyrst jafngildisrúmmálið. Hve stór hluti sýrunnar hefur hvarfast eftir 15,0 mL? Hvað segir það um [HF] og [F⁻]?',
+    hint: 'First find the equivalence volume. What fraction of the acid has reacted after 15.0 mL? What does that say about [HF] and [F⁻]?',
     explanationIs:
-      'Við hálfjafngildispunkt, helmingur sýrunnar hefur hvarfast, svo [HA] = [A⁻] og pH = pKₐ.',
-    explanation: 'At half-equivalence, half the acid has reacted, so [HA] = [A⁻] and pH = pKₐ.',
+      'Jafngildisrúmmálið er 30,0 mL, svo eftir 15,0 mL hefur helmingur sýrunnar hvarfast. Þá er [HF] = [F⁻] og pH = pKₐ = −log(6,8 × 10⁻⁴) = 3,17.',
+    explanation:
+      'The equivalence volume is 30.0 mL, so after 15.0 mL half the acid has reacted. Then [HF] = [F⁻] and pH = pKₐ = −log(6.8 × 10⁻⁴) = 3.17.',
     solutionStepsIs: [
-      'Við hálfjafngildispunkt: [HF] = [F⁻]',
-      'Henderson-Hasselbalch: pH = pKₐ + log([F⁻]/[HF])',
-      'pH = pKₐ + log(1) = pKₐ + 0 = pKₐ',
-      'pH = 3,17',
+      'n(HF) = 0,100 M × 30,0 mL = 3,00 mmol, svo jafngildisrúmmálið er 3,00 mmol / 0,100 M = 30,0 mL',
+      '15,0 mL er helmingur þess: hálfjafngildispunktur, 1,50 mmol HF og 1,50 mmol F⁻',
+      'pH = pKₐ + log([F⁻]/[HF]) = pKₐ + log(1) = pKₐ',
+      'pKₐ = −log(6,8 × 10⁻⁴) = 3,17, svo pH = 3,17',
     ],
     solutionSteps: [
-      'At half-equivalence: [HF] = [F⁻]',
-      'Henderson-Hasselbalch: pH = pKₐ + log([F⁻]/[HF])',
-      'pH = pKₐ + log(1) = pKₐ + 0 = pKₐ',
-      'pH = 3.17',
+      'n(HF) = 0.100 M × 30.0 mL = 3.00 mmol, so the equivalence volume is 3.00 mmol / 0.100 M = 30.0 mL',
+      '15.0 mL is half of that: half-equivalence, 1.50 mmol HF and 1.50 mmol F⁻',
+      'pH = pKₐ + log([F⁻]/[HF]) = pKₐ + log(1) = pKₐ',
+      'pKₐ = −log(6.8 × 10⁻⁴) = 3.17, so pH = 3.17',
     ],
   },
 ];
+
+/**
+ * Whether an answer is right: within `absoluteTolerance` where a problem sets
+ * one (the pH answers), else within `tolerance` of the answer, relatively.
+ */
+export function isAnswerCorrect(challenge: Level3Challenge, answer: number): boolean {
+  if (!Number.isFinite(answer)) return false;
+  const error = Math.abs(answer - challenge.correctAnswer);
+  // The 1e-9 keeps an answer exactly on the bound, such as 4,88 for 4,86, inside it.
+  if (challenge.absoluteTolerance !== undefined) return error <= challenge.absoluteTolerance + 1e-9;
+  return error / Math.abs(challenge.correctAnswer) <= challenge.tolerance;
+}

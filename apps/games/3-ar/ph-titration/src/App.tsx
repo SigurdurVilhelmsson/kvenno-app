@@ -43,6 +43,10 @@ const DEFAULT_PROGRESS: Progress = {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
+  const [confirmReset, setConfirmReset] = useState(false);
+  // The confirm step replaces the button that had focus, so focus moves to
+  // its safe choice rather than falling to <body>.
+  const focusOnMount = useCallback((el: HTMLButtonElement | null) => el?.focus(), []);
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
     'ph-titration-progress',
     DEFAULT_PROGRESS
@@ -379,12 +383,36 @@ function App() {
                     <span className="font-semibold">Framvinda:</span> {levelsCompleted} af 3 stigum
                     lokið
                   </div>
-                  <button
-                    onClick={resetProgress}
-                    className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
-                  >
-                    Endurstilla
-                  </button>
+                  {/* Two steps, so one stray tap does not wipe every level's
+                      result. It reset at once. */}
+                  {confirmReset ? (
+                    <div className="flex items-center gap-3 text-sm">
+                      <span className="text-warm-700">Eyða framvindu?</span>
+                      <button
+                        onClick={() => {
+                          resetProgress();
+                          setConfirmReset(false);
+                        }}
+                        className="font-semibold text-red-600 hover:text-red-700 pointer-coarse:py-3 pointer-coarse:-my-3"
+                      >
+                        Já, endurstilla
+                      </button>
+                      <button
+                        ref={focusOnMount}
+                        onClick={() => setConfirmReset(false)}
+                        className="text-warm-600 hover:text-warm-800 pointer-coarse:py-3 pointer-coarse:-my-3"
+                      >
+                        Hætta við
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmReset(true)}
+                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
+                    >
+                      Endurstilla
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -402,13 +430,11 @@ function App() {
                     </span>
                   </p>
                   <p>
-                    <strong>Henderson-Hasselbalch:</strong> pH = pK<sub>a</sub> + log([A⁻]/[HA])
+                    <strong>Henderson-Hasselbalch:</strong> pH = pKₐ + log([A⁻]/[HA])
                   </p>
                   <p>
                     <strong>Stuðpúðasvæði:</strong>{' '}
-                    <span className="whitespace-nowrap">
-                      pH = pK<sub>a</sub> ± 1
-                    </span>
+                    <span className="whitespace-nowrap">pH = pKₐ ± 1</span>
                   </p>
                   <p>
                     <strong>Fjölvirkar sýrur:</strong> Margir jafngildispunktar fyrir H₂SO₃, H₃PO₄

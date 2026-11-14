@@ -4,7 +4,7 @@ import { parseStudentNumber } from '@shared/utils';
 
 import { indicators } from '../data/indicators';
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
-import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
+import { colourChangeWindow, LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
 import { calculatePH } from '../utils/ph-calculations';
@@ -67,27 +67,29 @@ describe('Level 2 puzzles agree with the titration they serve', () => {
 });
 
 /**
- * Stig 2 grades the indicator by Stig 1's rule — the colour-change range must
- * contain the pH at the equivalence point (Stig 1, question 6) — on the pH the
- * result prints: the curve's own, to one decimal. Mobile-pass decision 113 (a),
- * 2026-10-23.
- *
- * Until then each puzzle listed its indicators by hand, against that rule and
- * against each other: methyl red was accepted for HCl + NaOH (pH 7), methyl
- * orange refused there but accepted for HNO₃ + KOH (also pH 7) and for ammonia
- * (pH 5,3), and phenolphthalein accepted for HF (pH 8,0). Stig 1's own worked
- * example paired HCl + NaOH with methyl red too.
+ * Stig 2 accepts an indicator whose whole colour change falls within 0,1 mL of
+ * the equivalence volume on the titration's curve: the textbook's rule (ch. 14,
+ * m68809), Siggi's ruling of 2026-11-14, replacing decision 113 (a), which accepted only
+ * an indicator whose range contained the equivalence pH and so marked
+ * phenolphthalein wrong for HCl + NaOH.
  *
  * The rule is written out here rather than imported, so the test does not
- * check the grader against itself.
+ * check the grader against itself: it walks the curve in 0,001 mL steps.
  */
-function suits(indicatorId: string, pH: number): boolean {
+function suits(titrationId: number, indicatorId: string): boolean {
+  const t = getTitrationById(titrationId) as MonoproticTitration;
   const [low, high] = indicators.find((i) => i.id === indicatorId)!.pHRange;
-  return pH >= low && pH <= high;
+  const inRange: number[] = [];
+  for (let v = 0; v <= 60; v += 0.001) {
+    const pH = calculatePH(t, v);
+    if (pH >= low && pH <= high) inRange.push(v);
+  }
+  if (inRange.length === 0) return false;
+  return (
+    inRange[0] >= t.equivalenceVolume - 0.1 - 0.001 &&
+    inRange[inRange.length - 1] <= t.equivalenceVolume + 0.1 + 0.001
+  );
 }
-
-const printedEquivalencePH = (t: MonoproticTitration) =>
-  Math.round(calculatePH(t, t.equivalenceVolume) * 10) / 10;
 
 /** The indicators a text names, as whole words: þýmólblátt is not brómþýmólblátt. */
 function namedIndicators(text: string): string[] {
@@ -96,25 +98,23 @@ function namedIndicators(text: string): string[] {
     .map((i) => i.id);
 }
 
-describe("Level 2 grades the indicator by Level 1's rule", () => {
+describe('Level 2 accepts an indicator that changes colour at equivalence', () => {
   it('accepts these indicators, and no others', () => {
     expect(Object.fromEntries(LEVEL2_PUZZLES.map((p) => [p.id, p.acceptableIndicators]))).toEqual({
-      1: ['bromothymol-blue'], // HCl + NaOH, pH 7,0
-      2: ['phenolphthalein', 'thymol-blue'], // CH₃COOH + NaOH, pH 8,7
-      3: ['bromothymol-blue'], // HNO₃ + KOH, pH 7,0
-      4: ['methyl-red'], // NH₃ + HCl, pH 5,3
-      5: ['thymol-blue'], // HF + NaOH, pH 8,0
-      6: ['phenolphthalein', 'thymol-blue'], // HCOOH + KOH, pH 8,3
+      1: ['methyl-red', 'bromothymol-blue', 'phenolphthalein', 'thymol-blue'], // HCl + NaOH
+      2: ['phenolphthalein', 'thymol-blue'], // CH₃COOH + NaOH
+      3: ['methyl-red', 'bromothymol-blue', 'phenolphthalein', 'thymol-blue'], // HNO₃ + KOH
+      4: ['methyl-red'], // NH₃ + HCl: methyl orange finishes 0,4 mL late
+      5: ['bromothymol-blue', 'phenolphthalein', 'thymol-blue'], // HF + NaOH
+      6: ['phenolphthalein', 'thymol-blue'], // HCOOH + KOH: bromothymol blue starts 0,2 mL early
     });
   });
 
   it.each(LEVEL2_PUZZLES.map((p) => [p.id, p] as const))(
-    'puzzle %i: accepts exactly the indicators whose range holds the printed pH',
-    (id, puzzle) => {
-      const pH = printedEquivalencePH(titrationOf(id));
-      const suited = indicators.filter((i) => suits(i.id, pH)).map((i) => i.id);
-      expect(suited.length, `pH ${pH}`).toBeGreaterThan(0);
-      expect(puzzle.acceptableIndicators, `pH ${pH}`).toEqual(suited);
+    'puzzle %i: accepts exactly the indicators that change colour within 0,1 mL',
+    (_id, puzzle) => {
+      const suited = indicators.filter((i) => suits(puzzle.titrationId, i.id)).map((i) => i.id);
+      expect(puzzle.acceptableIndicators).toEqual(suited);
     }
   );
 
@@ -125,16 +125,26 @@ describe("Level 2 grades the indicator by Level 1's rule", () => {
     }
   );
 
+  it('colourChangeWindow agrees with the walk', () => {
+    const [from, to] = colourChangeWindow(1, 'phenolphthalein');
+    expect(from).toBeGreaterThanOrEqual(-0.001);
+    expect(to).toBeLessThan(0.1);
+    expect(colourChangeWindow(1, 'methyl-orange')[0]).toBeLessThan(-0.3);
+  });
+
   it("Level 1's worked examples obey the rule they teach", () => {
+    const byFormula: Record<string, number> = { 'HCl + NaOH': 1, 'CH₃COOH + NaOH': 5 };
     const question6 = LEVEL1_CHALLENGES.find((c) => c.id === 6)!;
     for (const text of [question6.hints.solution, question6.explanationIs]) {
-      const examples = [...text.matchAll(/\(pH ~?(\d+(?:,\d+)?)\) → ([^;.]+)/g)];
+      const examples = [
+        ...text.matchAll(/(HCl \+ NaOH|CH₃COOH \+ NaOH) \(pH [\d,]+\) → ([^;.]+)/g),
+      ];
       expect(examples.length, text).toBeGreaterThan(0);
-      for (const [, pH, names] of examples) {
+      for (const [, reaction, names] of examples) {
         const named = namedIndicators(names);
         expect(named.length, names).toBeGreaterThan(0);
         for (const indicator of named) {
-          expect(suits(indicator, parseStudentNumber(pH)), `${indicator} at pH ${pH}`).toBe(true);
+          expect(suits(byFormula[reaction], indicator), `${indicator} for ${reaction}`).toBe(true);
         }
       }
     }

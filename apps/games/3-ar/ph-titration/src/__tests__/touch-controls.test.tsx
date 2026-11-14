@@ -30,7 +30,7 @@ afterEach(() => {
 function renderLevel2() {
   const view = render(<Level2 onComplete={() => {}} onBack={() => {}} />);
   const volume = () =>
-    Number(view.container.querySelector('[role=meter]')!.getAttribute('aria-valuenow'));
+    Number(view.container.querySelector('[data-burette-ml]')!.getAttribute('data-burette-ml'));
   return { volume };
 }
 

@@ -13,12 +13,12 @@ import {
   useRevealAfterCommit,
 } from '@shared/utils';
 
-import { Burette } from './Burette';
-import { Flask } from './Flask';
+import { BenchReadings } from './BenchReadings';
 import { IndicatorSelector } from './IndicatorSelector';
+import { TitrationApparatus } from './TitrationApparatus';
 import { TitrationCurve } from './TitrationCurve';
 import { indicators } from '../data/indicators';
-import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
+import { colourChangeWindow, ENDPOINT_WINDOW_ML, LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration, IndicatorType } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
@@ -478,21 +478,34 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           {/* On a phone on its side: the bench | the curve and the marking
               panel (auto-placed into the second column). */}
           <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-3 md:p-4 phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-4 phone-land:items-start">
-            {/* Below md the burette and flask stand side by side with the
-                controls under both, so the curve is on screen while pouring.
-                `contents` lets the burette column's two children join that
-                grid; from md it is the original column again. */}
-            <div className="grid grid-cols-2 items-end gap-x-2 gap-y-4 md:flex md:flex-row md:items-start md:justify-center md:gap-8 phone:gap-y-3 phone-land:row-span-3">
-              {/* Burette */}
-              <div className="contents md:flex md:flex-col md:items-center">
-                <div className="col-start-1 row-start-1 flex justify-center">
-                  <Burette volumeAdded={volumeAdded} maxVolume={60} isAnimating={isPouring} />
-                </div>
+            {/* The bench: the apparatus, with the readings beside it and the
+                pour controls under the readings (under both below md, so the
+                curve stays near while pouring). */}
+            <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 md:items-start md:gap-x-8 phone:gap-x-3 phone:gap-y-3 phone-land:row-span-3">
+              <div className="flex justify-center">
+                <TitrationApparatus
+                  volumeAdded={volumeAdded}
+                  maxVolume={60}
+                  volumeAnalyte={titration.analyte.volume}
+                  pH={currentPH}
+                  selectedIndicator={selectedIndicator}
+                  isPouring={isPouring || isSwirling}
+                />
+              </div>
+
+              {/* From md the readings and the controls are one column beside
+                  the apparatus; below md the controls run under both. */}
+              <div className="contents md:flex md:flex-col md:gap-6 md:pt-4">
+                <BenchReadings
+                  volumeAdded={volumeAdded}
+                  totalVolume={titration.analyte.volume + volumeAdded}
+                  pH={currentPH}
+                />
 
                 {/* Controls */}
-                <div className="col-span-2 row-start-2 empty:hidden">
+                <div className="col-span-2 empty:hidden">
                   <Presence show={phase === 'titrating'} exitDuration={250}>
-                    <div ref={controlsRef} className="md:mt-4 space-y-2">
+                    <div ref={controlsRef} className="space-y-2">
                       <div className="flex gap-2">
                         <button
                           onClick={handleAddDrop}
@@ -517,8 +530,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                         </button>
                       </div>
                       {/* Pointer events cover mouse, touch and pen in one path. The
-                        touch handlers this replaced had no touchcancel, so a hold
-                        the browser cancelled kept pouring to 60 mL. */}
+                      touch handlers this replaced had no touchcancel, so a hold
+                      the browser cancelled kept pouring to 60 mL. */}
                       <button
                         onPointerDown={() => setIsPouring(true)}
                         onPointerUp={() => setIsPouring(false)}
@@ -545,17 +558,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     </div>
                   </Presence>
                 </div>
-              </div>
-
-              {/* Flask */}
-              <div className="col-start-2 row-start-1 flex flex-col items-center">
-                <Flask
-                  pH={currentPH}
-                  selectedIndicator={selectedIndicator}
-                  volumeAnalyte={titration.analyte.volume}
-                  volumeTitrant={volumeAdded}
-                  isSwirling={isSwirling}
-                />
               </div>
             </div>
 
@@ -620,6 +622,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     value={markedVolume}
                     onChange={(e) => setMarkedVolume(parseFloat(e.target.value))}
                     aria-label="Jafngildisrúmmál"
+                    aria-valuetext={`${formatDecimal(markedVolume, 1)} mL`}
                     className="w-full accent-orange-500 pointer-coarse:h-11"
                   />
                   <div className="flex items-center gap-2">
@@ -779,15 +782,23 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       {formatDecimal(calculatePH(titration, titration.equivalenceVolume), 1)}) — þar
                       sem mólfjöldi sýru = mólfjöldi basa.
                       <br />
-                      <strong>Endapunktur:</strong> þar sem litvísirinn breytir um lit (
+                      <strong>Endapunktur:</strong> þar sem litvísirinn breytir um lit.{' '}
                       {indicators.find((i) => i.id === selectedIndicator)?.name} breytist við pH{' '}
                       {indicators
                         .find((i) => i.id === selectedIndicator)
                         ?.pHRange.map((pH) => formatDecimal(pH, 1))
                         .join('–')}
-                      ).
+                      , sem þessi ferill nær milli{' '}
+                      {colourChangeWindow(puzzle.titrationId, selectedIndicator)
+                        .map((dv) => formatDecimal(titration.equivalenceVolume + dv, 2))
+                        .join(' og ')}{' '}
+                      mL.
                       <br />
-                      Góður litvísir hefur endapunkt nálægt jafngildispunktinum.
+                      Góður litvísir skiptir um lit innan við {formatDecimal(
+                        ENDPOINT_WINDOW_ML,
+                        1
+                      )}{' '}
+                      mL frá jafngildispunktinum.
                     </div>
                   </div>
                 )}

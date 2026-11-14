@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest';
 
 import { APPENDIX_D1_ACIDS, APPENDIX_D2_BASES } from '@shared/data/appendix-d';
 
-import { indicators } from '../data/indicators';
-import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
+import { acceptableIndicatorsFor, LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { titrations } from '../data/titrations';
 import { calculatePH } from '../utils/ph-calculations';
 
@@ -68,12 +67,21 @@ describe('the titration bank', () => {
   );
 
   it.each(titrations.map((t) => [`${t.id} ${t.name}`, t] as const))(
-    "%s: the best indicator obeys Level 1's rule",
+    '%s: the best indicator is one Level 2 accepts',
     (_label, t) => {
-      const pH = Math.round(calculatePH(t, t.equivalenceVolume) * 10) / 10;
-      const [low, high] = indicators.find((i) => i.id === t.bestIndicator)!.pHRange;
-      expect(pH, t.bestIndicator).toBeGreaterThanOrEqual(low);
-      expect(pH, t.bestIndicator).toBeLessThanOrEqual(high);
+      expect(acceptableIndicatorsFor(t.id)).toContain(t.bestIndicator);
+    }
+  );
+});
+
+// The stored equivalencePH is the value the game's own curve reaches there.
+// HF said 8,08 and formic acid 8,35 while the curves drawn beside them reached
+// 7,97 and 8,28 (fixed 2026-11-14).
+describe('stored equivalence pH', () => {
+  it.each(titrations.map((t) => [t.name, t] as const))(
+    '%s stores the pH its curve reaches at equivalence',
+    (_name, t) => {
+      expect(calculatePH(t, t.equivalenceVolume)).toBeCloseTo(t.equivalencePH, 1);
     }
   );
 });
