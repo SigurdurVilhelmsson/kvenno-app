@@ -181,3 +181,31 @@ export const AGREES_WITH_ICELANDIC_APPENDIX = [
   'PbF₂',
   'SrCO₃',
 ] as const;
+
+/**
+ * The Icelandic textbook's own Ksp table (`Leysnimargfeldi`, appendix `m68868` of
+ * efnafraedi-2e), for the salts the games pose problems with. Transcribed
+ * 2026-11-14.
+ *
+ * **Not a second source to compute with.** Brown D.3 above is authoritative
+ * (2026-09-19). This is here so a test can check that a verdict a game grades,
+ * "does it precipitate?", comes out the same for a student who looks the
+ * constant up in the book they can read. BaSO₄ differs 209-fold between the two,
+ * and three of Leysnijafnvægi's mixing problems once flipped under it.
+ */
+export const ICELANDIC_APPENDIX_KSP: Record<string, number> = {
+  AgCl: 1.6e-10,
+  AgBr: 5.0e-13,
+  AgI: 1.5e-16,
+  'CaF₂': 4.0e-11,
+  'PbCl₂': 1.6e-5,
+  'PbF₂': 4e-8,
+  'Ag₂CrO₄': 9.0e-12,
+  'Ag₂CO₃': 8.1e-12,
+  'Ag₂SO₄': 1.2e-5,
+  'CaCO₃': 8.7e-9,
+  'SrCO₃': 7e-10,
+  'FeCO₃': 2.1e-11,
+  'BaSO₄': 2.3e-8,
+  'Mn(OH)₂': 2e-13,
+};

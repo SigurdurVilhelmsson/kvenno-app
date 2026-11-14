@@ -169,6 +169,20 @@ through the shared helpers in `@shared/utils` (`useScreenTop`, `revealSpan`,
   `@shared/utils`); the one change there is focus
   moving to headings, the feedback, the salt card and the new question.
 
+## Fixed 2026-11-14: verdicts that flipped in the Icelandic book
+
+From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`). Beita shows Brown's Ksp
+beside each mixing problem, so a student working on screen was never graded wrongly; one who
+checked the constant in the school's own appendix (`m68868`) got the opposite verdict on three of
+the six. The two BaSO₄ problems precipitated by Brown (1,1 × 10⁻¹⁰) and not by the Icelandic book
+(2,3 × 10⁻⁸), and the close call on SrCO₃ was 3 % under Brown's Ksp and 29 % over the book's
+7 × 10⁻¹⁰. The BaSO₄ problems are now ten times more concentrated, the close call is AgBr (both
+books 5,0 × 10⁻¹³, Q at 0,85 of it), and CaF₂ moved to Q = 5,5 Ksp so one problem still has a
+small ratio. `packages/shared/data/appendix-d.ts` gained `ICELANDIC_APPENDIX_KSP` for the 14 salts
+in the pool, and `both-books.test.ts` holds every mixing verdict and both precipitation orders to
+it, at least 10 % from the line in both books. The Mohr context now gives both factors (150-fold
+by Brown, 18-fold by the Icelandic book).
+
 ## Fixed 2026-10-23, mobile-pass decisions 120 and 121
 
 - **Æfa names the two slips this topic is known for** (decision 120 (b)). For a 1:2 or 2:1 salt,
