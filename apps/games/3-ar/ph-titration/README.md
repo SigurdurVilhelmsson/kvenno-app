@@ -71,6 +71,8 @@ pH readout and the curve move together. Nothing is graded or stored.
 - **H⁺, not H₃O⁺** (Siggi, 2026-11-14): his students know the shorter form, so the ionisation is
   written CH₃COOH ⇌ CH₃COO⁻ + H⁺. Only this screen; the levels are unchanged.
 - The moving SVGs carry `data-live` for `desktop-compare`.
+- **It is the platform's template for visualisations** (Siggi, 2026-11-14):
+  `docs/particle-view-template.md` writes up the design and logic to copy.
 
 ## What matters before touching it
 

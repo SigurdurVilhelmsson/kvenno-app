@@ -453,6 +453,15 @@ Y3: Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn �
    what made the test writable: it needs to know which name is right, and a test cannot settle a
    naming question, only hold one that is settled
 
+### Adding a visualisation (particle view, animation)
+
+**Start from `docs/particle-view-template.md`** — Siggi's ruling, 2026-11-14: Agnasýn in
+`3-ar/ph-titration` is the template for visualisation modules. Its core rules: numbers from the
+game's own function, never a second calculation; particles as amounts on a fixed scale, rounded;
+exaggerate only where a scene is about something too small to see, and say so on screen; scenes as
+data; no grading. If a second game needs the particle system, move it to `packages/shared` rather
+than copying it.
+
 ### Phones (2026-09)
 
 Every game screen was made playable at 360 px by touch in September 2026. What that leaves behind:
