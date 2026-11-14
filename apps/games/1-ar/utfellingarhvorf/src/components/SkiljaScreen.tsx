@@ -49,7 +49,7 @@ const STEPS = [
   {
     title: '3. Nettójónajafna',
     blurb:
-      'Sumar jónir standa óbreyttar beggja vegna örvarinnar. Þær heita áhorfendajónir og þær gera ekkert — styttum þær út. Eftir stendur efnahvarfið sjálft.',
+      'Sumar jónir standa óbreyttar beggja vegna örvarinnar. Þær heita meðjónir og þær gera ekkert — styttum þær út. Eftir stendur efnahvarfið sjálft.',
   },
 ] as const;
 
@@ -140,8 +140,8 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             <h3 className="mb-2 font-semibold text-green-900">Nettójónajafnan</h3>
             <p className="font-mono text-base text-green-900">{renderEquation(reaction.net)}</p>
             <p className="mt-3 text-sm text-green-800">
-              Áhorfendajónirnar hér eru {reaction.spectators.map((s) => s.formula).join(' og ')}.
-              Þær voru í glasinu allan tímann og eru það enn — þær breyttust hvorki efnafræðilega né
+              Meðjónirnar hér eru {reaction.spectators.map((s) => s.formula).join(' og ')}. Þær voru
+              í glasinu allan tímann og eru það enn — þær breyttust hvorki efnafræðilega né
               eðlisfræðilega, og þess vegna eiga þær ekki heima í jöfnunni.
             </p>
             <p className="mt-2 text-sm text-green-800">

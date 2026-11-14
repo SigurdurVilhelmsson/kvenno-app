@@ -98,7 +98,7 @@ being coined. Counts are from the live corpus, excluding its backup tree:
 | ----------------------- | ------------------ | ------------------- |
 | net ionic equation      | `nettójónajafna`   | 23 vs 8 two-word    |
 | complete ionic equation | `heildarjónajafna` | 6 vs 1              |
-| spectator ion           | `áhorfendajón`     | 6 vs 0              |
+| spectator ion           | `meðjón`           | Siggi, 2026-11-14   |
 | precipitation reaction  | `útfellingarhvarf` | 9 vs 7 `botnfalls-` |
 
 **One variant is worth Siggi's confirmation and is not blocking**: the book's glossary headwords are
@@ -119,7 +119,7 @@ They guard the file this game was harvested from, because a later port would bri
   every Level-1 answer button; the corpus says `sterkur rafkleyfi` and `sterkir rafkleyfar`. Its
   `Órafkleyfi` is not a word the book uses at all — non-electrolyte is `órafkleyft efni`, an
   adjective plus a noun, which is what `ordabok.md` already carried.
-- **`áhorfendajón`, not `áhorfandajón`.** The linking form is the genitive plural.
+- **`meðjón` (Siggi's ruling, 2026-11-14).** It replaced the textbook's `áhorfendajón`, the term this game shipped with; the linking form there was the genitive plural, never `áhorfandajón`.
   `ORPHANED_GAMES_ASSESSMENT.md:207` writes the wrong one, and Markdown is not scanned.
 - **`joðíð`, not `jódíð`.** The corpus is 54 to 0 and the shipped platform was already clean; the
   old game says `jódíð` four times, on the very reaction the book uses as its worked example.

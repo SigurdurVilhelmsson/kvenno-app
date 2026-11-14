@@ -112,7 +112,7 @@ const SOURCES: {
     b: ['K⁺', 'NO₃⁻'],
     difficulty: 'ledd',
     context:
-      'Ekkert gerist. Allar fjórar jónirnar verða áfram í lausn — og þá er engin nettójónajafna til, því allar jónirnar eru áhorfendajónir.',
+      'Ekkert gerist. Allar fjórar jónirnar verða áfram í lausn — og þá er engin nettójónajafna til, því allar jónirnar eru meðjónir.',
   },
   {
     id: 'mgno3-nacl',

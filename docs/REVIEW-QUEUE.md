@@ -891,6 +891,25 @@ as A2, which the 2008 curriculum does not state.
 - [ ] **The Icelandic teacher's final approval** of the Orðaforði and the moved answers, card by
       card at A1, A2 and B1 (`/islenskubraut/yfirferd` links each card at each level).
 
+### C23. Agnasýn, the particle view of a titration (2026-11-14)
+
+`3-ar/ph-titration` opens with a new menu card, **Agnasýn**: 25,0 mL of 0,100 M ediksýra titrated
+with 0,100 M NaOH (titration 5, the book's ch. 14 example) in seven scenes and a slider, with the
+particles in the flask, the equations and the títrunarferill moving together. Nothing is graded or
+stored. Every number on it is computed from the game's own `calculateWeakStrongPH`; the details are
+in the game's README.
+
+- [ ] **The Icelandic wording**, drafted by Claude (`src/data/agnasyn-steps.tsx`). Terms are the
+      glossary's or the book's, with `meðjón` for spectator ion (Siggi, 2026-11-14), `heildarjónajafna`, `nettójónajafna`, `samoka basi`,
+      `hálfjafngildispunktur` and `basajónun asetats`, the book's phrase at the equivalence point.
+- [ ] **Two exaggerated pairs**: at the start one CH₃COO⁻ and one H₃O⁺ are drawn where the true
+      amount is 0,27 of a particle, and at the equivalence point one CH₃COOH and one OH⁻ where it is
+      0,002. Both carry a dashed ring and a note saying so. Keep, or show the true counts (none)?
+- [ ] **pH at half-equivalence shows 4,75 on the meter** beside Henderson-Hasselbalch's 4,74: the
+      game's buffer ICE root sits 0,0005 above pKₐ, which tips the second decimal. The scene says so
+      in one line. Keep, or print the meter at Henderson-Hasselbalch in the buffer region?
+- [ ] On a projector and a phone (B-style hand check): the animation's pace, 0,7 s per drop.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)

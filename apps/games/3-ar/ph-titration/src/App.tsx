@@ -4,6 +4,7 @@ import { Header, ErrorBoundary, FadePresence, Presence } from '@shared/component
 import { useGameProgress } from '@shared/hooks';
 import { focusTarget, revealSpan, revealTop } from '@shared/utils';
 
+import { Agnasyn } from './components/Agnasyn';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
@@ -11,7 +12,7 @@ import { Level3 } from './components/Level3';
 /** Exit duration of each screen's FadePresence. */
 const SCREEN_FADE_MS = 200;
 
-type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'agnasyn' | 'level1' | 'level2' | 'level3' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -134,6 +135,10 @@ function App() {
 
   return (
     <div ref={pageTopRef}>
+      <FadePresence show={activeLevel === 'agnasyn'} exitDuration={SCREEN_FADE_MS}>
+        <Agnasyn onBack={() => setActiveLevel('menu')} />
+      </FadePresence>
+
       <FadePresence show={activeLevel === 'level1'} exitDuration={SCREEN_FADE_MS}>
         <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
@@ -256,6 +261,28 @@ function App() {
 
               {/* Level selection */}
               <div className="space-y-4 phone:space-y-3">
+                {/* Agnasýn: the Explore phase, before any level. Nothing is graded or stored. */}
+                <button
+                  onClick={() => setActiveLevel('agnasyn')}
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left"
+                >
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">🔬</div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xl font-bold text-amber-900 phone:text-lg">
+                        Agnasýn
+                      </span>
+                      <div className="text-sm text-amber-800 mt-1">
+                        Ediksýra títruð með NaOH, skref fyrir skref
+                      </div>
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
+                        Sjáðu agnirnar í lausninni, jöfnurnar og títrunarferilinn breytast saman:
+                        jafnvægi veikrar sýru, hálfjafngildispunkt og jafngildispunkt.
+                      </div>
+                    </div>
+                  </div>
+                </button>
+
                 {/* Level 1 */}
                 <button
                   data-level-card="level1"

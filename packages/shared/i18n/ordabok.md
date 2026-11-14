@@ -558,7 +558,7 @@ solution;lausn
 solvent;leysir
 spatula;spatúla
 specific heat capacity;eðlisvarmi
-spectator ion;áhorfendajón
+spectator ion;meðjón
 spectrophotometer;litrófsgreinir
 spectrophotometry;ljósgleypnimælingar
 spectroscopy;litrófsgreining

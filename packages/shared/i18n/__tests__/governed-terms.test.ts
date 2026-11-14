@@ -267,10 +267,10 @@ const GOVERNED_TERMS: GovernedTerm[] = [
   },
   {
     english: 'spectator ion',
-    correct: 'áhorfendajón',
-    banned: [/áhorfandajón/i],
+    correct: 'meðjón',
+    banned: [/áhorf[ae]ndajón/i, /áhorfsjón/i],
     guidance:
-      'The linking form is the genitive plural áhorfenda-, not áhorfanda-. The corpus is 6 to 0. Feminine, like jón: áhorfendajón / áhorfendajónina / áhorfendajónum / áhorfendajóna. ORPHANED_GAMES_ASSESSMENT.md:207 writes the wrong form, and Markdown is not scanned, so this row guards the code against it being copied across.',
+      "Siggi's ruling, 2026-11-14: meðjón, replacing áhorfendajón, which this row had taken from the textbook on 2026-09-20 (corpus 6 to 0). Feminine, like jón: meðjón / meðjónina / meðjónum / meðjóna, pl. meðjónir, def. meðjónirnar. Both earlier forms are banned, and so is áhorfsjón, which the 2-ar lab-reports rubric (hlutleysing_syru) used.",
   },
   {
     english: 'iodide',
