@@ -925,6 +925,26 @@ in the game's README.
       in one line. Keep, or print the meter at Henderson-Hasselbalch in the buffer region?
 - [ ] On a projector and a phone (B-style hand check): the animation's pace, 0,7 s per drop.
 
+### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
+
+The audit is `/mnt/project-files/3-ar-throun/throunaraaetlun-2026-11-14.md`; its Phase 0 fixes
+landed in PR #150. These were left for a follow-up, each needing a ruling or a decision first:
+
+- [ ] **Gaslögmál, significant figures:** several stored answers carry more figures than their
+      givens justify (the plan's Gaslögmál section). Round each to the figures its data has?
+- [ ] **Gaslögmál, givens in °C:** every temperature is given in K, so a student never converts.
+      Give some in °C?
+- [ ] **Gaslögmál, units (plan decision 4):** atm only; the book also uses kPa, torr and mm Hg.
+      Introduce them?
+- [ ] **Varmafræði, "Prótín (fellt) → Prótín (óvafið)"** (`data/problems.ts:268`): "fellt" reads
+      as precipitated, not folded. The book's words for a folded and an unfolded protein were not
+      checked; a ruling or a corpus check is needed before renaming.
+- [ ] **Varmafræði, CaCO₃'s S°:** the book's `m68865` row disagrees with itself (its ΔfG° is 83,7
+      where its ΔfH° − TΔS° gives 149,3), so CaCO₃ was left out of `STANDARD_ENTROPY` and the
+      game's 161 J/(mól·K) stays unsourced. Take Brown's value, or keep it out?
+- [ ] **The plan's other open decisions** (its "Decisions for Siggi", items 3 and 5–7) are raised
+      as the work reaches them.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)
