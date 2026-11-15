@@ -1021,6 +1021,16 @@ future work. Each needs his go-ahead and a place before it is built; the process
       pattern (`buffer-recipe-creator` still uses `window.confirm`), and the Varmafræði hub card
       still opens with an infinitive ("Læra um …").
 
+### C26. Wording drafted for the Year-1 plan (2026-11-15)
+
+From the Year-1 plan (`/mnt/project-files/1-ar-throun/throunaraaetlun-2026-11-15.md`). The content
+and numbers follow the Icelandic book; the student-facing sentences around them were drafted by
+Claude and want a teacher's read. Tick each with the date once read.
+
+- [ ] **Reynsluformúlur, percent composition** (`PercentScreen.tsx`, `data/percent.ts`): the two
+      column headings, the per-column feedback, and the grams-problem prompts ("sýni sem
+      inniheldur …") for díklórheptaoxíð.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)

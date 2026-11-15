@@ -93,18 +93,24 @@ export function formatFormula(counts: { element: ElementSymbol; subscript: numbe
 }
 
 /**
- * Derive the empirical formula from percent composition.
+ * Derive the empirical formula from percent composition, or, with `grams`, from the
+ * masses of each element in a sample.
  *
  * Throws when the percentages do not describe a compound — a wrong answer the
  * student could never reach is worse than no question, and the old repo shipped
  * exactly that in `l2-10`.
  */
-export function deriveEmpirical(percentages: Partial<Record<ElementSymbol, number>>): Derivation {
+export function deriveEmpirical(
+  percentages: Partial<Record<ElementSymbol, number>>,
+  options: { grams?: boolean } = {}
+): Derivation {
   const entries = Object.entries(percentages) as [ElementSymbol, number][];
   if (entries.length < 2) throw new RangeError('An empirical formula needs at least two elements');
 
+  // Masses measured in grams (the book's 5,31 g Cl and 8,40 g O) need not sum to anything;
+  // percentages must sum to 100.
   const total = entries.reduce((s, [, p]) => s + p, 0);
-  if (Math.abs(total - 100) > 0.5) {
+  if (!options.grams && Math.abs(total - 100) > 0.5) {
     throw new RangeError(`Percentages sum to ${total.toFixed(2)}, not 100`);
   }
 

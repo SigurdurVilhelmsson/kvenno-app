@@ -1425,10 +1425,68 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Æfa — prósentusamsetning, massi',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { fill: ['input[aria-label="Massi í 1 mól fyrir N"]', '0'] },
+          { fill: ['input[aria-label="Massi í 1 mól fyrir H"]', '0'] },
+        ],
+        verdict: { css: '#percent-verdict' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        together: [
+          [{ css: '[data-item-start]' }, { css: 'input[aria-label="Massi í 1 mól fyrir H"]' }],
+        ],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Æfa — prósentusamsetning, prósentur réttar',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+        {
+          fill: ['input[aria-label="Massi í 1 mól fyrir N"]', '14,007'],
+        },
+        {
+          fill: ['input[aria-label="Massi í 1 mól fyrir H"]', '3,024'],
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta súla'],
+        },
+        {
+          fill: ['input[aria-label="Massaprósenta fyrir N"]', '82,24'],
+        },
+        {
+          fill: ['input[aria-label="Massaprósenta fyrir H"]', '17,76'],
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+      ],
+    },
+    {
       name: 'Æfa — Mól',
       steps: [
         {
           clickRole: ['button', 'Æfa'],
+        },
+        {
+          clickRole: ['button', 'Beint í reynsluformúluna'],
         },
       ],
       loop: {
@@ -1450,6 +1508,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           clickRole: ['button', 'Æfa'],
+        },
+        {
+          clickRole: ['button', 'Beint í reynsluformúluna'],
         },
       ],
       // A right column opens no verdict box: the ticks beside the fields are the
@@ -1475,6 +1536,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Æfa'],
         },
         {
+          clickRole: ['button', 'Beint í reynsluformúluna'],
+        },
+        {
           fill: ['input[aria-label="Mól fyrir H"]', '0'],
         },
         {
@@ -1490,6 +1554,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           clickRole: ['button', 'Æfa'],
+        },
+        {
+          clickRole: ['button', 'Beint í reynsluformúluna'],
         },
         {
           fill: ['input[aria-label="Mól fyrir H"]', '5,883'],
@@ -1522,6 +1589,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           clickRole: ['button', 'Æfa'],
+        },
+        {
+          clickRole: ['button', 'Beint í reynsluformúluna'],
         },
         {
           fill: ['input[aria-label="Mól fyrir H"]', '5,883'],

@@ -7,6 +7,7 @@ import { useScreenTop } from '@shared/utils';
 import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
+import { PercentScreen } from './components/PercentScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
 import './styles.css';
 
@@ -48,7 +49,14 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
 ];
 
 function App() {
-  const [screen, setScreen] = useState<Screen>('menu');
+  const [screen, setScreenState] = useState<Screen>('menu');
+  // Æfa's two parts: percent composition first, then the empirical table. Every
+  // arrival at Æfa starts on the first part.
+  const [aefaPart, setAefaPart] = useState<'percent' | 'table'>('percent');
+  const setScreen = useCallback((next: Screen) => {
+    setAefaPart('percent');
+    setScreenState(next);
+  }, []);
   const { progress, updateProgress } = useGameProgress<Progress>('reynsluformulur-progress', {
     completed: [],
   });
@@ -62,10 +70,10 @@ function App() {
       if (!completed.includes(phase)) updateProgress({ completed: [...completed, phase] });
       setScreen(next);
     },
-    [completed, updateProgress]
+    [completed, updateProgress, setScreen]
   );
 
-  const backToMenu = useCallback(() => setScreen('menu'), []);
+  const backToMenu = useCallback(() => setScreen('menu'), [setScreen]);
 
   // Every screen change replaces the whole page. On a phone the button that
   // caused it sits a screen or more down, so the new screen would otherwise
@@ -74,7 +82,7 @@ function App() {
   // button that caused the swap has gone. Back on the menu, the next phase not
   // yet done is focused, and on a phone brought into view.
   const nextPhase = PHASES.find((phase) => !completed.includes(phase.id))?.id;
-  useScreenTop(screen, {
+  useScreenTop(screen === 'aefa' ? `aefa-${aefaPart}` : screen, {
     anyWidth: true,
     target: () =>
       screen === 'menu' && nextPhase
@@ -215,7 +223,17 @@ function App() {
           <SkiljaScreen onComplete={() => markCompleted('skilja', 'aefa')} onBack={backToMenu} />
         )}
 
-        {screen === 'aefa' && (
+        {/* Æfa opens on percent composition, the book's first step (decision 3,
+            2026-11-15), then the empirical table. Not gated: the link skips to the table. */}
+        {screen === 'aefa' && aefaPart === 'percent' && (
+          <PercentScreen
+            onComplete={() => setAefaPart('table')}
+            onSkip={() => setAefaPart('table')}
+            onBack={backToMenu}
+          />
+        )}
+
+        {screen === 'aefa' && aefaPart === 'table' && (
           <AefaScreen onComplete={() => markCompleted('aefa')} onBack={backToMenu} />
         )}
 
