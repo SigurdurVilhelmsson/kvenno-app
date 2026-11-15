@@ -60,6 +60,11 @@ const BANNED: { pattern: RegExp; why: string }[] = [
     why: 'displacement takes its qualifier: einfalt / tvöfalt skiptihvarf',
   },
   {
+    // Year-1 audit, 2026-11-15: a bond is tengi; tengsl is a relationship.
+    pattern: /breyta bara um tengsl/iu,
+    why: 'bond sense is tengi; the atoms "raðast bara saman á nýjan hátt"',
+  },
+  {
     pattern: /(?<!\p{L})þeir eru auðveldastir(?!\p{L})/iu,
     why: 'K and Cl (kalíum, klór) are neuter: "þau eru auðveldust"',
   },

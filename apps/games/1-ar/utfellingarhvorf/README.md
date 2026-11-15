@@ -187,6 +187,12 @@ quantitative one ("by Q vs Ksp?", 17.6), and the two share anchor compounds on p
 does not cross: PbI₂, this game's worked example, has no Appendix D row, so Leysnijafnvægi carries
 no Ksp for it — see its README.
 
+## Fixed 2026-11-15
+
+Æfa's two choice groups, the verdict and the deciding rule, are select-then-check, and colour was
+the only cue to what was chosen before Athuga. Both now carry `aria-pressed` (year-1 audit, Phase 0
+item 6; `aefa-pressed.test.tsx`).
+
 ## Open
 
 - **Precipitate colours are named in prose, not rendered.** The beaker has three states. The colours

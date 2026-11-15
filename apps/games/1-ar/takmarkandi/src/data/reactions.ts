@@ -128,18 +128,18 @@ export const REACTIONS: Reaction[] = [
   },
   {
     id: '17',
-    equation: 'P₄ + 5O₂ → 2P₂O₅',
+    equation: 'P₄ + 5O₂ → P₄O₁₀',
     reactant1: { formula: 'P₄', coeff: 1, color: '#7c3aed' },
     reactant2: { formula: 'O₂', coeff: 5, color: '#ef4444' },
-    products: [{ formula: 'P₂O₅', coeff: 2, color: '#f3f4f6' }],
+    products: [{ formula: 'P₄O₁₀', coeff: 1, color: '#f3f4f6' }],
     difficulty: 'hard',
   },
   {
     id: '18',
-    equation: 'S₈ + 12O₂ → 8SO₃',
+    equation: 'S₈ + 8O₂ → 8SO₂',
     reactant1: { formula: 'S₈', coeff: 1, color: '#fde047' },
-    reactant2: { formula: 'O₂', coeff: 12, color: '#ef4444' },
-    products: [{ formula: 'SO₃', coeff: 8, color: '#fef3c7' }],
+    reactant2: { formula: 'O₂', coeff: 8, color: '#ef4444' },
+    products: [{ formula: 'SO₂', coeff: 8, color: '#fef3c7' }],
     difficulty: 'hard',
   },
 
