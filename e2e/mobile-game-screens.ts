@@ -3171,6 +3171,20 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Varmamælingar og tengjaorka (2026-11-15): its Skilja and its first problem.
+    {
+      name: 'Varmamælingar — skilja',
+      steps: [{ clickRole: ['button', 'Varmamælingar og tengjaorka'] }, { wait: 300 }],
+    },
+    {
+      name: 'Varmamælingar — æfa',
+      steps: [
+        { clickRole: ['button', 'Varmamælingar og tengjaorka'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu dæmi'] },
+        { wait: 300 },
+      ],
+    },
     {
       name: 'Stig 1 — kynning',
       steps: [
