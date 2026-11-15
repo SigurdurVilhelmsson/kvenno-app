@@ -389,7 +389,7 @@ molar solubility;mólarleysni
 molar volume;mólrúmmál
 molarity;mólstyrkur
 mole;mól
-mole fraction;mólhlutfall
+mole fraction;mólbrot
 molecular equation;sameindajafna
 molecular formula;sameindaformúla
 molecular orbital;sameindasvigrúm
@@ -428,8 +428,8 @@ order of reaction;stig efnahvarfs
 organic;lífrænn
 organic chemistry;lífræn efnafræði
 organometallic chemistry;málmlífræn efnafræði
-osmosis;himnuflæði
-osmotic pressure;flæðiþrýstingur
+osmosis;osmósa
+osmotic pressure;osmósuþrýstingur
 overall equation;heildarjafna
 overall order of reaction;heildarstig efnahvarfs
 oxidation;oxun
