@@ -60,7 +60,7 @@ and marks `2,5` electrons wrong where the answer is 2.
   electron for 2+ ions, and a hardcoded `+ 2e⁻` gave silver two. The count is now read from the
   ion's charge (`electronsPerIon`). Potentials print with the decimal comma (`formatVolts`), and E°
   carries the textbook's subscript, `E°ker`. `cell-readout.test.tsx`.
-- **Terminology:** `galvaníhlað` (Siggi's ruling, 2026-08-27) in the `aria-label` and on the card,
+- **Terminology:** `galvaníker` (Siggi's ruling, 2026-11-15, replacing `galvaníhlað`) in the `aria-label` and on the card,
   `rafefnahlað` (2026-08-29) in the SVG `<title>`, and `anóða` / `katóða` with both accents (the
   accentless pair survived in this file's `aria-label` until 2026-08-27). The Daniell cell is
   `Daniell-hlað (Zn–Cu)` (decision 88). Platform rows in `governed-terms.test.ts` hold the first
@@ -179,10 +179,9 @@ one attempt each, ending `N af M rétt`.
 - **Electrolysis and Faraday's laws, batteries and corrosion** are absent (the rest of the
   orphaned `electrochemistry` game's proposal, `apps/games/ORPHANED_GAMES_ASSESSMENT.md`
   recommendation 11). Cell potentials are built: see Kerspenna above.
-- **The book's words differ from two platform rulings.** Ch. 17 calls the galvanic cell
-  `galvaníker` and spontaneous `sjálfsprottið`; the platform rules `galvaníhlað` (2026-08-27) and
-  `sjálfgengur`. Kerspenna follows the rulings. Siggi's 2026-11-15 rule (book over game) would
-  reverse both; asked in the year-2 thread rather than changed.
+- **Spontaneous stays `sjálfgengur`** although ch. 17 writes `sjálfsprottið`: Siggi, 2026-11-15,
+  with the book's word in its edit plan. The galvanic cell is the book's `galvaníker` since the same
+  day. `rafefnahlað` and `Daniell-hlað` keep their `-hlað` until ruled on.
 
 **Fixed 2026-11-15** (Siggi extended `docs/REVIEW-QUEUE.md` C3 to Stig 1 and Stig 3, year-2
 audit). A right answer given with a hint open that states it is not counted, and the feedback

@@ -82,19 +82,19 @@ export const KER_ITEMS: readonly KerItem[] = [
     id: 'ecell-zn-cu',
     kind: 'ecell',
     couples: ['Zn2+/Zn', 'Cu2+/Cu'],
-    question: 'Galvaníhlað er gert úr hálfkerunum Zn²⁺/Zn og Cu²⁺/Cu. Hver er E°ker?',
+    question: 'Galvaníker er gert úr hálfkerunum Zn²⁺/Zn og Cu²⁺/Cu. Hver er E°ker?',
   },
   {
     id: 'ecell-mg-ag',
     kind: 'ecell',
     couples: ['Ag+/Ag', 'Mg2+/Mg'],
-    question: 'Galvaníhlað er gert úr hálfkerunum Ag⁺/Ag og Mg²⁺/Mg. Hver er E°ker?',
+    question: 'Galvaníker er gert úr hálfkerunum Ag⁺/Ag og Mg²⁺/Mg. Hver er E°ker?',
   },
   {
     id: 'ecell-al-ni',
     kind: 'ecell',
     couples: ['Ni2+/Ni', 'Al3+/Al'],
-    question: 'Galvaníhlað er gert úr hálfkerunum Ni²⁺/Ni og Al³⁺/Al. Hver er E°ker?',
+    question: 'Galvaníker er gert úr hálfkerunum Ni²⁺/Ni og Al³⁺/Al. Hver er E°ker?',
   },
   {
     id: 'stefna-cu-ag',

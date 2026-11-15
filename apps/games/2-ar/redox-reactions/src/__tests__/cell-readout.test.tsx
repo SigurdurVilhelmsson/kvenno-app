@@ -68,7 +68,7 @@ describe('galvanic-cell text is Icelandic', () => {
     for (const pair of ['Zn-Cu', 'Mg-Cu', 'Fe-Cu', 'Zn-Ag']) {
       const text = show(pair).textContent ?? '';
       expect(text, pair).not.toMatch(/\bCell\b|°cell/);
-      expect(text, pair).toContain('galvaníhlað');
+      expect(text, pair).toContain('galvaníker');
       // Kerspenna, E°ker, as the textbook writes it (ch. 17).
       expect(text, pair).toContain('E°ker');
       cleanup();

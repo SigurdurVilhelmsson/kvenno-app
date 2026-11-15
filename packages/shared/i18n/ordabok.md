@@ -259,7 +259,7 @@ fuel cell;efnarafall
 fume hood;stinkskápur
 functional group;virknihópur
 funnel;trekt
-galvanic cell;galvaníhlað
+galvanic cell;galvaníker
 gas;gas
 gas constant;gasfastinn
 Gibbs free energy;Gibbs frjáls orka
