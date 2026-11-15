@@ -69,7 +69,7 @@ describe.each([
     expect(screen.getAllByText('✗ Ekki sjálfgengt')).toHaveLength(1);
     expect(temperaturePoint()).toBeUndefined();
     // The substituted formula and T_cross stay.
-    expect(text).toContain('ΔG° = (-91,8) - (500)(-0,199)');
+    expect(text).toContain('ΔG° = (-91,8) − (500)(-0,199)');
     expect(text).toContain('461 K');
   });
 

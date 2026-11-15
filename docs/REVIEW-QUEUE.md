@@ -944,6 +944,10 @@ in the game's README.
       (`3-ar/jafnvaegisfasti/src/components/AgnasynScreen.tsx`). The rate is chosen for display
       (mass action with kf/kr = K, no time units) and the screen says so. Keep, or show the path
       against extent instead of time?
+- [ ] **Varmafræði's tug of war** (2026-11-15): ΔH° and −TΔS° as bars that follow the
+      temperature slider, in Könnun and after each answer. Wording drafted by Claude
+      (`3-ar/thermodynamics-predictor/src/components/TugOfWar.tsx`), including the name
+      `Reipdráttur`.
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 

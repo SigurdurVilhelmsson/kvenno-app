@@ -72,6 +72,7 @@ whatever T it is set to.
 index.html                           <title>Varmafræði spámaður - Kvennaskólinn</title>
 src/App.tsx                          all four modes, grading, graph data, feedback
 src/components/EntropyVisualization.tsx   before/after particle picture of ΔS, via ParticleSimulation
+src/components/TugOfWar.tsx               ΔH° against −TΔS° as bars, ΔG° their sum
 src/data/problems.ts                 30 problems: reaction, ΔH, ΔS, default T, scenario, difficulty
 src/data/index.ts                    re-export
 src/types.ts                         Problem, GameMode, Spontaneity
@@ -184,6 +185,17 @@ hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`�
     `vetnisproxíðs`, `örstaður`, which the textbook calls `örástand`), the name `Dímun NO₂`, which
     is in neither the glossary nor the textbook (the book writes `tvíliðun NO₂` for this very
     reaction), and the menu's promise of `vísbendingar` in a mode that has no hints.
+
+## ΔH° against −TΔS° (2026-11-15)
+
+`TugOfWar` draws the two terms of ΔG° as bars on one axis, green left of zero (favours a
+spontaneous reaction) and red right of it, with ΔG° their sum below. As the temperature slider
+moves, ΔH° stays put and −TΔS° grows, and the crossover temperature is where the two bars are equal
+and opposite. The scale is fixed per reaction over 200–1200 K, so a bar changes length only when its
+value does. It sits under the slider in Könnun, and in a problem once the answer is checked, since
+it shows ΔG° itself. Its sum is `calculateDeltaG` (`tug-of-war.test.tsx`). The screen says ΔH° and
+ΔS° are taken as independent of temperature, the plan's P1 note. The worked line's hyphen-minus
+became a minus sign (`ΔG° = ΔH° − TΔS°`).
 
 ## Fixed 2026-11-14: PCl₅'s entropy and the equilibrium band
 

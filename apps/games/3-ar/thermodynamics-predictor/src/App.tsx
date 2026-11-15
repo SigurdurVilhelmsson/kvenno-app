@@ -28,6 +28,7 @@ import {
 } from '@shared/utils';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
+import { TugOfWar } from './components/TugOfWar';
 import { PROBLEMS } from './data';
 import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
 import { practiceDeck } from './utils/deck';
@@ -843,6 +844,8 @@ function App() {
             </div>
           </div>
 
+          <TugOfWar deltaH={demoDeltaH} deltaS={demoDeltaS} temperature={demoT} />
+
           <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
             <div className="font-bold text-amber-900 mb-2">Hvað sést?</div>
             <ul className="text-sm text-amber-900 space-y-2 list-disc list-inside">
@@ -1088,9 +1091,9 @@ function App() {
                     Við núverandi hitastig:
                   </div>
                   <div className="font-mono text-sm mb-2 phone:mb-1">
-                    ΔG° = ΔH° - TΔS°
+                    ΔG° = ΔH° − TΔS°
                     <br />
-                    ΔG° = ({formatDecimal(currentProblem.deltaH)}) - ({temperature})(
+                    ΔG° = ({formatDecimal(currentProblem.deltaH)}) − ({temperature})(
                     {formatDecimal(currentProblem.deltaS / 1000)})<br />
                     ΔG° ={' '}
                     {/* The value and the verdict are the question's answer, so they wait for
@@ -1110,6 +1113,17 @@ function App() {
                     </div>
                   )}
                 </div>
+
+                {/* The tug of war shows ΔG° itself, so it waits for the answer too. */}
+                {showSolution && (
+                  <div className="mt-3 phone:mt-2">
+                    <TugOfWar
+                      deltaH={currentProblem.deltaH}
+                      deltaS={currentProblem.deltaS}
+                      temperature={temperature}
+                    />
+                  </div>
+                )}
 
                 {crossoverTemp && crossoverTemp >= 200 && crossoverTemp <= 1200 && (
                   <div
