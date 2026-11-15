@@ -62,6 +62,18 @@ uses `t()`**, since `en`/`pl` blocks would mean coining Polish chemistry terms a
   non-electrolyte is an adjective plus a noun, `órafkleyft efni`. The test holds both. See the
   electrolyte row in `CLAUDE.md`'s terminology table before touching any of these strings.
 
+### Nærmynd (2026-11-15)
+
+The teaching page opens **Nærmynd** (year-1 plan item 11), on the particle-view template
+(`docs/particle-view-template.md`), and returns to it: 20,0 mL of 0,100 M natríumklóríð, glúkósi
+and ediksýra, one beaker at a time and then side by side, each with the conductivity bulb.
+`src/utils/naermynd.ts` takes the solutes, their equations and their classes from
+`data/electrolytes.ts`, so the bulb is `classify()`'s, and acetic acid's Ka from
+`@shared/data/appendix-d`. At ten particles per mmól each beaker holds twenty units; acetic acid's
+true ionisation is 0,27 of one, so one pair is drawn with a dashed ring and a note giving the true
+value, the template's rule 3. `naermynd.test.tsx` holds the counts and the bulbs. Wording drafted
+by Claude, review item C23.
+
 ## What matters before touching it
 
 **Stig 3 generates only physically possible, physically doable problems.**

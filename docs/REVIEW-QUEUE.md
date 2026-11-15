@@ -964,6 +964,9 @@ in the game's README.
       PbI₂ falling out and K⁺ and NO₃⁻ drawn faded as meðjónir. Wording drafted by Claude
       (`1-ar/utfellingarhvorf/src/data/naermynd-steps.tsx`). The beaker does not grow as the KI
       solution is added (25 mL to 55 mL); the table states the volume. Keep, or draw it?
+- [ ] **Lausnir's Stig 0 Nærmynd** (2026-11-15, year 1): natríumklóríð, ediksýra and glúkósi at
+      0,100 M with the conductivity bulb. Acetic acid's one ion pair is exaggerated (0,27 of a
+      particle) and marked. Wording drafted by Claude (`1-ar/lausnir/src/data/naermynd-steps.tsx`).
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 
