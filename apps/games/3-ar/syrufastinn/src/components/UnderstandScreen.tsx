@@ -28,7 +28,6 @@ import {
   useItemTop,
 } from '@shared/utils';
 
-
 import { useBackButton } from './BackButton';
 import { KlofnunBar } from './KlofnunBar';
 import { MONOPROTIC_ACIDS } from '../data/acids';
