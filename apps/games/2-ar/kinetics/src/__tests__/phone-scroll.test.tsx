@@ -249,7 +249,7 @@ describe('Stig 3', () => {
 
     clock += 150;
     fireEvent.click(view.getByRole('button', { name: 'Næsta þraut' }));
-    expect(view.getByText('Stig 3 / Þraut 1 af 6')).toBeTruthy();
+    expect(view.getByText(`Stig 3 / Þraut 1 af ${level3.length}`)).toBeTruthy();
 
     clock += 400;
     fireEvent.click(view.getByRole('button', { name: 'Næsta þraut' }));

@@ -14,7 +14,7 @@ Three levels, none gated, each picked from the menu.
 | ---- | --------------------- | -------------------------------------------------------------------------------------- |
 | 1    | `Stig 1: Hraðahugtök` | 6 multiple-choice questions, with the `Gagnvirk hermun` demos on the same screen       |
 | 2    | `Stig 2: Hraðalögmál` | Teach screen, then 6 initial-rate tables: pick the order in [A] (and [B]) from 0, 1, 2 |
-| 3    | `Stig 3: Hvarfgangur` | Teach screen, then 6 mechanisms with a multiple-choice question each                   |
+| 3    | `Stig 3: Hvarfgangur` | Teach screen, then 8 mechanisms with a multiple-choice question each                   |
 
 - **Stig 1** (`components/Level1.tsx`, data in `data/level1-questions.ts`) has no separate teach
   screen; under each question sit temperature and Ea sliders driving `MaxwellBoltzmann` and
@@ -27,7 +27,11 @@ Three levels, none gated, each picked from the menu.
   table. A `ConcentrationTimeGraph` sits under the level.
 - **Stig 3** (`components/Level3.tsx`, data in `data/level3-questions.ts`) shows each mechanism's
   steps marked slow, fast or fast equilibrium, and asks for the intermediate, the rate-determining
-  step, the rate law or the catalyst.
+  step, the rate law or the catalyst. **Molecularity since 2026-11-15** (year-2 plan, Phase 4):
+  the teach screen has a fourth card, `Sameindatala grunnhvarfs`, and challenges 7 and 8 ask
+  for the molecularity and rate law of 2NO + O₂ → 2NO₂ and whether the decomposition of
+  cyclobutane could be one unimolecular step, both the book's examples (kafli 12, Hvarfgangar,
+  m68794). `molecularity.test.ts` derives each correct rate law from its step's reactants.
 
 No level offers a retry, so a right answer is a right first answer. Each level reports
 `N af M rétt` to the menu, or `Lokið` for a level saved in points before counts were kept.

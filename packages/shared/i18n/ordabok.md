@@ -61,7 +61,7 @@ beaker;bikarglas
 bent;beygður
 benzoic acid;bensósýra
 bidentate;tvítenntur
-bimolecular reaction;tvísameinda efnahvarf
+bimolecular reaction;tvísameindahvarf
 binding energy;bindiorka
 biochemistry;lífefnafræði
 black body radiation;svarthlutageislun
@@ -209,6 +209,7 @@ electrophile;rafsækir
 electroplating;rafhúðun
 element;frumefni
 elemental analysis;frumefnagreining
+elementary reaction;grunnhvarf
 elementary step;grunnskref
 elimination;brottnám
 emission;útblástur
@@ -400,6 +401,7 @@ molecular equation;sameindajafna
 molecular formula;sameindaformúla
 molecular orbital;sameindasvigrúm
 molecular orbital theory;sameindasvigrúmakenningin
+molecularity;sameindatala
 molecule;sameind
 momentum;skriðþungi
 monoatomic ion;einatóma jón
@@ -613,7 +615,7 @@ target molecule;markeind
 tautomer;ráphverfa
 tautomerization;ráphvarf
 temperature;hitastig
-termolecular reacion;þrísameindaefnahvarf
+termolecular reaction;þrísameindahvarf
 test tube;tilraunaglas
 tetrahedral;ferflötungur
 tetrahedral;ferflötungslaga
@@ -637,7 +639,7 @@ trigonal pyramidal;þríhyrningslaga pýramídi
 triple bond;þrítengi
 triple point;þrípunktur
 tunneling effect;smug
-unimolecular reacion;einsameinda efnahvarf
+unimolecular reaction;einsameindahvarf
 unit cell;grindareining
 universal gas constant;gasfastinn
 unsaturated;ómettaður
