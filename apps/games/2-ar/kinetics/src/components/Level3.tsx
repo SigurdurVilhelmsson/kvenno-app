@@ -171,12 +171,26 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <h2 className="font-bold text-purple-900 mb-2">Hvað er hvarfgangur?</h2>
             <p className="text-warm-700 text-sm leading-relaxed">
               Flest efnahvörf gerast ekki í einu skrefi — þau hafa <strong>hvarfgang</strong> með
-              mörgum <strong>grunnskrefum</strong>. Hvert skref hefur sitt eigið hraðastig.
+              mörgum <strong>grunnhvörfum</strong>. Hvert skref hefur sitt eigið hraðastig.
             </p>
           </div>
 
           <div className="bg-white border border-warm-200 rounded-lg p-4 space-y-3">
-            <h3 className="font-bold text-warm-800">Þrjú lykilhugtök</h3>
+            <h3 className="font-bold text-warm-800">Fjögur lykilhugtök</h3>
+
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-3 text-sm">
+              <p className="font-bold text-teal-800 mb-1">Sameindatala grunnhvarfs</p>
+              <p className="text-warm-700">
+                Fjöldi hvarfefnaeinda sem taka þátt í grunnhvarfi: ein í{' '}
+                <strong>einsameindahvarfi</strong>, tvær í <strong>tvísameindahvarfi</strong> og
+                þrjár, sjaldan, í <strong>þrísameindahvarfi</strong>. Hraðalögmál grunnhvarfs má
+                leiða beint út frá jöfnu þess; hraðalögmál heildarhvarfs þarf að mæla.
+              </p>
+              <p className="font-mono text-xs text-warm-800 mt-1">
+                <span className="whitespace-nowrap">A → myndefni: hraði = k[A]</span> &nbsp;&nbsp;{' '}
+                <span className="whitespace-nowrap">A + B → myndefni: hraði = k[A][B]</span>
+              </p>
+            </div>
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
               <p className="font-bold text-amber-800 mb-1">Milliefni (intermediate)</p>

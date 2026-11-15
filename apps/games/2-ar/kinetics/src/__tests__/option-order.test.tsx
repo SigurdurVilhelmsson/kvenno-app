@@ -71,7 +71,7 @@ describe('the data this level draws from', () => {
     // Not a defect in itself — it is why the rendering must shuffle. If someone
     // ever reorders the data instead, this test says so rather than silently
     // becoming vacuous.
-    expect(challenges.length).toBe(6);
+    expect(challenges.length).toBe(8);
     for (const challenge of challenges) {
       expect(challenge.options[0].correct, `challenge ${challenge.id}`).toBe(true);
     }
@@ -152,10 +152,10 @@ describe('grading follows the shuffle', () => {
   };
 
   it('counts every correct answer, wherever the shuffle put it', () => {
-    // Six challenges. Run it several times so more than one arrangement is
+    // Every challenge. Run it several times so more than one arrangement is
     // exercised.
     for (let run = 0; run < 5; run++) {
-      expect(playAllSix('correct'), `run ${run}`).toBe(6);
+      expect(playAllSix('correct'), `run ${run}`).toBe(challenges.length);
     }
   });
 

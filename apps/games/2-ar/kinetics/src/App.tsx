@@ -316,7 +316,7 @@ function App() {
                     Grunnskref og hraðatakmarkandi skref
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Greindu hvarfganga og finndu milliefni.
+                    Greindu hvarfganga, sameindatölu og milliefni.
                   </div>
                 </div>
               </div>

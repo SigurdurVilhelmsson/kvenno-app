@@ -11,7 +11,12 @@ export interface MechanismChallenge {
   overallReaction: string;
   mechanism: MechanismStep[];
   question: string;
-  type: 'identify_intermediate' | 'rate_determining' | 'rate_law' | 'identify_catalyst';
+  type:
+    | 'identify_intermediate'
+    | 'rate_determining'
+    | 'rate_law'
+    | 'identify_catalyst'
+    | 'molecularity';
   options: { id: string; text: string; correct: boolean; explanation: string }[];
   hint: string;
   conceptExplanation: string;
@@ -248,5 +253,88 @@ export const challenges: MechanismChallenge[] = [
     hint: 'Leitaðu að efnum sem myndast og eyðast innan hvarfgangsins',
     conceptExplanation:
       'Í flóknum hvarfgöngum geta verið mörg milliefni. Þau eru öll efni sem myndast og eyðast innan ferlisins.',
+  },
+  {
+    id: 7,
+    title: 'Sameindatala',
+    description: 'Sameindatala grunnhvarfs er fjöldi hvarfefnaeinda sem taka þátt í því.',
+    overallReaction: '2NO + O₂ → 2NO₂',
+    mechanism: [{ equation: '2NO + O₂ → 2NO₂', type: 'slow', label: 'Eitt grunnhvarf' }],
+    question: 'Hver er sameindatala þessa grunnhvarfs og hvert er hraðalögmál þess?',
+    type: 'molecularity',
+    options: [
+      {
+        id: 'a',
+        text: 'Þrísameindahvarf: hraði = k[NO]²[O₂]',
+        correct: true,
+        explanation:
+          'Tvær NO-sameindir og ein O₂-sameind rekast saman samtímis: þrjár hvarfefnaeindir. Í grunnhvarfi verða stuðlarnir að veldum í hraðalögmálinu.',
+      },
+      {
+        id: 'b',
+        text: 'Tvísameindahvarf: hraði = k[NO][O₂]',
+        correct: false,
+        explanation:
+          'Stuðullinn 2 fyrir framan NO þýðir tvær NO-sameindir, svo eindirnar eru þrjár og [NO] er í öðru veldi.',
+      },
+      {
+        id: 'c',
+        text: 'Þrísameindahvarf, en hraðalögmálið þarf að mæla',
+        correct: false,
+        explanation:
+          'Það gildir um heildarhvarf. Hraðalögmál grunnhvarfs má leiða beint út frá jöfnu þess.',
+      },
+      {
+        id: 'd',
+        text: 'Einsameindahvarf: hraði = k[O₂]',
+        correct: false,
+        explanation: 'Einsameindahvarf hefur aðeins eina hvarfefnaeind, en hér eru þær þrjár.',
+      },
+    ],
+    hint: 'Teldu hvarfefnaeindirnar vinstra megin, stuðlana með',
+    conceptExplanation:
+      'Grunnhvarf er einsameinda-, tvísameinda- eða þrísameindahvarf eftir því hve margar hvarfefnaeindir taka þátt. Þrísameindahvörf eru sjaldgæf, því sjaldan rekast þrjár eindir saman samtímis, en hvarf NO við O₂ virðist vera eitt þeirra (kafli 12, Hvarfgangar).',
+  },
+  {
+    id: 8,
+    title: 'Grunnhvarf eða heildarhvarf?',
+    description: 'Mælt hraðalögmál heildarhvarfsins er hraði = k[C₄H₈].',
+    overallReaction: 'C₄H₈ → 2C₂H₄',
+    mechanism: [{ equation: 'C₄H₈ → 2C₂H₄', type: 'slow', label: 'Fyrirhugað grunnhvarf' }],
+    question: 'Gæti niðurbrot sýklóbútans gerst í einu grunnhvarfi?',
+    type: 'molecularity',
+    options: [
+      {
+        id: 'a',
+        text: 'Já: einsameindahvarf hefur fyrsta stigs hraðalögmál, eins og mælt var',
+        correct: true,
+        explanation:
+          'Ein C₄H₈-sameind brotnar niður, svo grunnhvarfið væri einsameindahvarf með hraði = k[C₄H₈]. Það er mælda hraðalögmálið.',
+      },
+      {
+        id: 'b',
+        text: 'Nei: stuðullinn 2 fyrir framan C₂H₄ gerir það annars stigs',
+        correct: false,
+        explanation:
+          'Myndefnin koma ekki inn í hraðalögmál grunnhvarfs. Aðeins hvarfefnaeindirnar ráða því.',
+      },
+      {
+        id: 'c',
+        text: 'Nei: heildarhvarf getur aldrei verið grunnhvarf',
+        correct: false,
+        explanation:
+          'Sum heildarhvörf gerast í einu skrefi, og þá er heildarhvarfið líka grunnhvarf.',
+      },
+      {
+        id: 'd',
+        text: 'Já, en það væri tvísameindahvarf því tvær sameindir myndast',
+        correct: false,
+        explanation:
+          'Sameindatala telur hvarfefnaeindirnar, ekki myndefnin. Hér er hvarfefnaeindin ein.',
+      },
+    ],
+    hint: 'Hvaða stig hefur hraðalögmál einsameindahvarfs?',
+    conceptExplanation:
+      'Þegar hraðalögmál sem spáð er út frá fyrirhuguðu grunnhvarfi passar við mælt hraðalögmál, er grunnhvarfið sennilegur hvarfgangur. Bókin tekur niðurbrot sýklóbútans sem dæmi (kafli 12, Hvarfgangar).',
   },
 ];
