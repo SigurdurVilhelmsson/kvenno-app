@@ -6,7 +6,7 @@ import App from '../App';
 import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 import { Level2, molecules } from '../components/Level2';
-import { Level3 } from '../components/Level3';
+import { LEVEL3_CHALLENGES, Level3 } from '../components/Level3';
 
 /**
  * No running score (mobile-pass decision 1, ruled (b)). Every level and the
@@ -143,7 +143,7 @@ describe('Stig 2, Byggja sameindir', () => {
 });
 
 describe('Stig 3', () => {
-  it('shows no score on the way and reports right answers of 10', () => {
+  it('shows no score on the way and reports right answers of all of them', () => {
     const onComplete = vi.fn();
     const { container } = render(<Level3 onComplete={onComplete} onBack={vi.fn()} />);
     const ui = within(container);
@@ -156,7 +156,7 @@ describe('Stig 3', () => {
       fireEvent.click(ui.getByRole('button', { name: /^Næsta/ }));
     }
     let right = 0;
-    for (let q = 0; q < 10; q++) {
+    for (let q = 0; q < LEVEL3_CHALLENGES.length; q++) {
       expectNoScore(container);
       const options = optionsBy(container, 'border-purple-300');
       fireEvent.click(options[q % options.length]);
@@ -164,7 +164,7 @@ describe('Stig 3', () => {
       expectNoScore(container);
       fireEvent.click(ui.getByRole('button', { name: /Næsta áskorun|Ljúka stigi/ }));
     }
-    expect(onComplete).toHaveBeenCalledWith(right, 10);
+    expect(onComplete).toHaveBeenCalledWith(right, LEVEL3_CHALLENGES.length);
   });
 });
 
@@ -238,7 +238,7 @@ describe('the menu and the end screen', () => {
       fireEvent.click(ui.getByRole('button', { name: /^Næsta/ }));
     }
     let right = 0;
-    for (let q = 0; q < 10; q++) {
+    for (let q = 0; q < LEVEL3_CHALLENGES.length; q++) {
       fireEvent.click(optionsBy(container, 'border-purple-300')[0]);
       if (ui.queryByText('Rétt!')) right++;
       fireEvent.click(ui.getByRole('button', { name: /Næsta áskorun|Ljúka stigi/ }));
@@ -246,7 +246,7 @@ describe('the menu and the end screen', () => {
     expect(container.textContent).toContain('Þú hefur lokið öllum stigum!');
     expect(container.textContent).toContain('9 af 10 rétt');
     expect(container.textContent).toContain('Lokið');
-    expect(container.textContent).toContain(`${right} af 10 rétt`);
+    expect(container.textContent).toContain(`${right} af ${LEVEL3_CHALLENGES.length} rétt`);
     expect(container.textContent).not.toMatch(/Heildar ?stig/);
     expect(container.textContent).not.toContain('120');
   });

@@ -21,6 +21,8 @@ interface FunctionalGroup {
   nameIcelandic: string;
   formula: string;
   suffix: string;
+  /** What the name ending is called on the card: an ether's group is a prefix (kafli 20.2). */
+  affixLabel?: 'Forskeyti';
   example: string;
   exampleName: string;
   description: string;
@@ -43,7 +45,7 @@ const functionalGroups: FunctionalGroup[] = [
     suffix: '-al',
     example: 'CH₃CHO',
     exampleName: 'etanal',
-    description: 'Karbonýlhópur í enda keðju',
+    description: 'Karbónýlhópur í enda keðju',
     color: 'bg-amber-100 border-amber-400 text-amber-800',
   },
   {
@@ -52,7 +54,7 @@ const functionalGroups: FunctionalGroup[] = [
     suffix: '-ón',
     example: 'CH₃COCH₃',
     exampleName: 'própanón',
-    description: 'Karbonýlhópur í miðri keðju',
+    description: 'Karbónýlhópur í miðri keðju',
     color: 'bg-orange-100 border-orange-400 text-orange-800',
   },
   {
@@ -64,11 +66,54 @@ const functionalGroups: FunctionalGroup[] = [
     description: 'Karboxýlhópur (sýruhópur)',
     color: 'bg-red-100 border-red-400 text-red-800',
   },
+  // The four groups below follow the book's kafli 20.2–20.4 (m68847–m68849): ethers, esters,
+  // amines and amides, each named as the book names its own examples.
+  {
+    nameIcelandic: 'Eter',
+    formula: 'C–O–C',
+    suffix: 'alkoxý-',
+    affixLabel: 'Forskeyti',
+    example: 'CH₃OCH₂CH₃',
+    exampleName: 'metoxýetan',
+    description:
+      'Súrefnisatóm milli tveggja kolefnisatóma. Eter hefur ekkert viðskeyti: minni alkýlhópurinn og súrefnið eru nefnd sem alkoxýhópur (metoxý-, etoxý-) framan við lengri keðjuna. Almennt heiti: etýlmetýleter.',
+    color: 'bg-sky-100 border-sky-400 text-sky-800',
+  },
+  {
+    nameIcelandic: 'Ester',
+    formula: '-COO-C',
+    suffix: '-óat',
+    example: 'CH₃COOCH₃',
+    exampleName: 'metýletanóat',
+    description:
+      'Myndast úr karboxýlsýru og alkóhóli. Alkýlhópur alkóhólsins kemur fyrst, svo sýran með -óat í stað -sýra: etansýra og metanól gefa metýletanóat (metýlasetat).',
+    color: 'bg-pink-100 border-pink-400 text-pink-800',
+  },
+  {
+    nameIcelandic: 'Amín',
+    formula: '-NH₂',
+    suffix: '-amín',
+    example: 'CH₃NH₂',
+    exampleName: 'metýlamín',
+    description:
+      'Nituratóm með stakt rafeindapar og þrjú tengi við kolefni eða vetni. Alkýlhóparnir á nitrinu eru taldir upp: metýlamín, dímetýlamín, trímetýlamín. Amín eru veikir basar, eins og ammoníak.',
+    color: 'bg-indigo-100 border-indigo-400 text-indigo-800',
+  },
+  {
+    nameIcelandic: 'Amíð',
+    formula: '-CONH₂',
+    suffix: '-amíð',
+    example: 'CH₃CONH₂',
+    exampleName: 'etanamíð',
+    description:
+      'Nituratóm tengt kolefni karbónýlhóps. Myndast úr karboxýlsýru og amíni eða ammoníaki, eins og ester úr sýru og alkóhóli. Etanamíð heitir líka asetamíð.',
+    color: 'bg-lime-100 border-lime-400 text-lime-800',
+  },
 ];
 
 interface Challenge {
   id: number;
-  type: 'identify' | 'name' | 'structure';
+  type: 'identify' | 'name' | 'structure' | 'isomer';
   question: string;
   formula?: string;
   structure?: string;
@@ -104,7 +149,7 @@ const challenges: Challenge[] = [
     formula: 'CH₃CHO',
     correctAnswer: 'Aldehýð (-CHO)',
     options: ['Alkóhól (-OH)', 'Aldehýð (-CHO)', 'Karboxýlsýra (-COOH)', 'Ketón (C=O)'],
-    explanation: '-CHO er aldehýðhópur (karbonýl í enda keðju)',
+    explanation: '-CHO er aldehýðhópur (karbónýl í enda keðju)',
   },
 
   // Naming challenges
@@ -173,7 +218,149 @@ const challenges: Challenge[] = [
     explanation:
       '1-própanól = 3 kolefni + alkóhól á kolefni 1 = CH₃CH₂CH₂OH. Á kolefni 2 væri það 2-própanól, CH₃CH(OH)CH₃.',
   },
+
+  // The four groups of kafli 20.2–20.4. Each name is one the book prints.
+  {
+    id: 11,
+    type: 'identify',
+    question: 'Hvaða virknihópur er í CH₃OCH₃?',
+    formula: 'CH₃OCH₃',
+    correctAnswer: 'Eter (C–O–C)',
+    options: ['Eter (C–O–C)', 'Alkóhól (-OH)', 'Ester (-COO-C)', 'Ketón (C=O)'],
+    explanation:
+      'Súrefnið situr milli tveggja kolefnisatóma og ber ekkert vetni, svo þetta er eter (metoxýmetan, dímetýleter). Alkóhól hefði -OH.',
+  },
+  {
+    id: 12,
+    type: 'identify',
+    question: 'Hvaða virknihópur er í CH₃CONH₂?',
+    formula: 'CH₃CONH₂',
+    correctAnswer: 'Amíð (-CONH₂)',
+    options: ['Amíð (-CONH₂)', 'Amín (-NH₂)', 'Ketón (C=O)', 'Karboxýlsýra (-COOH)'],
+    explanation:
+      'Nitrið er tengt kolefni karbónýlhóps (C=O), svo þetta er amíð: etanamíð. Í amíni er nitrið tengt kolefni án C=O.',
+  },
+  {
+    id: 13,
+    type: 'name',
+    question: 'Hvað heitir CH₃CH₂OCH₂CH₃ í IUPAC-kerfinu?',
+    formula: 'CH₃CH₂OCH₂CH₃',
+    correctAnswer: 'etoxýetan',
+    options: ['etoxýetan', 'metoxýprópan', '1-bútanól', 'etýlasetat'],
+    explanation:
+      'Etoxýhópur (CH₃CH₂O–) á etankeðju = etoxýetan. Almenna heitið er díetýleter. 1-bútanól hefur sömu sameindaformúlu, C₄H₁₀O, en er alkóhól: það er hverfa etoxýetans.',
+  },
+  {
+    id: 14,
+    type: 'name',
+    question: 'Hvað heitir CH₃COOCH₃?',
+    formula: 'CH₃COOCH₃',
+    correctAnswer: 'metýletanóat',
+    options: ['metýletanóat', 'etýlmetanóat', 'etansýra', 'metoxýetan'],
+    explanation:
+      'Sýruhlutinn CH₃COO– kemur úr etansýru (etanóat) og metýlhópurinn úr metanóli = metýletanóat, líka kallað metýlasetat. Etýlmetanóat væri HCOOCH₂CH₃, úr metansýru og etanóli.',
+  },
+  {
+    id: 15,
+    type: 'name',
+    question: 'Hvað heitir (CH₃)₂NH?',
+    formula: '(CH₃)₂NH',
+    correctAnswer: 'dímetýlamín',
+    options: ['dímetýlamín', 'metýlamín', 'trímetýlamín', 'etanamíð'],
+    explanation:
+      'Tveir metýlhópar á nitrinu = dímetýlamín. Etýlamín, CH₃CH₂NH₂, hefur sömu sameindaformúlu, C₂H₇N: amínin tvö eru hverfur.',
+  },
+
+  // Cis and trans (kafli 20.1, m68846).
+  {
+    id: 16,
+    type: 'isomer',
+    question: 'Hvað heitir 2-búten þegar metýlhóparnir tveir eru sömu megin við tvítengið?',
+    correctAnswer: 'cis-2-búten',
+    options: ['cis-2-búten', 'trans-2-búten', '1-búten', '2-bútýn'],
+    explanation:
+      'Sömu megin er cis, hvor sínum megin er trans. Hverfurnar tvær hafa sömu formúlu, C₄H₈, en ólíka rúmfræði og ólíkt suðumark.',
+  },
+  {
+    id: 17,
+    type: 'isomer',
+    question: 'Hvers vegna eru til tvær hverfur af 2-búteni en aðeins ein af bútani?',
+    correctAnswer: 'Kolefnisatómin geta ekki snúist um tvítengið',
+    options: [
+      'Kolefnisatómin geta ekki snúist um tvítengið',
+      'Tvítengi er lengra en eintengi',
+      'Búten hefur fleiri vetnisatóm en bútan',
+      'Metýlhóparnir hrinda hvor öðrum frá',
+    ],
+    explanation:
+      'Kolefnisatóm snúast frjálslega um eintengi, svo allar afstöður hópanna í bútani eru sama sameindin. Pí-tengið heldur tvítenginu stífu, svo afstaða hópanna í 2-búteni er föst.',
+  },
+  {
+    id: 18,
+    type: 'isomer',
+    question: 'Hvert þessara efna á sér cis- og trans-hverfu?',
+    correctAnswer: '2-penten',
+    options: ['2-penten', '1-penten', 'pentan', 'própen'],
+    explanation:
+      'Hvort kolefni tvítengisins þarf að bera tvo ólíka hópa. Í 2-penteni ber annað metýlhóp og vetni, hitt etýlhóp og vetni. Í 1-penteni og própeni ber kolefni 1 tvö vetnisatóm, og pentan hefur ekkert tvítengi.',
+  },
 ];
+
+/** The challenges in the order they are asked, for the tests. */
+export const LEVEL3_CHALLENGES: readonly Challenge[] = challenges;
+
+/**
+ * Cis- and trans-2-butene, drawn with 120° angles around the double bond as the book draws them
+ * (kafli 20.1, mynd um rúmhverfur bútens). One `C=C` in the middle, a methyl group and a hydrogen
+ * on each carbon.
+ */
+function ButeneIsomers() {
+  const one = (trans: boolean, label: string) => {
+    const y2 = trans ? 112 : 28;
+    const h2 = trans ? 28 : 112;
+    return (
+      <figure className="flex flex-col items-center">
+        <svg viewBox="0 0 200 140" className="w-full max-w-[200px]" aria-hidden="true">
+          <line x1="70" y1="66" x2="130" y2="66" stroke="currentColor" strokeWidth="3" />
+          <line x1="70" y1="74" x2="130" y2="74" stroke="currentColor" strokeWidth="3" />
+          <line x1="70" y1="70" x2="38" y2="28" stroke="currentColor" strokeWidth="3" />
+          <line x1="70" y1="70" x2="38" y2="112" stroke="currentColor" strokeWidth="3" />
+          <line x1="130" y1="70" x2="162" y2={y2} stroke="currentColor" strokeWidth="3" />
+          <line x1="130" y1="70" x2="162" y2={h2} stroke="currentColor" strokeWidth="3" />
+          <text x="70" y="60" textAnchor="middle" fontSize="16" fontWeight="bold">
+            C
+          </text>
+          <text x="130" y="60" textAnchor="middle" fontSize="16" fontWeight="bold">
+            C
+          </text>
+          <text x="30" y="22" textAnchor="middle" fontSize="15" fill="#be185d">
+            CH₃
+          </text>
+          <text x="30" y="130" textAnchor="middle" fontSize="15">
+            H
+          </text>
+          <text x="170" y={y2 === 28 ? 22 : 130} textAnchor="middle" fontSize="15" fill="#be185d">
+            CH₃
+          </text>
+          <text x="170" y={h2 === 28 ? 22 : 130} textAnchor="middle" fontSize="15">
+            H
+          </text>
+        </svg>
+        <figcaption className="font-bold">{label}</figcaption>
+      </figure>
+    );
+  };
+  return (
+    <div
+      role="img"
+      aria-label="cis-2-búten með báða metýlhópana sömu megin við tvítengið, og trans-2-búten með þá hvor sínum megin"
+      className="grid grid-cols-2 gap-2 text-warm-800"
+    >
+      {one(false, 'cis-2-búten')}
+      {one(true, 'trans-2-búten')}
+    </div>
+  );
+}
 
 export function Level3({ onComplete, onBack }: Level3Props) {
   const [phase, setPhase] = useState<'learn' | 'challenge'>('learn');
@@ -185,8 +372,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [isCorrect, setIsCorrect] = useState(false);
   // (quiz has no hints)
 
+  // The functional-group cards, then one card on cis and trans.
+  const learnSteps = functionalGroups.length + 1;
   const handleNextGroup = () => {
-    if (currentGroup < functionalGroups.length - 1) {
+    if (currentGroup < learnSteps - 1) {
       setCurrentGroup((prev) => prev + 1);
     } else {
       setPhase('challenge');
@@ -269,7 +458,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   };
 
   if (phase === 'learn') {
-    const group = functionalGroups[currentGroup];
+    const onIsomers = currentGroup === functionalGroups.length;
+    const group = functionalGroups[Math.min(currentGroup, functionalGroups.length - 1)];
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
@@ -282,7 +472,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               ← Til baka
             </button>
             <div className="ml-auto text-sm text-warm-500 whitespace-nowrap">
-              Virknihópur {currentGroup + 1} af {functionalGroups.length}
+              {onIsomers
+                ? 'Cis og trans'
+                : `Virknihópur ${currentGroup + 1} af ${functionalGroups.length}`}
             </div>
           </div>
 
@@ -294,7 +486,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           </p>
 
           <div className="flex justify-center gap-2 mb-6 phone:mb-4">
-            {functionalGroups.map((_, idx) => (
+            {Array.from({ length: learnSteps }, (_, idx) => (
               <div
                 key={idx}
                 className={`w-3 h-3 rounded-full ${
@@ -308,48 +500,83 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             ))}
           </div>
 
-          <div
-            ref={itemRef}
-            data-item-start
-            className={`${group.color} p-4 sm:p-8 rounded-2xl border-2 animate-slide-in`}
-          >
-            <div className="text-center mb-6 phone:mb-4">
-              <div className="text-2xl sm:text-4xl font-bold mb-2">{group.nameIcelandic}</div>
+          {onIsomers ? (
+            <div
+              ref={itemRef}
+              data-item-start
+              className="bg-pink-50 border-pink-300 text-warm-800 p-4 sm:p-8 rounded-2xl border-2 animate-slide-in"
+            >
+              <h2 className="text-2xl sm:text-4xl font-bold text-center mb-4 text-pink-800">
+                Cis og trans
+              </h2>
+              <p className="mb-4">
+                Kolefnisatóm geta snúist frjálslega um eintengi en ekki um tvítengi: tvítengið er
+                stíft. Því eru til tvær <strong>hverfur</strong> af 2-búteni, með sömu formúlu,
+                C₄H₈, en ólíka rúmfræði.
+              </p>
+              <div className="bg-white p-3 sm:p-4 rounded-xl mb-4">
+                <ButeneIsomers />
+              </div>
+              <ul className="list-disc pl-5 space-y-1 mb-4">
+                <li>
+                  <strong>cis-</strong>: metýlhóparnir eru sömu megin við tvítengið.
+                </li>
+                <li>
+                  <strong>trans-</strong>: metýlhóparnir eru hvor sínum megin við það.
+                </li>
+              </ul>
+              <p className="text-sm">
+                Hverfurnar hafa ólíka eðliseiginleika, til dæmis suðumark. Kolefni tvítengisins
+                þurfa hvort að bera tvo ólíka hópa: 1-búten á sér enga cis- eða trans-hverfu, því
+                kolefni 1 ber tvö vetnisatóm (Efnafræði 2e, kafli 20, „Vetniskolefni“).
+              </p>
             </div>
+          ) : (
+            <div
+              ref={itemRef}
+              data-item-start
+              className={`${group.color} p-4 sm:p-8 rounded-2xl border-2 animate-slide-in`}
+            >
+              <div className="text-center mb-6 phone:mb-4">
+                <div className="text-2xl sm:text-4xl font-bold mb-2">{group.nameIcelandic}</div>
+              </div>
 
-            <div className="bg-white p-4 sm:p-6 rounded-xl mb-6 phone:mb-4">
-              <div className="grid grid-cols-2 gap-3 sm:gap-6 text-center">
-                <div>
-                  <div className="text-sm text-warm-500 mb-1">Virknihópur</div>
-                  <div className="text-2xl sm:text-3xl font-mono font-bold whitespace-nowrap">
-                    {group.formula}
+              <div className="bg-white p-4 sm:p-6 rounded-xl mb-6 phone:mb-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-6 text-center">
+                  <div>
+                    <div className="text-sm text-warm-500 mb-1">Virknihópur</div>
+                    <div className="text-2xl sm:text-3xl font-mono font-bold whitespace-nowrap">
+                      {group.formula}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="text-sm text-warm-500 mb-1">Viðskeyti</div>
-                  <div className="text-2xl sm:text-3xl font-bold text-green-600 whitespace-nowrap">
-                    {group.suffix}
+                  <div>
+                    <div className="text-sm text-warm-500 mb-1">
+                      {group.affixLabel ?? 'Viðskeyti'}
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-bold text-green-600 whitespace-nowrap">
+                      {group.suffix}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white p-4 rounded-xl mb-4">
-              <div className="text-sm text-warm-500 mb-1">Dæmi:</div>
-              <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4">
-                <span className="text-xl sm:text-2xl font-mono whitespace-nowrap">
-                  {group.example}
-                </span>
-                {/* Arrow and name wrap together, so a narrow screen breaks before the arrow */}
-                <span className="flex items-center gap-x-3 sm:gap-x-4">
-                  <span className="text-xl sm:text-2xl text-warm-400">→</span>
-                  <span className="text-xl sm:text-2xl font-bold">{group.exampleName}</span>
-                </span>
+              <div className="bg-white p-4 rounded-xl mb-4">
+                <div className="text-sm text-warm-500 mb-1">Dæmi:</div>
+                <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4">
+                  <span className="text-xl sm:text-2xl font-mono whitespace-nowrap">
+                    {group.example}
+                  </span>
+                  {/* Arrow and name wrap together, so a narrow screen breaks before the arrow */}
+                  <span className="flex items-center gap-x-3 sm:gap-x-4">
+                    <span className="text-xl sm:text-2xl text-warm-400">→</span>
+                    <span className="text-xl sm:text-2xl font-bold">{group.exampleName}</span>
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <div className="text-center text-sm">{group.description}</div>
-          </div>
+              <div className="text-center text-sm">{group.description}</div>
+            </div>
+          )}
 
           <div className="flex gap-4 mt-8 phone:mt-4 phone:gap-3">
             <button
@@ -367,7 +594,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               onClick={handleNextGroup}
               className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl phone:px-2 phone:whitespace-nowrap"
             >
-              {currentGroup === functionalGroups.length - 1 ? 'Byrja áskoranir →' : 'Næsta →'}
+              {currentGroup === learnSteps - 1 ? 'Byrja áskoranir →' : 'Næsta →'}
             </button>
           </div>
 
@@ -402,6 +629,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         return '🏷️ Nefna sameind';
       case 'structure':
         return '🧪 Finna formúlu';
+      case 'isomer':
+        return '🔁 Cis og trans';
     }
   };
 
@@ -507,24 +736,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         )}
 
         <div className="mt-6 bg-warm-50 p-4 rounded-xl phone:mt-4">
-          <h3 className="font-semibold text-warm-700 mb-2">📋 Virknihópar og viðskeyti:</h3>
+          <h3 className="font-semibold text-warm-700 mb-2">📋 Virknihópar og nafnhlutar:</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center">
-            <div className="bg-blue-50 p-2 rounded border border-blue-200">
-              <div className="font-bold">-OH</div>
-              <div className="text-blue-600">-ól</div>
-            </div>
-            <div className="bg-amber-50 p-2 rounded border border-amber-200">
-              <div className="font-bold">-CHO</div>
-              <div className="text-amber-600">-al</div>
-            </div>
-            <div className="bg-orange-50 p-2 rounded border border-orange-200">
-              <div className="font-bold">C=O</div>
-              <div className="text-orange-600">-ón</div>
-            </div>
-            <div className="bg-red-50 p-2 rounded border border-red-200">
-              <div className="font-bold">-COOH</div>
-              <div className="text-red-600">-sýra</div>
-            </div>
+            {functionalGroups.map((fg) => (
+              <div key={fg.nameIcelandic} className={`p-2 rounded border ${fg.color}`}>
+                <div className="font-bold whitespace-nowrap">{fg.formula}</div>
+                <div className="whitespace-nowrap">{fg.suffix}</div>
+              </div>
+            ))}
           </div>
         </div>
 

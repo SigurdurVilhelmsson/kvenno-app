@@ -143,7 +143,7 @@ function App() {
             <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3 phone:px-3 phone:py-2">
               <div>
                 <div className="font-bold text-purple-800">Stig 3: Hagnýtar sameindir</div>
-                <div className="text-sm text-purple-600">Virknihópar og formúlur</div>
+                <div className="text-sm text-purple-600">Virknihópar, cis og trans</div>
               </div>
               <div className="font-bold text-purple-700 whitespace-nowrap">{resultLabel(3)}</div>
             </div>
@@ -280,9 +280,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-purple-600 mt-1">
-                    Virknihópar og flóknari sameindir
-                  </div>
+                  <div className="text-sm text-purple-600 mt-1">Átta virknihópar, cis og trans</div>
                 </div>
               </div>
             </button>

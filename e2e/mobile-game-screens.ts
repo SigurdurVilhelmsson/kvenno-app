@@ -5198,10 +5198,57 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 3 — cis og trans',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Hagnýtar sameindir'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+      ],
+    },
+    {
       name: 'Stig 3 — áskorun',
       steps: [
         {
           clickRole: ['button', 'Stig 3: Hagnýtar sameindir'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
         },
         {
           clickRole: ['button', 'Næsta →'],
@@ -5222,6 +5269,21 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           clickRole: ['button', 'Stig 3: Hagnýtar sameindir'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
         },
         {
           clickRole: ['button', 'Næsta →'],
@@ -5387,6 +5449,21 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           clickRole: ['button', 'Stig 3: Hagnýtar sameindir'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
         },
         {
           clickRole: ['button', 'Næsta →'],
