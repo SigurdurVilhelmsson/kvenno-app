@@ -632,6 +632,13 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       'ordabok.md gives dilution;þynning, and the textbook (ch. 3, m68703) writes þynning 18 times and the út- compound never. 1-ar/lausnir said both, útþynning 18 times beside þynning 8, until 2026-11-15 (year-1 audit). Feminine either way, so it is a string swap: þynning / þynningu / þynningu / þynningar.',
   },
+  {
+    english: "Avogadro's number",
+    correct: 'tala Avogadros',
+    banned: [/Avogadro-?t[aöo]l/i],
+    guidance:
+      'The textbook writes tala Avogadros (tölu Avogadros 10 times, tala Avogadros 5) and never the Avogadro-tala compound; ordabok.md had no entry until 2026-11-15 (year-1 audit). 1-ar/molmassi, 1-ar/einingakedjan and the games-hub card said Avogadro-tala. Feminine: tala Avogadros / tölu Avogadros / tölu Avogadros / tölu Avogadros. The law keeps the same genitive: lögmál Avogadros.',
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

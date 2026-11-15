@@ -132,14 +132,14 @@ export const avogadroRatios: Equivalence[] = [
     left: { value: 6.022e23, unit: 'atóm', species: 'Mg' },
     right: { value: 1, unit: 'mól', species: 'Mg' },
     kind: 'avogadro',
-    source: 'Avogadro-tala',
+    source: 'Tala Avogadros',
   },
   {
     id: 'avo-NaCl',
     left: { value: 6.022e23, unit: 'formúlueiningar', species: 'NaCl' },
     right: { value: 1, unit: 'mól', species: 'NaCl' },
     kind: 'avogadro',
-    source: 'Avogadro-tala',
+    source: 'Tala Avogadros',
   },
 ];
 
@@ -284,7 +284,7 @@ export const ratioById = (id: string): Equivalence => {
 export const KIND_LABELS: Record<Equivalence['kind'], string> = {
   metric: 'Forskeyti',
   molmassi: 'Mólmassi',
-  avogadro: 'Avogadro',
+  avogadro: 'Tala Avogadros',
   molstyrkur: 'Mólstyrkur',
   edlismassi: 'Eðlismassi',
   jafna: 'Úr efnajöfnu',

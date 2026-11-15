@@ -99,14 +99,14 @@ LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 tha
 
 ## Open
 
-- **Periodic-table legend, two names.** `Eðallofttegundir`: `ordabok.md` says `eðalgas`, the textbook
-  prefers `eðallofttegund-` (54 to 25 in `02-mt-output`), so by the resolution order it is Siggi's call. `P-málmar`
-  became `Tregir málmar` on 2026-10-02 (decisions item 21), and the plain-nonmetal swatch `Aðrir
-málmleysingjar` (item 35).
-- **Percent composition** is recorded in the roadmap as "a fourth `molmassi` level", which the
-  2026-08-29 no-Level-4 ruling does not allow. Where it goes is not decided.
+- **Percent composition** goes into Reynsluformúlur as an Æfa step (Siggi, 2026-11-15), not here.
 - **i18n.** Menu text uses `t()`; the level components are hardcoded Icelandic. Part of the
   platform-wide undecided `useGameI18n` question.
+
+**Fixed 2026-11-15 — the year-1 audit (Phase 0 item 4).** `Avogadro-talan` and `Avogadro-tölu`
+are `tala Avogadros` and `tölu Avogadros`, as the book writes them, with a `governed-terms.test.ts`
+row; and sucrose is `Súkrósi`, not `Súkrósi/Sykur`, since the name is read inside sentences. The
+legend's `Eðallofttegundir` entry left this list: it was ruled `eðalgas` on 2026-10-23 and swept.
 
 **Fixed 2026-10-23 — the mobile-pass decisions.**
 
@@ -126,7 +126,7 @@ málmleysingjar` (item 35).
 - **`magnefnafræði`** in the menu's "Af hverju mólmassi?" card, in neither `ordabok.md` nor the
   textbook, is now `hlutfallaefnafræði`, the ruled word for stoichiometry (decision 44, option
   (a)): grams to moles opens Brown ch. 3. Feminine and indeclinable in the singular, so `allrar
-  hlutfallaefnafræði` is a pure swap (`wording.test.ts`).
+hlutfallaefnafræði` is a pure swap (`wording.test.ts`).
 
 **Fixed 2026-09-23 — non-layout defects found in the phone pass.** Each has a test that failed
 against the previous commit.

@@ -387,7 +387,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   {
     formula: 'C₁₂H₂₂O₁₁',
     state: 'fast',
-    name: 'Súkrósi/Sykur',
+    name: 'Súkrósi',
     nameDative: 'súkrósa/sykri',
     nameGenitive: 'súkrósa/sykurs',
     ionic: false,
