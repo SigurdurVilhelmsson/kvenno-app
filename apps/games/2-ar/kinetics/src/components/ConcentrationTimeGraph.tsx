@@ -3,6 +3,11 @@ import { useId, useState, useMemo, useRef } from 'react';
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 import { formatDecimal } from '@shared/utils';
 
+import {
+  concentrationAt as calculateConcentration,
+  halfLife as calculateHalfLife,
+} from '../engine/rate-laws';
+
 interface ConcentrationTimeGraphProps {
   /** Initial concentration [A]₀ in M */
   initialConcentration?: number;
@@ -16,45 +21,6 @@ interface ConcentrationTimeGraphProps {
   interactive?: boolean;
   /** Compact display */
   compact?: boolean;
-}
-
-/**
- * Calculate concentration at time t for different orders
- */
-function calculateConcentration(t: number, A0: number, k: number, order: 0 | 1 | 2): number {
-  switch (order) {
-    case 0:
-      // [A] = [A]₀ - kt
-      return Math.max(0, A0 - k * t);
-    case 1:
-      // [A] = [A]₀ × e^(-kt)
-      return A0 * Math.exp(-k * t);
-    case 2:
-      // [A] = [A]₀ / (1 + kt[A]₀)
-      return A0 / (1 + k * t * A0);
-    default:
-      return A0;
-  }
-}
-
-/**
- * Calculate half-life for different orders
- */
-function calculateHalfLife(A0: number, k: number, order: 0 | 1 | 2): number {
-  if (k <= 0 || A0 <= 0) return 0;
-  switch (order) {
-    case 0:
-      // t₁/₂ = [A]₀ / (2k)
-      return A0 / (2 * k);
-    case 1:
-      // t₁/₂ = ln(2) / k
-      return Math.log(2) / k;
-    case 2:
-      // t₁/₂ = 1 / (k[A]₀)
-      return 1 / (k * A0);
-    default:
-      return 0;
-  }
 }
 
 const ORDER_INFO = {

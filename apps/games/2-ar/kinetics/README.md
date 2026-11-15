@@ -136,6 +136,25 @@ There are no side files. Run the tests from the repo root
 (`pnpm exec vitest run apps/games/2-ar/kinetics`): the render tests need the root config's DOM
 environment.
 
+## Nærmynd (2026-11-15)
+
+The amber card above the levels opens a particle view of half-life, built on the template in
+`docs/particle-view-template.md`. Nothing in it is graded or stored.
+
+- **Two flasks side by side.** The first is the book's decomposition of H₂O₂ (ch12/m68791):
+  1,000 M, halving every 6,00 klst., so 32 → 16 → 8 → 4 particles. The second is a zero-order
+  reaction made up for the comparison, with the same start and the same first half-life, and the
+  screen says so: the two agree at 6 klst. and the zero-order flask is empty at 12.
+- `engine/rate-laws.ts` holds the integrated rate laws and the half-life formulas. They used to
+  live inside `ConcentrationTimeGraph.tsx`, which now imports them, so the graph and the flasks
+  cannot compute different answers. `engine/naermynd.ts` turns them into counts on a fixed
+  scale (one particle per 1/32 of the start), rounded.
+- Each particle has a fixed place and a fixed turn to react, so a time always draws the same
+  picture. The caption under each flask gives the half-life from what is left: fixed at first
+  order, shrinking at zero order.
+- Scenes are data in `data/naermynd-steps.tsx`. The misconception it targets is that the second
+  half takes as long as the first and then the reaction is over.
+
 ## Open
 
 - **The Maxwell–Boltzmann panel cannot show its tail** (mobile-pass decision 80). At real scale the
