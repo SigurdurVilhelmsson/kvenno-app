@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { FeedbackPanel } from '@shared/components';
 import { useArmedAfter, useItemTop, useRevealAfterCommit, useScreenTop } from '@shared/utils';
 
-import { parseWholeNumber } from '../utils/answers';
+import { HINT_GAVE_ANSWER, parseWholeNumber } from '../utils/answers';
 
 // Misconceptions for oxidation states
 const OXIDATION_MISCONCEPTIONS: Record<string, string> = {
@@ -41,6 +41,11 @@ interface OxidationProblem {
   targetElement: string;
   correctAnswer: number;
   hint: string;
+  /**
+   * The hint ends by naming the answer (`S þarf að vera +6`). A right answer given with it
+   * open is not counted (REVIEW-QUEUE C3, extended to this level 2026-11-15).
+   */
+  hintStatesAnswer?: true;
 }
 
 const oxidationRules: OxidationRule[] = [
@@ -122,6 +127,7 @@ export const problems: OxidationProblem[] = [
     targetElement: 'S',
     correctAnswer: 6,
     hint: '2H (+2) + 4O (-8) = -6, S þarf að vera +6',
+    hintStatesAnswer: true,
   },
   {
     id: 6,
@@ -130,6 +136,7 @@ export const problems: OxidationProblem[] = [
     targetElement: 'Mn',
     correctAnswer: 7,
     hint: 'K (+1) + 4O (-8) = -7, Mn þarf að vera +7',
+    hintStatesAnswer: true,
   },
   {
     id: 7,
@@ -146,6 +153,7 @@ export const problems: OxidationProblem[] = [
     targetElement: 'N',
     correctAnswer: 5,
     hint: 'H (+1) + 3O (-6) = -5, N þarf að vera +5',
+    hintStatesAnswer: true,
   },
   {
     id: 9,
@@ -233,13 +241,15 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
     }
   };
 
+  const hintGaveAnswer = showHint && problems[currentProblem].hintStatesAnswer === true;
+
   const handleSubmit = () => {
     const answer = parseWholeNumber(userAnswer);
     const correct = answer === problems[currentProblem].correctAnswer;
     setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (correct && attempts === 0) setCorrectCount((prev) => prev + 1);
+    if (correct && attempts === 0 && !hintGaveAnswer) setCorrectCount((prev) => prev + 1);
   };
 
   const handleNext = () => {
@@ -489,7 +499,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
                     feedback={{
                       isCorrect,
                       explanation: isCorrect
-                        ? `Rétt! Oxunartala ${problem.targetElement} í ${problem.compoundDisplay} er ${problem.correctAnswer > 0 ? `+${problem.correctAnswer}` : problem.correctAnswer}.`
+                        ? `Rétt! ${hintGaveAnswer && attempts === 0 ? `${HINT_GAVE_ANSWER} ` : ''}Oxunartala ${problem.targetElement} í ${problem.compoundDisplay} er ${problem.correctAnswer > 0 ? `+${problem.correctAnswer}` : problem.correctAnswer}.`
                         : `Þú svaraðir ${userAnswer}, en rétt svar er ${problem.correctAnswer > 0 ? `+${problem.correctAnswer}` : problem.correctAnswer}. ${problem.hint || ''}`,
                       misconception: isCorrect ? undefined : OXIDATION_MISCONCEPTIONS.sum,
                       relatedConcepts: OXIDATION_RELATED,

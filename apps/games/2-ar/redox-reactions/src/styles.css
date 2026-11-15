@@ -1,21 +1,45 @@
-@import "tailwindcss";
-@import "../../../../../packages/shared/styles/theme.css";
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
 @source "../../../../../packages/shared";
-@import "../../../../../packages/shared/styles/game-base.css";
+@import '../../../../../packages/shared/styles/game-base.css';
 
 /* Oxidation number color scale */
-.ox-neg-4 { @apply bg-blue-800 text-white; }
-.ox-neg-3 { @apply bg-blue-700 text-white; }
-.ox-neg-2 { @apply bg-blue-600 text-white; }
-.ox-neg-1 { @apply bg-blue-500 text-white; }
-.ox-zero { @apply bg-gray-200 text-gray-800; }
-.ox-pos-1 { @apply bg-red-400 text-white; }
-.ox-pos-2 { @apply bg-red-500 text-white; }
-.ox-pos-3 { @apply bg-red-600 text-white; }
-.ox-pos-4 { @apply bg-red-700 text-white; }
-.ox-pos-5 { @apply bg-red-800 text-white; }
-.ox-pos-6 { @apply bg-red-900 text-white; }
-.ox-pos-7 { @apply bg-purple-900 text-white; }
+.ox-neg-4 {
+  @apply bg-blue-800 text-white;
+}
+.ox-neg-3 {
+  @apply bg-blue-700 text-white;
+}
+.ox-neg-2 {
+  @apply bg-blue-600 text-white;
+}
+.ox-neg-1 {
+  @apply bg-blue-500 text-white;
+}
+.ox-zero {
+  @apply bg-gray-200 text-gray-800;
+}
+.ox-pos-1 {
+  @apply bg-red-400 text-white;
+}
+.ox-pos-2 {
+  @apply bg-red-500 text-white;
+}
+.ox-pos-3 {
+  @apply bg-red-600 text-white;
+}
+.ox-pos-4 {
+  @apply bg-red-700 text-white;
+}
+.ox-pos-5 {
+  @apply bg-red-800 text-white;
+}
+.ox-pos-6 {
+  @apply bg-red-900 text-white;
+}
+.ox-pos-7 {
+  @apply bg-purple-900 text-white;
+}
 
 /* Oxidation state badge */
 .ox-badge {
@@ -59,14 +83,27 @@
 
 /* Animations */
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes electronMove {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(20px); }
-  100% { transform: translateX(40px); opacity: 0; }
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(40px);
+    opacity: 0;
+  }
 }
 
 .animate-slide-in {

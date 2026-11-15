@@ -48,8 +48,20 @@ interface Challenge {
   correctAnswer: number | string;
   options?: { id: string; text: string; correct: boolean; explanation: string }[];
   hints: TieredHints;
+  /**
+   * The first hint tier that states the answer: 4 (the worked solution) unless an earlier
+   * tier already does. A right answer after it is not counted (REVIEW-QUEUE C3, extended
+   * to this level 2026-11-15).
+   */
+  revealsAt?: 3 | 4;
   explanation: string;
 }
+
+/** Said beside a right answer that a hint had already given. */
+export const HINT_GAVE_ANSWER: Record<3 | 4, string> = {
+  3: 'Vísbendingin gaf svarið, svo svarið telst ekki með.',
+  4: 'Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.',
+};
 
 const challenges: Challenge[] = [
   {
@@ -80,6 +92,7 @@ const challenges: Challenge[] = [
       method: 'Klór er halógen í hópi 17 (VII A). Gildisrafeindir = 17 - 10 = 7.',
       solution: 'Cl hefur 7 gildisrafeindir og þarf því 1 rafeind til að ná áttureglunni.',
     },
+    revealsAt: 3,
     explanation:
       'Cl er í hópi 17 (VII A), sem þýðir 7 gildisrafeindir. Halógenar þurfa 1 rafeind til að ná áttureglunni.',
   },
@@ -202,6 +215,7 @@ const challenges: Challenge[] = [
       method: 'Flest atóm vilja líkja eftir eðalgastegundum með 8 rafeindir í ysta hvolfi.',
       solution: 'Súrefni vill hafa 8 rafeindir í ysta hvolfi (áttureglan).',
     },
+    revealsAt: 3,
     explanation:
       'Áttureglan: Atóm vilja hafa 8 rafeindir í ysta hvolfi til að vera stöðug (eins og eðalgastegundir).',
   },
@@ -291,6 +305,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
 
+  // A hint that states the answer counts as a revealed answer (C3).
+  const revealTier = challenge.revealsAt ?? 4;
+  const answerShown = hintsUsedTier >= revealTier;
+
   const checkAnswer = () => {
     let correct: boolean;
 
@@ -305,7 +323,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     }
 
     setIsCorrect(correct);
-    if (correct) setCorrectCount((prev) => prev + 1);
+    if (correct && !answerShown) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -512,7 +530,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 feedback={{
                   isCorrect,
                   explanation: isCorrect
-                    ? challenge.explanation
+                    ? answerShown
+                      ? `${HINT_GAVE_ANSWER[revealTier]} ${challenge.explanation}`
+                      : challenge.explanation
                     : `Rétt svar: ${challenge.correctAnswer}. ${challenge.explanation}`,
                   misconception: isCorrect ? undefined : MISCONCEPTIONS[challenge.type],
                   relatedConcepts: RELATED_CONCEPTS[challenge.type],

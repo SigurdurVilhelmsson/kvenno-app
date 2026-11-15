@@ -53,7 +53,7 @@ describe('Stig 1', () => {
    * Every wrong answer here is followed by Reyna aftur and the right answer — the second try
    * Stig 1 used to pay 5 points for. On every sixth problem the student moves on instead.
    */
-  function play() {
+  function play(openHints: boolean) {
     const onComplete = vi.fn();
     const { container } = render(<Level1 t={t} onComplete={onComplete} onBack={vi.fn()} />);
     const view = within(container);
@@ -62,7 +62,7 @@ describe('Stig 1', () => {
 
     level1.forEach((problem, i) => {
       expectNoScore(container);
-      fireEvent.click(view.getByRole('button', { name: 'Vísbending' }));
+      if (openHints) fireEvent.click(view.getByRole('button', { name: 'Vísbending' }));
       const answer = (value: number) => {
         fireEvent.change(view.getByRole('spinbutton', { name: 'Oxunartala' }), {
           target: { value: String(value) },
@@ -88,7 +88,16 @@ describe('Stig 1', () => {
   }
 
   it('counts first answers only, shows no score, and pays a retry nothing', () => {
-    expect(play()).toHaveBeenCalledWith(rightOf(level1.length), level1.length);
+    expect(play(false)).toHaveBeenCalledWith(rightOf(level1.length), level1.length);
+  });
+
+  // REVIEW-QUEUE C3, extended 2026-11-15: three hints end by naming the answer, and a right
+  // answer given with one of them open is a revealed answer. The other hints change nothing.
+  it('does not count a right answer the open hint had stated', () => {
+    const stated = level1.filter((p, i) => !wrongAt(i) && p.hintStatesAnswer).length;
+    expect(level1.filter((p) => p.hintStatesAnswer)).toHaveLength(3);
+    expect(stated).toBeGreaterThan(0);
+    expect(play(true)).toHaveBeenCalledWith(rightOf(level1.length) - stated, level1.length);
   });
 });
 
@@ -146,14 +155,16 @@ describe('Stig 3', () => {
   const total = level3.length * STEPS;
 
   /** Plays every problem, wrong on every third step, opening the hint before each one. */
-  function play() {
+  function play(openHints: boolean) {
     const onComplete = vi.fn();
     const { container } = render(<Level3 t={t} onComplete={onComplete} onBack={vi.fn()} />);
     const view: View = within(container);
     fireEvent.click(view.getByRole('button', { name: /Byrja æfingar/ }));
     const stepOn = () =>
       fireEvent.click(view.getByRole('button', { name: /^(Halda áfram|Næsta) →$/ }));
-    const hint = () => fireEvent.click(view.getByRole('button', { name: 'Sýna vísbendingu' }));
+    const hint = () => {
+      if (openHints) fireEvent.click(view.getByRole('button', { name: 'Sýna vísbendingu' }));
+    };
 
     let step = 0;
     const wrong = () => wrongAt(step++);
@@ -194,7 +205,21 @@ describe('Stig 3', () => {
   }
 
   it('counts every right step out of four per problem, and shows no score', () => {
-    expect(play()).toHaveBeenCalledWith(rightOf(total), total);
+    expect(play(false)).toHaveBeenCalledWith(rightOf(total), total);
+  });
+
+  // REVIEW-QUEUE C3, extended 2026-11-15: a step whose answer the open hint states is a
+  // revealed answer. Steps run identify, write-ox, write-red, balance in each problem.
+  it('does not count a right step the open hint had stated', () => {
+    const ORDER = ['identify', 'write-ox', 'write-red', 'balance'] as const;
+    let counted = 0;
+    level3.forEach((problem, p) =>
+      ORDER.forEach((name, k) => {
+        if (!wrongAt(p * 4 + k) && !problem.hintReveals.includes(name)) counted++;
+      })
+    );
+    expect(counted).toBeLessThan(rightOf(total));
+    expect(play(true)).toHaveBeenCalledWith(counted, total);
   });
 });
 

@@ -132,17 +132,17 @@ There are no side files. Run the tests from the repo root:
 - **i18n.** This is one of the nine games that keep a `LanguageSwitcher`, and the most translated
   (156 `t()` calls in `docs/i18n-coverage.md`). Whether to finish wiring the nine is the
   platform-wide undecided `useGameI18n` question (`CLAUDE.md`, "Remaining deferred").
-- **Hints that state the answer still count here** (found 2026-11-02, not yet fixed). Stig 3 shows
-  one hint, the same on all four steps, and on all six problems it gives both halves' electron
-  counts, on five the multiplier outright (`data/half-reactions.ts`, `hint:`), and on four which
-  species gives and which takes electrons. Stig 1's hint ends `S þarf að vera +6`, `Mn þarf að vera
-+7` and `N þarf að vera +5` on three of ten. A right answer given with them open counts, which
-  `right-count.test.tsx` asserts. The 2026-10-23 ruling that such a hint counts as a revealed
-  answer (REVIEW-QUEUE C3, "Hints that state the answer") was applied to VSEPR, gas-law and
-  equilibrium-shifter only.
 - **The orphaned `electrochemistry` game's two levels and a Faraday node** were proposed as
   additions here (`apps/games/ORPHANED_GAMES_ASSESSMENT.md`, recommendation 11): cell potentials
   from an E° table, with per-option diagnosis of the sign error. Not tracked elsewhere.
+
+**Fixed 2026-11-15** (Siggi extended `docs/REVIEW-QUEUE.md` C3 to Stig 1 and Stig 3, year-2
+audit). A right answer given with a hint open that states it is not counted, and the feedback
+says `Vísbendingin gaf svarið, svo svarið telst ekki með.` In Stig 1 that is the three hints that
+end `S þarf að vera +6`, `Mn … +7` and `N … +5` (`hintStatesAnswer`). In Stig 3 each problem lists
+the steps its hint states (`hintReveals` in `data/half-reactions.ts`): every step on four
+problems, all but identifying the species on the two whose hint names no species. Other hints
+change nothing. `right-count.test.tsx` plays each level with and without the hints.
 
 ## Leftovers
 
