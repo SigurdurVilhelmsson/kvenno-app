@@ -4,12 +4,13 @@ import { Header, ErrorBoundary } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
+import { GildiScreen } from './components/GildiScreen';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { resultLabel, screenAfterLevel, type Progress } from './utils/progress';
 
-type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'gildi' | 'complete';
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
@@ -65,6 +66,10 @@ function App() {
     applyLevelResult(2, correct, total);
   const handleLevel3Complete = (correct: number, total: number) =>
     applyLevelResult(3, correct, total);
+
+  if (activeLevel === 'gildi') {
+    return <GildiScreen onBack={() => setActiveLevel('menu')} />;
+  }
 
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
@@ -272,6 +277,28 @@ function App() {
                   </div>
                   <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                     Þekktu eðalgasstyttinguna og undantekningar Cr og Cu.
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            {/* Not a level: the bridge to Lewis-formúlur, with its own ten questions. It is
+                never marked done and counts toward nothing. */}
+            <button
+              type="button"
+              onClick={() => setActiveLevel('gildi')}
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-4xl phone:text-2xl" aria-hidden="true">
+                  ⚛️
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-xl phone:text-lg font-bold text-amber-900">
+                    Gildisrafeindir og jónir
+                  </span>
+                  <div className="text-sm text-amber-800 mt-1">
+                    Lewis-tákn og rafeindaskipan jóna: brúin yfir í Lewis-formúlur
                   </div>
                 </div>
               </div>
