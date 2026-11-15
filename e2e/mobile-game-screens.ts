@@ -4646,6 +4646,33 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         { wait: 300 },
       ],
     },
+    // Samþynningareiginleikar (2026-11-15): its Skilja, the first question, and the feedback
+    // for the vapour-pressure drop given as the pressure.
+    {
+      name: 'Samþynning — skilja',
+      steps: [{ clickRole: ['button', 'Samþynningareiginleikar'] }, { wait: 300 }],
+    },
+    {
+      name: 'Samþynning — æfa',
+      steps: [
+        { clickRole: ['button', 'Samþynningareiginleikar'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+      ],
+    },
+    {
+      name: 'Samþynning — endurgjöf',
+      steps: [
+        { clickRole: ['button', 'Samþynningareiginleikar'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+        { fill: ['input[inputmode="decimal"]', '0,036'] },
+        { clickRole: ['button', 'Athuga'] },
+        { wait: 300 },
+      ],
+    },
     {
       name: 'Stig 1 — kynning',
       steps: [

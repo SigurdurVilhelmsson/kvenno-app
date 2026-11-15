@@ -5,12 +5,14 @@ import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
 import { FasarScreen } from './components/FasarScreen';
+import { LausnirScreen } from './components/LausnirScreen';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { NaermyndScreen } from './components/NaermyndScreen';
 
-type ActiveLevel = 'menu' | 'naermynd' | 'fasar' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel =
+  'menu' | 'naermynd' | 'fasar' | 'lausnir' | 'level1' | 'level2' | 'level3' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -89,6 +91,9 @@ function App() {
 
   if (activeLevel === 'fasar') {
     return <FasarScreen onBack={() => setActiveLevel('menu')} />;
+  }
+  if (activeLevel === 'lausnir') {
+    return <LausnirScreen onBack={() => setActiveLevel('menu')} />;
   }
   if (activeLevel === 'naermynd') {
     return <NaermyndScreen onBack={() => setActiveLevel('menu')} />;
@@ -330,6 +335,26 @@ function App() {
                   </span>
                   <div className="text-sm text-teal-700 mt-1">
                     Hitunarferlar, bræðsluvermi og gufunarvermi, og hvernig fasarit er lesið
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            {/* Not a level: colligative properties (book ch. 11.4), with its own ten questions.
+                Never marked done. */}
+            <button
+              type="button"
+              onClick={() => setActiveLevel('lausnir')}
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-cyan-400 bg-cyan-50 hover:bg-cyan-100 transition-all text-left"
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl phone:text-2xl shrink-0">🧂</div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-lg sm:text-xl font-bold text-cyan-800">
+                    Samþynningareiginleikar
+                  </span>
+                  <div className="text-sm text-cyan-700 mt-1">
+                    Gufunarþrýstingur, suðumark, frostmark og osmósa lausna
                   </div>
                 </div>
               </div>

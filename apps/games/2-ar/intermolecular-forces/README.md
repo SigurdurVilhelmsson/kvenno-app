@@ -206,6 +206,30 @@ Fasabreytingar) and 10.4 (m68769, Fasarit), which no game covered.
   `markpunktur`, `storknun`, `hélun`. Vapour pressure stays `gufunarþrýstingur`, Siggi's ruling
   against the book.
 
+## Samþynningareiginleikar (2026-11-15)
+
+A second menu card opens colligative properties, the book's ch. 11.4 (m68783), on the same
+pattern: Skilja (particles count, Raoult's law, ΔTb and ΔTf, osmosis), an ungraded Kanna (sucrose,
+NaCl or CaCl₂ in water at a chosen molality) and Æfa, ten items. It sits here, after vapour
+pressure, rather than in Year 1's Lausnir, because it follows from the vapour view and needs
+molality (Siggi's go-ahead on the year-2 Phase 4 recommendations, 2026-11-15).
+
+- **The eight numeric items are the book's**: Raoult's law for glycerol in ethanol (0,142 atm) and
+  urea in water (23,4 torr), benzene's boiling point at 0,33 m (80,9 °C), iodine in chloroform
+  (62,91 °C), nitrobenzene's freezing point at 1,85 m (−9,3 °C), glucose's osmotic pressure
+  (7,6 atm), sea water (−2,1 °C, i = 2) and CaCl₂ (−0,208 °C, i = 3). `engine/lausnir.ts` holds
+  the book's table of Kb and Kf.
+- **A boiling or freezing point is graded on its change**, within 5 %: 1 % of 80 °C would pass
+  benzene's own boiling point. A vapour pressure is graded within 0,5 %, so the pure solvent's
+  is refused (23,7 against 23,4 torr). `lausnir.test.ts` checks both.
+- **Slips named**: the change given as the point, a forgotten van 't Hoff factor, the pressure drop
+  given as the pressure, mass fraction for mole fraction, and °C for kelvin.
+- **Terms are the book's** where `ordabok.md` differed: `mólbrot` (28 hits; `ordabok.md` said
+  `mólhlutfall`, and Year 3's Blöndur already writes `mólbrot`), `osmósa` and
+  `osmósuþrýstingur` (37 hits; `ordabok.md` said `himnuflæði` and `flæðiþrýstingur`), and the
+  module's title, `Samþynningareiginleikar`. `ordabok.md` now gives the book's forms. Electrolyte
+  stays the platform's `rafkleyfi`, and vapour pressure `gufunarþrýstingur`.
+
 ## Open
 
 - **The 3D view's no-WebGL panel wording** is drafted by Claude and waits on Siggi
