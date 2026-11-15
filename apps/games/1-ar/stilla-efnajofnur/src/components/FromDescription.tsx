@@ -228,8 +228,7 @@ export function FromDescription({ onComplete, onBack }: Props) {
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-3 sm:p-4">
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-4 phone:py-2 phone:mb-3 flex flex-wrap justify-between items-center gap-x-2 gap-y-1">
-          {/* Armed too: on a phone the chips fold away after a wrong pick, and the second
-              tap of a double tap can land here. */}
+          {/* Armed like the button at the foot of the screen. */}
           <button
             onClick={armed(onBack)}
             className="whitespace-nowrap text-warm-500 hover:text-warm-700 font-semibold text-sm pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
@@ -350,8 +349,10 @@ export function FromDescription({ onComplete, onBack }: Props) {
           )}
         </div>
 
+        {/* Armed: after a wrong pick the chips fold away on a phone and this button rises
+            under the finger, where the second tap of a double tap lands. */}
         <button
-          onClick={onBack}
+          onClick={armed(onBack)}
           className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2 text-sm pointer-coarse:py-3"
         >
           Til baka í valmynd
