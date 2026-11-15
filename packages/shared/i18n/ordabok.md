@@ -26,6 +26,8 @@ alkali metal;alkalímálmur
 alkaline earth metal;jarðalkalímálmur
 allowed energy levels;leyfð orkuþrep
 alloy;melmi
+amide;amíð
+amine;amín
 amorphous solid;myndlaust fastefni
 amplitude;útslag
 analytical chemistry;efnagreining
@@ -81,6 +83,7 @@ cancel out;styttast út
 capillary force;hárpípukraftur
 carbon dioxide;koldíoxíð
 carbon monoxide;kolmónoxíð
+carbonyl group;karbónýlhópur
 catalysis;hvötun
 catalyst;hvati
 cathode;katóða
@@ -102,6 +105,7 @@ chemistry;efnafræði
 chiral center;hendnimiðja
 chirality;hendni
 chromatography;litskiljun
+cis isomer;cis-hverfa
 coefficient;stuðull
 cohesion;samloðun
 collision theory;árekstrakenningin
@@ -229,6 +233,8 @@ equilibrium pressure;jafnvægisþrýstingur
 equilibrium vapor pressure;jafnvægisgufunarþrýstingur
 equivalence point;jafngildispunktur
 Erlenmeyer flask;keiluflaska
+ester;ester
+ether;eter
 ethyne;etýn
 excess;umframmagn
 excess;umfram-
@@ -620,6 +626,7 @@ third order reaction;þriðja stigs efnahvarf
 titrant;títrantur
 titration;títrun
 titration curve;títrunarferill
+trans isomer;trans-hverfa
 transition metal;hliðarmálmur
 transition state;virkniástand
 transmittans;hleypni

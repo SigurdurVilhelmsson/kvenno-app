@@ -3,8 +3,8 @@
 Chain position 8 of 8 in Year 2, the last node, after Oxun og afoxun. The game teaches IUPAC naming
 of hydrocarbons in the textbook's Icelandic stems (efnafræði 2e, ch. 20): the prefix counts the
 carbons of the longest chain (`met-` … `dek-`), the ending names the bond (`-an`, `-en`, `-ýn`),
-a number places a multiple bond or a methyl group, and then four functional groups (`-ól`, `-al`,
-`-ón`, `-sýra`).
+a number places a multiple bond or a methyl group, and then eight functional groups (`-ól`, `-al`,
+`-ón`, `-sýra`, the ether's `alkoxý-`, `-óat`, `-amín`, `-amíð`) and cis and trans.
 
 ## Structure
 
@@ -15,7 +15,7 @@ one Stig 2 result.
 | ---- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1    | `Stig 1: Grunnreglur`        | Teaching cards (10 prefixes, 3 endings), then the free `Sameindasmiður`, then a 10-question multiple-choice quiz, options shuffled                                                                                                |
 | 2    | `Stig 2: Nefna sameindir`    | `Nefna sameindir`: 15 drawn molecules to name (3 alkanes, 5 alkenes, 4 alkynes, then 3 branched alkanes), by dragging parts or typing. `Byggja sameindir`: 10 names to build as a chain (carbon count and the bond at each place) |
-| 3    | `Stig 3: Hagnýtar sameindir` | Four functional-group cards, then 10 multiple-choice challenges, options shuffled: 3 identify the group, 4 name the compound, 3 give the formula                                                                                  |
+| 3    | `Stig 3: Hagnýtar sameindir` | Eight functional-group cards and one on cis and trans, then 18 multiple-choice challenges, options shuffled: 5 identify the group, 7 name the compound, 3 give the formula, 3 on cis and trans                                    |
 
 - **Grading.** Stig 1 and Stig 3 grade on the tap, by string equality with the correct answer.
   Stig 2's typed name is `type="text"` and compared after lowercasing and stripping accents
@@ -128,13 +128,26 @@ src/__tests__/                             option-order, drag-builder-answers, n
                                            build-from-name, molecule-builder-naming,
                                            branched-explanation, molecule-drawing, organicConverter,
                                            misconception-diagnosis, menu-explainer, book-stems,
-                                           level-results, icelandic-text, phone-scroll;
+                                           level-results, icelandic-text, phone-scroll,
+                                           more-groups;
                                            next-guard-clock.ts is a helper
 ```
 
 There are no side files. Run the tests from the repo root
 (`pnpm exec vitest run apps/games/2-ar/organic-nomenclature`): the render tests need the root
 config's DOM environment.
+
+**Ethers, esters, amines, amides and cis/trans (2026-11-15, year-2 plan Phase 4).** Stig 3 has
+four more cards (`Eter`, `Ester`, `Amín`, `Amíð`), a card on cis and trans with cis- and
+trans-2-búten drawn side by side, and eight more challenges (ids 11–18). Every name is one the
+book prints: `metoxýetan` and `etýlmetýleter`, `etoxýetan` and `díetýleter` (m68847),
+`metýletanóat` and `metýlasetat` (m68848), `metýlamín`, `dímetýlamín`, `etanamíð` and `asetamíð`
+(m68849), `cis-2-búten` and `cis-2-penten` (m68846). An ether has no ending, so its card says
+`Forskeyti` for `alkoxý-`. **Isomer is `hverfa`**, as `ordabok.md` says; the book writes
+`ísómera` in its prose and `hverfa` in its exercises, so rule 1 settles it. `karbonýl` became the book's `karbónýl` (34 to 0) on the Stig 3 cards. Two explanations
+say two compounds share a formula (`etoxýetan` and `1-bútanól`, `dímetýlamín` and `etýlamín`);
+`more-groups.test.tsx` counts the atoms. Organic reactions (addition, substitution,
+esterification) are deferred, as Siggi chose. The wording was drafted by Claude.
 
 ## Open
 

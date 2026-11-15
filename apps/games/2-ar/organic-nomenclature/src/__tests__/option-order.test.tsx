@@ -3,7 +3,7 @@ import { fireEvent, render, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
 import { clockPastNextGuard } from './next-guard-clock';
-import { Level3 } from '../components/Level3';
+import { LEVEL3_CHALLENGES, Level3 } from '../components/Level3';
 
 // The buttons that follow an answer ignore a press within 400 ms of appearing.
 clockPastNextGuard();
@@ -38,6 +38,14 @@ const CORRECT_ANSWERS = [
   'CH₃OH',
   'CH₃COOH',
   'CH₃CH₂CH₂OH',
+  'Eter (C–O–C)',
+  'Amíð (-CONH₂)',
+  'etoxýetan',
+  'metýletanóat',
+  'dímetýlamín',
+  'cis-2-búten',
+  'Kolefnisatómin geta ekki snúist um tvítengið',
+  '2-penten',
 ];
 
 /** Walk the teaching phase and land on the first challenge. */
@@ -128,15 +136,15 @@ describe('grading follows the answer, not the position', () => {
 
     expect(onComplete).toHaveBeenCalledTimes(1);
     const [correct, total] = onComplete.mock.calls[0];
-    expect(total).toBe(10);
+    expect(total).toBe(LEVEL3_CHALLENGES.length);
     unmount();
     return correct;
   };
 
   it('counts every correct answer, wherever the shuffle put it', () => {
-    // Ten challenges. Repeated so more than one arrangement runs.
+    // Every challenge. Repeated so more than one arrangement runs.
     for (let run = 0; run < 5; run++) {
-      expect(playAllTen('correct'), `run ${run}`).toBe(10);
+      expect(playAllTen('correct'), `run ${run}`).toBe(CORRECT_ANSWERS.length);
     }
   });
 

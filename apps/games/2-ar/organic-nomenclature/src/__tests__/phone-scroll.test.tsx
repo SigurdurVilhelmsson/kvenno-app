@@ -338,7 +338,7 @@ describe('Stig 1 and 3 quizzes', () => {
   it('Stig 3: the challenges open at the top, and each Næsta brings the next back', () => {
     const rendered = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
     const ui = within(rendered.container);
-    for (let i = 0; i < 3; i++) fireEvent.click(ui.getByRole('button', { name: /Næsta →/ }));
+    for (let i = 0; i < 8; i++) fireEvent.click(ui.getByRole('button', { name: /Næsta →/ }));
     scrollTo.mockClear();
     fireEvent.click(ui.getByRole('button', { name: /Byrja áskoranir/ }));
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
@@ -361,7 +361,7 @@ describe('Stig 1 and 3 quizzes', () => {
     top = 40;
     const rendered = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
     const ui = within(rendered.container);
-    for (let i = 0; i < 3; i++) fireEvent.click(ui.getByRole('button', { name: /Næsta →/ }));
+    for (let i = 0; i < 8; i++) fireEvent.click(ui.getByRole('button', { name: /Næsta →/ }));
     fireEvent.click(ui.getByRole('button', { name: /Byrja áskoranir/ }));
     fireEvent.click(rendered.container.querySelector('.grid button')!);
     later();

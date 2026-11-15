@@ -93,11 +93,12 @@ describe('organic-nomenclature: Icelandic text', () => {
   it('shows no English on the Stig 3 learn cards', () => {
     const rendered = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
     const ui = within(rendered.container);
-    for (let card = 0; card < 4; card++) {
+    // Eight functional-group cards and one on cis and trans (2026-11-15).
+    for (let card = 0; card < 9; card++) {
       expect(rendered.container.textContent).not.toMatch(
-        /Functional|Alcohol|Aldehyde|Ketone|Carboxylic/
+        /Functional|Alcohol|Aldehyde|Ketone|Carboxylic|Ether|Amine|Amide/
       );
-      if (card < 3) fireEvent.click(ui.getByRole('button', { name: /^Næsta/ }));
+      if (card < 8) fireEvent.click(ui.getByRole('button', { name: /^Næsta/ }));
     }
     expect(ui.getByRole('button', { name: /Byrja áskoranir/ })).toBeTruthy();
   });
