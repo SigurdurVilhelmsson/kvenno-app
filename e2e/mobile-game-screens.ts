@@ -5456,7 +5456,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 2 — galvaníhlað í gangi',
+      name: 'Stig 2 — galvaníker í gangi',
       steps: [
         {
           clickRole: ['button', 'Stig 2: Greina redox-hvörf'],

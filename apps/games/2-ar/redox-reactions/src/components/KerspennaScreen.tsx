@@ -150,7 +150,7 @@ function Kanna() {
       className="space-y-3 rounded-xl border border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-4 phone:p-3"
     >
       <h3 id="ker-kanna" className="text-lg font-bold text-teal-800">
-        Kannaðu: settu saman galvaníhlað
+        Kannaðu: settu saman galvaníker
       </h3>
       <div className="flex flex-col gap-2 sm:flex-row">
         {select('ker-a', 'Hálfker 1', a, setA)}
@@ -301,7 +301,7 @@ export function KerspennaScreen({ onBack }: Props) {
                 </h3>
                 <p className="text-sm text-blue-900">
                   Tafla bókarinnar gefur <strong>staðalrafskautsspennu</strong>, E°, hvers hálfkers,
-                  alltaf skrifaða sem afoxun. Í galvaníhlaði er hálfkerið með hærra E° katóðan, þar
+                  alltaf skrifaða sem afoxun. Í galvaníkeri er hálfkerið með hærra E° katóðan, þar
                   sem afoxun verður, og hitt anóðan, þar sem oxun verður. Staðalkerspennan er
                 </p>
                 <p className="text-center font-mono text-blue-900">E°ker = E°katóða − E°anóða</p>

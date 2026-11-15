@@ -142,7 +142,7 @@ problems with one attempt each, ending `N af M rétt`.
   is named in the feedback, as are a forgotten bomb, the 50 g of one solution and a C=O read
   for carbon monoxide's C≡O.
 - **Term:** bond energy is `tengjaorka`, as `ordabok.md` says (Siggi, 2026-11-15), although the
-  book writes `tengisorka`.
+  book writes `tengisorka`. `governed-terms.test.ts` bans the book's form.
 
 ## Open
 

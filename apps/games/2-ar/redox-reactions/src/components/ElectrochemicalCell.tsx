@@ -63,11 +63,11 @@ const CELL_PAIRS: CellPair[] = [
       solutionColor: '#bbdefb',
       metalColor: '#f57c00',
     },
-    description: 'Klassískt dæmi um galvaníhlað. Zn oxast (tapar e⁻), Cu²⁺ afoxast (öðlast e⁻).',
+    description: 'Klassískt dæmi um galvaníker. Zn oxast (tapar e⁻), Cu²⁺ afoxast (öðlast e⁻).',
   },
   {
     id: 'mg-cu',
-    name: 'Mg–Cu galvaníhlað',
+    name: 'Mg–Cu galvaníker',
     anode: {
       metal: 'Magnesíum',
       metalSymbol: 'Mg',
@@ -90,7 +90,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'fe-cu',
-    name: 'Fe–Cu galvaníhlað',
+    name: 'Fe–Cu galvaníker',
     anode: {
       metal: 'Járn',
       metalSymbol: 'Fe',
@@ -113,7 +113,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'zn-ag',
-    name: 'Zn–Ag galvaníhlað',
+    name: 'Zn–Ag galvaníker',
     anode: {
       metal: 'Sink',
       metalSymbol: 'Zn',
@@ -383,7 +383,7 @@ export function ElectrochemicalCell({
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className={`font-bold text-amber-800 ${compact ? 'text-sm' : 'text-base'}`}>
-          Galvaníhlað
+          Galvaníker
         </h3>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer pointer-coarse:min-h-11 pointer-coarse:text-sm">
@@ -433,7 +433,7 @@ export function ElectrochemicalCell({
           // Moves on every frame while running, so scripts/desktop-compare.mjs masks it.
           data-live
           role="img"
-          aria-label={`Galvaníhlað: ${pair.anode.metal} anóða og ${pair.cathode.metal} katóða með rafeinda- og jónaflæði`}
+          aria-label={`Galvaníker: ${pair.anode.metal} anóða og ${pair.cathode.metal} katóða með rafeinda- og jónaflæði`}
         >
           <title>
             Rafefnahlað með {pair.anode.metal}/{pair.cathode.metal}
@@ -705,7 +705,7 @@ export function ElectrochemicalCell({
       {/* Educational note */}
       <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
-          <strong>Galvaníhlað</strong> breytir efnaorku í raforku. Rafeindir flæða frá anóðu til
+          <strong>Galvaníker</strong> breytir efnaorku í raforku. Rafeindir flæða frá anóðu til
           katóðu.
         </p>
       </div>

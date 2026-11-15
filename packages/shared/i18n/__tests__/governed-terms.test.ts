@@ -154,20 +154,20 @@ const GOVERNED_TERMS: GovernedTerm[] = [
   },
   {
     english: 'galvanic cell',
-    correct: 'galvaníhlað',
-    banned: [/galvanísk/i, /galvaníklef/i],
+    correct: 'galvaníker',
+    banned: [/galvanísk/i, /galvaníklef/i, /galvaníhla/i],
     guidance:
-      "Siggi's ruling, 2026-08-27. The compound absorbs the adjective, so any " +
-      'galvanísk- form is now wrong: not "Galvanískur klefi" but Galvaníhlað. ' +
-      'Neuter — nom/acc galvaníhlað, dat galvaníhlaði, gen galvaníhlaðs — where ' +
-      'klefi was masculine, so adjectives and determiners move with it.',
+      "Siggi's ruling, 2026-11-15: the book's galvaníker, replacing his 2026-08-27 " +
+      'galvaníhlað. The compound absorbs the adjective, so any galvanísk- form is ' +
+      'wrong: not "Galvanískur klefi" but Galvaníker. Neuter like galvaníhlað — ' +
+      'nom/acc galvaníker, dat galvaníkeri, gen galvaníkers — so nothing around it moves.',
   },
   {
     english: 'electrochemical cell',
     correct: 'rafefnahlað',
     banned: [/klef/i],
     guidance:
-      "Siggi's ruling, 2026-08-29, completing the pair with galvaníhlað. The one " +
+      "Siggi's ruling, 2026-08-29, completing the pair with galvaníhlað (now galvaníker). The one " +
       'shipped use was Rafefnaklefi in the SVG <title> of ElectrochemicalCell.tsx — ' +
       'the same diagram whose aria-label says Galvaníhlað, four lines away, so the ' +
       'component named one picture two ways. Neuter like galvaníhlað: nom/acc ' +
@@ -563,6 +563,13 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       "2026-11-15, by Siggi's ruling that the book wins where it and a game disagree. The book's defining module (ch04/m68710) marks oxari and afoxari as its terms, and its prose uses them about 90 to 26 against oxunarefni/afoxunarefni; ordabok.md was silent. 2-ar/redox-reactions said the -efni forms in Stig 2. NEUTER to MASCULINE, so the cases change: oxari / oxara / oxara / oxara, def. oxarinn, pl. oxarar (Hvað er oxarinn?). The ban starts at a letter boundary, so andoxunarefni (an antioxidant) still passes.",
   },
   {
+    english: 'bond energy',
+    correct: 'tengjaorka',
+    banned: [/tengis?ork/i],
+    guidance:
+      "Siggi's ruling, 2026-11-15, keeping ordabok.md's bond energy;tengjaorka although the book writes tengisorka (about 45 hits). Feminine weak: tengjaorka, tengjaorku, def. tengjaorkan. First used in 2-ar/hess-law's Varmamælingar og tengjaorka.",
+  },
+  {
     english: 'polyatomic ion / monoatomic ion',
     correct: 'fjölatóma jón / einatóma jón',
     banned: [/fjölfrumeinda/i, /einfrumeinda/i],
@@ -844,6 +851,15 @@ describe('the letter-lookaround bans', () => {
     }
     for (const right of ['Ammóníumstuðpúði', 'ammóníumstuðpúða', 'ammóníumklóríð', 'stuðpúði']) {
       expect(hits('buffer / ammonium buffer', right), right).toBe(false);
+    }
+  });
+
+  it("bond energy: the book's tengisorka and tengiorka, never tengjaorka", () => {
+    for (const wrong of ['tengisorka', 'Tengisorku', 'tengiorka']) {
+      expect(hits('bond energy', wrong), wrong).toBe(true);
+    }
+    for (const right of ['tengjaorka', 'tengjaorku', 'tengigráða']) {
+      expect(hits('bond energy', right), right).toBe(false);
     }
   });
 
