@@ -141,6 +141,17 @@ kPa, torr and mm Hg beside atm.
   second and the push of each hit, the kinetic model's factors, and `agnasyn.test.ts` holds their
   product equal to the gauge. Nothing is graded. The question simulator (`GasLawSimulator.tsx`) is
   unchanged; whether Agnasýn should replace it is left open. The Icelandic was drafted by Claude.
+- **Gasblöndur og efnahvörf, the Phase 4 gap (Siggi's pick, 2026-11-15).** The game stopped at one
+  gas. A menu card now opens `components/BlondurScreen.tsx`: Lögmál Daltons, mólbrot, gas safnað
+  yfir vatni and volumes in reactions, then a mixture to explore (three sliders, a stacked bar of
+  partial pressures, mole fractions), then eight graded problems ending `N af M rétt`. All eight
+  are the book's own, from ch. 9 module m68752, and `data/blondur.ts` builds each answer, worked
+  step and slip from its stated quantities through `engine/blondur.ts`; the water vapour pressures
+  are the book's table, 18–30 °C. A wrong answer that matches a known slip (°C for K, torr for atm,
+  H for H₂, the wrong coefficient, forgetting the water vapour) says so. Graded to 1 %; every
+  problem rejects 0, double and half (`blondur.test.ts`). These problems give temperatures in °C
+  and pressures in torr and kPa, which the levels still do not (C24). The Icelandic was drafted by
+  Claude.
 
 **Closed 2026-10-23 (Item 1 as applied, call 3/7, Siggi 2026-10-23).** In Æfingahamur the last
 hint states the answer, and a right answer given with it open still counted, so four presses of H

@@ -976,6 +976,11 @@ landed in PR #150. These were left for a follow-up, each needing a ruling or a d
       game's 161 J/(mól·K) stays unsourced. Take Brown's value, or keep it out?
 - [ ] **The plan's other open decisions** (its "Decisions for Siggi", items 3 and 5–7) are raised
       as the work reaches them.
+- [ ] **Gaslögmál, "Gasblöndur og efnahvörf"** (2026-11-15, Siggi's Phase 4 pick): Dalton's law,
+      mole fractions, gas over water and gas stoichiometry as a menu screen, with eight of the
+      book's m68752 problems. Its givens are in °C, torr and kPa, so the two items above are met
+      there but not in the levels. Wording drafted by Claude
+      (`3-ar/gas-law-challenge/src/components/BlondurScreen.tsx`, `src/data/blondur.ts`).
 
 ## D. Work that needs no ruling
 
