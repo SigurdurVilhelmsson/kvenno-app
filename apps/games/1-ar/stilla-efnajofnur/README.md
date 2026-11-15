@@ -107,6 +107,12 @@ src/__tests__/                    balance-checker, hint-agrees-with-grader, meth
 
 Run the tests from the repo root: `pnpm exec vitest run apps/games/1-ar/stilla-efnajofnur`.
 
+## Fixed 2026-11-15
+
+The two "Af hverju" cards said atoms only change their `tengsl`, a relationship; a bond is `tengi`,
+and the sentence now says the atoms `raðast bara saman á nýjan hátt` (year-1 audit, Phase 0 item
+5). `wording.test.ts` bans the old phrase.
+
 ## Open
 
 - **i18n.** The menu goes through `t()` with `en` and `pl` blocks; the levels are hardcoded

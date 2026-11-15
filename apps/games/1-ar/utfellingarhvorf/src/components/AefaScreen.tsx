@@ -183,6 +183,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                   <button
                     key={String(option.value)}
                     type="button"
+                    aria-pressed={answer === option.value}
                     onClick={() => setAnswer(option.value)}
                     className={`game-btn flex-1 rounded-lg border-2 px-2 py-3 font-semibold sm:px-4 phone:px-2 phone:py-2 pointer-coarse:min-h-11 ${
                       answer === option.value
@@ -209,6 +210,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                     ruleRefs.current[r.id] = el;
                   }}
                   type="button"
+                  aria-pressed={ruleId === r.id}
                   onClick={() => setRuleId(r.id)}
                   className={`game-btn block w-full rounded-lg border-2 px-3 py-2 text-left text-sm pointer-coarse:min-h-11 phone:py-1.5 ${
                     ruleId === r.id

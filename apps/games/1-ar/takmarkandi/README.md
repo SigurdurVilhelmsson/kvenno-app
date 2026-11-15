@@ -146,6 +146,14 @@ src/__tests__/                      data-integrity, yield, level3-playable, phon
                                     icelandic-text, play-integrity
 ```
 
+## Fixed 2026-11-15
+
+Two of the `hard` reactions no level draws yet were wrong as written: `S₈ + 12O₂ → 8SO₃` (sulfur
+burns to SO₂; SO₃ needs the contact process's catalyst) and `P₄ + 5O₂ → 2P₂O₅`, where the book and
+Nafnakerfið write P₄O₁₀. They are now `S₈ + 8O₂ → 8SO₂` and `P₄ + 5O₂ → P₄O₁₀`, and
+`reactions-balanced.test.ts` holds every reaction in the pool to its atoms, which nothing did
+before (year-1 audit, Phase 0 item 7).
+
 ## Open
 
 **Fixed 2026-09-23**, each guarded by `play-integrity.test.tsx`: Stig 1's answer alternated left,

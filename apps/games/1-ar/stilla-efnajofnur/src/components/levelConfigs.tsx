@@ -7,8 +7,8 @@ function Level1Intro() {
         <h2 className="text-xl font-bold text-warm-800 mb-3">Af hverju stillum við efnajöfnur?</h2>
         <p className="text-warm-700 text-sm leading-relaxed mb-3">
           <strong>Massavarðveislulögmálið</strong> segir að atóm hverfa ekki og myndast ekki í
-          efnahvörfum — þau breyta bara um tengsl. Fjöldi atóma af hverju frumefni verður að vera sá
-          sami beggja megin við örina.
+          efnahvörfum — þau raðast bara saman á nýjan hátt. Fjöldi atóma af hverju frumefni verður
+          að vera sá sami beggja megin við örina.
         </p>
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-800">
           Ef 4 vetnisatóm eru vinstra megin verða 4 vetnisatóm að vera hægra megin.
