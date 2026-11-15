@@ -5,13 +5,14 @@ import { useGameI18n } from '@shared/hooks';
 import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
-import { NaermyndScreen } from './components/NaermyndScreen';
+import { KerspennaScreen } from './components/KerspennaScreen';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+import { NaermyndScreen } from './components/NaermyndScreen';
 import { gameTranslations } from './i18n';
 
-type ActiveLevel = 'menu' | 'naermynd' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'naermynd' | 'kerspenna' | 'level1' | 'level2' | 'level3' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -91,6 +92,9 @@ function App() {
       : `${correct} ${t('progress.of', 'af')} ${total} ${t('progress.correct', 'rétt')}`;
   };
 
+  if (activeLevel === 'kerspenna') {
+    return <KerspennaScreen onBack={() => setActiveLevel('menu')} />;
+  }
   if (activeLevel === 'naermynd') {
     return <NaermyndScreen onBack={() => setActiveLevel('menu')} />;
   }
@@ -293,6 +297,26 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-purple-600 mt-1">{t('menu.level3Desc')}</div>
+                </div>
+              </div>
+            </button>
+
+            {/* Not a level: cell potentials and half-reactions in acid, with its own ten
+                questions. It is never marked done and counts toward nothing. */}
+            <button
+              type="button"
+              onClick={() => setActiveLevel('kerspenna')}
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-4 phone:gap-3">
+                <div className="text-4xl phone:text-2xl" aria-hidden="true">
+                  🔋
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-xl font-bold text-amber-900 phone:text-lg">Kerspenna</span>
+                  <div className="text-sm text-amber-800 mt-1">
+                    E°ker úr töflu bókarinnar, ΔG° og hálfhvörf í súrri lausn
+                  </div>
                 </div>
               </div>
             </button>

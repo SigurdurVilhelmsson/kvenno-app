@@ -5115,6 +5115,33 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Kerspenna (2026-11-15): its Skilja, the first question, and a reversed subtraction's
+    // feedback.
+    {
+      name: 'Kerspenna — skilja',
+      steps: [{ clickRole: ['button', 'Kerspenna'] }, { wait: 300 }],
+    },
+    {
+      name: 'Kerspenna — æfa',
+      steps: [
+        { clickRole: ['button', 'Kerspenna'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+      ],
+    },
+    {
+      name: 'Kerspenna — endurgjöf',
+      steps: [
+        { clickRole: ['button', 'Kerspenna'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+        { fill: ['input[inputmode="decimal"]', '-1,10'] },
+        { clickRole: ['button', 'Athuga'] },
+        { wait: 300 },
+      ],
+    },
     // Nærmynd, the particle view (2026-11-15): its first scene, the electrons moving, the
     // meðjón struck through, and the slider.
     {
