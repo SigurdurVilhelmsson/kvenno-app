@@ -260,6 +260,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       <button
                         key={order}
                         onClick={() => !showResult && setOrderA(order)}
+                        aria-pressed={orderA === order}
                         disabled={showResult}
                         className={`w-12 h-12 rounded-full border-2 font-bold transition-all ${
                           orderA === order
@@ -295,6 +296,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                         <button
                           key={order}
                           onClick={() => !showResult && setOrderB(order)}
+                          aria-pressed={orderB === order}
                           disabled={showResult}
                           className={`w-12 h-12 rounded-full border-2 font-bold transition-all ${
                             orderB === order

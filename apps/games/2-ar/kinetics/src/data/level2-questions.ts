@@ -117,9 +117,9 @@ export const challenges: RateLawChallenge[] = [
     correctOrderA: 1,
     correctOrderB: 1,
     rateConstantUnit: 'M⁻¹s⁻¹',
-    hint: 'A = BrO₃⁻, B = Br⁻ (H⁺ er stöðugur)',
+    hint: 'A = BrO₃⁻, B = Br⁻. [H⁺] er sá sami í öllum tilraununum.',
     explanation:
-      'Tilraun 1→2: [A] tvöfaldast → hraðinn tvöfaldast → 1. stig í A. Tilraun 1→3: [B] þrefaldast → hraðinn þrefaldast → 1. stig í B.',
+      'Tilraun 1→2: [A] tvöfaldast → hraðinn tvöfaldast → 1. stig í A. Tilraun 1→3: [B] þrefaldast → hraðinn þrefaldast → 1. stig í B. Hvarfið er líka 2. stigs í H⁺: hraði = k[BrO₃⁻][Br⁻][H⁺]². Hér er [H⁺] sá sami í öllum tilraunum, svo hraðafastinn sem reiknast úr töflunni er k[H⁺]², ekki k sjálfur.',
   },
   {
     id: 5,

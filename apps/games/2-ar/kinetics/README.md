@@ -145,6 +145,13 @@ environment.
   has two temperature sliders. The decisions doc records no ruling, and the code is unchanged,
   though REVIEW-QUEUE C3 lists items 12–122 as done.
 
+**Fixed 2026-11-15** (year-2 audit, Phase 0). Stig 1 said a collision must have the energy to
+`rjúfa tengsl`; a bond is `tengi`. Stig 2's bromate challenge holds [H⁺] fixed, and its
+explanation now says the reaction is second order in H⁺, so the k worked from the table is
+k[H⁺]². Stig 2's order buttons carry `aria-pressed`. `audit-2026-11-15.test.ts` holds all three.
+The new wording was drafted by Claude. The rate tables' mixed figures (P2 in the plan) are still
+open.
+
 **Closed.** The Stig 3 option order (2026-08-26), the hint penalty, the running score (decision 1
 (b)), the k field (decision 82), the terminology of decision 81, and the closing screen, all above.
 
