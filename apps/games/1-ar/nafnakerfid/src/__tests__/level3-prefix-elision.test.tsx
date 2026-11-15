@@ -7,12 +7,9 @@ import { COMPOUNDS } from '../data/compounds';
 clockPastNextGuard();
 
 /**
- * Decision 37. `data/naming.ts` makes `tetroxíð` one part, so Level 3's target
- * for N₂O₄ is `Díniturtetroxíð`. But the tray can offer `tetra` and `oxíð` as
- * distractors beside it, and the textbook (ch02/m68698) lets a student keep the
- * prefix vowel or drop it. A student who built `Díniturtetraoxíð` was told they
- * were close and shown the `a` in red. Level 2 already accepted both forms;
- * Level 3 now folds the vowel the same way.
+ * Decision 37. The textbook (ch02/m68698) lets a student keep the prefix vowel
+ * or drop it. Level 3's target for N₂O₄ is the book's `Díniturtetraoxíð`
+ * (2026-11-15); a name built with an elided `tetroxíð` part still counts.
  *
  * The compound and the tray are fixed here so the run is deterministic.
  */
@@ -53,8 +50,8 @@ function build(parts: string[]) {
 }
 
 describe('Level 3 on N₂O₄', () => {
-  it('targets the elided name', () => {
-    expect(N2O4.name).toBe('Díniturtetroxíð');
+  it('targets the name the textbook prints', () => {
+    expect(N2O4.name).toBe('Díniturtetraoxíð');
   });
 
   it('accepts the name built with the prefix vowel kept', () => {

@@ -34,7 +34,7 @@ function answerFirst(typed: string) {
   );
   const view = within(container);
   fireEvent.click(
-    view.getAllByRole('button').find((b) => b.textContent?.startsWith('Einfalt jónefni'))!
+    view.getAllByRole('button').find((b) => b.textContent?.startsWith('Einfalt jónaefni'))!
   );
   act(() => {
     vi.advanceTimersByTime(1600);

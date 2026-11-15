@@ -65,10 +65,10 @@ export const gameTranslations = createGameTranslations({
         nextQuestion: 'Næsta spurning',
         finishLevel: 'Ljúka stigi',
         cheatSheet: 'Minnisblað:',
-        refIonic: 'Jónefni:',
+        refIonic: 'Jónaefni:',
         refVariable: 'Breytileg:',
         refPolyatomic: 'Fjölatóma:',
-        refMolecular: 'Sameindir:',
+        refMolecular: 'Sameindaefni:',
       },
     },
     level2: {

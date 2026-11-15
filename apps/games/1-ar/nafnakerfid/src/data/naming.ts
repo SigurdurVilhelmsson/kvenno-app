@@ -8,9 +8,7 @@
  * Measured against the real pool, **33 of 51 compounds could not be assembled at
  * all** and so could never be marked correct: there was no token for a Roman
  * numeral, none for a polyatomic ion (`súlfat` and `nítrat` existed only as
- * _distractors_), no root for Mn, Cr, Pb, Hg, Sn or Co, and no form for the
- * elided prefixes — `dekoxíð` cannot be reached from `deka` + `oxíð`, which
- * concatenate to `dekaoxíð`.
+ * _distractors_), and no root for Mn, Cr, Pb, Hg, Sn or Co.
  *
  * The inventory below is the fix. It is the naming vocabulary itself, declared
  * once, and `segmentName` recovers the parts of any name built from it.
@@ -73,22 +71,13 @@ export const ELEMENT_ROOTS: Record<string, { root: string; full: string; stem?: 
   Co: { root: 'kóbalt', full: 'Kóbalt' },
 };
 
-/**
- * Prefix + oxíð where Icelandic drops the prefix's final -a before the vowel.
- *
- * These are single morphemes rather than two, because that is how they are
- * written and what a student has to recognise: the choice is `tetroxíð` over
- * `tetraoxíð`, not a rule applied after the fact. The textbook (ch02/m68698)
- * accepts the unelided form too, and the tray can offer `tetra` and `oxíð` as
- * distractors, so Level 3 grades a name built that way as right
- * (`utils/nameMatch.ts`, decision 37).
+/*
+ * There are no elided oxide morphemes. Names print the textbook's forms
+ * (ch02/m68698, Siggi 2026-11-15): the prefix keeps its vowel, so N₂O₄ is
+ * dí + nitur + tetra + oxíð = Díniturtetraoxíð and P₄O₁₀ ends in deka + oxíð.
+ * A student who drops the vowel (`tetroxíð`) is still graded right, by
+ * `utils/nameMatch.ts` (decision 37).
  */
-export const ELIDED_OXIDES: Record<number, string> = {
-  4: 'tetroxíð',
-  5: 'pentoxíð',
-  7: 'heptoxíð',
-  10: 'dekoxíð',
-};
 
 /** Polyatomic ions that keep a fixed name whatever they are bonded to. */
 export const POLYATOMIC_IONS = [
@@ -96,7 +85,7 @@ export const POLYATOMIC_IONS = [
   'súlfat',
   'nítrat',
   'karbónat',
-  'vetniskarbónat',
+  'bíkarbónat',
   'fosfat',
   'hýdroxíð',
   'díkrómat',
@@ -124,7 +113,6 @@ function buildInventory(): Morpheme[] {
   };
 
   Object.values(PREFIXES).forEach((p) => add(p, 'prefix'));
-  Object.values(ELIDED_OXIDES).forEach((o) => add(o, 'root'));
   Object.values(ELEMENT_ROOTS).forEach(({ root, stem }) => {
     add(root, 'root');
     if (stem) add(stem, 'root');

@@ -24,7 +24,7 @@ function reachAnswerStep() {
   );
   const typeButton = within(view.container)
     .getAllByRole('button')
-    .find((b) => b.textContent?.startsWith('Einfalt jónefni'));
+    .find((b) => b.textContent?.startsWith('Einfalt jónaefni'));
   fireEvent.click(typeButton!);
   act(() => {
     vi.advanceTimersByTime(1600);

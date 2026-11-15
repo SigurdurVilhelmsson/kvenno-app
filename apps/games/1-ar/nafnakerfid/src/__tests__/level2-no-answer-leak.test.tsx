@@ -23,7 +23,7 @@ const CORRECT_NAMES = [
   'Natríumsúlfat',
   'Kalíumnítrat',
   'Koldíoxíð',
-  'Díniturtetroxíð',
+  'Díniturtetraoxíð',
   'Brennisteinshexaflúoríð',
   'Kalsíumnítrat',
   'Blý(IV)oxíð',

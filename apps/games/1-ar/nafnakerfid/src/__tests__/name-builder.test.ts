@@ -78,18 +78,23 @@ describe('the cases the old builder could not express', () => {
 
   it('keeps a polyatomic ion whole', () => {
     expect(segmentsOf('K₂SO₄')).toEqual(['kalíum:root', 'súlfat:ion']);
-    expect(segmentsOf('NaHCO₃')).toEqual(['natríum:root', 'vetniskarbónat:ion']);
+    expect(segmentsOf('NaHCO₃')).toEqual(['natríum:root', 'bíkarbónat:ion']);
     expect(segmentsOf('(NH₄)₂SO₄')).toEqual(['ammóníum:ion', 'súlfat:ion']);
     expect(segmentsOf('Ca₃(PO₄)₂')).toEqual(['kalsíum:root', 'fosfat:ion']);
   });
 
-  it('offers the elided prefix as it is written, not as prefix plus oxíð', () => {
-    // deka + oxíð concatenates to "dekaoxíð", which is not the word. This is the
-    // reason the elided forms are single morphemes.
-    expect(segmentsOf('P₄O₁₀')).toEqual(['tetra:prefix', 'fosfór:root', 'dekoxíð:root']);
-    expect(segmentsOf('N₂O₄')).toEqual(['dí:prefix', 'nitur:root', 'tetroxíð:root']);
-    expect(segmentsOf('N₂O₅')).toEqual(['dí:prefix', 'nitur:root', 'pentoxíð:root']);
-    expect(segmentsOf('Cl₂O₇')).toEqual(['dí:prefix', 'klór:root', 'heptoxíð:root']);
+  it('builds an oxide from the prefix with its vowel kept, as the textbook prints it', () => {
+    // ch02/m68698 writes tetrafosfórdekaoxíð and díköfnunarefnistetraoxíð, so
+    // the prefix and oxíð are two parts (Siggi 2026-11-15).
+    expect(segmentsOf('P₄O₁₀')).toEqual([
+      'tetra:prefix',
+      'fosfór:root',
+      'deka:prefix',
+      'oxíð:root',
+    ]);
+    expect(segmentsOf('N₂O₄')).toEqual(['dí:prefix', 'nitur:root', 'tetra:prefix', 'oxíð:root']);
+    expect(segmentsOf('N₂O₅')).toEqual(['dí:prefix', 'nitur:root', 'penta:prefix', 'oxíð:root']);
+    expect(segmentsOf('Cl₂O₇')).toEqual(['dí:prefix', 'klór:root', 'hepta:prefix', 'oxíð:root']);
   });
 
   it('uses the first-element stem where it differs from the anion', () => {
@@ -158,15 +163,12 @@ describe('the morpheme inventory', () => {
     // as a distractor — but it should be a real naming form, not a leftover.
     // Pinned so that adding a morpheme is a deliberate act with a visible list.
     //
-    // `deka` is the interesting one: no name uses it, because P₄O₁₀ takes the
-    // elided `dekoxíð`. It is exactly the distractor that case wants — a student
-    // reaching for deka + oxíð builds "dekaoxíð", which is the mistake.
     const used = new Set(
       POOL.flatMap((c) => segmentName(c.name) ?? []).map((m) => m.text.toLowerCase())
     );
     const unused = MORPHEMES.filter((m) => !used.has(m.text.toLowerCase())).map((m) => m.text);
     expect(unused.sort()).toEqual(
-      ['deka', 'joðíð', 'mónó', 'nóna', 'okta', 'súlfíð', 'trí', 'vetni'].sort()
+      ['joðíð', 'mónó', 'nóna', 'okta', 'súlfíð', 'trí', 'vetni'].sort()
     );
   });
 });
