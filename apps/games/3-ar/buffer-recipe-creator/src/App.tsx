@@ -4,12 +4,13 @@ import { Header, ErrorBoundary, FadePresence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { focusTarget, revealSpan, revealTop } from '@shared/utils';
 
+import { Agnasyn } from './components/Agnasyn';
 import Level1 from './components/Level1';
 import Level2 from './components/Level2';
 import Level3 from './components/Level3';
 import './styles.css';
 
-type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3';
+type ActiveLevel = 'menu' | 'agnasyn' | 'level1' | 'level2' | 'level3';
 
 /**
  * What the game remembers: which levels are done. There is no score — points were dropped
@@ -109,6 +110,10 @@ function App() {
 
   return (
     <div ref={pageTopRef}>
+      <FadePresence show={activeLevel === 'agnasyn'} exitDuration={SCREEN_FADE_MS}>
+        <Agnasyn onBack={() => setActiveLevel('menu')} />
+      </FadePresence>
+
       <FadePresence show={activeLevel === 'level1'} exitDuration={SCREEN_FADE_MS}>
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           {/* Back button */}
@@ -163,6 +168,28 @@ function App() {
 
               {/* Level selection */}
               <div className="space-y-4 phone:space-y-2">
+                {/* Agnasýn: the Explore phase, before any level. Nothing is graded or stored. */}
+                <button
+                  onClick={() => setActiveLevel('agnasyn')}
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left"
+                >
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">🧪</div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xl font-bold text-amber-900 phone:text-lg">
+                        Agnasýn
+                      </span>
+                      <div className="text-sm text-amber-800 mt-1">
+                        Stuðpúði og vatn, skref fyrir skref
+                      </div>
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
+                        Sama sýra fer í stuðpúða og í hreint vatn. Sjáðu hvers vegna pH stuðpúðans
+                        haggast varla, og hvenær hann þrýtur.
+                      </div>
+                    </div>
+                  </div>
+                </button>
+
                 {/* Level 1 */}
                 <button
                   data-level-card="level1"

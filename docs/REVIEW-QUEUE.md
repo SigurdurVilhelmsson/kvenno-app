@@ -924,6 +924,11 @@ in the game's README.
       game's buffer ICE root sits 0,0005 above pKₐ, which tips the second decimal. The scene says so
       in one line. Keep, or print the meter at Henderson-Hasselbalch in the buffer region?
 - [ ] On a projector and a phone (B-style hand check): the animation's pace, 0,7 s per drop.
+- [ ] **Stuðpúðasmíði's Agnasýn** (2026-11-15), a buffer beside pure water with the same saltsýra
+      or natríumhýdroxíð dripped into both, built on the same particle view, now shared. Its
+      wording is drafted by Claude (`3-ar/buffer-recipe-creator/src/data/agnasyn-steps.tsx`), and
+      its two flasks sit side by side even on a phone, where each is about 160 px wide: check
+      they read on a real phone.
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 

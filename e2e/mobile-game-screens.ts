@@ -7939,6 +7939,32 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Agnasýn, a buffer beside water (2026-11-15): the two glasses, the buffer run out,
+    // and the slider with NaOH chosen.
+    {
+      name: 'Agnasýn — tvö glös',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — stuðpúðinn þrýtur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '4. Stuðpúðinn þrýtur'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '6. Kannaðu sjálf/ur'] },
+        { wait: 600 },
+        { clickRole: ['button', 'Natríumhýdroxíð, NaOH'] },
+        { wait: 300 },
+      ],
+    },
     {
       name: 'Stig 1 — rangt svar (endurgjöf)',
       steps: [

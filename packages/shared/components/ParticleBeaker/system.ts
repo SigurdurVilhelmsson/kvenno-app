@@ -1,6 +1,8 @@
 /**
- * The particles Agnasýn draws in the flask, and how they move from one set of
- * counts to the next.
+ * The particles a particle view draws in a flask, and how they move from one
+ * set of counts to the next. Written for Agnasýn in `3-ar/ph-titration` and
+ * shared since its second consumer, the buffer scene in
+ * `3-ar/buffer-recipe-creator` (docs/particle-view-template.md).
  *
  * Pure apart from the random source, which is passed in, so the tests can run a
  * titration through it and check what is left. The component owns the frame
@@ -11,13 +13,38 @@
  * CH₃COO⁻ while the OH⁻ leaves as water; the exaggerated pair of a dynamic
  * equilibrium recombines into the molecule it came from. Whatever no reaction
  * explains (a slider dragged backwards, a jump between scenes) fades in or out.
+ * A new H⁺ drips in with its Cl⁻ the same way and swims to a CH₃COO⁻, which
+ * becomes CH₃COOH.
+ *
+ * The kinds are a weak acid HA, its conjugate base A⁻, H⁺ (drawn for H₃O⁺),
+ * OH⁻, and the two spectators Na⁺ and Cl⁻. What HA and A⁻ are called is the
+ * drawing's business (`ParticleBeaker`'s `labels`), not this file's.
  */
 
-import type { FlagPair, ParticleCounts } from './agnasyn';
+/**
+ * The exaggerated pair at the two points where a minor species matters:
+ * `ion` is HA → A⁻ + H⁺, `hyd` is A⁻ + H₂O → HA + OH⁻.
+ */
+export type FlagPair = 'ion' | 'hyd' | null;
 
-export type Kind = 'HA' | 'A' | 'H3O' | 'OH' | 'Na' | 'H2O';
+/** What a view draws: the real counts, and the exaggerated pair if any. */
+export interface ParticleCounts {
+  HA: number;
+  A: number;
+  H3O: number;
+  OH: number;
+  Na: number;
+  /** Cl⁻, the spectator a strong acid brings; none when left out. */
+  Cl?: number;
+  flag: FlagPair;
+}
 
-type Action = 'neutralize' | 'recombine';
+export type Kind = 'HA' | 'A' | 'H3O' | 'OH' | 'Na' | 'Cl' | 'H2O';
+
+/** Every kind but water, which is only drawn as it leaves a neutralisation. */
+export type Species = Exclude<Kind, 'H2O'>;
+
+type Action = 'neutralize' | 'recombine' | 'protonate';
 
 export interface Particle {
   id: number;
@@ -70,6 +97,7 @@ export const RADIUS: Record<Kind, number> = {
   H3O: 7,
   OH: 7,
   Na: 6,
+  Cl: 8,
   H2O: 6,
 };
 
@@ -147,29 +175,31 @@ function pick<T>(items: T[], rng: () => number): T | undefined {
  * CH₃COOH it came from and a flagged CH₃COOH as its CH₃COO⁻; the flagged
  * H⁺ or OH⁻ counts as nothing.
  */
-export function realCounts(sys: System): Omit<ParticleCounts, 'flag'> {
-  const c = { HA: 0, A: 0, H3O: 0, OH: 0, Na: 0 };
-  const neutralizing = new Set(
-    sys.particles.filter((p) => alive(p) && p.action === 'neutralize').map((p) => p.target)
-  );
+export function realCounts(sys: System): Record<Species, number> {
+  const c = { HA: 0, A: 0, H3O: 0, OH: 0, Na: 0, Cl: 0 };
+  const targeted = (action: Action) =>
+    new Set(sys.particles.filter((p) => alive(p) && p.action === action).map((p) => p.target));
+  const neutralizing = targeted('neutralize');
+  const protonating = targeted('protonate');
   for (const p of sys.particles) {
     if (!alive(p)) continue;
-    if (p.action === 'neutralize') continue;
+    if (p.action === 'neutralize' || p.action === 'protonate') continue;
     if (p.flag) {
       if (p.kind === 'A') c.HA++;
       else if (p.kind === 'HA') c.A++;
       continue;
     }
     if (p.kind === 'HA' && neutralizing.has(p.id)) c.A++;
+    else if (p.kind === 'A' && protonating.has(p.id)) c.HA++;
     else if (p.kind !== 'H2O') c[p.kind]++;
   }
   return c;
 }
 
 /** What is drawn now, flagged particles included, for the legend and the tests. */
-export function shownCounts(sys: System): Record<Exclude<Kind, 'H2O'>, number> {
-  const c = { HA: 0, A: 0, H3O: 0, OH: 0, Na: 0 };
-  for (const p of sys.particles) if (alive(p)) c[p.kind as Exclude<Kind, 'H2O'>]++;
+export function shownCounts(sys: System): Record<Species, number> {
+  const c = { HA: 0, A: 0, H3O: 0, OH: 0, Na: 0, Cl: 0 };
+  for (const p of sys.particles) if (alive(p)) c[p.kind as Species]++;
   return c;
 }
 
@@ -239,6 +269,27 @@ function finishNeutralize(sys: System, oh: Particle, acid: Particle, animate: bo
   } else {
     sys.particles = sys.particles.filter((p) => p !== oh);
   }
+}
+
+/** An H⁺ has reached a CH₃COO⁻ and joins it: no water leaves, the H⁺ is simply gone. */
+function finishProtonate(sys: System, h: Particle, base: Particle): void {
+  base.kind = 'HA';
+  base.reserved = false;
+  base.glow = GLOW_S;
+  sys.particles = sys.particles.filter((p) => p !== h);
+}
+
+/** Run a swimmer's action now that it has arrived. */
+function finish(
+  sys: System,
+  p: Particle,
+  target: Particle,
+  rng: () => number,
+  animate: boolean
+): void {
+  if (p.action === 'neutralize') finishNeutralize(sys, p, target, animate);
+  else if (p.action === 'protonate') finishProtonate(sys, p, target);
+  else finishRecombine(sys, p, target, rng, animate);
 }
 
 /** Make an exaggerated pair from one free molecule. */
@@ -324,8 +375,9 @@ function convert(sys: System, from: Kind, to: Kind, n: number, rng: () => number
 
 /**
  * Move the system to new counts. With `drip`, new NaOH arrives as drops at the
- * spout and each OH⁻ a CH₃COOH needs swims to it; otherwise every change is
- * made where the particles are, fading or converting in place.
+ * spout and each OH⁻ a CH₃COOH needs swims to it, and new HCl the same way,
+ * each H⁺ a CH₃COO⁻ needs swimming to it; otherwise every change is made where
+ * the particles are, fading or converting in place.
  */
 export function applyCounts(
   sys: System,
@@ -361,6 +413,32 @@ export function applyCounts(
     }
   } else if (dNa < 0) {
     fadeOut(sys, 'Na', -dNa, rng, animate);
+  }
+
+  cur = realCounts(sys);
+  const dCl = (target.Cl ?? 0) - cur.Cl;
+  if (dCl > 0) {
+    const toProtonate = Math.min(dCl, Math.max(0, cur.A - target.A));
+    for (let i = 0; i < dCl; i++) {
+      spawn(sys, 'Cl', rng, drip ? 'spout' : 'random', animate);
+      const h = spawn(sys, 'H3O', rng, drip ? 'spout' : 'random', animate);
+      if (i < toProtonate) {
+        const base = pick(
+          sys.particles.filter((p) => alive(p) && p.kind === 'A' && !p.flag && !p.reserved),
+          rng
+        );
+        if (!base) continue;
+        if (drip) {
+          h.target = base.id;
+          h.action = 'protonate';
+          base.reserved = true;
+        } else {
+          finishProtonate(sys, h, base);
+        }
+      }
+    }
+  } else if (dCl < 0) {
+    fadeOut(sys, 'Cl', -dCl, rng, animate);
   }
 
   cur = realCounts(sys);
@@ -445,8 +523,7 @@ export function step(sys: System, dt: number, rng: () => number, still = false):
       const dy = target.y - p.y;
       const dist = Math.hypot(dx, dy);
       if (dist < RADIUS[target.kind] + RADIUS[p.kind] * 0.5 || still) {
-        if (p.action === 'neutralize') finishNeutralize(sys, p, target, !still);
-        else finishRecombine(sys, p, target, rng, !still);
+        finish(sys, p, target, rng, !still);
         continue;
       }
       p.vx = (dx / dist) * SWIM_SPEED;
@@ -511,10 +588,7 @@ export function settle(sys: System, rng: () => number): void {
   sys.later = [];
   for (const p of [...sys.particles]) {
     const target = byId(sys, p.target);
-    if (target) {
-      if (p.action === 'neutralize') finishNeutralize(sys, p, target, false);
-      else finishRecombine(sys, p, target, rng, false);
-    }
+    if (target) finish(sys, p, target, rng, false);
   }
   sys.particles = sys.particles.filter((p) => p.fade !== 'out' && p.kind !== 'H2O');
   for (const p of sys.particles) {

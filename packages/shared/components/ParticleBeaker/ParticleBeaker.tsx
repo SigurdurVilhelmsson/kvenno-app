@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { V_ACID, V_MAX, particleCountsAt } from '../utils/agnasyn';
 import {
   RADIUS,
   applyCounts,
@@ -9,13 +8,18 @@ import {
   setBounds,
   step,
   type Bounds,
-  type Particle,
+  type Kind,
+  type ParticleCounts,
+  type Species,
   type System,
-} from '../utils/particles';
+} from './system';
 
 /**
- * Agnasýn's view of the solution: the particles in the flask, magnified, with
- * the liquid rising as NaOH is added. Water molecules are not drawn.
+ * A particle view of a solution: the particles in a flask, magnified, with the
+ * liquid rising as the reagent is added from the búretta above. Water
+ * molecules are not drawn. It holds no chemistry: the caller passes the counts
+ * (from its own game's function, docs/particle-view-template.md) and how full
+ * the flask is.
  */
 
 const W = 320;
@@ -24,8 +28,8 @@ const GLASS = { left: 14, right: W - 14, top: 52, bottom: H - 10 };
 /** Liquid height at the largest volume on the scale. */
 const FULL = GLASS.bottom - GLASS.top - 6;
 
-function liquidBounds(volume: number): Bounds {
-  const h = (FULL * (V_ACID + volume)) / (V_ACID + V_MAX);
+function liquidBounds(fill: number): Bounds {
+  const h = FULL * Math.max(0.05, Math.min(1, fill));
   return {
     left: GLASS.left + 4,
     right: GLASS.right - 4,
@@ -35,7 +39,7 @@ function liquidBounds(volume: number): Bounds {
 }
 
 const STYLE: Record<
-  Particle['kind'],
+  Kind,
   { fill: string; stroke: string; text: string; label: string; textColor: string }
 > = {
   HA: { fill: '#93c5fd', stroke: '#1d4ed8', text: 'HA', label: 'CH₃COOH', textColor: '#1e3a8a' },
@@ -43,10 +47,11 @@ const STYLE: Record<
   H3O: { fill: '#fca5a5', stroke: '#b91c1c', text: '+', label: 'H⁺', textColor: '#7f1d1d' },
   OH: { fill: '#c4b5fd', stroke: '#6d28d9', text: '−', label: 'OH⁻', textColor: '#3b0764' },
   Na: { fill: '#e7e5e4', stroke: '#78716c', text: '+', label: 'Na⁺', textColor: '#57534e' },
+  Cl: { fill: '#ecfccb', stroke: '#65a30d', text: '−', label: 'Cl⁻', textColor: '#365314' },
   H2O: { fill: '#e0f2fe', stroke: '#7dd3fc', text: '', label: 'H₂O', textColor: '#0369a1' },
 };
 
-export function ParticleGlyph({ kind, flag = false }: { kind: Particle['kind']; flag?: boolean }) {
+export function ParticleGlyph({ kind, flag = false }: { kind: Kind; flag?: boolean }) {
   const size = 2 * (RADIUS[kind] + 6);
   return (
     <svg
@@ -61,7 +66,7 @@ export function ParticleGlyph({ kind, flag = false }: { kind: Particle['kind']; 
   );
 }
 
-function Glyph({ kind, flag }: { kind: Particle['kind']; flag: boolean }) {
+function Glyph({ kind, flag }: { kind: Kind; flag: boolean }) {
   const r = RADIUS[kind];
   const s = STYLE[kind];
   return (
@@ -90,57 +95,77 @@ function Glyph({ kind, flag }: { kind: Particle['kind']; flag: boolean }) {
   );
 }
 
-export const PARTICLE_LABEL: Record<Exclude<Particle['kind'], 'H2O'>, string> = {
+/** What each kind is called by default: Agnasýn's ediksýra and its asetatjón. */
+export const PARTICLE_LABEL: Record<Species, string> = {
   HA: STYLE.HA.label,
   A: STYLE.A.label,
   H3O: STYLE.H3O.label,
   OH: STYLE.OH.label,
   Na: STYLE.Na.label,
+  Cl: STYLE.Cl.label,
 };
 
 interface ParticleBeakerProps {
-  /** mL of NaOH added; may move continuously while a scene plays. */
-  volume: number;
-  /** New NaOH drips in and reacts where it lands, rather than appearing in place. */
+  /** The particles to draw; a change is shown as the reactions that make it. */
+  counts: ParticleCounts;
+  /** How full the flask is, 0–1; may move continuously while a scene plays. */
+  fill: number;
+  /** New reagent drips in and reacts where it lands, rather than appearing in place. */
   drip: boolean;
   /** No drifting and no swims: every change is made at once. */
   still: boolean;
-  /** Draw Na⁺ faded, once it has been named a spectator. */
+  /** Draw Na⁺ and Cl⁻ faded, once they have been named spectators. */
   dimSpectator: boolean;
   /** A label naming what is drawn, for a screen reader. */
   label: string;
+  /** The formula printed beside the búretta. */
+  reagent?: string;
 }
 
-export function ParticleBeaker({ volume, drip, still, dimSpectator, label }: ParticleBeakerProps) {
+/** A drip runs only for a small step forward in the strong reagent; anything else is a jump. */
+function isDripStep(prev: ParticleCounts, next: ParticleCounts): boolean {
+  const dNa = next.Na - prev.Na;
+  const dCl = (next.Cl ?? 0) - (prev.Cl ?? 0);
+  return (dNa > 0 && dNa <= 2 && dCl === 0) || (dCl > 0 && dCl <= 2 && dNa === 0);
+}
+
+export function ParticleBeaker({
+  counts,
+  fill,
+  drip,
+  still,
+  dimSpectator,
+  label,
+  reagent = 'NaOH',
+}: ParticleBeakerProps) {
   const sysRef = useRef<System | null>(null);
   const rngRef = useRef<() => number>(Math.random);
-  const volumeRef = useRef(volume);
-  volumeRef.current = volume;
+  const fillRef = useRef(fill);
+  fillRef.current = fill;
   const [, setFrame] = useState(0);
 
   if (sysRef.current === null) {
-    const sys = createSystem(liquidBounds(volume));
-    applyCounts(sys, particleCountsAt(volume), rngRef.current, { animate: false, drip: false });
+    const sys = createSystem(liquidBounds(fill));
+    applyCounts(sys, counts, rngRef.current, { animate: false, drip: false });
     sysRef.current = sys;
   }
 
-  const counts = particleCountsAt(volume);
-  const key = `${counts.Na}:${counts.flag}`;
+  const key = `${counts.HA}:${counts.A}:${counts.H3O}:${counts.OH}:${counts.Na}:${counts.Cl ?? 0}:${counts.flag}`;
   const lastKey = useRef(key);
-  const lastNa = useRef(counts.Na);
+  const lastCounts = useRef(counts);
   useEffect(() => {
     const sys = sysRef.current;
     if (!sys || lastKey.current === key) return;
     lastKey.current = key;
-    const forward = counts.Na > lastNa.current && counts.Na - lastNa.current <= 2;
-    lastNa.current = counts.Na;
-    setBounds(sys, liquidBounds(volumeRef.current));
+    const forward = isDripStep(lastCounts.current, counts);
+    lastCounts.current = counts;
+    setBounds(sys, liquidBounds(fillRef.current));
     applyCounts(sys, counts, rngRef.current, {
       animate: !still,
       drip: drip && forward && !still,
     });
     setFrame((f) => f + 1);
-    // `counts` follows from `key` and the volume.
+    // `key` names every count, so `counts` is read only when it changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, drip, still]);
 
@@ -154,7 +179,7 @@ export function ParticleBeaker({ volume, drip, still, dimSpectator, label }: Par
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       if (sys) {
-        setBounds(sys, liquidBounds(volumeRef.current));
+        setBounds(sys, liquidBounds(fillRef.current));
         step(sys, dt, rngRef.current);
       }
       setFrame((f) => (f + 1) % 1_000_000);
@@ -167,7 +192,7 @@ export function ParticleBeaker({ volume, drip, still, dimSpectator, label }: Par
   // A still view settles every change at once.
   useEffect(() => {
     if (!still || !sysRef.current) return;
-    setBounds(sysRef.current, liquidBounds(volume));
+    setBounds(sysRef.current, liquidBounds(fill));
     step(sysRef.current, 0, rngRef.current, true);
   });
 
@@ -181,12 +206,13 @@ export function ParticleBeaker({ volume, drip, still, dimSpectator, label }: Par
     return () => window.clearInterval(id);
   }, [flagged, still]);
 
-  const liquid = liquidBounds(volume);
+  const liquid = liquidBounds(fill);
   const particles = sysRef.current?.particles ?? [];
   // Spectators behind, so the reacting particles stay readable.
+  const spectator = (k: Kind) => k === 'Na' || k === 'Cl';
   const ordered = [
-    ...particles.filter((p) => p.kind === 'Na'),
-    ...particles.filter((p) => p.kind !== 'Na'),
+    ...particles.filter((p) => spectator(p.kind)),
+    ...particles.filter((p) => !spectator(p.kind)),
   ];
 
   return (
@@ -205,7 +231,7 @@ export function ParticleBeaker({ volume, drip, still, dimSpectator, label }: Par
         fill="#d6d3d1"
       />
       <text x={W / 2 + 18} y={20} fontSize={11} fill="#57534e">
-        NaOH
+        {reagent}
       </text>
 
       {/* The glass and the liquid. */}
@@ -233,7 +259,7 @@ export function ParticleBeaker({ volume, drip, still, dimSpectator, label }: Par
         <g
           key={p.id}
           transform={`translate(${Math.round(p.x * 10) / 10} ${Math.round(p.y * 10) / 10})`}
-          opacity={(p.kind === 'Na' && dimSpectator ? 0.7 : 1) * p.alpha}
+          opacity={(spectator(p.kind) && dimSpectator ? 0.7 : 1) * p.alpha}
         >
           {p.glow > 0 && (
             <circle r={RADIUS[p.kind] + 6} fill="#fde047" opacity={Math.min(0.6, p.glow / 2)} />

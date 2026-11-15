@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ParticleGlyph } from './ParticleBeaker';
+import { ParticleGlyph } from '@shared/components/ParticleBeaker';
 
 /**
  * NaOH(s) → Na⁺(aq) + OH⁻(aq), drawn as a small solid whose units come apart
