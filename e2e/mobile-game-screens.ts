@@ -4619,6 +4619,33 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         { wait: 600 },
       ],
     },
+    // Fasabreytingar og fasarit (2026-11-15): its Skilja with the heating curve and the phase
+    // diagram, the first question, and the feedback for the plateaus left out.
+    {
+      name: 'Fasar — skilja',
+      steps: [{ clickRole: ['button', 'Fasabreytingar og fasarit'] }, { wait: 300 }],
+    },
+    {
+      name: 'Fasar — æfa',
+      steps: [
+        { clickRole: ['button', 'Fasabreytingar og fasarit'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+      ],
+    },
+    {
+      name: 'Fasar — endurgjöf',
+      steps: [
+        { clickRole: ['button', 'Fasabreytingar og fasarit'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+        { fill: ['input[inputmode="decimal"]', '65,7'] },
+        { clickRole: ['button', 'Athuga'] },
+        { wait: 300 },
+      ],
+    },
     {
       name: 'Stig 1 — kynning',
       steps: [

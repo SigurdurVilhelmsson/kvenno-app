@@ -217,7 +217,7 @@ energy density;orkuþéttleiki
 enthalpy;vermi
 enthalpy change;vermibreyting
 enthalpy of formation;myndunarvermi
-enthalpy of fusion;bráðnunarvermi
+enthalpy of fusion;bræðsluvermi
 enthalpy of sublimation;þurrgufunarvermi
 enthalpy of vaporization;gufunarvermi
 entropy;óreiða
