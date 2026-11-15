@@ -114,7 +114,7 @@ const challenges: Challenge[] = [
     question: 'Hvað heitir CH₃CH₂OH?',
     formula: 'CH₃CH₂OH',
     correctAnswer: 'etanól',
-    options: ['metanól', 'etanól', 'própanól', 'etanal'],
+    options: ['metanól', 'etanól', '1-própanól', 'etanal'],
     explanation: '2 kolefni (et-) + alkóhól (-ól) = etanól',
   },
   {
@@ -123,7 +123,7 @@ const challenges: Challenge[] = [
     question: 'Hvað heitir CH₃CH₂COOH?',
     formula: 'CH₃CH₂COOH',
     correctAnswer: 'própansýra',
-    options: ['etansýra', 'própansýra', 'própanól', 'própan'],
+    options: ['etansýra', 'própansýra', '1-própanól', 'própan'],
     explanation: '3 kolefni (próp-) + karboxýlsýra (-sýra) = própansýra',
   },
   {
@@ -141,7 +141,7 @@ const challenges: Challenge[] = [
     question: 'Hvað heitir CH₃COCH₃?',
     formula: 'CH₃COCH₃',
     correctAnswer: 'própanón',
-    options: ['etanón', 'própanón', 'própanól', 'própan'],
+    options: ['etanón', 'própanón', '1-própanól', 'própan'],
     explanation: '3 kolefni (próp-) + ketón (-ón) = própanón (einnig kallað asetón)',
   },
 
@@ -165,10 +165,13 @@ const challenges: Challenge[] = [
   {
     id: 10,
     type: 'structure',
-    question: 'Hvaða formúlu hefur PRÓPANÓL?',
+    // The number says which carbon carries the OH, as Stig 2 numbers double bonds and
+    // branches. Without it the name fits CH₃CH(OH)CH₃ too, the book's 2-própanól (kafli 20).
+    question: 'Hvaða formúlu hefur 1-PRÓPANÓL?',
     correctAnswer: 'CH₃CH₂CH₂OH',
-    options: ['CH₃CH₂CH₂OH', 'CH₃CH₂CHO', 'CH₃CH₂COOH', 'C₃H₈'],
-    explanation: 'Própanól = 3 kolefni + alkóhól = CH₃CH₂CH₂OH',
+    options: ['CH₃CH₂CH₂OH', 'CH₃CH₂CHO', 'CH₃CH₂COOH', 'CH₃CH(OH)CH₃'],
+    explanation:
+      '1-própanól = 3 kolefni + alkóhól á kolefni 1 = CH₃CH₂CH₂OH. Á kolefni 2 væri það 2-própanól, CH₃CH(OH)CH₃.',
   },
 ];
 

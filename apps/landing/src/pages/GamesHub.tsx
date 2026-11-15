@@ -110,7 +110,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Lífræn nafnagift',
-        description: 'Lærðu IUPAC nafnakerfið fyrir alkana, alkena og alkýna',
+        description: 'Lærðu IUPAC-nafnakerfið fyrir alkana, alkena, alkýna og virka hópa',
         slug: 'organic-nomenclature',
       },
       {
