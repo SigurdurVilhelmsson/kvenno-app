@@ -93,10 +93,12 @@ export const gameTranslations = createGameTranslations({
       c3hint: 'Jákvætt ΔH þýðir innvermið hvarf (tekur til sín varma)',
       c3explanation: 'ΔH°rxn = [(-634,9) + (-393,51)] - [(-1220,0)] = +191,6 kJ/mól (innvermið)',
       c4title: 'Óþekkt myndunarvermi',
-      c4desc: 'Gefið er ΔH°rxn = -296,83 kJ/mól. Finndu ΔH°f fyrir SO₂(g).',
-      c4hint: 'Þetta er myndunarhvarf! ΔH°rxn = ΔH°f fyrir myndefnið.',
+      c4desc:
+        'Gefið er ΔH°rxn = -566,0 kJ fyrir hvarfið eins og það er skrifað. Finndu ΔH°f fyrir CO(g).',
+      c4hint:
+        'Settu upp ΔH°rxn = Σ n·ΔH°f(myndefni) − Σ n·ΔH°f(hvarfefni) og leystu fyrir óþekkta gildið. Mundu að stuðullinn fyrir CO er 2.',
       c4explanation:
-        'Þar sem hvarfefnin eru frumefni í stöðluðu ástandi: ΔH°rxn = ΔH°f(SO₂) = -296,83 kJ/mól',
+        '-566,0 = 2(-393,51) − [2·ΔH°f(CO) + 0], svo 2·ΔH°f(CO) = -787,02 + 566,0 = -221,0 og ΔH°f(CO) = -110,5 kJ/mól.',
       c5title: 'Brennsla etanóls',
       c5desc: 'Reiknaðu varmamyndun við brennslu etanóls.',
       c5hint: 'Mundu að margfalda ΔH°f með stuðlinum!',
@@ -196,10 +198,11 @@ export const gameTranslations = createGameTranslations({
       c3hint: 'Positive ΔH means endothermic reaction',
       c3explanation: 'ΔH°rxn = [(-634.9) + (-393.51)] - [(-1220.0)] = +191.6 kJ/mol (endothermic)',
       c4title: 'Unknown formation enthalpy',
-      c4desc: 'Given ΔH°rxn = -296.83 kJ/mol. Find ΔH°f for SO₂(g).',
-      c4hint: 'This is a formation reaction! ΔH°rxn = ΔH°f for the product.',
+      c4desc: 'Given ΔH°rxn = -566.0 kJ for the reaction as written. Find ΔH°f for CO(g).',
+      c4hint:
+        'Set up ΔH°rxn = Σ n·ΔH°f(products) − Σ n·ΔH°f(reactants) and solve for the unknown. Remember that the coefficient of CO is 2.',
       c4explanation:
-        'Since reactants are elements in standard state: ΔH°rxn = ΔH°f(SO₂) = -296.83 kJ/mol',
+        '-566.0 = 2(-393.51) − [2·ΔH°f(CO) + 0], so 2·ΔH°f(CO) = -787.02 + 566.0 = -221.0 and ΔH°f(CO) = -110.5 kJ/mol.',
       c5title: 'Ethanol combustion',
       c5desc: 'Calculate heat of combustion for ethanol.',
       c5hint: 'Remember to multiply ΔH°f by the coefficient!',
@@ -300,10 +303,11 @@ export const gameTranslations = createGameTranslations({
       c3explanation:
         'ΔH°rxn = [(-634.9) + (-393.51)] - [(-1220.0)] = +191.6 kJ/mol (endotermiczna)',
       c4title: 'Nieznana entalpia tworzenia',
-      c4desc: 'Dane: ΔH°rxn = -296.83 kJ/mol. Znajdź ΔH°f dla SO₂(g).',
-      c4hint: 'To jest reakcja tworzenia! ΔH°rxn = ΔH°f dla produktu.',
+      c4desc: 'Dane: ΔH°rxn = -566.0 kJ dla reakcji tak, jak jest zapisana. Znajdź ΔH°f dla CO(g).',
+      c4hint:
+        'Zapisz ΔH°rxn = Σ n·ΔH°f(produkty) − Σ n·ΔH°f(substraty) i wyznacz niewiadomą. Pamiętaj, że współczynnik CO wynosi 2.',
       c4explanation:
-        'Ponieważ substraty to pierwiastki w stanie standardowym: ΔH°rxn = ΔH°f(SO₂) = -296.83 kJ/mol',
+        '-566.0 = 2(-393.51) − [2·ΔH°f(CO) + 0], więc 2·ΔH°f(CO) = -787.02 + 566.0 = -221.0, a ΔH°f(CO) = -110.5 kJ/mol.',
       c5title: 'Spalanie etanolu',
       c5desc: 'Oblicz ciepło spalania etanolu.',
       c5hint: 'Pamiętaj, aby pomnożyć ΔH°f przez współczynnik!',

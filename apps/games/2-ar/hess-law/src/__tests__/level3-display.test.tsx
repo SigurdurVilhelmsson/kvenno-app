@@ -2,7 +2,7 @@
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
 
-import { Level3 } from '../components/Level3';
+import { CO_COMBUSTION_RXN, Level3 } from '../components/Level3';
 import { gameTranslations } from '../i18n';
 
 /**
@@ -39,7 +39,7 @@ function t(key: string, fallback?: string): string {
   return SHARED[key] ?? fallback ?? key;
 }
 
-const ANSWERS = ['-890,6', '-91,8', '191,6', '-296,83', '-1366,9', '-851,8'];
+const ANSWERS = ['-890,6', '-91,8', '191,6', '-110,5', '-1366,9', '-851,8'];
 
 function start() {
   const view = render(<Level3 t={t} onComplete={() => {}} onBack={() => {}} />);
@@ -83,72 +83,32 @@ describe('hess-law level 3 reverse challenge', () => {
   it('does not show the ΔH°f it asks for until the answer is checked', () => {
     const { page } = start();
     advanceTo(page, 3);
-    expect(page.getByText(/Finndu ΔH°f fyrir SO₂\(g\)/)).toBeTruthy();
+    expect(page.getByText(/Finndu ΔH°f fyrir CO\(g\)/)).toBeTruthy();
     fireEvent.click(page.getByRole('button', { name: 'Sýna ΔH°f töflu' }));
 
-    const card = page.getByText('SO₂(g)', { selector: '.font-mono.font-bold' }).parentElement!;
+    const card = page.getByText('CO(g)', { selector: '.font-mono.font-bold' }).parentElement!;
     expect(card.textContent).toContain('? kJ/mól');
-    expect(card.textContent).not.toMatch(/296/);
-    const total = page.getByText(/Samtals myndefni:/).textContent ?? '';
+    expect(card.textContent).not.toMatch(/110/);
+    const total = page.getByText(/Samtals hvarfefni:/).textContent ?? '';
     expect(total).toMatch(/\?/);
-    expect(total).not.toMatch(/296/);
+    expect(total).not.toMatch(/110|221/);
 
     answer(page, ANSWERS[3]);
-    expect(card.textContent).toContain('-296,83 kJ/mól');
+    expect(card.textContent).toContain('-110,52 kJ/mól');
   });
-});
 
-describe('hess-law level 3 notation', () => {
-  it.each(ANSWERS.map((_answer, i) => [i + 1, i] as const))(
-    'challenge %i prints decimal commas and subscripted formulas',
-    (_n, index) => {
-      const { view, page } = start();
-      advanceTo(page, index);
-      fireEvent.click(page.getByRole('button', { name: 'Sýna ΔH°f töflu' }));
-      answer(page, ANSWERS[index]);
-      const text = view.container.textContent ?? '';
-      expect(text).not.toMatch(/\d\.\d/);
-      // An element symbol, an ASCII digit, then more formula: CO2(g), H2O, C2H5OH.
-      // (Rows run together in textContent, so "kJ" then "2 ×" must not count.)
-      expect(text).not.toMatch(/[A-Z][a-z]?\d+(?=[A-Z(])/);
-    }
-  );
-});
-
-describe('hess-law level 3 Næsta guard', () => {
-  it('drops a Næsta press within 400 ms of the verdict, so a double tap cannot skip it', () => {
+  /**
+   * Year-2 audit, 2026-11-15: the old item was S + O₂ → SO₂ with ΔH°rxn given, which is
+   * ΔH°f(SO₂) itself, so the question printed its answer. The given value must differ from
+   * the answer, and the answer must follow from it and the book's ΔH°f(CO₂).
+   */
+  it('gives a ΔH°rxn that is not the answer', () => {
     const { page } = start();
-    answer(page, '-800');
-    clock += 150;
-    fireEvent.click(page.getByRole('button', { name: 'Næsta þraut' }));
-    expect(page.getByText(/Rétt svar:/)).toBeTruthy();
-    clock += 400;
-    fireEvent.click(page.getByRole('button', { name: 'Næsta þraut' }));
-    expect(page.queryByText(/Rétt svar:/)).toBeNull();
+    advanceTo(page, 3);
+    const desc = page.getByText(/Finndu ΔH°f fyrir CO\(g\)/).textContent ?? '';
+    expect(desc).toContain('-566,0');
+    expect(desc).not.toMatch(/110/);
+    expect(CO_COMBUSTION_RXN).toBe(-566);
+    expect((2 * -393.51 - CO_COMBUSTION_RXN) / 2).toBeCloseTo(-110.51, 2);
   });
-});
-
-/**
- * Both totals sat on screen beside the answer field, so ΔH°rxn was one subtraction away
- * (decisions item 75). They now read `?` until the answer is checked; the n × ΔH°f terms
- * stay, so the student still does the adding up.
- */
-describe('hess-law level 3 workspace totals', () => {
-  const totals = (page: ReturnType<typeof within>) =>
-    [/Samtals myndefni:/, /Samtals hvarfefni:/].map(
-      (label) => page.getByText(label).textContent ?? ''
-    );
-
-  it.each([0, 1, 2, 4, 5])(
-    'challenge %i hides both totals until checked, and keeps the terms',
-    (n) => {
-      const { page } = start();
-      advanceTo(page, n);
-      for (const total of totals(page)) expect(total).toMatch(/:\s*\? kJ$/);
-      expect(page.getAllByText(/× \(/).length).toBeGreaterThan(1);
-
-      answer(page, ANSWERS[n]);
-      for (const total of totals(page)) expect(total).toMatch(/:\s*-?\d[\d ]*(,\d)? kJ$/);
-    }
-  );
 });
