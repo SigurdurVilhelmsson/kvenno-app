@@ -193,11 +193,11 @@ describe('the angle and explanation steps', () => {
     );
   });
 
-  it('keeps the T of T-lögun upper-case inside the sentence', () => {
+  it('keeps the T of T-laga upper-case inside the sentence', () => {
     const { ui, container, m } = toAngleStep('ClF₃');
     answerAngle(ui, container, m.angle);
     next(ui);
-    expect(container.textContent).toContain('sameindarlögun ClF₃ er T-lögun:');
+    expect(container.textContent).toContain('sameindarlögun ClF₃ er T-laga:');
   });
 
   it('does not say lone pairs shrink the angle of square-planar XeF₄', () => {

@@ -423,6 +423,20 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       "2026-10-01, rule 1: ordabok.md gives see-saw;vegasalt. The book's running prose says róla or rólulaga instead, and the glossary settling that is the prósentuheimtur precedent. 2-ar/vsepr-geometry said Sjáldruslögun, which is neither. Neuter: vegasalt / vegasalt / vegasalti / vegasalts, so a molecule verður að vegasalti.",
   },
   {
+    english: 'T-shaped',
+    correct: 'T-laga',
+    banned: [/T-lögu[nð]/i],
+    guidance:
+      "2026-11-15, Siggi's ruling that the book wins where it and the games disagree (year-2 audit, decision 5). The book's VSEPR module (kafli 7) labels the shape T-laga, 8 hits to 1 (whole book), and ordabok.md now carries T-shaped;T-laga. 2-ar/vsepr-geometry said T-lögun. T-laga is an adjective that does not decline: sameindin er T-laga.",
+  },
+  {
+    english: 'ethyne',
+    correct: 'etýn',
+    banned: [/(?<!\p{L})etín/iu],
+    guidance:
+      '2026-11-15, the book wins (year-2 audit, decision 5): it writes etýn 4 times to etín twice, and 2-ar/organic-nomenclature spells the triple-bond ending -ýn. 2-ar/vsepr-geometry said Etín. The leading boundary keeps teknetín and metín, which are other words.',
+  },
+  {
     english: 'square planar',
     correct: 'ferningslaga flatt',
     banned: [/ferningsslétt/i],

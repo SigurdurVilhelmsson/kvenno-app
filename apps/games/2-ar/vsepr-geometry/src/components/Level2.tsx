@@ -33,7 +33,7 @@ const GEOMETRY_OPTIONS: GeometryOption[] = [
   { id: 'trigonal-pyramidal', name: 'Þríhyrningslaga pýramídi', bondAngle: '107°' },
   { id: 'tetrahedral', name: 'Ferflötungur', bondAngle: '109,5°' },
   { id: 'seesaw', name: 'Vegasalt', bondAngle: '90° og 120°' },
-  { id: 't-shaped', name: 'T-lögun', bondAngle: '90°' },
+  { id: 't-shaped', name: 'T-laga', bondAngle: '90°' },
   { id: 'trigonal-bipyramidal', name: 'Þríhyrndur tvípýramídi', bondAngle: '90° og 120°' },
   { id: 'square-planar', name: 'Ferningslaga flatt', bondAngle: '90°' },
   { id: 'octahedral', name: 'Áttflötungur', bondAngle: '90°' },
@@ -220,12 +220,12 @@ const molecules: Molecule[] = [
     lonePairs: 2,
     electronDomains: 5,
     electronGeometry: 'Þríhyrndur tvípýramídi',
-    molecularGeometry: 'T-lögun',
+    molecularGeometry: 'T-laga',
     correctGeometryId: 't-shaped',
     bondAngle: '90°',
     isPolar: true,
     explanation:
-      'Klór hefur 7 gildisrafeindir. 3 í tengi, 4 mynda 2 stök pör. 5 svæði rafeindaþéttleika = þríhyrndur tvípýramídi, en 2 stök pör á miðsléttunni gefa T-lögun.',
+      'Klór hefur 7 gildisrafeindir. 3 í tengi, 4 mynda 2 stök pör. 5 svæði rafeindaþéttleika = þríhyrndur tvípýramídi, en 2 stök pör á miðsléttunni gefa T-laga.',
   },
 ];
 
@@ -244,7 +244,7 @@ const GEOMETRIES_BY_DOMAINS: Record<number, { id: string; name: string }[]> = {
   5: [
     { id: 'trigonal-bipyramidal', name: 'Þríhyrndur tvípýramídi' },
     { id: 'seesaw', name: 'Vegasalt' },
-    { id: 't-shaped', name: 'T-lögun' },
+    { id: 't-shaped', name: 'T-laga' },
     { id: 'linear', name: 'Línuleg' },
   ],
   6: [
@@ -292,7 +292,7 @@ function lonePairsPhrase(n: number): string {
 function lonePairsDative(n: number): string {
   return n === 1 ? '1 stöku pari' : `${n} stökum pörum`;
 }
-/** A shape name inside a sentence: lower-case, except the T of T-lögun. */
+/** A shape name inside a sentence: lower-case, except the T of T-laga. */
 function inSentence(name: string): string {
   return name.startsWith('T-') ? name : name.charAt(0).toLowerCase() + name.slice(1);
 }
@@ -1483,7 +1483,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <td className="p-1 sm:p-2">5</td>
                   <td>3</td>
                   <td>2</td>
-                  <td>T-lögun</td>
+                  <td>T-laga</td>
                   <td>90°</td>
                 </tr>
                 <tr className="border-t bg-indigo-50">
