@@ -14,6 +14,8 @@ interface KlofnunBarProps {
   percent: number;
   /** Whether the 5 % rule licenses the approximation here. */
   valid: boolean;
+  /** What the share does: an acid `klofnar`, a weak base `hvarfast` with water. */
+  verb?: string;
 }
 
 const SCALE_MAX = 10;
@@ -30,7 +32,7 @@ export function formatPercent(percent: number): string {
   return (percent < 0.01 ? percent.toPrecision(2) : percent.toFixed(2)).replace('.', ',');
 }
 
-export function KlofnunBar({ percent, valid }: KlofnunBarProps) {
+export function KlofnunBar({ percent, valid, verb = 'klofnar' }: KlofnunBarProps) {
   const width = Math.min(percent / SCALE_MAX, 1) * 100;
   const label = formatPercent(percent);
 
@@ -55,7 +57,7 @@ export function KlofnunBar({ percent, valid }: KlofnunBarProps) {
       <div className="mt-1 grid grid-cols-[auto_1fr_auto] gap-x-2 text-xs text-warm-600">
         <span className="whitespace-nowrap">0 %</span>
         <span className={`text-center ${valid ? 'text-green-700' : 'font-semibold text-red-700'}`}>
-          <span className="whitespace-nowrap">{label} %</span> klofnar
+          <span className="whitespace-nowrap">{label} %</span> {verb}
           {valid ? '' : ' — yfir mörkunum'}
         </span>
         <span className="whitespace-nowrap">{SCALE_MAX} %</span>

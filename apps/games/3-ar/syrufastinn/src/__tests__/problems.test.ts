@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
+import { APPENDIX_D2_BASES } from '@shared/data/appendix-d';
+
 import { ANSWERABLE_PAIRS, WEAK_ACIDS } from '../data/acids';
 import {
   APPLY_PROBLEMS,
@@ -11,7 +13,7 @@ import {
   gradeApply,
 } from '../data/problems';
 import { percentDissociation, referencePH } from '../engine/grade';
-import { kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
+import { KW, kaFromMeasuredPH, solveWeakAcid, solveWeakBase } from '../engine/ka';
 
 describe('the practice set', () => {
   it('is entirely inside the 5 % rule', () => {
@@ -81,7 +83,7 @@ describe('the apply set', () => {
     // the pool appears exactly once, so the three still fail by visibly
     // different margins, and the phase is no longer one template twelve times.
     const breakers = APPLY_PROBLEMS.filter((p) => p.id.startsWith('apply-break-'));
-    const acids = breakers.map((p) => p.acid.id);
+    const acids = breakers.map((p) => p.acid!.id);
     expect(new Set(acids).size, acids.join(', ')).toBe(acids.length);
     expect([...new Set(RULE_BREAKING_PROBLEMS.map((p) => p.acid.id))].sort()).toEqual(
       [...acids].sort()
@@ -103,7 +105,7 @@ describe('the apply set', () => {
     // be graded correct and the misconception text would accuse a right answer.
     // Rounded to two decimals, as the answer hint asks, and nudged both ways.
     for (const p of APPLY_PROBLEMS.filter((q) => !q.approximationValid)) {
-      const approx = solveWeakAcid(p.acid.ka, p.concentration).pHApprox;
+      const approx = solveWeakAcid(p.acid!.ka, p.concentration).pHApprox;
       for (const typed of [approx, Math.round(approx * 100) / 100]) {
         expect(gradeApply(p, typed), `${p.id} accepts ${typed}`).toBe(false);
       }
@@ -112,7 +114,7 @@ describe('the apply set', () => {
 
   it('asks each kind at least once', () => {
     const kinds = new Set(APPLY_PROBLEMS.map((p) => p.kind));
-    expect([...kinds].sort()).toEqual(['ka', 'kb', 'klofnun', 'pH', 'pKa']);
+    expect([...kinds].sort()).toEqual(['basePH', 'ka', 'kb', 'klofnun', 'pH', 'pKa', 'saltPH']);
   });
 
   it('accepts its own stated answer', () => {
@@ -162,7 +164,7 @@ describe('the apply set', () => {
     const klofnun = APPLY_PROBLEMS.findIndex((q) => q.id === 'apply-klofnun');
     const p = APPLY_PROBLEMS[klofnun];
     for (const earlier of APPLY_PROBLEMS.slice(0, klofnun)) {
-      const same = earlier.acid.id === p.acid.id && earlier.concentration === p.concentration;
+      const same = earlier.acid?.id === p.acid?.id && earlier.concentration === p.concentration;
       expect(same, `${earlier.id} explains the solution apply-klofnun asks about`).toBe(false);
     }
   });
@@ -172,11 +174,11 @@ describe('the apply set', () => {
     // exact root's 1,33 %, where x/C gives 1,34 %. It is the student's own check,
     // so it divides the approximate x; the graded answer stays the exact α.
     const p = APPLY_PROBLEMS.find((q) => q.id === 'apply-klofnun')!;
-    const x = solveWeakAcid(p.acid.ka, p.concentration).hApprox;
+    const x = solveWeakAcid(p.acid!.ka, p.concentration).hApprox;
     const shown = ((x / p.concentration) * 100).toFixed(2).replace('.', ',');
     expect(p.explanation).toContain(`x/C = ${shown} %`);
     expect(shown).not.toBe(p.answer.toFixed(2).replace('.', ','));
-    expect(p.answer).toBeCloseTo(percentDissociation(p.acid.ka, p.concentration), 12);
+    expect(p.answer).toBeCloseTo(percentDissociation(p.acid!.ka, p.concentration), 12);
     expect(gradeApply(p, Number(shown.replace(',', '.')))).toBe(true);
   });
 
@@ -187,7 +189,7 @@ describe('the apply set', () => {
     // CLAUDE.md.
     for (const p of APPLY_PROBLEMS.filter((q) => !q.approximationValid)) {
       expect(p.misconception, p.id).toBeTruthy();
-      const s = solveWeakAcid(p.acid.ka, p.concentration);
+      const s = solveWeakAcid(p.acid!.ka, p.concentration);
       expect(p.misconception, p.id).toContain(s.pHApprox.toFixed(2).replace('.', ','));
     }
   });
@@ -223,7 +225,7 @@ describe('the apply set', () => {
     // decline differently from each other, so this catches a regression the four
     // hand-written problems above would not.
     for (const p of APPLY_PROBLEMS.filter((x) => x.id.startsWith('apply-break-'))) {
-      expect(p.question, p.id).toContain(`lausn af ${p.acid.nameDative} `);
+      expect(p.question, p.id).toContain(`lausn af ${p.acid!.nameDative} `);
     }
   });
 
@@ -268,9 +270,43 @@ describe('pKa', () => {
   it('is defined and asked once, graded on −log Ka', async () => {
     const { APPLY_PROBLEMS: problems, gradeApply: grade } = await import('../data/problems');
     const p = problems.find((q) => q.kind === 'pKa')!;
-    expect(p.answer).toBeCloseTo(-Math.log10(p.acid.ka), 12);
+    expect(p.answer).toBeCloseTo(-Math.log10(p.acid!.ka), 12);
     expect(p.answer).toBeCloseTo(3.74, 2);
     expect(grade(p, 3.74)).toBe(true);
     expect(grade(p, -3.74)).toBe(false);
+  });
+});
+
+describe('weak base and salt', () => {
+  const base = APPLY_PROBLEMS.find((q) => q.id === 'apply-base')!;
+  const salt = APPLY_PROBLEMS.find((q) => q.id === 'apply-salt')!;
+  const numbersIn = (text: string) =>
+    [...text.matchAll(/var (\d+(?:,\d+)?)/g)].map((m) => Number(m[1].replace(',', '.')));
+
+  it('computes both answers from the engine and Appendix D.2', () => {
+    const kb = APPENDIX_D2_BASES.ammonia.kb;
+    expect(base.answer).toBeCloseTo(solveWeakBase(kb, base.concentration).pHApprox, 12);
+    expect(salt.answer).toBeCloseTo(solveWeakAcid(KW / kb, salt.concentration).pHApprox, 12);
+  });
+
+  it('puts the base above 7 and the salt of a weak base below it', () => {
+    expect(base.answer).toBeGreaterThan(7);
+    expect(salt.answer).toBeLessThan(7);
+    expect(gradeApply(salt, 7)).toBe(false);
+  });
+
+  it('names only numbers that are graded wrong', () => {
+    for (const p of [base, salt]) {
+      const named = numbersIn(p.misconception ?? '');
+      expect(named.length, p.id).toBeGreaterThan(0);
+      for (const n of named) expect(gradeApply(p, n), `${p.id}: ${n}`).toBe(false);
+    }
+    expect(numbersIn(salt.misconception ?? '')).toHaveLength(3);
+  });
+
+  it('accepts the answer rounded to two decimals', () => {
+    for (const p of [base, salt]) {
+      expect(gradeApply(p, Math.round(p.answer * 100) / 100), p.id).toBe(true);
+    }
   });
 });

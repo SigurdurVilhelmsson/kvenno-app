@@ -192,6 +192,23 @@ were like that. The three kept are HF at 0,010 M (22,9 %, gap 0,056), saltpétur
 by visibly different margins. `problems.test.ts` asserts one pair per rule-breaking acid, that it
 is the most dilute, and that the approximate answer is rejected on every rule-breaker Beita poses.
 
+### Weak bases and salt hydrolysis, 2026-11-15 (Year-3 plan, Phase 4)
+
+Kb had one item, a constant to compute, and no solution of a base was ever solved. Skilja now has a
+sixth step, **Basar og sölt**: NH₃ + H₂O ⇌ NH₄⁺ + OH⁻ worked at 0,10 M to pH 11,13, the value
+`ph-titration` stores for the same solution, then natríumasetat (basísk, 8,87), ammóníumklóríð
+(súr, 5,13) and natríumklóríð (hlutlaus), each ion named as a meðjón or a samoka sýra or basi, with
+Ka · Kb = Kw as the bridge. Beita gains two problems, so it poses ten:
+
+- `apply-base`: pH of 0,25 M ammóníak (11,33), with a misconception for answering pOH.
+- `apply-salt`: pH of 0,20 M ammóníumklóríð (4,98), with misconceptions for using Kb as Ka (2,72),
+  treating NH₄⁺ as a base (9,02) and assuming a salt is neutral (7). A test holds each named number
+  to being graded wrong.
+
+Kb of ammóníak is Appendix D.2's, read from `packages/shared/data/appendix-d.ts`. `ApplyProblem`
+now carries `solutionK` (the constant whose x/C the bar shows) and an optional `acid`, since the two
+new problems are about a base. The Icelandic of the step and both problems was drafted by Claude.
+
 ### Kanna and Beita, 2026-11-15 (Year-3 development plan, Sýrufastinn P1)
 
 - **Kanna predicts before it observes.** The question "Hvað heldurðu að Ka-dálkurinn sýni?" used to

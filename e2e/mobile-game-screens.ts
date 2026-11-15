@@ -7248,6 +7248,20 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Skilja — basar og sölt',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+        {
+          clickRole: ['button', '6. Basar og sölt'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+    },
+    {
       name: 'Æfa — skref 1 með vísbendingum',
       steps: [
         {

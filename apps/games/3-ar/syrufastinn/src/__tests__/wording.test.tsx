@@ -246,6 +246,19 @@ describe('Kanna, predict before observe', () => {
   });
 });
 
+describe('Skilja, bases and salts', () => {
+  it('works 0,10 M ammóníak to the pH pH Títrun starts from, and sorts the three salts', () => {
+    render(<UnderstandScreen onComplete={() => {}} onBack={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: '6. Basar og sölt' }));
+    const text = screen.getByRole('group').textContent ?? '';
+    expect(text).toContain('pH = 14,00 − pOH = 11,13');
+    expect(text).toMatch(/basísk, pH 8,87/);
+    expect(text).toMatch(/súr, pH 5,13/);
+    expect(text).toMatch(/hlutlaus, pH 7/);
+    expect(screen.getByRole('button', { name: 'Áfram í Æfa' })).toBeTruthy();
+  });
+});
+
 describe('Skilja', () => {
   const ediksyra = MONOPROTIC_ACIDS.find((a) => a.id === 'ediksyra')!;
   const s = solveWeakAcid(ediksyra.ka, 0.1);
@@ -310,7 +323,7 @@ describe('Beita feedback', () => {
 
     const gaveX = text.match(/var ([\d,]+(?: × 10\S+)?) skilaðirðu styrknum x/u);
     expect(gaveX, 'names the returned-x answer').toBeTruthy();
-    const x = solveWeakAcid(p.acid.ka, p.concentration).hApprox;
+    const x = solveWeakAcid(p.acid!.ka, p.concentration).hApprox;
     expect(Math.abs(readPrinted(gaveX![1]) - x) / x).toBeLessThan(0.05);
   });
 
