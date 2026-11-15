@@ -3413,6 +3413,30 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Nærmynd, the particle view (2026-11-15): the two flasks at the start, at two
+    // half-lives where they part, and the slider.
+    {
+      name: 'Nærmynd — upphaf',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 300 }],
+    },
+    {
+      name: 'Nærmynd — tveir helmingunartímar',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '3. Tveir helmingunartímar'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Nærmynd — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '5. Kannaðu sjálf/ur'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Stig 1 — spurning',
       steps: [
