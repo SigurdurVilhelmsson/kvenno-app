@@ -171,6 +171,15 @@ config's DOM environment.
 - **The IMF → Lífræn nafnagift link** (functional groups and properties) was planned in February
   and never built (`docs/FEBRUARY-DECISIONS-RECOVERED.md`, "Cross-game integration").
 
+**Fixed 2026-11-15** (year-2 audit, Phase 0): Stig 3 told students the gecko and the soap
+bubble were "ekki rafstöðufyrirbæri", against the book (kafli 10), where every intermolecular force
+is electrostatic. Those distractors are now `Segulkraftar` and `Sápan límir vatnssameindirnar saman`.
+The water–H₂S item taught that S-H forms weak hydrogen bonds; its answer is now that H₂S forms none,
+since H must be bonded to F, O or N. Stig 1's London card says London forces grow with molecular
+size and can outweigh the others, and the menu's strength grid says its order is the usual one, not
+a rule. The strength badges are unchanged. Guarded by `book-electrostatic.test.ts`. The new
+wording was drafted by Claude.
+
 **Fixed 2026-11-02**, found writing this file: three Stig 3 titles and four hints kept the English
 `vs`. The titles follow decision 73's `Ediksýra eða asetaldehýð` (`Etanól eða dímetýleter`,
 `n-Oktan eða 2,2,3,3-tetrametýlbútan`, `HF eða H₂O`), the hints say `og` or `á móti`, and
