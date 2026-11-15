@@ -161,7 +161,7 @@ src/utils/grading.ts                 1 % tolerance, applyFactorPath, the thousan
 src/utils/level3Run.ts               drawing a run of 12
 src/utils/scoring.ts                 composite score, scoreExplanation
 src/utils/unitConversion.ts          imported only by utils.test.ts
-src/__tests__/                       36 test files; Stig 0: sigfigs, sigfig-items, stig0-r5-play;
+src/__tests__/                       37 test files; Stig 0: sigfigs, sigfig-items, stig0-r5-play;
                                      Stig 1: level1-*; Stig 2: level2-*, unit-cancellation;
                                      Stig 3: level3-*, challenge-data, data-integrity;
                                      shared: grading, thousands-dot, hint-cost,
@@ -174,6 +174,18 @@ EVALUATION.md                        a pre-restructure design note; stale
 
 Run the tests from the repo root (`pnpm exec vitest run apps/games/1-ar/dimensional-analysis`): the
 render tests need the root config's DOM environment.
+
+## Fixed 2026-11-15 — the year-1 audit (Phase 0 item 3)
+
+- **Stig 2's L2-13 asked for a second conversion it did not have** (`… og síðan aftur í mL með
+öðru gildi`). It and L2-14 were also one-step problems in the advanced tier, easier than the
+  medium ones before them. L2-13 is now kg → g → mg and L2-14 s → mín → klst.
+- **L2-1 said the package showed a concentration (`styrk`) in g**; it shows the mass.
+- **Stig 0's rounding items r1, r4 and r5 blamed the instrument** for digits it displayed. An
+  instrument that shows a digit measures it; the book's reason to round is a calculation
+  (`m68690`), so each is now a calculated value limited by its least precise input.
+- `level2-problem-wording.test.ts` holds all of it, and checks that every Stig 2 chain carries the
+  start unit to the target unit.
 
 ## Open
 

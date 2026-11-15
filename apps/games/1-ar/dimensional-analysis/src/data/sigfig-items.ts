@@ -150,7 +150,12 @@ const round = (id: string, value: number, figures: number, context: string): Rou
  * rule 4 — which is why its printed answer is in standard form, `6,0 × 10¹`.
  */
 export const ROUND_ITEMS: RoundItem[] = [
-  round('r1', 1234, 2, 'Vogin sýnir 1234 g en hún er aðeins nákvæm upp á tvo markverða stafi.'),
+  round(
+    'r1',
+    1234,
+    2,
+    'Massi reiknast 1234 g sem rúmmál × eðlismassi, en eðlismassinn er gefinn með tveimur markverðum stöfum.'
+  ),
   round(
     'r2',
     0.0045678,
@@ -158,12 +163,17 @@ export const ROUND_ITEMS: RoundItem[] = [
     'Styrkur mælist 0,0045678 M. Skrifaðu hann með þremur markverðum stöfum.'
   ),
   round('r3', 2.5, 3, 'Rúmmál 2,5 mL er mælt með pípettu sem gefur þrjá markverða stafi.'),
-  round('r4', 98765, 3, 'Massi 98765 mg úr vog sem gefur þrjá markverða stafi.'),
+  round(
+    'r4',
+    98765,
+    3,
+    'Massi reiknast 98765 mg, en ónákvæmasta mælingin í margfeldinu hefur þrjá markverða stafi.'
+  ),
   round(
     'r5',
     60.221,
     2,
-    'Hitastig mælist 60,221 °C en mælirinn er aðeins nákvæmur upp á tvo markverða stafi.'
+    'Meðalhraði reiknast 60,221 km/klst, en vegalengdin var mæld með tveimur markverðum stöfum.'
   ),
 ];
 
