@@ -181,11 +181,12 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
             {/* The bar shows the solution the question is about, so the 5 %
                 verdict is visible next to the answer. Kb is a property of the
                 conjugate base rather than of a solution, and pKa of the acid, so
-                neither gets a bar. */}
-            {problem.kind !== 'kb' && problem.kind !== 'pKa' && (
+                neither gets a bar (no solutionK). */}
+            {problem.solutionK !== undefined && (
               <div className="mb-4 phone:mb-3">
                 <KlofnunBar
-                  percent={percentDissociation(problem.acid.ka, problem.concentration)}
+                  percent={percentDissociation(problem.solutionK, problem.concentration)}
+                  verb={problem.kind === 'basePH' ? 'hvarfast' : undefined}
                   valid={problem.approximationValid}
                 />
               </div>

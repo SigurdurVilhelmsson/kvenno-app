@@ -15,6 +15,7 @@
  *    rule that never fires is a rule nobody believes.
  */
 
+import { APPENDIX_D2_BASES } from '@shared/data/appendix-d';
 import { formatDecimal, formatScientific } from '@shared/utils';
 
 import { ANSWERABLE_PAIRS, MONOPROTIC_ACIDS, type WeakAcid } from './acids';
@@ -26,9 +27,16 @@ import {
   percentDissociation,
   referencePH,
 } from '../engine/grade';
-import { pKa, kbFromKa, kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
+import {
+  pKa,
+  kaFromKb,
+  kbFromKa,
+  kaFromMeasuredPH,
+  solveWeakAcid,
+  solveWeakBase,
+} from '../engine/ka';
 
-export type ApplyKind = 'pH' | 'ka' | 'kb' | 'pKa' | 'klofnun';
+export type ApplyKind = 'pH' | 'ka' | 'kb' | 'pKa' | 'klofnun' | 'basePH' | 'saltPH';
 
 export interface PHProblem {
   id: string;
@@ -115,8 +123,15 @@ export const APPLY_RULE_BREAKERS: PHProblem[] = [
 export interface ApplyProblem {
   id: string;
   kind: ApplyKind;
-  acid: WeakAcid;
+  /** The acid the problem is about; absent for the weak-base and salt problems. */
+  acid?: WeakAcid;
   concentration: number;
+  /**
+   * The Ka or Kb whose x/C is the solution's klofnunarhlutfall, for the bar shown
+   * after answering. Absent where the answer is a property of a substance rather
+   * than of a solution (Kb of a conjugate base, pKa), which gets no bar.
+   */
+  solutionK?: number;
   /** What the student is asked, in Icelandic. */
   question: string;
   /**
@@ -190,6 +205,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     kind: 'pH',
     acid: propansyra,
     concentration: 0.25,
+    solutionK: propansyra.ka,
     question: `Hvert er pH í 0,25 M lausn af ${propansyra.nameDative} (Ka = ${sci(propansyra.ka)})?`,
     answer: referencePH(propansyra.ka, 0.25),
     grading: { mode: 'absolute', tolerance: PH_TOLERANCE },
@@ -206,6 +222,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     kind: 'ka',
     acid: ediksyra,
     concentration: 0.1,
+    solutionK: ediksyra.ka,
     question:
       'Þú mælir pH = 2,87 í 0,100 M lausn af óþekktri veikri sýru. Hver er sýrufasti hennar Ka?',
     // Computed from the pH the question states, not from the acid's table value.
@@ -272,6 +289,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     kind: 'klofnun',
     acid: klofnunAcid,
     concentration: KLOFNUN_C,
+    solutionK: klofnunAcid.ka,
     question: `Hversu hátt er klofnunarhlutfall ${fmt(KLOFNUN_C, 3)} M lausnar af ${klofnunAcid.nameDative} (Ka = ${sci(klofnunAcid.ka)})? Svaraðu í prósentum.`,
     answer: percentDissociation(klofnunAcid.ka, KLOFNUN_C),
     grading: { mode: 'relative', tolerance: PERCENT_RELATIVE_TOLERANCE },
@@ -293,6 +311,60 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     approximationValid: true,
   });
 
+  // A weak base: the same method with OH⁻ in place of H⁺, then pH = 14 − pOH.
+  // Skilja works 0,10 M ammóníak; this is the same base at another C.
+  const ammoniakKb = APPENDIX_D2_BASES.ammonia.kb;
+  const BASE_C = 0.25;
+  const base = solveWeakBase(ammoniakKb, BASE_C);
+  const basePOH = -Math.log10(base.approximationValid ? base.hApprox : base.hExact);
+  out.push({
+    id: 'apply-base',
+    kind: 'basePH',
+    concentration: BASE_C,
+    solutionK: ammoniakKb,
+    question: `Hvert er pH í ${fmt(BASE_C, 2)} M lausn af ammóníaki, NH₃ (Kb = ${sci(ammoniakKb)})?`,
+    answer: base.approximationValid ? base.pHApprox : base.pH,
+    grading: { mode: 'absolute', tolerance: PH_TOLERANCE },
+    answerHint: 'pH, tveir aukastafir',
+    explanation:
+      `NH₃ + H₂O ⇌ NH₄⁺ + OH⁻. Sama aðferð og fyrir sýru, nema x er [OH⁻]: ` +
+      `x = √(Kb · C) = ${formatScientific(base.hApprox, 3)} M, pOH = ${fmt(basePOH, 2)} ` +
+      `og pH = 14,00 − pOH = ${fmt(14 - basePOH, 2)}. ` +
+      `Ammóníakið hvarfast ${fmt(base.fractionDissociated * 100, 2)} %, vel innan 5 %.`,
+    misconception: `Ef svarið þitt var ${fmt(basePOH, 2)} þá er það pOH. x er styrkur OH⁻, svo −log x gefur pOH, og pH = 14,00 − pOH.`,
+    approximationValid: base.approximationValid,
+  });
+
+  // A salt of a weak base: NH₄⁺ is the conjugate acid of ammóníak, Ka = Kw / Kb.
+  // Cl⁻ is the conjugate base of a strong acid and does nothing, a meðjón.
+  const SALT_C = 0.2;
+  const ammoniumKa = kaFromKb(ammoniakKb);
+  const salt = solveWeakAcid(ammoniumKa, SALT_C);
+  const saltPH = salt.approximationValid ? salt.pHApprox : salt.pH;
+  const kbAsKa = -Math.log10(Math.sqrt(ammoniakKb * SALT_C));
+  out.push({
+    id: 'apply-salt',
+    kind: 'saltPH',
+    concentration: SALT_C,
+    solutionK: ammoniumKa,
+    question:
+      `Ammóníumklóríð, NH₄Cl, leysist alveg upp í vatni. Hvert er pH í ${fmt(SALT_C, 2)} M lausn af því? ` +
+      `Kb ammóníaks er ${sci(ammoniakKb)}.`,
+    answer: saltPH,
+    grading: { mode: 'absolute', tolerance: PH_TOLERANCE },
+    answerHint: 'pH, tveir aukastafir',
+    explanation:
+      'Klóríðjónin er samoka basi sterkrar sýru, svo hún hefur engin áhrif á pH: hún er meðjón. ' +
+      `NH₄⁺ er samoka sýra ammóníaks: NH₄⁺ ⇌ NH₃ + H⁺, með Ka = Kw / Kb = ${sci(ammoniumKa)}. ` +
+      `x = √(Ka · C) = ${formatScientific(salt.hApprox, 3)} M og pH = ${fmt(saltPH, 2)}. ` +
+      'Lausn af salti er því ekki endilega hlutlaus: þetta er vatnsrof salta.',
+    misconception:
+      `Ef svarið þitt var ${fmt(kbAsKa, 2)} notaðirðu Kb ammóníaks sem Ka. Ka ammóníumjónarinnar er Kw / Kb. ` +
+      `Ef það var ${fmt(14 - saltPH, 2)} reiknaðirðu NH₄⁺ sem basa; hún gefur frá sér H⁺, svo lausnin er súr. ` +
+      'Ef það var 7 gerðirðu ráð fyrir að lausn af salti sé hlutlaus.',
+    approximationValid: salt.approximationValid,
+  });
+
   for (const p of APPLY_RULE_BREAKERS) {
     const s = solveWeakAcid(p.acid.ka, p.concentration);
     out.push({
@@ -300,6 +372,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
       kind: 'pH',
       acid: p.acid,
       concentration: p.concentration,
+      solutionK: p.acid.ka,
       question: `Hvert er pH í ${fmt(p.concentration, 3)} M lausn af ${p.acid.nameDative} (Ka = ${sci(p.acid.ka)})? Athugaðu 5 % regluna áður en þú svarar.`,
       answer: p.answer,
       grading: { mode: 'absolute', tolerance: PH_TOLERANCE },

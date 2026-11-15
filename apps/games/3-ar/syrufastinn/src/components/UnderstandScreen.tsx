@@ -16,6 +16,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { APPENDIX_D2_BASES } from '@shared/data/appendix-d';
 import {
   formatDecimal,
   formatScientific,
@@ -31,11 +32,18 @@ import { useBackButton } from './BackButton';
 import { KlofnunBar } from './KlofnunBar';
 import { MONOPROTIC_ACIDS } from '../data/acids';
 import { percentDissociation } from '../engine/grade';
-import { pKa, solveWeakAcid } from '../engine/ka';
+import { kaFromKb, kbFromKa, pKa, solveWeakAcid, solveWeakBase } from '../engine/ka';
 
 const fmt = formatDecimal;
 
-const STEPS = ['Efnajafnan', 'ICE-taflan', 'Sýrufastinn', 'Nálgunin', '5 % reglan'] as const;
+const STEPS = [
+  'Efnajafnan',
+  'ICE-taflan',
+  'Sýrufastinn',
+  'Nálgunin',
+  '5 % reglan',
+  'Basar og sölt',
+] as const;
 
 interface UnderstandScreenProps {
   onComplete: () => void;
@@ -71,6 +79,15 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
   const C = 0.1;
   const s = solveWeakAcid(acid.ka, C);
   const pct = percentDissociation(acid.ka, C);
+
+  // Step 6: a weak base and the salts of weak acids and bases, at 0,10 M.
+  const ammoniakKb = APPENDIX_D2_BASES.ammonia.kb;
+  const base = solveWeakBase(ammoniakKb, C);
+  const basePOH = -Math.log10(base.hApprox);
+  const acetateKb = kbFromKa(acid.ka);
+  const acetatePH = 14 + Math.log10(solveWeakAcid(acetateKb, C).hApprox);
+  const ammoniumKa = kaFromKb(ammoniakKb);
+  const ammoniumPH = -Math.log10(solveWeakAcid(ammoniumKa, C).hApprox);
 
   // The counter-example, from the same pool: same method, rule fails.
   const weakRule = MONOPROTIC_ACIDS.find((a) => a.id === 'maurasyra')!;
@@ -318,6 +335,55 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
                 Athugaðu að hvorugt hangir á því hvort sýran sé „sterk“ eða „veik“. Sama sýran fer
                 yfir mörkin ef þú þynnir hana nógu mikið — það er þynningin sem hækkar
                 klofnunarhlutfallið, alveg eins og taflan í Kanna sýndi.
+              </p>
+            </div>
+          )}
+
+          {step === 5 && (
+            <div>
+              <h3 id="skilja-step" className="mb-3 text-lg font-semibold text-warm-800">
+                Veikir basar og vatnsrof salta
+              </h3>
+              <p className="mb-3 text-warm-700">
+                Veikur basi tekur við róteind frá vatni, og þá myndast OH⁻ í stað H⁺:
+              </p>
+              <div className="mb-4 rounded-lg bg-warm-50 p-4 text-center font-mono text-warm-800">
+                <span className="block">NH₃ + H₂O ⇌ NH₄⁺ + OH⁻</span>
+                <span className="block whitespace-nowrap">Kb = [NH₄⁺][OH⁻] / [NH₃]</span>
+              </div>
+              <p className="mb-4 text-warm-700">
+                Reikningurinn er sá sami, nema x er nú [OH⁻]. Fyrir 0,10 M ammóníak (Kb ={' '}
+                {formatScientific(ammoniakKb, 2)}) er{' '}
+                <span className="whitespace-nowrap">
+                  x = √(Kb · C) = {formatScientific(base.hApprox, 3)} M
+                </span>
+                , pOH = −log x = {fmt(basePOH, 2)} og pH = 14,00 − pOH ={' '}
+                <strong>{fmt(14 - basePOH, 2)}</strong>, sama pH og ammóníaklausnin í pH Títrun
+                byrjar á.
+              </p>
+              <p className="mb-2 text-warm-700">
+                Salt leysist alveg upp í jónir, og hver jón er annaðhvort meðjón, sem hefur engin
+                áhrif á pH, eða samoka sýra eða basi veiks efnis. Lausnirnar hér eru 0,10 M:
+              </p>
+              <ul className="mb-4 space-y-2 text-sm text-warm-700">
+                <li className="rounded-lg border border-sky-200 bg-sky-50 p-3">
+                  <strong>Natríumasetat:</strong> Na⁺ er meðjón; asetatjónin er samoka basi
+                  ediksýru, með Kb = Kw / Ka = {formatScientific(acetateKb, 2)}. Lausnin er basísk,
+                  pH {fmt(acetatePH, 2)}.
+                </li>
+                <li className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                  <strong>Ammóníumklóríð:</strong> Cl⁻ er meðjón; ammóníumjónin er samoka sýra
+                  ammóníaks, með Ka = Kw / Kb = {formatScientific(ammoniumKa, 2)}. Lausnin er súr,
+                  pH {fmt(ammoniumPH, 2)}.
+                </li>
+                <li className="rounded-lg border border-warm-200 bg-warm-50 p-3">
+                  <strong>Natríumklóríð:</strong> báðar jónirnar eru meðjónir, svo lausnin er
+                  hlutlaus, pH 7.
+                </li>
+              </ul>
+              <p className="text-warm-700">
+                Þetta heitir <strong>vatnsrof salta</strong>. Brúin er Ka · Kb = Kw: því veikari sem
+                sýran er, því sterkari er samoka basi hennar.
               </p>
 
               <button
