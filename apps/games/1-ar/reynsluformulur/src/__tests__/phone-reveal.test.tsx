@@ -506,7 +506,7 @@ describe('Beita', () => {
     later();
     fireEvent.click(screen.getByRole('button', { name: 'Næsta dæmi' }));
 
-    expect(screen.getByText('Dæmi 2 af 3')).toBeTruthy();
+    expect(screen.getByText('Dæmi 2 af 4')).toBeTruthy();
     expect(scrollBy).toHaveBeenCalledTimes(2);
     expect(scrollBy.mock.calls[1][0].top).toBeLessThan(0);
   });
@@ -537,7 +537,7 @@ describe('Beita', () => {
     render(<BeitaScreen onComplete={() => {}} onBack={() => {}} />);
     answer('3');
     fireEvent.click(screen.getByRole('button', { name: 'Næsta dæmi' }));
-    expect(screen.getByText('Dæmi 1 af 3')).toBeTruthy();
+    expect(screen.getByText('Dæmi 1 af 4')).toBeTruthy();
   });
 
   it('Enter in the field answers, as "Svara" does', () => {

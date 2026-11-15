@@ -27,6 +27,21 @@ need a multiplier, and Skilja teaches the method on Járn(III)oxíð precisely b
 out 1 : 1,5. Teaching it on a compound where every ratio is already whole would hide the only hard
 part.
 
+## Percent composition first, and the book's own examples (2026-11-15)
+
+Siggi's ruling on the year-1 plan (decision 3): percent composition is drilled here, as the first
+part of Æfa, because that is the book's order. `ch03/m68702` opens with it and then turns it round
+to find a formula. `PercentScreen` asks two columns, filled one at a time like the empirical table:
+the grams of each element in one mole, then each as a percent of the molar mass. Its three
+compounds are the book's: ammonia (82,24 % N), iron(III) oxide (69,9 % Fe) and aspirin
+(C₉H₈O₄), and like everything else here they are written as formulas, with every number derived
+(`src/data/percent.ts`). It is not gated: "Beint í reynsluformúluna" goes straight to the table.
+
+The same pass added the book's other worked examples where the game lacked them: koldíoxíð in Æfa,
+díklórheptaoxíð as a problem given in **grams** (5,31 g Cl and 8,40 g O, which gives Cl₂O₇ after a
+×2; Siggi confirmed the name), and nikótín in Beita. A grams problem skips the sum-to-100 check
+(`deriveEmpirical(…, { grams: true })`) and says "sýni sem inniheldur" instead of a percentage.
+
 ## Where the content came from, and what was wrong with it
 
 Harvested from `hlutfallsgreining` in the frozen `namsbokasafn-leikir`. The roadmap's instruction
@@ -96,7 +111,8 @@ the formula.
 src/engine/empirical.ts       the four columns; no React, no Icelandic
 src/data/elements.ts          atomic masses, re-exported from @shared/data/elements
 src/data/problems.ts          compounds as formulas; percentages and keys derived
-src/components/               KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
+src/data/percent.ts           percent composition, the book's three compounds
+src/components/               KannaScreen, SkiljaScreen, PercentScreen, AefaScreen, BeitaScreen
 src/__tests__/                86 tests across empirical, problems, feedback-text, phase-flow and phone-reveal
 ```
 

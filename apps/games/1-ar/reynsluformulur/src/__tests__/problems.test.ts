@@ -16,6 +16,20 @@ import { deriveEmpirical, formatFormula, percentComposition } from '../engine/em
  */
 
 describe('every problem is answerable and agrees with its own grader', () => {
+  it("solves the book's gram example to its Cl₂O₇, and its nicotine to C₁₀H₁₄N₂", () => {
+    // ch03/m68702: 5,31 g Cl and 8,40 g O; nicotine is C₅H₇N twice over.
+    const cl = PROBLEMS.find((p) => p.id === 'diklorheptaoxid')!;
+    expect(cl.basis).toBe('grams');
+    expect(cl.answer).toBe('Cl₂O₇');
+    expect(cl.multiplier).toBe(2);
+    const nicotine = MOLECULAR_PROBLEMS.find((p) => p.id === 'nikotin')!;
+    expect(nicotine.answer).toBe('C₁₀H₁₄N₂');
+    expect(nicotine.n).toBe(2);
+    expect(PROBLEMS.find((p) => p.id === 'koldioxid')!.percentages.map((p) => p.percent)).toEqual([
+      27.29, 72.71,
+    ]);
+  });
+
   it('ships a usable set', () => {
     expect(PROBLEMS.length).toBeGreaterThanOrEqual(8);
     expect(MOLECULAR_PROBLEMS.length).toBeGreaterThanOrEqual(3);
@@ -23,7 +37,7 @@ describe('every problem is answerable and agrees with its own grader', () => {
 
   it.each(PROBLEMS.map((p) => [p.id, p] as const))('%s derives its own answer', (_id, problem) => {
     const record = Object.fromEntries(problem.percentages.map((p) => [p.element, p.percent]));
-    const derived = deriveEmpirical(record);
+    const derived = deriveEmpirical(record, { grams: problem.basis === 'grams' });
     expect(derived.formula).toBe(problem.answer);
     expect(derived.multiplier).toBe(problem.multiplier);
   });
@@ -43,7 +57,7 @@ describe('every problem is answerable and agrees with its own grader', () => {
   });
 
   it('every percentage set sums to 100', () => {
-    for (const p of PROBLEMS) {
+    for (const p of PROBLEMS.filter((x) => x.basis === 'percent')) {
       const total = p.percentages.reduce((s, x) => s + x.percent, 0);
       expect(total, p.id).toBeCloseTo(100, 1);
     }
@@ -55,7 +69,7 @@ describe('every problem is answerable and agrees with its own grader', () => {
     // wrong answer explicitly and asserts it is not what we ship.
     for (const problem of NEEDS_MULTIPLIER) {
       const record = Object.fromEntries(problem.percentages.map((p) => [p.element, p.percent]));
-      const derived = deriveEmpirical(record);
+      const derived = deriveEmpirical(record, { grams: problem.basis === 'grams' });
       const rounded = formatFormula(
         derived.rows.map((r) => ({
           element: r.element,

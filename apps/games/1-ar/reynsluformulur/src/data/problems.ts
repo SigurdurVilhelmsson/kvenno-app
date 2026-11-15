@@ -142,6 +142,19 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'thung',
     context: 'Þyngsta dæmið: hlutföllin verða 1,5 : 1 : 4 og allt þarf að tvöfaldast.',
   },
+  // The book's worked example (ch03/m68702), added 2026-11-15: the gas from fermenting
+  // grain, 27,29 % C and 72,71 % O, which the percentages derived here reproduce.
+  {
+    id: 'koldioxid',
+    name: 'Koldíoxíð',
+    counts: [
+      { element: 'C', subscript: 1 },
+      { element: 'O', subscript: 2 },
+    ],
+    difficulty: 'ledd',
+    context:
+      'Sýnidæmi kennslubókarinnar: gasið sem myndast þegar korn gerjast í etanól. Hlutfallið 1 : 2 kemur beint út.',
+  },
 ];
 
 export interface EmpiricalProblem {
@@ -149,7 +162,12 @@ export interface EmpiricalProblem {
   name: string;
   context: string;
   difficulty: Compound['difficulty'];
-  /** Derived from the formula — never typed. */
+  /**
+   * `percent`: the values are mass percentages, derived from the formula. `grams`: they are
+   * measured masses in a sample, as the book gives them, so there is no 100 g to assume.
+   */
+  basis: 'percent' | 'grams';
+  /** Derived from the formula — never typed — except for a `grams` problem, the book's data. */
   percentages: { element: ElementSymbol; percent: number }[];
   /** Derived from the percentages — never typed. */
   answer: string;
@@ -167,11 +185,56 @@ export const PROBLEMS: EmpiricalProblem[] = COMPOUNDS.map((c) => {
     name: c.name,
     context: c.context,
     difficulty: c.difficulty,
+    basis: 'percent' as const,
     percentages: pct.map((p) => ({ element: p.element, percent: Number(p.percent.toFixed(2)) })),
     answer: derived.formula,
     multiplier: derived.multiplier,
   };
 });
+
+/**
+ * Problems given as measured masses rather than percentages. The book's second example
+ * (ch03/m68702): a sample holding 5,31 g Cl and 8,40 g O. These are the book's data, not
+ * derived from a formula, so a test holds the derived answer to the book's Cl₂O₇.
+ */
+const GRAM_SOURCES: {
+  id: string;
+  name: string;
+  masses: { element: ElementSymbol; grams: number }[];
+  difficulty: Compound['difficulty'];
+  context: string;
+}[] = [
+  {
+    id: 'diklorheptaoxid',
+    name: 'Díklórheptaoxíð',
+    masses: [
+      { element: 'Cl', grams: 5.31 },
+      { element: 'O', grams: 8.4 },
+    ],
+    difficulty: 'thung',
+    context:
+      'Dæmi úr kennslubókinni, gefið í grömmum en ekki prósentum: þá þarf ekki að gera ráð fyrir 100 g sýni, heldur deilirðu mössunum beint með mólmössunum. Hlutfallið 1 : 3,5 verður að tvöfaldast.',
+  },
+];
+
+for (const g of GRAM_SOURCES) {
+  const derived = deriveEmpirical(
+    Object.fromEntries(g.masses.map((m) => [m.element, m.grams])) as Partial<
+      Record<ElementSymbol, number>
+    >,
+    { grams: true }
+  );
+  PROBLEMS.push({
+    id: g.id,
+    name: g.name,
+    context: g.context,
+    difficulty: g.difficulty,
+    basis: 'grams',
+    percentages: g.masses.map((m) => ({ element: m.element, percent: m.grams })),
+    answer: derived.formula,
+    multiplier: derived.multiplier,
+  });
+}
 
 /** Problems whose ratios need multiplying up — the 1,5 trap, which is the lesson. */
 export const NEEDS_MULTIPLIER = PROBLEMS.filter((p) => p.multiplier > 1);
@@ -237,6 +300,18 @@ const MOLECULAR_SOURCES: {
       { element: 'H', subscript: 6 },
     ],
     context: 'Reynsluformúlan CH er sú sama og fyrir asetýlen (C₂H₂); mólmassinn aðskilur þau.',
+  },
+  // The book's worked example (ch03/m68702), added 2026-11-15.
+  {
+    id: 'nikotin',
+    name: 'Nikótín',
+    counts: [
+      { element: 'C', subscript: 10 },
+      { element: 'H', subscript: 14 },
+      { element: 'N', subscript: 2 },
+    ],
+    context:
+      'Sýnidæmi kennslubókarinnar: 74,02 % C, 8,710 % H og 17,27 % N gefa reynsluformúluna C₅H₇N, og mólmassinn, um 162 g/mól, er tvöfaldur massi hennar.',
   },
 ];
 

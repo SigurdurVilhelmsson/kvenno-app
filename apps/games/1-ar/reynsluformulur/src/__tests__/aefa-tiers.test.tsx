@@ -79,7 +79,9 @@ describe('Æfa: a wrong column', () => {
 describe('Æfa: the Lágstafur hint', () => {
   const derivedOf = (name: string) => {
     const p = PROBLEMS.find((x) => x.name === name)!;
-    return deriveEmpirical(Object.fromEntries(p.percentages.map((q) => [q.element, q.percent])));
+    return deriveEmpirical(Object.fromEntries(p.percentages.map((q) => [q.element, q.percent])), {
+      grams: p.basis === 'grams',
+    });
   };
 
   it("names the compound's own ratio, so Kalíumdíkrómat's is 3,5", () => {
@@ -91,7 +93,8 @@ describe('Æfa: the Lágstafur hint', () => {
   it('says something for every compound, with or without a multiplier', () => {
     for (const p of PROBLEMS) {
       const derived = deriveEmpirical(
-        Object.fromEntries(p.percentages.map((q) => [q.element, q.percent]))
+        Object.fromEntries(p.percentages.map((q) => [q.element, q.percent])),
+        { grams: p.basis === 'grams' }
       );
       const hint = subscriptHint(derived);
       expect(hint.length, p.name).toBeGreaterThan(20);

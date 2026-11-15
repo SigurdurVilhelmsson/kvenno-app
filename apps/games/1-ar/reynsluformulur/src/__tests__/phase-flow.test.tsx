@@ -36,6 +36,9 @@ describe('the "Áfram í …" buttons go where they say', () => {
     for (let i = 0; i < 3; i++) fireEvent.click(ui.getByRole('button', { name: 'Næsta súla' }));
     fireEvent.click(ui.getByRole('button', { name: 'Áfram í Æfa' }));
 
+    // Æfa opens on percent composition (decision 3, 2026-11-15); the link skips to the table.
+    expect(ui.getByRole('heading', { name: 'Æfa — prósentusamsetning' })).toBeTruthy();
+    fireEvent.click(ui.getByRole('button', { name: 'Beint í reynsluformúluna' }));
     expect(ui.getByRole('heading', { name: 'Æfa' })).toBeTruthy();
 
     fireEvent.click(ui.getByRole('button', { name: 'Til baka' }));

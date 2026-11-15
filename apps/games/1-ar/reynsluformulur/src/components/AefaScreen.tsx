@@ -74,6 +74,10 @@ const PROMPT: Record<Column, string> = {
   subscript: 'Margfaldaðu hlutföllin upp þangað til allar tölurnar eru heilar.',
 };
 
+/** A problem given in grams has no 100 g sample to assume: the masses are divided as they are. */
+const PROMPT_GRAMS =
+  'Massarnir eru mældir í grömmum. Deildu hverjum massa með mólmassa frumefnisins.';
+
 function close(got: number, want: number): boolean {
   if (!Number.isFinite(got)) return false;
   return Math.abs(got - want) <= Math.abs(want) * TOLERANCE;
@@ -107,7 +111,9 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   const problem = PROBLEMS[index];
   const derived: Derivation = useMemo(
     () =>
-      deriveEmpirical(Object.fromEntries(problem.percentages.map((p) => [p.element, p.percent]))),
+      deriveEmpirical(Object.fromEntries(problem.percentages.map((p) => [p.element, p.percent])), {
+        grams: problem.basis === 'grams',
+      }),
     [problem]
   );
 
@@ -230,15 +236,20 @@ export function AefaScreen({ onComplete, onBack }: Props) {
             </p>
             <p className="mb-4 text-warm-700">
               <strong>{problem.name}</strong> —{' '}
+              {problem.basis === 'grams' && 'sýni sem inniheldur '}
               {problem.percentages.map((p, i) => (
                 <span key={p.element}>
                   {i > 0 && ', '}
-                  <span className="whitespace-nowrap">{`${p.element} ${fmt(p.percent, 2)} %`}</span>
+                  <span className="whitespace-nowrap">
+                    {problem.basis === 'grams'
+                      ? `${fmt(p.percent, 2)} g ${p.element}`
+                      : `${p.element} ${fmt(p.percent, 2)} %`}
+                  </span>
                 </span>
               ))}
             </p>
             <p id="aefa-prompt" className="mb-4 text-sm text-warm-600">
-              {PROMPT[column]}
+              {column === 'moles' && problem.basis === 'grams' ? PROMPT_GRAMS : PROMPT[column]}
             </p>
           </div>
 
