@@ -337,11 +337,11 @@ describe('Stig 3', () => {
 
     const next = ui.getByRole('button', { name: /Næsta dæmi/ });
     press(next);
-    expect(ui.getByText('Dæmi 1/8')).toBeTruthy();
+    expect(ui.getByText('Dæmi 1/11')).toBeTruthy();
 
     later();
     press(next);
-    expect(ui.getByText('Dæmi 2/8')).toBeTruthy();
+    expect(ui.getByText('Dæmi 2/11')).toBeTruthy();
     expect(focused()?.tagName).toBe('INPUT');
   });
 

@@ -18,10 +18,24 @@ Stig 0 was added on 2026-09-20.
 | 0    | Rafkleyfi     | Teach phase, then classify 15 solutes as sterkur rafkleyfi, veikur or órafkleyft efni     |
 | 1    | Hugtök        | 6 challenges: predict the direction, then hit a target concentration with sliders         |
 | 2    | Rökstuðningur | 12 "what happens if…?" multiple-choice scenarios, 5 on concentration and 7 on temperature |
-| 3    | Útreikningar  | 8 generated calculations — 4 easy (molarity, dilution), 4 medium (mass, mixing)           |
+| 3    | Útreikningar  | 11 generated calculations — 4 easy, 4 medium, then one each in the other units            |
 
 Stig 3 grades at a 2 % relative tolerance (`utils/validation.ts`), and its input is `type="text"`
 read through `parseStudentNumber`, so the Icelandic decimal comma works.
+
+**The other concentration units came from the book, 2026-11-15** (year-1 plan item 15). After its
+eight molarity problems Stig 3 poses one each of massaprósenta, ppm or ppb, and mólhlutfall, from
+`utils/concentration-units.ts`. The first two are the book's ch03/m68704 (_Aðrar einingar fyrir
+styrk lausna_), mole fraction its ch11/m68783. The formula card carries the four definitions, and
+each problem has its own worked solution (`steps`, which `StepBySolution` renders for any type
+without a layout of its own). Each problem also lists its likely slips (`wrongRoutes`): dividing
+by the water instead of the solution, grams for moles, dividing by the water's moles alone, a
+missing mg → g step, ppm for ppb. `diagnoseAnswer` names the slip when an answer lands on one,
+and the generators keep every slip outside the 2 % tolerance (`stig3-grading.test.tsx` checks
+800 of each). Glucose is held under what dissolves in water; the alcohols and glycerol mix
+freely. Every answer stays under the field's 1000 ceiling, so ppb asks at most 800. The book
+names ppm both `partar á milljón` (prose) and `milljónustu hlutar` (glossary); the game prints the
+symbols and uses the glossary headwords in the problem labels. Wording drafted by Claude.
 
 **The answer it grades against is the exact value of the numbers the question prints (2026-09-23).**
 The generators used to store a rounded answer — two significant figures for a mass, up to 5 % off —
