@@ -150,14 +150,39 @@ graded or stored.
   masculine, where `-efni` was neuter. `ordabok.md` carries both and `governed-terms.test.ts`
   bans the `-efni` forms; `andoxunarefni` (an antioxidant) is a different word and passes.
 
+## Kerspenna (2026-11-15)
+
+The second amber card opens cell potentials and half-reactions in acid (year-2 audit, Phase 3;
+book ch. 17, m68821, m68823, m68824). It is not a level: never marked done, counted toward
+nothing. Skilja: E°ker = E°katóða − E°anóða from the table, the direction of a reaction and
+ΔG° = −nFE°ker, and the four steps for a half-reaction in acid. Kanna: any two of twelve
+half-cells make a cell, with the katóða at the higher E° whichever comes first. Æfa: ten items,
+one attempt each, ending `N af M rétt`.
+
+- **Every key comes from the book's table** (`@shared/data/electrode-potentials`) through
+  `engine/kerspenna.ts`: E°ker is a difference of two rows, n the least common multiple of the
+  two half-reactions' electrons as the table writes them, sjálfgengt where E°ker > 0, and a
+  half-reaction's key is the table's own row. The data stores none of them.
+- **Grading.** A potential is right within 0,011 V, so a student working from E° to two decimals
+  is right; ΔG° within 1 %. Each graded number refuses 0, its negative, double and half
+  (`kerspenna.test.ts`). A wrong number is diagnosed where it can be: a reversed subtraction, the
+  E° added, n left out, ΔG° in J.
+- **`isBalanced`** counts atoms and charge in an equation as written. It passes every row of the
+  shared table, and each half-reaction distractor fails it for the reason its feedback gives.
+- F is 96 485 C/mól, the book's `Faraday-fastinn` (m68824).
+
 ## Open
 
 - **i18n.** This is one of the nine games that keep a `LanguageSwitcher`, and the most translated
   (156 `t()` calls in `docs/i18n-coverage.md`). Whether to finish wiring the nine is the
   platform-wide undecided `useGameI18n` question (`CLAUDE.md`, "Remaining deferred").
-- **The orphaned `electrochemistry` game's two levels and a Faraday node** were proposed as
-  additions here (`apps/games/ORPHANED_GAMES_ASSESSMENT.md`, recommendation 11): cell potentials
-  from an E° table, with per-option diagnosis of the sign error. Not tracked elsewhere.
+- **Electrolysis and Faraday's laws, batteries and corrosion** are absent (the rest of the
+  orphaned `electrochemistry` game's proposal, `apps/games/ORPHANED_GAMES_ASSESSMENT.md`
+  recommendation 11). Cell potentials are built: see Kerspenna above.
+- **The book's words differ from two platform rulings.** Ch. 17 calls the galvanic cell
+  `galvaníker` and spontaneous `sjálfsprottið`; the platform rules `galvaníhlað` (2026-08-27) and
+  `sjálfgengur`. Kerspenna follows the rulings. Siggi's 2026-11-15 rule (book over game) would
+  reverse both; asked in the year-2 thread rather than changed.
 
 **Fixed 2026-11-15** (Siggi extended `docs/REVIEW-QUEUE.md` C3 to Stig 1 and Stig 3, year-2
 audit). A right answer given with a hint open that states it is not counted, and the feedback
