@@ -170,7 +170,7 @@ leave".
 was done. The last three, ruled the same day:
 
 - [x] 51 utfellingarhvorf: the FeCl₃ coagulant sentence. Siggi took the draft, 2026-10-23 (PR #112).
-- [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted.
+- [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted. **Reopened 2026-11-15** (Siggi): built as Agnasýn, a cylinder with a stimpill and four scenes; see the game's README. Wording drafted by Claude, worth a read.
 - [x] 103 equilibrium-shifter: the systems with no constant. Siggi: source them from `m68869`,
       2026-10-23 (PR #112). It covers the two complex ions; eight remain with no source.
 

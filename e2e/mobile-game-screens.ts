@@ -5922,6 +5922,32 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Agnasýn — lögmál Boyles',
+      steps: [
+        { clickRole: ['button', 'Opna Agnasýn'] },
+        { fill: ['#gas-agnasyn-control', '12'] },
+        { wait: 400 },
+      ],
+    },
+    {
+      name: 'Agnasýn — lögmál Charles og alkul',
+      steps: [
+        { clickRole: ['button', 'Opna Agnasýn'] },
+        { clickRole: ['button', '2. Lögmál Charles'] },
+        { fill: ['#gas-agnasyn-control', '600'] },
+        { wait: 400 },
+      ],
+    },
+    {
+      name: 'Agnasýn — lögmál Avogadros',
+      steps: [
+        { clickRole: ['button', 'Opna Agnasýn'] },
+        { clickRole: ['button', '4. Lögmál Avogadros'] },
+        { fill: ['#gas-agnasyn-control', '2'] },
+        { wait: 400 },
+      ],
+    },
+    {
       name: 'Stig 1 — spurning',
       steps: [
         {
