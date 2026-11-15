@@ -1033,6 +1033,11 @@ Claude and want a teacher's read. Tick each with the date once read.
 - [ ] **Reynsluformúlur, percent composition** (`PercentScreen.tsx`, `data/percent.ts`): the two
       column headings, the per-column feedback, and the grams-problem prompts ("sýni sem
       inniheldur …") for díklórheptaoxíð.
+- [ ] **Reynsluformúlur, brunaefnagreining** (`CombustionScreen.tsx`): the intro sentence, the three
+      slip messages and the worked steps. Numbers are the book's (ch04/m68716).
+- [x] **Classification of matter and physical/chemical change** (book ch. 1, _einsleit_,
+      _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
+      a game. Do not log it as a game gap again.
 
 ## D. Work that needs no ruling
 

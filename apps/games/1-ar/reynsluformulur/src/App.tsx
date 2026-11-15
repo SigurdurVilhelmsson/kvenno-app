@@ -6,6 +6,7 @@ import { useScreenTop } from '@shared/utils';
 
 import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
+import { CombustionScreen } from './components/CombustionScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { PercentScreen } from './components/PercentScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
@@ -43,7 +44,7 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
     id: 'beita',
     number: '4',
     name: 'Beita',
-    description: 'Reynsluformúla plús mældur mólmassi gefur sameindaformúluna.',
+    description: 'Sameindaformúla úr mólmassa, og reynsluformúla úr brunaefnagreiningu.',
     tone: 'bg-purple-600 hover:bg-purple-700',
   },
 ];
@@ -53,8 +54,11 @@ function App() {
   // Æfa's two parts: percent composition first, then the empirical table. Every
   // arrival at Æfa starts on the first part.
   const [aefaPart, setAefaPart] = useState<'percent' | 'table'>('percent');
+  // Beita's two parts: molecular formulas, then combustion analysis.
+  const [beitaPart, setBeitaPart] = useState<'molecular' | 'bruni'>('molecular');
   const setScreen = useCallback((next: Screen) => {
     setAefaPart('percent');
+    setBeitaPart('molecular');
     setScreenState(next);
   }, []);
   const { progress, updateProgress } = useGameProgress<Progress>('reynsluformulur-progress', {
@@ -82,13 +86,16 @@ function App() {
   // button that caused the swap has gone. Back on the menu, the next phase not
   // yet done is focused, and on a phone brought into view.
   const nextPhase = PHASES.find((phase) => !completed.includes(phase.id))?.id;
-  useScreenTop(screen === 'aefa' ? `aefa-${aefaPart}` : screen, {
-    anyWidth: true,
-    target: () =>
-      screen === 'menu' && nextPhase
-        ? document.querySelector(`[data-phase-card="${nextPhase}"]`)
-        : null,
-  });
+  useScreenTop(
+    screen === 'aefa' ? `aefa-${aefaPart}` : screen === 'beita' ? `beita-${beitaPart}` : screen,
+    {
+      anyWidth: true,
+      target: () =>
+        screen === 'menu' && nextPhase
+          ? document.querySelector(`[data-phase-card="${nextPhase}"]`)
+          : null,
+    }
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
@@ -237,8 +244,12 @@ function App() {
           <AefaScreen onComplete={() => markCompleted('aefa')} onBack={backToMenu} />
         )}
 
-        {screen === 'beita' && (
-          <BeitaScreen onComplete={() => markCompleted('beita')} onBack={backToMenu} />
+        {screen === 'beita' && beitaPart === 'molecular' && (
+          <BeitaScreen onComplete={() => setBeitaPart('bruni')} onBack={backToMenu} />
+        )}
+
+        {screen === 'beita' && beitaPart === 'bruni' && (
+          <CombustionScreen onComplete={() => markCompleted('beita')} onBack={backToMenu} />
         )}
       </main>
     </div>

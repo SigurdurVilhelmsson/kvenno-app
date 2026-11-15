@@ -26,6 +26,7 @@ const GAMES_DIR = join(__dirname, '..', '..', '..', '..', 'apps', 'games');
 const COUNTS_ONLY: Record<string, string> = {
   '1-ar/takmarkandi/src/components/Level2.tsx': 'molecules formed, reaction runs',
   '1-ar/lotukerfid/src/components/Level3.tsx': 'protons, neutrons, electrons',
+  '1-ar/reynsluformulur/src/components/CombustionScreen.tsx': 'atoms of C and H in a formula',
   '2-ar/lewis-structures/src/components/Level1.tsx': 'valence electrons',
   '2-ar/lewis-structures/src/components/LewisGuidedMode.tsx': 'electrons, bonds',
   '2-ar/redox-reactions/src/components/Level1.tsx': 'oxidation numbers',
