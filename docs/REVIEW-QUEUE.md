@@ -976,6 +976,39 @@ landed in PR #150. These were left for a follow-up, each needing a ruling or a d
       game's 161 J/(mól·K) stays unsourced. Take Brown's value, or keep it out?
 - [ ] **The plan's other open decisions** (its "Decisions for Siggi", items 3 and 5–7) are raised
       as the work reaches them.
+- [ ] **Gaslögmál, "Gasblöndur og efnahvörf"** (2026-11-15, Siggi's Phase 4 pick): Dalton's law,
+      mole fractions, gas over water and gas stoichiometry as a menu screen, with eight of the
+      book's m68752 problems. Its givens are in °C, torr and kPa, so the two items above are met
+      there but not in the levels. Wording drafted by Claude
+      (`3-ar/gas-law-challenge/src/components/BlondurScreen.tsx`, `src/data/blondur.ts`).
+
+### C25. Year-3 gap projects left for later (2026-11-15)
+
+From the Year-3 plan's Phase 4 (`/mnt/project-files/3-ar-throun/throunaraaetlun-2026-11-14.md`).
+Already built: pKa (#152), weak bases and salt hydrolysis (#154), ΔG° = −RT ln K (#156), and
+Dalton's law with gas stoichiometry (#157). Siggi (2026-11-15) asked for the rest to be logged as
+future work. Each needs his go-ahead and a place before it is built; the process is
+`docs/game-audit-process.md`.
+
+- [ ] **Polyprotic acids** (book ch. 14, _Fjölvirkar sýrur_): stepwise Ka₁, Ka₂, Ka₃ and why the
+      first step sets the pH. Suggested home: a Sýrufastinn menu screen. Constants from Appendix D.1.
+- [ ] **Complex ions** (book ch. 15): formation constants and how a complexing agent dissolves a
+      precipitate (AgCl in NH₃). Suggested home: Leysnijafnvægi. Kf values from the Icelandic
+      book's appendix K (`m68869`), which `equilibrium-shifter` already uses.
+- [ ] **Effusion and diffusion** (book ch. 9, Graham's law): rates against molar mass, with a
+      particle scene of two gases leaving through a pinhole. Suggested home: Gaslögmál, beside
+      Agnasýn.
+- [ ] **Gas density and molar mass** (book ch. 9, d = PM/RT): the book's worked examples (N₂ at
+      STP, cyclopropane's formula, a volatile liquid). Suggested home: a fifth topic in
+      Gaslögmál's "Gasblöndur og efnahvörf".
+- [ ] **The kinetic-molecular theory itself and real gases** (book ch. 9): speed distributions,
+      and where PV = nRT fails (van der Waals). Agnasýn shows the kinetic picture qualitatively;
+      this would make it quantitative. Scoping.
+- [ ] **pH and pOH as a topic of their own** (book ch. 14): taught in passing in pH Títrun and
+      Sýrufastinn, never on its own. Probably small: a Skilja step in Sýrufastinn.
+- [ ] **Across the games** (plan's "Across the games"): one shared reset-with-confirmation
+      pattern (`buffer-recipe-creator` still uses `window.confirm`), and the Varmafræði hub card
+      still opens with an infinitive ("Læra um …").
 
 ## D. Work that needs no ruling
 

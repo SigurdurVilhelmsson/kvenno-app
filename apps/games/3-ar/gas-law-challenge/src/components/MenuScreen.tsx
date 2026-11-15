@@ -13,6 +13,8 @@ interface MenuScreenProps {
   onStart: (mode: GameMode) => void;
   /** Opens Agnasýn, the cylinder of molecules. */
   onAgnasyn: () => void;
+  /** Opens Gasblöndur og efnahvörf: Dalton's law and gas stoichiometry. */
+  onBlondur: () => void;
   /** The screen's root, for App's screen-swap anchoring. */
   rootRef?: Ref<HTMLDivElement>;
 }
@@ -43,6 +45,7 @@ export function MenuScreen({
   resetProgress,
   onStart,
   onAgnasyn,
+  onBlondur,
   rootRef,
 }: MenuScreenProps) {
   // The menu shows each level's practice round as `N af M rétt`, and points only for
@@ -251,6 +254,24 @@ export function MenuScreen({
                     Byrja Keppni (Stig {selectedLevel})
                   </button>
                 </div>
+              </div>
+
+              {/* Beyond one gas: mixtures and reactions, the book's m68752, graded on its own. */}
+              <div className="mt-6 flex flex-col gap-3 rounded-xl border-2 border-indigo-300 bg-indigo-50 p-4 sm:flex-row sm:items-center sm:justify-between phone:mt-4 phone:p-3">
+                <div>
+                  <h2 className="font-bold text-indigo-900">Gasblöndur og efnahvörf</h2>
+                  <p className="text-sm text-warm-700">
+                    Lögmál Daltons, mólbrot, gas safnað yfir vatni og rúmmál lofttegunda í
+                    efnahvörfum. Skýring, blanda til að kanna og átta dæmi úr kennslubókinni.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={onBlondur}
+                  className="shrink-0 rounded-lg bg-indigo-600 px-5 py-2.5 font-semibold text-white hover:bg-indigo-700"
+                >
+                  Opna gasblöndur
+                </button>
               </div>
 
               <div className="mt-6 bg-warm-50 p-4 rounded-lg border border-warm-200 phone:mt-4 phone:p-3">

@@ -5,6 +5,7 @@ import { useGameProgress } from '@shared/hooks';
 import { focusTarget, parseStudentNumber, revealSpan, revealTop } from '@shared/utils';
 
 import { AgnasynScreen } from './components/AgnasynScreen';
+import { BlondurScreen } from './components/BlondurScreen';
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { GameScreen } from './components/GameScreen';
 import { MenuScreen } from './components/MenuScreen';
@@ -34,7 +35,9 @@ const NEW_RUN: GameStats = {
 };
 
 function App() {
-  const [screen, setScreen] = useState<'menu' | 'game' | 'feedback' | 'agnasyn'>('menu');
+  const [screen, setScreen] = useState<'menu' | 'game' | 'feedback' | 'agnasyn' | 'blondur'>(
+    'menu'
+  );
   const [gameMode, setGameMode] = useState<GameMode>('practice');
   const [selectedLevel, setSelectedLevel] = useState<Level>(1);
   const [currentQuestion, setCurrentQuestion] = useState<GasLawQuestion | null>(null);
@@ -320,8 +323,8 @@ function App() {
       focusTarget(chooser?.querySelector<HTMLElement>('[aria-pressed="true"]'));
     } else if (which === 'game') {
       focusTarget(root.querySelector<HTMLElement>('[data-item-start]'));
-    } else if (which === 'agnasyn') {
-      // AgnasynScreen focuses its own heading on mount.
+    } else if (which === 'agnasyn' || which === 'blondur') {
+      // Agnasýn and Gasblöndur focus their own headings on mount.
     } else {
       focusTarget(root.querySelector<HTMLElement>('[data-feedback-verdict]'));
     }
@@ -411,11 +414,15 @@ function App() {
           resetProgress={resetProgress}
           onStart={startRun}
           onAgnasyn={() => setScreen('agnasyn')}
+          onBlondur={() => setScreen('blondur')}
           rootRef={menuRoot}
         />
       </FadePresence>
       <FadePresence show={screen === 'agnasyn'} exitDuration={200}>
         <AgnasynScreen onBack={() => setScreen('menu')} />
+      </FadePresence>
+      <FadePresence show={screen === 'blondur'} exitDuration={200}>
+        <BlondurScreen onBack={() => setScreen('menu')} />
       </FadePresence>
       <FadePresence show={screen === 'game'} exitDuration={200}>
         {currentQuestion && (

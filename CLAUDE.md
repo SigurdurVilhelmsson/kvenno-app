@@ -940,6 +940,12 @@ there, each pointing to where its detail lives. When you finish one, tick it wit
 PR. When you find a new one, add it there as well as wherever else you write it up. A ruling that
 exists only in a PR description or a session transcript gets lost.
 
+## Auditing a year's games: `docs/game-audit-process.md`
+
+The process run on Year 3 in November 2026 (Siggi, 2026-11-15): audit each game as pH Títrun
+was, propose animations only where they teach, list the curriculum's gaps, write a plan, then work
+it one PR at a time. Year 3's leftover gap projects are `docs/REVIEW-QUEUE.md` C25.
+
 ## Before changing a game, read `docs/README.md`
 
 Three August-2026 review documents supersede the older per-game reviews and the year `REVIEW_TRACKER.md` files. They carry `file:line` citations and were adversarially verified:

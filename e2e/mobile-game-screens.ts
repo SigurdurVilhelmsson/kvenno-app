@@ -5947,6 +5947,47 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         { wait: 400 },
       ],
     },
+    // Gasblöndur og efnahvörf (2026-11-15): Dalton's law and gas stoichiometry, the book's
+    // m68752. The explanation with the mixture, the problem loop, and a worked solution.
+    {
+      name: 'Gasblöndur — skýring og blanda',
+      steps: [
+        { clickRole: ['button', 'Opna gasblöndur'] },
+        { fill: ['#gas-blondur-2', '0.25'] },
+        { wait: 400 },
+      ],
+    },
+    {
+      name: 'Gasblöndur — dæmi',
+      steps: [
+        { clickRole: ['button', 'Opna gasblöndur'] },
+        { wait: 400 },
+        { clickRole: ['button', 'Æfa: átta dæmi'] },
+        { wait: 300 },
+      ],
+      loop: {
+        prompt: { css: '#gas-blondur-problem' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['#gas-blondur-answer', '1,14'] }],
+        verdict: { css: '#gas-blondur-feedback' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        typedTogether: [[{ css: '[data-blondur-given]' }, { css: '#gas-blondur-answer' }]],
+      },
+    },
+    {
+      name: 'Gasblöndur — lausn',
+      steps: [
+        { clickRole: ['button', 'Opna gasblöndur'] },
+        { wait: 400 },
+        { clickRole: ['button', 'Æfa: átta dæmi'] },
+        { wait: 300 },
+        { fill: ['#gas-blondur-answer', '0,0953'] },
+        { clickRole: ['button', 'Athuga'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Stig 1 — spurning',
       steps: [
