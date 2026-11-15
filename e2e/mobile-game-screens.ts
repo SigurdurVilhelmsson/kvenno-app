@@ -6413,6 +6413,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Agnasýn — upphaf',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — jafnvægi',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { fill: ['input[type="range"]', '10'] },
+        { wait: 600 },
+      ],
+    },
+    {
       name: 'Kanna — allar fjórar blöndur',
       steps: [
         {

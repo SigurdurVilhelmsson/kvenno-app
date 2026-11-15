@@ -128,5 +128,8 @@ naming the acid (`text`: `HF`, `F⁻`), and the weak acid's equilibrium shown at
 ions the system does not know, so `engine/mixture.ts` turns `applyStress`'s amounts into counts on
 one scale per system and `components/MixtureView.tsx` draws them as plain SVG circles that keep
 their place between frames. A system it cannot draw without exaggerating shows no particles.
+`3-ar/jafnvaegisfasti`'s Agnasýn does the same for the approach to equilibrium: two flasks of the
+water-gas shift whose end is `solveExtent`'s root, with a path drawn from mass-action rates whose
+ratio is K, on a time axis the screen says has no units.
 Open review items for Agnasýn itself are C23 in
 `docs/REVIEW-QUEUE.md`.

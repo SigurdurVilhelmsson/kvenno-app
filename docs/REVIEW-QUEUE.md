@@ -939,6 +939,11 @@ in the game's README.
       drawn without exaggeration; the rest show none. Captions drafted by Claude
       (`3-ar/equilibrium-shifter/src/components/MixtureView.tsx`). Keep showing no particles for
       the weak acids, or draw them with a marked exaggeration as Agnasýn does?
+- [ ] **Jafnvægisfastinn's Agnasýn** (2026-11-15): the water-gas shift from reactants and from
+      products, Q traced to K, ICE tables read off the particles. Wording drafted by Claude
+      (`3-ar/jafnvaegisfasti/src/components/AgnasynScreen.tsx`). The rate is chosen for display
+      (mass action with kf/kr = K, no time units) and the screen says so. Keep, or show the path
+      against extent instead of time?
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 

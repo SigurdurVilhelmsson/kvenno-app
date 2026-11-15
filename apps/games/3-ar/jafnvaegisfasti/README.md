@@ -240,9 +240,10 @@ packages/shared/engine/equilibrium.ts   the maths; no React, no Icelandic
 src/data/reactions.ts       24 reactions, every constant cited to a module
 src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 7 ICE (M) · 4 ICE (atm)
 src/data/coupled.ts         5 coupled: 3 single-rule, then the book's 2 combinations
-src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
+src/engine/agnasyn.ts       Agnasýn's two flasks: path, counts and Q at each moment
+src/components/             AgnasynScreen, KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                             ScientificInput (the `× 10` answer row, with a ± sign button on touch)
-src/__tests__/              159 tests
+src/__tests__/              197 tests
 ```
 
 ## Phones
@@ -292,6 +293,26 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
 
 `phone-scroll.test.tsx` holds the game to this. A desktop window keeps exactly the scrolling it had
 (`useCommitReveal`, `useItemStart` and `useRevealTopOnDesktop` in `@shared/utils`); what it gains is focus.
+
+## Agnasýn: two routes to one equilibrium (2026-11-15)
+
+A menu card above the four phases, graded by nothing and never marked done, following the
+particle-view template (`docs/particle-view-template.md`). The water-gas shift at 800 °C, K = 0,64,
+runs in two flasks: one from 0,020 M CO and H₂O, one from 0,020 M CO₂ and H₂, at 20 particles per
+0,020 M. A Spila button and a time slider move both; beside them Q is traced against time on a log
+axis with K dashed, and under each flask an ICE table is read off its particles (Upphaf,
+Breyting, Nú, which becomes Jafnvægi once the counts stop changing).
+
+- **Where each flask ends is `solveExtent`'s root and nothing else.** Both flasks hold the same
+  atoms, so both end at 11 CO, 11 H₂O, 9 CO₂ and 9 H₂, with Q = K.
+- **How fast is not in the book.** The path is mass action with kf/kr = K (`K_FORWARD`), which
+  settles on the same root, on a time axis with no units; the screen says so. A test holds the
+  integrated end within 0,5 % of the root, and the last instant is the root itself.
+- **At equilibrium the particles keep changing places**, one of each species going and another
+  appearing every 1,8 s, so both reactions are seen to continue while the counts hold. With reduced
+  motion nothing plays by itself and the particles do not fade.
+- Tests: `agnasyn.test.ts` (the path, Q monotone toward K from both sides, conservation, the shared
+  end) and `agnasyn-screen.test.tsx`; e2e paths `Agnasýn — upphaf` and `Agnasýn — jafnvægi`.
 
 ## Fixed 2026-11-14: the 1846 % line, and air as molarities
 
