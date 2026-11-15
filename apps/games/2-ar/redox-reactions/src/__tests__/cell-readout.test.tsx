@@ -50,7 +50,7 @@ describe('galvanic-cell numbers', () => {
     for (const [pair, cell] of [
       ['Zn-Cu', '1,10'],
       ['Mg-Cu', '2,71'],
-      ['Fe-Cu', '0,78'],
+      ['Fe-Cu', '0,79'],
       ['Zn-Ag', '1,56'],
     ]) {
       const text = show(pair).textContent ?? '';
@@ -73,5 +73,18 @@ describe('galvanic-cell text is Icelandic', () => {
       expect(text, pair).toContain('E°ker');
       cleanup();
     }
+  });
+});
+
+describe('the electrode potentials come from the book', () => {
+  /**
+   * Year-2 audit, 2026-11-15: iron was a typed −0,44 V where the book's appendix (m68870) gives
+   * −0,447, so the Fe–Cu cell read 0,78 V instead of 0,79. Each E° on screen is now the book's
+   * value to two decimals.
+   */
+  it('shows iron at −0,45 V', () => {
+    const text = show('Fe-Cu').textContent ?? '';
+    expect(text).toMatch(/E° = -0,45 V/);
+    expect(text).not.toMatch(/-0,44\b/);
   });
 });
