@@ -21,6 +21,10 @@
  *
  * Values are the ones molmassi has always shipped. Nothing was re-sourced
  * here: this is a move, not a revision, and a test asserts that.
+ *
+ * Every mass rounds to the one the Icelandic textbook's periodic table
+ * (`m68859`) prints, held by `__tests__/elements-book.test.ts` since
+ * 2026-11-15. Change a value only with the book beside you.
  */
 
 export const ATOMIC_MASSES = {
