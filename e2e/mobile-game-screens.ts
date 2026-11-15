@@ -1644,6 +1644,39 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Nærmynd, the particle view (2026-11-15): its first scene, the meðjónir struck
+    // through, the lead used up, and the slider.
+    {
+      name: 'Nærmynd — upphaf',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 300 }],
+    },
+    {
+      name: 'Nærmynd — meðjónirnar',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '3. Meðjónirnar'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Nærmynd — allt blýið fallið út',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '4. Allt blýið fallið út'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Nærmynd — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '5. Kannaðu sjálf/ur'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Kanna — áður en hellt er',
       steps: [

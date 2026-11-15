@@ -7,10 +7,11 @@ import { useScreenTop } from '@shared/utils';
 import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
+import { NaermyndScreen } from './components/NaermyndScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
 import './styles.css';
 
-type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
+type Screen = 'menu' | 'naermynd' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
 interface Progress {
   completed: Screen[];
@@ -123,6 +124,20 @@ function App() {
                 sem gera nokkuð.
               </p>
 
+              {/* Nærmynd: the particles behind the reaction. Not a phase and never marked
+                  done; nothing in it is graded. */}
+              <button
+                type="button"
+                onClick={() => setScreen('naermynd')}
+                className="game-card mb-4 w-full rounded-lg border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 sm:p-5 phone:mb-3 phone:p-3"
+              >
+                <h3 className="text-xl font-semibold text-amber-900 phone:text-lg">Nærmynd</h3>
+                <p className="text-sm text-amber-800">
+                  Sjáðu blýnítrat og kalíumjoðíð jón fyrir jón: gult botnfall myndast og meðjónirnar
+                  standa í stað.
+                </p>
+              </button>
+
               <div className="grid gap-4 phone:gap-3 phone-land:grid-cols-2">
                 {PHASES.map((phase) => (
                   <button
@@ -220,6 +235,8 @@ function App() {
             </div>
           </div>
         )}
+
+        {screen === 'naermynd' && <NaermyndScreen onBack={backToMenu} />}
 
         {screen === 'kanna' && (
           <KannaScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />

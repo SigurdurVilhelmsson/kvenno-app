@@ -960,6 +960,10 @@ in the game's README.
       Q meter, and the Mohr titration. Every picture is exaggerated (the ions are about one per
       four million water molecules), marked with a dashed ring and said in each scene. Wording
       drafted by Claude (`3-ar/leysnijafnvaegi/src/data/naermynd-steps.tsx`).
+- [ ] **Útfellingarhvörf's Nærmynd** (2026-11-15, year 1): Pb(NO₃)₂ with KI added in portions,
+      PbI₂ falling out and K⁺ and NO₃⁻ drawn faded as meðjónir. Wording drafted by Claude
+      (`1-ar/utfellingarhvorf/src/data/naermynd-steps.tsx`). The beaker does not grow as the KI
+      solution is added (25 mL to 55 mL); the table states the volume. Keep, or draw it?
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 
