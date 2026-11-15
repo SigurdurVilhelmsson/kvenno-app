@@ -8448,6 +8448,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Agnasýn — mettuð lausn',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — blöndun',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '3. Tvær lausnir blandaðar'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — Mohr-títrun, rautt',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '4. Mohr-títrun'] },
+        { fill: ['#mohr-ag', '-4.5'] },
+        { wait: 600 },
+      ],
+    },
+    {
       name: 'Kanna — sleðinn færður',
       steps: [
         {

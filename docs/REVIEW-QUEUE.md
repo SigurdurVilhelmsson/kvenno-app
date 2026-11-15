@@ -948,6 +948,10 @@ in the game's README.
       temperature slider, in Könnun and after each answer. Wording drafted by Claude
       (`3-ar/thermodynamics-predictor/src/components/TugOfWar.tsx`), including the name
       `Reipdráttur`.
+- [ ] **Leysnijafnvægi's Agnasýn** (2026-11-15): AgCl saturated, with a common ion, mixed with a
+      Q meter, and the Mohr titration. Every picture is exaggerated (the ions are about one per
+      four million water molecules), marked with a dashed ring and said in each scene. Wording
+      drafted by Claude (`3-ar/leysnijafnvaegi/src/data/agnasyn-steps.tsx`).
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 
