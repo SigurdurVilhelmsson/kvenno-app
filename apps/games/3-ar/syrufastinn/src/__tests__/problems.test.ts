@@ -156,6 +156,17 @@ describe('the apply set', () => {
     }
   });
 
+  it('does not ask the klofnunarhlutfall of a solution an earlier explanation solved', () => {
+    // apply-ka's explanation prints [H⁺] = 1,3 × 10⁻³ M for 0,100 M ediksýra; when
+    // apply-klofnun asked about that same solution its answer was 1,3 % by reading.
+    const klofnun = APPLY_PROBLEMS.findIndex((q) => q.id === 'apply-klofnun');
+    const p = APPLY_PROBLEMS[klofnun];
+    for (const earlier of APPLY_PROBLEMS.slice(0, klofnun)) {
+      const same = earlier.acid.id === p.acid.id && earlier.concentration === p.concentration;
+      expect(same, `${earlier.id} explains the solution apply-klofnun asks about`).toBe(false);
+    }
+  });
+
   it('divides the x it prints when it states the klofnunarhlutfall', () => {
     // Decision 105 (a). The sentence printed 1,3 × 10⁻³ M for x and then the
     // exact root's 1,33 %, where x/C gives 1,34 %. It is the student's own check,

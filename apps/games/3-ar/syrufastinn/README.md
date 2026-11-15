@@ -192,6 +192,19 @@ were like that. The three kept are HF at 0,010 M (22,9 %, gap 0,056), saltpétur
 by visibly different margins. `problems.test.ts` asserts one pair per rule-breaking acid, that it
 is the most dilute, and that the approximate answer is rejected on every rule-breaker Beita poses.
 
+### Kanna and Beita, 2026-11-15 (Year-3 development plan, Sýrufastinn P1)
+
+- **Kanna predicts before it observes.** The question "Hvað heldurðu að Ka-dálkurinn sýni?" used to
+  come after the table already showed the Ka column, which answered it. The column now shows `?`
+  until the student has guessed. Held by `wording.test.tsx` (`hides the Ka column …`).
+- **Beita's klofnunarhlutfall is no longer read off an earlier explanation.** It asked about 0,100 M
+  ediksýra, the solution whose [H⁺] = 1,3 × 10⁻³ M apply-ka's explanation had just printed, so the
+  answer was 1,3 % by reading. It now asks about propansýra at 0,050 M (1,60 %), which against
+  apply-ph's 0,25 M (0,72 %) also shows dilution raising it. Ediksýra is in two of the five hand
+  problems rather than three. Held by `problems.test.ts` (`does not ask the klofnunarhlutfall of a
+solution an earlier explanation solved`).
+- The five local `toFixed` formatters are now `formatDecimal`.
+
 ### Æfa: one problem per acid, ending at the line
 
 **Decision 106 (a) and (b), 2026-10-23.** Æfa used to take "five evenly spaced" problems through

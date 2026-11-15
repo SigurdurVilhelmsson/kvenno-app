@@ -19,6 +19,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import {
+  formatDecimal,
   DECIMAL_INPUT_PROPS,
   focusTarget,
   isPhone,
@@ -36,7 +37,7 @@ import { ScientificKeys } from './ScientificKeys';
 import { APPLY_PROBLEMS, gradeApply } from '../data/problems';
 import { percentDissociation } from '../engine/grade';
 
-const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+const fmt = formatDecimal;
 
 interface ApplyScreenProps {
   onComplete: () => void;

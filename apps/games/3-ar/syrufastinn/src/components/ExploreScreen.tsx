@@ -9,12 +9,14 @@
  *
  * The reflection question at the end is not scored and cannot be got wrong —
  * both answers open the same explanation, because the point is to have committed
- * to a guess before reading it.
+ * to a guess before reading it. The Ka column shows `?` until then, since it is
+ * the answer to the question.
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
+  formatDecimal,
   focusTarget,
   formatScientific,
   isPhone,
@@ -30,7 +32,7 @@ import { EXPLORABLE_ACIDS, exploreSeries } from '../data/problems';
 import { percentDissociation } from '../engine/grade';
 import { kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
 
-const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+const fmt = formatDecimal;
 
 /**
  * Two figures, the source's: Appendix D gives every Ka to two, so the column
@@ -223,8 +225,19 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
                     <td className="whitespace-nowrap py-2 pr-1.5 text-warm-600 sm:pr-3">
                       {sci(r.h)}
                     </td>
+                    {/* Hidden until the student has guessed: the question below asks
+                        what this column does, so showing it first answers it. */}
                     <td className="whitespace-nowrap py-2 font-semibold text-green-700">
-                      {sci(r.ka)}
+                      {guess === null ? (
+                        <>
+                          <span aria-hidden="true" className="text-warm-400">
+                            ?
+                          </span>
+                          <span className="sr-only">falið þar til þú hefur giskað</span>
+                        </>
+                      ) : (
+                        sci(r.ka)
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -254,8 +267,8 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
               Áður en þú lest lengra — hvað heldurðu?
             </p>
             <p className="mb-4 text-sm text-warm-700">
-              Þú hefur mælt {rows.length} lausnir af sömu sýru. pH-gildin eru ólík. Hvað gerir
-              Ka-dálkurinn?
+              Þú hefur mælt {rows.length} lausnir af sömu sýru. pH-gildin eru ólík. Hvað heldurðu að
+              Ka-dálkurinn sýni þegar hann birtist?
             </p>
             <div ref={guessesRef} className="flex flex-col gap-2 sm:flex-row">
               <button

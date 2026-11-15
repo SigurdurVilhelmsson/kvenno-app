@@ -17,6 +17,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import {
+  formatDecimal,
   formatScientific,
   isPhone,
   revealTop,
@@ -32,7 +33,7 @@ import { MONOPROTIC_ACIDS } from '../data/acids';
 import { percentDissociation } from '../engine/grade';
 import { pKa, solveWeakAcid } from '../engine/ka';
 
-const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+const fmt = formatDecimal;
 
 const STEPS = ['Efnajafnan', 'ICE-taflan', 'Sýrufastinn', 'Nálgunin', '5 % reglan'] as const;
 

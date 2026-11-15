@@ -18,6 +18,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import {
+  formatDecimal,
   DECIMAL_INPUT_PROPS,
   focusTarget,
   formatScientific,
@@ -37,7 +38,7 @@ import { PRACTICE_PROBLEMS } from '../data/problems';
 import { PH_TOLERANCE, isRelativelyClose, isAbsolutelyClose } from '../engine/grade';
 import { solveWeakAcid } from '../engine/ka';
 
-const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+const fmt = formatDecimal;
 /**
  * x as the student types it, `1,34e-3`: kept only where the screen shows the
  * answer to type or echoes the one typed. Everything else is printed with
