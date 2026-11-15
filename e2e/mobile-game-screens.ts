@@ -3533,6 +3533,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Born-Haber (2026-11-15): puzzle 7 has five cards, each naming its step.
+    {
+      name: 'Stig 2 — Born-Haber',
+      steps: [
+        { clickRole: ['button', 'Stig 2: Þrautir'] },
+        { clickRole: ['button', '7'] },
+        { css: 'button[data-equation-select]' },
+        { wait: 300 },
+      ],
+    },
     {
       name: 'Stig 2 — orkuferill',
       steps: [

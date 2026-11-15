@@ -3,6 +3,7 @@ import { render, fireEvent, cleanup, within } from '@testing-library/react';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 
 import { Level2 } from '../components/Level2';
+import { PUZZLES } from '../data/puzzles';
 
 /**
  * Drives the real Level 2 on puzzle 5 (SO₂ + ½O₂ → SO₃, ΔH = −99,0 kJ).
@@ -75,14 +76,16 @@ describe('hess-law level 2 grading', () => {
     // Checking again grades the combination now on the cards, and counts it.
     fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
     expect(page.getByText(/✓ Rétt!/).textContent).toMatch(/Snúa við jöfnu 1/);
-    // Puzzle 6 left wrong, and the level ends: one puzzle solved, the fixed one.
-    fireEvent.click(page.getByRole('button', { name: '6' }));
-    fireEvent.click(view.container.querySelector<HTMLElement>('button[data-equation-select]')!);
-    fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
+    // Every later puzzle left wrong, and the level ends: one puzzle solved, the fixed one.
+    for (let n = 6; n <= PUZZLES.length; n++) {
+      fireEvent.click(page.getByRole('button', { name: String(n) }));
+      fireEvent.click(view.container.querySelector<HTMLElement>('button[data-equation-select]')!);
+      fireEvent.click(page.getByRole('button', { name: 'Athuga lausn' }));
+    }
     vi.spyOn(performance, 'now').mockReturnValue(performance.now() + 1000);
     fireEvent.click(page.getByRole('button', { name: /Ljúka stigi/ }));
     vi.restoreAllMocks();
-    expect(onComplete).toHaveBeenCalledWith(1, 6);
+    expect(onComplete).toHaveBeenCalledWith(1, PUZZLES.length);
   });
 
   it('keeps the verdict when a multiplier already chosen is tapped again', () => {

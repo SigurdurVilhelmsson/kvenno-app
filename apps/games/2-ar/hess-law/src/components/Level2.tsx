@@ -26,7 +26,7 @@ function EquationBlock({
   const effectiveDeltaH = equation.deltaH * equation.multiplier * (equation.isReversed ? -1 : 1);
   const displayMultiplier = equation.multiplier !== 1 ? `${equation.multiplier} × ` : '';
 
-  const label = `${equation.isReversed ? equation.products : equation.reactants} → ${equation.isReversed ? equation.reactants : equation.products}, ΔH = ${formatDecimal(effectiveDeltaH, 1)} kJ`;
+  const label = `${equation.step ? `${equation.step}: ` : ''}${equation.isReversed ? equation.products : equation.reactants} → ${equation.isReversed ? equation.reactants : equation.products}, ΔH = ${formatDecimal(effectiveDeltaH, 1)} kJ`;
 
   // The card is a plain group, and choosing it is a real button: the equation and its ΔH.
   // It used to be a role="button" div holding its own Snúa and ×n buttons, which a screen
@@ -65,6 +65,11 @@ function EquationBlock({
         }}
         className="block w-full rounded-lg focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-400/50"
       >
+        {equation.step && (
+          <span className="block text-center text-xs font-semibold text-warm-600 mb-1">
+            {equation.step}
+          </span>
+        )}
         {/* Equation display */}
         <span className="block text-center mb-3 phone:mb-1 font-mono">
           {displayMultiplier && (
