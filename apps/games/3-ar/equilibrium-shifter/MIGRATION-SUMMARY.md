@@ -9,7 +9,9 @@ The equilibrium-shifter game has been successfully migrated from the original HT
 ## What Was Migrated
 
 ### 1. **TypeScript Types** (`src/types.ts`) - 150 lines
+
 Complete type definitions for the entire game:
+
 - `Equilibrium` - Full equilibrium system with reactants, products, thermodynamics
 - `Stress` - All stress types (concentration, temperature, pressure, catalyst)
 - `ShiftResult` - Le Chatelier shift results with explanations
@@ -17,9 +19,11 @@ Complete type definitions for the entire game:
 - Full type safety throughout the application
 
 ### 2. **Equilibria Data** (`src/data/equilibria.ts`) - 1,013 lines
+
 All 30 equilibrium systems from the original game, properly structured:
 
 **Beginner Level (10 equilibria):**
+
 1. N₂O₄ ⇌ 2NO₂ (Dinitrogen Tetroxide)
 2. H₂ + I₂ ⇌ 2HI (Hydrogen Iodide Formation)
 3. PCl₅ ⇌ PCl₃ + Cl₂ (Phosphorus Pentachloride)
@@ -29,32 +33,15 @@ All 30 equilibrium systems from the original game, properly structured:
 7. H₂O ⇌ H⁺ + OH⁻ (Water Autoionization)
 8. CH₃COOH ⇌ CH₃COO⁻ + H⁺ (Acetic Acid Dissociation)
 9. NH₃ + H₂O ⇌ NH₄⁺ + OH⁻ (Ammonia Base)
-10. AgCl ⇌ Ag⁺ + Cl⁻ (Silver Chloride Precipitation)
+10. AgCl ⇌ Ag⁺ + Cl⁻ (Silver Chloride Solubility)
 
-**Intermediate Level (12 equilibria):**
-11. N₂ + 3H₂ ⇌ 2NH₃ (Haber Process)
-12. 2SO₂ + O₂ ⇌ 2SO₃ (Contact Process)
-13. 4NH₃ + 5O₂ ⇌ 4NO + 6H₂O (Ostwald Process)
-14. CO + H₂O ⇌ CO₂ + H₂ (Water Gas Shift)
-15. 2NO + O₂ ⇌ 2NO₂ (Nitrogen Oxide Formation)
-16. C + CO₂ ⇌ 2CO (Boudouard Reaction)
-17. CH₄ + H₂O ⇌ CO + 3H₂ (Steam Reforming)
-18. H₂ + CO₂ ⇌ H₂O + CO (Reverse Water Gas)
-19. N₂ + O₂ ⇌ 2NO (Nitrogen Fixation)
-20. 2H₂S + 3O₂ ⇌ 2H₂O + 2SO₂ (Hydrogen Sulfide Oxidation)
-21. H₂CO₃ ⇌ H⁺ + HCO₃⁻ (Carbonic Acid)
-22. Cu(NH₃)₄²⁺ ⇌ Cu²⁺ + 4NH₃ (Copper Ammonia Complex)
+**Intermediate Level (12 equilibria):** 11. N₂ + 3H₂ ⇌ 2NH₃ (Haber Process) 12. 2SO₂ + O₂ ⇌ 2SO₃ (Contact Process) 13. 4NH₃ + 5O₂ ⇌ 4NO + 6H₂O (Ostwald Process) 14. CO + H₂O ⇌ CO₂ + H₂ (Water Gas Shift) 15. 2NO + O₂ ⇌ 2NO₂ (Nitrogen Oxide Formation) 16. C + CO₂ ⇌ 2CO (Boudouard Reaction) 17. CH₄ + H₂O ⇌ CO + 3H₂ (Steam Reforming) 18. H₂ + CO₂ ⇌ H₂O + CO (Reverse Water Gas) 19. N₂ + O₂ ⇌ 2NO (Nitrogen Fixation) 20. 2H₂S + 3O₂ ⇌ 2H₂O + 2SO₂ (Hydrogen Sulfide Oxidation) 21. H₂CO₃ ⇌ H⁺ + HCO₃⁻ (Carbonic Acid) 22. Cu(NH₃)₄²⁺ ⇌ Cu²⁺ + 4NH₃ (Copper Ammonia Complex)
 
-**Advanced Level (8 equilibria):**
-23. 2C + O₂ ⇌ 2CO (Coupled Carbon Equilibria)
-24. CH₃COOH + H₂O ⇌ CH₃COO⁻ + H₃O⁺ (Buffer System)
-25-26. N₂ + 3H₂ ⇌ 2NH₃ (Temperature/Pressure Dependent K)
-27. H₃PO₄ ⇌ H⁺ + H₂PO₄⁻ (Simultaneous Equilibria)
-28. N₂ + 3H₂ ⇌ 2NH₃ (Heterogeneous Catalysis)
-29. Hb + 4O₂ ⇌ Hb(O₂)₄ (Hemoglobin - Biology)
-30. 2SO₂ + O₂ ⇌ 2SO₃ (Industrial Optimization)
+**Advanced Level (8 equilibria):** 23. 2C + O₂ ⇌ 2CO (Coupled Carbon Equilibria) 24. CH₃COOH + H₂O ⇌ CH₃COO⁻ + H₃O⁺ (Buffer System)
+25-26. N₂ + 3H₂ ⇌ 2NH₃ (Temperature/Pressure Dependent K) 27. H₃PO₄ ⇌ H⁺ + H₂PO₄⁻ (Simultaneous Equilibria) 28. N₂ + 3H₂ ⇌ 2NH₃ (Heterogeneous Catalysis) 29. Hb + 4O₂ ⇌ Hb(O₂)₄ (Hemoglobin - Biology) 30. 2SO₂ + O₂ ⇌ 2SO₃ (Industrial Optimization)
 
 Each equilibrium includes:
+
 - Chemical equation with phases
 - Icelandic and English names
 - Thermodynamics (ΔH, endothermic/exothermic)
@@ -64,15 +51,18 @@ Each equilibrium includes:
 - All possible stresses that can be applied
 
 ### 3. **Le Chatelier Logic Engine** (`src/utils/le-chatelier.ts`) - 345 lines
+
 100% accurate implementation of Le Chatelier's Principle:
 
 **Concentration Changes:**
+
 - Add reactant → Shift RIGHT
 - Add product → Shift LEFT
 - Remove reactant → Shift LEFT
 - Remove product → Shift RIGHT
 
 **Temperature Changes:**
+
 - Endothermic (ΔH > 0): Heat is reactant
   - Increase T → RIGHT
   - Decrease T → LEFT
@@ -81,24 +71,29 @@ Each equilibrium includes:
   - Decrease T → RIGHT
 
 **Pressure Changes (Gas only):**
+
 - Increase P → Toward fewer moles
 - Decrease P → Toward more moles
 - Equal moles → NO SHIFT
 - No gases → NO SHIFT
 
 **Catalyst:**
+
 - ALWAYS → NO SHIFT (speeds both directions equally)
 
 Each calculation returns:
+
 - Shift direction (left/right/none)
 - Detailed explanation (Icelandic & English)
 - Step-by-step reasoning
 - Molecular interpretation
 
 ### 4. **Main App Component** (`src/App.tsx`) - 714 lines
+
 Complete game implementation with both modes:
 
 **Learning Mode:**
+
 - Unlimited time
 - Student selects stress to apply
 - Detailed explanations after each prediction
@@ -108,6 +103,7 @@ Complete game implementation with both modes:
 - Focus on understanding WHY shifts occur
 
 **Challenge Mode:**
+
 - 10 questions per round
 - 20 seconds per question
 - Random stress application
@@ -120,6 +116,7 @@ Complete game implementation with both modes:
 - Results screen with statistics
 
 **Visual Features:**
+
 - Chemical equation display with ⇌ arrows
 - Thermodynamics indicator (🔥 exothermic, ❄️ endothermic)
 - Molecule visualization with emojis
@@ -130,6 +127,7 @@ Complete game implementation with both modes:
 - Responsive design for mobile
 
 **Accessibility:**
+
 - Skip link for keyboard navigation
 - High contrast mode
 - Text size adjustment
@@ -139,9 +137,11 @@ Complete game implementation with both modes:
 - Focus indicators
 
 ### 5. **CSS Animations & Styling** (`src/styles.css`) - 508 lines
+
 Complete visual polish:
 
 **Animations:**
+
 - `float` - Molecule floating effect
 - `glow-pulse` - Glowing effect for favored side
 - `pulse-success` - Success animation
@@ -153,6 +153,7 @@ Complete visual polish:
 - `slideInRight` - Explanation entrance
 
 **Styling:**
+
 - Kvenno orange branding (#f36b22)
 - Gradient backgrounds
 - Mode selection cards with hover effects
@@ -170,6 +171,7 @@ Complete visual polish:
 ## Architecture
 
 ### File Structure
+
 ```
 /games/3-ar/equilibrium-shifter/
 ├── src/
@@ -189,12 +191,15 @@ Complete visual polish:
 ```
 
 ### Integration with Shared Hooks
+
 The game properly integrates with the shared hooks system:
+
 - `useProgress` - Save/load progress, track completed problems
 - `useAccessibility` - High contrast, text size, reduced motion
 - `useI18n` - Language switching (Icelandic/English/Polish)
 
 ### Key Technologies
+
 - ✅ React 18 with TypeScript
 - ✅ Vite for fast development
 - ✅ Tailwind CSS + Custom CSS
@@ -208,13 +213,16 @@ The game properly integrates with the shared hooks system:
 ## What Makes This Implementation Special
 
 ### 1. **Educational Accuracy**
+
 The Le Chatelier logic is 100% accurate based on chemical principles:
+
 - Handles all stress types correctly
 - Accounts for thermodynamics properly
 - Distinguishes gas vs. aqueous equilibria
 - Explains WHY shifts occur, not just WHAT happens
 
 ### 2. **Visual Learning**
+
 - Emoji molecules make abstract concepts concrete
 - Animated shifts show direction of change
 - Color coding (red=exothermic, blue=endothermic)
@@ -222,17 +230,21 @@ The Le Chatelier logic is 100% accurate based on chemical principles:
 - Students SEE what happens at molecular level
 
 ### 3. **Dual Learning Modes**
+
 - **Learning Mode**: Deep understanding, no pressure
 - **Challenge Mode**: Test mastery, competitive edge
 
 ### 4. **Real Chemistry**
+
 All 30 equilibria are:
+
 - Real industrial processes (Haber, Contact, Ostwald)
 - Biologically relevant (hemoglobin, buffers)
 - Classic demonstrations (Fe-SCN complex)
 - Properly categorized by difficulty
 
 ### 5. **Icelandic First**
+
 - All UI text in Icelandic
 - English explanations available
 - Icelandic chemistry terminology
@@ -243,6 +255,7 @@ All 30 equilibria are:
 ## Testing Recommendations
 
 ### Critical Tests:
+
 1. **Le Chatelier Logic:**
    - ✓ Test all concentration changes
    - ✓ Test temperature with exothermic reactions
@@ -291,7 +304,9 @@ All 30 equilibria are:
 ## Important Notes
 
 ### Le Chatelier Accuracy
+
 The logic engine has been carefully implemented to handle all edge cases:
+
 - Pure solids don't affect Q (heterogeneous equilibria)
 - Pressure only affects gas equilibria
 - Equal moles = no pressure effect
@@ -299,7 +314,9 @@ The logic engine has been carefully implemented to handle all edge cases:
 - Temperature changes K (only stress that does)
 
 ### Educational Value
+
 This game teaches Le Chatelier's Principle through:
+
 1. **Prediction** - Student makes prediction
 2. **Animation** - Visual feedback of shift
 3. **Explanation** - Why it happened
@@ -307,7 +324,9 @@ This game teaches Le Chatelier's Principle through:
 5. **Molecular View** - Particle-level understanding
 
 ### Next Steps
+
 The game is ready to use! To test locally:
+
 ```bash
 cd /home/user/ChemistryGames/games/3-ar/equilibrium-shifter
 npm install

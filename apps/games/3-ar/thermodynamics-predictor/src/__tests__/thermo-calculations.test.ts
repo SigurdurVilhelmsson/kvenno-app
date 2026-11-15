@@ -130,3 +130,23 @@ describe('thermodynamic scenarios', () => {
     expect(getSpontaneity(highT)).toBe('spontaneous');
   });
 });
+
+describe('the equilibrium band follows the crossover temperature', () => {
+  // A flat |ΔG°| < 1 called freezing water (ΔH° −6,0, ΔS° −22) "jafnvægi" from 228 K
+  // to 318 K. The band is now half a per cent of |ΔH°|, at most 1 kJ/mol.
+  const freeze = (t: number) => getSpontaneity(calculateDeltaG(-6.0, -22, t), -6.0);
+
+  it('is at equilibrium at the melting point', () => {
+    expect(freeze(273)).toBe('equilibrium');
+  });
+
+  it('is spontaneous ten degrees below it, and not ten degrees above', () => {
+    expect(freeze(263)).toBe('spontaneous');
+    expect(freeze(283)).toBe('non-spontaneous');
+  });
+
+  it('keeps 1 kJ/mol for large enthalpies', () => {
+    expect(getSpontaneity(0.9, -500)).toBe('equilibrium');
+    expect(getSpontaneity(-1.1, -500)).toBe('spontaneous');
+  });
+});

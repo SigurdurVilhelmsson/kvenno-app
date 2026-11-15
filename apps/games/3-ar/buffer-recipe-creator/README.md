@@ -169,6 +169,20 @@ Each has a test that fails against the version before it.
   four no puzzle currently shows. The contrast of the flask comparison panel, whose grey text sat at about
   1,6 : 1 on a see-through background, is fixed by making the panel opaque.
 
+## Fixed 2026-11-14: weighing out a gas, and two contexts
+
+From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
+
+- **Stig 2 no longer asks for a mass of ammonia.** Its third puzzle (problem 17) wanted grams of
+  NH₃ to weigh out, a gas. It is now the carbonate buffer (problem 12, NaHCO₃ and Na₂CO₃ at
+  pH 9,80), whose two salts are solids; `weighable.test.ts`. Stig 3 keeps the ammonium buffer,
+  made from stock solutions by volume.
+- **Problem 11's context** said phosphate is the blood's second buffer after bicarbonate and in
+  the next sentence that it keeps the pH inside cells. Phosphate is the main buffer inside cells;
+  in blood, bicarbonate and the proteins matter more. It says so now, in all three languages.
+- **Problem 12's context** described swimming pools at pH 7,2–7,8 beside a buffer made at 9,80.
+  It now describes the buffer it is.
+
 ## Fixed 2026-10-23, mobile-pass decisions 117–119
 
 - **The ammonium buffer keeps the `-m` of `ammóníum`** (decision 117 (a)): `ammóníumstuðpúði` at

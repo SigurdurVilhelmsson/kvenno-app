@@ -416,3 +416,18 @@ function parseFormula(formula: string): [string, number][] {
   }
   return out;
 }
+
+describe('the five per cent rule on a backward run', () => {
+  it('measures the species the run uses up, not the ones it forms', async () => {
+    const { largestRelativeChange } = await import('@shared/engine/equilibrium');
+    const reaction = {
+      reactants: [{ formula: 'A', coefficient: 1, phase: 'g' as const }],
+      products: [{ formula: 'B', coefficient: 1, phase: 'g' as const }],
+    };
+    // Backwards by 0,01 from A = 0,001 and B = 1: B loses 1 %, A grows tenfold.
+    expect(largestRelativeChange(reaction as never, { A: 0.001, B: 1 }, -0.01)).toBeCloseTo(
+      0.01,
+      10
+    );
+  });
+});

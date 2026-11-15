@@ -16,13 +16,29 @@ export function calculateDeltaG(deltaH: number, deltaS: number, temp: number): n
 }
 
 /**
+ * How close to 0 (kJ/mol) ΔG° must be to count as equilibrium: 1 kJ/mol, or half a per cent
+ * of |ΔH°| where that is less.
+ *
+ * Near the crossover ΔG° = ΔS°(T_cross − T) and ΔH° = ΔS°·T_cross, so |ΔG°| / |ΔH°| is
+ * |T − T_cross| / T_cross: half a per cent of ΔH° is "within half a per cent of the
+ * crossover temperature". A flat 1 kJ/mol was that for no reaction in particular, and for
+ * freezing water (ΔH° = −6,0, ΔS° = −22) it called everything from 228 K to 318 K
+ * "jafnvægi", so ice at −45 °C was graded as at equilibrium (found 2026-11-14).
+ */
+export function equilibriumBand(deltaH?: number): number {
+  if (deltaH === undefined) return 1;
+  return Math.min(1, 0.005 * Math.abs(deltaH));
+}
+
+/**
  * Determine the spontaneity of a reaction based on its ΔG value.
  *
  * @param deltaG - Gibbs free energy in kJ/mol
- * @returns 'spontaneous' if ΔG < -1, 'non-spontaneous' if ΔG > 1, 'equilibrium' if |ΔG| < 1
+ * @param deltaH - ΔH° in kJ/mol, which sets how wide "equilibrium" is (`equilibriumBand`)
+ * @returns 'equilibrium' within the band, else 'spontaneous' or 'non-spontaneous' by sign
  */
-export function getSpontaneity(deltaG: number): Spontaneity {
-  if (Math.abs(deltaG) < 1) return 'equilibrium';
+export function getSpontaneity(deltaG: number, deltaH?: number): Spontaneity {
+  if (Math.abs(deltaG) < equilibriumBand(deltaH)) return 'equilibrium';
   return deltaG < 0 ? 'spontaneous' : 'non-spontaneous';
 }
 

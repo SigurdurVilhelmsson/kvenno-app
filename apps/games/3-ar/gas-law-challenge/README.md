@@ -105,6 +105,29 @@ src/__tests__/near-miss-retry.test.tsx               Reyna aftur in practice, no
 src/__tests__/last-hint-reveals-answer.test.tsx      the last hint gives the answer: not counted
 ```
 
+## Fixed 2026-11-14: scenarios with wrong physics, and the kinetic picture
+
+From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`). No answer changed.
+
+- **Question 17** put a car tyre at constant pressure (Charles), while question 19 treats a tyre
+  as the constant-volume container it is. It is a balloon left in a hot car now.
+- **Question 19** says the pressure is the total pressure: a tyre gauge reads about 1 atm less,
+  and Gay-Lussac's law holds only for the total.
+- **Question 8** was 268 K (−5 °C) at 100 m depth in the sea, colder than liquid seawater gets. It
+  is a diving cylinder lying on a quay in frost.
+- **Question 9** put air at −30 °C in a climber's lungs; it asks about 5,0 L of the outside air,
+  and its hint says 40 % of sea level rather than "a third".
+- **Question 6** heated a balloon "from 300 K", a value the ideal-gas question never used.
+- **Question 12** said spacecraft are kept at 0,7 atm; the shuttle was lowered to it before a
+  spacewalk, and the scenario says so.
+- **The principle texts and the menu** called pressure the number of collisions and temperature
+  the speed. Pressure is how often and how hard the particles hit each square metre, and T
+  measures their mean kinetic energy; heating makes the collisions both more frequent and harder.
+  `scenario-physics.test.ts`.
+
+Not yet done, and in the plan: givens in °C to convert, answers to the figures the data has, and
+kPa, torr and mm Hg beside atm.
+
 ## Open
 
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle

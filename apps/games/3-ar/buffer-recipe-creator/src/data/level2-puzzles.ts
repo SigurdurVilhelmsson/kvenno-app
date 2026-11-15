@@ -127,7 +127,8 @@ const SOURCES: Level2PuzzleSource[] = [
     ratioTolerance: 0.1,
     massTolerance: 0.05,
     topicIs: () => 'Þetta snýst um Henderson-Hasselbalch jöfnuna: pH = pKa + log([Basi]/[Sýra]).',
-    noteIs: 'Þetta er pH blóðs, og líkaminn viðheldur þessu hlutfalli til að halda því stöðugu.',
+    noteIs:
+      'Þetta er pH blóðs. Inni í frumum, þar sem fosfat er helsti stuðpúðinn, er pH nálægt þessu.',
   },
   {
     id: 2,
@@ -140,14 +141,16 @@ const SOURCES: Level2PuzzleSource[] = [
     noteIs: 'Þetta þýðir næstum tvöfalt meira af basa en sýru.',
   },
   {
+    // Was problem 17, ammonium chloride and ammonia, until 2026-11-14: it asked
+    // for a mass of NH₃, a gas, to weigh out. Both carbonate salts are solids.
     id: 3,
-    problemId: 17, // Ammonia pH 9.50
-    taskIs: 'Búðu til ammóníumstuðpúða við pH 9,50 úr ammóníumklóríði og ammóníaki.',
+    problemId: 12, // Carbonate pH 9.80
+    taskIs: 'Búðu til karbónatstuðpúða við pH 9,80 úr NaHCO₃ og Na₂CO₃.',
     ratioTolerance: 0.1,
     massTolerance: 0.05,
-    topicIs: (p) => `Ammóníumstuðpúði virkar við hátt pH með pKa = ${fmt(p.pKa, 2)}.`,
-    noteIs:
-      'Athugaðu að ammóníak (NH₃) hefur mjög lágan mólmassa (17 g/mól) svo massinn er lítill.',
+    topicIs: (p) =>
+      `Í karbónatstuðpúða er sýran HCO₃⁻ (úr NaHCO₃) og basinn CO₃²⁻ (úr Na₂CO₃), pKa = ${fmt(p.pKa, 2)}.`,
+    noteIs: 'pH er undir pKa, svo meira þarf af sýruforminu en basaforminu.',
   },
   {
     id: 5,

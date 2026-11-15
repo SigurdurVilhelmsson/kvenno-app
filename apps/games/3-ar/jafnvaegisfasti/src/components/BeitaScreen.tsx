@@ -151,8 +151,14 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   // the five per cent question has no answer and is skipped, with the reason given instead
   // (mobile-pass decision 97 (a), ruled 2026-10-23).
   const noDenominator = activeReactants(problem.reaction).length === 0;
+  // A problem that runs backwards starts with every species present, which is not the case
+  // the shortcut is taught for (products at zero, so x leaves only the denominator), and the
+  // engine gives no approximate x for it. Until 2026-11-14 the question was asked anyway and
+  // the verdict measured the change against the reactants, which a backward run forms:
+  // "Stærsta breytingin er 1846,06 % af upphafsstyrknum". It is skipped, with the reason.
+  const skipRule = noDenominator || backwards;
   /** After x is right, or shown: the five per cent question, or straight to the verdict. */
-  const afterX = () => setStage(noDenominator ? 'done' : 'approximation');
+  const afterX = () => setStage(skipRule ? 'done' : 'approximation');
 
   /** Dative singular definite, for "less than 5 % of the starting ___". */
   const startingAmount = unit === 'M' ? 'upphafsstyrknum' : 'upphafsþrýstingnum';
@@ -484,7 +490,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     aria-labelledby={verdictId}
                     tabIndex={-1}
                     className={`rounded-lg border-2 p-4 phone:p-3 ${
-                      noDenominator || ruleAnswer === result.approximationSafe
+                      skipRule || ruleAnswer === result.approximationSafe
                         ? 'border-green-300 bg-green-50'
                         : 'border-amber-300 bg-amber-50'
                     }`}
@@ -492,11 +498,13 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     <p id={verdictId} className="mb-2 font-semibold text-warm-900">
                       {noDenominator
                         ? 'Hér er enginn nefnari — x² = Kp er leyst nákvæmlega og engin nálgun þarf.'
-                        : ruleAnswer === result.approximationSafe
-                          ? 'Rétt.'
-                          : 'Ekki rétt.'}
+                        : backwards
+                          ? 'Hér eru öll efnin til staðar í upphafi og hvarfið gengur afturábak, svo nálgunin á ekki við — x er leyst nákvæmlega.'
+                          : ruleAnswer === result.approximationSafe
+                            ? 'Rétt.'
+                            : 'Ekki rétt.'}
                     </p>
-                    {!noDenominator && (
+                    {!skipRule && (
                       <p className="mb-2 text-sm text-warm-800">
                         Stærsta breytingin er{' '}
                         <span className="whitespace-nowrap font-mono">

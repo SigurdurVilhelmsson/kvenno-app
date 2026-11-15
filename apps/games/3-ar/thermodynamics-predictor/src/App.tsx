@@ -329,7 +329,7 @@ function App() {
   // Check answer
   const checkAnswer = () => {
     const calculatedDeltaG = calcDeltaGForProblem(temperature);
-    const correctSpontaneity = getSpontaneity(calculatedDeltaG);
+    const correctSpontaneity = getSpontaneity(calculatedDeltaG, currentProblem?.deltaH);
 
     const deltaGCorrect = isDeltaGCorrect(userDeltaG, calculatedDeltaG);
     const spontaneityCorrect = userSpontaneity === correctSpontaneity;
@@ -730,7 +730,7 @@ function App() {
     // The same verdict the graded problems use, so ΔG = 0 at 500 K reads as equilibrium: a
     // plain `< 0` test called it "Ekki sjálfgengt — ΔG > 0" at the one temperature the
     // "Hvað sést?" list below says is equilibrium.
-    const demoSpontaneity = getSpontaneity(demoDeltaG);
+    const demoSpontaneity = getSpontaneity(demoDeltaG, demoDeltaH);
     return (
       <div
         ref={discoverRoot}
@@ -889,7 +889,7 @@ function App() {
     if (!currentProblem) return null;
 
     const currentDeltaG = calcDeltaGForProblem(temperature);
-    const currentSpontaneity = getSpontaneity(currentDeltaG);
+    const currentSpontaneity = getSpontaneity(currentDeltaG, currentProblem.deltaH);
     const crossoverTemp = crossoverTemperature(currentProblem.deltaH, currentProblem.deltaS);
     // The verdict is the message's first sentence ("Rétt!", "Rangt.", "Sjálfgengi er rétt en
     // ΔG er rangt."); the rest explains it.

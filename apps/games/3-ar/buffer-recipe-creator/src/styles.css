@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@import "../../../../../packages/shared/styles/theme.css";
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
 @source "../../../../../packages/shared";
-@import "../../../../../packages/shared/styles/game-base.css";
+@import '../../../../../packages/shared/styles/game-base.css';
 
 /* Buffer Recipe Creator Specific Styles */
 
@@ -9,7 +9,8 @@
 .ph-scale {
   width: 100%;
   height: 40px;
-  background: linear-gradient(to right,
+  background: linear-gradient(
+    to right,
     #e00000 0%,
     #ff0000 7%,
     #ff6b00 14%,
@@ -24,7 +25,8 @@
     #0090ff 77%,
     #0000ff 84%,
     #6000ff 91%,
-    #a000ff 100%);
+    #a000ff 100%
+  );
   border-radius: 8px;
   position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -56,8 +58,13 @@
 
 /* Animations */
 @keyframes pulse-success {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 .pulse-success {
@@ -65,9 +72,16 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
 }
 
 .shake {
@@ -75,8 +89,13 @@
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px #22c55e; }
-  50% { box-shadow: 0 0 20px #22c55e; }
+  0%,
+  100% {
+    box-shadow: 0 0 5px #22c55e;
+  }
+  50% {
+    box-shadow: 0 0 20px #22c55e;
+  }
 }
 
 .glow {

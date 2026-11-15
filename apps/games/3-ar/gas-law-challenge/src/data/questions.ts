@@ -177,7 +177,8 @@ export const questions: GasLawQuestion[] = [
   {
     id: 6,
     emoji: '🎈',
-    scenario_is: 'Loftbelgur er hitaður upp úr 300K í 400K við fastan þrýsting.',
+    scenario_is:
+      'Loftið í loftbelg er hitað í 400 K við 1,0 atm. Hvert er rúmmál 150 móla af lofti við þann hita?',
     difficulty: 'Miðlungs',
     gasLaw: 'ideal',
     given: {
@@ -245,8 +246,9 @@ export const questions: GasLawQuestion[] = [
 
   {
     id: 8,
-    emoji: '🌊',
-    scenario_is: 'Djúpköfun á 100m dýpi þar sem þrýstingur er 11 atm.',
+    emoji: '🤿',
+    scenario_is:
+      'Lítill kafarakútur liggur úti á bryggju í frosti. Í honum er þrýstingurinn 11 atm.',
     difficulty: 'Erfitt',
     gasLaw: 'ideal',
     given: {
@@ -258,7 +260,7 @@ export const questions: GasLawQuestion[] = [
     answer: 268,
     tolerance: 5,
     hints: [
-      'Djúpt í hafinu = hár þrýstingur og kalt',
+      'Hár þrýstingur í köldum kút',
       'Notaðu T = PV/nR',
       'Settu inn: T = (11,0)(3,0)/[(1,5)(0,08206)]',
       'Reiknaðu: T = 268 K',
@@ -268,11 +270,11 @@ export const questions: GasLawQuestion[] = [
       substitution: 'T = (11,0 atm)(3,0 L) / [(1,5 mól)(0,08206 L·atm/mól·K)]',
       calculation: 'T = 268 K',
       steps: [
-        'Á 100 m dýpi er þrýstingurinn mjög hár (11 atm)',
+        'Í kútnum er þrýstingurinn hár (11 atm)',
         'Byrja á PV = nRT',
         'Einangra T: T = PV/nR',
         'Setja inn gildi: T = (11,0)(3,0)/(1,5 × 0,08206)',
-        'Reikna: T = 268 K (≈ −5 °C, kalt!)',
+        'Reikna: T = 268 K (≈ −5 °C, frost!)',
       ],
     },
   },
@@ -282,7 +284,7 @@ export const questions: GasLawQuestion[] = [
     id: 9,
     emoji: '🏔️',
     scenario_is:
-      'Á toppi Everest (8849m) er loftþrýstingur aðeins 0,33 atm. Hversu mikið loft (mól) er í 5L lungum?',
+      'Á toppi Everest (8849 m) er loftþrýstingur aðeins 0,33 atm og hitinn um −30 °C. Hversu mörg mól eru í 5,0 L af útiloftinu?',
     difficulty: 'Miðlungs',
     gasLaw: 'ideal',
     given: {
@@ -297,7 +299,7 @@ export const questions: GasLawQuestion[] = [
       'Mikil hæð = lágur þrýstingur = minna loft í hverjum andardrætti',
       'Notaðu n = PV/RT',
       'Settu inn: n = (0,33)(5,0)/[(0,08206)(243)]',
-      'Reiknaðu: n = 0,083 mól (aðeins þriðjungur af því sem er við sjávarmál!)',
+      'Reiknaðu: n = 0,083 mól (um 40 % af því sem 5,0 L af lofti geyma við sjávarmál)',
     ],
     solution: {
       formula: 'n = PV/RT',
@@ -386,7 +388,7 @@ export const questions: GasLawQuestion[] = [
     id: 12,
     emoji: '🚀',
     scenario_is:
-      'Geimferð: Í geimskipi er þrýstingi haldið við 0,7 atm (eins og á 3000m hæð á jörðu).',
+      'Geimferð: Fyrir geimgöngu var þrýstingurinn í geimskutlunni lækkaður í 0,7 atm (eins og á 3000 m hæð á jörðu).',
     difficulty: 'Erfitt',
     gasLaw: 'ideal',
     given: {
@@ -559,9 +561,9 @@ export const questions: GasLawQuestion[] = [
 
   {
     id: 17,
-    emoji: '🚗',
+    emoji: '🎈',
     scenario_is:
-      'Hjólbarði bíls hefur rúmmál 8,0 L við 293 K (20°C). Eftir akstur er rúmmálið orðið 8,8 L við fastan þrýsting. Hvert er nýja hitastigið?',
+      'Blaðra hefur rúmmál 8,0 L við 293 K (20 °C). Hún gleymist í bíl á sólríkum degi og rúmmálið verður 8,8 L við fastan þrýsting. Hvert er nýja hitastigið?',
     difficulty: 'Miðlungs',
     gasLaw: 'charles',
     given: {
@@ -587,7 +589,7 @@ export const questions: GasLawQuestion[] = [
         'V₂ = 8,8 L (gefið í verkefninu)',
         'Setja inn: T₂ = 293 × 8,8/8,0',
         'K·L / L → K (L styttist út)',
-        'T₂ = 322,3 K (≈ 49°C — heitur hjólbarði!)',
+        'T₂ = 322,3 K (≈ 49 °C — heitur bíll!)',
       ],
     },
   },
@@ -632,7 +634,7 @@ export const questions: GasLawQuestion[] = [
     id: 19,
     emoji: '🚙',
     scenario_is:
-      'Bíldekk hefur þrýsting 2,2 atm við 288 K (15°C). Eftir akstur á sólríkum degi hækkar þrýstingurinn í 2,5 atm. Rúmmálið er fast. Hvert er nýja hitastigið?',
+      'Heildarþrýstingur loftsins í dekki er 2,2 atm við 288 K (15 °C). Eftir akstur á sólríkum degi er hann 2,5 atm. Rúmmálið er fast. Hvert er nýja hitastigið? (Dekkjamælir sýnir yfirþrýsting, um 1 atm minna en heildarþrýstinginn, og lögmálið gildir aðeins um heildarþrýsting.)',
     difficulty: 'Miðlungs',
     gasLaw: 'gay-lussac',
     given: {

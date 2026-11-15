@@ -293,6 +293,22 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
 `phone-scroll.test.tsx` holds the game to this. A desktop window keeps exactly the scrolling it had
 (`useCommitReveal`, `useItemStart` and `useRevealTopOnDesktop` in `@shared/utils`); what it gains is focus.
 
+## Fixed 2026-11-14: the 1846 % line, and air as molarities
+
+From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
+
+- **The backward Beita problem skips the five per cent question.** Tilraun 2 runs backwards from
+  a mixture holding every species, which is not the case the shortcut is taught for, and the
+  engine gives it no approximate x. The screen still asked the question and then measured the
+  change against the reactants, which a backward run forms: "Stærsta breytingin er 1846,06 % af
+  upphafsstyrknum". It now goes from x to the verdict with the reason, as the problem with no
+  denominator does. `largestRelativeChange` in the shared engine measures the species a run uses
+  up, the products when it runs backwards (`equilibrium.test.ts`, `beita-direction.test.tsx`).
+- **The nitric oxide problem says what its numbers are.** It starts N₂ at 0,781 M and O₂ at
+  0,21 M and called them "hlutföll andrúmsloftsins", mole fractions written as molarities; air at
+  2000 °C is far thinner. Δn = 0, so the fraction that becomes NO is the same either way, and the
+  context now says so.
+
 ## Open
 
 - **The ICE ordering above** — the book puts the calculations after Le Chatelier and this game puts

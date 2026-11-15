@@ -36,7 +36,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Tengir þrýsting, rúmmál, mól og hitastig',
     constants: 'R = 0,08206 L·atm/(mól·K)',
     principleIs:
-      'Gasagnir hreyfast stöðugt og rekast á veggi ílátsins. PV = nRT tengir saman fjölda árekstra (P), plássið sem agnirnar hafa (V), fjölda agna (n) og hraðann þeirra (T). R er fastinn sem gerir einingarnar samstæðar.',
+      'Gasagnir hreyfast stöðugt og rekast á veggi ílátsins. Þrýstingurinn (P) ræðst af því hve oft og hve fast þær rekast á hvern fermetra veggjarins. PV = nRT tengir hann við plássið sem agnirnar hafa (V), fjölda agna (n) og hitastigið (T), sem er mælikvarði á meðalhreyfiorku agnanna. R er fastinn sem gerir einingarnar samstæðar.',
   },
   boyles: {
     id: 'boyles',
@@ -45,7 +45,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Þrýstingur og rúmmál eru í andhverfu hlutfalli',
     constants: 'T og n eru fastar',
     principleIs:
-      'Ef þú minnkar rúmmálið (V↓) án þess að breyta hitastigi eða fjölda agna, þá þurfa sömu agnir að rekast við minni veggi á styttri tíma → fleiri árekstrar á fermetra → hærri þrýstingur. P og V eru því í andhverfu hlutfalli: þegar annað tvöfaldast, helmingast hitt.',
+      'Ef þú minnkar rúmmálið (V↓) án þess að breyta hitastigi eða fjölda agna, þá þéttast agnirnar og hver fermetri veggjarins verður fyrir fleiri árekstrum á sekúndu → hærri þrýstingur. P og V eru því í andhverfu hlutfalli: þegar annað tvöfaldast, helmingast hitt.',
   },
   charles: {
     id: 'charles',
@@ -54,7 +54,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Rúmmál og hitastig eru í beinu hlutfalli',
     constants: 'P og n eru fastar',
     principleIs:
-      'Hærra hitastig þýðir að agnirnar hreyfast hraðar. Til að halda sama þrýstingi (sami fjöldi árekstra á fermetra) þarf rúmmálið að aukast. V og T eru því í beinu hlutfalli í Kelvin.',
+      'Hærra hitastig þýðir meiri meðalhreyfiorku: agnirnar hreyfast hraðar og rekast oftar og fastar á veggina. Til að þrýstingurinn haldist óbreyttur þarf rúmmálið að aukast, svo árekstrarnir dreifist á stærri veggi. V og T eru því í beinu hlutfalli, í kelvinum.',
   },
   'gay-lussac': {
     id: 'gay-lussac',
@@ -63,7 +63,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Þrýstingur og hitastig eru í beinu hlutfalli',
     constants: 'V og n eru fastar',
     principleIs:
-      'Í lokuðu íláti (V fast) gera hraðari agnir harðari árekstur við veggina. Hærra T → harðari árekstur → hærri P. Þess vegna springa loftkútar þegar þeir ofhitna.',
+      'Í lokuðu íláti (V fast) hreyfast agnirnar hraðar við hærra hitastig, svo þær rekast bæði oftar og fastar á veggina. Hærra T → hærri P. Þess vegna geta lokaðir kútar sprungið þegar þeir ofhitna.',
   },
   combined: {
     id: 'combined',
@@ -81,7 +81,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Rúmmál og mólfjöldi eru í beinu hlutfalli',
     constants: 'P og T eru fastar',
     principleIs:
-      'Við sama þrýsting og hitastig þurfa fleiri agnir (n↑) meira pláss til að halda sama árekstri á fermetra. Þess vegna hefur 1 mól af hvaða gasi sem er sama rúmmál við staðalaðstæður (22,4 L við STP).',
+      'Við sama þrýsting og hitastig þurfa fleiri agnir (n↑) meira pláss, svo hver fermetri veggjarins verði áfram fyrir jafnmörgum árekstrum. Þess vegna hefur 1 mól af hvaða gasi sem er sama rúmmál við sömu aðstæður (22,4 L við STP).',
   },
 };
 

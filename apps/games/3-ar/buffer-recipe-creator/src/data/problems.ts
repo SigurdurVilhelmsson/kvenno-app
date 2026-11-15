@@ -180,11 +180,11 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     acidMolarMass: 119.98,
     baseMolarMass: 141.96,
     context:
-      '🩸 Blóðstuðpúði (pH 7,35-7,45): Fosfatstuðpúði er annar mikilvægasti stuðpúði blóðsins eftir bíkarbónat. Viðheldur pH í frumunum.',
+      '🩸 Fosfat í frumum: fosfatstuðpúði er helsti stuðpúðinn inni í frumum. Í blóðinu vega bíkarbónatkerfið og prótínin þyngra.',
     contextEn:
-      '🩸 Blood buffer (pH 7.35-7.45): Phosphate buffer is the second most important blood buffer after bicarbonate. Maintains pH inside cells.',
+      '🩸 Phosphate in cells: the phosphate buffer is the main buffer inside cells. In blood, the bicarbonate system and proteins matter more.',
     contextPl:
-      '🩸 Bufor krwi (pH 7,35-7,45): Bufor fosforanowy jest drugim najważniejszym buforem krwi po wodorowęglanie. Utrzymuje pH wewnątrz komórek.',
+      '🩸 Fosforan w komórkach: bufor fosforanowy jest głównym buforem wewnątrz komórek. We krwi większą rolę odgrywają układ wodorowęglanowy i białka.',
   },
   {
     id: 12,
@@ -199,11 +199,11 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     acidMolarMass: 84.01,
     baseMolarMass: 105.99,
     context:
-      '🏊 Sundlaugaefnafræði: Karbónatstuðpúði viðheldur pH í sundlaugum (pH 7,2-7,8). Of hátt pH veldur húðertingu.',
+      'Karbónatstuðpúði úr NaHCO₃ og Na₂CO₃, tveimur föstum söltum sem má vigta. Notaður á rannsóknarstofu við pH nálægt 10.',
     contextEn:
-      '🏊 Swimming pool chemistry: Carbonate buffer maintains pH in swimming pools (pH 7.2-7.8). Too high pH causes skin irritation.',
+      'Carbonate buffer from NaHCO₃ and Na₂CO₃, two solid salts that can be weighed. Used in the laboratory near pH 10.',
     contextPl:
-      '🏊 Chemia basenu: Bufor węglanowy utrzymuje pH w basenach (pH 7,2-7,8). Zbyt wysokie pH powoduje podrażnienie skóry.',
+      'Bufor węglanowy z NaHCO₃ i Na₂CO₃, dwóch stałych soli, które można zważyć. Stosowany w laboratorium przy pH bliskim 10.',
   },
   {
     id: 14,

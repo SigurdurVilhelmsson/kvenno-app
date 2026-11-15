@@ -140,30 +140,38 @@ const MIXING_ORDER: Omit<
   {
     formula: 'BaSO₄',
     difficulty: 'mid',
-    cation: { concentration: 1.0e-4, volume: 0.1, source: 'BaCl₂' },
-    anion: { concentration: 1.0e-4, volume: 0.1, source: 'Na₂SO₄' },
+    // 1,0 × 10⁻³ M, not 10⁻⁴: at 10⁻⁴ the verdict was "precipitates" by Brown and
+    // "does not" by the Icelandic book, whose Ksp for BaSO₄ is 209 times larger.
+    cation: { concentration: 1.0e-3, volume: 0.1, source: 'BaCl₂' },
+    anion: { concentration: 1.0e-3, volume: 0.1, source: 'Na₂SO₄' },
     context: 'Jafnstór rúmmál, svo báðir styrkir helmingast áður en nokkuð annað gerist.',
   },
   {
     formula: 'BaSO₄',
     difficulty: 'thung',
-    cation: { concentration: 4.0e-5, volume: 0.025, source: 'BaCl₂' },
-    anion: { concentration: 4.0e-5, volume: 0.075, source: 'Na₂SO₄' },
+    // 4,0 × 10⁻³ M for the same reason as the problem above.
+    cation: { concentration: 4.0e-3, volume: 0.025, source: 'BaCl₂' },
+    anion: { concentration: 4.0e-3, volume: 0.075, source: 'Na₂SO₄' },
     context:
       'Ójöfn rúmmál: 25 mL á móti 75 mL. Styrkirnir þynnast ekki jafnt, og þar fellur flest fólk.',
   },
   {
     formula: 'CaF₂',
     difficulty: 'thung',
-    cation: { concentration: 2.0e-3, volume: 0.05, source: 'CaCl₂' },
-    anion: { concentration: 2.0e-3, volume: 0.05, source: 'NaF' },
+    // Q is 5,5 times Ksp, in both books: the one mixing problem whose ratio is a
+    // small number, since the two BaSO₄ problems had to move far over the line.
+    cation: { concentration: 1.2e-3, volume: 0.05, source: 'CaCl₂' },
+    anion: { concentration: 1.2e-3, volume: 0.05, source: 'NaF' },
     context: 'Hlutfallið 1:2, svo flúoríðstyrkurinn fer í annað veldi í Q.',
   },
   {
-    formula: 'SrCO₃',
+    // The close call is AgBr, which both books give as 5,0 × 10⁻¹³. It was SrCO₃,
+    // with Q 3 % under Brown's Ksp and 29 % over the Icelandic book's, so a
+    // student checking their own book got the opposite verdict.
+    formula: 'AgBr',
     difficulty: 'mid',
-    cation: { concentration: 6.0e-5, volume: 0.05, source: 'Sr(NO₃)₂' },
-    anion: { concentration: 6.0e-5, volume: 0.05, source: 'Na₂CO₃' },
+    cation: { concentration: 1.3e-6, volume: 0.05, source: 'AgNO₃' },
+    anion: { concentration: 1.3e-6, volume: 0.05, source: 'NaBr' },
     context:
       'Naumt: Q lendir rétt undir Ksp. Svona dæmi er ekki hægt að giska á — það verður að reikna.',
   },
@@ -204,7 +212,7 @@ const FRACTIONAL_ORDER: Omit<FractionalProblem, 'order' | 'defeatsKspOrdering'>[
     sharedIonName: 'Ag⁺',
     difficulty: 'thung',
     context:
-      'Mohr-títrun. Lausnin inniheldur bæði klóríð og krómat í 0,010 M, og silfurnítrati er dreypt í. Silfurkrómat er með 150-falt lægra Ksp en silfurklóríð — og fellur samt út á eftir. Það er einmitt þess vegna sem rauði liturinn virkar sem litvísir: hann kemur ekki fyrr en klóríðið er uppurið.',
+      'Mohr-títrun. Lausnin inniheldur bæði klóríð og krómat í 0,010 M, og silfurnítrati er dreypt í. Silfurkrómat er með mun lægra Ksp en silfurklóríð — 150-falt lægra hjá Brown, 18-falt í íslensku bókinni — og fellur samt út á eftir. Það er einmitt þess vegna sem rauði liturinn virkar sem litvísir: hann kemur ekki fyrr en klóríðið er uppurið.',
     candidates: [
       { formula: 'AgCl', otherIonConcentration: 0.01 },
       { formula: 'Ag₂CrO₄', otherIonConcentration: 0.01 },

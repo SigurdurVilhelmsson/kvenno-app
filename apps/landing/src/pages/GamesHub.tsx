@@ -146,7 +146,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Jafnvægisstjóri',
-        description: 'Læra um Le Chatelier meginregluna',
+        description: 'Hvernig jafnvægi hliðrast við álag: lögmál Le Chateliers',
         slug: 'equilibrium-shifter',
       },
       {

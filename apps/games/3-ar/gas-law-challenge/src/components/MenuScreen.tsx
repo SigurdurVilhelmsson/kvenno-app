@@ -91,8 +91,8 @@ export function MenuScreen({
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3">
                   <div className="bg-white p-2 rounded">
-                    <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri árekstrar =
-                    meiri þrýstingur
+                    <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri og harðari
+                    árekstrar = meiri þrýstingur
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-green-700">V (rúmmál)</strong> — minna ílát = fleiri
@@ -100,7 +100,7 @@ export function MenuScreen({
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-red-700">T (hitastig)</strong> — hærra T = hraðari agnir
-                    = harðari árekstur
+                    = fleiri og harðari árekstrar
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-amber-700">n (mólfjöldi)</strong> — fleiri agnir =

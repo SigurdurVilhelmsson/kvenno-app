@@ -103,7 +103,10 @@ describe('the problem that runs backwards', () => {
     });
     fireEvent.change(screen.getByLabelText('Veldisvísir'), { target: { value: String(power) } });
     fireEvent.click(screen.getByText('Athuga'));
-    // A correct x moves straight on to the five per cent question.
-    expect(screen.getByText(/nálgunin hefði dugað/)).toBeTruthy();
+    // A correct x goes straight to the verdict: no five per cent question, since every
+    // species is present at the start, and no percentage of a starting amount that grows.
+    expect(screen.queryByText(/nálgunin hefði dugað/)).toBeNull();
+    expect(screen.getByText(/nálgunin á ekki við/)).toBeTruthy();
+    expect(screen.queryByText(/Stærsta breytingin/)).toBeNull();
   });
 });
