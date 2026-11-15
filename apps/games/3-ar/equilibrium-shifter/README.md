@@ -94,10 +94,12 @@ src/engine/stress.ts              what a stress does to Q, K and the mixture
 src/utils/le-chatelier.ts         the qualitative shift and its explanations
 src/components/QKComparison.tsx   the Q vs K bars, drawn from the shift direction
 src/components/NumbersPanel.tsx   the same comparison in computed numbers
-src/components/ParticleEquilibrium.tsx  particle picture
+src/engine/mixture.ts             particle counts per frame, from applyStress, on one scale
+src/components/MixtureView.tsx    the mixture's particles, three frames
 src/types.ts, src/i18n.ts, src/styles.css, src/main.tsx
 src/__tests__/                    le-chatelier, numbers, numbers-panel, qk-pressure,
-                                  screen-anchoring, bar-labels, learning-count, ruled-names
+                                  screen-anchoring, bar-labels, learning-count, ruled-names,
+                                  mixture, mixture-view
 ```
 
 **On a phone (2026-09-23).** Everything below `sm` is a phone layout and `sm:`/`md:` restore the
@@ -118,8 +120,7 @@ desktop one, which was checked pixel-identical at 1280 and 768. Four choices are
   feedback button within 400 ms of it appearing is dropped (`useArmedAfter`), so a double tap on
   a prediction cannot skip the explanation. Screen swaps do not use `useScreenTop`: the screens
   fade (`FadePresence`), which mounts the new one a render later, so the same steps run as its
-  root attaches — and without setting state, because every render of `App` re-seeds the particle
-  picture from `Math.random`.
+  root attaches — and without setting state.
 - **The numbers table scrolls sideways inside its own box** where a row of scientific notation is
   wider than the phone (the weak acids at 360 px, most systems at 320 px). The species column is
   pinned (`.table-pin`, which also carries its high-contrast background) and a shadow marks the
@@ -132,6 +133,31 @@ desktop one, which was checked pixel-identical at 1280 and 768. Four choices are
 The shared pieces it depends on: `packages/shared/engine/equilibrium.ts`,
 `packages/shared/data/thermo.ts`, `packages/shared/data/appendix-d.ts`. `MIGRATION-SUMMARY.md` is a
 historical record of the port from the old HTML game and is out of date on most specifics.
+
+## The particles in the mixture (2026-11-15)
+
+The generic picture that sat under the equation (twenty orange R and twenty purple P, five moving
+one way or the other once the answer was in) is gone. It drew the same thing for every system and
+every stress, so it showed the conclusion rather than the mixture. In its place `MixtureView`
+draws the real species in K on one fixed scale per system, from `engine/mixture.ts`, which takes
+every amount from `applyStress` (the same numbers as the table below it):
+
+- **Three frames:** in equilibrium, the instant after the stress, the new equilibrium. The third
+  appears only once the student has answered, since it is the answer. Where K's new value cannot
+  be computed (no reference temperature) the view stops at the second frame, rather than drawing
+  the old equilibrium as the new one.
+- **Particles are amounts, concentration times volume.** Compressing the vessel keeps the counts
+  and narrows the box; the shift that follows is what changes them. A temperature change leaves
+  the second frame identical to the first, and says that K moved, not the mixture.
+- **The largest species is 20 particles; the smallest must be at least 2,** or the system is not
+  drawn. That keeps 13 of the 22 systems with a constant: the gas-phase industrial ones, iron
+  thiocyanate and phosphoric acid. The weak acids (their H⁺ is about a hundredth of the acid), NO
+  and N₂O₄ ⇌ 2NO₂ would need exaggerating, which this view does not do, so they show no particles,
+  and neither do the eight systems without a constant. `mixture.test.ts` holds the list.
+- Counts are rounded to whole particles, so a small shift can stay under one particle; the caption
+  says so where the third frame equals the second.
+- Learning mode picks a system at random, so the e2e paths see the view only when they land on one
+  of the 13.
 
 ## Fixed 2026-11-14: two temperature answers backwards, and a hint that gave the answer
 

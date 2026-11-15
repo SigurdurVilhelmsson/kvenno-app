@@ -22,12 +22,13 @@ import {
   revealSpan,
 } from '@shared/utils';
 
+import { MixtureView } from './components/MixtureView';
 import { NumbersPanel } from './components/NumbersPanel';
-import { ParticleEquilibrium } from './components/ParticleEquilibrium';
 import { QKComparison } from './components/QKComparison';
 import { getRandomEquilibrium } from './data';
 import { CONSTANTS, STARTING_MIXTURES } from './data/constants';
-import { applyStress } from './engine/stress';
+import { mixtureFrames } from './engine/mixture';
+import { applyStress, equilibrate } from './engine/stress';
 import { gameTranslations } from './i18n';
 import {
   Equilibrium,
@@ -204,9 +205,8 @@ function App() {
   // on a phone the new screen starts at the top of the page, or back on the
   // menu with Lærdómshamur revealed; at every width focus moves to the new
   // heading (the equation, the results heading) or to Lærdómshamur, since the
-  // button that caused the swap has unmounted. No state is set here: every
-  // render of this component re-seeds the particle picture from Math.random,
-  // so an extra render would change which equilibrium comes next.
+  // button that caused the swap has unmounted. No state is set here, so the
+  // swap costs no extra render.
   const lastShownRef = useRef<string>(screen);
   const screenShown = (which: 'menu' | 'game' | 'results') => {
     if (lastShownRef.current === which) return;
@@ -864,20 +864,32 @@ function App() {
             </div>
           </div>
 
-          {/* Dynamic Particle Equilibrium Visualization */}
-          <div className="flex justify-center mb-6 phone:order-1 phone:mb-3 phone-land:col-start-1 phone-land:row-start-3">
-            <ParticleEquilibrium
-              reactantCount={20}
-              productCount={20}
-              shiftDirection={showExplanation ? correctShift?.direction : null}
-              isExothermic={
-                currentEquilibrium.thermodynamics.deltaH === 0
-                  ? null
-                  : currentEquilibrium.thermodynamics.type === 'exothermic'
-              }
-              running={screen === 'game'}
-            />
-          </div>
+          {/* The mixture, drawn to scale where the system allows it. Systems
+            that cannot be (a weak acid's H⁺ is a hundredth of the acid) or carry
+            no constant show no particles, rather than a picture of nothing in
+            particular. */}
+          {(() => {
+            const constant = CONSTANTS[currentEquilibrium.id];
+            const start = STARTING_MIXTURES[currentEquilibrium.id];
+            if (!constant || !start) return null;
+            const before = equilibrate(currentEquilibrium, constant.value, start);
+            if (!before) return null;
+            const outcome = appliedStress
+              ? applyStress(currentEquilibrium, constant, start, appliedStress)
+              : null;
+            const mixture = mixtureFrames(currentEquilibrium, before, outcome, appliedStress);
+            if (!mixture) return null;
+            return (
+              <div className="flex justify-center mb-6 phone:order-1 phone:mb-3 phone-land:col-start-1 phone-land:row-start-3">
+                <MixtureView
+                  mixture={mixture}
+                  stress={appliedStress?.type ?? null}
+                  available={showExplanation ? 3 : appliedStress ? 2 : 1}
+                  inert={outcome?.inert ?? false}
+                />
+              </div>
+            );
+          })()}
 
           {/* Context/Description */}
           <div className="bg-warm-50 rounded-lg px-2 py-4 sm:p-4 mb-6 phone:order-1 phone:py-2 phone:mb-0 phone-land:col-start-1 phone-land:row-start-4">

@@ -934,6 +934,11 @@ in the game's README.
       Each glass holds the same 40 molecules in more water, so the three flasks are drawn the same
       size although their volumes differ a hundredfold; the text says so. Keep, or draw the
       volumes?
+- [ ] **Hliðrun jafnvægis' particles** (2026-11-15): the generic R/P picture became the real
+      species on one scale, in three frames from `applyStress`, for the 13 systems that can be
+      drawn without exaggeration; the rest show none. Captions drafted by Claude
+      (`3-ar/equilibrium-shifter/src/components/MixtureView.tsx`). Keep showing no particles for
+      the weak acids, or draw them with a marked exaggeration as Agnasýn does?
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 

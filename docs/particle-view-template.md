@@ -123,5 +123,10 @@ flasks on one screen, which is why the system is one per flask and holds no glob
 is `3-ar/syrufastinn`'s, three flasks with no búretta (`reagent={null}`, a shorter `height`), glyphs
 naming the acid (`text`: `HF`, `F⁻`), and the weak acid's equilibrium shown at its real counts by
 `exchange` rather than by an exaggerated pair.
+
+`3-ar/equilibrium-shifter` follows the same rules without the flask: its species are gases and
+ions the system does not know, so `engine/mixture.ts` turns `applyStress`'s amounts into counts on
+one scale per system and `components/MixtureView.tsx` draws them as plain SVG circles that keep
+their place between frames. A system it cannot draw without exaggerating shows no particles.
 Open review items for Agnasýn itself are C23 in
 `docs/REVIEW-QUEUE.md`.
