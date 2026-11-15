@@ -7,6 +7,7 @@ import {
   type Direction,
 } from '@shared/engine/equilibrium';
 import {
+  formatDecimal,
   formatScientific,
   gradeScientific,
   INVALID_ENTRY_MESSAGE,
@@ -190,7 +191,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   };
 
   const decimals = (value: number) =>
-    Math.abs(value) < 1e-3 ? formatScientific(value, 3) : value.toFixed(4).replace('.', ',');
+    Math.abs(value) < 1e-3 ? formatScientific(value, 3) : formatDecimal(value, 4);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -508,7 +509,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                       <p className="mb-2 text-sm text-warm-800">
                         Stærsta breytingin er{' '}
                         <span className="whitespace-nowrap font-mono">
-                          {(result.relativeChange * 100).toFixed(2).replace('.', ',')} %
+                          {formatDecimal(result.relativeChange * 100, 2)} %
                         </span>{' '}
                         af {startingAmount}, sem er {result.approximationSafe ? 'undir' : 'yfir'}{' '}
                         <span className="whitespace-nowrap">

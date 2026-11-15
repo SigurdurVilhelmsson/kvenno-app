@@ -8,7 +8,13 @@ import {
   reactionQuotient,
   solveExtent,
 } from '@shared/engine/equilibrium';
-import { focusTarget, formatScientific, revealSpan, useArmedAfter } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  formatScientific,
+  revealSpan,
+  useArmedAfter,
+} from '@shared/utils';
 
 import { reactionBy } from '../data/reactions';
 
@@ -165,9 +171,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
                   {SPECIES.map((s) => (
                     <div key={s} className="flex justify-between gap-1">
                       <dt>[{s}]</dt>
-                      <dd className="whitespace-nowrap">
-                        {amounts[s].toFixed(4).replace('.', ',')} M
-                      </dd>
+                      <dd className="whitespace-nowrap">{formatDecimal(amounts[s], 4)} M</dd>
                     </div>
                   ))}
                 </dl>
@@ -195,14 +199,12 @@ export function KannaScreen({ onComplete, onBack }: Props) {
                       {SPECIES.map((s) => (
                         <div key={s} className="flex justify-between gap-1">
                           <dt>[{s}]</dt>
-                          <dd className="whitespace-nowrap">
-                            {settled[s].toFixed(4).replace('.', ',')} M
-                          </dd>
+                          <dd className="whitespace-nowrap">{formatDecimal(settled[s], 4)} M</dd>
                         </div>
                       ))}
                     </dl>
                     <p className="mt-3 border-t border-green-200 pt-3 font-mono text-xs font-semibold text-green-900 min-[360px]:text-sm phone:mt-2 phone:pt-2">
-                      Q = {settledQ!.toFixed(2).replace('.', ',')}
+                      Q = {formatDecimal(settledQ!, 2)}
                     </p>
                   </>
                 ) : (
@@ -249,9 +251,9 @@ export function KannaScreen({ onComplete, onBack }: Props) {
                 <p className="text-sm text-purple-900">
                   Upphafsblöndurnar fjórar eru gjörólíkar — ein hafði ekkert myndefni, önnur ekkert
                   hvarfefni. Samt endar Q alltaf á{' '}
-                  <span className="font-mono font-semibold">{K.toFixed(2).replace('.', ',')}</span>.
-                  Talan fer ekki eftir því hvað þú settir í kolbuna. Hún fer eftir hvarfinu sjálfu
-                  og hitastiginu — og hún heitir <strong>jafnvægisfastinn</strong>, K.
+                  <span className="font-mono font-semibold">{formatDecimal(K, 2)}</span>. Talan fer
+                  ekki eftir því hvað þú settir í kolbuna. Hún fer eftir hvarfinu sjálfu og
+                  hitastiginu — og hún heitir <strong>jafnvægisfastinn</strong>, K.
                 </p>
                 <p className="mt-2 font-mono text-sm text-purple-900">{kcExpression(reaction)}</p>
               </div>
