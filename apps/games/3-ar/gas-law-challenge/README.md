@@ -130,8 +130,17 @@ kPa, torr and mm Hg beside atm.
 
 ## Open
 
-- **No Explore phase.** The first thing after the menu is a graded question; the review cycle
-  deferred a manipulable pre-game simulator. Siggi, 2026-10-23 (decision 94): skipped for now.
+- **Agnasýn, an Explore screen (decision 94, reopened 2026-11-15).** Until then the first thing
+  after the menu was a graded question; Siggi had skipped a manipulable pre-game view on
+  2026-10-23. The menu now opens Agnasýn (`components/AgnasynScreen.tsx`, numbers from
+  `engine/agnasyn.ts`, scenes in `data/agnasyn-steps.tsx`): one cylinder with a stimpill and four
+  scenes, Boyle (push the stimpill), Charles (heat, the stimpill free under a weight, with V against
+  t in °C carried to alkul at −273,15 °C), Gay-Lussac (heat, the stimpill locked) and Avogadro (add
+  gas). Each starts at 1,00 mól, 300 K and 1,00 atm, holds two quantities fixed and marks them; one
+  circle is 0,050 mól, which the screen states. Two bars split P/P₀ into hits on the stimpill per
+  second and the push of each hit, the kinetic model's factors, and `agnasyn.test.ts` holds their
+  product equal to the gauge. Nothing is graded. The question simulator (`GasLawSimulator.tsx`) is
+  unchanged; whether Agnasýn should replace it is left open. The Icelandic was drafted by Claude.
 
 **Closed 2026-10-23 (Item 1 as applied, call 3/7, Siggi 2026-10-23).** In Æfingahamur the last
 hint states the answer, and a right answer given with it open still counted, so four presses of H
