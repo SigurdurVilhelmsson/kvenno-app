@@ -9,8 +9,9 @@ import { Level3 } from '../components/Level3';
 import { StepBySolution } from '../components/StepBySolution';
 import type { Difficulty, Problem } from '../types';
 import { clockPastNextGuard } from './next-guard-clock';
+import { generateUnitProblem, type UnitProblemType } from '../utils/concentration-units';
 import { generateProblem } from '../utils/problem-generator';
-import { checkAnswer, validateInput } from '../utils/validation';
+import { checkAnswer, diagnoseAnswer, validateInput } from '../utils/validation';
 
 // These tests press Næsta at once; step the clock past its 400 ms guard.
 clockPastNextGuard();
@@ -69,6 +70,24 @@ function exactFromQuestion(p: Problem): number {
         /blandar (\d+) mL af ([\d,]+) M .*? með (\d+) mL af ([\d,]+) M/
       );
       return (num(m1) * num(v1) + num(m2) * num(v2)) / (num(v1) + num(v2));
+    }
+    case 'massPercent': {
+      const [, g, w] = need(/leysir (\d+) g af .*? í (\d+) g af vatni/);
+      return (num(g) / (num(g) + num(w))) * 100;
+    }
+    case 'ppm': {
+      const [, sample, trace, unit, asked] = need(
+        /^([\d,]+) g sýni .*? inniheldur ([\d,]+) (mg|µg) af .*? í (ppm|ppb)\?/
+      );
+      const grams = num(trace) * (unit === 'mg' ? 1e-3 : 1e-6);
+      return (grams / num(sample)) * (asked === 'ppm' ? 1e6 : 1e9);
+    }
+    case 'moleFraction': {
+      const [, g, mm, w, mmw] = need(
+        /úr (\d+) g af .*?mólmassi ([\d,]+) g\/mól\) og (\d+) g af vatni \(mólmassi ([\d,]+) g\/mól\)/
+      );
+      const a = num(g) / num(mm);
+      return a / (a + num(w) / num(mmw));
     }
   }
 }
@@ -133,6 +152,64 @@ describe('Stig 3 grades against the value its own question gives', () => {
     }
   });
 });
+
+describe('the other concentration units grade against their own question too', () => {
+  const UNIT_TYPES: UnitProblemType[] = ['massPercent', 'ppm', 'moleFraction'];
+  const batch = UNIT_TYPES.flatMap((t) =>
+    Array.from({ length: 800 }, () => generateUnitProblem(t))
+  );
+
+  it('marks the exact answer and the last hint and worked solution correct', () => {
+    for (const p of batch) {
+      expect(checkAnswer(exactFromQuestion(p), p.answer), p.question).toBe(true);
+      expect(checkAnswer(lastNumber(p.hints[2]), p.answer), p.hints[2]).toBe(true);
+      expect(validateInput(formatAnswerish(p.answer)).valid, p.question).toBe(true);
+    }
+    for (const p of batch.filter((_, i) => i % 40 === 0)) {
+      const { container, unmount } = render(createElement(StepBySolution, { problem: p }));
+      const svar = [...container.querySelectorAll('h4')].find((h) =>
+        h.textContent?.startsWith('Svar:')
+      );
+      expect(checkAnswer(lastNumber(svar!.textContent ?? ''), p.answer), p.type).toBe(true);
+      unmount();
+    }
+  });
+
+  it('rejects 0, double and half, and keeps every wrong route outside the tolerance', () => {
+    for (const p of batch) {
+      expect(checkAnswer(0, p.answer)).toBe(false);
+      expect(checkAnswer(p.answer * 2, p.answer)).toBe(false);
+      expect(checkAnswer(p.answer / 2, p.answer)).toBe(false);
+      for (const r of p.wrongRoutes ?? []) {
+        expect(checkAnswer(r.value, p.answer), `${p.question} → ${r.message}`).toBe(false);
+        expect(diagnoseAnswer(r.value, p.answer, p.wrongRoutes)).toBe(r.message);
+      }
+    }
+  });
+
+  it('names the slip: dividing by the water alone, grams for moles, a unit step', () => {
+    const percent = batch.find((p) => p.type === 'massPercent')!;
+    const [, g, w] = percent.question.match(/leysir (\d+) g af .*? í (\d+) g af vatni/)!;
+    expect(diagnoseAnswer((num(g) / num(w)) * 100, percent.answer, percent.wrongRoutes)).toMatch(
+      /massa vatnsins/
+    );
+    const fraction = batch.find((p) => p.type === 'moleFraction')!;
+    expect(fraction.wrongRoutes!.map((r) => r.message).join(' ')).toMatch(/grömm.*mólum vatnsins/);
+    const ppm = batch.find((p) => p.unit === 'ppm')!;
+    expect(diagnoseAnswer(ppm.answer * 1000, ppm.answer, ppm.wrongRoutes)).toMatch(/sömu einingu/);
+  });
+
+  it("asks in ppm and in ppb, and keeps every answer under the field's ceiling", () => {
+    const units = new Set(batch.filter((p) => p.type === 'ppm').map((p) => p.unit));
+    expect([...units].sort()).toEqual(['ppb', 'ppm']);
+    for (const p of batch) expect(p.answer).toBeLessThan(1000);
+  });
+});
+
+/** The answer as a student would type it back. */
+function formatAnswerish(value: number): string {
+  return String(Number.parseFloat(value.toPrecision(3))).replace('.', ',');
+}
 
 describe('a worked step reproduces the answer from the numbers it prints', () => {
   /**
@@ -201,7 +278,7 @@ describe('Stig 3 screen', () => {
   /** Answer every problem (with "1", right or wrong) and return the questions. */
   function playThrough(): string[] {
     const seen: string[] = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 11; i++) {
       seen.push(question());
       fireEvent.change(screen.getByPlaceholderText('0,000'), { target: { value: '1' } });
       fireEvent.click(screen.getByRole('button', { name: 'Athuga' }));
@@ -215,7 +292,7 @@ describe('Stig 3 screen', () => {
     const first = playThrough();
     fireEvent.click(screen.getByRole('button', { name: 'Reyna aftur' }));
     const second = playThrough();
-    expect(second).toHaveLength(8);
+    expect(second).toHaveLength(11);
     expect(second).not.toEqual(first);
   });
 

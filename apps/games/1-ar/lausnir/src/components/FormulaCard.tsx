@@ -23,9 +23,20 @@ export function FormulaCard({ themeColor }: FormulaCardProps) {
           <div className="font-mono ml-2">(M₁ × V₁) = (M₂ × V₂)</div>
         </div>
         <hr className="my-2" />
+        {/* The book's ch03/m68704 and, for mole fraction, ch11/m68783. */}
+        <div>
+          <strong>Aðrar styrkeiningar:</strong>
+          <div className="font-mono ml-2">massaprósenta = (g efnis / g lausnar) × 100 %</div>
+          <div className="font-mono ml-2">ppm = (g efnis / g lausnar) × 10⁶</div>
+          <div className="font-mono ml-2">ppb = (g efnis / g lausnar) × 10⁹</div>
+          <div className="font-mono ml-2">mólhlutfall = mól efnis / mól allra efna</div>
+          <div className="ml-2 text-warm-600">Massi lausnar = massi efnis + massi leysis</div>
+        </div>
+        <hr className="my-2" />
         <div>
           <strong>Umreikningsstuðlar:</strong>
           <div className="font-mono ml-2">1 L = 1000 mL &nbsp;|&nbsp; 1 g = 1000 mg</div>
+          <div className="font-mono ml-2">1 mg = 1000 µg</div>
         </div>
       </div>
     </div>

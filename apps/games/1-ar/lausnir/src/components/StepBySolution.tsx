@@ -18,6 +18,28 @@ function round3(value: number): number {
 export function StepBySolution({ problem }: StepBySolutionProps) {
   if (!problem) return null;
 
+  if (problem.steps) {
+    return (
+      <div className="mt-4 space-y-2 phone:mt-0 phone:space-y-1">
+        <h3 className="text-lg font-bold text-warm-800 phone:text-base">Lausn með skrefum:</h3>
+        {problem.steps.map((step) => (
+          <div key={step.title} className="solution-step">
+            <h4>{step.title}</h4>
+            {step.lines.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
+          </div>
+        ))}
+        <div className="solution-step">
+          <h4>
+            Svar: {formatAnswer(problem.answer)}
+            {problem.unit ? ` ${problem.unit}` : ''}
+          </h4>
+        </div>
+      </div>
+    );
+  }
+
   if (problem.type === 'dilution') {
     return (
       <div className="mt-4 space-y-2 phone:mt-0 phone:space-y-1">

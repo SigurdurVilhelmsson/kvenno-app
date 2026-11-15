@@ -29,7 +29,14 @@ export interface Chemical {
 }
 
 export type ProblemType =
-  'dilution' | 'molarity' | 'molarityFromMass' | 'massFromMolarity' | 'mixing';
+  | 'dilution'
+  | 'molarity'
+  | 'molarityFromMass'
+  | 'massFromMolarity'
+  | 'mixing'
+  | 'massPercent'
+  | 'ppm'
+  | 'moleFraction';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 export type GameMode = 'competition' | 'practice';
@@ -45,6 +52,13 @@ export interface Problem {
   unit: string;
   difficulty: Difficulty;
   hints: string[];
+  /** The worked solution, for a type StepBySolution has no layout of its own for. */
+  steps?: { title: string; lines: string[] }[];
+  /**
+   * Answers a likely slip produces, each with what to say when a student's
+   * answer lands on one. Outside the answer's tolerance by construction.
+   */
+  wrongRoutes?: { value: number; message: string }[];
 }
 
 export interface GameState {

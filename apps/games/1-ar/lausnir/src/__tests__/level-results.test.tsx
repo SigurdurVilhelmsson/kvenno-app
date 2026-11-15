@@ -34,6 +34,17 @@ vi.mock('../utils/problem-generator', async (importOriginal) => {
     },
   };
 });
+vi.mock('../utils/concentration-units', async (importOriginal) => {
+  const real = await importOriginal<typeof import('../utils/concentration-units')>();
+  return {
+    ...real,
+    generateUnitProblem: (...args: Parameters<typeof real.generateUnitProblem>) => {
+      const p = real.generateUnitProblem(...args);
+      generated.push(p);
+      return p;
+    },
+  };
+});
 
 afterEach(cleanup);
 clockPastNextGuard();
@@ -116,10 +127,10 @@ describe('Stig 3 counts right answers and never gates completion', () => {
     const onComplete = vi.fn();
     const { container } = render(<Level3 onComplete={onComplete} onBack={vi.fn()} />);
     const ui = within(container);
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 11; i++) {
       expectNoRunningScore(container);
       // The old header showed "N/8" over "Rétt".
-      expect(container.textContent).not.toMatch(/\d\/8Rétt/);
+      expect(container.textContent).not.toMatch(/\d\/(8|11)Rétt/);
       const question = container.querySelector('p.text-lg')?.textContent;
       const problem = generated.find((p) => p.question === question)!;
       // A wrong answer is a third of the right one: positive and in range, so
@@ -133,17 +144,17 @@ describe('Stig 3 counts right answers and never gates completion', () => {
     return { onComplete, container, ui };
   }
 
-  it('reports 3 of 8 when three are right', () => {
+  it('reports 3 of 11 when three are right', () => {
     const { onComplete, container, ui } = play((i) => i < 3);
-    expect(container.textContent).toContain('3 af 8 rétt');
+    expect(container.textContent).toContain('3 af 11 rétt');
     fireEvent.click(ui.getByRole('button', { name: 'Ljúka stigi →' }));
-    expect(onComplete).toHaveBeenCalledWith(3, 8);
+    expect(onComplete).toHaveBeenCalledWith(3, 11);
   });
 
-  it('offers "Ljúka stigi" at 0 of 8 too, where it used to need 5', () => {
+  it('offers "Ljúka stigi" at 0 of 11 too, where it used to need 5', () => {
     const { onComplete, container, ui } = play(() => false);
-    expect(container.textContent).toContain('0 af 8 rétt');
+    expect(container.textContent).toContain('0 af 11 rétt');
     fireEvent.click(ui.getByRole('button', { name: 'Ljúka stigi →' }));
-    expect(onComplete).toHaveBeenCalledWith(0, 8);
+    expect(onComplete).toHaveBeenCalledWith(0, 11);
   });
 });

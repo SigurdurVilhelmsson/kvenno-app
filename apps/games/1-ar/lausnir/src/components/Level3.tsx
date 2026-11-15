@@ -15,15 +15,11 @@ import {
 import { Problem, ProblemType } from '../types';
 import { FormulaCard } from './FormulaCard';
 import { StepBySolution } from './StepBySolution';
+import { generateUnitProblem, type UnitProblemType } from '../utils/concentration-units';
 import { generateProblem } from '../utils/problem-generator';
-import {
-  validateInput,
-  checkAnswer,
-  formatAnswer,
-  getContextualFeedback,
-} from '../utils/validation';
+import { validateInput, checkAnswer, formatAnswer, diagnoseAnswer } from '../utils/validation';
 
-const TOTAL = 8;
+const TOTAL = 11;
 const THEME = '#8b5cf6';
 
 interface Level3Props {
@@ -31,7 +27,10 @@ interface Level3Props {
   onBack: () => void;
 }
 
-/** Pre-generate 8 problems: 4 easier then 4 harder, shuffled within each group */
+/**
+ * Pre-generate 11 problems: 4 easier, 4 harder, each group shuffled, then one
+ * in each of the other concentration units (year-1 plan item 15).
+ */
 function generateAllProblems(): Problem[] {
   const easyTypes: ProblemType[] = ['molarity', 'dilution', 'molarity', 'dilution'];
   const hardTypes: ProblemType[] = [
@@ -46,7 +45,10 @@ function generateAllProblems(): Problem[] {
       while (p.type !== type) p = generateProblem(diff);
       return p;
     });
-  return [...gen(easyTypes, 'easy'), ...gen(hardTypes, 'medium')];
+  const units = shuffleArray<UnitProblemType>(['massPercent', 'ppm', 'moleFraction']).map(
+    generateUnitProblem
+  );
+  return [...gen(easyTypes, 'easy'), ...gen(hardTypes, 'medium'), ...units];
 }
 
 export function Level3({ onComplete, onBack }: Level3Props) {
@@ -337,10 +339,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <FeedbackPanel
                   feedback={{
                     isCorrect: correct,
-                    explanation: `Rétt svar: ${formatAnswer(problem.answer)} ${problem.unit}`,
+                    explanation: `Rétt svar: ${formatAnswer(problem.answer)}${problem.unit ? ` ${problem.unit}` : ''}`,
                     misconception: correct
                       ? undefined
-                      : getContextualFeedback(parseStudentNumber(input), problem.answer),
+                      : diagnoseAnswer(
+                          parseStudentNumber(input),
+                          problem.answer,
+                          problem.wrongRoutes
+                        ),
                   }}
                   config={{
                     showExplanation: true,

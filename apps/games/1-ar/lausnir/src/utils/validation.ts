@@ -59,6 +59,19 @@ export function checkAnswer(
   return Math.abs(userValue - correctAnswer) <= tolerance;
 }
 
+/**
+ * Which slip the answer came from, when it lands within the tolerance of one of
+ * the problem's wrong routes; otherwise how far off it is.
+ */
+export function diagnoseAnswer(
+  userValue: number,
+  correctAnswer: number,
+  wrongRoutes: { value: number; message: string }[] = []
+): string {
+  const route = wrongRoutes.find((r) => checkAnswer(userValue, r.value));
+  return route ? route.message : getContextualFeedback(userValue, correctAnswer);
+}
+
 export function getContextualFeedback(userValue: number, correctAnswer: number): string {
   const percentError = Math.abs((userValue - correctAnswer) / correctAnswer) * 100;
 
