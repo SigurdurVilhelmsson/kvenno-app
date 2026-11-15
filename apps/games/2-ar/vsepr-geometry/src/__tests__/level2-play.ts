@@ -45,7 +45,7 @@ export const POOL: PoolEntry[] = [
   { formula: 'SF₄', bondingPairs: 4, lonePairs: 1, shape: 'Vegasalt', angle: '90 og 120' },
   { formula: 'SF₆', bondingPairs: 6, lonePairs: 0, shape: 'Áttflötungur', angle: '90' },
   { formula: 'XeF₄', bondingPairs: 4, lonePairs: 2, shape: 'Ferningslaga flatt', angle: '90' },
-  { formula: 'ClF₃', bondingPairs: 3, lonePairs: 2, shape: 'T-lögun', angle: '90' },
+  { formula: 'ClF₃', bondingPairs: 3, lonePairs: 2, shape: 'T-laga', angle: '90' },
 ];
 
 export type Ui = ReturnType<typeof within>;

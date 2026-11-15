@@ -99,7 +99,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         slug: 'lewis-structures',
       },
       {
-        title: 'VSEPR Rúmfræði',
+        title: 'VSEPR-rúmfræði',
         description: 'Lærðu um lögun sameinda með VSEPR kenningunni',
         slug: 'vsepr-geometry',
       },

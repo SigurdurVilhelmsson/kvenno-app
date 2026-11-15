@@ -1,4 +1,4 @@
-# VSEPR Rúmfræði
+# VSEPR-rúmfræði
 
 Chain position 3 in Year 2, between Lewis-formúlur and Millisameindakraftar. The game teaches how
 the number of `svæði rafeindaþéttleika` around a central atom, bonding domains and lone pairs
@@ -167,6 +167,12 @@ its explanation step marked a 10–20 character answer `Rangt` after Athuga allo
 (`wholeCount`, `explanationLongEnough`, `level2-grading.test.tsx`). The menu and Stig 3 said
 `Þríhyrnd` for trigonal planar; they say `Þríhyrningslaga flatt`, and `icelandic-text.test.ts`
 bans the bare form.
+
+**Fixed 2026-11-15** (year-2 audit, Phase 0; Siggi's ruling that the book wins where it and the
+games disagree). The T shape is `T-laga`, the book's label (8 to 1), not `T-lögun`; Stig 3's
+ethyne is `etýn` (book 4 to 2, and Lífræn nafnagift's `-ýn`), not `Etín`; and the game is
+`VSEPR-rúmfræði`, one hyphenated compound, on the hub card, the `<title>` and the header. Both
+terms are in `ordabok.md` and have `governed-terms.test.ts` rows.
 
 **Closed.** Decisions 1, 6, 7 (Stig 2), 8 (`klíptu eða skrunaðu`), 20, 67, 68, 69, 70 and 71 are
 applied, and the bond-angle scale (D1) is fixed. The three-domain bent card was once reported as a

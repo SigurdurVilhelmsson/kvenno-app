@@ -192,7 +192,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="VSEPR Rúmfræði" />
+      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="VSEPR-rúmfræði" />
       <div className="min-h-screen p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
           <p className="text-center text-warm-600 mb-8 phone:mb-3">

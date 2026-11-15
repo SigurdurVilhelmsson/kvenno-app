@@ -355,9 +355,9 @@ const challenges: Challenge[] = [
     id: 10,
     type: 'multi_center',
     formula: 'C₂H₂',
-    name: 'Etín (asetýlen)',
+    name: 'Etýn (asetýlen)',
     lewisStructure: 'H-C≡C-H',
-    question: 'Hvaða svigrúmablöndun hafa kolefnin í C₂H₂ (etín)?',
+    question: 'Hvaða svigrúmablöndun hafa kolefnin í C₂H₂ (etýn)?',
     options: [
       {
         id: 'a',

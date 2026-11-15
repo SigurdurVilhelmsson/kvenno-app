@@ -228,6 +228,7 @@ equilibrium pressure;jafnvægisþrýstingur
 equilibrium vapor pressure;jafnvægisgufunarþrýstingur
 equivalence point;jafngildispunktur
 Erlenmeyer flask;keiluflaska
+ethyne;etýn
 excess;umframmagn
 excess;umfram-
 excited state;örvað ástand
@@ -598,6 +599,7 @@ superscript;hávísir
 surface tension;yfirborðsspenna
 synthesis;samruni
 synthesis reaction;samrunaefnahvarf
+T-shaped;T-laga
 target molecule;markeind
 tautomer;ráphverfa
 tautomerization;ráphvarf
