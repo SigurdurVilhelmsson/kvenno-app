@@ -71,14 +71,15 @@ export const challenges: Challenge[] = [
         id: 'a',
         text: 'Vatn er skautaðra en H₂S',
         correct: false,
-        explanation: 'Báðar eru skautaðar, en það útskýrir ekki muninn.',
+        explanation:
+          'Vatn er skautaðra, en það eitt skýrir ekki 160 °C mun. Munurinn er að vatn myndar vetnistengi og H₂S ekki.',
       },
       {
         id: 'b',
-        text: 'Súrefni er rafneikvæðara en brennisteinn → sterkari H-tengi',
+        text: 'Vatn myndar vetnistengi en H₂S ekki',
         correct: true,
         explanation:
-          'Rétt! O er mun rafneikvæðara en S. O-H myndar sterk vetnistengi, S-H mjög veik.',
+          'Rétt! Vetnistengi myndast aðeins þegar H er bundið við F, O eða N. S er ekki nógu rafneikvætt, svo milli H₂S-sameinda eru aðeins tvískauts-tvískauts kraftar og London-kraftar, sem eru mun veikari en vetnistengin í vatni.',
       },
       {
         id: 'c',
@@ -93,9 +94,9 @@ export const challenges: Challenge[] = [
         explanation: 'Þetta hefur ekki áhrif á suðumark.',
       },
     ],
-    hint: 'Vetnistengi eru sterkust þegar H er bundið við MJÖG rafneikvætt atóm.',
+    hint: 'Hvaða atóm þarf H að vera bundið við til að vetnistengi myndist?',
     conceptNote:
-      'Vetnistengi myndast helst með F, O, N vegna mikillar rafneikvæðni. S, Cl, P eru ekki rafneikvæð nóg til að mynda sterk H-tengi.',
+      'Vetnistengi myndast aðeins þegar H er bundið við F, O eða N, sem eru mjög rafneikvæð. H bundið við S, Cl eða P myndar ekki vetnistengi; þar eru aðeins tvískauts-tvískauts kraftar og London-kraftar.',
   },
   {
     id: 3,
@@ -188,7 +189,8 @@ export const challenges: Challenge[] = [
         id: 'a',
         text: 'Vetnistengi við glerið',
         correct: false,
-        explanation: 'Gekkó myndar ekki efnasambönd við undirlag.',
+        explanation:
+          'Gekkóar loða líka við fleti sem geta ekki myndað vetnistengi. Það eru London-kraftarnir sem duga.',
       },
       {
         id: 'b',
@@ -199,9 +201,10 @@ export const challenges: Challenge[] = [
       },
       {
         id: 'c',
-        text: 'Rafstöðuaðdráttarkraftar',
+        text: 'Segulkraftar',
         correct: false,
-        explanation: 'Þetta er ekki rafstöðufyrirbæri.',
+        explanation:
+          'Hvorki fætur gekkóa né gler eru segulmögnuð. Millisameindakraftar eru rafstöðukraftar, ekki segulkraftar.',
       },
       {
         id: 'd',
@@ -212,7 +215,7 @@ export const challenges: Challenge[] = [
     ],
     hint: 'Gekkófætur hafa milljónir smárra hára. Hvað gerist þegar yfirborðsflatarmál eykst?',
     conceptNote:
-      'Þetta er dæmigert um hvernig margir veikir kraftar geta orðið sterkir saman. Hver setae gefur smá London-kraft, en milljónir þeirra gefa nægan kraft til að halda gekkóinum.',
+      'Þetta er dæmigert um hvernig margir veikir kraftar geta orðið sterkir saman. Hver setae gefur smá London-kraft, en milljónir þeirra gefa nægan kraft til að halda gekkóinum. London-kraftar eru rafstöðukraftar eins og allir millisameindakraftar: aðdráttur milli tímabundinna tvískauta.',
   },
   {
     id: 6,
@@ -350,9 +353,10 @@ export const challenges: Challenge[] = [
       },
       {
         id: 'd',
-        text: 'Rafstöðuafleiðsla',
+        text: 'Sápan límir vatnssameindirnar saman',
         correct: false,
-        explanation: 'Þetta er ekki rafstöðufyrirbæri.',
+        explanation:
+          'Sápa myndar ekki tengi milli vatnssameinda; hún minnkar raunar yfirborðsspennu vatns. Krafturinn sem togar yfirborðið saman er aðdráttur vetnistengja, sem er rafstöðukraftur.',
       },
     ],
     hint: 'Sameindir á yfirborðinu hafa færri nágranna til að mynda H-tengi við...',

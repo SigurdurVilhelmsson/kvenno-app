@@ -49,7 +49,7 @@ const IMF_TYPES: IMFType[] = [
     id: 'london',
     name: 'London-dreifikraftar',
     description:
-      'Veikir, tímabundnir aðdráttarkraftar vegna tímabundinna tvískauta. Til staðar í ÖLLUM sameindum.',
+      'Aðdráttur milli tímabundinna tvískauta. Til staðar í ÖLLUM sameindum. Oftast veikastir, en þeir vaxa með stærð sameindar og geta í stórum sameindum orðið sterkari en hinir kraftarnir.',
     strength: 'Veikastur',
     examples: ['CH₄', 'Ar', 'CO₂', 'CCl₄', 'I₂'],
   },
@@ -65,7 +65,7 @@ const IMF_TYPES: IMFType[] = [
     id: 'hydrogen',
     name: 'Vetnistengi',
     description:
-      'Sérstaklega sterkur tvískauts-tvískauts kraftur þegar H er bundið við F, O, eða N. Sterkasta IMF.',
+      'Sérstaklega sterkur tvískauts-tvískauts kraftur þegar H er bundið við F, O, eða N. Almennt sterkastur millisameindakraftanna.',
     strength: 'Sterkastur',
     examples: ['H₂O', 'NH₃', 'HF', 'CH₃OH', 'DNA'],
   },

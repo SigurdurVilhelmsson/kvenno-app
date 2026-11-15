@@ -209,6 +209,12 @@ function App() {
                 <div className="text-red-600">Sterkastur</div>
               </div>
             </div>
+            {/* The order is the usual one, not a law: the book's group 15–17 hydrides boil
+                higher down each group as growing London forces outweigh falling polarity. */}
+            <p className="text-indigo-900 text-xs mt-3">
+              Þetta er algengasta röðin, ekki regla. London-kraftar vaxa með stærð sameinda: niður
+              flokk 17 hækkar suðumarkið frá HCl til HI þótt skautunin minnki.
+            </p>
           </div>
 
           {/* Level selection */}
