@@ -145,6 +145,12 @@ config's DOM environment.
   planned in February and never built (`docs/FEBRUARY-DECISIONS-RECOVERED.md`, "Cross-game
   integration").
 
+**Fixed 2026-11-15** (year-2 audit, Phase 0). Stig 3 asked for the formula of `PRÓPANÓL`, a
+name that fits 2-própanól too. It asks for `1-PRÓPANÓL`, with CH₃CH(OH)CH₃ as a distractor, and
+the other options say `1-própanól`, as the book writes it (kafli 20). The hub card names Stig 3's
+functional groups (`virka hópa`). `propanol-locant.test.ts` holds both. The new wording was
+drafted by Claude.
+
 **Closed.** The April review cycle's deferred items for this game are done: branched molecules in
 Stig 2 (above), touch for the drag builder (the shared component's, CLAUDE.md), and the move to
 `useGameProgress` (`apps/games/2-ar/REVIEW_TRACKER.md`). The closing screen opened after Stig 3 whatever else was played (found and fixed
