@@ -5,12 +5,13 @@ import { useGameI18n } from '@shared/hooks';
 import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
+import { NaermyndScreen } from './components/NaermyndScreen';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
 
-type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'naermynd' | 'level1' | 'level2' | 'level3' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -90,6 +91,9 @@ function App() {
       : `${correct} ${t('progress.of', 'af')} ${total} ${t('progress.correct', 'rétt')}`;
   };
 
+  if (activeLevel === 'naermynd') {
+    return <NaermyndScreen onBack={() => setActiveLevel('menu')} />;
+  }
   if (activeLevel === 'level1') {
     return <Level1 t={t} onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
   }
@@ -208,6 +212,20 @@ function App() {
               </div>
             </div>
           </div>
+
+          {/* Nærmynd: the particles behind the reaction. Not a level and never marked done;
+              nothing in it is graded. */}
+          <button
+            type="button"
+            onClick={() => setActiveLevel('naermynd')}
+            className="game-card mb-4 w-full rounded-xl border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 sm:p-5 phone:mb-3 phone:p-3"
+          >
+            <h2 className="text-xl font-bold text-amber-900 phone:text-lg">Nærmynd</h2>
+            <p className="text-sm text-amber-800">
+              Sjáðu sink í koparsúlfatlausn: rafeindirnar flytjast, blái liturinn dofnar og meðjónin
+              stendur í stað.
+            </p>
+          </button>
 
           <div className="space-y-4 phone:space-y-3">
             <button

@@ -5020,6 +5020,39 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Nærmynd, the particle view (2026-11-15): its first scene, the electrons moving, the
+    // meðjón struck through, and the slider.
+    {
+      name: 'Nærmynd — upphaf',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 300 }],
+    },
+    {
+      name: 'Nærmynd — rafeindir flytjast',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta skref'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Nærmynd — meðjónin',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '3. Meðjónin'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Nærmynd — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '5. Kannaðu sjálf/ur'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Stig 1 — regla',
       steps: [
