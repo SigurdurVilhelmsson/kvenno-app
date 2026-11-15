@@ -10,11 +10,11 @@ half-reactions are scaffolded one step at a time.
 
 Three levels, none gated (Siggi's ruling, 2026-08-29). The menu names them from `i18n.ts`.
 
-| Stig | Menu name                     | What it asks                                                                                       |
-| ---- | ----------------------------- | -------------------------------------------------------------------------------------------------- |
-| 1    | `Stig 1: Oxunartölur`         | Six rule cards, then type the oxidation number of one element in 10 formulas, NaCl to Cr₂O₇²⁻      |
-| 2    | `Stig 2: Greina redox-hvörf`  | Intro, then 8 reactions × 4 two-option questions (oxast, afoxast, oxunarefnið, afoxunarefnið) = 32 |
-| 3    | `Stig 3: Stilla redox-jöfnur` | Intro, then 6 problems × 4 steps = 24: name both species, each half's electrons, the multipliers   |
+| Stig | Menu name                     | What it asks                                                                                     |
+| ---- | ----------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1    | `Stig 1: Oxunartölur`         | Six rule cards, then type the oxidation number of one element in 10 formulas, NaCl to Cr₂O₇²⁻    |
+| 2    | `Stig 2: Greina redox-hvörf`  | Intro, then 8 reactions × 4 two-option questions (oxast, afoxast, oxarinn, afoxarinn) = 32       |
+| 3    | `Stig 3: Stilla redox-jöfnur` | Intro, then 6 problems × 4 steps = 24: name both species, each half's electrons, the multipliers |
 
 - **Stig 1** reads a `type="number"` field through `parseWholeNumber` (`utils/answers.ts`), which
   accepts a whole number, signed or not, and rejects `-1.5` (a `parseInt` used to round it to -1).
@@ -143,13 +143,14 @@ graded or stored.
   with electrons moving through the plate, SO₄²⁻ struck out of the full equation as the meðjón,
   the colourless end with E°ker = 1,10 V, and a slider.
 - The book's word for the cell potential is `staðalkerspenna`, E°ker (ch17/m68823), and the
-  view uses it. The levels' `oxunarefni`/`afoxunarefni` were left alone here; the book says
-  `oxari`/`afoxari`, which is listed under Open.
+  view uses it.
+- Stig 2 said `oxunarefni`/`afoxunarefni` until 2026-11-15. The book's defining module
+  (ch04/m68710) marks `oxari` and `afoxari` as its terms, and its prose uses them about 90 to 26,
+  so by Siggi's ruling that day (book over game) the level now says `Hvað er oxarinn?`. Both are
+  masculine, where `-efni` was neuter. `ordabok.md` carries both and `governed-terms.test.ts`
+  bans the `-efni` forms; `andoxunarefni` (an antioxidant) is a different word and passes.
 
 ## Open
-
-- Stig 2 says `oxunarefni`/`afoxunarefni`; the book says `oxari` and `afoxari` (about 80 and 30
-  hits in `02-mt-output`). Not yet swept, and `ordabok.md` has no entry for either.
 
 - **i18n.** This is one of the nine games that keep a `LanguageSwitcher`, and the most translated
   (156 `t()` calls in `docs/i18n-coverage.md`). Whether to finish wiring the nine is the

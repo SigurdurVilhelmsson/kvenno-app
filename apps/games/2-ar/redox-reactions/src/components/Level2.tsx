@@ -160,12 +160,12 @@ const questionTypes: Question[] = [
   { type: 'reduced', label: 'Hvað afoxast?', hint: 'Hvað öðlast rafeindir? (ox# lækkar)' },
   {
     type: 'oxidizing-agent',
-    label: 'Hvað er oxunarefnið?',
+    label: 'Hvað er oxarinn?',
     hint: 'Efnið sem veldur oxun (tekur við rafeindum)',
   },
   {
     type: 'reducing-agent',
-    label: 'Hvað er afoxunarefnið?',
+    label: 'Hvað er afoxarinn?',
     hint: 'Efnið sem veldur afoxun (gefur rafeindir)',
   },
 ];
@@ -343,20 +343,20 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
           </div>
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <h3 className="font-bold text-amber-800 mb-2">Oxunarefni vs. afoxunarefni</h3>
+            <h3 className="font-bold text-amber-800 mb-2">Oxari og afoxari</h3>
             <ul className="space-y-1 text-sm text-warm-700 list-disc list-inside">
               <li>
-                <strong>Oxunarefni</strong> = tegundin sem <em>veldur</em> oxun. Hún sjálf afoxast
-                (tekur til sín rafeindir). Í dæminu: Cu²⁺.
+                <strong>Oxari</strong> = tegundin sem <em>veldur</em> oxun. Hún sjálf afoxast (tekur
+                til sín rafeindir). Í dæminu: Cu²⁺.
               </li>
               <li>
-                <strong>Afoxunarefni</strong> = tegundin sem <em>veldur</em> afoxun. Hún sjálf oxast
+                <strong>Afoxari</strong> = tegundin sem <em>veldur</em> afoxun. Hún sjálf oxast
                 (tapar rafeindum). Í dæminu: Zn.
               </li>
             </ul>
             <p className="text-xs text-amber-700 mt-2">
-              Mundu: tegundin sem „oxast“ og „afoxunarefni“ er sama tegundin — bara tvö ólík
-              sjónarhorn á sama hlutverkið.
+              Mundu: tegundin sem „oxast“ og „afoxari“ er sama tegundin — bara tvö ólík sjónarhorn á
+              sama hlutverkið.
             </p>
           </div>
 
@@ -547,7 +547,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
             </div>
             <div className="bg-purple-50 p-2 sm:p-3 rounded-lg">
               <div className="font-bold text-purple-800">
-                {t('concepts.oxidizingAgent', 'Oxunarefni')}
+                {t('concepts.oxidizingAgent', 'Oxari')}
               </div>
               <div className="text-purple-600">
                 {t('concepts.oxidizingAgentDesc', 'Veldur oxun • Afoxast sjálft')}
@@ -555,7 +555,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
             </div>
             <div className="bg-green-50 p-2 sm:p-3 rounded-lg">
               <div className="font-bold text-green-800">
-                {t('concepts.reducingAgent', 'Afoxunarefni')}
+                {t('concepts.reducingAgent', 'Afoxari')}
               </div>
               <div className="text-green-600">
                 {t('concepts.reducingAgentDesc', 'Veldur afoxun • Oxast sjálft')}

@@ -556,6 +556,13 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       "Siggi's ruling, 2026-10-02 (decision 16, option b): the systematic name, as Nafnakerfið teaches oxides, and the pair of koldíoxíð. The corpus is split 23 to 24 and ordabok.md was silent. hess-law said both words, Kolmónoxíð in a puzzle title and Kolsýringur in its formation-enthalpy table. Masculine to NEUTER, so the cases change: kolmónoxíð / kolmónoxíð / kolmónoxíði / kolmónoxíðs (með kolmónoxíði, brennsla kolmónoxíðs). Unrelated and not banned: kolsýra, carbonic acid.",
   },
   {
+    english: 'oxidizing agent / reducing agent',
+    correct: 'oxari / afoxari',
+    banned: [/(?<!\p{L})(af)?oxunarefn/iu],
+    guidance:
+      "2026-11-15, by Siggi's ruling that the book wins where it and a game disagree. The book's defining module (ch04/m68710) marks oxari and afoxari as its terms, and its prose uses them about 90 to 26 against oxunarefni/afoxunarefni; ordabok.md was silent. 2-ar/redox-reactions said the -efni forms in Stig 2. NEUTER to MASCULINE, so the cases change: oxari / oxara / oxara / oxara, def. oxarinn, pl. oxarar (Hvað er oxarinn?). The ban starts at a letter boundary, so andoxunarefni (an antioxidant) still passes.",
+  },
+  {
     english: 'polyatomic ion / monoatomic ion',
     correct: 'fjölatóma jón / einatóma jón',
     banned: [/fjölfrumeinda/i, /einfrumeinda/i],
@@ -837,6 +844,15 @@ describe('the letter-lookaround bans', () => {
     }
     for (const right of ['Ammóníumstuðpúði', 'ammóníumstuðpúða', 'ammóníumklóríð', 'stuðpúði']) {
       expect(hits('buffer / ammonium buffer', right), right).toBe(false);
+    }
+  });
+
+  it("oxidizing agent: the -efni forms in any case, never andoxunarefni or the book's words", () => {
+    for (const wrong of ['Oxunarefni', 'oxunarefnið', 'Afoxunarefni', 'afoxunarefnis']) {
+      expect(hits('oxidizing agent / reducing agent', wrong), wrong).toBe(true);
+    }
+    for (const right of ['andoxunarefni', 'oxarinn', 'afoxari', 'oxunartala']) {
+      expect(hits('oxidizing agent / reducing agent', right), right).toBe(false);
     }
   });
 });

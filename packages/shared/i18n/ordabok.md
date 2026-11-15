@@ -434,6 +434,7 @@ overall equation;heildarjafna
 overall order of reaction;heildarstig efnahvarfs
 oxidation;oxun
 oxidation number;oxunartala
+oxidizing agent;oxari
 oxoacid;oxósýra
 paramagnetic;meðseglandi
 partial pressure;hlutþrýstingur
@@ -513,6 +514,7 @@ rearrangement;umröðun
 reciprocal;umhverfa
 redox;oxunar-afoxunarhvarf
 redox reaction;redox-hvarf
+reducing agent;afoxari
 reduction;afoxun
 reduction potential;afoxunarspenna
 reflux;sísuða
