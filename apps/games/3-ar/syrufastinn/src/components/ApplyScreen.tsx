@@ -179,8 +179,9 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
           <div ref={feedbackRef} className="fade-in mt-5 phone:mt-3">
             {/* The bar shows the solution the question is about, so the 5 %
                 verdict is visible next to the answer. Kb is a property of the
-                conjugate base rather than of a solution, so it gets no bar. */}
-            {problem.kind !== 'kb' && (
+                conjugate base rather than of a solution, and pKa of the acid, so
+                neither gets a bar. */}
+            {problem.kind !== 'kb' && problem.kind !== 'pKa' && (
               <div className="mb-4 phone:mb-3">
                 <KlofnunBar
                   percent={percentDissociation(problem.acid.ka, problem.concentration)}

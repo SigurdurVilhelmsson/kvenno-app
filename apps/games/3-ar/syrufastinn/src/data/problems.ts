@@ -28,7 +28,7 @@ import {
 } from '../engine/grade';
 import { pKa, kbFromKa, kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
 
-export type ApplyKind = 'pH' | 'ka' | 'kb' | 'klofnun';
+export type ApplyKind = 'pH' | 'ka' | 'kb' | 'pKa' | 'klofnun';
 
 export interface PHProblem {
   id: string;
@@ -183,6 +183,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
   const ediksyra = MONOPROTIC_ACIDS.find((a) => a.id === 'ediksyra')!;
   const propansyra = MONOPROTIC_ACIDS.find((a) => a.id === 'propansyra')!;
   const fenol = MONOPROTIC_ACIDS.find((a) => a.id === 'fenol')!;
+  const maurasyra = MONOPROTIC_ACIDS.find((a) => a.id === 'maurasyra')!;
 
   out.push({
     id: 'apply-ph',
@@ -239,6 +240,24 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
       'Það er engin sérstök basareikningsfræði að læra — bara þetta samband.',
     misconception:
       'Ef þú dróst frá í stað þess að deila: sambandið er margföldun, Ka · Kb = Kw. Í pK-formi verður það pKa + pKb = 14, og þá má leggja saman.',
+    approximationValid: true,
+  });
+
+  // pKa is what pH Títrun and Stuðpúðasmíði hand the student; this is where it is defined.
+  out.push({
+    id: 'apply-pka',
+    kind: 'pKa',
+    acid: maurasyra,
+    concentration: 0.1,
+    question: `Í pH Títrun og Stuðpúðasmíði eru sýrur gefnar upp með pKa í stað Ka. Hvert er pKa ${maurasyra.nameGenitive} (Ka = ${sci(maurasyra.ka)})?`,
+    answer: pKa(maurasyra.ka),
+    grading: { mode: 'absolute', tolerance: PH_TOLERANCE },
+    answerHint: 'pKa, tveir aukastafir',
+    explanation:
+      `pKa = −log Ka = −log(${sci(maurasyra.ka)}) = ${fmt(pKa(maurasyra.ka), 2)}. ` +
+      `Því sterkari sem sýran er, því stærri er Ka og því lægri pKa: ${ediksyra.name.toLowerCase()} hefur pKa ${fmt(pKa(ediksyra.ka), 2)} ` +
+      `og ${fenol.name.toLowerCase()} ${fmt(pKa(fenol.ka), 2)}.`,
+    misconception: `Ef svarið þitt var ${fmt(-pKa(maurasyra.ka), 2)} gleymdirðu mínusmerkinu: pKa = −log Ka, og fyrir veika sýru er það jákvæð tala.`,
     approximationValid: true,
   });
 

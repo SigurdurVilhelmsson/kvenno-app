@@ -112,7 +112,7 @@ describe('the apply set', () => {
 
   it('asks each kind at least once', () => {
     const kinds = new Set(APPLY_PROBLEMS.map((p) => p.kind));
-    expect([...kinds].sort()).toEqual(['ka', 'kb', 'klofnun', 'pH']);
+    expect([...kinds].sort()).toEqual(['ka', 'kb', 'klofnun', 'pH', 'pKa']);
   });
 
   it('accepts its own stated answer', () => {
@@ -250,5 +250,16 @@ describe('the explore series', () => {
       const cs = exploreSeries(acid).map((p) => p.concentration);
       expect([...cs].sort((a, b) => b - a)).toEqual(cs);
     }
+  });
+});
+
+describe('pKa', () => {
+  it('is defined and asked once, graded on −log Ka', async () => {
+    const { APPLY_PROBLEMS: problems, gradeApply: grade } = await import('../data/problems');
+    const p = problems.find((q) => q.kind === 'pKa')!;
+    expect(p.answer).toBeCloseTo(-Math.log10(p.acid.ka), 12);
+    expect(p.answer).toBeCloseTo(3.74, 2);
+    expect(grade(p, 3.74)).toBe(true);
+    expect(grade(p, -3.74)).toBe(false);
   });
 });

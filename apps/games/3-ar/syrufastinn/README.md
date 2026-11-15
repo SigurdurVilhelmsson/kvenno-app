@@ -171,7 +171,17 @@ not contrived. A rule that never fires is a rule nobody believes.
 **Siggi's ruling, 2026-09-22, built the same day.** Adding HNO₂ had taken Beita from 12 problems
 to 16, twelve of them one generated template differing only in acid and concentration. It now
 poses **seven**: the four hand-written problems (pH, Ka, Kb, klofnunarhlutfall) and one
-rule-breaker per acid — `APPLY_RULE_BREAKERS` in `src/data/problems.ts`.
+rule-breaker per acid — `APPLY_RULE_BREAKERS` in `src/data/problems.ts`. **Eight since
+2026-11-15:** a fifth hand-written problem asks for maurasýra's pKa (3,74), graded to ±0,02 like
+a pH.
+
+### pKa is defined here
+
+**2026-11-15, the Year-3 development plan's Phase 4.** pH Títrun and Stuðpúðasmíði hand the
+student pKa as given data, and until now no game said what it is. Skilja's Sýrufastinn step now
+states `pKa = −log Ka` with ediksýra's value computed from its Ka (4,74) and names the two games
+that use it; Beita's pKa problem checks it, with a misconception for the dropped minus sign.
+Held by `problems.test.ts` (`pKa`).
 
 **Which pair per acid was not in the ruling, and the grader decided it: the most dilute.** Near
 the 5 % line the gap between √(Ka·C) and the exact root is only about 0,011 in pH, inside
