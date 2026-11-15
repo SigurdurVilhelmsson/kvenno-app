@@ -244,7 +244,7 @@ export const challenges: KineticsChallenge[] = [
         id: 'c',
         text: 'Aðeins rétt stefna',
         correct: false,
-        explanation: 'Orkukrafan er nauðsynleg til að rjúfa tengsl.',
+        explanation: 'Orkukrafan er nauðsynleg til að rjúfa tengi.',
       },
       {
         id: 'd',
@@ -258,7 +258,7 @@ export const challenges: KineticsChallenge[] = [
       strategy: 'Hugsaðu um bílárekstur - stefna og hraði skipta báðir máli',
       method: 'Tveir þættir: orka ≥ Ea OG rétt stefna',
       solution:
-        'Árekstur verður að hafa nógu mikla orku til að rjúfa tengsl OG sameindir þurfa að snerta á réttum stað',
+        'Árekstur verður að hafa nógu mikla orku til að rjúfa tengi OG sameindir þurfa að snerta á réttum stað',
     },
     conceptExplanation:
       'Árekstrartíðni ákvarðar hversu oft sameindir mætast. En aðeins brot þeirra hefur nóga orku og rétta stefnu.',
