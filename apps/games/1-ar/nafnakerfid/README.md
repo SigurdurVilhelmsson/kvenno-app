@@ -34,7 +34,33 @@ polyatomic ions, Roman numerals) and `segmentName` decomposes a name
 back into it with backtracking. `utils/nameParts.ts` builds the tray: the name's own morphemes plus
 2, 3 or 4 distractors by difficulty, same kind first. Level 3 grades on case-insensitive string
 equality against `compound.name`, with only a Greek prefix's last vowel before `oxíð` folded away
-(`utils/nameMatch.ts`), so a name the parts cannot spell is an unanswerable question. The pool is 52 of the 59 compounds; `name-builder.test.ts` pins both numbers.
+(`utils/nameMatch.ts`), so a name the parts cannot spell is an unanswerable question. The pool is 65 of the 72 compounds; `name-builder.test.ts` pins both numbers.
+
+**Acids and hydrates came from the book, 2026-11-15** (year-1 plan item 13). `ch02/m68698` names
+both and the game had neither. Stig 3's pool gains the book's nine acids (binary: vetnisklóríðsýra,
+vetnisbrómíðsýra, vetnissúlfíðsýra; oxo: kolsýra, saltpéturssýra and -sýrlingur, brennisteinssýra
+and -sýrlingur, fosfórsýra) and four hydrates (kopar(II)súlfat pentahýdrat and three more), so the
+pool is 65. `naming.ts` declares the new parts: `vetnis-` and `saltpéturs-` stems, `sýra` and
+`sýrlingur`, and the hydrate words (`pentahýdrat` …) as whole parts that carry their space, so a
+built name reads as the book prints it. Only the counts the book's hydrates use are offered; it
+writes `þríhýdrat` where this game's prefix for three is `trí`. `acids-hydrates.test.ts` holds the
+names to the book's table and each hydrate's prefix to its formula. HF is left out: the book's
+`vetnisflúoríðsýra` sits beside the platform's ruled `flússýra`. Name → formula is the third part of
+item 13, below.
+
+**Frá nafni til formúlu, 2026-11-15** (item 13's third part): Stig 3 the other way round, on a
+card of its own under the three levels, badged `Æfing`. It is not a fourth level (Siggi,
+2026-08-29), and its count is kept apart from the levels'. The student reads a name, picks its
+cation and anion from four each (the same metal at its other charge is always one of the four),
+and sets how many of each with steppers. The total charge shows as they go, as Stilla efnajöfnur
+counts atoms. What is graded is the ions and the lowest whole numbers. `data/ions.ts` holds the
+ions and derives every formula from the two charges. Its pool is every simple ionic compound in
+`compounds.ts` whose name and formula one ion pair spells (40), and it throws on import if one
+does not. Fe₃O₄ (two charges) and Mn₂O₇ (Mn(VII) is no ion a student meets) are left out, as are
+the hydrates. Feedback names the first thing wrong. A charge that does not cancel is said
+without the counts, so a retry still counts; the lowest-ratio verdict prints the formula, so a
+retry after it does not (decision 1 (b)). `name-to-formula.test.tsx` holds the formulas to
+`compounds.ts` and plays a run to a perfect count. Wording drafted by Claude.
 
 **Exclusion is declared, not inferred.** `excludeFromNameBuilder` sits on the seven compounds that
 are a single indivisible word — the trivial names (H₂O, NH₃, CH₄) and the four diatomic elements.

@@ -2,8 +2,9 @@
 import { shuffleArray } from '@shared/utils';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
-export type CompoundType = 'ionic' | 'molecular';
-export type Category = 'jónaefni' | 'sameind' | 'sameindaefni' | 'málmar-breytilega-hleðsla';
+export type CompoundType = 'ionic' | 'molecular' | 'acid';
+export type Category =
+  'jónaefni' | 'sameind' | 'sameindaefni' | 'málmar-breytilega-hleðsla' | 'sýra' | 'hýdrat';
 
 export interface Compound {
   formula: string;
@@ -585,6 +586,138 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'hard',
     elements: ['Fe', 'O'],
     observable: 'Segulsteinn, blanda Fe²⁺ og Fe³⁺',
+  },
+  // ACIDS and HYDRATES, from the book's ch02/m68698 (year-1 plan item 13, 2026-11-15).
+  // The observable names neither the anion nor the water count; `why` says both.
+  {
+    formula: 'HCl(aq)',
+    name: 'Vetnisklóríðsýra',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'medium',
+    elements: ['H', 'Cl'],
+    observable: 'Tvíundarsýra: vetnisklóríð leyst í vatni',
+    why: 'Vetnis- + klóríð + sýra. Hún kallast líka saltsýra.',
+  },
+  {
+    formula: 'HBr(aq)',
+    name: 'Vetnisbrómíðsýra',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'medium',
+    elements: ['H', 'Br'],
+    observable: 'Tvíundarsýra: gas leyst í vatni',
+    why: 'Vetnis- + brómíð + sýra.',
+  },
+  {
+    formula: 'H₂S(aq)',
+    name: 'Vetnissúlfíðsýra',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'hard',
+    elements: ['H', 'S'],
+    observable: 'Tvíundarsýra: gas leyst í vatni',
+    why: 'Vetnis- + súlfíð + sýra.',
+  },
+  {
+    formula: 'H₂CO₃',
+    name: 'Kolsýra',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'medium',
+    elements: ['H', 'C', 'O'],
+    observable: 'Oxósýra: í gosdrykkjum',
+    why: 'CO₃²⁻ er karbónat; -at verður -sýra og stofninn er kol-.',
+  },
+  {
+    formula: 'HNO₃',
+    name: 'Saltpéturssýra',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'medium',
+    elements: ['H', 'N', 'O'],
+    observable: 'Oxósýra: notuð í áburðarframleiðslu',
+    why: 'NO₃⁻ er nítrat; -at verður -sýra og stofninn er saltpéturs-.',
+  },
+  {
+    formula: 'HNO₂',
+    name: 'Saltpéturssýrlingur',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'hard',
+    elements: ['H', 'N', 'O'],
+    observable: 'Oxósýra: einu súrefnisatómi færra en systursýran',
+    why: 'NO₂⁻ er nítrít; -ít verður -sýrlingur.',
+  },
+  {
+    formula: 'H₂SO₄',
+    name: 'Brennisteinssýra',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'medium',
+    elements: ['H', 'S', 'O'],
+    observable: 'Oxósýra: í rafgeymum bíla',
+    why: 'SO₄²⁻ er súlfat; -at verður -sýra og stofninn er brennisteins-, ekki súlfat-.',
+  },
+  {
+    formula: 'H₂SO₃',
+    name: 'Brennisteinssýrlingur',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'hard',
+    elements: ['H', 'S', 'O'],
+    observable: 'Oxósýra: einu súrefnisatómi færra en systursýran',
+    why: 'SO₃²⁻ er súlfít; -ít verður -sýrlingur.',
+  },
+  {
+    formula: 'H₃PO₄',
+    name: 'Fosfórsýra',
+    type: 'acid',
+    category: 'sýra',
+    difficulty: 'medium',
+    elements: ['H', 'P', 'O'],
+    observable: 'Oxósýra: í kóladrykkjum',
+    why: 'PO₄³⁻ er fosfat; -at verður -sýra og stofninn er fosfór-.',
+  },
+  {
+    formula: 'CuSO₄·5H₂O',
+    name: 'Kopar(II)súlfat pentahýdrat',
+    type: 'ionic',
+    category: 'hýdrat',
+    difficulty: 'hard',
+    elements: ['Cu', 'S', 'O', 'H'],
+    observable: 'Blár kristall',
+    why: 'Cu²⁺ og súlfat, og fimm vatnssameindir: penta + hýdrat.',
+  },
+  {
+    formula: 'MgSO₄·7H₂O',
+    name: 'Magnesíumsúlfat heptahýdrat',
+    type: 'ionic',
+    category: 'hýdrat',
+    difficulty: 'hard',
+    elements: ['Mg', 'S', 'O', 'H'],
+    observable: 'Notað í baðsölt',
+    why: 'Sjö vatnssameindir á hverja formúlueiningu: hepta + hýdrat.',
+  },
+  {
+    formula: 'Na₂CO₃·10H₂O',
+    name: 'Natríumkarbónat dekahýdrat',
+    type: 'ionic',
+    category: 'hýdrat',
+    difficulty: 'hard',
+    elements: ['Na', 'C', 'O', 'H'],
+    observable: 'Notað í þvottaefni',
+    why: 'Tíu vatnssameindir: deka + hýdrat.',
+  },
+  {
+    formula: 'CoCl₂·6H₂O',
+    name: 'Kóbalt(II)klóríð hexahýdrat',
+    type: 'ionic',
+    category: 'hýdrat',
+    difficulty: 'hard',
+    elements: ['Co', 'Cl', 'O', 'H'],
+    observable: 'Rauðbleikur kristall',
+    why: 'Co²⁺ og klóríð, og sex vatnssameindir: hexa + hýdrat.',
   },
 ];
 

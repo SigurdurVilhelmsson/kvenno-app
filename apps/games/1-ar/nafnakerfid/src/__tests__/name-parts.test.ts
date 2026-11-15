@@ -42,7 +42,7 @@ describe('generateParts offers the answer', () => {
   const pool = buildablePool();
 
   it('draws from a pool that is nearly the whole compound table', () => {
-    expect(pool.length).toBe(52);
+    expect(pool.length).toBe(65);
   });
 
   it.each(pool.map((c) => [c.formula, c] as const))('%s', (_formula, compound) => {

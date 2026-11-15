@@ -91,10 +91,32 @@ export const POLYATOMIC_IONS = [
   'díkrómat',
 ] as const;
 
+/**
+ * Acids, from the book's _Tvíundarsýrur_ and _Oxsýrur_ (`ch02/m68698`). A binary acid
+ * is `vetnis-` + the anion + `sýra` (HCl(aq) = vetnisklóríðsýra); an oxoacid drops the
+ * hydrogen and takes the stem of its anion, `-at` becoming `-sýra` and `-ít`
+ * `-sýrlingur` (brennisteinssýra, brennisteinssýrlingur). The stems are the book's,
+ * including its exceptions: sulfate gives `brennisteins-`, nitrate `saltpéturs-`,
+ * carbonate `kol-` and phosphate `fosfór-`. Year-1 plan item 13, 2026-11-15.
+ */
+export const ACID_ENDINGS = ['sýra', 'sýrlingur'] as const;
+export const ACID_STEMS = ['vetnis', 'saltpéturs'] as const;
+
+/**
+ * Hydrates (`ch02/m68698`): the anhydrous name, then a word made of a Greek prefix for
+ * the water molecules and `hýdrat`, written apart — kopar(II)súlfat pentahýdrat. Each
+ * whole word is one part, carrying its space, so a built name reads exactly as the book
+ * prints it and the choice the part asks for is the count of water molecules.
+ *
+ * Only the counts the book's hydrate names use: it writes `þríhýdrat` where this game's
+ * prefix for three is `trí`, so three is left out until that is settled.
+ */
+export const HYDRATE_WORDS = [2, 5, 6, 7, 10].map((n) => ` ${PREFIXES[n]}hýdrat`);
+
 /** Oxidation states written as Roman numerals, for metals with a variable charge. */
 export const ROMAN_NUMERALS = ['(I)', '(II)', '(III)', '(IV)', '(VII)', '(II,III)'] as const;
 
-export type MorphemeKind = 'prefix' | 'root' | 'ion' | 'charge';
+export type MorphemeKind = 'prefix' | 'root' | 'ion' | 'charge' | 'acid' | 'water';
 
 export interface Morpheme {
   /** The text exactly as it is written inside a name. */
@@ -119,6 +141,9 @@ function buildInventory(): Morpheme[] {
   });
   POLYATOMIC_IONS.forEach((i) => add(i, 'ion'));
   ROMAN_NUMERALS.forEach((r) => add(r, 'charge'));
+  ACID_STEMS.forEach((st) => add(st, 'root'));
+  ACID_ENDINGS.forEach((e) => add(e, 'acid'));
+  HYDRATE_WORDS.forEach((w) => add(w, 'water'));
 
   return out;
 }

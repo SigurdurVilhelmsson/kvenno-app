@@ -1037,6 +1037,9 @@ Claude and want a teacher's read. Tick each with the date once read.
       slip messages and the worked steps. Numbers are the book's (ch04/m68716).
 - [ ] **Lotukerfið Stig 3, ions and average atomic mass** (`Level3.tsx`, `data/ions.ts`,
       `data/isotopes.ts`): the two new question prompts and their wrong-answer messages.
+- [ ] **Nafnakerfið, acids, hydrates and Frá nafni til formúlu** (`Level3.tsx`, `NameToFormula.tsx`,
+      `data/ions.ts`): the practice card's prompt and feedback, and the note on why HF is left out.
+      The acid and hydrate names are the book's.
 - [x] **Classification of matter and physical/chemical change** (book ch. 1, _einsleit_,
       _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
       a game. Do not log it as a game gap again.
