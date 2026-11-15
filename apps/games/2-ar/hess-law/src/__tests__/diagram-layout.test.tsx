@@ -33,13 +33,13 @@ afterEach(() => {
 const THREE_STEPS = [
   { label: 'C(s) + O₂(g) → CO₂(g)', deltaH: -787 },
   { label: 'H₂(g) + ½O₂(g) → H₂O(l)', deltaH: -857.4 },
-  { label: 'C₂H₅OH(l) → 2C(s) + 3H₂(g) + ½O₂(g)', deltaH: 277 },
+  { label: 'C₂H₅OH(l) → 2C(s) + 3H₂(g) + ½O₂(g)', deltaH: 277.6 },
 ];
 
 function renderPathway(px: number, isCorrect = false) {
   stubContainerWidth(px);
   const { container } = render(
-    <EnergyPathwayDiagram steps={THREE_STEPS} targetDeltaH={-1367} isCorrect={isCorrect} />
+    <EnergyPathwayDiagram steps={THREE_STEPS} targetDeltaH={-1366.8} isCorrect={isCorrect} />
   );
   const svg = container.querySelector('svg[role="img"]') as SVGSVGElement;
   const svgTexts = [...svg.querySelectorAll('text')].map((t) => t.textContent);
@@ -51,7 +51,7 @@ describe('EnergyPathwayDiagram layout', () => {
     const { container, svg, svgTexts } = renderPathway(800);
     expect(svg.getAttribute('viewBox')).toBe('0 0 400 280');
     expect(svgTexts).toContain('-787 kJ');
-    expect(svgTexts).toContain('Σ = -1367');
+    expect(svgTexts).toContain('Σ = -1366,8');
     expect(container.querySelector('ol')).toBeNull();
   });
 
@@ -63,7 +63,7 @@ describe('EnergyPathwayDiagram layout', () => {
     expect(svgTexts).toEqual(expect.arrayContaining(['1', '2', '3']));
 
     const items = [...container.querySelectorAll('ol > li')].map((li) => li.textContent);
-    expect(items).toEqual(['1-787 kJΣ = -787', '2-857 kJΣ = -1644', '3+277 kJΣ = -1367']);
+    expect(items).toEqual(['1-787 kJΣ = -787', '2-857,4 kJΣ = -1644,4', '3+277,6 kJΣ = -1366,8']);
   });
 
   it('still marks a correct path with a tick when narrow', () => {
@@ -105,10 +105,10 @@ describe('StatePathComparison layout', () => {
     const nodes = [...svg.querySelectorAll('path, text')];
     const lastLine = nodes.map((n) => n.tagName).lastIndexOf('path');
     const stepValues = nodes.filter(
-      (n) => n.tagName === 'text' && /^[+-]\d+$/.test(n.textContent ?? '')
+      (n) => n.tagName === 'text' && n.hasAttribute('data-step-value')
     );
     expect(stepValues.map((n) => n.textContent)).toEqual(
-      expect.arrayContaining(['-394', '-111', '-283'])
+      expect.arrayContaining(['-393,5', '-110,5', '-283'])
     );
     for (const n of stepValues) expect(nodes.indexOf(n)).toBeGreaterThan(lastLine);
   });

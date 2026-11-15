@@ -1,6 +1,9 @@
 import { useMemo, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
+
+import { kjLabel } from '../utils/kj-label';
 
 interface EnergyStep {
   label: string;
@@ -293,13 +296,12 @@ export function EnergyPathwayDiagram({
                   textAnchor="middle"
                   fontWeight="bold"
                 >
-                  {step.deltaH > 0 ? '+' : ''}
-                  {step.deltaH.toFixed(0)} kJ
+                  {kjLabel(step.deltaH)} kJ
                 </text>
 
                 {/* Cumulative label */}
                 <text x={x} y={y + 18} fill="#9ca3af" fontSize="9" textAnchor="middle">
-                  Σ = {step.cumulativeH.toFixed(0)}
+                  Σ = {formatDecimal(Math.round(step.cumulativeH * 10) / 10)}
                 </text>
               </g>
             );
@@ -359,10 +361,11 @@ export function EnergyPathwayDiagram({
                 {index + 1}
               </span>
               <span className="font-bold" style={{ color: step.color }}>
-                {step.deltaH > 0 ? '+' : ''}
-                {step.deltaH.toFixed(0)} kJ
+                {kjLabel(step.deltaH)} kJ
               </span>
-              <span className="text-warm-400">Σ = {step.cumulativeH.toFixed(0)}</span>
+              <span className="text-warm-400">
+                Σ = {formatDecimal(Math.round(step.cumulativeH * 10) / 10)}
+              </span>
             </li>
           ))}
         </ol>

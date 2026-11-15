@@ -53,6 +53,9 @@ const term = (formula: string, coefficient: number) => ({
 /** Answers are asked for, printed and graded to one decimal, as the book quotes them. */
 const oneDecimal = (x: number) => Math.round(x * 10) / 10;
 
+/** ΔH°rxn for 2CO + O₂ → 2CO₂: twice the book's ΔH°c of CO, −283,0 kJ/mól (m68727). */
+export const CO_COMBUSTION_RXN = 2 * -283.0;
+
 /**
  * The challenges. Every ΔH°f comes from the shared table and every `calculate` answer is
  * derived from those values below, so an answer cannot disagree with the numbers the
@@ -104,12 +107,16 @@ const challenges: Challenge[] = (
       titleKey: 'level3.c4title',
       descKey: 'level3.c4desc',
       type: 'reverse',
-      equation: 'S(s) + O₂(g) → SO₂(g)',
-      reactants: [term('S(s)', 1), term('O2(g)', 1)],
-      products: [term('SO2(g)', 1)],
-      unknownCompound: 'SO2(g)',
-      givenDeltaHrxn: formationEnthalpy('SO2(g)'),
-      correctAnswer: formationEnthalpy('SO2(g)'),
+      // The book's combustion enthalpy of CO (−283,0 kJ/mól, Staðalbrunavermi á mól in
+      // kafli 5, m68727), doubled for the equation as written. The answer is worked back
+      // from it and ΔH°f(CO₂), so it is the book's own Hess calculation. This replaced
+      // S + O₂ → SO₂, whose ΔH°rxn is ΔH°f(SO₂) and so printed the answer it asked for.
+      equation: '2CO(g) + O₂(g) → 2CO₂(g)',
+      reactants: [term('CO(g)', 2), term('O2(g)', 1)],
+      products: [term('CO2(g)', 2)],
+      unknownCompound: 'CO(g)',
+      givenDeltaHrxn: CO_COMBUSTION_RXN,
+      correctAnswer: oneDecimal((2 * formationEnthalpy('CO2(g)') - CO_COMBUSTION_RXN) / 2),
       unit: 'kJ/mól',
       hintKey: 'level3.c4hint',
       explanationKey: 'level3.c4explanation',

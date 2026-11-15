@@ -66,7 +66,7 @@ describe('hess-law level 1: the ΔH a question asks for', () => {
 
 /**
  * The state-path panel under every card is a worked example, and its CO₂ example labels its
- * first step `C + ½O₂ → CO` with ΔH = -111: challenge 5's answer, on screen below the
+ * first step `C + ½O₂ → CO` with ΔH = -110,5 (the -111 of its options): challenge 5's answer, on screen below the
  * question (decisions item 77). Challenge 5 now names that example, and the panel leaves it
  * out, picker button included, until the answer is checked.
  */
@@ -79,7 +79,7 @@ describe('hess-law level 1: the state-path panel under challenge 5', () => {
   it('leaves out the example that prints the answer until it is checked', () => {
     const { page } = openChallenge(5);
     expect(page.queryByRole('button', { name: CO2_EXAMPLE })).toBeNull();
-    expect(panel(page).textContent).not.toMatch(/-111\b/);
+    expect(panel(page).textContent).not.toMatch(/-111\b|-110,5/);
     expect(page.getByRole('button', { name: 'Myndun H₂O' })).toBeTruthy();
 
     answer(page, '-111 kJ');
@@ -89,7 +89,7 @@ describe('hess-law level 1: the state-path panel under challenge 5', () => {
   it('keeps it on the other challenges, where it answers nothing', () => {
     const { page } = openChallenge(4);
     fireEvent.click(page.getByRole('button', { name: CO2_EXAMPLE }));
-    expect(panel(page).textContent).toMatch(/-111\b/);
+    expect(panel(page).textContent).toMatch(/-110,5/);
   });
 
   it('is named only by challenge 5, and names an example the panel has', () => {

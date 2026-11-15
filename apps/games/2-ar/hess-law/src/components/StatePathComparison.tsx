@@ -3,6 +3,8 @@ import { useState, useMemo, useRef } from 'react';
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 import { formatDecimal } from '@shared/utils';
 
+import { kjLabel } from '../utils/kj-label';
+
 interface PathStep {
   label: string;
   deltaH: number;
@@ -241,6 +243,7 @@ export function StatePathComparison({
     point: { x: number; y: number; deltaH: number }
   ) => (
     <text
+      data-step-value
       x={point.x}
       y={narrow && pathIndex > 0 ? point.y + 22 : point.y - 12}
       fill={path.color}
@@ -249,8 +252,7 @@ export function StatePathComparison({
       fontWeight="bold"
       {...halo}
     >
-      {point.deltaH > 0 ? '+' : ''}
-      {point.deltaH.toFixed(0)}
+      {kjLabel(point.deltaH)}
     </text>
   );
 

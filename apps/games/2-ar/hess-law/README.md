@@ -134,9 +134,20 @@ environment.
   "Remaining deferred"; `docs/i18n-coverage.md`). Here the switcher changes only Stig 3's play
   screen: the menu, Stig 1, Stig 2, Stig 3's teach screen and its wrong-answer line are hardcoded
   Icelandic. So the `en` and `pl` blocks are rendered, through Stig 3's titles, hints and
-  explanations. Their numbers use a decimal point (`-890.6`, `+191.6`, `-296.83`): right in
+  explanations. Their numbers use a decimal point (`-890.6`, `+191.6`, `-566.0`): right in
   English, wrong in Polish, which writes a comma (mobile-pass decision 4 noted both). The Polish
   block itself is still waiting for teacher sign-off (`CLAUDE.md`, "Hess Polish i18n block").
+
+**Fixed 2026-11-15** (year-2 audit, Phase 0). Stig 3 challenge 4 gave ΔH°rxn for
+S + O₂ → SO₂ and asked for ΔH°f(SO₂), which is the same number, so it printed its answer. It is now
+2CO + O₂ → 2CO₂ with ΔH°rxn = −566,0 kJ, twice the book's combustion enthalpy of CO (−283,0,
+kafli 5, m68727). The student works ΔH°f(CO) = −110,5 back from it and ΔH°f(CO₂).
+`level3-display.test.tsx` holds it. The diagrams printed every ΔH to a whole kJ, so Stig 2
+puzzle 3's staircase read −1367 beside a card saying −1366,8, and Stig 1's state-path panel
+showed −394 and −111. Their labels now keep one decimal where the value has one
+(`utils/kj-label.ts`, `kj-label.test.tsx`). Methane, which the plan first named for challenge 4,
+was not used: challenge 1 is methane's combustion and prints ΔH°f(CH₄). The new wording was
+drafted by Claude.
 
 **Closed.** The hint penalty (2026-08-26), the formation-enthalpy source (decision 9), the running
 score (decision 1 (b)), and decisions 75–79, all above. The closing screen opened after Stig 3 whatever else was played (found and fixed 2026-11-02): it now opens only when the level just finished completes the set, as in Millisameindakraftar, held by `completion-screen.test.tsx`. Stig 2 puzzle 4's hint called NO a `millistig`; it says `milliefni` since 2026-11-02, and `icelandic-text.test.ts` bans the other word.
