@@ -155,6 +155,29 @@ The amber card above the levels opens a particle view of half-life, built on the
 - Scenes are data in `data/naermynd-steps.tsx`. The misconception it targets is that the second
   half takes as long as the first and then the reaction is over.
 
+## Heildað hraðalögmál og Arrhenius (2026-11-15)
+
+The second amber card opens the integrated rate laws, half-lives and the two-point Arrhenius
+equation (year-2 audit, Phase 3; book ch. 12.4, m68791, and 12.5, m68793). It is not a level:
+never marked done, counted toward nothing. Skilja: the three integrated laws, which plot is
+straight and the half-lives, and `Arrheniusarjafnan`. Kanna: move [A]₀ at each order; only at first
+order does the half-life stay put. Æfa: ten items, one attempt each, ending `N af M rétt`.
+
+- **The numbers are the book's**: cyclobutane, butadiene, H₂O₂, cyclopropane, N₂O₅, HI and
+  acetaldehyde, each item citing its example or exercise. The data says which formula answers
+  it; the key comes from `engine/rate-laws.ts` (`timeToLeave`, `kFromHalfLife`,
+  `activationEnergy`, beside the laws the graph and Nærmynd already share). `heildun.test.ts`
+  holds every key to the answer the book prints where it prints one.
+- **Grading.** Within 1 %, or 3 % for an activation energy so the book's two-figure answers
+  pass (it gives HI's Ea as 1,8 × 10⁵ J/mól from the same two points that give 185 kJ/mól).
+  Every graded number refuses 0, its negative, double and half. A wrong number is diagnosed
+  where it can be: 80 % taken as what is left, the first-order formula on a second-order
+  reaction, Ea in J or with log for ln.
+- Terms are the book's: `heildaða hraðalögmálið`, `helmingunartími`, `virkjunarorka`,
+  `hraðafasti`, `Arrheniusarjafnan`, which Stig 1 now writes too (it said `Arrhenius jafnan`).
+- **Molecularity** (the rate law of an elementary step) is the one ch. 12 gap the plan listed that
+  this does not cover. It is queued as a small follow-up.
+
 ## Open
 
 - **The Maxwell–Boltzmann panel cannot show its tail** (mobile-pass decision 80). At real scale the

@@ -122,7 +122,7 @@ export const challenges: KineticsChallenge[] = [
         id: 'c',
         text: 'Hraðafastinn k minnkar',
         correct: false,
-        explanation: 'k hækkar með hitastigi samkvæmt Arrhenius jöfnunni.',
+        explanation: 'k hækkar með hitastigi samkvæmt Arrheniusarjöfnunni.',
       },
       {
         id: 'd',
@@ -134,11 +134,11 @@ export const challenges: KineticsChallenge[] = [
     hints: {
       topic: 'Þetta snýst um hitastig og hvarfhraða',
       strategy: 'Hugsaðu um orkudreifingu Maxwell-Boltzmann',
-      method: 'Arrhenius jafnan: k = Ae^(-Ea/RT) - hærra T hækkar k',
+      method: 'Arrheniusarjafnan: k = Ae^(-Ea/RT) - hærra T hækkar k',
       solution: 'Hærra hitastig eykur hreyfiorku, þannig fleiri sameindir hafa E ≥ Ea',
     },
     conceptExplanation:
-      'Arrhenius jafnan: k = Ae^(-Ea/RT). Þegar T hækkar, hækkar k veldisvísislega.',
+      'Arrheniusarjafnan: k = Ae^(-Ea/RT). Þegar T hækkar, hækkar k veldisvísislega.',
   },
   {
     id: 4,
