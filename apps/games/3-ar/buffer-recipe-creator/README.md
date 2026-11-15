@@ -22,16 +22,16 @@ Stig 1 has no numbers to type: it grades whether [base]/[acid] falls inside the 
 pKa. Stig 2 and 3 are the calculation. Levels are not gated (the 2026-08-29 ruling); progress is kept
 under the `buffer-recipe-creator-progress` key.
 
-## Agnasýn: a buffer beside water (2026-11-15)
+## Nærmynd: a buffer beside water (2026-11-15)
 
 The first card on the menu, before Stig 1, is the game's Explore phase: 50 mL of a buffer and 50 mL
 of pure water side by side, with the same 1,0 M saltsýra (or natríumhýdroxíð) dripped into both.
 Five scenes and a slider; nothing is graded or stored. It is built on the shared particle view
-(`@shared/components/ParticleBeaker`, `docs/particle-view-template.md`), Agnasýn in `3-ar/ph-titration`
+(`@shared/components/ParticleBeaker`, `docs/particle-view-template.md`), Nærmynd in `3-ar/ph-titration`
 being the first consumer.
 
 - **The buffer is Stig 2's first problem** (problem 1, ediksýra at pH 4,74, 0,10 M), and
-  `engine/agnasyn.ts` takes its amounts from `solveBuffer`, so the scene and Stig 2 describe one
+  `engine/naermynd.ts` takes its amounts from `solveBuffer`, so the scene and Stig 2 describe one
   solution.
 - **The pH is exact**, from the charge balance of the whole solution (`pHAfter`), not from
   Henderson-Hasselbalch, which fails exactly where the scene is going: the buffer running out. The
@@ -43,7 +43,7 @@ being the first consumer.
 - **Capacity is shown, not defined**: the buffer takes 2,5 mL of either reagent, a dashed line on the
   curve marks it, and scene 4 drips past it.
 
-Tests: `agnasyn.test.ts` (the chemistry) and `agnasyn-screen.test.tsx` (every scene played, the
+Tests: `naermynd.test.ts` (the chemistry) and `naermynd-screen.test.tsx` (every scene played, the
 slider, no decimal point on screen). Wording is drafted by Claude (`docs/REVIEW-QUEUE.md` C23).
 
 ## Nothing in Stig 2 or Stig 3 is stored
@@ -118,9 +118,9 @@ component.
 ```
 src/App.tsx                               menu, progress, chain chip
 src/engine/buffer.ts                      solveBuffer, solveStockRecipe, bufferRange
-src/engine/agnasyn.ts                     Agnasýn's chemistry: exact pH, particle counts
-src/data/agnasyn-steps.tsx                Agnasýn's five scenes
-src/components/Agnasyn.tsx, BufferCurve   Agnasýn's screen and its pH curve
+src/engine/naermynd.ts                     Nærmynd's chemistry: exact pH, particle counts
+src/data/naermynd-steps.tsx                Nærmynd's five scenes
+src/components/Naermynd.tsx, BufferCurve   Nærmynd's screen and its pH curve
 src/types.ts                              BufferProblem (no stored answers)
 src/data/problems.ts                      28 problems: the pool Stig 2 and 3 draw from
 src/data/level1-challenges.ts             6 ratio-band challenges

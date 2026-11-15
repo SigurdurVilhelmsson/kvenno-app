@@ -15,7 +15,7 @@ import {
 /**
  * The shared particle system's strong-acid half, added for the buffer scene in
  * `3-ar/buffer-recipe-creator`: H⁺ drips in with Cl⁻ and protonates CH₃COO⁻.
- * Agnasýn's titration (the NaOH half) is held by `3-ar/ph-titration`'s tests.
+ * Nærmynd's titration (the NaOH half) is held by `3-ar/ph-titration`'s tests.
  */
 
 const BOUNDS = { left: 0, right: 300, top: 0, bottom: 240 };

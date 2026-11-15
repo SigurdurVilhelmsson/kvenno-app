@@ -1,9 +1,9 @@
 import { formatDecimal } from '@shared/utils';
 
-import { PKA, V_EQ, V_HALF, V_MAX, pHAt } from '../utils/agnasyn';
+import { PKA, V_EQ, V_HALF, V_MAX, pHAt } from '../utils/naermynd';
 
 /**
- * Agnasýn's títrunarferill, drawn only as far as the NaOH added so far, with
+ * Nærmynd's títrunarferill, drawn only as far as the NaOH added so far, with
  * the two points the scenes are about marked once the curve has reached them.
  */
 

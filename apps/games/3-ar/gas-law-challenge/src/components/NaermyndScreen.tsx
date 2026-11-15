@@ -1,10 +1,10 @@
 /**
- * Agnasýn — the molecules behind PV = nRT. Nothing is graded or stored.
+ * Nærmynd — the molecules behind PV = nRT. Nothing is graded or stored.
  *
  * One cylinder with a stimpill, four scenes (Boyle, Charles with the line to
  * absolute zero, Gay-Lussac, Avogadro), each holding two quantities fixed while
  * the student moves a third. Built on the particle-view template
- * (docs/particle-view-template.md): every number from `engine/agnasyn.ts`, the
+ * (docs/particle-view-template.md): every number from `engine/naermynd.ts`, the
  * molecules on a fixed scale that the screen states, scenes as data, and a
  * still picture for reduced motion. Decision 94, reopened 2026-11-15.
  */
@@ -14,7 +14,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Header } from '@shared/components';
 import { focusTarget, formatDecimal, prefersReducedMotion, revealTop } from '@shared/utils';
 
-import { STEPS } from '../data/agnasyn-steps';
+import { STEPS } from '../data/naermynd-steps';
 import {
   CONTROLS,
   FIXED,
@@ -28,7 +28,7 @@ import {
   type GasState,
   type GasVariable,
   type SceneKind,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 const W = 240;
 const H = 280;
@@ -366,11 +366,11 @@ function readout(v: GasVariable, s: GasState): string {
   }
 }
 
-interface AgnasynScreenProps {
+interface NaermyndScreenProps {
   onBack: () => void;
 }
 
-export function AgnasynScreen({ onBack }: AgnasynScreenProps) {
+export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [values, setValues] = useState<Record<SceneKind, number>>(() => ({
     boyle: CONTROLS.boyle.start,
@@ -422,7 +422,7 @@ export function AgnasynScreen({ onBack }: AgnasynScreenProps) {
             tabIndex={-1}
             className="mb-2 text-2xl font-bold text-warm-800 phone:text-base"
           >
-            Agnasýn: sameindirnar á bak við PV = nRT
+            Nærmynd: sameindirnar á bak við PV = nRT
           </h2>
 
           <nav aria-label="Skref" className="mb-4 phone:mb-3">
@@ -475,13 +475,13 @@ export function AgnasynScreen({ onBack }: AgnasynScreenProps) {
             <div className="space-y-3">
               <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-3">
                 <label
-                  htmlFor="gas-agnasyn-control"
+                  htmlFor="gas-naermynd-control"
                   className="mb-1 block text-sm font-semibold text-purple-900"
                 >
                   {step.action}: {controlText}
                 </label>
                 <input
-                  id="gas-agnasyn-control"
+                  id="gas-naermynd-control"
                   type="range"
                   min={control.min}
                   max={control.max}

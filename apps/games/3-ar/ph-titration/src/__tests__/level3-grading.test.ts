@@ -46,7 +46,7 @@ describe('Stig 3 grading', () => {
 
 /**
  * Four problems walk one titration (2026-11-14): 25,0 mL of 0,100 M ediksýra
- * with 0,100 M NaOH, the flask Stig 2 and Agnasýn draw. Each answer is the
+ * with 0,100 M NaOH, the flask Stig 2 and Nærmynd draw. Each answer is the
  * game's own `calculatePH` at that volume, so the problems, the curve and the
  * worked solutions cannot disagree.
  */

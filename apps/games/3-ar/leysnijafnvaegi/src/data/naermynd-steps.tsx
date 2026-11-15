@@ -13,11 +13,11 @@ import {
   S_COMMON,
   S_WATER,
   WATER_PER_ION,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 /**
- * The scenes of this game's Agnasýn, as data (docs/particle-view-template.md).
- * Every number in the text is computed in `engine/agnasyn.ts`.
+ * The scenes of this game's Nærmynd, as data (docs/particle-view-template.md).
+ * Every number in the text is computed in `engine/naermynd.ts`.
  */
 
 export type IonKind = 'Ag' | 'Cl' | 'Na' | 'NO3' | 'CrO4';

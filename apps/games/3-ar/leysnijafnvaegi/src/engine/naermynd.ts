@@ -2,7 +2,7 @@ import { mixAndCompare, molarSolubility, precipitationOrder, solubilityWithCommo
 import { saltBy } from '../data/salts';
 
 /**
- * The chemistry behind this game's Agnasýn: silver chloride saturated, with a
+ * The chemistry behind this game's Nærmynd: silver chloride saturated, with a
  * common ion, mixed from two solutions, and the Mohr titration.
  *
  * **Every picture here is exaggerated, and the screen says so.** A saturated

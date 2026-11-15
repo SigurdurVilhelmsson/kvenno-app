@@ -116,7 +116,7 @@ function Glyph({ kind, flag, text }: { kind: Kind; flag: boolean; text?: GlyphTe
   );
 }
 
-/** What each kind is called by default: Agnasýn's ediksýra and its asetatjón. */
+/** What each kind is called by default: Nærmynd's ediksýra and its asetatjón. */
 export const PARTICLE_LABEL: Record<Species, string> = {
   HA: STYLE.HA.label,
   A: STYLE.A.label,

@@ -4,17 +4,17 @@ import { Header, ErrorBoundary, FadePresence, Presence } from '@shared/component
 import { useGameProgress } from '@shared/hooks';
 import { focusTarget, revealSpan, revealTop } from '@shared/utils';
 
-import { Agnasyn } from './components/Agnasyn';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+import { Naermynd } from './components/Naermynd';
 
 /** Exit duration of each screen's FadePresence. */
 const SCREEN_FADE_MS = 200;
 /** The share of answers right, across the levels, that the end screen celebrates. */
 const CELEBRATE_SHARE = 0.8;
 
-type ActiveLevel = 'menu' | 'agnasyn' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'naermynd' | 'level1' | 'level2' | 'level3' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -154,8 +154,8 @@ function App() {
 
   return (
     <div ref={pageTopRef}>
-      <FadePresence show={activeLevel === 'agnasyn'} exitDuration={SCREEN_FADE_MS}>
-        <Agnasyn onBack={() => setActiveLevel('menu')} />
+      <FadePresence show={activeLevel === 'naermynd'} exitDuration={SCREEN_FADE_MS}>
+        <Naermynd onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
       <FadePresence show={activeLevel === 'level1'} exitDuration={SCREEN_FADE_MS}>
@@ -286,16 +286,16 @@ function App() {
 
               {/* Level selection */}
               <div className="space-y-4 phone:space-y-3">
-                {/* Agnasýn: the Explore phase, before any level. Nothing is graded or stored. */}
+                {/* Nærmynd: the Explore phase, before any level. Nothing is graded or stored. */}
                 <button
-                  onClick={() => setActiveLevel('agnasyn')}
+                  onClick={() => setActiveLevel('naermynd')}
                   className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left"
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
                     <div className="text-3xl sm:text-4xl phone:text-2xl">🔬</div>
                     <div className="flex-1 min-w-0">
                       <span className="text-xl font-bold text-amber-900 phone:text-lg">
-                        Agnasýn
+                        Nærmynd
                       </span>
                       <div className="text-sm text-amber-800 mt-1">
                         Ediksýra títruð með NaOH, skref fyrir skref

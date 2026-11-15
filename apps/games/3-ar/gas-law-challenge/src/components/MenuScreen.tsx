@@ -11,8 +11,8 @@ interface MenuScreenProps {
   setSelectedLevel: (level: Level) => void;
   resetProgress: () => void;
   onStart: (mode: GameMode) => void;
-  /** Opens Agnasýn, the cylinder of molecules. */
-  onAgnasyn: () => void;
+  /** Opens Nærmynd, the cylinder of molecules. */
+  onNaermynd: () => void;
   /** Opens Gasblöndur og efnahvörf: Dalton's law and gas stoichiometry. */
   onBlondur: () => void;
   /** The screen's root, for App's screen-swap anchoring. */
@@ -44,7 +44,7 @@ export function MenuScreen({
   setSelectedLevel,
   resetProgress,
   onStart,
-  onAgnasyn,
+  onNaermynd,
   onBlondur,
   rootRef,
 }: MenuScreenProps) {
@@ -125,10 +125,10 @@ export function MenuScreen({
                 </p>
               </div>
 
-              {/* Agnasýn: nothing graded, so it sits with the teaching, before the levels. */}
+              {/* Nærmynd: nothing graded, so it sits with the teaching, before the levels. */}
               <div className="mb-8 flex flex-col gap-3 rounded-xl border-2 border-purple-300 bg-white p-4 sm:flex-row sm:items-center sm:justify-between phone:mb-4 phone:p-3">
                 <div>
-                  <h2 className="font-bold text-purple-800">Agnasýn</h2>
+                  <h2 className="font-bold text-purple-800">Nærmynd</h2>
                   <p className="text-sm text-warm-600">
                     Strokkur með stimpli: ýttu, hitaðu og bættu gasi við, og sjáðu hvernig P, V, T
                     og n hanga saman. Ekkert er metið.
@@ -136,10 +136,10 @@ export function MenuScreen({
                 </div>
                 <button
                   type="button"
-                  onClick={onAgnasyn}
+                  onClick={onNaermynd}
                   className="shrink-0 rounded-lg bg-purple-600 px-5 py-2.5 font-semibold text-white hover:bg-purple-700"
                 >
-                  Opna Agnasýn
+                  Opna Nærmynd
                 </button>
               </div>
 

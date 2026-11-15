@@ -130,17 +130,17 @@ kPa, torr and mm Hg beside atm.
 
 ## Open
 
-- **Agnasýn, an Explore screen (decision 94, reopened 2026-11-15).** Until then the first thing
+- **Nærmynd, an Explore screen (decision 94, reopened 2026-11-15).** Until then the first thing
   after the menu was a graded question; Siggi had skipped a manipulable pre-game view on
-  2026-10-23. The menu now opens Agnasýn (`components/AgnasynScreen.tsx`, numbers from
-  `engine/agnasyn.ts`, scenes in `data/agnasyn-steps.tsx`): one cylinder with a stimpill and four
+  2026-10-23. The menu now opens Nærmynd (`components/NaermyndScreen.tsx`, numbers from
+  `engine/naermynd.ts`, scenes in `data/naermynd-steps.tsx`): one cylinder with a stimpill and four
   scenes, Boyle (push the stimpill), Charles (heat, the stimpill free under a weight, with V against
   t in °C carried to alkul at −273,15 °C), Gay-Lussac (heat, the stimpill locked) and Avogadro (add
   gas). Each starts at 1,00 mól, 300 K and 1,00 atm, holds two quantities fixed and marks them; one
   circle is 0,050 mól, which the screen states. Two bars split P/P₀ into hits on the stimpill per
-  second and the push of each hit, the kinetic model's factors, and `agnasyn.test.ts` holds their
+  second and the push of each hit, the kinetic model's factors, and `naermynd.test.ts` holds their
   product equal to the gauge. Nothing is graded. The question simulator (`GasLawSimulator.tsx`) is
-  unchanged; whether Agnasýn should replace it is left open. The Icelandic was drafted by Claude.
+  unchanged; whether Nærmynd should replace it is left open. The Icelandic was drafted by Claude.
 - **Gasblöndur og efnahvörf, the Phase 4 gap (Siggi's pick, 2026-11-15).** The game stopped at one
   gas. A menu card now opens `components/BlondurScreen.tsx`: Lögmál Daltons, mólbrot, gas safnað
   yfir vatni and volumes in reactions, then a mixture to explore (three sliders, a stacked bar of

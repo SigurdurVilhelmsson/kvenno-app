@@ -15,9 +15,9 @@ import {
   qAt,
   settledTime,
   unsnappedEnd,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
-describe('Agnasýn: the approach to equilibrium', () => {
+describe('Nærmynd: the approach to equilibrium', () => {
   it('uses the water-gas shift and its sourced K', () => {
     expect(REACTION.id).toBe('vatnsgas');
     expect(K).toBe(0.64);

@@ -18,11 +18,11 @@ import {
   percentIonised,
   speciesAt,
   trueMinorParticles,
-} from '../utils/agnasyn';
+} from '../utils/naermynd';
 
 /**
- * Agnasýn's scenes, in the order a titration runs. Every number on them is
- * computed from `utils/agnasyn.ts`, so a scene cannot print a pH the curve
+ * Nærmynd's scenes, in the order a titration runs. Every number on them is
+ * computed from `utils/naermynd.ts`, so a scene cannot print a pH the curve
  * beside it does not reach.
  */
 

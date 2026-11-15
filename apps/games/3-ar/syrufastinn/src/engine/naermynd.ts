@@ -4,7 +4,7 @@ import { solveWeakAcid } from './ka';
 import { WEAK_ACIDS, type WeakAcid } from '../data/acids';
 
 /**
- * The chemistry behind this game's Agnasýn: the same weak acid at three
+ * The chemistry behind this game's Nærmynd: the same weak acid at three
  * concentrations, and a weak acid beside a strong one.
  *
  * Every glass holds the same number of acid molecules, 40, dissolved in more or

@@ -11,11 +11,11 @@ import {
   strongPH,
   weakCounts,
   weakPH,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 /**
- * The scenes of this game's Agnasýn, as data (docs/particle-view-template.md).
- * Every number in the text is computed from `engine/agnasyn.ts`.
+ * The scenes of this game's Nærmynd, as data (docs/particle-view-template.md).
+ * Every number in the text is computed from `engine/naermynd.ts`.
  */
 
 export type GlassSpec = { strong: boolean; c: number };

@@ -12,7 +12,7 @@ import {
 } from '@shared/components/ParticleBeaker';
 import { APPENDIX_D1_ACIDS } from '@shared/data/appendix-d';
 
-import { FIRST_BUFFER_ML, STEPS, hhPH } from '../data/agnasyn-steps';
+import { FIRST_BUFFER_ML, STEPS, hhPH } from '../data/naermynd-steps';
 import { titrations } from '../data/titrations';
 import {
   ACID_PARTICLES,
@@ -28,12 +28,12 @@ import {
   percentIonised,
   speciesAt,
   trueMinorParticles,
-} from '../utils/agnasyn';
+} from '../utils/naermynd';
 import { calculatePH } from '../utils/ph-calculations';
 
 const BOUNDS = { left: 0, right: 300, top: 0, bottom: 200 };
 
-describe('Agnasýn chemistry', () => {
+describe('Nærmynd chemistry', () => {
   it('is titration 5, the textbook example, with the Appendix D constant', () => {
     const t = titrations.find((x) => x.id === 5)!;
     expect(KA).toBe(t.Ka);
@@ -92,7 +92,7 @@ describe('Agnasýn chemistry', () => {
   });
 });
 
-describe('Agnasýn particles', () => {
+describe('Nærmynd particles', () => {
   it('drips a whole titration in and ends with the counts it should', () => {
     const rng = seeded(7);
     const sys = createSystem(BOUNDS);
@@ -159,7 +159,7 @@ describe('Agnasýn particles', () => {
   });
 });
 
-describe('Agnasýn scenes', () => {
+describe('Nærmynd scenes', () => {
   it('print a Henderson-Hasselbalch pH the curve agrees with to two decimals', () => {
     for (const v of [FIRST_BUFFER_ML, 20]) expect(hhPH(v).toFixed(2)).toBe(pHAt(v).toFixed(2));
     expect(hhPH(V_HALF).toFixed(2)).toBe('4.74');

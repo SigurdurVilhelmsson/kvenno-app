@@ -5570,34 +5570,34 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
-    // Agnasýn, the particle view (2026-11-14): its first scene, the scene with the NaOH
+    // Nærmynd, the particle view (2026-11-14): its first scene, the scene with the NaOH
     // dissolving above the flask, the equivalence point and the slider.
     {
-      name: 'Agnasýn — upphaf',
-      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+      name: 'Nærmynd — upphaf',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 600 }],
     },
     {
-      name: 'Agnasýn — NaOH leysist upp',
+      name: 'Nærmynd — NaOH leysist upp',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', 'Næsta skref'] },
         { wait: 600 },
       ],
     },
     {
-      name: 'Agnasýn — jafngildispunktur',
+      name: 'Nærmynd — jafngildispunktur',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '6. Jafngildispunktur'] },
         { wait: 600 },
       ],
     },
     {
-      name: 'Agnasýn — kannaðu sjálf/ur',
+      name: 'Nærmynd — kannaðu sjálf/ur',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '8. Kannaðu sjálf/ur'] },
         { wait: 600 },
@@ -5922,28 +5922,28 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Agnasýn — lögmál Boyles',
+      name: 'Nærmynd — lögmál Boyles',
       steps: [
-        { clickRole: ['button', 'Opna Agnasýn'] },
-        { fill: ['#gas-agnasyn-control', '12'] },
+        { clickRole: ['button', 'Opna Nærmynd'] },
+        { fill: ['#gas-naermynd-control', '12'] },
         { wait: 400 },
       ],
     },
     {
-      name: 'Agnasýn — lögmál Charles og alkul',
+      name: 'Nærmynd — lögmál Charles og alkul',
       steps: [
-        { clickRole: ['button', 'Opna Agnasýn'] },
+        { clickRole: ['button', 'Opna Nærmynd'] },
         { clickRole: ['button', '2. Lögmál Charles'] },
-        { fill: ['#gas-agnasyn-control', '600'] },
+        { fill: ['#gas-naermynd-control', '600'] },
         { wait: 400 },
       ],
     },
     {
-      name: 'Agnasýn — lögmál Avogadros',
+      name: 'Nærmynd — lögmál Avogadros',
       steps: [
-        { clickRole: ['button', 'Opna Agnasýn'] },
+        { clickRole: ['button', 'Opna Nærmynd'] },
         { clickRole: ['button', '4. Lögmál Avogadros'] },
-        { fill: ['#gas-agnasyn-control', '2'] },
+        { fill: ['#gas-naermynd-control', '2'] },
         { wait: 400 },
       ],
     },
@@ -6480,13 +6480,13 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Agnasýn — upphaf',
-      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+      name: 'Nærmynd — upphaf',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 600 }],
     },
     {
-      name: 'Agnasýn — jafnvægi',
+      name: 'Nærmynd — jafnvægi',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { fill: ['input[type="range"]', '10'] },
         { wait: 600 },
@@ -7236,24 +7236,24 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
-    // Agnasýn (2026-11-15): the three dilutions, strong against weak, and the explore scene.
+    // Nærmynd (2026-11-15): the three dilutions, strong against weak, and the explore scene.
     {
-      name: 'Agnasýn — þynning',
-      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+      name: 'Nærmynd — þynning',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 600 }],
     },
     {
-      name: 'Agnasýn — sterk og veik',
+      name: 'Nærmynd — sterk og veik',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '3. Sterk sýra og veik'] },
         { wait: 600 },
       ],
     },
     {
-      name: 'Agnasýn — kannaðu sjálf/ur',
+      name: 'Nærmynd — kannaðu sjálf/ur',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '4. Kannaðu sjálf/ur'] },
         { wait: 600 },
@@ -8100,25 +8100,25 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
-    // Agnasýn, a buffer beside water (2026-11-15): the two glasses, the buffer run out,
+    // Nærmynd, a buffer beside water (2026-11-15): the two glasses, the buffer run out,
     // and the slider with NaOH chosen.
     {
-      name: 'Agnasýn — tvö glös',
-      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+      name: 'Nærmynd — tvö glös',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 600 }],
     },
     {
-      name: 'Agnasýn — stuðpúðinn þrýtur',
+      name: 'Nærmynd — stuðpúðinn þrýtur',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '4. Stuðpúðinn þrýtur'] },
         { wait: 600 },
       ],
     },
     {
-      name: 'Agnasýn — kannaðu sjálf/ur',
+      name: 'Nærmynd — kannaðu sjálf/ur',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '6. Kannaðu sjálf/ur'] },
         { wait: 600 },
@@ -8573,22 +8573,22 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Agnasýn — mettuð lausn',
-      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+      name: 'Nærmynd — mettuð lausn',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 600 }],
     },
     {
-      name: 'Agnasýn — blöndun',
+      name: 'Nærmynd — blöndun',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '3. Tvær lausnir blandaðar'] },
         { wait: 600 },
       ],
     },
     {
-      name: 'Agnasýn — Mohr-títrun, rautt',
+      name: 'Nærmynd — Mohr-títrun, rautt',
       steps: [
-        { clickRole: ['button', 'Agnasýn'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { wait: 600 },
         { clickRole: ['button', '4. Mohr-títrun'] },
         { fill: ['#mohr-ag', '-4.5'] },

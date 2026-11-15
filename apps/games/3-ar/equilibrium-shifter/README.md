@@ -179,7 +179,7 @@ From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
 - **Id 10 is `Leysni silfurklóríðs`**: its equation is the dissolving, not a precipitation.
 - **The hub card says `lögmál Le Chateliers`**, which this game's own text test already required.
 - **Not changed: id 24 keeps H₃O⁺.** It is written with hydronium on purpose, beside id 8 with a
-  bare proton (`numbers.test.ts`). Siggi's H⁺ ruling of 2026-11-14 was for Agnasýn; whether it
+  bare proton (`numbers.test.ts`). Siggi's H⁺ ruling of 2026-11-14 was for Nærmynd; whether it
   reaches this pair is a question for him.
 
 ## Fixed 2026-10-23: acetic acid's heating stress, and the names

@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { AgnasynScreen, showQ } from '../components/AgnasynScreen';
-import { T_MAX } from '../engine/agnasyn';
+import { NaermyndScreen, showQ } from '../components/NaermyndScreen';
+import { T_MAX } from '../engine/naermynd';
 
-describe('AgnasynScreen', () => {
+describe('NaermyndScreen', () => {
   it('opens at time zero with Q = 0 in one flask and ∞ in the other', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     expect(screen.getByRole('heading', { name: /tvær leiðir að sama jafnvægi/ })).toBeTruthy();
     expect(screen.getByText('Q = 0')).toBeTruthy();
     expect(screen.getByText('Q = ∞')).toBeTruthy();
@@ -16,7 +16,7 @@ describe('AgnasynScreen', () => {
   });
 
   it('reads the ICE table off the particles once the slider reaches equilibrium', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     fireEvent.change(screen.getByRole('slider', { name: 'Tími' }), {
       target: { value: String(T_MAX) },
     });

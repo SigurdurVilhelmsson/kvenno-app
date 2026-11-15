@@ -136,7 +136,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Gaslögmál',
-        description: 'Gagnvirkur leikur um gaslögmálin (PV=nRT) með agnasýn',
+        description: 'Gagnvirkur leikur um gaslögmálin (PV=nRT) með nærmynd',
         slug: 'gas-law-challenge',
       },
       {

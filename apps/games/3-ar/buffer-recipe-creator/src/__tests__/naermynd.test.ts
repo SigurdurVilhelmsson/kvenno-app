@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { STEPS } from '../data/agnasyn-steps';
+import { STEPS } from '../data/naermynd-steps';
+import { solveBuffer } from '../engine/buffer';
 import {
   ACID_PARTICLES,
   BASE_PARTICLES,
@@ -16,11 +17,10 @@ import {
   V_SAMPLE,
   countsAfter,
   pHAfter,
-} from '../engine/agnasyn';
-import { solveBuffer } from '../engine/buffer';
+} from '../engine/naermynd';
 
 /**
- * Agnasýn's numbers: the buffer is Stig 2's first problem, its pH is exact and
+ * Nærmynd's numbers: the buffer is Stig 2's first problem, its pH is exact and
  * agrees with Henderson-Hasselbalch while both acid and base are there, and
  * the particles are whole amounts that follow the reaction.
  */
@@ -30,7 +30,7 @@ const volumes = Array.from(
   (_, i) => i * ML_PER_PARTICLE
 );
 
-describe('Agnasýn chemistry', () => {
+describe('Nærmynd chemistry', () => {
   it('takes its buffer from Stig 2’s first problem through solveBuffer', () => {
     expect(SCENE_PROBLEM.acidName).toBe('CH₃COOH');
     const r = solveBuffer(SCENE_PROBLEM);

@@ -1,13 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { AgnasynScreen } from '../components/AgnasynScreen';
+import { NaermyndScreen } from '../components/NaermyndScreen';
 
 const readout = (v: string) => document.querySelector(`[data-readout="${v}"]`)?.textContent ?? '';
 
-describe('Gaslögmál Agnasýn screen', () => {
+describe('Gaslögmál Nærmynd screen', () => {
   it('starts on Boyle with the starting state and marks what is fixed', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     expect(screen.getByRole('heading', { level: 3 }).textContent).toBe('1. Lögmál Boyles');
     expect(readout('P')).toMatch(/^1,00 atm/);
     expect(readout('T')).toContain('300 K (27 °C)');
@@ -17,7 +17,7 @@ describe('Gaslögmál Agnasýn screen', () => {
   });
 
   it('doubles the pressure when the volume is halved', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     const slider = screen.getByRole('slider');
     fireEvent.change(slider, { target: { value: '24' } });
     const p24 = readout('P');
@@ -28,7 +28,7 @@ describe('Gaslögmál Agnasýn screen', () => {
   });
 
   it('shows the line to absolute zero on the Charles scene only', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     expect(screen.queryByText('Rúmmál á móti hitastigi í °C')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '2. Lögmál Charles' }));
     expect(screen.getByText('Rúmmál á móti hitastigi í °C')).toBeTruthy();
@@ -36,7 +36,7 @@ describe('Gaslögmál Agnasýn screen', () => {
   });
 
   it('adds one circle per step of the mólfjöldi slider (Avogadro)', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: '4. Lögmál Avogadros' }));
     const circles = () => document.querySelectorAll('svg[data-live] circle').length;
     const before = circles();
@@ -46,7 +46,7 @@ describe('Gaslögmál Agnasýn screen', () => {
   });
 
   it('states the scale of the picture on screen', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     expect(screen.getByText(/Hver hringur er 0,050 mól/)).toBeTruthy();
   });
 });

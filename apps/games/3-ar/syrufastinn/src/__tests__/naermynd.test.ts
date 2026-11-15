@@ -11,15 +11,15 @@ import {
   strongCounts,
   trueIons,
   weakCounts,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 /**
- * Agnasýn's numbers: the dilution scene shows rising percent dissociation with
+ * Nærmynd's numbers: the dilution scene shows rising percent dissociation with
  * no exaggeration, Ka read back from every glass is the acid's own, and every
  * glass the slider can make keeps its molecules.
  */
 
-describe('Sýrufastinn Agnasýn', () => {
+describe('Sýrufastinn Nærmynd', () => {
   it('draws flússýra honestly at every dilution: at least one ion, rising', () => {
     const ions = DILUTION.map((c) => weakCounts(SCENE_ACID, c).A);
     expect(ions[0]).toBeGreaterThanOrEqual(1);

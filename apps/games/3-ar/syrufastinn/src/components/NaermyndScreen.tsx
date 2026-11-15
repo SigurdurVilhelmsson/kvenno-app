@@ -1,10 +1,10 @@
 /**
- * Agnasýn — the particles behind percent dissociation.
+ * Nærmynd — the particles behind percent dissociation.
  *
  * Nothing is graded or stored. Three scenes show the same weak acid at three
  * concentrations and a weak acid beside a strong one; the fourth lets the
  * student pick any acid and concentration. Built on the shared particle view
- * (docs/particle-view-template.md), every number from `engine/agnasyn.ts`.
+ * (docs/particle-view-template.md), every number from `engine/naermynd.ts`.
  */
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -20,7 +20,7 @@ import { focusTarget, formatDecimal, prefersReducedMotion, revealTop } from '@sh
 import { useBackButton } from './BackButton';
 import { CONCENTRATIONS, isAnswerable } from '../data/acids';
 import type { WeakAcid } from '../data/acids';
-import { STEPS, type GlassSpec } from '../data/agnasyn-steps';
+import { STEPS, type GlassSpec } from '../data/naermynd-steps';
 import { EXPLORABLE_ACIDS } from '../data/problems';
 import {
   UNITS,
@@ -32,18 +32,18 @@ import {
   weakCounts,
   weakPH,
   SCENE_ACID,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 const EXPLORE = STEPS.length;
 const TOTAL = STEPS.length + 1;
 
 const M = (c: number) => `${formatDecimal(c, c < 0.1 ? 3 : c < 1 ? 2 : 1)} M`;
 
-interface AgnasynScreenProps {
+interface NaermyndScreenProps {
   onBack: () => void;
 }
 
-export function AgnasynScreen({ onBack }: AgnasynScreenProps) {
+export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [acid, setAcid] = useState<WeakAcid>(SCENE_ACID);
   const [c, setC] = useState(0.1);
@@ -107,7 +107,7 @@ export function AgnasynScreen({ onBack }: AgnasynScreenProps) {
             tabIndex={-1}
             className="mb-2 text-2xl font-bold text-warm-800 phone:mb-0 phone:min-w-0 phone:flex-1 phone:text-base"
           >
-            Agnasýn: hversu mikið klofnar?
+            Nærmynd: hversu mikið klofnar?
           </h2>
           <span className="text-sm text-warm-600 whitespace-nowrap">
             Skref {stepIndex + 1} af {TOTAL}
@@ -261,11 +261,11 @@ function ExploreControls({ acid, c, onAcid, onConcentration }: ExploreControlsPr
   return (
     <div className="mb-4 space-y-3 rounded-xl border-2 border-green-200 bg-green-50 p-3">
       <div>
-        <label htmlFor="agnasyn-acid" className="mb-1 block text-sm font-semibold text-green-900">
+        <label htmlFor="naermynd-acid" className="mb-1 block text-sm font-semibold text-green-900">
           Veik sýra
         </label>
         <select
-          id="agnasyn-acid"
+          id="naermynd-acid"
           value={acid.id}
           onChange={(e) => onAcid(e.target.value)}
           className="w-full rounded-lg border border-green-300 bg-white p-2 pointer-coarse:min-h-11"

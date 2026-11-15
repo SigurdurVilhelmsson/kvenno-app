@@ -1,5 +1,5 @@
 /**
- * The chemistry behind Agnasýn, the particle view of one titration: 25,0 mL of
+ * The chemistry behind Nærmynd, the particle view of one titration: 25,0 mL of
  * 0,100 M ediksýra titrated with 0,100 M NaOH. It is titration 5 in
  * `data/titrations.ts` and the textbook's own worked example (ch. 14, the
  * equivalence point at pH 8,72), so the screen, the book and Stig 2 describe
@@ -28,7 +28,7 @@ import { calculateWeakStrongPH } from './ph-calculations';
 const found = titrations.find(
   (t): t is MonoproticTitration => t.id === 5 && t.type === 'weak-strong'
 );
-if (!found || found.Ka == null) throw new Error('Agnasýn needs titration 5, ediksýra + NaOH');
+if (!found || found.Ka == null) throw new Error('Nærmynd needs titration 5, ediksýra + NaOH');
 export const ACETIC: MonoproticTitration = found;
 
 export const KA: number = found.Ka;

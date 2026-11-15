@@ -2,12 +2,12 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { Agnasyn } from '../components/Agnasyn';
-import { STEPS } from '../data/agnasyn-steps';
-import { drawnCounts, particleCountsAt, pHAt } from '../utils/agnasyn';
+import { Naermynd } from '../components/Naermynd';
+import { STEPS } from '../data/naermynd-steps';
+import { drawnCounts, particleCountsAt, pHAt } from '../utils/naermynd';
 
 /**
- * Agnasýn walked through as a student would, with reduced motion so every
+ * Nærmynd walked through as a student would, with reduced motion so every
  * scene lands at once: each scene shows its own volume's pH, the particle view
  * names the counts that volume should have, and nothing on screen writes a
  * decimal point.
@@ -42,9 +42,9 @@ function expectNoDecimalPoint(where: string) {
   }
 }
 
-describe('Agnasýn', () => {
+describe('Nærmynd', () => {
   it('walks every scene with the pH and particles of its volume', async () => {
-    render(<Agnasyn onBack={() => {}} />);
+    render(<Naermynd onBack={() => {}} />);
     await settle();
     STEPS.forEach((step, i) => {
       expect(screen.getByRole('heading', { level: 3 }).textContent).toBe(`${i + 1}. ${step.title}`);
@@ -62,7 +62,7 @@ describe('Agnasýn', () => {
   });
 
   it('lets the student drive the búretta in the last scene', async () => {
-    render(<Agnasyn onBack={() => {}} />);
+    render(<Naermynd onBack={() => {}} />);
     await settle();
     fireEvent.click(screen.getByRole('button', { name: /8\. Kannaðu sjálf/ }));
     await settle();
@@ -79,7 +79,7 @@ describe('Agnasýn', () => {
   });
 
   it('focuses each new scene title', async () => {
-    render(<Agnasyn onBack={() => {}} />);
+    render(<Naermynd onBack={() => {}} />);
     await settle();
     fireEvent.click(screen.getByRole('button', { name: 'Næsta skref →' }));
     await settle();
