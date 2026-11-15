@@ -73,7 +73,7 @@ describe('Stig 3 identify-by-particles', () => {
       render(<Level3 onBack={() => {}} onComplete={() => {}} />);
       fireEvent.click(screen.getByRole('button', { name: /Byrja æfingar/ }));
 
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 12; i++) {
         const z = questionText().match(/hefur (\d+) róteind(?:ir)? og/)?.[1];
         if (z) {
           const wrongZ = Number(z) === 1 ? 2 : 1;
@@ -86,7 +86,7 @@ describe('Stig 3 identify-by-particles', () => {
           expect(tapped.className).toMatch(/ring-red-500/);
           checked++;
         } else {
-          fireEvent.change(screen.getByPlaceholderText('t.d. 12'), { target: { value: '1' } });
+          fireEvent.change(screen.getByPlaceholderText(/^t\.d\. 12/), { target: { value: '1' } });
           fireEvent.click(screen.getByRole('button', { name: 'Athuga' }));
         }
         next();
@@ -99,7 +99,7 @@ describe('Stig 3 identify-by-particles', () => {
   it('does not ring a cell red when the tap was right', () => {
     render(<Level3 onBack={() => {}} onComplete={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: /Byrja æfingar/ }));
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const z = questionText().match(/hefur (\d+) róteind(?:ir)? og/)?.[1];
       if (z) {
         fireEvent.click(screen.getByRole('button', { name: new RegExp(`, sætistala ${z},`) }));
@@ -107,7 +107,7 @@ describe('Stig 3 identify-by-particles', () => {
         expect(document.querySelector('.ring-red-500')).toBeNull();
         return;
       }
-      fireEvent.change(screen.getByPlaceholderText('t.d. 12'), { target: { value: '1' } });
+      fireEvent.change(screen.getByPlaceholderText(/^t\.d\. 12/), { target: { value: '1' } });
       fireEvent.click(screen.getByRole('button', { name: 'Athuga' }));
       next();
     }

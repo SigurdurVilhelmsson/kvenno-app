@@ -83,9 +83,9 @@ describe('decimal comma', () => {
     render(<Level3 onBack={() => {}} onComplete={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: /Byrja æfingar/ }));
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       expect(decimalPointsOnScreen()).toEqual([]);
-      const input = screen.queryByPlaceholderText('t.d. 12');
+      const input = screen.queryByPlaceholderText(/^t\.d\. 12/);
       if (input) {
         fireEvent.change(input, { target: { value: '1' } });
         fireEvent.click(screen.getByRole('button', { name: 'Athuga' }));

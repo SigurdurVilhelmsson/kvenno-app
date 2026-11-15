@@ -422,9 +422,9 @@ describe('Stig 3', () => {
     fireEvent.click(view.getByRole('button', { name: /Byrja æfingar/ }));
     let typed = 0;
     let table = 0;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       clock += 500;
-      const input = view.queryByPlaceholderText('t.d. 12');
+      const input = view.queryByPlaceholderText(/^t\.d\. 12/);
       if (input) {
         typed++;
         expect(focused()).toBe(input);
@@ -441,7 +441,7 @@ describe('Stig 3', () => {
       clock += 500;
       fireEvent.click(view.getByRole('button', { name: /Næsta spurning|Sjá niðurstöður/ }));
     }
-    expect(typed).toBe(6);
+    expect(typed).toBe(10);
     expect(table).toBe(2);
     expect(focused()?.textContent).toBe('Niðurstöður');
   });

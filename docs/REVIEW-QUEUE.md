@@ -1035,6 +1035,8 @@ Claude and want a teacher's read. Tick each with the date once read.
       inniheldur …") for díklórheptaoxíð.
 - [ ] **Reynsluformúlur, brunaefnagreining** (`CombustionScreen.tsx`): the intro sentence, the three
       slip messages and the worked steps. Numbers are the book's (ch04/m68716).
+- [ ] **Lotukerfið Stig 3, ions and average atomic mass** (`Level3.tsx`, `data/ions.ts`,
+      `data/isotopes.ts`): the two new question prompts and their wrong-answer messages.
 - [x] **Classification of matter and physical/chemical change** (book ch. 1, _einsleit_,
       _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
       a game. Do not log it as a game gap again.

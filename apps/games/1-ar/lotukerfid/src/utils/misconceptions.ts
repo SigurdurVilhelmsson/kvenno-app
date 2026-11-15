@@ -122,3 +122,47 @@ export function level2Misconception(
       return 'Lotubundnir eiginleikar eiga sér allir sömu skýringu: hversu fast kjarninn heldur í ystu rafeindirnar. Athugaðu fyrst hvort frumefnin tvö eru í sömu lotu eða sama flokki — reglan snýst við eftir því.';
   }
 }
+
+/**
+ * Level 3 — the electrons in an ion. `charge` is the ion's, signed.
+ */
+export function ionMisconception(z: number, charge: number, given: number): string | undefined {
+  if (given === z) {
+    return `${z} er fjöldi rafeinda í hlutlausa atóminu. Jónin hefur hleðsluna ${Math.abs(charge)}${charge > 0 ? '+' : '−'}, svo rafeindirnar eru ${charge > 0 ? 'færri' : 'fleiri'} en róteindirnar.`;
+  }
+  if (given === z + charge) {
+    return charge > 0
+      ? 'Jákvæð hleðsla þýðir að atómið hefur misst rafeindir, ekki fengið þær: rafeindirnar eru færri en róteindirnar.'
+      : 'Neikvæð hleðsla þýðir að atómið hefur fengið rafeindir, ekki misst þær: rafeindirnar eru fleiri en róteindirnar.';
+  }
+  if (given === Math.abs(charge)) {
+    return 'Hleðslan segir hve mörgum rafeindum munar á jóninni og hlutlausa atóminu, ekki hve margar rafeindirnar eru. Byrjaðu á sætistölunni.';
+  }
+  return undefined;
+}
+
+/**
+ * Level 3 — the average atomic mass from isotope abundances. Each check is the shortcut
+ * that gives that number; within the level's tolerance of it, the shortcut is named.
+ */
+export function averageMassMisconception(
+  isotopes: { massNumber: number; mass: number; percent: number }[],
+  want: number,
+  given: number,
+  tolerance: number
+): string | undefined {
+  const near = (x: number) => Math.abs(given - x) <= tolerance;
+  if (near(want)) return undefined;
+  const plainMean = isotopes.reduce((s, i) => s + i.mass, 0) / isotopes.length;
+  if (near(plainMean)) {
+    return 'Þetta er venjulegt meðaltal massanna. Samsæturnar eru ekki jafn algengar, svo hver massi vegur eftir gnægð sinni: margfaldaðu hvern massa með hlutfalli sínu og leggðu saman.';
+  }
+  if (near(want * 100)) {
+    return 'Prósenturnar þarf að gera að hlutfalli fyrst: 80,1 % er 0,801. Deildu summunni með 100.';
+  }
+  const commonest = isotopes.reduce((a, b) => (b.percent > a.percent ? b : a));
+  if (near(commonest.massNumber) || near(commonest.mass)) {
+    return 'Þetta er massi algengustu samsætunnar einnar. Hinar samsæturnar draga meðaltalið til sín, eftir því hve algengar þær eru.';
+  }
+  return undefined;
+}

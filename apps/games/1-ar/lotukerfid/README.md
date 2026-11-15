@@ -10,11 +10,11 @@ an atom.
 Three levels, none gated; any can be opened from the menu. Each opens with a teaching screen and
 then plays a fixed number of generated questions.
 
-| Stig | Menu name                                    | What it asks                                                                                                                                                                |
-| ---- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | `Stig 1: Þekkja frumefni`                    | 10 questions from all 42 elements: 4 find-by-name and 3 find-by-position (tap the cell), 3 name-by-symbol (four options)                                                    |
-| 2    | `Stig 2: Flokkar og lotubundnir eiginleikar` | 10 multiple-choice: 4 classify (`málmur` / `málmleysingi` / `hálfmálmur`), 2 order three elements by `meðalatómmassi`, 2 group properties (of 4), 2 periodic trends (of 12) |
-| 3    | `Stig 3: Atómbygging`                        | 8 questions from the 36 elements of periods 1–4: 2 each of protons, electrons, neutrons (typed) and identify-by-particles (tap the cell)                                    |
+| Stig | Menu name                                    | What it asks                                                                                                                                                                                          |
+| ---- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | `Stig 1: Þekkja frumefni`                    | 10 questions from all 42 elements: 4 find-by-name and 3 find-by-position (tap the cell), 3 name-by-symbol (four options)                                                                              |
+| 2    | `Stig 2: Flokkar og lotubundnir eiginleikar` | 10 multiple-choice: 4 classify (`málmur` / `málmleysingi` / `hálfmálmur`), 2 order three elements by `meðalatómmassi`, 2 group properties (of 4), 2 periodic trends (of 12)                           |
+| 3    | `Stig 3: Atómbygging`                        | 12 questions: 2 each of protons, electrons, neutrons (typed) and identify-by-particles (tap the cell) from the 36 elements of periods 1–4, electrons in an ion, and average atomic mass from isotopes |
 
 The two trend questions in a Stig 2 run come from different trend types (`atómradíus`,
 `jónunarorka`, `rafneikvæðni`), and the two group questions are drawn without repeating.
@@ -96,6 +96,17 @@ abbreviation became `Tm`). The legend calls the plain non-metals `Aðrir málmle
 2 counts halogens and noble gases as málmleysingjar too (decision 35); `table-reading.test.tsx`
 checks the legend against `getClassification`.
 
+**Ions and average atomic mass came from the book, 2026-11-15** (year-1 plan item 12). Both are
+in `ch02/m68692` and neither was anywhere in the game. Stig 3 now asks for the electrons in an ion
+(`data/ions.ts`: the ions the main groups form, named as `1-ar/nafnakerfid` names them, the count
+derived as Z − charge) and for an average atomic mass (`data/isotopes.ts`: the book's own samples,
+boron, solar-wind neon, magnesium, chlorine and copper, with its numbers as printed and the answer
+derived). The average is typed with a decimal comma (`DECIMAL_INPUT_PROPS`), counted right within
+0,02 amu, which takes the book's `10,8` for boron and rejects the plain mean, the commonest mass
+number, a sum not divided by 100, and the table's 20,18 for the solar-wind neon. **The table's masses
+are hidden on that question until it is answered**, since the table prints the very number asked
+for, as Stig 2 hides them for order-by-mass. `isotopes-ions.test.ts` holds all of it.
+
 ## Layout
 
 ```
@@ -107,6 +118,8 @@ src/components/Level3.tsx        Stig 3: intro, particle questions, typed or tap
 src/components/PeriodicTable.tsx the shared table, legend, sideways scroll on a phone
 src/data/elements.ts             42 elements with massNumber, categories, labels, nameInSentence
 src/data/trends.ts               TREND_INFO and the 12 TREND_QUESTIONS
+src/data/ions.ts                 the 12 ions Stig 3 asks about
+src/data/isotopes.ts             the book's five isotope samples and averageMass
 src/utils/misconceptions.ts      the misconception text for all three levels
 src/utils/tableLayout.ts         tabletBelowMd, the old below-md scroll kept for tablets
 src/__tests__/                   answer-marking, data-integrity, decimal-comma, icelandic-text,
