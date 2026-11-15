@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 
 import { useArmedAfter, useItemTop, useRevealAfterCommit, useScreenTop } from '@shared/utils';
 
+import { NaermyndElectrolytes } from './NaermyndElectrolytes';
 import { CLASSES, KIND_NAMES, SOLUTES, classOf, type ElectrolyteClass } from '../data/electrolytes';
 
 /**
@@ -33,7 +34,7 @@ interface Props {
   onBack: () => void;
 }
 
-type Phase = 'teach' | 'drill' | 'done';
+type Phase = 'teach' | 'naermynd' | 'drill' | 'done';
 
 const ORDER: ElectrolyteClass[] = ['sterkur', 'veikur', 'orafkleyft'];
 
@@ -94,6 +95,10 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
     setAnswer(null);
   };
 
+  if (phase === 'naermynd') {
+    return <NaermyndElectrolytes onBack={() => setPhase('teach')} />;
+  }
+
   if (phase === 'teach') {
     return (
       <Shell title="Stig 0 — Rafkleyfi" onBack={onBack}>
@@ -144,6 +149,19 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
             ekkert um hvort það er sterkt. Flússýra ætir gler og er samt veik sýra.
           </p>
         </div>
+
+        {/* Nærmynd: the particles behind the three bulbs. Not graded; it returns here. */}
+        <button
+          type="button"
+          onClick={() => setPhase('naermynd')}
+          className="game-card mb-4 w-full rounded-xl border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 phone:p-3"
+        >
+          <span className="block text-lg font-bold text-amber-900">Nærmynd</span>
+          <span className="block text-sm text-amber-800">
+            Sjáðu jónirnar í natríumklóríði, ediksýru og glúkósa, ögn fyrir ögn, og hvers vegna
+            peran logar skært, dauft eða alls ekki.
+          </span>
+        </button>
 
         <button
           type="button"

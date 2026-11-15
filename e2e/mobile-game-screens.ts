@@ -2475,6 +2475,39 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Stig 0's Nærmynd, the particle view (2026-11-15): one beaker, the exaggerated
+    // acetic acid pair, and the three side by side.
+    {
+      name: 'Stig 0 — Nærmynd',
+      steps: [
+        { clickRole: ['button', 'Rafkleyfi'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+      ],
+    },
+    {
+      name: 'Stig 0 — Nærmynd, ediksýra',
+      steps: [
+        { clickRole: ['button', 'Rafkleyfi'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '3. Ediksýra'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Stig 0 — Nærmynd, allar þrjár',
+      steps: [
+        { clickRole: ['button', 'Rafkleyfi'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '4. Allar þrjár saman'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Stig 0 — endurgjöf',
       steps: [
