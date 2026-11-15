@@ -338,9 +338,7 @@ function App() {
             Millisameindakraftar → Lögmál Hess → Hvarfhraði → Oxun og afoxun →{' '}
             <u>Lífræn nafnagift</u>
           </div>
-          <div className="mt-2 text-center text-xs text-warm-400">
-            Sérsniðið námsefni — Lífræn efnafræði
-          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">Kafli 20 — Efnafræði 2e</div>
         </div>
       </div>
     </div>

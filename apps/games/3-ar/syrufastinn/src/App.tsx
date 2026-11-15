@@ -221,7 +221,7 @@ function App() {
                 <u>Sýrufastinn</u> → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
               </div>
               <div className="mt-2 text-center text-xs text-warm-400 phone:order-1">
-                Kafli 16 — Chemistry: The Central Science (Brown et al.)
+                Kafli 14 — Efnafræði 2e
               </div>
             </div>
           </div>

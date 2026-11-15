@@ -422,6 +422,9 @@ function App() {
             Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → <u>Lausnir</u> →
             Einingakeðjan
           </div>
+          <div className="mt-2 text-center text-xs text-warm-400">
+            Kaflar 3 og 11 — Efnafræði 2e
+          </div>
         </div>
       </div>
     </div>

@@ -201,7 +201,7 @@ function App() {
                 Lausnir → Einingakeðjan
               </div>
               <div className="mt-2 text-center text-xs text-warm-400 phone:order-1">
-                Kafli 3 — Chemistry: The Central Science (Brown et al.)
+                Kafli 3 — Efnafræði 2e
               </div>
             </div>
           </div>

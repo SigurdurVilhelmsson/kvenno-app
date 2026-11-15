@@ -352,9 +352,7 @@ function App() {
             Millisameindakraftar → Lögmál Hess → <u>Hvarfhraði</u> → Oxun og afoxun → Lífræn
             nafnagift
           </div>
-          <div className="mt-2 text-center text-xs text-warm-400">
-            Kafli 14 — Chemistry: The Central Science (Brown et al.)
-          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">Kafli 12 — Efnafræði 2e</div>
         </div>
       </div>
     </div>

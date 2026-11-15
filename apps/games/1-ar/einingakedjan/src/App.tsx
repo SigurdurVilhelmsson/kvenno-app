@@ -189,6 +189,9 @@ function App() {
                 Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → Lausnir →{' '}
                 <u>Einingakeðjan</u>
               </div>
+              <div className="mt-2 text-center text-xs text-warm-400 phone:order-1">
+                Kaflar 3–4 — Efnafræði 2e
+              </div>
             </div>
           </div>
         )}

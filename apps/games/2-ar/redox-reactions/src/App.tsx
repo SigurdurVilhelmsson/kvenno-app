@@ -319,7 +319,9 @@ function App() {
             Millisameindakraftar → Lögmál Hess → Hvarfhraði → <u>Oxun og afoxun</u> → Lífræn
             nafnagift
           </div>
-          <div className="mt-2 text-center text-xs text-warm-400">{t('menu.footer')}</div>
+          <div className="mt-2 text-center text-xs text-warm-400">
+            Kaflar 4 og 17 — Efnafræði 2e
+          </div>
         </div>
       </div>
     </div>

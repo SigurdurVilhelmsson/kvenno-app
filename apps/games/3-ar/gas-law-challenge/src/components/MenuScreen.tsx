@@ -312,6 +312,7 @@ export function MenuScreen({
               <strong>Námsleiðin:</strong> <u>Gaslögmál</u> → Jafnvægisfastinn → Hliðrun jafnvægis →
               Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
             </div>
+            <div className="mt-2 text-center text-xs text-warm-400">Kafli 9 — Efnafræði 2e</div>
           </div>
 
           <footer className="text-center text-sm text-warm-500 py-4">

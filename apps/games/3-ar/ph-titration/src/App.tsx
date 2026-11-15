@@ -472,9 +472,7 @@ function App() {
                 <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis →
                 Sýrufastinn → Varmafræði → <u>pH Títrun</u> → Stuðpúðar → Leysnijafnvægi
               </div>
-              <div className="mt-2 text-center text-xs text-warm-400">
-                Kafli 17 — Chemistry: The Central Science (Brown et al.)
-              </div>
+              <div className="mt-2 text-center text-xs text-warm-400">Kafli 14 — Efnafræði 2e</div>
             </div>
           </div>
         </div>
