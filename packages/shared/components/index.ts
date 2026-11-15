@@ -80,6 +80,9 @@ export type { ResponsiveContainerProps } from './ResponsiveContainer';
 export { MoleculeViewer, MoleculeViewerGrid } from './MoleculeViewer';
 export type { MoleculeViewerProps, MoleculeViewerGridProps } from './MoleculeViewer';
 
+// ScientificInput - an answer as a number and a power of ten (3-ar games)
+export { ScientificInput, toggleSign } from './ScientificInput';
+
 // FeedbackPanel - detailed feedback for game answers
 export { FeedbackPanel } from './FeedbackPanel';
 export type {

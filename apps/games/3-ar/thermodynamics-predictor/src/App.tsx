@@ -28,6 +28,7 @@ import {
 } from '@shared/utils';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
+import { GibbsKScreen } from './components/GibbsKScreen';
 import { TugOfWar } from './components/TugOfWar';
 import { PROBLEMS } from './data';
 import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
@@ -52,9 +53,9 @@ const ANSWER_CARD_EXIT_MS = 250;
 const FEEDBACK_VERDICT_PX = 60;
 
 /** Which screen a mode shows: the two runs share one. */
-type Screen = 'menu' | 'discover' | 'game';
+type Screen = 'menu' | 'discover' | 'gibbsK' | 'game';
 const screenOf = (mode: GameMode): Screen =>
-  mode === 'menu' ? 'menu' : mode === 'discover' ? 'discover' : 'game';
+  mode === 'menu' || mode === 'discover' || mode === 'gibbsK' ? mode : 'game';
 
 /** The top of the page, at once and at every width — what `window.scrollTo(0, 0)` did. */
 const toPageTop = () =>
@@ -179,6 +180,7 @@ function App() {
   }, []);
   const menuRoot = useCallback((el: HTMLDivElement | null) => attach('menu', el), [attach]);
   const discoverRoot = useCallback((el: HTMLDivElement | null) => attach('discover', el), [attach]);
+  const gibbsKRoot = useCallback((el: HTMLDivElement | null) => attach('gibbsK', el), [attach]);
   const gameRoot = useCallback((el: HTMLDivElement | null) => attach('game', el), [attach]);
   useLayoutEffect(() => {
     const root = roots.current[screen];
@@ -694,6 +696,17 @@ function App() {
                   </div>
                 </button>
               </div>
+              <button
+                onClick={() => setMode('gibbsK')}
+                data-mode-start="gibbsK"
+                className="game-card w-full p-5 rounded-lg text-white font-bold text-lg transition mt-4 phone:px-4 phone:py-3 phone:mt-2"
+                style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' }}
+              >
+                ⚖️ ΔG° og K — hversu langt gengur hvarfið?
+                <div className="text-sm font-normal mt-1 phone:mt-0.5">
+                  ΔG° = −RT ln K: skýring, sleði og sex dæmi
+                </div>
+              </button>
             </div>
 
             {/* Why this matters + curriculum */}
@@ -1579,6 +1592,9 @@ function App() {
       </FadePresence>
       <FadePresence show={mode === 'discover'} exitDuration={200}>
         {renderDiscover()}
+      </FadePresence>
+      <FadePresence show={mode === 'gibbsK'} exitDuration={200}>
+        <GibbsKScreen rootRef={gibbsKRoot} onBack={() => setMode('menu')} />
       </FadePresence>
       <FadePresence show={mode === 'learning' || mode === 'challenge'} exitDuration={200}>
         {renderGame()}
