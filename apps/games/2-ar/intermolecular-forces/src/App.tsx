@@ -4,11 +4,12 @@ import { Header, ErrorBoundary } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
+import { NaermyndScreen } from './components/NaermyndScreen';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 
-type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'naermynd' | 'level1' | 'level2' | 'level3' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -85,6 +86,9 @@ function App() {
     return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
   };
 
+  if (activeLevel === 'naermynd') {
+    return <NaermyndScreen onBack={() => setActiveLevel('menu')} />;
+  }
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
   }
@@ -216,6 +220,19 @@ function App() {
               flokk 17 hækkar suðumarkið frá HCl til HI þótt skautunin minnki.
             </p>
           </div>
+
+          {/* Nærmynd: the vapour above a liquid, molecule by molecule. Not a level and never
+              marked done; nothing in it is graded. */}
+          <button
+            type="button"
+            onClick={() => setActiveLevel('naermynd')}
+            className="game-card mb-4 w-full rounded-xl border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 sm:p-5 phone:mb-3 phone:p-3"
+          >
+            <h2 className="text-xl font-bold text-amber-900 phone:text-lg">Nærmynd</h2>
+            <p className="text-sm text-amber-800">
+              Sjáðu gufuna yfir vatni og alkóhólum, og hvað er í bólunum þegar vatn sýður.
+            </p>
+          </button>
 
           {/* Level selection */}
           <div className="space-y-4 phone:space-y-3">

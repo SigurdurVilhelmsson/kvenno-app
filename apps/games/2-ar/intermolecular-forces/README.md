@@ -161,6 +161,24 @@ There are no side files. Run the tests from the repo root
 (`pnpm exec vitest run apps/games/2-ar/intermolecular-forces`): the render tests need the root
 config's DOM environment.
 
+## Nærmynd (2026-11-15)
+
+The amber card above the levels opens a particle view of liquids in closed flasks at 20 °C,
+built on the template in `docs/particle-view-template.md`. Nothing in it is graded or stored.
+
+- **The misconception it targets:** that boiling breaks the molecule, water into H₂ and O₂. The
+  molecules are drawn whole in the liquid, in the vapour and in the bubbles of boiling water.
+- **Every pressure is the book's,** in `data/vapour-pressure.ts` with a test: the four alcohols
+  from the table in ch10/m68768 (20 °C by its header, though its summary line says 25 °C), and
+  water from appendix m68863 (2,33 kPa at 20 °C, 101,3 kPa at 100 °C). The book prints no
+  number for diethyl ether or methane, so the plan's water-against-methane pair became water
+  against the alcohols; methane is a gas at 20 °C and has no vapour pressure to compare.
+- The vapour holds one molecule per kPa, rounded (`engine/naermynd.ts`), and the screen says the
+  real vapour is far thinner than the liquid. The liquid is drawn the same for every substance.
+- The book spells the term without `-nar-`; the platform's word is `gufunarþrýstingur`
+  (decision 18), and the comment in the data file avoids quoting the book's spelling, which the
+  term guards would refuse.
+
 ## Open
 
 - **The 3D view's no-WebGL panel wording** is drafted by Claude and waits on Siggi
