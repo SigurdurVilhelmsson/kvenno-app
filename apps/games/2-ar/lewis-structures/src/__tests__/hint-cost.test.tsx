@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { clockPastNextGuard } from './next-guard-clock';
 import { pastExample } from './past-example';
-import { Level1 } from '../components/Level1';
+import { playLevel1 } from './play-level1';
 import { Level3 } from '../components/Level3';
 
 /**
@@ -19,34 +19,6 @@ import { Level3 } from '../components/Level3';
 
 afterEach(cleanup);
 clockPastNextGuard();
-
-/** Stig 1's answers: typed counts, and the one multiple-choice question. */
-const LEVEL1: (string | RegExp)[] = ['4', '7', '8', '8', '16', '8', /^[a-d]\. ?8 rafeindir$/, '1'];
-
-function playLevel1(openHints: boolean) {
-  const onComplete = vi.fn();
-  const { container } = render(<Level1 onComplete={onComplete} onBack={vi.fn()} />);
-  const ui = within(container);
-  for (const answer of LEVEL1) {
-    if (openHints) {
-      for (let tier = 1; tier <= 4; tier++) {
-        fireEvent.click(ui.getByRole('button', { name: new RegExp(`Vísbending ${tier}/4`) }));
-      }
-    }
-    // No cost shown for opening them, and no running score.
-    expect(container.textContent).not.toMatch(/Stig: \d/);
-    expect(container.textContent).not.toMatch(/\d+ stig\b/);
-    if (typeof answer === 'string') {
-      fireEvent.change(ui.getByPlaceholderText('?'), { target: { value: answer } });
-    } else {
-      fireEvent.click(ui.getByRole('button', { name: answer }));
-    }
-    fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
-    expect(container.textContent).not.toContain('Rétt svar:');
-    fireEvent.click(ui.getByRole('button', { name: /Næsta þraut|Ljúka stigi 1/ }));
-  }
-  return onComplete;
-}
 
 /** Stig 3's correct options, in question order (as option-order.test.tsx has them). */
 const LEVEL3 = [
@@ -80,10 +52,12 @@ function playLevel3(openHint: boolean) {
 }
 
 describe('a hint never changes the result', () => {
-  it('Stig 1 reports 8 of 8 with or without every hint tier open', () => {
-    expect(playLevel1(false)).toHaveBeenCalledWith(8, 8);
+  // Tiers 1 and 2 never state the answer. The tier that does is a revealed answer
+  // (REVIEW-QUEUE C3, extended 2026-11-15): hint-reveals-answer.test.tsx.
+  it('Stig 1 reports 8 of 8 with or without its first two hint tiers open', () => {
+    expect(playLevel1(0)).toHaveBeenCalledWith(8, 8);
     cleanup();
-    expect(playLevel1(true)).toHaveBeenCalledWith(8, 8);
+    expect(playLevel1(2)).toHaveBeenCalledWith(8, 8);
   });
 
   it('Stig 3 reports 8 of 8 with or without its hint open', () => {

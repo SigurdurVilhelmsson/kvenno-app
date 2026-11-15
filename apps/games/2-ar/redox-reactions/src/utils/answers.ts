@@ -65,3 +65,9 @@ export function parseWholeNumber(text: string): number {
   if (!/^[+-]?\d+(?:[.,]0*)?$/.test(trimmed)) return Number.NaN;
   return Number(trimmed.replace(/[.,]0*$/, ''));
 }
+
+/**
+ * Said beside a right answer that a hint had already given, which is not counted
+ * (REVIEW-QUEUE C3, extended to Stig 1 and Stig 3 on 2026-11-15).
+ */
+export const HINT_GAVE_ANSWER = 'Vísbendingin gaf svarið, svo svarið telst ekki með.';

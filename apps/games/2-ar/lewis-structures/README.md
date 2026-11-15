@@ -144,11 +144,6 @@ DOM environment.
 
 ## Open
 
-- **Stig 1's last hint tier states the answer and still counts** (found 2026-11-02). Tier 4 is the
-  worked solution (`C er í hópi 14: 14 - 10 = 4 gildisrafeindir.`), and `hint-cost.test.tsx`
-  requires `8 of 8` with every tier open. `docs/REVIEW-QUEUE.md` C3 ruled on 2026-10-23 that a hint
-  which gives the answer counts as a revealed answer, but applied it to VSEPR, gas-law and
-  equilibrium-shifter only; this game is unruled.
 - **Hand checks** in `docs/REVIEW-QUEUE.md` B: whether a screen reader announces Stig 2's
   wrong-drawing note twice, and Siggi playing the game on a phone.
 - **The no-WebGL panel's wording** (`Þrívíddarsýn er ekki tiltæk`), shared by all three 3D games,
@@ -159,6 +154,13 @@ DOM environment.
 switcher and the dead `i18n.ts` went on 2026-09-19 (`switcher-earns-its-place.test.ts`), so this
 game is outside the open `useGameI18n` question. C1 item 5 accepted one scroll for SF₆, PCl₅ and
 BF₃ on Stig 2 rather than changing the board.
+
+**Fixed 2026-11-15** (Siggi extended `docs/REVIEW-QUEUE.md` C3 to this level, year-2 audit). A
+right answer in Stig 1 given after the hint tier that states it is not counted, and the feedback
+says `Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.` That tier is the fourth, the
+worked solution, except on questions 2 and 7, where the third already gives the answer
+(`revealsAt: 3`, and the line starts `Vísbendingin gaf svarið`). `hint-reveals-answer.test.tsx`
+holds it; `hint-cost.test.tsx` still requires 8 of 8 with the first two tiers open.
 
 ## Leftovers
 

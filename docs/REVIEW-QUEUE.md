@@ -251,6 +251,10 @@ Siggi, 2026-10-23: accept 1, 2, 4, 5, 6 and 8 as applied; 3 and 7 as recommended
       `Síðasta vísbendingin gaf svarið, svo svarið telst ekki með.` (VSEPR, whose verdict is
       one line, prefixes `Rétt!`). In equilibrium-shifter a wrong answer after it drops out of
       the count too, as an answer the game had shown always has there.
+- [x] **Extended to Lewis Stig 1 and Oxun og afoxun Stig 1 and 3** — 2026-11-15, Siggi (year-2
+      audit, decision 6). Lewis counts no answer after the tier that states it (the fourth, or the
+      third on questions 2 and 7); redox marks the three Stig 1 hints and each Stig 3 problem's
+      revealed steps in its data. The feedback line is the one above. See each game's README.
 - [x] **Follow-up: gas-law's Keppnishamur hints** gave the answer for full points (call 3 covers
       practice only). — 2026-10-23, Siggi: "use your recommendations": Keppnishamur offers every
       hint but the last, as it offers no worked solution; no points penalty

@@ -22,6 +22,13 @@ export interface RedoxProblem {
   finalEquation: string;
   finalDisplay: string;
   hint: string;
+  /**
+   * The steps whose answer the hint states: which species gives and which takes electrons
+   * (`identify`), each half's electrons (`write-ox`, `write-red`) and the multipliers
+   * (`balance`). A right answer to one of them with the hint open is not counted
+   * (REVIEW-QUEUE C3, extended to this level 2026-11-15).
+   */
+  hintReveals: ('identify' | 'write-ox' | 'write-red' | 'balance')[];
 }
 
 export const problems: RedoxProblem[] = [
@@ -57,6 +64,7 @@ export const problems: RedoxProblem[] = [
     finalEquation: 'Zn + Cu²⁺ → Zn²⁺ + Cu',
     finalDisplay: 'Zn + Cu²⁺ → Zn²⁺ + Cu',
     hint: 'Bæði hálfhvörfin nota 2 rafeindir, svo margfaldarinn er 1',
+    hintReveals: ['write-ox', 'write-red', 'balance'],
   },
   {
     id: 2,
@@ -90,6 +98,7 @@ export const problems: RedoxProblem[] = [
     finalEquation: 'Fe + 2Ag⁺ → Fe²⁺ + 2Ag',
     finalDisplay: 'Fe + 2Ag⁺ → Fe²⁺ + 2Ag',
     hint: 'Fe gefur 2e⁻, Ag⁺ tekur 1e⁻, þú þarft 2×Ag⁺',
+    hintReveals: ['identify', 'write-ox', 'write-red', 'balance'],
   },
   {
     id: 3,
@@ -123,6 +132,7 @@ export const problems: RedoxProblem[] = [
     finalEquation: '2Al + 6H⁺ → 2Al³⁺ + 3H₂',
     finalDisplay: '2Al + 6H⁺ → 2Al³⁺ + 3H₂',
     hint: 'Al gefur 3e⁻, 2H⁺ tekur 2e⁻. 3 × 2 = 6 rafeindir, svo 2×Al og 3×(2H⁺)',
+    hintReveals: ['identify', 'write-ox', 'write-red', 'balance'],
   },
   {
     id: 4,
@@ -156,6 +166,7 @@ export const problems: RedoxProblem[] = [
     finalEquation: '2Mg + O₂ → 2MgO',
     finalDisplay: '2Mg + O₂ → 2MgO',
     hint: 'Mg gefur 2e⁻, O₂ tekur 4e⁻, þú þarft 2×Mg',
+    hintReveals: ['identify', 'write-ox', 'write-red', 'balance'],
   },
   {
     id: 5,
@@ -189,6 +200,7 @@ export const problems: RedoxProblem[] = [
     finalEquation: 'Cl₂ + 2Br⁻ → 2Cl⁻ + Br₂',
     finalDisplay: 'Cl₂ + 2Br⁻ → 2Cl⁻ + Br₂',
     hint: 'Bæði hálfhvörfin nota 2e⁻',
+    hintReveals: ['write-ox', 'write-red', 'balance'],
   },
   {
     id: 6,
@@ -222,5 +234,6 @@ export const problems: RedoxProblem[] = [
     finalEquation: '2Fe³⁺ + Sn²⁺ → 2Fe²⁺ + Sn⁴⁺',
     finalDisplay: '2Fe³⁺ + Sn²⁺ → 2Fe²⁺ + Sn⁴⁺',
     hint: 'Sn²⁺ gefur 2e⁻, Fe³⁺ tekur 1e⁻, þú þarft 2×Fe³⁺',
+    hintReveals: ['identify', 'write-ox', 'write-red', 'balance'],
   },
 ];

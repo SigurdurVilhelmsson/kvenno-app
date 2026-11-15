@@ -11,7 +11,7 @@ import {
 } from '@shared/utils';
 
 import { problems } from '../data/half-reactions';
-import { matchesSpecies, parseWholeNumber } from '../utils/answers';
+import { HINT_GAVE_ANSWER, matchesSpecies, parseWholeNumber } from '../utils/answers';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
@@ -90,17 +90,26 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   const armed = useArmedAfter(400, `${currentProblem}:${step}:${feedback.show}`);
 
   const problem = problems[currentProblem];
+  // A hint that states this step's answer makes a right answer a revealed one (C3).
+  const hintGaveAnswer = showHint && step !== 'complete' && problem.hintReveals.includes(step);
+  const countRight = () => {
+    if (!hintGaveAnswer) setCorrectCount((prev) => prev + 1);
+  };
+  const rightMessage = (message: string) =>
+    hintGaveAnswer ? `${message} ${HINT_GAVE_ANSWER}` : message;
 
   const checkIdentify = () => {
     const oxCorrect = matchesSpecies(answers.oxidized, problem.oxidationHalf.species);
     const redCorrect = matchesSpecies(answers.reduced, problem.reductionHalf.species);
 
     if (oxCorrect && redCorrect) {
-      setCorrectCount((prev) => prev + 1);
+      countRight();
       setFeedback({
         show: true,
         correct: true,
-        message: t('level3.identifyCorrect', 'Rétt! Þú greindir hvað oxast og afoxast.'),
+        message: rightMessage(
+          t('level3.identifyCorrect', 'Rétt! Þú greindir hvað oxast og afoxast.')
+        ),
       });
     } else {
       setFeedback({
@@ -116,11 +125,13 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     const redM = parseWholeNumber(answers.redMultiplier);
 
     if (oxM === problem.multiplierOx && redM === problem.multiplierRed) {
-      setCorrectCount((prev) => prev + 1);
+      countRight();
       setFeedback({
         show: true,
         correct: true,
-        message: t('level3.balanceCorrect', 'Frábært! Þú stilltir rafeindirnar rétt.'),
+        message: rightMessage(
+          t('level3.balanceCorrect', 'Frábært! Þú stilltir rafeindirnar rétt.')
+        ),
       });
     } else {
       setFeedback({
@@ -135,8 +146,12 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     if (feedback.show || !answers.oxElectrons) return;
     const correct = parseWholeNumber(answers.oxElectrons) === problem.oxidationHalf.electrons;
     if (correct) {
-      setCorrectCount((prev) => prev + 1);
-      setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
+      countRight();
+      setFeedback({
+        show: true,
+        correct: true,
+        message: rightMessage(t('common.correct', 'Rétt!')),
+      });
     } else {
       setFeedback({
         show: true,
@@ -150,8 +165,12 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     if (feedback.show || !answers.redElectrons) return;
     const correct = parseWholeNumber(answers.redElectrons) === problem.reductionHalf.electrons;
     if (correct) {
-      setCorrectCount((prev) => prev + 1);
-      setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
+      countRight();
+      setFeedback({
+        show: true,
+        correct: true,
+        message: rightMessage(t('common.correct', 'Rétt!')),
+      });
     } else {
       setFeedback({
         show: true,
