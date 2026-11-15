@@ -29,3 +29,24 @@ export function halfLife(A0: number, k: number, order: Order): number {
       return 1 / (k * A0);
   }
 }
+
+/** The gas constant in J/(mól·K), as the book gives it (m68793). */
+export const R = 8.314;
+
+/** Time for a first-order reaction to leave the fraction `left` of its reactant: −ln(left)/k. */
+export function timeToLeave(left: number, k: number): number {
+  if (left <= 0 || left >= 1 || k <= 0) throw new Error('need 0 < left < 1 and k > 0');
+  return -Math.log(left) / k;
+}
+
+/** First-order k from a half-life: ln 2 / t½. */
+export const kFromHalfLife = (tHalf: number) => Math.log(2) / tHalf;
+
+/**
+ * Activation energy in J/mól from k at two temperatures in kelvin, the book's two-point form of
+ * the Arrhenius equation (m68793): Ea = R·ln(k₂/k₁) / (1/T₁ − 1/T₂).
+ */
+export function activationEnergy(k1: number, T1: number, k2: number, T2: number): number {
+  if (T1 === T2) throw new Error('two different temperatures are needed');
+  return (R * Math.log(k2 / k1)) / (1 / T1 - 1 / T2);
+}

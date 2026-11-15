@@ -4,12 +4,13 @@ import { Header, ErrorBoundary } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
-import { NaermyndScreen } from './components/NaermyndScreen';
+import { HeildunScreen } from './components/HeildunScreen';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+import { NaermyndScreen } from './components/NaermyndScreen';
 
-type ActiveLevel = 'menu' | 'naermynd' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'naermynd' | 'heildun' | 'level1' | 'level2' | 'level3' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -91,6 +92,9 @@ function App() {
   };
 
   // Render active level
+  if (activeLevel === 'heildun') {
+    return <HeildunScreen onBack={() => setActiveLevel('menu')} />;
+  }
   if (activeLevel === 'naermynd') {
     return <NaermyndScreen onBack={() => setActiveLevel('menu')} />;
   }
@@ -313,6 +317,28 @@ function App() {
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
                     Greindu hvarfganga og finndu milliefni.
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            {/* Not a level: integrated rate laws and the Arrhenius equation, with its own ten
+                questions. It is never marked done and counts toward nothing. */}
+            <button
+              type="button"
+              onClick={() => setActiveLevel('heildun')}
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl phone:text-2xl" aria-hidden="true">
+                  📉
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-base min-[360px]:text-lg sm:text-xl font-bold text-amber-900">
+                    Heildað hraðalögmál og Arrhenius
+                  </span>
+                  <div className="text-sm text-amber-800 mt-1">
+                    [A] eftir tímann t, helmingunartími og virkjunarorka út frá tveimur hraðaföstum
                   </div>
                 </div>
               </div>

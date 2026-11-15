@@ -3493,6 +3493,33 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Heildað hraðalögmál og Arrhenius (2026-11-15): its Skilja, the first question, and the
+    // feedback for 80 % taken as what is left.
+    {
+      name: 'Heildun — skilja',
+      steps: [{ clickRole: ['button', 'Heildað hraðalögmál og Arrhenius'] }, { wait: 300 }],
+    },
+    {
+      name: 'Heildun — æfa',
+      steps: [
+        { clickRole: ['button', 'Heildað hraðalögmál og Arrhenius'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+      ],
+    },
+    {
+      name: 'Heildun — endurgjöf',
+      steps: [
+        { clickRole: ['button', 'Heildað hraðalögmál og Arrhenius'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+        { fill: ['input[inputmode="decimal"]', '24,3'] },
+        { clickRole: ['button', 'Athuga'] },
+        { wait: 300 },
+      ],
+    },
     // Nærmynd, the particle view (2026-11-15): the two flasks at the start, at two
     // half-lives where they part, and the slider.
     {
