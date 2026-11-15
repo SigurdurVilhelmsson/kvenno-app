@@ -70,8 +70,8 @@ describe('the problems', () => {
 
   it('grades every Erfitt prompt that points here, ATP among them', () => {
     const atp = byId('atp');
-    expect(problemDeltaG(atp)).toBeCloseTo(calculateDeltaG(-20, 35, 310), 9);
-    expect(answerOf(atp)).toBeCloseTo(1.58e5, -3);
+    expect(problemDeltaG(atp)).toBeCloseTo(calculateDeltaG(-20.5, 32, 310), 9);
+    expect(answerOf(atp)).toBeCloseTo(1.34e5, -3);
     const pointed = [...PROBLEMS.advanced].filter((p) => p.inGibbsK).map((p) => p.id);
     expect(pointed).toEqual([23, 24, 27]);
   });

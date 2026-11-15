@@ -248,6 +248,8 @@ From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
 
 - **ΔS° is checked against the book since 2026-11-14** (`STANDARD_ENTROPY` in `thermo.ts`, the
   S° column of `m68865`; `standard-entropy.test.ts`). Six are out of its reach: ice (twice),
-  glucose, the protein, ATP, and CaCO₃, whose row in the book disagrees with itself, so its 161
-  is unsourced. Photosynthesis's −210 is about −255 by standard tables (glucose is not in the
+  glucose, the protein, ATP, and CaCO₃. ATP was sourced elsewhere on 2026-11-15: ΔH° −20,5 kJ/mol
+  by calorimetry (Gajewski, Steckler & Goldberg, J. Biol. Chem. 261, 12733, 1986) and ΔS° 32 from the book's
+  ΔG° = −30 kJ (m68819), replacing an unsourced −20 and 35 (`atp-values.test.ts`). CaCO₃'s row in the book disagrees with itself, so its 161 is
+  unsourced. Photosynthesis's −210 is about −255 by standard tables (glucose is not in the
   book).

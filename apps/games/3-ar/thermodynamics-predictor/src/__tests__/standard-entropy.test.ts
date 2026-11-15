@@ -41,7 +41,7 @@ const NOT_IN_THE_BOOK: Record<number, string> = {
   12: 'CaCO₃: the book’s row disagrees with itself (see STANDARD_ENTROPY)',
   14: 'glucose: the table has no C₆H₁₂O₆ row',
   26: 'a protein is not a species with an entropy',
-  27: 'ATP, ADP and phosphate are not in the table',
+  27: 'ATP, ADP and phosphate are not in the table (sourced elsewhere: atp-values.test.ts)',
   29: 'ice: the table has no H₂O(s) row',
 };
 

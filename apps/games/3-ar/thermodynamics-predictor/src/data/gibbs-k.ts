@@ -50,8 +50,8 @@ const problemById = (id: number) => {
   return found;
 };
 const haber = problemById(11);
-// ATP's ΔH° and ΔS° are the game's own and unsourced (README, Open). Their ΔG° at 310 K,
-// −30,9 kJ/mól, is within 0,4 of the −30,5 biochemistry quotes for ATP hydrolysis at pH 7.
+// ATP's ΔH° is Goldberg's calorimetric value and its ΔS° is derived from the book's ΔG° (see
+// problems.ts, id 27).
 const atp = problemById(27);
 
 export const GIBBS_K_PROBLEMS: GibbsKProblem[] = [
@@ -113,7 +113,7 @@ export const GIBBS_K_PROBLEMS: GibbsKProblem[] = [
     note: 'Reiknaðu fyrst ΔG° við 310 K, svo K. Stórt K er það sem gerir ATP að orkugjafa frumna.',
     deltaH: atp.deltaH,
     deltaS: atp.deltaS,
-    source: 'ΔH° og ΔS° eins og í Æfingarhamnum',
+    source: 'ΔH° mælt með varmamælingu, ΔS° leitt af ΔG° kennslubókarinnar',
   },
   {
     id: 'ediksyra',
