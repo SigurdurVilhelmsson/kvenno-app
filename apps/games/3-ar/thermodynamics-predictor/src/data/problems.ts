@@ -238,6 +238,7 @@ export const PROBLEMS: ProblemsData = {
       scenario: 3,
       difficulty: 'Erfitt',
       advancedTask: 'Hvað segir ΔG° um stærð K við 298 K?',
+      inGibbsK: true,
     },
     {
       id: 24,
@@ -249,6 +250,7 @@ export const PROBLEMS: ProblemsData = {
       scenario: 3,
       difficulty: 'Erfitt',
       advancedTask: 'Hvernig breytist K frá 298 K til 700 K?',
+      inGibbsK: true,
     },
     {
       id: 25,
@@ -284,6 +286,7 @@ export const PROBLEMS: ProblemsData = {
       scenario: 1,
       difficulty: 'Erfitt',
       advancedTask: 'Hvað segir ΔG° um K, og hvaða þýðingu hefur það?',
+      inGibbsK: true,
     },
     {
       id: 28,

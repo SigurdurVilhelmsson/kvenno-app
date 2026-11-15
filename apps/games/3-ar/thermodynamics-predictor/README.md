@@ -23,7 +23,7 @@ One screen per mode, all in `src/App.tsx`; there are no level components.
 | Menu                       | A static derivation of ΔG = ΔH − TΔS, then a difficulty choice (Auðvelt / Miðlungs / Erfitt, 10 / 12 / 8 problems)                                                                                                                                            |
 | Könnun (`discover`)        | Ungraded. A fixed demo reaction (ΔH = −100 kJ/mol, ΔS = −200 J/(mol·K), crossover 500 K) and a 200–1200 K slider; ΔG and its sign update live                                                                                                                 |
 | Æfingarhamur (`learning`)  | A round: every problem of the chosen difficulty once, in a random order. Enter ΔG° (kJ/mol) and pick one of three verdicts; the solution then shows the steps and, for scenarios 3–4, the crossover temperature. No points; the round ends with `N af M rétt` |
-| ΔG° og K (`gibbsK`)        | ΔG° = −RT ln K in its own screen (`src/components/GibbsKScreen.tsx`): the relation and the book's table, an ungraded ΔG° slider at 298 K with K on a log axis, then six graded problems one at a time, ending `N af M rétt` (see below)                       |
+| ΔG° og K (`gibbsK`)        | ΔG° = −RT ln K in its own screen (`src/components/GibbsKScreen.tsx`): the relation and the book's table, an ungraded ΔG° slider at 298 K with K on a log axis, then seven graded problems one at a time, ending `N af M rétt` (see below)                     |
 | Keppnishamur (`challenge`) | Problems drawn at random from the chosen difficulty, with a 90-second timer, a score and a streak, both starting from 0 every run                                                                                                                             |
 
 Grading (`checkAnswer`, `src/App.tsx:184`): ΔG° goes through `isDeltaGCorrect`
@@ -124,8 +124,9 @@ stats take a row of their own; and Könnun's two buttons stack.
   point, under the heading `Áskorun`, while the grader checks only ΔG° and the verdict. The box is
   now `Til umhugsunar (ekki metið):` and every prompt is a question to think about (drafted
   wording). Grading them, option (a), waits on ΔG° = −RT ln K returning to the formula card.
-  Since 2026-11-15 the relation is taught and graded in ΔG° og K (below); whether the Erfitt
-  prompts point there is in `docs/REVIEW-QUEUE.md`.
+  Since 2026-11-15 the relation is taught and graded in ΔG° og K (below). Siggi's call that
+  day: the prompts stay ungraded, and ids 23, 24 and 27 (`inGibbsK`) say they are worked and
+  graded there; ATP's is the seventh problem.
   `icelandic-text.test.tsx` (`the Erfitt prompts`) holds it.
 - **Two names settled — fixed 2026-10-23 (mobile-pass decision 110, in part).** Könnun called the
   crossover temperature `þveragahitastig` and the game `Umbreytingarhitastig`; both now say
@@ -211,7 +212,7 @@ orka og jafnvægi"): R = 8,314 J/(mól·K) as the book prints it, ΔG° in J/mó
 the book's own table of ΔG° against K. The slider shows that K moves tenfold for every
 RT ln 10 = 5,7 kJ/mól at 298 K.
 
-Æfa poses six problems, two of each kind, every number sourced and every answer computed:
+Æfa poses seven problems, every answer computed:
 
 | Problem                 | Given                                             | Answer             |
 | ----------------------- | ------------------------------------------------- | ------------------ |

@@ -394,7 +394,7 @@ export function GibbsKScreen({ rootRef, onBack }: Props) {
               onClick={() => setPhase('aefa')}
               className="game-btn w-full rounded-xl bg-green-600 py-3 font-bold text-white hover:bg-green-700"
             >
-              Æfa: sex dæmi →
+              Æfa: sjö dæmi →
             </button>
           </>
         ) : (

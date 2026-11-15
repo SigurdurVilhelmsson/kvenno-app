@@ -4,6 +4,7 @@ import { APPENDIX_D1_ACIDS } from '@shared/data/appendix-d';
 import { gradeScientific } from '@shared/utils';
 
 import { answerOf } from '../components/GibbsKScreen';
+import { PROBLEMS } from '../data';
 import { GIBBS_K_PROBLEMS, problemDeltaG } from '../data/gibbs-k';
 import {
   K_TOLERANCE,
@@ -61,11 +62,18 @@ describe('the relation', () => {
 });
 
 describe('the problems', () => {
-  it('are six: two of each kind', () => {
-    expect(GIBBS_K_PROBLEMS).toHaveLength(6);
-    for (const kind of ['K-fra-G', 'K-fra-HS', 'G-fra-K'] as const) {
-      expect(GIBBS_K_PROBLEMS.filter((p) => p.kind === kind)).toHaveLength(2);
-    }
+  it('are seven: two K from ΔG°, three K from ΔH° and ΔS°, two ΔG° from K', () => {
+    expect(GIBBS_K_PROBLEMS).toHaveLength(7);
+    const count = (kind: string) => GIBBS_K_PROBLEMS.filter((p) => p.kind === kind).length;
+    expect([count('K-fra-G'), count('K-fra-HS'), count('G-fra-K')]).toEqual([2, 3, 2]);
+  });
+
+  it('grades every Erfitt prompt that points here, ATP among them', () => {
+    const atp = byId('atp');
+    expect(problemDeltaG(atp)).toBeCloseTo(calculateDeltaG(-20, 35, 310), 9);
+    expect(answerOf(atp)).toBeCloseTo(1.58e5, -3);
+    const pointed = [...PROBLEMS.advanced].filter((p) => p.inGibbsK).map((p) => p.id);
+    expect(pointed).toEqual([23, 24, 27]);
   });
 
   it("N₂O₄ ⇌ 2NO₂ gives the book's K = 0,32 (m68819)", () => {

@@ -42,8 +42,17 @@ const DELTA_F_G = {
   'AgCl(s)': -109.8,
 } as const;
 
-const haber = [...PROBLEMS.intermediate, ...PROBLEMS.advanced].find((p) => p.id === 11);
-if (!haber) throw new Error('gibbs-k: problem 11 (Haber) is missing from problems.ts');
+const problemById = (id: number) => {
+  const found = [...PROBLEMS.beginner, ...PROBLEMS.intermediate, ...PROBLEMS.advanced].find(
+    (p) => p.id === id
+  );
+  if (!found) throw new Error(`gibbs-k: problem ${id} is missing from problems.ts`);
+  return found;
+};
+const haber = problemById(11);
+// ATP's ΔH° and ΔS° are the game's own and unsourced (README, Open). Their ΔG° at 310 K,
+// −30,9 kJ/mól, is within 0,4 of the −30,5 biochemistry quotes for ATP hydrolysis at pH 7.
+const atp = problemById(27);
 
 export const GIBBS_K_PROBLEMS: GibbsKProblem[] = [
   {
@@ -92,6 +101,18 @@ export const GIBBS_K_PROBLEMS: GibbsKProblem[] = [
     note: 'Sama hvarf við hærra hitastig. ΔH° og ΔS° eru talin óháð hitastigi.',
     deltaH: haber.deltaH,
     deltaS: haber.deltaS,
+    source: 'ΔH° og ΔS° eins og í Æfingarhamnum',
+  },
+  {
+    id: 'atp',
+    kind: 'K-fra-HS',
+    name: 'Vatnsrof ATP við líkamshita',
+    reaction: 'ATP + H₂O ⇌ ADP + Pᵢ',
+    temp: atp.defaultTemp,
+    symbol: 'K',
+    note: 'Reiknaðu fyrst ΔG° við 310 K, svo K. Stórt K er það sem gerir ATP að orkugjafa frumna.',
+    deltaH: atp.deltaH,
+    deltaS: atp.deltaS,
     source: 'ΔH° og ΔS° eins og í Æfingarhamnum',
   },
   {

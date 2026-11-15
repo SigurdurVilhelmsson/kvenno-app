@@ -704,7 +704,7 @@ function App() {
               >
                 ⚖️ ΔG° og K — hversu langt gengur hvarfið?
                 <div className="text-sm font-normal mt-1 phone:mt-0.5">
-                  ΔG° = −RT ln K: skýring, sleði og sex dæmi
+                  ΔG° = −RT ln K: skýring, sleði og sjö dæmi
                 </div>
               </button>
             </div>
@@ -1061,6 +1061,11 @@ function App() {
                         (mobile-pass decision 111 (b)). */}
                     <div className="text-sm font-bold">Til umhugsunar (ekki metið):</div>
                     <div className="text-sm">{currentProblem.advancedTask}</div>
+                    {currentProblem.inGibbsK && (
+                      <div className="text-sm mt-1">
+                        Reiknað og metið í <strong>ΔG° og K</strong> í valmyndinni.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

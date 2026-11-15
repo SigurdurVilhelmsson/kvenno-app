@@ -30,7 +30,7 @@ function open() {
 /** Open the screen and go on to Æfa, with the first problem's name focused. */
 async function practise() {
   open();
-  fireEvent.click(screen.getByRole('button', { name: /Æfa: sex dæmi/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Æfa: sjö dæmi/ }));
   const first = screen.getByRole('heading', { name: GIBBS_K_PROBLEMS[0].name });
   await waitFor(() => expect(document.activeElement).toBe(first));
 }
@@ -72,7 +72,7 @@ describe('ΔG° og K', () => {
     expect(screen.getByText(/K < 1: meira af hvarfefnum/)).toBeTruthy();
   });
 
-  it('plays all six right to "6 af 6 rétt", focusing each verdict', async () => {
+  it('plays all seven right to "7 af 7 rétt", focusing each verdict', async () => {
     await practise();
     for (const p of GIBBS_K_PROBLEMS) {
       expect(screen.getByRole('heading', { name: p.name })).toBeTruthy();
@@ -81,11 +81,11 @@ describe('ΔG° og K', () => {
       await waitFor(() => expect(document.activeElement).toBe(verdict));
       fireEvent.click(screen.getByRole('button', { name: /Næsta dæmi|Sjá niðurstöðu/ }));
     }
-    expect(screen.getByRole('heading', { name: '6 af 6 rétt' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: '7 af 7 rétt' })).toBeTruthy();
     // Back to the explanation and on again keeps the result where it was.
     fireEvent.click(screen.getByRole('button', { name: 'Skýring og sleði' }));
     expect(screen.getByLabelText(/^ΔG° = /)).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /Æfa: sex dæmi/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Æfa: sjö dæmi/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Byrja aftur' }));
     expect(screen.getByRole('heading', { name: GIBBS_K_PROBLEMS[0].name })).toBeTruthy();
   });
@@ -103,7 +103,7 @@ describe('ΔG° og K', () => {
       type(answerOf(p));
       fireEvent.click(screen.getByRole('button', { name: /Næsta dæmi|Sjá niðurstöðu/ }));
     }
-    expect(screen.getByRole('heading', { name: '5 af 6 rétt' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: '6 af 7 rétt' })).toBeTruthy();
   });
 
   it('asks again, without grading, for an empty or unreadable answer', async () => {

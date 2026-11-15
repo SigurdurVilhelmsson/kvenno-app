@@ -7566,7 +7566,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         { clickRole: ['button', 'ΔG° og K'] },
         { wait: 400 },
-        { clickRole: ['button', 'Æfa: sex dæmi'] },
+        { clickRole: ['button', 'Æfa: sjö dæmi'] },
         { wait: 300 },
       ],
       loop: {
@@ -7588,7 +7588,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         { clickRole: ['button', 'ΔG° og K'] },
         { wait: 400 },
-        { clickRole: ['button', 'Æfa: sex dæmi'] },
+        { clickRole: ['button', 'Æfa: sjö dæmi'] },
         { wait: 300 },
         { fill: ['input[aria-label="Tala"]', '3,1'] },
         { fill: ['input[aria-label="Veldisvísir"]', '0'] },
