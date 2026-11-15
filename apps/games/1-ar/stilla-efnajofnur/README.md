@@ -29,6 +29,24 @@ There is no running score: each level ends `Þú stilltir N af M jöfnum rétt` 
 fresh shuffle) and `Ljúka stigi`, which marks the level done at any score; the menu shows a ✓
 beside each level done. Progress is saved under `stillaEfnajofnurProgress`.
 
+## Frá lýsingu til jöfnu
+
+A card under the three levels, badged `Æfing` (2026-11-15, year-1 plan item 17). It is not a
+fourth level (Siggi, 2026-08-29), and its count is kept apart. Six of twelve reactions told in
+words, from the book's ch04/m68709 (_Að skrifa og stilla efnajöfnur_): its end-of-module
+exercises and its sodium-in-water example, with methane for butane, whose 13 O₂ the steppers
+(1 to 9) cannot reach, and the platform's `koldíoxíð`. The student first picks the reactants
+and products with their states, (s), (l), (g) or (aq), the four the same module introduces.
+Each side offers the right substances, each again in its likeliest wrong state, and a decoy
+formula (`O` for súrefnisgas, `MgOH` for magnesíumhýdroxíð). A wrong pick names the side, and
+for a wrong state the formula, never the right state, so a retry still counts. Then it balances
+with the levels' `EquationEditor` and `AtomCounter`; a wrong set of coefficients shows the
+balanced equation, as the levels do. An item counts when the substances were right at the first
+try and the coefficients are right. `data/descriptions.ts` writes out each formula's atoms,
+since some carry brackets, and `from-description.test.tsx` holds them to `parseFormula`, the
+coefficients to the atoms, each state to a word in the description, and plays a run to a perfect
+count. Wording drafted by Claude.
+
 ## What matters before touching it
 
 **The name and the identifier (2026-09-24).** The verb for balancing an equation is `stilla`

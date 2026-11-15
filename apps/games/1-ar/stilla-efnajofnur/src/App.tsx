@@ -4,16 +4,20 @@ import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
+import { FromDescription } from './components/FromDescription';
 import { Level } from './components/Level';
 import { LEVEL1_CONFIG, LEVEL2_CONFIG, LEVEL3_CONFIG } from './components/levelConfigs';
 import { gameTranslations } from './i18n';
 
-type AppMode = 'menu' | 'level1' | 'level2' | 'level3';
+type AppMode = 'menu' | 'level1' | 'level2' | 'level3' | 'description';
 
 interface Progress {
   level1Completed: boolean;
   level2Completed: boolean;
   level3Completed: boolean;
+  /** "Frá lýsingu til jöfnu", a practice beside the levels, not a fourth one. */
+  descriptionCorrect?: number;
+  descriptionTotal?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
@@ -86,6 +90,21 @@ function App() {
         config={LEVEL3_CONFIG}
         onBack={() => setMode('menu')}
         onComplete={() => completeLevel(3)}
+      />
+    );
+  }
+
+  if (mode === 'description') {
+    return (
+      <FromDescription
+        onBack={() => setMode('menu')}
+        onComplete={(correct, total) => {
+          updateProgress({
+            descriptionCorrect: Math.max(progress.descriptionCorrect ?? 0, correct),
+            descriptionTotal: total,
+          });
+          setMode('menu');
+        }}
       />
     );
   }
@@ -223,6 +242,41 @@ function App() {
                 <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
                   {t('menu.level3.tags.complex')}
                 </span>
+              </div>
+            </button>
+
+            {/* Not a fourth level (2026-08-29): the book's word problems
+                (ch04/m68709), kept apart so the levels stay three. */}
+            <button
+              data-level-card="description"
+              onClick={() => setMode('description')}
+              className="game-card w-full bg-white rounded-2xl border-2 border-dashed border-sky-300 p-6 phone:p-4 text-left hover:border-sky-500 transition-all"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-4 phone:gap-3">
+                  <div className="w-14 h-14 phone:w-11 phone:h-11 shrink-0 rounded-xl bg-sky-100 flex items-center justify-center text-2xl phone:text-xl">
+                    📝
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="bg-sky-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                        Æfing
+                      </span>
+                      <h2 className="text-xl phone:text-lg font-bold text-warm-800">
+                        Frá lýsingu til jöfnu
+                      </h2>
+                    </div>
+                    <p className="text-warm-600 text-sm">
+                      Lestu lýsingu á efnahvarfi, veldu efnin og ham þeirra og stilltu jöfnuna.
+                    </p>
+                    {progress.descriptionTotal !== undefined && (
+                      <p className="text-green-700 text-sm font-bold mt-1">
+                        ✓ {progress.descriptionCorrect} af {progress.descriptionTotal} rétt
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <span className="text-warm-400 text-2xl">→</span>
               </div>
             </button>
           </div>

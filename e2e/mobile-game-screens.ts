@@ -2325,6 +2325,31 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    {
+      name: 'Frá lýsingu til jöfnu — röng efni',
+      steps: [
+        { clickRole: ['button', 'Frá lýsingu til jöfnu'] },
+        { css: '[role="group"][aria-label="Hvarfefni (vinstra megin)"] button' },
+        { css: '[role="group"][aria-label="Myndefni (hægra megin)"] button' },
+        { clickRole: ['button', 'Athuga efnin'] },
+        { wait: 400 },
+      ],
+    },
+    {
+      name: 'Frá lýsingu til jöfnu — velja efni',
+      steps: [{ clickRole: ['button', 'Frá lýsingu til jöfnu'] }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga efnin' },
+        answer: [
+          { css: '[role="group"][aria-label="Hvarfefni (vinstra megin)"] button' },
+          { css: '[role="group"][aria-label="Myndefni (hægra megin)"] button' },
+        ],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
   ],
   '1-ar/takmarkandi': [
     {
