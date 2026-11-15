@@ -197,8 +197,8 @@ the lead runs out. Nothing is graded or stored.
   complete ionic equation.
 - **The mass of precipitate** (1,15 g at the end) uses `molarMassOf` from `@shared/utils`.
 - **The precipitate is drawn as PbI₂ units on the floor**; the screen says the solid really forms as
-  a yellow cloud that settles. The solution's volume grows as KI is added, which the table states
-  in mL but the beaker does not draw.
+  a yellow cloud that settles. The liquid rises as the KI solution is added (25,0 to 55,0 mL),
+  and the table states the volume (Siggi, 2026-11-15).
 
 Wording drafted by Claude; review item C23 in `docs/REVIEW-QUEUE.md`.
 

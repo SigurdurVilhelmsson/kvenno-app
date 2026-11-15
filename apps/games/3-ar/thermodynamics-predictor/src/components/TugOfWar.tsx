@@ -50,7 +50,7 @@ export function TugOfWar({ deltaH, deltaS, temperature, tMin = 200, tMax = 1200 
 
   return (
     <div className="rounded-lg border border-warm-200 bg-white p-3 phone:p-2">
-      <div className="mb-1 text-sm font-semibold text-warm-700">Reipdráttur: ΔH° á móti −TΔS°</div>
+      <div className="mb-1 text-sm font-semibold text-warm-700">Reipitog: ΔH° á móti −TΔS°</div>
       <div role="img" aria-label={description} className="space-y-1.5">
         <div className="flex justify-between text-xs text-warm-500" aria-hidden="true">
           <span>← styður sjálfgengi</span>

@@ -2,11 +2,12 @@
  * Nærmynd — lead(II) nitrate and potassium iodide, particle by particle. Nothing is graded
  * or stored.
  *
- * Built on the particle-view template (docs/particle-view-template.md), in the fixed-place
- * form `2-ar/redox-reactions` uses: every count comes from `engine/naermynd.ts`, each
- * particle stands for a fixed amount, and every particle has a fixed place, so a scene
- * always draws the same picture. Each Pb²⁺ that meets two I⁻ leaves the solution and joins
- * the yellow PbI₂ on the floor; the K⁺ and NO₃⁻, the meðjónir, stay where they are.
+ * Built on the particle-view template (docs/particle-view-template.md), drawn without motion:
+ * every count comes from `engine/naermynd.ts`, each particle stands for a fixed amount, and the
+ * layout is fixed for each amount added, so a scene always draws the same picture. The liquid
+ * rises as the KI solution goes in (25,0 to 55,0 mL, Siggi's ruling on C23, 2026-11-15), and
+ * the ions spread through it. Each Pb²⁺ that meets two I⁻ leaves the solution and joins the
+ * yellow PbI₂ on the floor; the K⁺ and NO₃⁻, the meðjónir, stay in solution.
  */
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -18,55 +19,83 @@ import { STEPS, type Equation } from '../data/naermynd-steps';
 import {
   IODIDE_MAX,
   LEAD_START,
+  LEAD_VOLUME_ML,
   PER_MMOL,
   PRECIPITATE_FORMULA,
   SPECTATORS,
   amountsAt,
   countsAt,
+  type Counts,
   precipitateMass,
 } from '../engine/naermynd';
 import type { Term } from '../engine/precipitation';
 
 const W = 300;
-const H = 230;
+const H = 282;
+/** Where the liquid stands once the largest volume on the slider is in. */
 const TOP = 34;
-const FLOOR = 208;
+const FLOOR = 260;
+/** The liquid's bottom edge, inside the glass. */
+const BOTTOM = H - 10;
 
-/** Fixed places in the solution, on a jittered grid so ions never overlap. */
-const SOLUTION_SLOTS: { x: number; y: number }[] = (() => {
-  const cols = 6;
-  const rows = 5;
-  const x0 = 36;
-  const x1 = W - 30;
-  const y0 = TOP + 16;
-  const y1 = FLOOR - 46;
-  const out: { x: number; y: number }[] = [];
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++) {
-      const jx = ((r * 7 + c * 13) % 5) - 2;
-      const jy = ((r * 11 + c * 3) % 5) - 2;
-      out.push({
-        x: x0 + (c + (r % 2 ? 0.5 : 0)) * ((x1 - x0) / cols) + jx * 2,
-        y: y0 + r * ((y1 - y0) / (rows - 1)) + jy * 2,
-      });
-    }
-  return out;
-})();
+/** mL in the beaker after `iodide` mmól of I⁻ has been added as KI solution. */
+function volumeAt(iodide: number): number {
+  return LEAD_VOLUME_ML + amountsAt(iodide).addedMl;
+}
+const VOLUME_MAX = volumeAt(IODIDE_MAX);
 
-// Each kind keeps its own slots, in an order scattered through the beaker (7 is coprime
-// with 30, so stepping by it visits every slot once), so a scene always draws the same
-// picture and an ion never jumps to another place when a neighbour leaves.
-const ORDER = SOLUTION_SLOTS.map((_, i) => SOLUTION_SLOTS[(i * 7) % SOLUTION_SLOTS.length]);
-const NO3_SLOTS = ORDER.slice(0, 10);
-const PB_SLOTS = ORDER.slice(10, 15);
-const K_SLOTS = ORDER.slice(15, 27);
-const I_SLOTS = ORDER.slice(27, 30);
+/** The top of the liquid: the solution rises as the KI solution is poured in. */
+function liquidTop(iodide: number): number {
+  return BOTTOM - ((BOTTOM - TOP) * volumeAt(iodide)) / VOLUME_MAX;
+}
 
-/** Where the PbI₂ units settle: a low heap on the floor of the beaker. */
-const HEAP: { x: number; y: number }[] = [0, -1, 1, -2, 2, -0.5, 0.5].map((k, i) => ({
+/** Where the PbI₂ units settle: one low row on the floor of the beaker. */
+const HEAP: { x: number; y: number }[] = [0, -1, 1, -2, 2, -3, 3].map((k) => ({
   x: W / 2 + k * 34,
-  y: i < 5 ? FLOOR - 14 : FLOOR - 32,
+  y: FLOOR - 14,
 }));
+/** The solution's ions stay above this line, clear of the heap. */
+const SOLUTION_FLOOR = FLOOR - 30;
+const COLS = 8;
+
+type SolutionKind = 'NO3' | 'K' | 'Pb2' | 'I';
+
+/**
+ * Lays the ions out in the liquid as it stands: rows of up to eight, spread evenly from the top
+ * of the liquid down to the heap. The order is a fixed scatter by kind and index, so a scene
+ * always draws the same picture and the kinds stay mixed.
+ */
+function layout(c: Counts, top: number): { kind: SolutionKind; x: number; y: number }[] {
+  const kinds: [SolutionKind, number][] = [
+    ['NO3', c.NO3],
+    ['K', c.K],
+    ['Pb2', c.Pb2],
+    ['I', c.I],
+  ];
+  const ions = kinds
+    .flatMap(([kind, n], k) =>
+      Array.from({ length: n }, (_, i) => ({ kind, key: (k * 31 + i * 17) % 97 }))
+    )
+    .sort((a, b) => a.key - b.key);
+  const rows = Math.max(1, Math.ceil(ions.length / COLS));
+  const y0 = top + 14;
+  const rowH = (SOLUTION_FLOOR - y0) / rows;
+  const x0 = 34;
+  const x1 = W - 34;
+  return ions.map((ion, n) => {
+    const r = Math.floor(n / COLS);
+    const inRow = Math.min(COLS, ions.length - r * COLS);
+    const c0 = n % COLS;
+    const step = (x1 - x0) / COLS;
+    const jx = ((r * 7 + c0 * 13) % 5) - 2;
+    const jy = ((r * 11 + c0 * 3) % 5) - 2;
+    return {
+      kind: ion.kind,
+      x: x0 + (W - 2 * x0 - inRow * step) / 2 + (c0 + 0.5 + (r % 2 ? 0.25 : -0.25)) * step + jx,
+      y: y0 + (r + 0.5) * rowH + jy,
+    };
+  });
+}
 
 const ION = {
   Pb2: { label: 'Pb²⁺', fill: '#475569', text: '#fff', r: 10 },
@@ -77,6 +106,7 @@ const ION = {
 type Kind = keyof typeof ION;
 
 const SPECTATOR_KINDS: Kind[] = ['K', 'NO3'];
+const isSpectator = (k: Kind) => SPECTATOR_KINDS.includes(k);
 
 function Ion({ kind, x, y, dim }: { kind: Kind; x: number; y: number; dim: boolean }) {
   const ion = ION[kind];
@@ -117,6 +147,7 @@ function Precipitate({ x, y }: { x: number; y: number }) {
 
 function Beaker({ iodide, dim, label }: { iodide: number; dim: boolean; label: string }) {
   const c = countsAt(iodide);
+  const top = liquidTop(iodide);
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label={label}>
       <path
@@ -127,26 +158,19 @@ function Beaker({ iodide, dim, label }: { iodide: number; dim: boolean; label: s
       />
       <rect
         x={18}
-        y={TOP}
+        y={top}
         width={W - 36}
-        height={H - 10 - TOP}
+        height={BOTTOM - top}
         rx={10}
         fill="#bae6fd"
         fillOpacity={0.25}
       />
       {/* The meðjónir first, so the ions that react are drawn over them. */}
-      {NO3_SLOTS.slice(0, c.NO3).map((p, i) => (
-        <Ion key={`no3-${i}`} kind="NO3" x={p.x} y={p.y} dim={dim} />
-      ))}
-      {K_SLOTS.slice(0, c.K).map((p, i) => (
-        <Ion key={`k-${i}`} kind="K" x={p.x} y={p.y} dim={dim} />
-      ))}
-      {PB_SLOTS.slice(0, c.Pb2).map((p, i) => (
-        <Ion key={`pb-${i}`} kind="Pb2" x={p.x} y={p.y} dim={dim} />
-      ))}
-      {I_SLOTS.slice(0, c.I).map((p, i) => (
-        <Ion key={`i-${i}`} kind="I" x={p.x} y={p.y} dim={dim} />
-      ))}
+      {layout(c, top)
+        .sort((a, b) => Number(isSpectator(b.kind)) - Number(isSpectator(a.kind)))
+        .map((p, i) => (
+          <Ion key={`${p.kind}-${i}`} kind={p.kind} x={p.x} y={p.y} dim={dim} />
+        ))}
       {HEAP.slice(0, c.PbI2).map((p, i) => (
         <Precipitate key={`pbi2-${i}`} x={p.x} y={p.y} />
       ))}
@@ -226,6 +250,7 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
 
   const rows: [string, string][] = [
     ['Kalíumjoðíðlausn bætt við', `${formatDecimal(a.addedMl, 1)} mL`],
+    ['Rúmmál lausnar', `${formatDecimal(volumeAt(iodide), 1)} mL`],
     ['Pb²⁺(aq)', mmol(a.Pb2)],
     ['I⁻(aq)', mmol(a.I)],
     ['K⁺(aq), meðjón', mmol(a.K)],

@@ -921,12 +921,13 @@ in the game's README.
 - [ ] **The Icelandic wording**, drafted by Claude (`src/data/naermynd-steps.tsx`). Terms are the
       glossary's or the book's, with `meðjón` for spectator ion (Siggi, 2026-11-14), `heildarjónajafna`, `nettójónajafna`, `samoka basi`,
       `hálfjafngildispunktur` and `basajónun asetats`, the book's phrase at the equivalence point.
-- [ ] **Two exaggerated pairs**: at the start one CH₃COO⁻ and one H₃O⁺ are drawn where the true
+- [x] **Two exaggerated pairs**: at the start one CH₃COO⁻ and one H⁺ are drawn where the true
       amount is 0,27 of a particle, and at the equivalence point one CH₃COOH and one OH⁻ where it is
-      0,002. Both carry a dashed ring and a note saying so. Keep, or show the true counts (none)?
-- [ ] **pH at half-equivalence shows 4,75 on the meter** beside Henderson-Hasselbalch's 4,74: the
+      0,002. Both carry a dashed ring and a note saying so. **Kept** (Siggi, 2026-11-15): at true counts scene 1
+      would show an acid that does not ionise and scene 6 could not show why the pH is above 7.
+- [x] **pH at half-equivalence shows 4,75 on the meter** beside Henderson-Hasselbalch's 4,74: the
       game's buffer ICE root sits 0,0005 above pKₐ, which tips the second decimal. The scene says so
-      in one line. Keep, or print the meter at Henderson-Hasselbalch in the buffer region?
+      in one line. **Kept** (Siggi, 2026-11-15): the meter stays on the function that draws Stig 2's curve.
 - [ ] On a projector and a phone (B-style hand check): the animation's pace, 0,7 s per drop.
 - [ ] **Stuðpúðasmíði's Nærmynd** (2026-11-15), a buffer beside pure water with the same saltsýra
       or natríumhýdroxíð dripped into both, built on the same particle view, now shared. Its
@@ -936,22 +937,23 @@ in the game's README.
 - [ ] **Sýrufastinn's Nærmynd** (2026-11-15): flússýra diluted 1,0 → 0,10 → 0,010 M, then HCl
       beside flússýra. Wording drafted by Claude (`3-ar/syrufastinn/src/data/naermynd-steps.tsx`).
       Each glass holds the same 40 molecules in more water, so the three flasks are drawn the same
-      size although their volumes differ a hundredfold; the text says so. Keep, or draw the
-      volumes?
+      size although their volumes differ a hundredfold; the text says so. **Kept** (Siggi, 2026-11-15); the
+      wording is still open.
 - [ ] **Hliðrun jafnvægis' particles** (2026-11-15): the generic R/P picture became the real
       species on one scale, in three frames from `applyStress`, for the 13 systems that can be
       drawn without exaggeration; the rest show none. Captions drafted by Claude
-      (`3-ar/equilibrium-shifter/src/components/MixtureView.tsx`). Keep showing no particles for
-      the weak acids, or draw them with a marked exaggeration as Nærmynd does?
+      (`3-ar/equilibrium-shifter/src/components/MixtureView.tsx`). **The weak acids keep no
+      particles** (Siggi, 2026-11-15): an exaggerated pair is always one pair, so it could not show the shift.
+      The captions' wording is still open.
 - [ ] **Jafnvægisfastinn's Nærmynd** (2026-11-15): the water-gas shift from reactants and from
       products, Q traced to K, ICE tables read off the particles. Wording drafted by Claude
       (`3-ar/jafnvaegisfasti/src/components/NaermyndScreen.tsx`). The rate is chosen for display
-      (mass action with kf/kr = K, no time units) and the screen says so. Keep, or show the path
-      against extent instead of time?
+      (mass action with kf/kr = K, no time units) and the screen says so. **Time kept** (Siggi, 2026-11-15);
+      the wording is still open.
 - [ ] **Varmafræði's tug of war** (2026-11-15): ΔH° and −TΔS° as bars that follow the
       temperature slider, in Könnun and after each answer. Wording drafted by Claude
       (`3-ar/thermodynamics-predictor/src/components/TugOfWar.tsx`), including the name
-      `Reipdráttur`.
+      `Reipdráttur`. **Renamed `Reipitog`** (Siggi, 2026-11-15); the captions' wording is still open.
 - [ ] **Varmafræði's ΔG° og K** (2026-11-15): ΔG° = −RT ln K taught, explored on a slider and
       graded on six sourced problems (`3-ar/thermodynamics-predictor/src/components/GibbsKScreen.tsx`,
       `src/data/gibbs-k.ts`). Wording drafted by Claude, including the slip messages. Siggi ruled
@@ -962,8 +964,9 @@ in the game's README.
       drafted by Claude (`3-ar/leysnijafnvaegi/src/data/naermynd-steps.tsx`).
 - [ ] **Útfellingarhvörf's Nærmynd** (2026-11-15, year 1): Pb(NO₃)₂ with KI added in portions,
       PbI₂ falling out and K⁺ and NO₃⁻ drawn faded as meðjónir. Wording drafted by Claude
-      (`1-ar/utfellingarhvorf/src/data/naermynd-steps.tsx`). The beaker does not grow as the KI
-      solution is added (25 mL to 55 mL); the table states the volume. Keep, or draw it?
+      (`1-ar/utfellingarhvorf/src/data/naermynd-steps.tsx`). **The liquid now rises** as the KI
+      solution is added, 25,0 to 55,0 mL (Siggi, 2026-11-15), and the table gives the volume. The wording is
+      still open.
 - [ ] **Lausnir's Stig 0 Nærmynd** (2026-11-15, year 1): natríumklóríð, ediksýra and glúkósi at
       0,100 M with the conductivity bulb. Acetic acid's one ion pair is exaggerated (0,27 of a
       particle) and marked. Wording drafted by Claude (`1-ar/lausnir/src/data/naermynd-steps.tsx`).
