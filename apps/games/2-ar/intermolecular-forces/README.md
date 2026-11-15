@@ -179,6 +179,33 @@ built on the template in `docs/particle-view-template.md`. Nothing in it is grad
   (decision 18), and the comment in the data file avoids quoting the book's spelling, which the
   term guards would refuse.
 
+## Fasabreytingar og fasarit (2026-11-15)
+
+A menu card after Stig 3 opens a screen of its own, not a level and never marked done: Skilja (the
+six phase changes, the heating curve, the phase diagram), an ungraded Kanna and Æfa, ten items with
+one attempt each, ending `N af M rétt`. Year-2 plan, Phase 4: the book's ch. 10.3 (m68768,
+Fasabreytingar) and 10.4 (m68769, Fasarit), which no game covered.
+
+- **Kanna is a heating curve** of 100 g of ice from −20 °C to 120 °C, with a slider for the heat
+  added. The marker stops on each plateau while the readout moves grams from ice to water or from
+  water to steam, which is the point: the heat goes into the forces between molecules, not into
+  the temperature. `engine/fasar.ts` (`heatSteps`, `stateAfter`) works it out.
+- **Every number key is derived**, from the constants the book's own worked example uses for water
+  (2,09, 4,184 and 1,84 J/(g·°C); 6,01 and 40,67 kJ/mól). The five numeric items are the book's
+  135 g heating curve (416 kJ), its 94,0 g cooling (68,7 kJ), its 422 g exercise (1125 kJ),
+  TiCl₄'s melting (13,0 kJ) and ethanol's ΔH(gufunar) by Clausius-Clapeyron (41,4 kJ/mól).
+  `fasar.test.ts` holds each to the book within 1 % and refuses 0, the negative, double and half.
+- **Slips are named**: a plateau left out (melting or boiling), only the m·c·ΔT parts, the cooling
+  answer given negative, mass for moles, J for kJ and log for ln.
+- **The phase diagram is drawn not to scale**, as the book draws it. The five choice items ask why
+  the temperature stands still, which change is exothermic, water below its triple point, dry ice
+  at 1 atm and ice under pressure.
+- **Terms.** `bræðsluvermi` is the book's word (6 hits), where `ordabok.md` says
+  `bráðnunarvermi` (no hits); the screen uses the book's, by the 2026-11-15 rule, and `ordabok.md`
+  now does too. The rest agree: `gufunarvermi`, `þurrgufun`, `fasarit`, `þrípunktur`,
+  `markpunktur`, `storknun`, `hélun`. Vapour pressure stays `gufunarþrýstingur`, Siggi's ruling
+  against the book.
+
 ## Open
 
 - **The 3D view's no-WebGL panel wording** is drafted by Claude and waits on Siggi
