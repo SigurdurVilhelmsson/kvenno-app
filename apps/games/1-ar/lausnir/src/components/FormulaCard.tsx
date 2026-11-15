@@ -18,7 +18,7 @@ export function FormulaCard({ themeColor }: FormulaCardProps) {
           <div className="font-mono ml-2">g × (1 mól / mólmassi g) → mól</div>
         </div>
         <div>
-          <strong>Útþynning (varðveisla móla):</strong>
+          <strong>Þynning (varðveisla móla):</strong>
           <div className="font-mono ml-2">mól fyrir = mól eftir</div>
           <div className="font-mono ml-2">(M₁ × V₁) = (M₂ × V₂)</div>
         </div>

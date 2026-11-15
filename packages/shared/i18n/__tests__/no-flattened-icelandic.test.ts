@@ -68,7 +68,7 @@ const FLATTENED: { wrong: RegExp; right: string }[] = [
   { wrong: /\bRett!|\bRett svar\b/, right: 'Rétt' },
   { wrong: /\bLaerdu\b/i, right: 'Lærðu' },
   { wrong: /\bmolstyrk\b/i, right: 'mólstyrk' },
-  { wrong: /\butthynning[a-z]*\b/i, right: 'útþynningu' },
+  { wrong: /\butthynning[a-z]*\b/i, right: 'þynningu' },
   { wrong: /\bdaemi\b/i, right: 'dæmi' },
   { wrong: /\badferd[a-z]*\b/i, right: 'aðferð' },
   { wrong: /\bHalda afram\b/i, right: 'Halda áfram' },

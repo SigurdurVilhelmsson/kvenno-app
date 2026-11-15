@@ -30,7 +30,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
         </div>
         <div className="solution-step">
           <h4>Skref 1: Varðveisla móla</h4>
-          <p>Við útþynningu breytist fjöldi móla ekki: mól₁ = mól₂</p>
+          <p>Við þynningu breytist fjöldi móla ekki: mól₁ = mól₂</p>
           <p>Þar sem mól = M × V: M₁ × V₁ = M₂ × V₂</p>
         </div>
         <div className="solution-step">

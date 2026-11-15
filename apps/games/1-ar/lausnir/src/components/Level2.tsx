@@ -95,10 +95,10 @@ export const SCENARIOS: Scenario[] = [
   {
     id: 1,
     type: 'concentration',
-    title: 'Útþynning með vatni',
+    title: 'Þynning með vatni',
     setup: 'Þú ert með 100 mL af 2,0 M NaCl lausn.',
     question: 'Hvað gerist við styrkinn ef þú bætir við 100 mL af vatni?',
-    hint: 'Fjöldi sameinda breytist ekki, en rúmmálið tvöfaldast.',
+    hint: 'Fjöldi einda breytist ekki, en rúmmálið tvöfaldast.',
     options: [
       {
         id: 'a',
@@ -110,51 +110,51 @@ export const SCENARIOS: Scenario[] = [
         id: 'b',
         text: 'Styrkurinn helst óbreyttur (2,0 M)',
         isCorrect: false,
-        explanation: 'Nei - þegar rúmmál eykst en sameindir haldast, lækkar styrkur.',
+        explanation: 'Nei - þegar rúmmál eykst en eindir haldast, lækkar styrkur.',
       },
       {
         id: 'c',
         text: 'Styrkurinn helmingast (1,0 M)',
         isCorrect: true,
-        explanation: 'Rétt! Tvöfalt rúmmál með sama fjölda sameinda = helmingur styrks.',
+        explanation: 'Rétt! Tvöfalt rúmmál með sama fjölda einda = helmingur styrks.',
       },
       {
         id: 'd',
         text: 'Styrkurinn verður núll (0 M)',
         isCorrect: false,
-        explanation: 'Nei - sameindir hverfa ekki, þær dreifast bara á stærra rúmmál.',
+        explanation: 'Nei - eindir hverfa ekki, þær dreifast bara á stærra rúmmál.',
       },
     ],
-    concept: 'Við útþynningu: sameindir haldast, rúmmál eykst → styrkur minnkar í réttu hlutfalli.',
+    concept: 'Við þynningu: eindir haldast, rúmmál eykst → styrkur minnkar í réttu hlutfalli.',
     visualBefore: { volumeML: 100, concentration: 2.0 },
     visualAfter: { volumeML: 200, concentration: 1.0 },
   },
   {
     id: 2,
     type: 'concentration',
-    title: 'Bæta við leysiefni',
+    title: 'Bæta við uppleystu efni',
     setup: 'Þú ert með 200 mL af 1,5 M glúkósalausn.',
     question:
       'Þú leysir upp meira af glúkósa í lausninni (án þess að breyta rúmmáli). Hvað gerist?',
-    hint: 'Rúmmálið helst óbreytt en fjöldi sameinda eykst.',
+    hint: 'Rúmmálið helst óbreytt en fjöldi einda eykst.',
     options: [
       {
         id: 'a',
         text: 'Styrkurinn eykst',
         isCorrect: true,
-        explanation: 'Rétt! Fleiri sameindir í sama rúmmáli = hærri styrkur.',
+        explanation: 'Rétt! Fleiri eindir í sama rúmmáli = hærri styrkur.',
       },
       {
         id: 'b',
         text: 'Styrkurinn minnkar',
         isCorrect: false,
-        explanation: 'Nei - að bæta við sameindum eykur styrk, ekki minnkar.',
+        explanation: 'Nei - að bæta við eindum eykur styrk, ekki minnkar.',
       },
       {
         id: 'c',
         text: 'Styrkurinn helst óbreyttur',
         isCorrect: false,
-        explanation: 'Nei - fleiri sameindir í sama rúmmáli breytir styrknum.',
+        explanation: 'Nei - fleiri eindir í sama rúmmáli breytir styrknum.',
       },
       {
         id: 'd',
@@ -163,7 +163,7 @@ export const SCENARIOS: Scenario[] = [
         explanation: 'Nei - þú getur bætt við efni að vissu marki (mettunarpunkti).',
       },
     ],
-    concept: 'Styrkur = sameindir/rúmmál. Fleiri sameindir í sama rúmmáli = hærri styrkur.',
+    concept: 'Mólstyrkur = mól / L. Fleiri eindir í sama rúmmáli = hærri styrkur.',
     visualBefore: { volumeML: 200, concentration: 1.5 },
     visualAfter: { volumeML: 200, concentration: 2.5 },
   },
@@ -173,7 +173,7 @@ export const SCENARIOS: Scenario[] = [
     title: 'Blanda tveggja lausna',
     setup: 'Þú blandar 100 mL af 3,0 M lausn við 100 mL af 1,0 M lausn (sama efni).',
     question: 'Hver verður endanlegur styrkur blöndunnar?',
-    hint: 'Heildarfjöldi sameinda er summa beggja lausna.',
+    hint: 'Heildarfjöldi einda er summa beggja lausna.',
     options: [
       {
         id: 'a',
@@ -185,7 +185,7 @@ export const SCENARIOS: Scenario[] = [
         id: 'b',
         text: 'Nákvæmlega 4,0 M (summa)',
         isCorrect: false,
-        explanation: 'Nei - styrkur legst ekki saman svona. Sameindir dreifast á heildarrúmmálið.',
+        explanation: 'Nei - styrkur legst ekki saman svona. Eindir dreifast á heildarrúmmálið.',
       },
       {
         id: 'c',
@@ -200,7 +200,8 @@ export const SCENARIOS: Scenario[] = [
         explanation: 'Nei - sterkari lausnin hækkar heildarstyrk.',
       },
     ],
-    concept: 'Við blöndun: heildarsameindir / heildarrúmmál = lokastyrkur. Jöfn rúmmál → meðaltal.',
+    concept:
+      'Við blöndun: heildarfjöldi einda / heildarrúmmál = lokastyrkur. Jöfn rúmmál → meðaltal.',
     visualBefore: { volumeML: 100, concentration: 3.0 },
     visualAfter: { volumeML: 200, concentration: 2.0 },
   },
@@ -331,25 +332,25 @@ export const SCENARIOS: Scenario[] = [
     title: 'Uppgufun',
     setup: 'Þú hefur 500 mL af 0,5 M saltlausn í opinni skál. Helmingur vatnsins gufar upp.',
     question: 'Hvað gerist við styrkinn?',
-    hint: 'Sameindir hverfa ekki — rúmmálið minnkar.',
+    hint: 'Eindir hverfa ekki — rúmmálið minnkar.',
     options: [
       {
         id: 'a',
         text: 'Styrkurinn helmingast (0,25 M)',
         isCorrect: false,
-        explanation: 'Nei - minna rúmmál með sama fjölda sameinda = hærri styrkur.',
+        explanation: 'Nei - minna rúmmál með sama fjölda einda = hærri styrkur.',
       },
       {
         id: 'b',
         text: 'Styrkurinn tvöfaldast (1,0 M)',
         isCorrect: true,
-        explanation: 'Rétt! Helmingur rúmmáls með sama fjölda sameinda = tvöfaldur styrkur.',
+        explanation: 'Rétt! Helmingur rúmmáls með sama fjölda einda = tvöfaldur styrkur.',
       },
       {
         id: 'c',
         text: 'Styrkurinn helst óbreyttur',
         isCorrect: false,
-        explanation: 'Nei - minna rúmmál þýðir meiri þéttleika sameinda.',
+        explanation: 'Nei - minna rúmmál þýðir meiri þéttleika einda.',
       },
       {
         id: 'd',
@@ -358,8 +359,7 @@ export const SCENARIOS: Scenario[] = [
         explanation: 'Nei - salt (NaCl) gufar ekki upp við venjulegt hitastig.',
       },
     ],
-    concept:
-      'Uppgufun er andstæða útþynningar: rúmmál minnkar en sameindir haldast → styrkur eykst.',
+    concept: 'Uppgufun er andstæða þynningar: rúmmál minnkar en eindir haldast → styrkur eykst.',
     visualBefore: { volumeML: 500, concentration: 0.5 },
     visualAfter: { volumeML: 250, concentration: 1.0 },
   },
@@ -405,7 +405,7 @@ export const SCENARIOS: Scenario[] = [
   {
     id: 9,
     type: 'concentration',
-    title: 'Þríföld útþynning',
+    title: 'Þríföld þynning',
     setup: 'Þú þarft að þynna 6,0 M sýru niður í 2,0 M.',
     question: 'Hversu mikið þarftu að auka rúmmálið?',
     hint: 'C₁V₁ = C₂V₂. Hvert er nýja rúmmálið?',
@@ -995,6 +995,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <button
                   key={option.id}
                   data-chosen={selectedAnswer === option.id ? '' : undefined}
+                  aria-pressed={selectedAnswer === option.id}
                   onClick={() => !showResult && setSelectedAnswer(option.id)}
                   disabled={showResult}
                   className={`w-full p-4 phone:px-3 phone:py-2.5 rounded-xl border-2 text-left transition-all ${bgColor} ${borderColor} ${textColor} ${showResult ? 'cursor-default' : 'cursor-pointer'}`}

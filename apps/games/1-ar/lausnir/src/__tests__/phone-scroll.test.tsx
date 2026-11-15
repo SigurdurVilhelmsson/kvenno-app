@@ -122,7 +122,7 @@ describe('the menu', () => {
     // Stig 2 opened in the middle of its answer options.
     press(within(container).getByRole('button', { name: /Stig 2: Rökstuðningur/ }));
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
-    expect(within(container).getByText('Atburðarás 1: Útþynning með vatni')).toBeTruthy();
+    expect(within(container).getByText('Atburðarás 1: Þynning með vatni')).toBeTruthy();
     expect(focused()?.tagName).toBe('H1');
   });
 
@@ -208,7 +208,7 @@ describe('Stig 1', () => {
     later();
     press(ui.getByRole('button', { name: /Áfram í verkefni/ }));
 
-    // 20 → 30 sameindir in 200 mL is the 1,5 M asked for.
+    // 20 → 30 eindir in 200 mL is the 1,5 M asked for.
     press(ui.getByRole('button', { name: '+10' }));
     press(ui.getByRole('button', { name: /Athuga lausn/ }));
     expectFeedbackFocused(/Rétt/);
@@ -248,13 +248,13 @@ describe('Stig 1', () => {
     later();
     press(ui.getByRole('button', { name: /Áfram í verkefni/ }));
 
-    // 20 sameindir in 200 mL is 1,0 M, under the 1,5 M asked for.
+    // 20 eindir in 200 mL is 1,0 M, under the 1,5 M asked for.
     press(ui.getByRole('button', { name: /Athuga lausn/ }));
     expectFeedbackFocused(/Ekki alveg — styrkurinn er of lágur\./);
     expect(focused()?.getAttribute('aria-labelledby')).toBe('lausnir-l1-miss');
     expect(scrollBy).toHaveBeenCalled();
 
-    // 21 sameindir is still too low, but the message was about 20: it goes.
+    // 21 eindir is still too low, but the message was about 20: it goes.
     press(ui.getByRole('button', { name: '+1' }));
     expect(ui.queryByText(/Ekki alveg/)).toBeNull();
 

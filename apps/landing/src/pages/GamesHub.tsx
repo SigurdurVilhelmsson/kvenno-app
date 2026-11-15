@@ -69,7 +69,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Lausnir',
-        description: 'Mólstyrkur og útþynning lausna',
+        description: 'Mólstyrkur og þynning lausna',
         slug: 'lausnir',
       },
       {

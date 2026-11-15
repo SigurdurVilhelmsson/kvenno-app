@@ -123,10 +123,8 @@ src/components/TemperatureSolubility.tsx     SOLUBILITY_DATA, curves, Stig 2 tem
 src/components/FormulaCard.tsx, StepBySolution.tsx  Stig 3 reference and worked solution
 src/data/chemicals.ts                        20 chemicals: molar mass, form, maxMolarity
 src/data/electrolytes.ts                     Stig 0 solutes and classOf
-src/data/facts.ts                            CHEMISTRY_FACTS — exported, rendered nowhere
 src/utils/problem-generator.ts               Stig 3 generators
 src/utils/validation.ts                      input parsing and the 2 % check
-src/utils/scoring.ts                         imported only by utils.test.ts; no level uses it
 src/types.ts
 src/__tests__/                               electrolytes, weighable-substances, problem-generator,
                                              solubility-data, cooling-scenarios,
@@ -140,8 +138,34 @@ LEVEL1_README.md                             April prototype notes; stale, see b
 Run the tests from the repo root (`pnpm exec vitest run apps/games/1-ar/lausnir`): the Level 2 render
 test needs the root config's DOM environment.
 
+## Fixed 2026-11-15 — the year-1 audit (Phase 0 item 2)
+
+- **Stig 1 defines concentration as the book does** (ch. 3, `m68703`): `Mólstyrkur = mól / L`,
+  where it said concentration was particles over volume. A drawn particle is a scale, not a
+  definition, and the play screen now says so beside the beaker (`hver eind = 0,01 mól`). The
+  particles are **eindir**, not `sameindir`, in Stig 1 and Stig 2, since NaCl has no molecules.
+  Sameind and eind decline alike, so nothing around them moved. `concentration-definition.test.tsx`
+  holds it.
+- **`þynning`, not `útþynning`**, here, on the hub card and in the page description, as
+  `ordabok.md` and the book (18 to 0) write it; a `governed-terms.test.ts` row bans the út- form.
+- **Stig 2's scenario about dissolving more glucose was titled `Bæta við leysiefni`**, a word the
+  book uses for solvent as often as for anything; it is now `Bæta við uppleystu efni`, the book's
+  word for solute.
+- **Stig 2's options carry `aria-pressed`**, so a screen reader hears which one is chosen before
+  Athuga.
+- **`data/facts.ts` is gone**: exported, rendered nowhere, and the last place the game said
+  `Avogadros tala`.
+
 ## Open
 
+- **The O₂ and CO₂ curves end at 0 at 100 °C** (`TemperatureSolubility.tsx`), where the basis the
+  chart states, 1 atm of the gas over the solution, gives a value above zero. Neither point, nor the
+  others, has a recorded source. Needs a sourced 100 °C value or the gas curves ending at 80 °C,
+  which the six-point arrays do not allow yet.
+- **Molar masses are typed twice** in `data/chemicals.ts` (`molarMass` and `molarMassDisplay`), most
+  rounded to whole numbers, so NaCl is 58,5 here and 58,44 in Mólhugtakið. Every rounded value is
+  inside Stig 3's 2 % tolerance. Weighing them with `packages/shared/utils/formula.ts` needs it to
+  read parentheses first (`Ca(OH)₂`).
 - **i18n.** Stig 1–3 use `t()` with `en` and `pl` blocks while Stig 0 is hardcoded Icelandic. That
   split sits inside the platform-wide undecided `useGameI18n` question (see `CLAUDE.md`) rather than
   answering it.
@@ -160,6 +184,5 @@ Not recorded anywhere else; found while writing this file.
 
 - **`LEVEL1_README.md` describes a prototype, not the shipped game.** It refers to an
   `App-Level1-Demo.tsx` that does not exist and to `App.tsx` as "the old calculation game".
-- **Dead code:** `utils/scoring.ts` (including a `getHintPenalty` no level calls), `data/facts.ts`,
-  and most of the `GameState` interface in `types.ts` belong to the pre-restructure game. Nothing
-  renders them.
+- **Dead code:** most of the `GameState` interface in `types.ts` belongs to the pre-restructure
+  game. Nothing renders it.
