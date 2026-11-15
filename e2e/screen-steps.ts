@@ -24,6 +24,8 @@ export async function runStep(page: Page, step: ScreenStep): Promise<void> {
     await page.getByRole(role, { name }).first().click();
   } else if ('css' in step) {
     await page.locator(step.css).first().click();
+  } else if ('cssAll' in step) {
+    for (const each of await page.locator(step.cssAll).all()) await each.click();
   } else if ('fill' in step) {
     await page.locator(step.fill[0]).first().fill(step.fill[1]);
   } else if ('press' in step) {

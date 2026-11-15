@@ -12,6 +12,8 @@ export type ScreenStep =
   | { click: string }
   | { clickRole: [Parameters<import('@playwright/test').Page['getByRole']>[0], string] }
   | { css: string }
+  /** Every match, in order: a pick that must be wrong whatever a shuffle put first. */
+  | { cssAll: string }
   | { fill: [string, string] }
   | { press: string }
   | { wait: number };
@@ -2329,7 +2331,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Frá lýsingu til jöfnu — röng efni',
       steps: [
         { clickRole: ['button', 'Frá lýsingu til jöfnu'] },
-        { css: '[role="group"][aria-label="Hvarfefni (vinstra megin)"] button' },
+        { cssAll: '[role="group"][aria-label="Hvarfefni (vinstra megin)"] button' },
         { css: '[role="group"][aria-label="Myndefni (hægra megin)"] button' },
         { clickRole: ['button', 'Athuga efnin'] },
         { wait: 400 },
@@ -2341,8 +2343,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       loop: {
         prompt: { css: '[data-item-start]' },
         action: { role: 'button', name: 'Athuga efnin' },
+        // Every reactant chip: each right one's wrong-state twin is among them, so the pick
+        // is always wrong. The first chip alone is sometimes right, since the chips shuffle.
         answer: [
-          { css: '[role="group"][aria-label="Hvarfefni (vinstra megin)"] button' },
+          { cssAll: '[role="group"][aria-label="Hvarfefni (vinstra megin)"] button' },
           { css: '[role="group"][aria-label="Myndefni (hægra megin)"] button' },
         ],
         verdict: { css: '.feedback-panel p' },
