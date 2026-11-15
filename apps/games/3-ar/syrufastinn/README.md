@@ -233,7 +233,7 @@ is not answerable or not inside the rule. α depends only on Ka/C, so saltpétur
 0,25 M and ediksýra at 0,010 M tie maurasýra's 4,15 %; the decision named maurasýra.
 `problems.test.ts` holds one problem per eligible acid, the ascending order and the last pair.
 
-## Agnasýn: how much dissociates (2026-11-15)
+## Nærmynd: how much dissociates (2026-11-15)
 
 A card above the four phases opens a particle view, built on the shared one
 (`@shared/components/ParticleBeaker`, `docs/particle-view-template.md`). It is not a phase, is never
@@ -251,7 +251,7 @@ marked done and grades nothing.
   molecule ionises while a free H⁺ rejoins another F⁻ (`exchange` in the shared system), so the
   counts never change.
 
-Tests: `agnasyn.test.ts` and `agnasyn-screen.test.tsx`. Wording is drafted by Claude
+Tests: `naermynd.test.ts` and `naermynd-screen.test.tsx`. Wording is drafted by Claude
 (`docs/REVIEW-QUEUE.md` C23).
 
 ## Layout
@@ -261,10 +261,10 @@ src/engine/ka.ts              equilibrium maths; no React, no Icelandic
 src/engine/grade.ts           the grading ruling, and the tolerances it implies
 src/data/acids.ts             acids, with protons / nameEstablished / answerability guards
 src/data/problems.ts          the Æfa and Beita sets, generated from the engine
-src/engine/agnasyn.ts         Agnasýn's particle counts, pH and Ka read back
-src/data/agnasyn-steps.tsx    Agnasýn's three scenes
+src/engine/naermynd.ts         Nærmynd's particle counts, pH and Ka read back
+src/data/naermynd-steps.tsx    Nærmynd's three scenes
 src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar,
-                              ScientificKeys, BackButton, AgnasynScreen
+                              ScientificKeys, BackButton, NaermyndScreen
 src/__tests__/                ka, grade, problems, chain-string, phone-input, phone-scroll, wording
 ```
 

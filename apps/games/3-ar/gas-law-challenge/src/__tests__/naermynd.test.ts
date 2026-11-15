@@ -14,7 +14,7 @@ import {
   particleCount,
   stateAt,
   type SceneKind,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 import { R } from '../types';
 
 const KINDS: SceneKind[] = ['boyle', 'charles', 'gayLussac', 'avogadro'];
@@ -26,7 +26,7 @@ function across(kind: SceneKind) {
   return out;
 }
 
-describe('Agnasýn engine (gas laws)', () => {
+describe('Nærmynd engine (gas laws)', () => {
   it('starts every scene at 1,00 mól, 300 K and 1,00 atm', () => {
     for (const kind of KINDS) {
       const s = stateAt(kind, CONTROLS[kind].start);

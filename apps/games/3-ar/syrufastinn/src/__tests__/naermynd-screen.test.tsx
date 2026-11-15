@@ -2,12 +2,12 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
-import { AgnasynScreen } from '../components/AgnasynScreen';
-import { STEPS } from '../data/agnasyn-steps';
-import { SCENE_ACID, strongPH, weakCounts, weakPH } from '../engine/agnasyn';
+import { NaermyndScreen } from '../components/NaermyndScreen';
+import { STEPS } from '../data/naermynd-steps';
+import { SCENE_ACID, strongPH, weakCounts, weakPH } from '../engine/naermynd';
 
 /**
- * Agnasýn walked through with reduced motion: each scene shows the pH and the
+ * Nærmynd walked through with reduced motion: each scene shows the pH and the
  * ions of its glasses, and nothing on screen writes a decimal point.
  */
 
@@ -35,9 +35,9 @@ function expectNoDecimalPoint(where: string) {
   }
 }
 
-describe('Agnasýn: hversu mikið klofnar?', () => {
+describe('Nærmynd: hversu mikið klofnar?', () => {
   it('walks every scene with the pH and ions of its glasses', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     STEPS.forEach((step, i) => {
       expect(screen.getByRole('heading', { level: 3 }).textContent).toBe(`${i + 1}. ${step.title}`);
       const images = screen.getAllByRole('img');
@@ -60,7 +60,7 @@ describe('Agnasýn: hversu mikið klofnar?', () => {
   });
 
   it('lets the student choose an acid and a concentration', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: `${STEPS.length + 1}. Kannaðu sjálf/ur` }));
     fireEvent.change(screen.getByLabelText('Veik sýra'), { target: { value: 'ediksyra' } });
     fireEvent.click(screen.getByRole('button', { name: '0,010 M' }));

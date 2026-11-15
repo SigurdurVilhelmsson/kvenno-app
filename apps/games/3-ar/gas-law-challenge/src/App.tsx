@@ -4,11 +4,11 @@ import { ErrorBoundary, FadePresence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { focusTarget, parseStudentNumber, revealSpan, revealTop } from '@shared/utils';
 
-import { AgnasynScreen } from './components/AgnasynScreen';
 import { BlondurScreen } from './components/BlondurScreen';
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { GameScreen } from './components/GameScreen';
 import { MenuScreen } from './components/MenuScreen';
+import { NaermyndScreen } from './components/NaermyndScreen';
 import { getPracticeDeck, getRandomQuestionForLevel, type Level } from './data';
 import {
   GasLawProgress,
@@ -35,7 +35,7 @@ const NEW_RUN: GameStats = {
 };
 
 function App() {
-  const [screen, setScreen] = useState<'menu' | 'game' | 'feedback' | 'agnasyn' | 'blondur'>(
+  const [screen, setScreen] = useState<'menu' | 'game' | 'feedback' | 'naermynd' | 'blondur'>(
     'menu'
   );
   const [gameMode, setGameMode] = useState<GameMode>('practice');
@@ -323,8 +323,8 @@ function App() {
       focusTarget(chooser?.querySelector<HTMLElement>('[aria-pressed="true"]'));
     } else if (which === 'game') {
       focusTarget(root.querySelector<HTMLElement>('[data-item-start]'));
-    } else if (which === 'agnasyn' || which === 'blondur') {
-      // Agnasýn and Gasblöndur focus their own headings on mount.
+    } else if (which === 'naermynd' || which === 'blondur') {
+      // Nærmynd and Gasblöndur focus their own headings on mount.
     } else {
       focusTarget(root.querySelector<HTMLElement>('[data-feedback-verdict]'));
     }
@@ -413,13 +413,13 @@ function App() {
           setSelectedLevel={setSelectedLevel}
           resetProgress={resetProgress}
           onStart={startRun}
-          onAgnasyn={() => setScreen('agnasyn')}
+          onNaermynd={() => setScreen('naermynd')}
           onBlondur={() => setScreen('blondur')}
           rootRef={menuRoot}
         />
       </FadePresence>
-      <FadePresence show={screen === 'agnasyn'} exitDuration={200}>
-        <AgnasynScreen onBack={() => setScreen('menu')} />
+      <FadePresence show={screen === 'naermynd'} exitDuration={200}>
+        <NaermyndScreen onBack={() => setScreen('menu')} />
       </FadePresence>
       <FadePresence show={screen === 'blondur'} exitDuration={200}>
         <BlondurScreen onBack={() => setScreen('menu')} />

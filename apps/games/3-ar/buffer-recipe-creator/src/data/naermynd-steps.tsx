@@ -10,11 +10,11 @@ import {
   countsAfter,
   pHAfter,
   type Reagent,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 /**
- * The scenes of this game's Agnasýn, as data (docs/particle-view-template.md).
- * Every number in the text is computed from `engine/agnasyn.ts`, never typed.
+ * The scenes of this game's Nærmynd, as data (docs/particle-view-template.md).
+ * Every number in the text is computed from `engine/naermynd.ts`, never typed.
  */
 export interface Step {
   title: string;

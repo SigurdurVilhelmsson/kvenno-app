@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 
-import type { SceneKind } from '../engine/agnasyn';
+import type { SceneKind } from '../engine/naermynd';
 
 /**
- * The scenes of this game's Agnasýn, as data (docs/particle-view-template.md).
- * Every number on screen is computed in `engine/agnasyn.ts`.
+ * The scenes of this game's Nærmynd, as data (docs/particle-view-template.md).
+ * Every number on screen is computed in `engine/naermynd.ts`.
  */
 
 export interface Step {

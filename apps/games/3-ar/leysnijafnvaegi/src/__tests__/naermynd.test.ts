@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { molarSolubility } from '../engine/ksp';
 import {
   AG2CRO4,
   AGCL,
@@ -13,10 +14,9 @@ import {
   WATER_PER_ION,
   mixAt,
   mohrAt,
-} from '../engine/agnasyn';
-import { molarSolubility } from '../engine/ksp';
+} from '../engine/naermynd';
 
-describe('Agnasýn: the numbers behind the pictures', () => {
+describe('Nærmynd: the numbers behind the pictures', () => {
   it('uses Brown’s AgCl and Ag₂CrO₄ through the game’s own engine', () => {
     expect(AGCL.ksp).toBe(1.8e-10);
     expect(AG2CRO4.ksp).toBe(1.2e-12);

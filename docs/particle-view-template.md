@@ -1,10 +1,10 @@
-# Particle views: the Agnasýn template
+# Particle views: the Nærmynd template
 
-Agnasýn (`apps/games/3-ar/ph-titration`, 2026-11-14, PR #147) shows one titration three ways at
+Nærmynd (`apps/games/3-ar/ph-titration`, 2026-11-14, PR #147) shows one titration three ways at
 once: the particles in the flask, the equations, and the curve as far as the NaOH added. Siggi
 asked for its design and logic to be the template for later visualisation modules. This file is
 that template: what to copy, in what order, and why each rule is there. Read the game's README
-section `## Agnasýn` beside it for what the screen itself teaches.
+section `## Nærmynd` beside it for what the screen itself teaches.
 
 ## What it is
 
@@ -16,13 +16,13 @@ report `N af M rétt` and it does not gate anything.
 
 | File                              | Owns                                                    | Rule                                |
 | --------------------------------- | ------------------------------------------------------- | ----------------------------------- |
-| `utils/agnasyn.ts`                | The chemistry: constants, pH, species, particle counts  | Pure. No React, no randomness       |
+| `utils/naermynd.ts`               | The chemistry: constants, pH, species, particle counts  | Pure. No React, no randomness       |
 | shared `ParticleBeaker/system.ts` | The particle system: positions, drift, reactions, fades | Pure apart from an `rng` passed in  |
-| `data/agnasyn-steps.tsx`          | The scenes: title, volume, equations, text, note        | Every number printed is computed    |
+| `data/naermynd-steps.tsx`         | The scenes: title, volume, equations, text, note        | Every number printed is computed    |
 | shared `ParticleBeaker.tsx`       | Drawing the system in SVG; the frame loop               | Holds no chemistry                  |
 | `components/ProgressCurve.tsx`    | The curve drawn to the current volume, with markers     | Reads the same `pHAt` as the beaker |
 | `components/NaOHDissolve.tsx`     | A side panel for one process (the solid dissolving)     | Optional, per scene                 |
-| `components/Agnasyn.tsx`          | Scene navigation, playback, slider, readouts, legend    | The only stateful screen            |
+| `components/Naermynd.tsx`         | Scene navigation, playback, slider, readouts, legend    | The only stateful screen            |
 
 Keep the split. The chemistry and the particle system are tested without a DOM; the components only
 draw what those two say.
@@ -37,7 +37,7 @@ draw what those two say.
    and the game describe one flask.
 2. **Particles are amounts on a fixed scale.** Choose particles per mmól so the main species is a
    readable number (8 per mmól gives 20 acid molecules, and one Na⁺ plus one OH⁻ per 1,25 mL).
-   Every count drawn is the amount rounded, and a test holds that (`agnasyn.test.ts`). Do not tune
+   Every count drawn is the amount rounded, and a test holds that (`naermynd.test.ts`). Do not tune
    counts for looks.
 3. **Exaggerate only where a scene is about something too small to see, and say so.** The ionised
    acid at the start is 0,27 of a particle; acetate's OH⁻ at equivalence is 0,002. At exactly those
@@ -74,7 +74,7 @@ draw what those two say.
 - **The true amounts are one tap away**: a `PhoneDisclosure` table of particles and concentrations
   under the views. A concentration shows `0` only when it is exactly zero; otherwise scientific
   notation.
-- **Write the species the class writes.** Agnasýn says H⁺, not H₃O⁺, because Siggi's students do
+- **Write the species the class writes.** Nærmynd says H⁺, not H₃O⁺, because Siggi's students do
   (2026-11-14). Ask before choosing.
 
 ## Platform rules it had to meet
@@ -82,7 +82,7 @@ draw what those two say.
 Every one of these is enforced by a test or CI job, and every one bit during the build:
 
 - Icelandic only; numbers through `formatDecimal` / `formatScientific`, never `toFixed` in a
-  component; `agnasyn-screen.test.tsx` fails on any `\d.\d` in text or an `aria-label`.
+  component; `naermynd-screen.test.tsx` fails on any `\d.\d` in text or an `aria-label`.
 - Terminology from `packages/shared/i18n/ordabok.md`; `governed-terms.test.ts` scans comments too
   (a constant once named for a "puff" of water tripped the `púffer` ban).
 - Scrolling only through `@shared/utils` (`revealTop(..., { anyWidth: true })`, `focusTarget` on the
@@ -107,7 +107,7 @@ Every one of these is enforced by a test or CI job, and every one bit during the
 
 ## Adapting it
 
-For a new system, replace `utils/agnasyn.ts` (constants, `pHAt` or its equivalent, `speciesAt`,
+For a new system, replace `utils/naermynd.ts` (constants, `pHAt` or its equivalent, `speciesAt`,
 `particleCountsAt`, which volumes are flagged) and `data/*-steps.tsx`. **The particle system and
 the flask are shared since 2026-11-15**, when the second consumer arrived:
 `@shared/components/ParticleBeaker` (`system.ts`, `ParticleBeaker.tsx`). The flask takes the counts
@@ -117,8 +117,8 @@ in to neutralise HA and HCl dripping in to protonate A⁻. A new species goes in
 test in `packages/shared/components/__tests__/particle-system.test.ts`. `ProgressCurve.tsx` stays
 in `3-ar/ph-titration`, since a curve's axis is the scene's own.
 
-The second consumer is `3-ar/buffer-recipe-creator`'s Agnasýn, a buffer beside pure water
-(`engine/agnasyn.ts`, `data/agnasyn-steps.tsx`, `components/Agnasyn.tsx`, `BufferCurve.tsx`): two
+The second consumer is `3-ar/buffer-recipe-creator`'s Nærmynd, a buffer beside pure water
+(`engine/naermynd.ts`, `data/naermynd-steps.tsx`, `components/Naermynd.tsx`, `BufferCurve.tsx`): two
 flasks on one screen, which is why the system is one per flask and holds no global state. The third
 is `3-ar/syrufastinn`'s, three flasks with no búretta (`reagent={null}`, a shorter `height`), glyphs
 naming the acid (`text`: `HF`, `F⁻`), and the weak acid's equilibrium shown at its real counts by
@@ -128,8 +128,8 @@ naming the acid (`text`: `HF`, `F⁻`), and the weak acid's equilibrium shown at
 ions the system does not know, so `engine/mixture.ts` turns `applyStress`'s amounts into counts on
 one scale per system and `components/MixtureView.tsx` draws them as plain SVG circles that keep
 their place between frames. A system it cannot draw without exaggerating shows no particles.
-`3-ar/jafnvaegisfasti`'s Agnasýn does the same for the approach to equilibrium: two flasks of the
+`3-ar/jafnvaegisfasti`'s Nærmynd does the same for the approach to equilibrium: two flasks of the
 water-gas shift whose end is `solveExtent`'s root, with a path drawn from mass-action rates whose
 ratio is K, on a time axis the screen says has no units.
-Open review items for Agnasýn itself are C23 in
+Open review items for Nærmynd itself are C23 in
 `docs/REVIEW-QUEUE.md`.

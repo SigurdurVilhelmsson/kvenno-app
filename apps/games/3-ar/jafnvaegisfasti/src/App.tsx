@@ -5,13 +5,13 @@ import { useGameProgress } from '@shared/hooks';
 import { useRevealTopOnDesktop, useScreenTop } from '@shared/utils';
 
 import { AefaScreen } from './components/AefaScreen';
-import { AgnasynScreen } from './components/AgnasynScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
+import { NaermyndScreen } from './components/NaermyndScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
 import './styles.css';
 
-type Screen = 'menu' | 'agnasyn' | 'kanna' | 'skilja' | 'aefa' | 'beita';
+type Screen = 'menu' | 'naermynd' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
 interface Progress {
   completed: Screen[];
@@ -123,14 +123,14 @@ function App() {
                 hvar jafnvægið lendir í stað þess að segja bara í hvora áttina það færist.
               </p>
 
-              {/* Agnasýn: the approach to equilibrium, drawn. Not one of the four phases
+              {/* Nærmynd: the approach to equilibrium, drawn. Not one of the four phases
                   and never marked done; nothing in it is graded. */}
               <button
                 type="button"
-                onClick={() => setScreen('agnasyn')}
+                onClick={() => setScreen('naermynd')}
                 className="game-card mb-4 w-full rounded-lg border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 sm:p-5 phone:mb-2 phone:p-3"
               >
-                <h3 className="text-xl font-semibold text-amber-900 phone:text-lg">Agnasýn</h3>
+                <h3 className="text-xl font-semibold text-amber-900 phone:text-lg">Nærmynd</h3>
                 <p className="text-amber-800 phone:text-sm">
                   Sjáðu sameindirnar: ein blanda úr hvarfefnum, önnur úr myndefnum, og Q sem stefnir
                   á K í báðum.
@@ -239,7 +239,7 @@ function App() {
           </div>
         )}
 
-        {screen === 'agnasyn' && <AgnasynScreen onBack={backToMenu} />}
+        {screen === 'naermynd' && <NaermyndScreen onBack={backToMenu} />}
 
         {screen === 'kanna' && (
           <KannaScreen onComplete={() => markCompleted('kanna')} onBack={backToMenu} />

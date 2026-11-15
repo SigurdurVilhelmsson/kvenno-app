@@ -12,7 +12,7 @@ import {
 
 import { NaOHDissolve } from './NaOHDissolve';
 import { ProgressCurve } from './ProgressCurve';
-import { STEPS, hhPH } from '../data/agnasyn-steps';
+import { STEPS, hhPH } from '../data/naermynd-steps';
 import {
   ML_PER_PARTICLE,
   PARTICLES_PER_MMOL,
@@ -27,14 +27,14 @@ import {
   pHAt,
   particleCountsAt,
   speciesAt,
-} from '../utils/agnasyn';
+} from '../utils/naermynd';
 
 /**
- * Agnasýn: one titration, ediksýra with NaOH, shown three ways at once — the
+ * Nærmynd: one titration, ediksýra with NaOH, shown three ways at once — the
  * particles in the flask, the equations, and the títrunarferill as it grows.
  * It is the game's Explore phase: nothing is graded and nothing is stored.
  *
- * Seven scenes walk the titration in order (`data/agnasyn-steps.tsx`), each
+ * Seven scenes walk the titration in order (`data/naermynd-steps.tsx`), each
  * dripping in the NaOH from the previous scene's volume so the particles and
  * the curve move together; the eighth hands the student the búretta.
  */
@@ -44,14 +44,14 @@ const SECONDS_PER_DROP = 0.7;
 const EXPLORE = STEPS.length;
 const TOTAL = STEPS.length + 1;
 
-interface AgnasynProps {
+interface NaermyndProps {
   onBack: () => void;
 }
 
 type SpeciesKey = 'HA' | 'A' | 'H3O' | 'OH' | 'Na';
 const ROWS: SpeciesKey[] = ['HA', 'A', 'H3O', 'OH', 'Na'];
 
-export function Agnasyn({ onBack }: AgnasynProps) {
+export function Naermynd({ onBack }: NaermyndProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [volume, setVolume] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -168,7 +168,7 @@ export function Agnasyn({ onBack }: AgnasynProps) {
           tabIndex={-1}
           className="text-2xl font-bold text-purple-700 phone:text-xl"
         >
-          Agnasýn: ediksýra títruð með NaOH
+          Nærmynd: ediksýra títruð með NaOH
         </h2>
         <p className="text-sm text-warm-600 mb-3">
           Sjáðu agnirnar í lausninni, jöfnurnar og títrunarferilinn breytast saman.
@@ -363,11 +363,11 @@ export function Agnasyn({ onBack }: AgnasynProps) {
 function ExploreControls({ volume, onChange }: { volume: number; onChange: (v: number) => void }) {
   return (
     <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-3">
-      <label htmlFor="agnasyn-volume" className="block text-sm font-semibold text-purple-900 mb-2">
+      <label htmlFor="naermynd-volume" className="block text-sm font-semibold text-purple-900 mb-2">
         Rúmmál NaOH: {formatDecimal(volume, 2)} mL
       </label>
       <input
-        id="agnasyn-volume"
+        id="naermynd-volume"
         type="range"
         min={0}
         max={V_MAX}

@@ -1,6 +1,6 @@
 /**
  * The particles a particle view draws in a flask, and how they move from one
- * set of counts to the next. Written for Agnasýn in `3-ar/ph-titration` and
+ * set of counts to the next. Written for Nærmynd in `3-ar/ph-titration` and
  * shared since its second consumer, the buffer scene in
  * `3-ar/buffer-recipe-creator` (docs/particle-view-template.md).
  *

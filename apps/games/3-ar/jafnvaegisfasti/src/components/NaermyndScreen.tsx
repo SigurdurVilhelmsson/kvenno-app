@@ -1,8 +1,8 @@
 /**
- * Agnasýn — two flasks of the water-gas shift, one started from reactants and
+ * Nærmynd — two flasks of the water-gas shift, one started from reactants and
  * one from products, running to the same equilibrium. Nothing is graded or
  * stored. Built on the particle-view template (docs/particle-view-template.md);
- * every number comes from `engine/agnasyn.ts`.
+ * every number comes from `engine/naermynd.ts`.
  */
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -21,7 +21,7 @@ import {
   settledTime,
   type FlaskId,
   REACTION,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 const COLORS: Record<string, string> = {
   CO: '#ea580c',
@@ -274,7 +274,7 @@ interface Props {
   onBack: () => void;
 }
 
-export function AgnasynScreen({ onBack }: Props) {
+export function NaermyndScreen({ onBack }: Props) {
   const [still] = useState(prefersReducedMotion);
   const [t, setT] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -343,7 +343,7 @@ export function AgnasynScreen({ onBack }: Props) {
             tabIndex={-1}
             className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl phone:text-base"
           >
-            Agnasýn: tvær leiðir að sama jafnvægi
+            Nærmynd: tvær leiðir að sama jafnvægi
           </h2>
           <button
             onClick={onBack}

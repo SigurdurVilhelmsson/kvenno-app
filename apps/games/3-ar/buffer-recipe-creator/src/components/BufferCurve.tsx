@@ -7,7 +7,7 @@ import {
   pHAfter,
   type Glass,
   type Reagent,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 /**
  * pH against the reagent added, for both glasses, drawn as far as the volume

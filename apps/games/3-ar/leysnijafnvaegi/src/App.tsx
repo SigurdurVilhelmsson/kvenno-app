@@ -5,13 +5,13 @@ import { useGameProgress } from '@shared/hooks';
 import { useRevealTopOnDesktop, useScreenTop } from '@shared/utils';
 
 import { AefaScreen } from './components/AefaScreen';
-import { AgnasynScreen } from './components/AgnasynScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
+import { NaermyndScreen } from './components/NaermyndScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
 import './styles.css';
 
-type Screen = 'menu' | 'agnasyn' | 'kanna' | 'skilja' | 'aefa' | 'beita';
+type Screen = 'menu' | 'naermynd' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
 interface Progress {
   completed: Screen[];
@@ -124,14 +124,14 @@ function App() {
                 lausnirnar voru sem þú blandaðir.
               </p>
 
-              {/* Agnasýn: the ions behind Ksp. Not one of the four phases and never
+              {/* Nærmynd: the ions behind Ksp. Not one of the four phases and never
                   marked done; nothing in it is graded. */}
               <button
                 type="button"
-                onClick={() => setScreen('agnasyn')}
+                onClick={() => setScreen('naermynd')}
                 className="game-card mb-4 w-full rounded-lg border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 sm:p-5 phone:mb-3 phone:p-3"
               >
-                <h3 className="text-xl font-semibold text-amber-900 phone:text-lg">Agnasýn</h3>
+                <h3 className="text-xl font-semibold text-amber-900 phone:text-lg">Nærmynd</h3>
                 <p className="text-amber-800 phone:text-sm">
                   Sjáðu jónirnar: mettuð lausn, samjón, tvær lausnir blandaðar og Mohr-títrun.
                 </p>
@@ -238,7 +238,7 @@ function App() {
           </div>
         )}
 
-        {screen === 'agnasyn' && <AgnasynScreen onBack={backToMenu} />}
+        {screen === 'naermynd' && <NaermyndScreen onBack={backToMenu} />}
 
         {screen === 'kanna' && (
           <KannaScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />

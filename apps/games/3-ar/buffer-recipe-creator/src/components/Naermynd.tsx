@@ -10,7 +10,7 @@ import {
 import { focusTarget, formatDecimal, prefersReducedMotion, revealTop } from '@shared/utils';
 
 import { BufferCurve, CURVE_COLOR } from './BufferCurve';
-import { STEPS } from '../data/agnasyn-steps';
+import { STEPS } from '../data/naermynd-steps';
 import {
   ML_PER_PARTICLE,
   PARTICLES_PER_MMOL,
@@ -24,13 +24,13 @@ import {
   pHAfter,
   type Glass,
   type Reagent,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 /**
- * Agnasýn: a buffer beside pure water, with the same acid or base dripped into
+ * Nærmynd: a buffer beside pure water, with the same acid or base dripped into
  * both. The game's Explore phase: nothing is graded and nothing is stored.
  * Built on the shared particle view (docs/particle-view-template.md), with
- * every number from `engine/agnasyn.ts`.
+ * every number from `engine/naermynd.ts`.
  */
 
 /** Seconds per particle's worth of reagent while a scene plays. */
@@ -42,11 +42,11 @@ const ROWS: Species[] = ['HA', 'A', 'H3O', 'OH', 'Na', 'Cl'];
 const GLASS_NAME: Record<Glass, string> = { buffer: 'Stuðpúði', water: 'Hreint vatn' };
 const REAGENT_NAME: Record<Reagent, string> = { HCl: 'saltsýru', NaOH: 'natríumhýdroxíði' };
 
-interface AgnasynProps {
+interface NaermyndProps {
   onBack: () => void;
 }
 
-export function Agnasyn({ onBack }: AgnasynProps) {
+export function Naermynd({ onBack }: NaermyndProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [reagent, setReagent] = useState<Reagent>('HCl');
   const [volume, setVolume] = useState(0);
@@ -179,7 +179,7 @@ export function Agnasyn({ onBack }: AgnasynProps) {
           tabIndex={-1}
           className="text-2xl font-bold text-purple-700 phone:text-xl"
         >
-          Agnasýn: stuðpúði og vatn
+          Nærmynd: stuðpúði og vatn
         </h2>
         <p className="text-sm text-warm-600 mb-3">
           Sama sýra eða basi fer í stuðpúða og í hreint vatn. Sjáðu hvað verður um agnirnar og
@@ -406,11 +406,11 @@ function ExploreControls({ reagent, volume, onReagent, onVolume }: ExploreContro
           ))}
         </div>
       </fieldset>
-      <label htmlFor="agnasyn-volume" className="block text-sm font-semibold text-purple-900 mb-2">
+      <label htmlFor="naermynd-volume" className="block text-sm font-semibold text-purple-900 mb-2">
         Rúmmál {reagent}: {formatDecimal(volume, 2)} mL
       </label>
       <input
-        id="agnasyn-volume"
+        id="naermynd-volume"
         type="range"
         min={0}
         max={V_MAX}

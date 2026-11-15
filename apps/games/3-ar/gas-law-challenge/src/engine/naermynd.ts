@@ -1,7 +1,7 @@
 import { R } from '../types';
 
 /**
- * The numbers behind this game's Agnasýn: one cylinder of ideal gas with a
+ * The numbers behind this game's Nærmynd: one cylinder of ideal gas with a
  * movable stimpill, and four scenes that each hold two quantities fixed and let
  * the student move a third (docs/particle-view-template.md).
  *

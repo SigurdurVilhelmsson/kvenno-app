@@ -8,7 +8,7 @@ import {
 import { reactionBy } from '../data/reactions';
 
 /**
- * The chemistry behind this game's Agnasýn: the water-gas shift at 800 °C,
+ * The chemistry behind this game's Nærmynd: the water-gas shift at 800 °C,
  * K = 0,64, started once from reactants only and once from products only.
  *
  * Where each flask ends comes from `solveExtent` and nowhere else. How fast it

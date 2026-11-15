@@ -81,7 +81,7 @@ Priority key for every item:
 
 ## 2. Propose animations, only where they teach
 
-Animations follow `docs/particle-view-template.md`, whose model is the Agnasýn screen in pH
+Animations follow `docs/particle-view-template.md`, whose model is the Nærmynd screen in pH
 Títrun. Propose one only where seeing the particles answers a question the game asks, and say
 which misconception it removes. Skip the proposal where the topic is already visual or the
 picture would only decorate it. For each proposal give:

@@ -170,7 +170,7 @@ leave".
 was done. The last three, ruled the same day:
 
 - [x] 51 utfellingarhvorf: the FeCl₃ coagulant sentence. Siggi took the draft, 2026-10-23 (PR #112).
-- [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted. **Reopened 2026-11-15** (Siggi): built as Agnasýn, a cylinder with a stimpill and four scenes; see the game's README. Wording drafted by Claude, worth a read.
+- [x] 94 gas-law-challenge: an Explore screen. Siggi: skip for now, 2026-10-23. Reopen when wanted. **Reopened 2026-11-15** (Siggi): built as Nærmynd, a cylinder with a stimpill and four scenes; see the game's README. Wording drafted by Claude, worth a read.
 - [x] 103 equilibrium-shifter: the systems with no constant. Siggi: source them from `m68869`,
       2026-10-23 (PR #112). It covers the two complex ions; eight remain with no source.
 
@@ -906,15 +906,15 @@ as A2, which the 2008 curriculum does not state.
 - [ ] **The Icelandic teacher's final approval** of the Orðaforði and the moved answers, card by
       card at A1, A2 and B1 (`/islenskubraut/yfirferd` links each card at each level).
 
-### C23. Agnasýn, the particle view of a titration (2026-11-14)
+### C23. Nærmynd, the particle view of a titration (2026-11-14)
 
-`3-ar/ph-titration` opens with a new menu card, **Agnasýn**: 25,0 mL of 0,100 M ediksýra titrated
+`3-ar/ph-titration` opens with a new menu card, **Nærmynd**: 25,0 mL of 0,100 M ediksýra titrated
 with 0,100 M NaOH (titration 5, the book's ch. 14 example) in seven scenes and a slider, with the
 particles in the flask, the equations and the títrunarferill moving together. Nothing is graded or
 stored. Every number on it is computed from the game's own `calculateWeakStrongPH`; the details are
 in the game's README.
 
-- [ ] **The Icelandic wording**, drafted by Claude (`src/data/agnasyn-steps.tsx`). Terms are the
+- [ ] **The Icelandic wording**, drafted by Claude (`src/data/naermynd-steps.tsx`). Terms are the
       glossary's or the book's, with `meðjón` for spectator ion (Siggi, 2026-11-14), `heildarjónajafna`, `nettójónajafna`, `samoka basi`,
       `hálfjafngildispunktur` and `basajónun asetats`, the book's phrase at the equivalence point.
 - [ ] **Two exaggerated pairs**: at the start one CH₃COO⁻ and one H₃O⁺ are drawn where the true
@@ -924,13 +924,13 @@ in the game's README.
       game's buffer ICE root sits 0,0005 above pKₐ, which tips the second decimal. The scene says so
       in one line. Keep, or print the meter at Henderson-Hasselbalch in the buffer region?
 - [ ] On a projector and a phone (B-style hand check): the animation's pace, 0,7 s per drop.
-- [ ] **Stuðpúðasmíði's Agnasýn** (2026-11-15), a buffer beside pure water with the same saltsýra
+- [ ] **Stuðpúðasmíði's Nærmynd** (2026-11-15), a buffer beside pure water with the same saltsýra
       or natríumhýdroxíð dripped into both, built on the same particle view, now shared. Its
-      wording is drafted by Claude (`3-ar/buffer-recipe-creator/src/data/agnasyn-steps.tsx`), and
+      wording is drafted by Claude (`3-ar/buffer-recipe-creator/src/data/naermynd-steps.tsx`), and
       its two flasks sit side by side even on a phone, where each is about 160 px wide: check
       they read on a real phone.
-- [ ] **Sýrufastinn's Agnasýn** (2026-11-15): flússýra diluted 1,0 → 0,10 → 0,010 M, then HCl
-      beside flússýra. Wording drafted by Claude (`3-ar/syrufastinn/src/data/agnasyn-steps.tsx`).
+- [ ] **Sýrufastinn's Nærmynd** (2026-11-15): flússýra diluted 1,0 → 0,10 → 0,010 M, then HCl
+      beside flússýra. Wording drafted by Claude (`3-ar/syrufastinn/src/data/naermynd-steps.tsx`).
       Each glass holds the same 40 molecules in more water, so the three flasks are drawn the same
       size although their volumes differ a hundredfold; the text says so. Keep, or draw the
       volumes?
@@ -938,10 +938,10 @@ in the game's README.
       species on one scale, in three frames from `applyStress`, for the 13 systems that can be
       drawn without exaggeration; the rest show none. Captions drafted by Claude
       (`3-ar/equilibrium-shifter/src/components/MixtureView.tsx`). Keep showing no particles for
-      the weak acids, or draw them with a marked exaggeration as Agnasýn does?
-- [ ] **Jafnvægisfastinn's Agnasýn** (2026-11-15): the water-gas shift from reactants and from
+      the weak acids, or draw them with a marked exaggeration as Nærmynd does?
+- [ ] **Jafnvægisfastinn's Nærmynd** (2026-11-15): the water-gas shift from reactants and from
       products, Q traced to K, ICE tables read off the particles. Wording drafted by Claude
-      (`3-ar/jafnvaegisfasti/src/components/AgnasynScreen.tsx`). The rate is chosen for display
+      (`3-ar/jafnvaegisfasti/src/components/NaermyndScreen.tsx`). The rate is chosen for display
       (mass action with kf/kr = K, no time units) and the screen says so. Keep, or show the path
       against extent instead of time?
 - [ ] **Varmafræði's tug of war** (2026-11-15): ΔH° and −TΔS° as bars that follow the
@@ -952,10 +952,10 @@ in the game's README.
       graded on six sourced problems (`3-ar/thermodynamics-predictor/src/components/GibbsKScreen.tsx`,
       `src/data/gibbs-k.ts`). Wording drafted by Claude, including the slip messages. Siggi ruled
       the same day that the Erfitt prompts on K (ids 23, 24, 27) stay ungraded and point there.
-- [ ] **Leysnijafnvægi's Agnasýn** (2026-11-15): AgCl saturated, with a common ion, mixed with a
+- [ ] **Leysnijafnvægi's Nærmynd** (2026-11-15): AgCl saturated, with a common ion, mixed with a
       Q meter, and the Mohr titration. Every picture is exaggerated (the ions are about one per
       four million water molecules), marked with a dashed ring and said in each scene. Wording
-      drafted by Claude (`3-ar/leysnijafnvaegi/src/data/agnasyn-steps.tsx`).
+      drafted by Claude (`3-ar/leysnijafnvaegi/src/data/naermynd-steps.tsx`).
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 
@@ -997,12 +997,12 @@ future work. Each needs his go-ahead and a place before it is built; the process
       book's appendix K (`m68869`), which `equilibrium-shifter` already uses.
 - [ ] **Effusion and diffusion** (book ch. 9, Graham's law): rates against molar mass, with a
       particle scene of two gases leaving through a pinhole. Suggested home: Gaslögmál, beside
-      Agnasýn.
+      Nærmynd.
 - [ ] **Gas density and molar mass** (book ch. 9, d = PM/RT): the book's worked examples (N₂ at
       STP, cyclopropane's formula, a volatile liquid). Suggested home: a fifth topic in
       Gaslögmál's "Gasblöndur og efnahvörf".
 - [ ] **The kinetic-molecular theory itself and real gases** (book ch. 9): speed distributions,
-      and where PV = nRT fails (van der Waals). Agnasýn shows the kinetic picture qualitatively;
+      and where PV = nRT fails (van der Waals). Nærmynd shows the kinetic picture qualitatively;
       this would make it quantitative. Scoping.
 - [ ] **pH and pOH as a topic of their own** (book ch. 14): taught in passing in pH Títrun and
       Sýrufastinn, never on its own. Probably small: a Skilja step in Sýrufastinn.

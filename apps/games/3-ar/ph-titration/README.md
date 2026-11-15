@@ -10,7 +10,7 @@ cites Brown et al., ch. 17.
 
 ## Structure
 
-**Agnasýn** (2026-11-14), the first card on the menu, is the Explore phase: one titration shown
+**Nærmynd** (2026-11-14), the first card on the menu, is the Explore phase: one titration shown
 three ways at once, then three levels. Three levels, none gated, each opened from a card on the menu. Finishing Stig 3 goes to an end
 screen; finishing Stig 1 or 2 returns to the menu.
 
@@ -59,7 +59,7 @@ screen; finishing Stig 1 or 2 returns to the menu.
   shows the correct answer, the explanation, and a `Sýna útreikningsgang` button for the worked
   steps. A reference panel (`Uppflettitöflur`: a pKₐ table and the key equations) sits under the
   card, closed on a phone (`PhoneDisclosure`). Problems 8 to 11 (2026-11-14) walk one
-  titration, 25,0 mL of 0,100 M ediksýra with 0,100 M NaOH, the flask Stig 2 and Agnasýn draw: the
+  titration, 25,0 mL of 0,100 M ediksýra with 0,100 M NaOH, the flask Stig 2 and Nærmynd draw: the
   initial pH, pH after 10,0 mL, at equivalence and after 30,0 mL. Each carries `fromCurve`, and
   `level3-grading.test.ts` holds its answer to the game's own `calculatePH` there. The buffer-only
   Henderson-Hasselbalch problem (0,15 M ediksýra, 0,20 M asetat) went then, Siggi leaving it to
@@ -70,7 +70,7 @@ level's card; a level finished under the old points format shows `Lokið` (`resu
 `App.tsx:121-126`). Progress is in localStorage under `ph-titration-progress`, keeping the best count
 per level. There is no timed or competitive mode.
 
-## Agnasýn
+## Nærmynd
 
 25,0 mL of 0,100 M ediksýra titrated with 0,100 M NaOH: titration 5 in `data/titrations.ts` and the
 textbook's ch. 14 worked example (equivalence at pH 8,72). Seven scenes, then a slider:
@@ -80,14 +80,14 @@ tæmist, jafngildispunktur (basajónun asetats, Kb, why pH > 7), eftir jafngildi
 Kannaðu sjálf/ur. Each scene drips in its NaOH from the last one's volume, so the particles, the
 pH readout and the curve move together. Nothing is graded or stored.
 
-- **Every number comes from the game's own curve.** `utils/agnasyn.ts` takes the pH from
+- **Every number comes from the game's own curve.** `utils/naermynd.ts` takes the pH from
   `calculateWeakStrongPH` and the species from that pH, so this screen cannot disagree with Stig 2.
-  The scene texts compute what they print (`data/agnasyn-steps.tsx`).
+  The scene texts compute what they print (`data/naermynd-steps.tsx`).
 - **The particles are amounts on a fixed scale**, 8 per mmól: 20 for the acid, and one Na⁺ and one
   OH⁻ per 1,25 mL of NaOH. Two species are far under one particle at the two volumes whose scenes
   are about them, the ionised acid at the start (0,27) and acetate's OH⁻ at the equivalence point
   (0,002). Exactly there one pair is drawn with a dashed ring and a note says it is exaggerated;
-  every other count is the amount rounded. `agnasyn.test.ts` holds that the rounded amounts equal
+  every other count is the amount rounded. `naermynd.test.ts` holds that the rounded amounts equal
   the counts drawn.
 - **The equilibria are drawn as dynamic**: at those two volumes the pair recombines and another
   molecule ionises every few seconds (`flicker` in the shared `@shared/components/ParticleBeaker`).
@@ -95,9 +95,9 @@ pH readout and the curve move together. Nothing is graded or stored.
   agrees with the curve to two decimals except at half-equivalence, where the ICE root is 0,0005
   above pKₐ and the meter shows 4,75. The scene says so (C23 in `docs/REVIEW-QUEUE.md`).
 - The particle system (`packages/shared/components/ParticleBeaker/system.ts`, shared since
-  2026-11-15) is pure apart from a random source passed in; `agnasyn.test.ts` drips a
+  2026-11-15) is pure apart from a random source passed in; `naermynd.test.ts` drips a
   whole titration through it and drags a slider at random, checking the counts after each move.
-  `agnasyn-screen.test.tsx` walks every scene with reduced motion. With reduced motion the view
+  `naermynd-screen.test.tsx` walks every scene with reduced motion. With reduced motion the view
   does not drift and every change is made at once.
 - **H⁺, not H₃O⁺** (Siggi, 2026-11-14): his students know the shorter form, so the ionisation is
   written CH₃COOH ⇌ CH₃COO⁻ + H⁺. Only this screen; the levels are unchanged.
@@ -222,11 +222,11 @@ such material would become Apply content inside the existing levels.
 
 ```
 src/App.tsx                       menu, level routing, end screen, progress (ph-titration-progress)
-src/components/Agnasyn.tsx        Agnasýn: scenes, playback, slider, readouts
-src/components/ProgressCurve.tsx  Agnasýn's curve, drawn as far as the NaOH added
-src/components/NaOHDissolve.tsx   Agnasýn's NaOH(s) → Na⁺ + OH⁻ loop
-src/data/agnasyn-steps.tsx        Agnasýn's seven scenes
-src/utils/agnasyn.ts              Agnasýn's chemistry and particle counts
+src/components/Naermynd.tsx        Nærmynd: scenes, playback, slider, readouts
+src/components/ProgressCurve.tsx  Nærmynd's curve, drawn as far as the NaOH added
+src/components/NaOHDissolve.tsx   Nærmynd's NaOH(s) → Na⁺ + OH⁻ loop
+src/data/naermynd-steps.tsx        Nærmynd's seven scenes
+src/utils/naermynd.ts              Nærmynd's chemistry and particle counts
 src/types.ts                      Titration, Indicator and the difficulty/indicator unions
 src/components/Level1.tsx         Stig 1: intro card, 6 questions, TitrationCurvePreview (shown
                                     with the result on a "which curve" question, never on 3, 4, 6)

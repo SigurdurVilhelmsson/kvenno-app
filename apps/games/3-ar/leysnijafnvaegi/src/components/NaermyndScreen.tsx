@@ -1,9 +1,9 @@
 /**
- * Agnasýn — the particles behind Ksp. Nothing is graded or stored.
+ * Nærmynd — the particles behind Ksp. Nothing is graded or stored.
  *
  * Four scenes: a saturated solution, a common ion, two solutions mixed with Q
  * against Ksp, and the Mohr titration. Built on the particle-view template
- * (docs/particle-view-template.md); every number from `engine/agnasyn.ts`. The
+ * (docs/particle-view-template.md); every number from `engine/naermynd.ts`. The
  * ions are exaggerated in every scene, since the real ones are far too few to
  * draw, and each scene says so.
  */
@@ -19,7 +19,7 @@ import {
 } from '@shared/utils';
 
 import { BackButton } from './BackButton';
-import { STEPS, type IonKind, type Picture } from '../data/agnasyn-steps';
+import { STEPS, type IonKind, type Picture } from '../data/naermynd-steps';
 import {
   AGCL,
   AG_FOR_AG2CRO4,
@@ -31,7 +31,7 @@ import {
   MOHR_LOG_MIN,
   mixAt,
   mohrAt,
-} from '../engine/agnasyn';
+} from '../engine/naermynd';
 
 const ION: Record<
   IonKind,
@@ -218,11 +218,11 @@ function QMeter({ q, ksp }: { q: number; ksp: number }) {
   );
 }
 
-interface AgnasynScreenProps {
+interface NaermyndScreenProps {
   onBack: () => void;
 }
 
-export function AgnasynScreen({ onBack }: AgnasynScreenProps) {
+export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [mixC, setMixC] = useState<number>(MIX_CONCENTRATIONS[1]);
   const [logAg, setLogAg] = useState(MOHR_LOG_MIN);
@@ -276,7 +276,7 @@ export function AgnasynScreen({ onBack }: AgnasynScreenProps) {
             tabIndex={-1}
             className="min-w-0 text-2xl font-bold text-warm-800 phone:text-base"
           >
-            Agnasýn: jónirnar á bak við Ksp
+            Nærmynd: jónirnar á bak við Ksp
           </h2>
           <BackButton onClick={onBack} />
         </div>

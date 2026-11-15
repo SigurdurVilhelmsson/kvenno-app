@@ -4,7 +4,7 @@ import { solveBuffer } from './buffer';
 import { BUFFER_PROBLEMS } from '../data/problems';
 
 /**
- * The chemistry behind this game's Agnasýn: 50 mL of a buffer beside 50 mL of
+ * The chemistry behind this game's Nærmynd: 50 mL of a buffer beside 50 mL of
  * pure water, with 1,0 M saltsýra or natríumhýdroxíð dripped into both.
  *
  * The buffer is problem 1, the first one Stig 2 sets: an ediksýra buffer at

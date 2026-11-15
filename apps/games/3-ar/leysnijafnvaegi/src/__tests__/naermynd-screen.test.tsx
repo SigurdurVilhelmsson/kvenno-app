@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { AgnasynScreen } from '../components/AgnasynScreen';
-import { STEPS } from '../data/agnasyn-steps';
+import { NaermyndScreen } from '../components/NaermyndScreen';
+import { STEPS } from '../data/naermynd-steps';
 
-describe('Leysnijafnvægi Agnasýn', () => {
+describe('Leysnijafnvægi Nærmynd', () => {
   it('opens on the saturated solution and says the ions are exaggerated', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     expect(screen.getByRole('heading', { name: '1. Mettuð lausn' })).toBeTruthy();
     expect(screen.getByRole('img').getAttribute('aria-label')).toBe(
       'Mettuð lausn: 3 Ag⁺, 3 Cl⁻; botnfall, hvítt silfurklóríð.'
@@ -15,7 +15,7 @@ describe('Leysnijafnvægi Agnasýn', () => {
   });
 
   it('tips the Q meter when the solutions are dilute enough', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: '3. Tvær lausnir blandaðar' }));
     expect(screen.getByText(/Q > Ksp, silfurklóríð fellur út/)).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /× 10⁻⁵ M/ }));
@@ -24,7 +24,7 @@ describe('Leysnijafnvægi Agnasýn', () => {
   });
 
   it('turns the Mohr flask red only once the chloride is nearly gone', () => {
-    render(<AgnasynScreen onBack={() => {}} />);
+    render(<NaermyndScreen onBack={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: '4. Mohr-títrun' }));
     const slider = screen.getByRole('slider');
     fireEvent.change(slider, { target: { value: '-6' } });
