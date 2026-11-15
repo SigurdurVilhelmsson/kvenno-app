@@ -219,10 +219,30 @@ describe('constants as the source gives them', () => {
   it("Kanna's table recovers Ka to the figures the table gives it", () => {
     render(<ExploreScreen onComplete={() => {}} onBack={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: '1,000 M' }));
+    fireEvent.click(screen.getByRole('button', { name: '0,100 M' }));
+    fireEvent.click(screen.getByRole('button', { name: '0,010 M' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hann helst sá sami' }));
     const row = screen.getAllByRole('row')[1];
     const acid = MONOPROTIC_ACIDS.find((a) => row.textContent?.includes(formatScientific(a.ka, 2)));
     expect(acid, row.textContent ?? '').toBeTruthy();
     expect(row.textContent).not.toContain(formatScientific(acid!.ka, 3));
+  });
+});
+
+describe('Kanna, predict before observe', () => {
+  it('hides the Ka column until the student has guessed what it does', () => {
+    render(<ExploreScreen onComplete={() => {}} onBack={() => {}} />);
+    for (const c of ['1,000 M', '0,100 M', '0,010 M']) {
+      fireEvent.click(screen.getByRole('button', { name: c }));
+    }
+    const kaCells = () =>
+      screen
+        .getAllByRole('row')
+        .slice(1)
+        .map((r) => r.lastElementChild!);
+    for (const cell of kaCells()) expect(cell.textContent).not.toMatch(/10⁻/);
+    fireEvent.click(screen.getByRole('button', { name: 'Hann breytist með styrknum' }));
+    for (const cell of kaCells()) expect(cell.textContent).toMatch(/× 10⁻/);
   });
 });
 

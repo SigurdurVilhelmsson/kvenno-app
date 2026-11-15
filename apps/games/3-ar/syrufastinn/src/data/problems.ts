@@ -15,7 +15,7 @@
  *    rule that never fires is a rule nobody believes.
  */
 
-import { formatScientific } from '@shared/utils';
+import { formatDecimal, formatScientific } from '@shared/utils';
 
 import { ANSWERABLE_PAIRS, MONOPROTIC_ACIDS, type WeakAcid } from './acids';
 import {
@@ -28,7 +28,7 @@ import {
 } from '../engine/grade';
 import { pKa, kbFromKa, kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
 
-export type ApplyKind = 'pH' | 'ka' | 'kb' | 'klofnun';
+export type ApplyKind = 'pH' | 'ka' | 'kb' | 'pKa' | 'klofnun';
 
 export interface PHProblem {
   id: string;
@@ -144,7 +144,7 @@ export interface ApplyProblem {
 }
 
 /** Icelandic decimal comma, since that is what the games print and accept. */
-const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+const fmt = formatDecimal;
 
 const SUPERSCRIPT: Record<string, string> = {
   '-': '⁻',
@@ -183,6 +183,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
   const ediksyra = MONOPROTIC_ACIDS.find((a) => a.id === 'ediksyra')!;
   const propansyra = MONOPROTIC_ACIDS.find((a) => a.id === 'propansyra')!;
   const fenol = MONOPROTIC_ACIDS.find((a) => a.id === 'fenol')!;
+  const maurasyra = MONOPROTIC_ACIDS.find((a) => a.id === 'maurasyra')!;
 
   out.push({
     id: 'apply-ph',
@@ -242,28 +243,51 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     approximationValid: true,
   });
 
-  const klofnunX = solveWeakAcid(ediksyra.ka, 0.1).hApprox;
+  // pKa is what pH Títrun and Stuðpúðasmíði hand the student; this is where it is defined.
+  out.push({
+    id: 'apply-pka',
+    kind: 'pKa',
+    acid: maurasyra,
+    concentration: 0.1,
+    question: `Í pH Títrun og Stuðpúðasmíði eru sýrur gefnar upp með pKa í stað Ka. Hvert er pKa ${maurasyra.nameGenitive} (Ka = ${sci(maurasyra.ka)})?`,
+    answer: pKa(maurasyra.ka),
+    grading: { mode: 'absolute', tolerance: PH_TOLERANCE },
+    answerHint: 'pKa, tveir aukastafir',
+    explanation:
+      `pKa = −log Ka = −log(${sci(maurasyra.ka)}) = ${fmt(pKa(maurasyra.ka), 2)}. ` +
+      `Því sterkari sem sýran er, því stærri er Ka og því lægri pKa: ${ediksyra.name.toLowerCase()} hefur pKa ${fmt(pKa(ediksyra.ka), 2)} ` +
+      `og ${fenol.name.toLowerCase()} ${fmt(pKa(fenol.ka), 2)}.`,
+    misconception: `Ef svarið þitt var ${fmt(-pKa(maurasyra.ka), 2)} gleymdirðu mínusmerkinu: pKa = −log Ka, og fyrir veika sýru er það jákvæð tala.`,
+    approximationValid: true,
+  });
+
+  // Not ediksýra at 0,100 M: apply-ka's explanation prints [H⁺] = 1,3 × 10⁻³ M
+  // for exactly that solution, which made this answer 1,3 % by reading. Propansýra
+  // at 0,050 M, against apply-ph's 0,25 M, also shows dilution raising it.
+  const klofnunAcid = propansyra;
+  const KLOFNUN_C = 0.05;
+  const klofnunX = solveWeakAcid(klofnunAcid.ka, KLOFNUN_C).hApprox;
   out.push({
     id: 'apply-klofnun',
     kind: 'klofnun',
-    acid: ediksyra,
-    concentration: 0.1,
-    question: `Hversu hátt er klofnunarhlutfall 0,100 M lausnar af ${ediksyra.nameDative} (Ka = ${sci(ediksyra.ka)})? Svaraðu í prósentum.`,
-    answer: percentDissociation(ediksyra.ka, 0.1),
+    acid: klofnunAcid,
+    concentration: KLOFNUN_C,
+    question: `Hversu hátt er klofnunarhlutfall ${fmt(KLOFNUN_C, 3)} M lausnar af ${klofnunAcid.nameDative} (Ka = ${sci(klofnunAcid.ka)})? Svaraðu í prósentum.`,
+    answer: percentDissociation(klofnunAcid.ka, KLOFNUN_C),
     grading: { mode: 'relative', tolerance: PERCENT_RELATIVE_TOLERANCE },
     answerHint: '% af sýrunni',
     // The sentence is the student's own check, done the book's way, so it divides
-    // the x it prints: x_approx / C, 1,34 %. The graded answer stays the exact α
-    // (1,33 %), which the relative tolerance admits either way. Decision 105 (a).
+    // the x it prints: x_approx / C, 1,61 %. The graded answer stays the exact α
+    // (1,60 %), which the relative tolerance admits either way. Decision 105 (a).
     explanation:
-      `x = √(Ka · C) = ${formatScientific(klofnunX, 3)} M og klofnunarhlutfallið er x/C = ${fmt((klofnunX / 0.1) * 100, 2)} %. ` +
+      `x = √(Ka · C) = ${formatScientific(klofnunX, 3)} M og klofnunarhlutfallið er x/C = ${fmt((klofnunX / KLOFNUN_C) * 100, 2)} %. ` +
       `Til samanburðar klofnar ${fenol.name.toLowerCase()} aðeins ` +
       `${fmt(percentDissociation(fenol.ka, 1.0), 4)} % í 1,0 M lausn — þúsundfalt minna, og samt er sú lausn súr.`,
-    // Each number named is the one that mistake produces at 0,100 M. The old text
+    // Each number named is the one that mistake produces at this C. The old text
     // was written when this problem was fenól at 1,0 M, where x/C is x itself, so
     // "1,3 × 10⁻³ means you forgot the 100" stopped being true when C changed.
     misconception:
-      `Ef svarið þitt var ${fmt(percentDissociation(ediksyra.ka, 0.1) / 100, 4)} gleymdirðu að margfalda með 100. ` +
+      `Ef svarið þitt var ${fmt(percentDissociation(klofnunAcid.ka, KLOFNUN_C) / 100, 4)} gleymdirðu að margfalda með 100. ` +
       `Ef það var ${sci(klofnunX)} skilaðirðu styrknum x. ` +
       'Klofnunarhlutfallið er x/C sem prósenta, ekki x sjálft.',
     approximationValid: true,

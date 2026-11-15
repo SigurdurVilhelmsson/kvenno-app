@@ -112,7 +112,7 @@ describe('the apply set', () => {
 
   it('asks each kind at least once', () => {
     const kinds = new Set(APPLY_PROBLEMS.map((p) => p.kind));
-    expect([...kinds].sort()).toEqual(['ka', 'kb', 'klofnun', 'pH']);
+    expect([...kinds].sort()).toEqual(['ka', 'kb', 'klofnun', 'pH', 'pKa']);
   });
 
   it('accepts its own stated answer', () => {
@@ -153,6 +153,17 @@ describe('the apply set', () => {
       expect(gradeApply(p, p.answer * 2), `${p.id} accepts double`).toBe(false);
       expect(gradeApply(p, p.answer / 2), `${p.id} accepts half`).toBe(false);
       expect(gradeApply(p, Number.NaN), `${p.id} accepts NaN`).toBe(false);
+    }
+  });
+
+  it('does not ask the klofnunarhlutfall of a solution an earlier explanation solved', () => {
+    // apply-ka's explanation prints [H⁺] = 1,3 × 10⁻³ M for 0,100 M ediksýra; when
+    // apply-klofnun asked about that same solution its answer was 1,3 % by reading.
+    const klofnun = APPLY_PROBLEMS.findIndex((q) => q.id === 'apply-klofnun');
+    const p = APPLY_PROBLEMS[klofnun];
+    for (const earlier of APPLY_PROBLEMS.slice(0, klofnun)) {
+      const same = earlier.acid.id === p.acid.id && earlier.concentration === p.concentration;
+      expect(same, `${earlier.id} explains the solution apply-klofnun asks about`).toBe(false);
     }
   });
 
@@ -250,5 +261,16 @@ describe('the explore series', () => {
       const cs = exploreSeries(acid).map((p) => p.concentration);
       expect([...cs].sort((a, b) => b - a)).toEqual(cs);
     }
+  });
+});
+
+describe('pKa', () => {
+  it('is defined and asked once, graded on −log Ka', async () => {
+    const { APPLY_PROBLEMS: problems, gradeApply: grade } = await import('../data/problems');
+    const p = problems.find((q) => q.kind === 'pKa')!;
+    expect(p.answer).toBeCloseTo(-Math.log10(p.acid.ka), 12);
+    expect(p.answer).toBeCloseTo(3.74, 2);
+    expect(grade(p, 3.74)).toBe(true);
+    expect(grade(p, -3.74)).toBe(false);
   });
 });

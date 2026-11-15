@@ -17,6 +17,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import {
+  formatDecimal,
   formatScientific,
   isPhone,
   revealTop,
@@ -30,9 +31,9 @@ import { useBackButton } from './BackButton';
 import { KlofnunBar } from './KlofnunBar';
 import { MONOPROTIC_ACIDS } from '../data/acids';
 import { percentDissociation } from '../engine/grade';
-import { solveWeakAcid } from '../engine/ka';
+import { pKa, solveWeakAcid } from '../engine/ka';
 
-const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+const fmt = formatDecimal;
 
 const STEPS = ['Efnajafnan', 'ICE-taflan', 'Sýrufastinn', 'Nálgunin', '5 % reglan'] as const;
 
@@ -235,6 +236,15 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
                 <span className="whitespace-nowrap">x = {formatScientific(s.hExact, 3)} M</span>,
                 sem er pH <strong>{fmt(s.pH, 4)}</strong>.
               </p>
+              <div className="mt-4 rounded-lg border border-sky-200 bg-sky-50 p-4 phone:p-3">
+                <p className="mb-2 text-center font-mono text-warm-800">pKa = −log Ka</p>
+                <p className="text-warm-700">
+                  Ka spannar marga tugi, svo hann er oft gefinn upp sem pKa, á sama hátt og [H⁺] sem
+                  pH. Fyrir ediksýru er pKa = −log({formatScientific(acid.ka, 2)}) ={' '}
+                  {fmt(pKa(acid.ka), 2)}. Því sterkari sem sýran er, því lægra er pKa. Í pH Títrun
+                  og Stuðpúðasmíði færðu pKa gefinn upp; þetta er talan á bak við hann.
+                </p>
+              </div>
             </div>
           )}
 

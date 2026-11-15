@@ -136,7 +136,7 @@ describe('Beita on a phone', () => {
       fireEvent.click(screen.getByText('Næsta dæmi'));
     }
 
-    expect(APPLY_PROBLEMS[3].kind).toBe('klofnun');
+    expect(APPLY_PROBLEMS[3].kind).toBe('pKa');
     expect(screen.queryByRole('button', { name: E_KEY })).toBeNull();
   });
 });

@@ -171,7 +171,17 @@ not contrived. A rule that never fires is a rule nobody believes.
 **Siggi's ruling, 2026-09-22, built the same day.** Adding HNO₂ had taken Beita from 12 problems
 to 16, twelve of them one generated template differing only in acid and concentration. It now
 poses **seven**: the four hand-written problems (pH, Ka, Kb, klofnunarhlutfall) and one
-rule-breaker per acid — `APPLY_RULE_BREAKERS` in `src/data/problems.ts`.
+rule-breaker per acid — `APPLY_RULE_BREAKERS` in `src/data/problems.ts`. **Eight since
+2026-11-15:** a fifth hand-written problem asks for maurasýra's pKa (3,74), graded to ±0,02 like
+a pH.
+
+### pKa is defined here
+
+**2026-11-15, the Year-3 development plan's Phase 4.** pH Títrun and Stuðpúðasmíði hand the
+student pKa as given data, and until now no game said what it is. Skilja's Sýrufastinn step now
+states `pKa = −log Ka` with ediksýra's value computed from its Ka (4,74) and names the two games
+that use it; Beita's pKa problem checks it, with a misconception for the dropped minus sign.
+Held by `problems.test.ts` (`pKa`).
 
 **Which pair per acid was not in the ruling, and the grader decided it: the most dilute.** Near
 the 5 % line the gap between √(Ka·C) and the exact root is only about 0,011 in pH, inside
@@ -181,6 +191,19 @@ were like that. The three kept are HF at 0,010 M (22,9 %, gap 0,056), saltpétur
 0,010 M (19,1 %, gap 0,046) and maurasýra at 0,010 M (12,6 %, gap 0,029), so the three still fail
 by visibly different margins. `problems.test.ts` asserts one pair per rule-breaking acid, that it
 is the most dilute, and that the approximate answer is rejected on every rule-breaker Beita poses.
+
+### Kanna and Beita, 2026-11-15 (Year-3 development plan, Sýrufastinn P1)
+
+- **Kanna predicts before it observes.** The question "Hvað heldurðu að Ka-dálkurinn sýni?" used to
+  come after the table already showed the Ka column, which answered it. The column now shows `?`
+  until the student has guessed. Held by `wording.test.tsx` (`hides the Ka column …`).
+- **Beita's klofnunarhlutfall is no longer read off an earlier explanation.** It asked about 0,100 M
+  ediksýra, the solution whose [H⁺] = 1,3 × 10⁻³ M apply-ka's explanation had just printed, so the
+  answer was 1,3 % by reading. It now asks about propansýra at 0,050 M (1,60 %), which against
+  apply-ph's 0,25 M (0,72 %) also shows dilution raising it. Ediksýra is in two of the five hand
+  problems rather than three. Held by `problems.test.ts` (`does not ask the klofnunarhlutfall of a
+solution an earlier explanation solved`).
+- The five local `toFixed` formatters are now `formatDecimal`.
 
 ### Æfa: one problem per acid, ending at the line
 
