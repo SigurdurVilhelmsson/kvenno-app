@@ -254,6 +254,7 @@ function App() {
             Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi →
             Lausnir → Einingakeðjan
           </div>
+          <div className="mt-2 text-center text-xs text-warm-400">Kaflar 2 og 6 — Efnafræði 2e</div>
 
           {/* Reset */}
           {(progress.level1Completed || progress.level2Completed || progress.level3Completed) && (

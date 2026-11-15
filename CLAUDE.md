@@ -435,6 +435,9 @@ Y3: Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn �
 2. Add entry to `scripts/build-games.mjs` games array
 3. Add a game card to `yearGamesConfigs` in `apps/landing/src/pages/GamesHub.tsx` (title, description, and `slug` matching the build-games.mjs output name). **Not `YearHub.tsx`** — that file holds only the three aggregate "Leikir og æfingar" links, so editing it leaves the new game unreachable.
 4. Update the `Námsleiðin` chain string in every sibling game's `App.tsx` for that year (`src/components/MenuScreen.tsx` for gas-law-challenge)
+   and put the book chapter under the new game's own chain line, `Kafli N — Efnafræði 2e` (the
+   Icelandic book's numbering, not Brown's; Siggi, 2026-11-15). `menu-cites-book.test.ts` holds
+   every menu to it
 5. **Give the game one name and use it in all three places** — the hub card in step 3, the
    `<title>` in `index.html` (suffixed `- Kvennaskólinn`), and the `gameTitle` on the `Header`.
    **`packages/shared/i18n/__tests__/game-titles-agree.test.ts` enforces it**, with the hub card as

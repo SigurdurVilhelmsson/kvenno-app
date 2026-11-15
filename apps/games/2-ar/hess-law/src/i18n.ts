@@ -58,7 +58,7 @@ export const gameTranslations = createGameTranslations({
       multiply: 'Margfalda jöfnu: n × jafna → n × ΔH',
       formation: 'Myndunarvermi: ΔH°rxn = Σ ΔH°f(myndefni) - Σ ΔH°f(hvarfefni)',
     },
-    credits: 'Kafli 5 — Chemistry: The Central Science (Brown et al.)',
+    credits: 'Kafli 5 — Efnafræði 2e',
     level3: {
       showTable: 'Sýna ΔH°f töflu',
       hideTable: 'Fela ΔH°f töflu',
@@ -163,7 +163,7 @@ export const gameTranslations = createGameTranslations({
       multiply: 'Multiply equation: n × equation → n × ΔH',
       formation: 'Formation enthalpy: ΔH°rxn = Σ ΔH°f(products) - Σ ΔH°f(reactants)',
     },
-    credits: 'Chapter 5 — Chemistry: The Central Science (Brown et al.)',
+    credits: 'Chapter 5 — Efnafræði 2e',
     level3: {
       showTable: 'Show ΔH°f table',
       hideTable: 'Hide ΔH°f table',
@@ -267,7 +267,7 @@ export const gameTranslations = createGameTranslations({
       multiply: 'Mnożenie równania: n × równanie → n × ΔH',
       formation: 'Entalpia tworzenia: ΔH°rxn = Σ ΔH°f(produkty) - Σ ΔH°f(substraty)',
     },
-    credits: 'Rozdział 5 — Chemistry: The Central Science (Brown et al.)',
+    credits: 'Rozdział 5 — Efnafræði 2e',
     level3: {
       showTable: 'Pokaż tabelę ΔH°f',
       hideTable: 'Ukryj tabelę ΔH°f',

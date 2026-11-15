@@ -722,6 +722,7 @@ function App() {
               <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis →
               Sýrufastinn → <u>Varmafræði</u> → pH Títrun → Stuðpúðar → Leysnijafnvægi
             </div>
+            <div className="mt-2 text-center text-xs text-warm-400">Kafli 16 — Efnafræði 2e</div>
           </div>
         </div>
       </div>

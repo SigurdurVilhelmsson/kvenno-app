@@ -361,9 +361,7 @@ function App() {
             <strong>Námsleiðin:</strong> Rafeindabygging → Lewis-formúlur → <u>VSEPR</u> →
             Millisameindakraftar → Lögmál Hess → Hvarfhraði → Oxun og afoxun → Lífræn nafnagift
           </div>
-          <div className="mt-2 text-center text-xs text-warm-400">
-            Kafli 9 — Chemistry: The Central Science (Brown et al.)
-          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">Kaflar 7–8 — Efnafræði 2e</div>
         </div>
       </div>
     </div>

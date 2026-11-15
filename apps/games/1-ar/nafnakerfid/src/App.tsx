@@ -258,6 +258,7 @@ function App() {
             Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi →
             Lausnir → Einingakeðjan
           </div>
+          <div className="mt-2 text-center text-xs text-warm-400">Kafli 2 — Efnafræði 2e</div>
         </div>
       </div>
     </div>
