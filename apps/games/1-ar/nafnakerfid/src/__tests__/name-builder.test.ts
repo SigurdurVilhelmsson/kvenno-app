@@ -35,7 +35,7 @@ const built = (segments: Morpheme[]) => {
 
 describe('every compound in the pool can be built', () => {
   it('has the pool it is meant to check', () => {
-    expect(POOL.length).toBe(52);
+    expect(POOL.length).toBe(65);
     expect(COMPOUNDS.length - POOL.length).toBe(7);
   });
 
@@ -168,7 +168,7 @@ describe('the morpheme inventory', () => {
     );
     const unused = MORPHEMES.filter((m) => !used.has(m.text.toLowerCase())).map((m) => m.text);
     expect(unused.sort()).toEqual(
-      ['joðíð', 'mónó', 'nóna', 'okta', 'súlfíð', 'trí', 'vetni'].sort()
+      ['joðíð', 'mónó', 'nóna', 'okta', 'trí', 'vetni', ' díhýdrat'].sort()
     );
   });
 });

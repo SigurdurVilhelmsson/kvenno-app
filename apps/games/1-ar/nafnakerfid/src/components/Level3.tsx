@@ -110,6 +110,8 @@ const KIND_STYLES: Record<MorphemeKind, string> = {
   root: 'bg-warm-100 text-warm-700 hover:bg-warm-200 focus-visible:ring-warm-400',
   ion: 'bg-purple-100 text-purple-700 hover:bg-purple-200 focus-visible:ring-purple-400',
   charge: 'bg-amber-100 text-amber-800 hover:bg-amber-200 focus-visible:ring-amber-400',
+  acid: 'bg-rose-100 text-rose-800 hover:bg-rose-200 focus-visible:ring-rose-400',
+  water: 'bg-sky-100 text-sky-800 hover:bg-sky-200 focus-visible:ring-sky-400',
 };
 
 /**
@@ -123,6 +125,12 @@ const POLYATOMIC_CAVEAT =
 
 /** Naming rule explanation for a compound, shown after it is answered. */
 export function ruleFor(c: Compound): string {
+  if (c.category === 'hýdrat')
+    return `Hýdrat: nafn vatnsfría efnisins, og svo sérstakt orð úr grísku forskeyti og „hýdrat“. Forskeytið segir hve margar vatnssameindir fylgja hverri formúlueiningu (·5H₂O = pentahýdrat). ${POLYATOMIC_CAVEAT}`;
+  if (c.category === 'sýra' && c.name.startsWith('Vetnis'))
+    return 'Tvíundarsýra: vetnis- + nafn anjónarinnar + sýra. HCl leyst í vatni er vetnisklóríðsýra.';
+  if (c.category === 'sýra')
+    return 'Oxósýra: vetninu er sleppt og stofn anjónarinnar tekinn; -at verður -sýra og -ít verður -sýrlingur (súlfat → brennisteinssýra, súlfít → brennisteinssýrlingur).';
   if (c.category === 'málmar-breytilega-hleðsla')
     return `Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð. Rómverska talan segir hvaða hleðslu málmurinn hefur — þetta þarf þegar málmur getur haft fleiri en eina hleðslu (t.d. járn: +2 eða +3). ${POLYATOMIC_CAVEAT}`;
   if (c.type === 'molecular')
@@ -301,6 +309,15 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     used to name before the answer (decision 38 (a)). */}
                 <strong>Fjölatóma jónir:</strong> halda föstu nafni (K₂SO₄ = Kalíumsúlfat). Einnig
                 ammóníum (NH₄⁺), fosfat (PO₄³⁻), bíkarbónat (HCO₃⁻) og díkrómat (Cr₂O₇²⁻).
+              </li>
+              <li>
+                <strong>Sýrur:</strong> tvíundarsýra = vetnis- + anjón + sýra (HCl(aq) =
+                Vetnisklóríðsýra). Oxósýra: -at → -sýra, -ít → -sýrlingur (HNO₃ = Saltpéturssýra,
+                HNO₂ = Saltpéturssýrlingur).
+              </li>
+              <li>
+                <strong>Hýdröt:</strong> nafn efnisins + forskeyti og „hýdrat“ sem sér orð
+                (CuSO₄·5H₂O = Kopar(II)súlfat pentahýdrat).
               </li>
             </ul>
           )}

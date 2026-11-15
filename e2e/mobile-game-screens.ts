@@ -1041,6 +1041,50 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         verdict: { css: '.feedback-panel p' },
         next: { role: 'button', name: 'Næsta efni' },
         viewports: ['android', 'iphone', 'se', 'landscape'],
+        // None at 360x640 and 390x664. With the acids and hydrates in the pool the
+        // seeded run opens on NaCl, whose tray wraps to two rows, and on the SE
+        // Athuga then sits 28 px below the fold.
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Frá nafni til formúlu — rangt svar',
+      steps: [
+        { clickRole: ['button', 'Frá nafni til formúlu'] },
+        { css: '[role="group"][aria-label="Katjón"] button' },
+        { css: '[role="group"][aria-label="Anjón"] button' },
+        { clickRole: ['button', 'Athuga'] },
+        { wait: 400 },
+      ],
+    },
+    {
+      name: 'Frá nafni til formúlu — leikur',
+      steps: [{ clickRole: ['button', 'Frá nafni til formúlu'] }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { css: '[role="group"][aria-label="Katjón"] button' },
+          { css: '[role="group"][aria-label="Anjón"] button' },
+        ],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta nafn' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Frá nafni til formúlu — reyna aftur',
+      steps: [{ clickRole: ['button', 'Frá nafni til formúlu'] }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { css: '[role="group"][aria-label="Katjón"] button' },
+          { css: '[role="group"][aria-label="Anjón"] button' },
+        ],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        viewports: ['android', 'iphone'],
       },
     },
   ],

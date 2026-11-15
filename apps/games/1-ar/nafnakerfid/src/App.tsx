@@ -8,9 +8,10 @@ import { useScreenTop } from '@shared/utils';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+import { NameToFormula } from './components/NameToFormula';
 import { gameTranslations } from './i18n';
 
-type Screen = 'menu' | 'level1' | 'level2' | 'level3';
+type Screen = 'menu' | 'level1' | 'level2' | 'level3' | 'formula';
 type Level = 1 | 2 | 3;
 
 /**
@@ -33,6 +34,9 @@ interface Progress {
   level3Completed: boolean;
   level3Correct?: number;
   level3Total?: number;
+  /** "Frá nafni til formúlu", a practice beside the levels, not a fourth one. */
+  formulaCorrect?: number;
+  formulaTotal?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
@@ -102,6 +106,21 @@ function App() {
 
   if (screen === 'level2') {
     return <Level2 t={t} onComplete={completeLevel(2)} onBack={() => setScreen('menu')} />;
+  }
+
+  if (screen === 'formula') {
+    return (
+      <NameToFormula
+        onComplete={(correct, total) => {
+          updateProgress({
+            formulaCorrect: Math.max(progress.formulaCorrect ?? 0, correct),
+            formulaTotal: total,
+          });
+          setScreen('menu');
+        }}
+        onBack={() => setScreen('menu')}
+      />
+    );
   }
 
   if (screen === 'level3') {
@@ -214,6 +233,40 @@ function App() {
                     {progress.level3Completed ? (
                       <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
                         ✓ {resultLabel(3)}
+                      </div>
+                    ) : (
+                      <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>
+                    )}
+                  </div>
+                </div>
+              </button>
+
+              {/* Not a fourth level (2026-08-29): Stig 3 the other way round, kept
+                  apart so the levels and their count stay three. */}
+              <button
+                data-level-card="formula"
+                onClick={() => setScreen('formula')}
+                className="game-card w-full bg-white border-2 border-dashed border-sky-300 hover:border-sky-500 hover:bg-sky-50 rounded-xl p-4 sm:p-6 phone:p-3 text-left transition-all"
+              >
+                <div className="flex items-center justify-between gap-3 phone-land:flex-col phone-land:items-start phone-land:gap-1">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="shrink-0 whitespace-nowrap bg-sky-600 text-white text-sm font-bold px-3 py-1 rounded-full">
+                        Æfing
+                      </span>
+                      <h3 className="min-w-0 text-base min-[360px]:text-lg sm:text-xl font-bold text-warm-800">
+                        Frá nafni til formúlu
+                      </h3>
+                    </div>
+                    <p className="text-warm-600 text-sm">
+                      Lestu jónirnar úr nafninu og finndu hve margar af hvorri gera efnið óhlaðið.
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right phone-land:text-left">
+                    {progress.formulaTotal !== undefined ? (
+                      <div className="text-green-700 text-sm sm:text-base font-bold whitespace-nowrap">
+                        ✓ {progress.formulaCorrect} {t('menu.of')} {progress.formulaTotal}{' '}
+                        {t('menu.correct')}
                       </div>
                     ) : (
                       <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>

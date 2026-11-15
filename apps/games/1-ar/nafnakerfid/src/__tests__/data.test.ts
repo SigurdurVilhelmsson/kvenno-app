@@ -14,9 +14,11 @@ const VALID_CATEGORIES: Category[] = [
   'sameind',
   'sameindaefni',
   'málmar-breytilega-hleðsla',
+  'sýra',
+  'hýdrat',
 ];
 const VALID_DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
-const VALID_TYPES: CompoundType[] = ['ionic', 'molecular'];
+const VALID_TYPES: CompoundType[] = ['ionic', 'molecular', 'acid'];
 
 describe('COMPOUNDS data integrity', () => {
   it('all compounds have required fields', () => {
