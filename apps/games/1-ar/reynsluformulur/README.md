@@ -29,6 +29,18 @@ part.
 
 ## Percent composition first, and the book's own examples (2026-11-15)
 
+## Brunaefnagreining in Beita (2026-11-15)
+
+Siggi's Phase 4 ruling on the year-1 plan: combustion analysis (book ch04/m68716) goes here, as
+Beita's second part, after the molecular formulas. The masses of CO₂ and H₂O give the masses of C
+and H, and the rest is the table Æfa drilled. The book's three problems: pólýetýlen (CH₂),
+pólýstýren (CH) and naftalen, where only CO₂ is given, hydrogen is the sample's mass less the
+carbon's, and the molar mass makes C₅H₄ into C₁₀H₈ (`src/data/combustion.ts`). The student writes
+the formula as two counts; the grader names three slips (forgetting the two H per water, giving
+the empirical formula where the molecular one is asked, swapping the counts), and the worked steps
+show after a right answer or a second wrong one (`CombustionScreen.tsx`). Beita is marked done
+after this part.
+
 Siggi's ruling on the year-1 plan (decision 3): percent composition is drilled here, as the first
 part of Æfa, because that is the book's order. `ch03/m68702` opens with it and then turns it round
 to find a formula. `PercentScreen` asks two columns, filled one at a time like the empirical table:
@@ -112,6 +124,7 @@ src/engine/empirical.ts       the four columns; no React, no Icelandic
 src/data/elements.ts          atomic masses, re-exported from @shared/data/elements
 src/data/problems.ts          compounds as formulas; percentages and keys derived
 src/data/percent.ts           percent composition, the book's three compounds
+src/data/combustion.ts        combustion analysis, the book's three hydrocarbons
 src/components/               KannaScreen, SkiljaScreen, PercentScreen, AefaScreen, BeitaScreen
 src/__tests__/                86 tests across empirical, problems, feedback-text, phase-flow and phone-reveal
 ```

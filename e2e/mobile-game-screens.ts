@@ -1653,6 +1653,41 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       },
     },
     {
+      name: 'Beita — brunaefnagreining',
+      steps: [
+        { clickRole: ['button', 'Beita'] },
+        { fill: ['#n-input', '1'] },
+        { clickRole: ['button', 'Svara'] },
+        { wait: 450 },
+        { clickRole: ['button', 'Næsta dæmi'] },
+        { fill: ['#n-input', '1'] },
+        { clickRole: ['button', 'Svara'] },
+        { wait: 450 },
+        { clickRole: ['button', 'Næsta dæmi'] },
+        { fill: ['#n-input', '1'] },
+        { clickRole: ['button', 'Svara'] },
+        { wait: 450 },
+        { clickRole: ['button', 'Næsta dæmi'] },
+        { fill: ['#n-input', '1'] },
+        { clickRole: ['button', 'Svara'] },
+        { wait: 450 },
+        { clickRole: ['button', 'Klára'] },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Svara' },
+        answer: [
+          { fill: ['input[aria-label="Fjöldi C"]', '1'] },
+          { fill: ['input[aria-label="Fjöldi H"]', '1'] },
+        ],
+        verdict: { css: '#bruni-verdict' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[aria-label="Fjöldi H"]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
       name: 'Beita — rangt svar',
       steps: [
         {
