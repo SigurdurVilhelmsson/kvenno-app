@@ -94,7 +94,7 @@ describe('grading follows the shuffle', () => {
     for (let run = 0; run < 3; run++) {
       const { ui, container, onComplete } = start();
       let right = 0;
-      for (let q = 0; q < 12; q++) {
+      for (let q = 0; q < 16; q++) {
         const position = (q + run) % 4;
         const { correctAt, verdict } = answer(ui, container, position);
         expect(correctAt, `question ${q + 1}`).toBeGreaterThanOrEqual(0);
@@ -102,7 +102,7 @@ describe('grading follows the shuffle', () => {
         if (correctAt === position) right++;
         advance(ui);
       }
-      expect(onComplete).toHaveBeenCalledWith(right, 12);
+      expect(onComplete).toHaveBeenCalledWith(right, 16);
       unmount?.();
       unmount = null;
     }

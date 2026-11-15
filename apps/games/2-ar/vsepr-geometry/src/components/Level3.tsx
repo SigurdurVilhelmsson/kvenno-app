@@ -18,7 +18,7 @@ interface Level3Props {
 
 interface Challenge {
   id: number;
-  type: 'hybridization' | 'polarity' | 'multi_center' | 'dipole';
+  type: 'hybridization' | 'polarity' | 'multi_center' | 'sigma_pi' | 'dipole';
   formula: string;
   name: string;
   question: string;
@@ -389,6 +389,170 @@ const challenges: Challenge[] = [
     conceptExplanation:
       'Í C₂H₂ er þrítengi milli kolefnanna. Hvert C hefur aðeins 2 svæði rafeindaþéttleika (C-H + C≡C) = sp-svigrúmablöndun. Sameindin er línuleg (180°).',
   },
+  // σ and π bonds (book ch. 8.3, m68746, Margföld tengi): the molecules of the two questions
+  // above, now asked what their bonds are made of. The book's counts: ethene has five σ bonds and
+  // one π bond, ethyne three σ and two π.
+  {
+    id: 13,
+    type: 'sigma_pi',
+    formula: 'C₂H₄',
+    name: 'Eten (etýlen)',
+    lewisStructure: 'H₂C = CH₂',
+    question: 'Hve mörg σ-tengi og π-tengi eru í C₂H₄?',
+    options: [
+      {
+        id: 'a',
+        text: '5 σ-tengi og 1 π-tengi',
+        correct: true,
+        explanation:
+          'Rétt! Fjögur C–H-tengi og eitt C–C σ-tengi eru fimm σ-tengi, og tvítengið bætir við einu π-tengi.',
+      },
+      {
+        id: 'b',
+        text: '6 σ-tengi og 0 π-tengi',
+        correct: false,
+        explanation:
+          'Tvítengi er ekki tvö σ-tengi: það er eitt σ-tengi og eitt π-tengi. Aðeins eitt tengi getur legið eftir ásnum milli atómanna.',
+      },
+      {
+        id: 'c',
+        text: '4 σ-tengi og 2 π-tengi',
+        correct: false,
+        explanation:
+          'Tvítengið er eitt σ-tengi og eitt π-tengi, svo það eru 4 C–H σ-tengi og 1 C–C σ-tengi, 5 í allt.',
+      },
+      {
+        id: 'd',
+        text: '4 σ-tengi og 1 π-tengi',
+        correct: false,
+        explanation:
+          'C–C σ-tengið gleymdist: hvert margfalt tengi á eitt σ-tengi eftir ásnum, auk π-tengjanna.',
+      },
+    ],
+    hint: 'Hvert eintengi er eitt σ-tengi. Tvítengi er eitt σ-tengi og eitt π-tengi.',
+    conceptExplanation:
+      'Hvert kolefni í eteni er sp²-blandað. sp²-svigrúmin mynda fimm σ-tengi: fjögur C–H og eitt C–C. Óblandaða p-svigrúmið á hvoru kolefni skarast hlið við hlið og myndar eitt π-tengi (Efnafræði 2e, kafli 8, „Margföld tengi“).',
+  },
+  {
+    id: 14,
+    type: 'sigma_pi',
+    formula: 'C₂H₂',
+    name: 'Etýn (asetýlen)',
+    lewisStructure: 'H-C≡C-H',
+    question: 'Hve mörg σ-tengi og π-tengi eru í C₂H₂?',
+    options: [
+      {
+        id: 'a',
+        text: '3 σ-tengi og 2 π-tengi',
+        correct: true,
+        explanation:
+          'Rétt! Tvö C–H-tengi og eitt C–C σ-tengi, og þrítengið bætir við tveimur π-tengjum.',
+      },
+      {
+        id: 'b',
+        text: '2 σ-tengi og 3 π-tengi',
+        correct: false,
+        explanation:
+          'Þrítengi er ekki þrjú π-tengi: eitt þeirra er σ-tengi eftir ásnum, hin tvö eru π-tengi.',
+      },
+      {
+        id: 'c',
+        text: '5 σ-tengi og 0 π-tengi',
+        correct: false,
+        explanation:
+          'Aðeins eitt tengi milli tveggja atóma getur verið σ-tengi. Hin tvö í þrítenginu eru π-tengi.',
+      },
+      {
+        id: 'd',
+        text: '3 σ-tengi og 1 π-tengi',
+        correct: false,
+        explanation:
+          'Það á við um tvítengi. sp-blandað kolefni á tvö óblönduð p-svigrúm, sem mynda tvö π-tengi.',
+      },
+    ],
+    hint: 'Þrítengi er eitt σ-tengi og tvö π-tengi.',
+    conceptExplanation:
+      'Hvert kolefni í etýni er sp-blandað. sp-svigrúmin mynda þrjú σ-tengi: tvö C–H og eitt C–C. Tvö óblönduð p-svigrúm á hvoru kolefni skarast hlið við hlið og mynda tvö π-tengi, svo þrítengið er eitt σ-tengi og tvö π-tengi (Efnafræði 2e, kafli 8, „Margföld tengi“).',
+  },
+  {
+    id: 15,
+    type: 'sigma_pi',
+    formula: 'C₂H₄',
+    name: 'Eten (etýlen)',
+    lewisStructure: 'H₂C = CH₂',
+    question: 'Hvernig myndast π-tengið í C₂H₄?',
+    options: [
+      {
+        id: 'a',
+        text: 'Óblönduð p-svigrúm skarast hlið við hlið, fyrir ofan og neðan tengiásinn',
+        correct: true,
+        explanation:
+          'Rétt! p-svigrúmið sem tók ekki þátt í svigrúmablönduninni er hornrétt á plan sp²-svigrúmanna, og tvö slík skarast hlið við hlið.',
+      },
+      {
+        id: 'b',
+        text: 'sp²-svigrúm skarast enda á enda eftir tengiásnum',
+        correct: false,
+        explanation: 'Þannig myndast C–C σ-tengið. π-tengið liggur utan ássins.',
+      },
+      {
+        id: 'c',
+        text: 'sp²-svigrúm kolefnis skarast við s-svigrúm vetnis',
+        correct: false,
+        explanation: 'Þannig myndast C–H σ-tengin.',
+      },
+      {
+        id: 'd',
+        text: '2s-svigrúm kolefnanna skarast',
+        correct: false,
+        explanation:
+          '2s-svigrúmið er hluti af sp²-svigrúmunum eftir svigrúmablöndun og myndar ekki tengi eitt og sér.',
+      },
+    ],
+    hint: 'Svigrúmablöndun til sp² notar s-svigrúmið og tvö p-svigrúm. Hvaða svigrúm er þá eftir?',
+    conceptExplanation:
+      'σ-tengi liggur eftir ásnum milli atómanna og myndast við skörun enda á enda. π-tengi myndast við hliðarskörun óblandaðra p-svigrúma og hefur tvær blöðkur, fyrir ofan og neðan plan σ-tengjanna (Efnafræði 2e, kafli 8, „Margföld tengi“).',
+  },
+  {
+    id: 16,
+    type: 'sigma_pi',
+    formula: 'C₂H₄',
+    name: 'Eten (etýlen)',
+    lewisStructure: 'H₂C = CH₂',
+    question: 'Atómin geta auðveldlega snúist um C–C eintengi en ekki um C=C tvítengi. Af hverju?',
+    options: [
+      {
+        id: 'a',
+        text: 'Snúningur myndi slíta hliðarskörun p-svigrúmanna og þar með π-tengið',
+        correct: true,
+        explanation:
+          'Rétt! σ-tengi er samhverft um ásinn, svo snúningur breytir ekki skörun þess. π-tengið þarf að p-svigrúmin standi samsíða.',
+      },
+      {
+        id: 'b',
+        text: 'Tvítengið er styttra, svo vetnisatómin rekast saman ef þau snúast',
+        correct: false,
+        explanation:
+          'Lengdin ræður ekki: það sem hindrar snúninginn er að π-tengið rofnar þegar p-svigrúmin snúast hvort frá öðru.',
+      },
+      {
+        id: 'c',
+        text: 'σ-tengi er ekki til í tvítengi',
+        correct: false,
+        explanation:
+          'Tvítengi er einmitt eitt σ-tengi og eitt π-tengi. Það er π-tengið sem hindrar snúninginn.',
+      },
+      {
+        id: 'd',
+        text: 'Stöku rafeindapörin á kolefnunum standa í vegi',
+        correct: false,
+        explanation: 'Kolefnin í eteni hafa engin stök rafeindapör.',
+      },
+    ],
+    hint: 'Hugsaðu um hvernig hvort tengið liggur miðað við ásinn milli kolefnanna.',
+    conceptExplanation:
+      'Skörun enda á enda er ekki háð stefnu svigrúmanna, svo snúningur um σ-tengi er auðveldur. Snúningur um tvítengi myndi minnka skörun π-svigrúmanna og í raun rjúfa π-tengið. Þess vegna er etensameindin flöt og öll sex atómin í einu plani (Efnafræði 2e, kafli 8, „Margföld tengi“).',
+  },
   // Dipole moment questions
   {
     id: 11,
@@ -510,6 +674,9 @@ function inputOrbitals(domains: number): { kind: 's' | 'p' | 'd'; rotate: number
 
 // The same diagram laid out top to bottom for phones: the wide one shrinks to
 // ~250 px there and its labels fall to 5-9 px.
+/** The questions, for the tests to hold the σ/π counts to the book. */
+export const LEVEL3_CHALLENGES: readonly Challenge[] = challenges;
+
 function HybridizationDiagramStacked({ domains }: { domains: number }) {
   const c = HYBRIDIZATION_CONFIGS[domains];
   if (!c) return null;
@@ -828,6 +995,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         return 'Skautun';
       case 'multi_center':
         return 'Mörg miðatóm';
+      case 'sigma_pi':
+        return 'σ- og π-tengi';
       case 'dipole':
         return 'Tvískautsvægi';
       default:
@@ -843,6 +1012,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         return 'bg-blue-100 text-blue-800';
       case 'multi_center':
         return 'bg-green-100 text-green-800';
+      case 'sigma_pi':
+        return 'bg-teal-100 text-teal-800';
       case 'dipole':
         return 'bg-orange-100 text-orange-800';
       default:

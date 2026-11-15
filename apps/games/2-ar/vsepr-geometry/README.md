@@ -12,11 +12,11 @@ completion screen show as the level's best count; progress saved before counts w
 `Lokið`. Progress lives under the localStorage key `vsepr-geometry-progress`. The completion screen
 ("Þú hefur lokið öllum stigum!") follows whichever level completes the set, in any order.
 
-| Stig | Menu name                          | What it asks                                                                |
-| ---- | ---------------------------------- | --------------------------------------------------------------------------- |
-| 1    | Stig 1: VSEPR Kenning              | Explore 8 shapes with four widgets, then 8 multiple-choice questions        |
-| 2    | Stig 2: Spá fyrir um lögun         | 10 molecules, 4 steps each: count, shape, angle, written explanation        |
-| 3    | Stig 3: Svigrúmablöndun og skautun | 12 multiple-choice questions: hybridization, polarity, two centres, dipoles |
+| Stig | Menu name                          | What it asks                                                                     |
+| ---- | ---------------------------------- | -------------------------------------------------------------------------------- |
+| 1    | Stig 1: VSEPR Kenning              | Explore 8 shapes with four widgets, then 8 multiple-choice questions             |
+| 2    | Stig 2: Spá fyrir um lögun         | 10 molecules, 4 steps each: count, shape, angle, written explanation             |
+| 3    | Stig 3: Svigrúmablöndun og skautun | 16 multiple-choice questions: hybridization, polarity, two centres, σ/π, dipoles |
 
 - **Stig 1** opens on an explore phase: a shape picker (linear through octahedral, each with an
   example from CO₂ to SF₆), a 2D/3D toggle, and four widgets — `ElectronRepulsionAnimation`,
@@ -29,7 +29,7 @@ completion screen show as the level's best count; progress saved before counts w
   only once the shape step is answered right; a wrong answer moves on without them. Three steps
   are counted per molecule, so the level reports out of 30; the explanation is checked only for
   length and never counted.
-- **Stig 3** is 4 hybridization, 4 polarity, 2 multi-centre (C₂H₄, C₂H₂) and 2 dipole questions,
+- **Stig 3** is 4 hybridization, 4 polarity, 2 multi-centre (C₂H₄, C₂H₂), 4 σ/π and 2 dipole questions,
   options shuffled per question. After a hybridization question the `HybridizationDiagram` shows
   which orbitals mix into the hybrid set (`HYBRIDIZATION_CONFIGS` in `components/Level3.tsx`).
 
@@ -38,6 +38,15 @@ an answer may list several angles: `parseAngles` in `utils/bondAngles.ts` reads 
 through `parseStudentNumber`, and `gradeBondAngle` accepts each stored angle within
 `ANGLE_TOLERANCE` (±2°) — a bent molecule also 103–106° — and refuses any written angle the shape
 does not have (`SHAPE_ANGLES`).
+
+**σ- og π-tengi (2026-11-15, year-2 plan Phase 4).** Four questions after the two multi-centre
+ones ask what the multiple bonds in the same molecules are made of, from the book's ch. 8.3
+(m68746, Margföld tengi): the σ and π counts of ethene (5 and 1) and ethyne (3 and 2), how the
+π bond forms (side-by-side overlap of unhybridised p orbitals) and why a double bond does not
+rotate. Each wrong option names its slip: a double bond counted as two σ bonds, a triple bond as
+three π, the C–C σ bond forgotten. `sigma-pi.test.ts` works each count out from the Lewis
+structure the card shows. Terms are the book's prose forms, `σ-tengi` and `π-tengi`; `ordabok.md`
+now gives its glossary forms `sigma-tengi` and `pí-tengi`, where it had them unhyphenated.
 
 ## What matters before touching it
 

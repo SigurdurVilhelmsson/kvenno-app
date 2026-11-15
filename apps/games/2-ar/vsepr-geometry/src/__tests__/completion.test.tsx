@@ -40,7 +40,7 @@ function start() {
 /** Enter Stig 3 from the menu and answer all twelve questions. */
 function playLevel3(ui: ReturnType<typeof within>, container: HTMLElement) {
   fireEvent.click(ui.getByRole('button', { name: /Stig 3: Svigrúmablöndun og skautun/ }));
-  for (let q = 0; q < 12; q++) {
+  for (let q = 0; q < 16; q++) {
     fireEvent.click(container.querySelector('button:has(span.uppercase)') as HTMLElement);
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
     fireEvent.click(ui.getByRole('button', { name: /Næsta spurning|Ljúka stigi 3/ }));

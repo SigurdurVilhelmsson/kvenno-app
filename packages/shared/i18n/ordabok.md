@@ -460,7 +460,7 @@ photonic crystal;ljóseindakristall
 physical chemistry;eðlisefnafræði
 physical equilibrium;eðlisjafnvægi
 physical properties;eðliseiginleikar
-pi bond;pí tengi
+pi bond;pí-tengi
 pipette;pípetta
 pipette bulb;pípettubelgur
 pipette filler;pípettupumpa
@@ -547,7 +547,7 @@ seed crystal;sáðkristall
 semipermeable;hálfgegndræpur
 separation funnel;skiltrekt
 shell;hvolf
-sigma bond;sigma tengi
+sigma bond;sigma-tengi
 significant figures;markverðir stafir
 simple cubic;einföld teningslaga
 simple cubic;einfaldur teningur

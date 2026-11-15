@@ -184,18 +184,18 @@ describe('Stig 2, the angle hint', () => {
 
 describe('Stig 3', () => {
   for (const openHint of [false, true]) {
-    it(`reports right answers of 12, ${openHint ? 'with' : 'without'} the hint open`, () => {
+    it(`reports right answers of 16, ${openHint ? 'with' : 'without'} the hint open`, () => {
       const onComplete = vi.fn();
       const rendered = render(<Level3 onComplete={onComplete} onBack={vi.fn()} />);
       unmount = rendered.unmount;
       const right = playChoices(
         within(rendered.container),
         rendered.container,
-        12,
+        16,
         /Næsta spurning|Ljúka stigi 3/,
         openHint
       );
-      expect(onComplete).toHaveBeenCalledWith(right, 12);
+      expect(onComplete).toHaveBeenCalledWith(right, 16);
     });
   }
 });
@@ -249,11 +249,11 @@ describe('the menu and the end screen', () => {
     );
     const { ui, container } = startApp();
     fireEvent.click(ui.getByRole('button', { name: /Stig 3: Svigrúmablöndun og skautun/ }));
-    const right = playChoices(ui, container, 12, /Næsta spurning|Ljúka stigi 3/, false);
+    const right = playChoices(ui, container, 16, /Næsta spurning|Ljúka stigi 3/, false);
     expect(container.textContent).toContain('Þú hefur lokið öllum stigum!');
     expect(container.textContent).toContain('7 af 8 rétt');
     expect(container.textContent).toContain('Lokið');
-    expect(container.textContent).toContain(`${right} af 12 rétt`);
+    expect(container.textContent).toContain(`${right} af 16 rétt`);
     expect(container.textContent).not.toMatch(/Heildar ?stig/);
     expect(container.textContent).not.toContain('300');
   });

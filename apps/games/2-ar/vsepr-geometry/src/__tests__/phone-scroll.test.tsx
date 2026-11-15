@@ -399,11 +399,11 @@ describe('Stig 3', () => {
 
     clock += 150;
     fireEvent.click(view.getByRole('button', { name: 'Næsta spurning' }));
-    expect(view.getByText('Spurning 1 af 12')).toBeTruthy();
+    expect(view.getByText('Spurning 1 af 16')).toBeTruthy();
 
     clock += 400;
     fireEvent.click(view.getByRole('button', { name: 'Næsta spurning' }));
-    expect(view.getByText('Spurning 2 af 12')).toBeTruthy();
+    expect(view.getByText('Spurning 2 af 16')).toBeTruthy();
     expect(focused()?.hasAttribute('data-item-start')).toBe(true);
   });
 
