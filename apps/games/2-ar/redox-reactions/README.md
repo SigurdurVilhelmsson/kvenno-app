@@ -127,7 +127,29 @@ src/__tests__/                           answers, half-reactions-data, redox-bal
 There are no side files. Run the tests from the repo root:
 `pnpm exec vitest run apps/games/2-ar/redox-reactions`.
 
+## Nærmynd (2026-11-15)
+
+The amber card above the levels opens a particle view of Stig 3's first problem, zinc in
+copper(II) sulfate, built on the template in `docs/particle-view-template.md`. Nothing in it is
+graded or stored.
+
+- `engine/naermynd.ts` holds the numbers: 50,0 mL of 0,100 M CuSO₄ (5,00 mmól Cu²⁺), the
+  extent of reaction ξ in mmól, and E° from `@shared/data/electrode-potentials` (the book's
+  m68870). The multipliers and electron counts come from `problems[0]`, not a second copy.
+- Each ion stands for 0,50 mmól and is drawn in a fixed place; `countsAt` rounds the amounts,
+  and a test holds the drawing to them. Only the plate's surface is drawn: fourteen slots, each
+  zinc until a copper atom takes its place.
+- The five scenes are data in `data/naermynd-steps.tsx`: the blue solution, the two half-reactions
+  with electrons moving through the plate, SO₄²⁻ struck out of the full equation as the meðjón,
+  the colourless end with E°ker = 1,10 V, and a slider.
+- The book's word for the cell potential is `staðalkerspenna`, E°ker (ch17/m68823), and the
+  view uses it. The levels' `oxunarefni`/`afoxunarefni` were left alone here; the book says
+  `oxari`/`afoxari`, which is listed under Open.
+
 ## Open
+
+- Stig 2 says `oxunarefni`/`afoxunarefni`; the book says `oxari` and `afoxari` (about 80 and 30
+  hits in `02-mt-output`). Not yet swept, and `ordabok.md` has no entry for either.
 
 - **i18n.** This is one of the nine games that keep a `LanguageSwitcher`, and the most translated
   (156 `t()` calls in `docs/i18n-coverage.md`). Whether to finish wiring the nine is the
