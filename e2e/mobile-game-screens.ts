@@ -5404,6 +5404,32 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Gildisrafeindir og jónir (2026-11-15): its Skilja, its first question and a wrong
+    // answer's feedback. 15 is a distractor on the first question, and no other option holds it.
+    {
+      name: 'Gildisrafeindir — skilja',
+      steps: [{ clickRole: ['button', 'Gildisrafeindir og jónir'] }, { wait: 300 }],
+    },
+    {
+      name: 'Gildisrafeindir — æfa',
+      steps: [
+        { clickRole: ['button', 'Gildisrafeindir og jónir'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+      ],
+    },
+    {
+      name: 'Gildisrafeindir — endurgjöf',
+      steps: [
+        { clickRole: ['button', 'Gildisrafeindir og jónir'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Æfa: tíu spurningar'] },
+        { wait: 300 },
+        { clickRole: ['button', '15'] },
+        { wait: 300 },
+      ],
+    },
     {
       name: 'Stig 1 — kennsla',
       steps: [

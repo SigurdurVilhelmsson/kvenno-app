@@ -132,13 +132,36 @@ src/__tests__/                  data-integrity, electrons, level1-options, level
 There are no side files. Run the tests from the repo root:
 `pnpm exec vitest run apps/games/2-ar/rafeindabygging`.
 
+## Gildisrafeindir og jónir (2026-11-15)
+
+The amber card below the levels opens the bridge to Lewis-formúlur, the one February's spec
+asked for (year-2 audit, Phase 3). It is not a level: it is never marked done and counts toward
+nothing. Skilja teaches valence and core electrons (book ch. 6, m68734), Lewis symbols (ch. 7,
+m68739) and the configurations of ions (m68734, "Rafeindaskipan jóna"); an ungraded Kanna takes
+any main-group element of periods 2–4 to its configuration, valence electrons, Lewis symbol and
+usual ion; Æfa asks ten questions, one attempt each, ending `N af M rétt`.
+
+- **Nothing is stored per element.** `engine/gildi.ts` builds a configuration from Z in Aufbau
+  order, with Cr and Cu as Stig 3 teaches them, and agrees with every Stig 3 key up to krypton
+  (`gildi.test.ts`). An ion is made from its atom: electrons leave from the highest n, and within
+  it the highest l, which is the book's rule for a main-group atom and for a transition metal
+  alike (Fe²⁺ is `[Ar] 3d⁶`). The book's worked ions are tests.
+- **Valence electrons are the highest n**, so bromine has seven; a filled d subshell below counts
+  as core, as `valenceOf` already said for Stig 3. Transition metals are refused rather than
+  given a count.
+- **A Lewis symbol puts one dot on each side before any side takes two**, the book's figure of
+  period 3. Each symbol is an SVG whose accessible name reads the dots (`5 punktar: eitt par og
+þrír stakir`).
+- **The ten items' keys come from the engine**; the data holds only the options, and every wrong
+  option carries what it would mean (`15 er sætistala fosfórs`, `Þetta er Fe²⁺`, `3d fylltist
+síðast, en hliðarmálmur missir 4s-rafeindirnar fyrst`). Options shuffle per question.
+- Terms are the book's: `gildisrafeind`, `kjarnarafeind`, `Lewis-tákn`, `katjón`, `anjón`.
+
 ## Open
 
-- **The bridge to Lewis is not built.** February's spec had five levels; this game builds three.
-  Energy ordering (why 4s fills before 3d) is a teaching panel in Stig 2 with no practice, and the
-  s/p/d/f blocks → valence electrons → Lewis dot symbols level, the reason the game sits before
-  Lewis-formúlur, does not exist. Tracked only in `docs/FEBRUARY-DECISIONS-RECOVERED.md` (the
-  five-level table, and "Then finish `rafeindabygging`").
+- **Energy ordering has no practice.** Why 4s fills before 3d is a teaching panel in Stig 2 and
+  nothing asks it. February's five-level table is in `docs/FEBRUARY-DECISIONS-RECOVERED.md`; its
+  bridge to Lewis is now the screen below.
 
 **Fixed 2026-11-02**, found writing this file: Stig 2's input label, placeholder and format note,
 and the menu card, gave oxygen's configuration as the example while oxygen is one of the answers.
