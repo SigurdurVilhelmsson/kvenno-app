@@ -8,9 +8,10 @@ import { useScreenTop } from '@shared/utils';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+import { VarmiScreen } from './components/VarmiScreen';
 import { gameTranslations } from './i18n';
 
-type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'varmi' | 'complete';
 
 /**
  * What the game remembers: which levels are done, and the best count of right
@@ -96,6 +97,10 @@ function App() {
   };
 
   // Render active level
+  if (activeLevel === 'varmi') {
+    return <VarmiScreen onBack={() => setActiveLevel('menu')} />;
+  }
+
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
   }
@@ -296,6 +301,28 @@ function App() {
                   <div className="text-xs text-warm-600 mt-2">
                     Notaðu ΔH°<sub>f</sub> töflur til að reikna ΔH°<sub>rxn</sub>. Leystu öfug
                     verkefni.
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            {/* Not a level: calorimetry and bond energies, with its own ten problems. It is
+                never marked done and counts toward nothing. */}
+            <button
+              type="button"
+              onClick={() => setActiveLevel('varmi')}
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left"
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl" aria-hidden="true">
+                  🌡️
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-xl font-bold text-amber-900">
+                    Varmamælingar og tengjaorka
+                  </span>
+                  <div className="text-sm text-amber-800 mt-1">
+                    q = m·c·ΔT, varmamælar og ΔH metið út frá tengjum
                   </div>
                 </div>
               </div>

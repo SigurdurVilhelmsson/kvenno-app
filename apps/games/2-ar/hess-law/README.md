@@ -127,6 +127,23 @@ There are no side files. Run the tests from the repo root
 (`pnpm exec vitest run apps/games/2-ar/hess-law`): the render tests need the root config's DOM
 environment.
 
+## Varmamælingar og tengjaorka (2026-11-15)
+
+A menu card after Stig 3 opens a screen of its own, not a level: Skilja (q = m·c·ΔT, the
+calorimeter, bond energies), an ungraded Kanna (a hot metal dropped into water) and Æfa, ten
+problems with one attempt each, ending `N af M rétt`.
+
+- Every problem is from the book and names its place: ch05/m68724 (q = m·c·ΔT), ch05/m68726
+  (coffee-cup and bomb calorimeters) and ch07/m68741 (bond energies). `engine/varmi.ts` holds
+  the book's specific heats and average bond energies; `data/varmi.ts` builds every answer,
+  worked step and slip from the stated quantities, and a test holds each answer to the one the
+  book prints.
+- Calorimetry answers carry a sign: q(hvarf) = −q(lausn). The commonest slip, the sign flipped,
+  is named in the feedback, as are a forgotten bomb, the 50 g of one solution and a C=O read
+  for carbon monoxide's C≡O.
+- **Term:** bond energy is `tengjaorka`, as `ordabok.md` says (Siggi, 2026-11-15), although the
+  book writes `tengisorka`.
+
 ## Open
 
 - **i18n.** This is one of the nine games that keep a `LanguageSwitcher` (in the menu header), and
