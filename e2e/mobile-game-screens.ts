@@ -4383,6 +4383,30 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Nærmynd, the particle view (2026-11-15): water's vapour, the alcohol series and
+    // boiling water.
+    {
+      name: 'Nærmynd — vatn',
+      steps: [{ clickRole: ['button', 'Nærmynd'] }, { wait: 300 }],
+    },
+    {
+      name: 'Nærmynd — alkóhólaröðin',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '3. Alkóhólaröðin'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Nærmynd — vatn sýður',
+      steps: [
+        { clickRole: ['button', 'Nærmynd'] },
+        { wait: 300 },
+        { clickRole: ['button', '4. Vatn sýður'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Stig 1 — kynning',
       steps: [
