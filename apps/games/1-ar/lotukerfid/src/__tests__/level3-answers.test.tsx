@@ -4,6 +4,7 @@ import { describe, it, expect } from 'vitest';
 import { clockPastNextGuard } from './next-guard-clock';
 import { Level3, generateQuestions } from '../components/Level3';
 import { ELEMENTS } from '../data/elements';
+import { averageMass, ISOTOPE_SAMPLES } from '../data/isotopes';
 
 // Næsta ignores a press within 400 ms of appearing; these tests press it at once.
 clockPastNextGuard();
@@ -25,7 +26,17 @@ function questionText(): string {
 }
 
 /** The answer to a numeric question, read back from its own text. */
-function answerTo(text: string): number | null {
+function answerTo(text: string): number | string | null {
+  if (/meðalatómmassi/.test(text)) {
+    const sample = ISOTOPE_SAMPLES.find((s) => text.includes(`% ${s.symbol}-`))!;
+    return averageMass(sample).toFixed(2).replace('.', ',');
+  }
+  const ion = text.match(/\(([A-Z][a-z]?)([²³]?)([⁺⁻])\)/);
+  if (ion) {
+    const size = ion[2] === '²' ? 2 : ion[2] === '³' ? 3 : 1;
+    const charge = ion[3] === '⁺' ? size : -size;
+    return ELEMENTS.find((e) => e.symbol === ion[1])!.atomicNumber - charge;
+  }
   const m = text.match(/\(([A-Z][a-z]?)(?:-(\d+))?\)/);
   if (!m) return null;
   const el = ELEMENTS.find((e) => e.symbol === m[1])!;
@@ -39,8 +50,9 @@ describe('Stig 3 grader', () => {
     fireEvent.click(screen.getByRole('button', { name: /Byrja æfingar/ }));
 
     let checked = 0;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       const input = screen.queryByPlaceholderText('t.d. 12');
+      const decimal = screen.queryByPlaceholderText('t.d. 12,01');
       if (input) {
         const answer = answerTo(questionText());
         expect(answer, questionText()).not.toBeNull();
@@ -48,19 +60,22 @@ describe('Stig 3 grader', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Athuga' }));
         expect(screen.getByRole('alert').textContent, `${answer}.5`).toMatch(/Rangt/);
         checked++;
+      } else if (decimal) {
+        fireEvent.change(decimal, { target: { value: String(answerTo(questionText())) } });
+        fireEvent.click(screen.getByRole('button', { name: 'Athuga' }));
       } else {
         fireEvent.click(screen.getByRole('button', { name: /\(H\), sætistala 1,/ }));
       }
       fireEvent.click(screen.getByRole('button', { name: /Næsta spurning|Sjá niðurstöður/ }));
     }
-    expect(checked).toBe(6);
+    expect(checked).toBe(8);
   });
 
   it('still marks the whole number right', () => {
     render(<Level3 onBack={() => {}} onComplete={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: /Byrja æfingar/ }));
-    for (let i = 0; i < 8; i++) {
-      const input = screen.queryByPlaceholderText('t.d. 12');
+    for (let i = 0; i < 12; i++) {
+      const input = screen.queryByPlaceholderText(/^t\.d\. 12/);
       if (input) {
         fireEvent.change(input, { target: { value: String(answerTo(questionText())) } });
         fireEvent.click(screen.getByRole('button', { name: 'Athuga' }));
@@ -76,8 +91,8 @@ describe('Stig 3 grader', () => {
   it('does not grade an empty field', () => {
     render(<Level3 onBack={() => {}} onComplete={() => {}} />);
     fireEvent.click(screen.getByRole('button', { name: /Byrja æfingar/ }));
-    for (let i = 0; i < 8; i++) {
-      const input = screen.queryByPlaceholderText('t.d. 12');
+    for (let i = 0; i < 12; i++) {
+      const input = screen.queryByPlaceholderText(/^t\.d\. 12/);
       if (input) {
         fireEvent.keyDown(input, { key: 'Enter' });
         expect(screen.queryByRole('alert')).toBeNull();

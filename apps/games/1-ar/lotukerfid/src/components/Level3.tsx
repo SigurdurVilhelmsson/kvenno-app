@@ -1,8 +1,17 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
 import {
+  DECIMAL_INPUT_PROPS,
+  formatDecimal,
   parseStudentNumber,
   revealSpan,
   revealTop,
@@ -15,7 +24,18 @@ import {
 
 import { PeriodicTable } from './PeriodicTable';
 import { ELEMENTS, nameInSentence, type Element } from '../data/elements';
-import { particleMisconception } from '../utils/misconceptions';
+import { chargeText, ionFormula, IONS, type Ion } from '../data/ions';
+import {
+  AVERAGE_MASS_TOLERANCE,
+  averageMass,
+  ISOTOPE_SAMPLES,
+  type IsotopeSample,
+} from '../data/isotopes';
+import {
+  averageMassMisconception,
+  ionMisconception,
+  particleMisconception,
+} from '../utils/misconceptions';
 import { tabletBelowMd } from '../utils/tableLayout';
 
 interface Level3Props {
@@ -23,7 +43,8 @@ interface Level3Props {
   onComplete: () => void;
 }
 
-type QuestionType = 'protons' | 'electrons' | 'neutrons' | 'identify-by-particles';
+type QuestionType =
+  'protons' | 'electrons' | 'neutrons' | 'identify-by-particles' | 'ion-electrons' | 'average-mass';
 
 export interface Question {
   type: QuestionType;
@@ -33,6 +54,34 @@ export interface Question {
   explanation: string;
   /** For identify-by-particles: the element must be clicked on the table */
   requiresTableClick?: boolean;
+  /** For ion-electrons: the ion asked about. */
+  ion?: Ion;
+  /** For average-mass: the sample, whose answer is a decimal in amu. */
+  sample?: IsotopeSample;
+}
+
+/** A number as the book prints it, with a decimal comma and its own decimals. */
+const asPrinted = (n: number) => String(n).replace('.', ',');
+
+const elementOf = (symbol: string) => ELEMENTS.find((e) => e.symbol === symbol)!;
+
+const COUNT_WORDS = ['', '', 'tveggja', 'þriggja'];
+
+function averageMassText(sample: IsotopeSample): string {
+  const parts = sample.isotopes.map(
+    (iso) =>
+      `${asPrinted(iso.percent)} % ${sample.symbol}-${iso.massNumber} (${asPrinted(iso.mass)} amu)`
+  );
+  const list = parts.slice(0, -1).join(', ') + ' og ' + parts[parts.length - 1];
+  return `${sample.name} er blanda ${COUNT_WORDS[sample.isotopes.length]} samsæta: ${list}. Hver er meðalatómmassi ${sample.genitive}?`;
+}
+
+/** Exported for tests: whether a typed answer is right. */
+export function isRight(question: Question, value: number): boolean {
+  if (question.type === 'average-mass') {
+    return Math.abs(value - question.correctAnswer) <= AVERAGE_MASS_TOLERANCE;
+  }
+  return value === question.correctAnswer;
 }
 
 function pickRandom<T>(arr: T[], n: number): T[] {
@@ -114,10 +163,44 @@ export function generateQuestions(): Question[] {
     });
   }
 
+  // 2 ion questions: the electrons of an ion the main groups form
+  for (const ion of pickRandom(IONS, 2)) {
+    const el = elementOf(ion.symbol);
+    const electrons = el.atomicNumber - ion.charge;
+    const lostOrGained =
+      ion.charge > 0
+        ? `hefur misst ${particleCount(ion.charge, 'rafeind', 'rafeindir')}`
+        : `hefur fengið ${particleCount(-ion.charge, 'rafeind', 'rafeindir')}`;
+    questions.push({
+      type: 'ion-electrons',
+      element: el,
+      ion,
+      text: `Hversu margar rafeindir hefur ${ion.name} (${ionFormula(ion)})?`,
+      correctAnswer: electrons,
+      explanation: `${el.name} hefur sætistöluna ${el.atomicNumber}, svo hlutlausa atómið hefur ${particleCount(el.atomicNumber, 'rafeind', 'rafeindir')}. ${ionFormula(ion)} ${lostOrGained} og hefur því ${particleCount(electrons, 'rafeind', 'rafeindir')}: ${el.atomicNumber} − (${chargeText(ion.charge)}) = ${electrons}. Róteindirnar eru áfram ${el.atomicNumber}.`,
+    });
+  }
+
+  // 2 average-mass questions, from the book's samples
+  for (const sample of pickRandom(ISOTOPE_SAMPLES, 2)) {
+    const want = averageMass(sample);
+    const terms = sample.isotopes
+      .map((iso) => `${formatDecimal(iso.percent / 100, 4)} × ${asPrinted(iso.mass)}`)
+      .join(' + ');
+    questions.push({
+      type: 'average-mass',
+      element: elementOf(sample.symbol),
+      sample,
+      text: averageMassText(sample),
+      correctAnswer: want,
+      explanation: `Meðalatómmassi = summa massa × gnægð hverrar samsætu = ${terms} = ${formatDecimal(want, 2)} amu. ${sample.note}`,
+    });
+  }
+
   return shuffleArray(questions);
 }
 
-const TOTAL = 8;
+const TOTAL = 12;
 
 function hintFor(question: Question): string {
   if (question.type === 'protons') {
@@ -129,7 +212,67 @@ function hintFor(question: Question): string {
   if (question.type === 'neutrons') {
     return 'Nifteindir = massatala − sætistala. Massatalan er talan í heiti samsætunnar (t.d. 63 í Cu-63) — hún er ekki meðalatómmassinn sem stendur á lotukerfinu.';
   }
+  if (question.type === 'ion-electrons') {
+    return 'Byrjaðu á sætistölunni: svo margar rafeindir hefur hlutlausa atómið. Jákvæð jón hefur misst rafeindir, neikvæð hefur fengið þær; hleðslan segir hve margar.';
+  }
+  if (question.type === 'average-mass') {
+    return 'Margfaldaðu massa hverrar samsætu með gnægð hennar sem hlutfalli (80,1 % = 0,801) og leggðu saman.';
+  }
   return 'Sætistalan (fjöldi róteinda) ákvarðar hvaða frumefni þetta er. Leitaðu að þeirri sætistölu í lotukerfinu.';
+}
+
+/** The misconception slot, read from the number the student gave. */
+function misconceptionFor(question: Question, given: number): string | undefined {
+  if (question.type === 'ion-electrons' && question.ion) {
+    return ionMisconception(question.element.atomicNumber, question.ion.charge, given);
+  }
+  if (question.type === 'average-mass' && question.sample) {
+    return averageMassMisconception(
+      question.sample.isotopes,
+      question.correctAnswer,
+      given,
+      AVERAGE_MASS_TOLERANCE
+    );
+  }
+  if (question.type === 'ion-electrons' || question.type === 'average-mass') return undefined;
+  return particleMisconception(question.type, question.element, given);
+}
+
+/** The book's table for an average mass: each isotope's mass, abundance and share. */
+function IsotopeCard({ sample }: { sample: IsotopeSample }) {
+  return (
+    <div className="bg-warm-50 rounded-xl border-2 border-warm-200 p-4 phone:p-3">
+      <h3 className="font-bold text-warm-800 mb-2">Samsætur {sample.genitive}</h3>
+      <table className="w-full text-sm text-right font-mono">
+        <thead>
+          <tr className="text-warm-500 text-xs">
+            <th className="text-left font-normal">Samsæta</th>
+            <th className="font-normal">Massi (amu)</th>
+            <th className="font-normal">Gnægð</th>
+            <th className="font-normal">Framlag</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sample.isotopes.map((iso) => (
+            <tr key={iso.massNumber}>
+              <td className="text-left">
+                {sample.symbol}-{iso.massNumber}
+              </td>
+              <td>{asPrinted(iso.mass)}</td>
+              <td>{asPrinted(iso.percent)} %</td>
+              <td>{formatDecimal((iso.mass * iso.percent) / 100, 3)}</td>
+            </tr>
+          ))}
+          <tr className="border-t border-warm-300 font-bold">
+            <td className="text-left font-sans" colSpan={3}>
+              Meðalatómmassi
+            </td>
+            <td>{formatDecimal(averageMass(sample), 2)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export function Level3({ onBack, onComplete }: Level3Props) {
@@ -222,7 +365,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
     if (!input.trim()) return;
     const value = parseStudentNumber(input);
     if (Number.isNaN(value)) return;
-    const correct = value === question.correctAnswer;
+    const correct = isRight(question, value);
     setGiven(value);
     setIsCorrect(correct);
     if (correct) setCorrectCount((prev) => prev + 1);
@@ -262,13 +405,26 @@ export function Level3({ onBack, onComplete }: Level3Props) {
     setDone(false);
   };
 
+  const answerField = {
+    ref: inputRef,
+    'data-item-start': '',
+    enterKeyHint: 'done' as const,
+    autoComplete: 'off',
+    value: input,
+    onChange: (e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value),
+    onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleSubmit(),
+    className:
+      'flex-1 px-4 py-3 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-lg font-mono phone:min-w-0 phone:px-3 phone:py-2',
+    autoFocus: true,
+  };
+
   // --- Summary screen ---
   if (done) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6 phone:p-6 phone:space-y-4">
           <div className="text-5xl phone:text-4xl">
-            {correctCount >= 6 ? '🎉' : correctCount >= 4 ? '👍' : '📚'}
+            {correctCount >= 9 ? '🎉' : correctCount >= 6 ? '👍' : '📚'}
           </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
@@ -372,6 +528,37 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               </p>
             </div>
 
+            <div className="bg-purple-50 p-4 rounded-lg">
+              <h3 className="font-bold text-purple-800 mb-2">
+                Jónir: rafeindum bætt við eða teknar
+              </h3>
+              <p className="text-sm text-purple-700 mb-2">
+                Atóm sem missir rafeindir verður jákvætt hlaðið og kallast <strong>katjón</strong>;
+                atóm sem fær rafeindir verður neikvætt hlaðið og kallast <strong>anjón</strong>.
+                Róteindirnar breytast ekki, og því ekki frumefnið heldur.
+              </p>
+              <div className="text-sm text-purple-700 space-y-1 font-mono">
+                <p>
+                  Na: 11 rafeindir → Na⁺ missir eina → <strong>10 rafeindir</strong>
+                </p>
+                <p>
+                  O: 8 rafeindir → O²⁻ fær tvær → <strong>10 rafeindir</strong>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-sky-50 p-4 rounded-lg">
+              <h3 className="font-bold text-sky-800 mb-2">Meðalatómmassi: vegið meðaltal</h3>
+              <p className="text-sm text-sky-700 mb-2">
+                Talan neðst í reitnum er meðaltal yfir allar samsætur frumefnisins, þar sem hver
+                samsæta vegur eftir því hve algeng hún er (<strong>gnægð</strong>). Bór er 19,9 %
+                B-10 (10,0129 amu) og 80,1 % B-11 (11,0093 amu):
+              </p>
+              <p className="text-sm text-sky-700 font-mono">
+                0,199 × 10,0129 + 0,801 × 11,0093 = <strong>10,81 amu</strong>
+              </p>
+            </div>
+
             <button
               onClick={() => setShowIntro(false)}
               className="w-full bg-kvenno-orange hover:bg-kvenno-orange-600 text-white font-bold py-3 rounded-xl transition-colors"
@@ -463,20 +650,18 @@ export function Level3({ onBack, onComplete }: Level3Props) {
                   Svar:
                 </label>
                 <div className="flex gap-3 phone:flex-1 phone:min-w-0 phone:gap-2">
-                  <input
-                    ref={inputRef}
-                    data-item-start
-                    type="number"
-                    inputMode="numeric"
-                    enterKeyHint="done"
-                    autoComplete="off"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                    placeholder="t.d. 12"
-                    className="flex-1 px-4 py-3 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-lg font-mono phone:min-w-0 phone:px-3 phone:py-2"
-                    autoFocus
-                  />
+                  {/* A count is whole, so its field is type="number"; an average
+                      mass is a decimal, which that type would eat the comma of. */}
+                  {question.type === 'average-mass' ? (
+                    <input {...DECIMAL_INPUT_PROPS} {...answerField} placeholder="t.d. 12,01" />
+                  ) : (
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      {...answerField}
+                      placeholder="t.d. 12"
+                    />
+                  )}
                   <button
                     key="check"
                     onClick={handleSubmit}
@@ -509,10 +694,19 @@ export function Level3({ onBack, onComplete }: Level3Props) {
           {/* Reference table for numeric questions */}
           {!question.requiresTableClick && (
             <div className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3 phone:mb-2 phone:p-2 max-md:phone-land:col-start-2 max-md:phone-land:row-start-1">
+              {/* The table prints the very average an average-mass question asks
+                  for, so its masses wait for the answer, as Stig 2 hides them. */}
+              {question.type === 'average-mass' && !answered && (
+                <p className="text-xs text-warm-500 mb-2 text-center phone:mb-1">
+                  Meðalatómmassinn er falinn þangað til þú hefur svarað — reiknaðu hann út frá
+                  samsætunum.
+                </p>
+              )}
               <PeriodicTable
                 highlightedElements={answered ? new Set([question.element.symbol]) : undefined}
                 correctElement={answered ? question.element.symbol : null}
                 interactive={false}
+                showMasses={answered || question.type !== 'average-mass'}
               />
             </div>
           )}
@@ -540,40 +734,46 @@ export function Level3({ onBack, onComplete }: Level3Props) {
                     // Renders outside the collapsible explanation, so it is the one
                     // thing a student who reads nothing else still sees.
                     misconception:
-                      isCorrect || given === null
-                        ? undefined
-                        : particleMisconception(question.type, question.element, given),
+                      isCorrect || given === null ? undefined : misconceptionFor(question, given),
                   }}
                   config={{ showExplanation: true }}
                 />
 
-                {/* Particle breakdown card */}
-                <div className="bg-warm-50 rounded-xl border-2 border-warm-200 p-4 phone:p-3">
-                  <h3 className="font-bold text-warm-800 mb-2">
-                    {question.element.name} ({question.element.symbol})
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm phone:gap-2 max-md:phone-land:grid-cols-2">
-                    <div className="bg-white rounded-lg p-2 border border-warm-200">
-                      <div className="text-warm-500 text-xs">Róteindir</div>
-                      <div className="font-bold text-lg">{question.element.atomicNumber}</div>
+                {/* Particle breakdown card, or the isotopes for an average mass */}
+                {question.sample ? (
+                  <IsotopeCard sample={question.sample} />
+                ) : (
+                  <div className="bg-warm-50 rounded-xl border-2 border-warm-200 p-4 phone:p-3">
+                    <h3 className="font-bold text-warm-800 mb-2">
+                      {question.ion
+                        ? `${ionFormula(question.ion)}, hleðsla ${chargeText(question.ion.charge)}`
+                        : `${question.element.name} (${question.element.symbol})`}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm phone:gap-2 max-md:phone-land:grid-cols-2">
+                      <div className="bg-white rounded-lg p-2 border border-warm-200">
+                        <div className="text-warm-500 text-xs">Róteindir</div>
+                        <div className="font-bold text-lg">{question.element.atomicNumber}</div>
+                      </div>
+                      <div className="bg-white rounded-lg p-2 border border-warm-200">
+                        <div className="text-warm-500 text-xs">Rafeindir</div>
+                        <div className="font-bold text-lg">
+                          {question.element.atomicNumber - (question.ion?.charge ?? 0)}
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-2 border border-warm-200">
+                        <div className="text-warm-500 text-xs">Massatala</div>
+                        <div className="font-bold text-lg">{question.element.massNumber}</div>
+                      </div>
+                      <div className="bg-white rounded-lg p-2 border border-warm-200">
+                        <div className="text-warm-500 text-xs">Nifteindir</div>
+                        <div className="font-bold text-lg">{neutronCount(question.element)}</div>
+                      </div>
                     </div>
-                    <div className="bg-white rounded-lg p-2 border border-warm-200">
-                      <div className="text-warm-500 text-xs">Rafeindir</div>
-                      <div className="font-bold text-lg">{question.element.atomicNumber}</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-2 border border-warm-200">
-                      <div className="text-warm-500 text-xs">Massatala</div>
-                      <div className="font-bold text-lg">{question.element.massNumber}</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-2 border border-warm-200">
-                      <div className="text-warm-500 text-xs">Nifteindir</div>
-                      <div className="font-bold text-lg">{neutronCount(question.element)}</div>
-                    </div>
+                    <p className="text-xs text-warm-500 mt-2 text-center">
+                      Massatala = róteindir + nifteindir = {question.element.massNumber}
+                    </p>
                   </div>
-                  <p className="text-xs text-warm-500 mt-2 text-center">
-                    Massatala = róteindir + nifteindir = {question.element.massNumber}
-                  </p>
-                </div>
+                )}
               </div>
 
               <button
