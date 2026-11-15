@@ -41,18 +41,13 @@ function parseFormula(formula: string): { symbol: string; count: number }[] {
 }
 
 /**
- * Does the Greek prefix for `count` show up in this name?
+ * Does the Greek prefix for `count` show up in this name, whole?
  *
- * Icelandic elides the prefix's final -a before a vowel, which is why N₂O₄ is
- * Díniturtetroxíð rather than -tetraoxíð. So a prefix ending in -a also counts
- * as present in its elided form; `dí` and `trí` are matched whole, since
- * dropping their final letter would match almost anything.
+ * The game prints the textbook's forms (ch02/m68698, Siggi 2026-11-15), which
+ * keep the prefix's final vowel before oxíð: Díniturtetraoxíð, not -tetroxíð.
  */
 function prefixAppears(name: string, count: number): boolean {
-  const prefix = PREFIXES[count];
-  const lower = name.toLowerCase();
-  if (lower.includes(prefix)) return true;
-  return prefix.endsWith('a') && lower.includes(prefix.slice(0, -1));
+  return name.toLowerCase().includes(PREFIXES[count]);
 }
 
 const byFormula = (formula: string) => {
@@ -63,7 +58,7 @@ const byFormula = (formula: string) => {
 
 describe('the names B5 got wrong', () => {
   it.each([
-    ['P₄O₁₀', 'Tetrafosfórdekoxíð'],
+    ['P₄O₁₀', 'Tetrafosfórdekaoxíð'],
     ['Co(NO₃)₂', 'Kóbalt(II)nítrat'],
     ['Fe₃O₄', 'Járn(II,III)oxíð'],
     ['PCl₅', 'Fosfórpentaklóríð'],
@@ -118,6 +113,12 @@ describe('molecular names carry the prefix their formula requires', () => {
         ).toBe(false);
       }
     });
+  });
+});
+
+describe('names print the prefix vowel the textbook keeps', () => {
+  it.each(COMPOUNDS.map((c) => [c.formula, c.name] as const))('%s', (_formula, name) => {
+    expect(name).not.toMatch(/(tetr|pent|hex|hept|okt|n[oó]n|dek)oxíð/i);
   });
 });
 

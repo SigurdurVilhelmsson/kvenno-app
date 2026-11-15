@@ -49,7 +49,7 @@ export const challenges: NamingChallenge[] = [
     metal: 'Kalíum',
     nonmetal: 'brómíð',
     steps: {
-      identifyType: 'Jónefni (málmur + málmleysingi)',
+      identifyType: 'Jónaefni (málmur + málmleysingi)',
       nameParts: ['Kalíum (málmur)', 'bróm → brómíð'],
       finalName: 'Kalíum + brómíð = Kalíumbrómíð',
     },
@@ -63,7 +63,7 @@ export const challenges: NamingChallenge[] = [
     metal: 'Kalsíum',
     nonmetal: 'oxíð',
     steps: {
-      identifyType: 'Jónefni (málmur + málmleysingi)',
+      identifyType: 'Jónaefni (málmur + málmleysingi)',
       nameParts: ['Kalsíum (málmur)', 'súrefni → oxíð'],
       finalName: 'Kalsíum + oxíð = Kalsíumoxíð',
     },
@@ -78,7 +78,7 @@ export const challenges: NamingChallenge[] = [
     nonmetal: 'klóríð',
     oxidationState: 'III',
     steps: {
-      identifyType: 'Jónefni með breytilega hleðslu',
+      identifyType: 'Jónaefni með breytilega hleðslu',
       nameParts: ['Járn (breytileg hleðsla)', '3 Cl⁻ → Fe³⁺ → (III)', 'klór → klóríð'],
       finalName: 'Járn(III) + klóríð = Járn(III)klóríð',
     },
@@ -93,7 +93,7 @@ export const challenges: NamingChallenge[] = [
     nonmetal: 'oxíð',
     oxidationState: 'I',
     steps: {
-      identifyType: 'Jónefni með breytilega hleðslu',
+      identifyType: 'Jónaefni með breytilega hleðslu',
       nameParts: ['Kopar (breytileg hleðsla)', '2 Cu + O²⁻ → 2Cu⁺ → (I)', 'súrefni → oxíð'],
       finalName: 'Kopar(I) + oxíð = Kopar(I)oxíð',
     },
@@ -107,7 +107,7 @@ export const challenges: NamingChallenge[] = [
     metal: 'Natríum',
     polyatomicIon: 'súlfat',
     steps: {
-      identifyType: 'Jónefni með fjölatóma jón',
+      identifyType: 'Jónaefni með fjölatóma jón',
       nameParts: ['Natríum (málmur)', 'SO₄²⁻ = súlfat (fjölatóma jón)'],
       finalName: 'Natríum + súlfat = Natríumsúlfat',
     },
@@ -121,7 +121,7 @@ export const challenges: NamingChallenge[] = [
     metal: 'Kalíum',
     polyatomicIon: 'nítrat',
     steps: {
-      identifyType: 'Jónefni með fjölatóma jón',
+      identifyType: 'Jónaefni með fjölatóma jón',
       nameParts: ['Kalíum (málmur)', 'NO₃⁻ = nítrat (fjölatóma jón)'],
       finalName: 'Kalíum + nítrat = Kalíumnítrat',
     },
@@ -135,23 +135,23 @@ export const challenges: NamingChallenge[] = [
     prefix1: '',
     prefix2: 'dí',
     steps: {
-      identifyType: 'Sameind (tveir málmleysingjar)',
+      identifyType: 'Sameindaefni (tveir málmleysingjar)',
       nameParts: ['C: 1 atóm → (sleppum mónó)', 'O: 2 atóm → dí', 'súrefni → oxíð'],
       finalName: 'Kol + dí + oxíð = Koldíoxíð',
     },
-    hint: 'Bæði C og O eru málmleysingjar - þetta er sameind',
+    hint: 'Bæði C og O eru málmleysingjar - þetta er sameindaefni',
   },
   {
     id: 8,
     formula: 'N₂O₄',
-    correctName: 'Díniturtetroxíð',
+    correctName: 'Díniturtetraoxíð',
     type: 'molecular',
     prefix1: 'dí',
     prefix2: 'tetra',
     steps: {
-      identifyType: 'Sameind (tveir málmleysingjar)',
+      identifyType: 'Sameindaefni (tveir málmleysingjar)',
       nameParts: ['N: 2 atóm → dí', 'O: 4 atóm → tetra', 'súrefni → oxíð'],
-      finalName: 'Dí + nitur + tetra + oxíð = Díniturtetroxíð',
+      finalName: 'Dí + nitur + tetra + oxíð = Díniturtetraoxíð',
     },
     hint: 'N og O eru báðir málmleysingjar',
   },
@@ -163,7 +163,7 @@ export const challenges: NamingChallenge[] = [
     prefix1: '',
     prefix2: 'hexa',
     steps: {
-      identifyType: 'Sameind (tveir málmleysingjar)',
+      identifyType: 'Sameindaefni (tveir málmleysingjar)',
       nameParts: ['S: 1 atóm → (sleppum mónó)', 'F: 6 atóm → hexa', 'flúor → flúoríð'],
       finalName: 'Brennisteinn + hexa + flúoríð = Brennisteinshexaflúoríð',
     },
@@ -177,7 +177,7 @@ export const challenges: NamingChallenge[] = [
     metal: 'Kalsíum',
     polyatomicIon: 'nítrat',
     steps: {
-      identifyType: 'Jónefni með fjölatóma jón',
+      identifyType: 'Jónaefni með fjölatóma jón',
       nameParts: ['Kalsíum (málmur)', 'NO₃⁻ = nítrat (×2 breytir ekki nafninu)'],
       finalName: 'Kalsíum + nítrat = Kalsíumnítrat',
     },
@@ -192,7 +192,7 @@ export const challenges: NamingChallenge[] = [
     nonmetal: 'oxíð',
     oxidationState: 'IV',
     steps: {
-      identifyType: 'Jónefni með breytilega hleðslu',
+      identifyType: 'Jónaefni með breytilega hleðslu',
       nameParts: ['Blý (breytileg hleðsla)', '2 O²⁻ = -4 → Pb⁴⁺ → (IV)', 'súrefni → oxíð'],
       finalName: 'Blý(IV) + oxíð = Blý(IV)oxíð',
     },
@@ -206,7 +206,7 @@ export const challenges: NamingChallenge[] = [
     prefix1: '',
     prefix2: 'penta',
     steps: {
-      identifyType: 'Sameind (tveir málmleysingjar)',
+      identifyType: 'Sameindaefni (tveir málmleysingjar)',
       nameParts: ['P: 1 atóm → (sleppum mónó)', 'Cl: 5 atóm → penta', 'klór → klóríð'],
       finalName: 'Fosfór + penta + klóríð = Fosfórpentaklóríð',
     },
@@ -216,22 +216,22 @@ export const challenges: NamingChallenge[] = [
 
 const typeNames: Record<CompoundType, { name: string; color: string; description: string }> = {
   'ionic-simple': {
-    name: 'Einfalt jónefni',
+    name: 'Einfalt jónaefni',
     color: 'blue',
     description: 'Málmur + málmleysingi, fær endinguna -íð',
   },
   'ionic-variable': {
-    name: 'Jónefni (breytileg hleðsla)',
+    name: 'Jónaefni (breytileg hleðsla)',
     color: 'purple',
     description: 'Málmur með breytilega hleðslu, notar rómverskar tölur',
   },
   'ionic-polyatomic': {
-    name: 'Jónefni (fjölatóma jón)',
+    name: 'Jónaefni (fjölatóma jón)',
     color: 'green',
     description: 'Inniheldur fjölatóma jón eins og súlfat, nítrat eða karbónat',
   },
   molecular: {
-    name: 'Sameind',
+    name: 'Sameindaefni',
     color: 'orange',
     description: 'Tveir málmleysingjar, notar grísk forskeyti',
   },
@@ -853,7 +853,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">
-              <div className="font-bold text-blue-700">Jónefni</div>
+              <div className="font-bold text-blue-700">Jónaefni</div>
               <div className="text-blue-600">málmur + -íð</div>
             </div>
             <div className="bg-purple-50 p-2 rounded border border-purple-200">
@@ -865,7 +865,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               <div className="text-green-600">málmur + jón</div>
             </div>
             <div className="bg-orange-50 p-2 rounded border border-orange-200">
-              <div className="font-bold text-orange-700">Sameind</div>
+              <div className="font-bold text-orange-700">Sameindaefni</div>
               <div className="text-orange-600">forskeyti + -íð</div>
             </div>
           </div>

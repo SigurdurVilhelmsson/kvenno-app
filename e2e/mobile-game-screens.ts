@@ -836,7 +836,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Æfing með leiðsögn'],
         },
         {
-          clickRole: ['button', 'Sameind'],
+          clickRole: ['button', 'Sameindaefni'],
         },
         {
           wait: 1900,
@@ -850,7 +850,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Æfing með leiðsögn'],
         },
         {
-          clickRole: ['button', 'Sameind'],
+          clickRole: ['button', 'Sameindaefni'],
         },
         {
           wait: 1900,
@@ -873,7 +873,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Æfing með leiðsögn'],
         },
         {
-          clickRole: ['button', 'Sameind'],
+          clickRole: ['button', 'Sameindaefni'],
         },
         {
           wait: 1900,
@@ -1012,7 +1012,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — skref 3, leikur',
       steps: [
         { clickRole: ['button', 'Æfing með leiðsögn'] },
-        { clickRole: ['button', 'Sameind'] },
+        { clickRole: ['button', 'Sameindaefni'] },
         { wait: 1900 },
         { clickRole: ['button', 'Ég skil'] },
       ],

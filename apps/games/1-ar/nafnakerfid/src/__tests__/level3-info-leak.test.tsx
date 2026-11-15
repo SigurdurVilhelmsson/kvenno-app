@@ -93,7 +93,7 @@ describe('Level 3 on screen', () => {
     const { container } = render(<Level3 t={t} onComplete={vi.fn()} onBack={vi.fn()} />);
     fireEvent.click(within(container).getByRole('button', { name: /Nafnareglur/ }));
     const rules = container.querySelector('ul')!.textContent ?? '';
-    for (const ion of ['ammóníum (NH₄⁺)', 'fosfat (PO₄³⁻)', 'vetniskarbónat (HCO₃⁻)']) {
+    for (const ion of ['ammóníum (NH₄⁺)', 'fosfat (PO₄³⁻)', 'bíkarbónat (HCO₃⁻)']) {
       expect(rules).toContain(ion);
     }
     expect(rules).toContain('díkrómat (Cr₂O₇²⁻)');

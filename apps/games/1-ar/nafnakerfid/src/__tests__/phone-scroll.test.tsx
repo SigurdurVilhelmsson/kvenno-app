@@ -290,14 +290,14 @@ describe('Level 2', () => {
   it('Step 1: the choice moves focus to the verdict; a desktop scrolls the least that shows it', () => {
     phone = false;
     const view = render2();
-    press(view.getByRole('button', { name: /^Sameind/ }));
+    press(view.getByRole('button', { name: /^Sameindaefni/ }));
     expect(focused()?.id).toBe('nk-l2-type-verdict');
     expect(scrollBy).toHaveBeenCalledWith({ top: -300, behavior: 'smooth' });
   });
 
   it('Step 2 focuses its heading; Step 3 leaves focus in the field', () => {
     const view = render2();
-    chooseType(view, /^Einfalt jónefni/);
+    chooseType(view, /^Einfalt jónaefni/);
     expect(focused()?.textContent).toBe('Skref 2: Hvernig er nafnið byggt upp?');
     press(view.getByRole('button', { name: /skrifa nafnið/ }));
     expect(focused()).toBe(view.getByRole('textbox'));
@@ -305,7 +305,7 @@ describe('Level 2', () => {
 
   it('the check moves focus to the verdict group, and Næsta ignores an early press', () => {
     const view = render2();
-    chooseType(view, /^Einfalt jónefni/);
+    chooseType(view, /^Einfalt jónaefni/);
     press(view.getByRole('button', { name: /skrifa nafnið/ }));
     fireEvent.change(view.getByRole('textbox'), { target: { value: 'Kalíumbrómíð' } });
     press(view.getByRole('button', { name: 'Athuga svar' }));
@@ -320,7 +320,7 @@ describe('Level 2', () => {
   ])('on %s the next compound lands on its formula, and only there', (_, isPhone) => {
     phone = isPhone;
     const view = render2();
-    chooseType(view, /^Einfalt jónefni/);
+    chooseType(view, /^Einfalt jónaefni/);
     press(view.getByRole('button', { name: /skrifa nafnið/ }));
     fireEvent.change(view.getByRole('textbox'), { target: { value: 'Kalíumbrómíð' } });
     press(view.getByRole('button', { name: 'Athuga svar' }));
@@ -340,7 +340,7 @@ describe('Level 2', () => {
   ])('on %s the hint sits %s the buttons, and takes focus', (_, isPhone, where) => {
     phone = isPhone;
     const view = render2();
-    chooseType(view, /^Einfalt jónefni/);
+    chooseType(view, /^Einfalt jónaefni/);
     press(view.getByRole('button', { name: /skrifa nafnið/ }));
     press(view.getByRole('button', { name: /Vísbending/ }));
     const hint = view.getByText(/K er málmur í hópi 1/).closest('div.rounded-xl') as HTMLElement;

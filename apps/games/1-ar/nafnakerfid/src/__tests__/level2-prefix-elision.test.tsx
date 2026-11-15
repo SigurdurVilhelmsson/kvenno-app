@@ -7,18 +7,19 @@ import { Level2, challenges } from '../components/Level2';
  * Step 2 builds N₂O₄ as `dí + nitur + tetra + oxíð`, and the textbook's naming
  * section (ch02/m68698) says a student may keep the prefix's last vowel before
  * a vowel or drop it — "geta nemendur valið að fylgja hvorri aðferðinni sem
- * er". The grader accepted only the elided `Díniturtetroxíð`, so a student who
- * followed the steps exactly and typed `Díniturtetraoxíð` was marked wrong,
- * under a summary reading `Dí + nitur + tetra + oxíð = Díniturtetroxíð`.
+ * er". The grader once accepted only the elided `Díniturtetroxíð`, so a student
+ * who followed the steps exactly and typed `Díniturtetraoxíð` was marked wrong.
+ * Since 2026-11-15 the game prints the book's kept-vowel form and still accepts
+ * the elided one.
  */
 
 const t = (_key: string, fallback?: string) => fallback ?? '';
 
 const TYPE_LABELS = {
-  'ionic-simple': 'Einfalt jónefni',
-  'ionic-variable': 'Jónefni (breytileg hleðsla)',
-  'ionic-polyatomic': 'Jónefni (fjölatóma jón)',
-  molecular: 'Sameind',
+  'ionic-simple': 'Einfalt jónaefni',
+  'ionic-variable': 'Jónaefni (breytileg hleðsla)',
+  'ionic-polyatomic': 'Jónaefni (fjölatóma jón)',
+  molecular: 'Sameindaefni',
 } as const;
 
 const N2O4 = challenges.findIndex((c) => c.formula === 'N₂O₄');
@@ -75,7 +76,7 @@ function answerN2O4(typed: string) {
 describe('Level 2 on N₂O₄', () => {
   it('is in the level', () => {
     expect(N2O4).toBeGreaterThanOrEqual(0);
-    expect(challenges[N2O4].correctName).toBe('Díniturtetroxíð');
+    expect(challenges[N2O4].correctName).toBe('Díniturtetraoxíð');
   });
 
   it('accepts the name the steps build, with the prefix vowel kept', () => {

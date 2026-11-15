@@ -127,7 +127,7 @@ export function ruleFor(c: Compound): string {
     return `Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð. Rómverska talan segir hvaða hleðslu málmurinn hefur — þetta þarf þegar málmur getur haft fleiri en eina hleðslu (t.d. járn: +2 eða +3). ${POLYATOMIC_CAVEAT}`;
   if (c.type === 'molecular')
     return 'Sameindaefni: Grísk forskeyti + frumefni-íð. Forskeytin segja hversu mörg atóm eru af hverri tegund (dí=2, trí=3, tetra=4...). Mónó- er sleppt fyrir fyrra frumefnið.';
-  return `Jónefni: Málmur + málmleysingi-íð. Málmurinn heldur nafni sínu, málmleysinginn fær endinguna -íð (t.d. klór → klóríð). ${POLYATOMIC_CAVEAT}`;
+  return `Jónaefni: Málmur + málmleysingi-íð. Málmurinn heldur nafni sínu, málmleysinginn fær endinguna -íð (t.d. klór → klóríð). ${POLYATOMIC_CAVEAT}`;
 }
 
 export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
@@ -204,8 +204,8 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   );
 
   const handleCheck = useCallback(() => {
-    // `tetra` + `oxíð` is as right as `tetroxíð`: the textbook lets a student
-    // keep the prefix vowel or drop it, and Level 2 accepts both (decision 37).
+    // The game prints `tetraoxíð`, but the textbook lets a student keep the
+    // prefix vowel or drop it, and Level 2 accepts both (decision 37).
     const correct =
       foldPrefixVowel(displayName.toLowerCase()) === foldPrefixVowel(compound.name.toLowerCase());
     setIsCorrect(correct);
@@ -287,7 +287,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           {rulesOpen && (
             <ul className="mt-2 space-y-1 text-warm-700">
               <li>
-                <strong>Jónefni:</strong> Málmur + málmleysingi-íð (NaCl = Natríumklóríð)
+                <strong>Jónaefni:</strong> Málmur + málmleysingi-íð (NaCl = Natríumklóríð)
               </li>
               <li>
                 <strong>Sameindaefni:</strong> Forskeyti + frumefni-íð (CO₂ = Koldíoxíð)
@@ -300,7 +300,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     pool also holds these four, which the line under the formula
                     used to name before the answer (decision 38 (a)). */}
                 <strong>Fjölatóma jónir:</strong> halda föstu nafni (K₂SO₄ = Kalíumsúlfat). Einnig
-                ammóníum (NH₄⁺), fosfat (PO₄³⁻), vetniskarbónat (HCO₃⁻) og díkrómat (Cr₂O₇²⁻).
+                ammóníum (NH₄⁺), fosfat (PO₄³⁻), bíkarbónat (HCO₃⁻) og díkrómat (Cr₂O₇²⁻).
               </li>
             </ul>
           )}

@@ -10,7 +10,7 @@ import {
 } from '../data/compounds';
 
 const VALID_CATEGORIES: Category[] = [
-  'jónefni',
+  'jónaefni',
   'sameind',
   'sameindaefni',
   'málmar-breytilega-hleðsla',

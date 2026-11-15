@@ -30,7 +30,7 @@ one of the unshuffled-array defects — `docs/README.md` lists it among the four
 symbols, and 33 of the 51 compounds in its pool could not be assembled at all — no Roman numeral, no
 polyatomic ion, no root for six metals, no elided prefix. `data/naming.ts` now declares the naming
 vocabulary once (Greek prefixes, element roots and first-element stems such as `brennisteins-`,
-elided oxides like `dekoxíð`, polyatomic ions, Roman numerals) and `segmentName` decomposes a name
+polyatomic ions, Roman numerals) and `segmentName` decomposes a name
 back into it with backtracking. `utils/nameParts.ts` builds the tray: the name's own morphemes plus
 2, 3 or 4 distractors by difficulty, same kind first. Level 3 grades on case-insensitive string
 equality against `compound.name`, with only a Greek prefix's last vowel before `oxíð` folded away
@@ -124,12 +124,30 @@ own outside the site header, so focus would otherwise fall to the page.
   and on a phone on its side the field and its buttons on one row, so the formula stays in view.
   Level 3: counters inline, and the spent tray hidden once answered ("Reyna aftur" brings it back).
 
+## Fixed 2026-11-15 — the year-1 audit's terms
+
+The audit (`/mnt/project-files/1-ar-throun/throunaraaetlun-2026-11-15.md`, Phase 0 item 1) found
+the game's class names disagreeing with `ordabok.md` and the textbook, and Siggi ruled that the game
+prints the book's own forms (ch02/m68698):
+
+- **`jónaefni`, not `jónefni`** (about 65 sites, the Level 2 type buttons included), **`jónatengi`**
+  for an ionic bond and **`samgilt tengi`** for a covalent one (neuter, so `samgild tengi` in the
+  plural). Each is now a `governed-terms.test.ts` row.
+- **A molecular compound is `sameindaefni`**, where Levels 1 and 2 said `Sameind`, matching Level 3.
+  The internal category id `sameind` in `data/compounds.ts` is never shown and was left.
+- **Oxide prefixes keep their vowel**: Díniturtetraoxíð, Díniturpentaoxíð, Díklórheptaoxíð,
+  Tetrafosfórdekaoxíð. `naming.ts` no longer declares elided oxide parts, so Level 3 builds these
+  from `tetra` + `oxíð`. The elided spelling is still graded right in Levels 2 and 3
+  (`utils/nameMatch.ts`). `compound-names.test.ts` fails on a printed elided name.
+- **NaHCO₃ is `Natríumbíkarbónat`**, as the book names it, and `bíkarbónat` replaces
+  `vetniskarbónat` among the polyatomic ions.
+
 ## Fixed 2026-10-23 — the mobile-pass decisions
 
 - **Level 2 accepted a name typed without its Icelandic letters in silence** (decision 36, option
   (c)). `foldLetters` still folds `ó` to `o`, `ð` to `d` and so on, so `Kaliumbromid` is right and
   counts, but where only that fold makes it match the verdict reads `Rétt — en skrifaðu
-  Kalíumbrómíð`: a phone keyboard types every Icelandic letter, and silent acceptance taught the
+Kalíumbrómíð`: a phone keyboard types every Icelandic letter, and silent acceptance taught the
   flattened form. Case, spaces and brackets still never count (`level2-icelandic-letters.test.tsx`).
 - **Level 3 accepted only the elided prefix** (decision 37). The tray can offer `tetra` and `oxíð`
   beside `tetroxíð` (under 1 % of trays for N₂O₄, N₂O₅, Cl₂O₇ and P₄O₁₀), and the textbook
@@ -147,11 +165,11 @@ own outside the site header, so focus would otherwise fall to the page.
   (`level3-info-leak.test.tsx`).
 - **The menu's `Af hverju nafnakerfið?` card** said `Sama nafn, sama efni — óháð tungumáli`, while
   the game teaches `Natríumklóríð`, not `sodium chloride`. It now reads `Sama kerfi, sama efni — á
-  hvaða tungumáli sem er` (decision 41; `App.test.tsx`).
+hvaða tungumáli sem er` (decision 41; `App.test.tsx`).
 - **The warm-up's `Mundu:` card** said metals are groups 1, 2 and 3–12 and non-metals 15–18: hydrogen
   is in group 1, groups 13–14 were missing (Al, Sn and Pb, all used in Levels 2–3, among them), and
   15–16 hold metals too. It now says where on the table each sits, `vinstra megin og í miðju (hópar
-  1–12, nema vetni)` and `efst til hægri (hópar 14–18, að hluta)`, under the same labels (decision
+1–12, nema vetni)` and `efst til hægri (hópar 14–18, að hluta)`, under the same labels (decision
   40, option (b); `level1-groups-card.test.tsx`).
 
 ## Fixed 2026-09-23

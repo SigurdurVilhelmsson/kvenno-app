@@ -604,6 +604,27 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       "Siggi's ruling, 2026-10-02 (decision 33): the book's defined term (Appendix B, 17 hits, and its own significant-figures exercise). 1-ar/dimensional-analysis had coined veldisritháttur in Stig 0 and vísindatölustafir in Level 3, neither in the corpus. Neuter: staðalform / staðalform / staðalformi / staðalforms, so á staðalformi, ritað á staðalformi. The same word means standard state in ch05 and ch16; in a game about numbers that does not arise.",
   },
+  {
+    english: 'ionic compound',
+    correct: 'jónaefni',
+    banned: [/jónefn/i, /jónabindingarefn/i],
+    guidance:
+      'ordabok.md gives ionic compound;jónaefni and the textbook writes jónaefni 140 times against 0 for jónefni. 1-ar/nafnakerfid said jónefni at about 65 sites, including the type labels a student picks from in Level 2, until 2026-11-15 (year-1 audit). Neuter, like efni: jónaefni / jónaefni / jónaefni / jónaefnis, plural dative jónaefnum.',
+  },
+  {
+    english: 'ionic bond',
+    correct: 'jónatengi',
+    banned: [/jónabinding/i],
+    guidance:
+      'ordabok.md gives ionic bond;jónatengi; the textbook has jónatengi 21 times and the binding compound never. 1-ar/nafnakerfid said Jónabindingar until 2026-11-15. Neuter, like tengi: the plural is also jónatengi.',
+  },
+  {
+    english: 'covalent bond',
+    correct: 'samgilt tengi',
+    banned: [/samgild[a-z]* binding/i],
+    guidance:
+      'ordabok.md gives covalent bond;samgilt tengi; the textbook writes samgilt/samgild tengi 125 times and samgild binding never. 1-ar/nafnakerfid said samgild binding until 2026-11-15. Tengi is neuter, so the adjective moves with it: samgilt tengi, plural samgild tengi, dative samgildum tengjum.',
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

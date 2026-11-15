@@ -93,10 +93,10 @@ describe('Level 1', () => {
 
 describe('Level 2', () => {
   const TYPE_LABELS = {
-    'ionic-simple': 'Einfalt jónefni',
-    'ionic-variable': 'Jónefni (breytileg hleðsla)',
-    'ionic-polyatomic': 'Jónefni (fjölatóma jón)',
-    molecular: 'Sameind',
+    'ionic-simple': 'Einfalt jónaefni',
+    'ionic-variable': 'Jónaefni (breytileg hleðsla)',
+    'ionic-polyatomic': 'Jónaefni (fjölatóma jón)',
+    molecular: 'Sameindaefni',
   } as const;
 
   function play(nameRightAt: (i: number) => boolean) {

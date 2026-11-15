@@ -19,21 +19,21 @@ type RuleId = 'ionic-simple' | 'ionic-variable' | 'ionic-polyatomic' | 'molecula
 // Misconceptions for each rule type
 const MISCONCEPTIONS: Record<RuleId, string> = {
   'ionic-simple':
-    'Algeng villa er að rugla saman jónefnum og sameindum. Jónefni eru málmur + málmleysingi og nota ekki grísk forskeyti.',
+    'Algeng villa er að rugla saman jónaefnum og sameindaefnum. Jónaefni eru málmur + málmleysingi og nota ekki grísk forskeyti.',
   'ionic-variable':
     'Rómverska talan sýnir hleðslu málmsins, ekki fjölda atóma. (II) þýðir +2 hleðslu, ekki 2 atóm.',
   'ionic-polyatomic':
     'Fjölatóma jónir hafa föst nöfn sem þarf að læra. Súlfat er SO₄²⁻, ekki SO₃²⁻ (það er súlfít).',
   molecular:
-    'Í sameindum notum við grísk forskeyti (mónó, dí, trí...) en fyrra frumefnið fær aldrei "mónó-" forskeytið.',
+    'Í sameindaefnum notum við grísk forskeyti (mónó, dí, trí...) en fyrra frumefnið fær aldrei "mónó-" forskeytið.',
 };
 
 // Related concepts for each rule type
 const RELATED_CONCEPTS: Record<RuleId, string[]> = {
-  'ionic-simple': ['Jónabindingar', 'Málmar og málmleysingjar', 'Endingar (-íð)'],
+  'ionic-simple': ['Jónatengi', 'Málmar og málmleysingjar', 'Endingar (-íð)'],
   'ionic-variable': ['Breytilegar hleðslur', 'Rómverskar tölur', 'Hliðarmálmar'],
   'ionic-polyatomic': ['Fjölatóma jónir', 'Hleðslujöfnun', 'Sérstök nöfn'],
-  molecular: ['Samgild binding', 'Grísk forskeyti', 'Málmleysingjar'],
+  molecular: ['Samgild tengi', 'Grísk forskeyti', 'Málmleysingjar'],
 };
 
 interface Level1Props {
@@ -56,7 +56,7 @@ interface NamingRule {
 const namingRules: NamingRule[] = [
   {
     id: 'ionic-simple',
-    title: 'Einföld jónefni',
+    title: 'Einföld jónaefni',
     description: 'Málmur + málmleysingi (hópar 1, 2, 13)',
     rules: [
       'Málmurinn kemur fyrst og heldur nafni sínu',
@@ -111,7 +111,7 @@ const namingRules: NamingRule[] = [
   },
   {
     id: 'molecular',
-    title: 'Sameindir (málmleysingjar)',
+    title: 'Sameindaefni (málmleysingjar)',
     description: 'Tveir eða fleiri málmleysingjar',
     rules: [
       'Notaðu grísk forskeyti til að sýna fjölda atóma',
@@ -123,7 +123,7 @@ const namingRules: NamingRule[] = [
       { formula: 'CO₂', name: 'Koldíoxíð', explanation: 'C (eitt) + O₂ (tvö) = kol + dí + oxíð' },
       {
         formula: 'N₂O₄',
-        name: 'Díniturtetroxíð',
+        name: 'Díniturtetraoxíð',
         explanation: 'N₂ (tvö) + O₄ (fjögur) = dí + nitur + tetra + oxíð',
       },
       {
@@ -188,12 +188,12 @@ const warmupQuestions: WarmupQuestion[] = [
 export const quizQuestions: QuizQuestion[] = [
   {
     id: 1,
-    question: 'Hvaða ending fær klór í jónefnum?',
+    question: 'Hvaða ending fær klór í jónaefnum?',
     options: ['-íð (klóríð)', '-at (klórat)', '-ít (klórít)', '-an (klóran)'],
     correctIndex: 0,
     hints: {
-      topic: 'Þetta snýst um endingar málmleysinga í jónefnum.',
-      strategy: 'Einatóma málmleysingjar fá alltaf sömu endinguna í jónefnum.',
+      topic: 'Þetta snýst um endingar málmleysinga í jónaefnum.',
+      strategy: 'Einatóma málmleysingjar fá alltaf sömu endinguna í jónaefnum.',
       method: 'Endingin er -íð. Breyttu nafni frumefnisins: klór → klór + íð.',
       solution: 'Klór → klóríð. Einatóma málmleysingjar fá endinguna -íð.',
     },
@@ -206,7 +206,7 @@ export const quizQuestions: QuizQuestion[] = [
     options: ['Magnesíumoxíð', 'Magnesíumoxat', 'Dímagnesíumoxíð', 'Magnesíum(II)oxíð'],
     correctIndex: 0,
     hints: {
-      topic: 'Þetta er jónefni - málmur og málmleysingi.',
+      topic: 'Þetta er jónaefni - málmur og málmleysingi.',
       strategy: 'Mg er í hópi 2 og hefur alltaf sömu hleðslu. Þarf ekki rómverskar tölur.',
       method: 'Nafn málmsins + nafn málmleysingsins með endingu -íð. Súrefni → oxíð.',
       solution: 'Magnesíum + oxíð = Magnesíumoxíð. Ekki þarf grísk forskeyti eða rómverskar tölur.',
@@ -266,7 +266,7 @@ export const quizQuestions: QuizQuestion[] = [
     options: ['Tvö atóm', 'Eitt atóm', 'Þrjú atóm', 'Fjögur atóm'],
     correctIndex: 0,
     hints: {
-      topic: 'Þetta snýst um grísk forskeyti í sameindum.',
+      topic: 'Þetta snýst um grísk forskeyti í nöfnum sameindaefna.',
       strategy: 'Grísk forskeyti segja okkur fjölda atóma.',
       method: 'Listi: mónó=1, dí=2, trí=3, tetra=4, penta=5, hexa=6.',
       solution: 'Dí þýðir 2. Dæmi: koldíoxíð hefur 2 súrefnisatóm.',
@@ -277,13 +277,13 @@ export const quizQuestions: QuizQuestion[] = [
     id: 7,
     question: 'Hvað heitir N₂O₅?',
     formula: 'N₂O₅',
-    options: ['Díniturpentoxíð', 'Niturpentoxíð', 'Dínituroxíð', 'Niturdíoxíð'],
+    options: ['Díniturpentaoxíð', 'Niturpentaoxíð', 'Dínituroxíð', 'Niturdíoxíð'],
     correctIndex: 0,
     hints: {
-      topic: 'Þetta er sameind - tveir málmleysingjar.',
-      strategy: 'Sameindir nota grísk forskeyti til að sýna fjölda atóma.',
+      topic: 'Þetta er sameindaefni - tveir málmleysingjar.',
+      strategy: 'Sameindaefni nota grísk forskeyti til að sýna fjölda atóma.',
       method: 'N₂ = 2 nitur → "dí" forskeyti. O₅ = 5 súrefni → "penta" forskeyti + oxíð ending.',
-      solution: 'N₂ = dínitur, O₅ = pentoxíð. Saman: Díniturpentoxíð.',
+      solution: 'N₂ = dínitur, O₅ = pentaoxíð. Saman: Díniturpentaoxíð.',
     },
     ruleId: 'molecular',
   },
@@ -299,7 +299,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctIndex: 0,
     hints: {
-      topic: 'Þetta snýst um notkun grísku forskeytanna í sameindum.',
+      topic: 'Þetta snýst um notkun grísku forskeytanna í nöfnum sameindaefna.',
       strategy: 'Það er sérstök regla um hvenær við notum "mónó-" forskeytið.',
       method:
         'Við sleppum "mónó-" fyrir FYRRA frumefnið, en síðara frumefnið fær alltaf forskeyti.',
@@ -310,21 +310,21 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 9,
-    question: 'Hvernig þekkir þú hvort efnasamband er jónefni eða sameind?',
+    question: 'Hvernig þekkir þú hvort efnasamband er jónaefni eða sameindaefni?',
     options: [
-      'Jónefni: málmur + málmleysingi. Sameind: tveir málmleysingjar.',
-      'Jónefni eru alltaf föst, sameindir alltaf gas',
-      'Jónefni hafa fleiri atóm',
+      'Jónaefni: málmur + málmleysingi. Sameindaefni: tveir málmleysingjar.',
+      'Jónaefni eru alltaf föst, sameindaefni alltaf gas',
+      'Jónaefni hafa fleiri atóm',
       'Það er engin leið að sjá það',
     ],
     correctIndex: 0,
     hints: {
-      topic: 'Þetta snýst um greinarmun á jónefnum og sameindum.',
+      topic: 'Þetta snýst um greinarmun á jónaefnum og sameindaefnum.',
       strategy: 'Líttu á hvaða frumefni eru í efnasambandinu - málmar eða málmleysingjar.',
       method:
         'Málmar gefa rafeindir, málmleysingjar taka. Ef báðir eru málmleysingjar, deila þeir.',
       solution:
-        'Jónefni: málmur + málmleysingi (jónabindingar). Sameind: tveir málmleysingjar (samgild binding).',
+        'Jónaefni: málmur + málmleysingi (jónatengi). Sameindaefni: tveir málmleysingjar (samgild tengi).',
     },
     ruleId: 'ionic-simple',
   },
@@ -335,10 +335,11 @@ export const quizQuestions: QuizQuestion[] = [
     options: ['Kalsíumhýdroxíð', 'Kalsíumdíhýdroxíð', 'Kalsíum(II)hýdroxíð', 'Díkalsíumhýdroxíð'],
     correctIndex: 0,
     hints: {
-      topic: 'Þetta snýst um fjölatóma jónir í jónefnum.',
-      strategy: 'OH⁻ er fjölatóma jón með sérstakt nafn. Jónefni nota ekki grísk forskeyti.',
+      topic: 'Þetta snýst um fjölatóma jónir í jónaefnum.',
+      strategy: 'OH⁻ er fjölatóma jón með sérstakt nafn. Jónaefni nota ekki grísk forskeyti.',
       method: 'Fjölatóma jónin: OH⁻ = hýdroxíð. Nafnið: málmur + nafn jónar.',
-      solution: 'OH⁻ er hýdroxíðjónin. Nafnið er kalsíumhýdroxíð. Ekki grísk forskeyti í jónefnum.',
+      solution:
+        'OH⁻ er hýdroxíðjónin. Nafnið er kalsíumhýdroxíð. Ekki grísk forskeyti í jónaefnum.',
     },
     ruleId: 'ionic-polyatomic',
   },
@@ -1025,7 +1026,9 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </h3>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="bg-blue-50 px-1 py-2 sm:p-2 rounded">
-              <span className="font-bold text-blue-700">{t('level1.ui.refIonic', 'Jónefni:')}</span>{' '}
+              <span className="font-bold text-blue-700">
+                {t('level1.ui.refIonic', 'Jónaefni:')}
+              </span>{' '}
               málmur + -íð
             </div>
             <div className="bg-purple-50 px-1 py-2 sm:p-2 rounded">
@@ -1042,7 +1045,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
             <div className="bg-orange-50 px-1 py-2 sm:p-2 rounded">
               <span className="font-bold text-orange-700">
-                {t('level1.ui.refMolecular', 'Sameindir:')}
+                {t('level1.ui.refMolecular', 'Sameindaefni:')}
               </span>{' '}
               grísk forskeyti
             </div>
