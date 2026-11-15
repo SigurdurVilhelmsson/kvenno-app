@@ -8,11 +8,13 @@ export interface Problem {
   scenario: 1 | 2 | 3 | 4;
   difficulty: 'Auðvelt' | 'Miðlungs' | 'Erfitt';
   advancedTask?: string;
+  /** The advanced task is worked and graded in ΔG° og K, and the box says so. */
+  inGibbsK?: true;
 }
 
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
-export type GameMode = 'menu' | 'discover' | 'learning' | 'challenge';
+export type GameMode = 'menu' | 'discover' | 'gibbsK' | 'learning' | 'challenge';
 
 export type Spontaneity = 'spontaneous' | 'equilibrium' | 'non-spontaneous';
 

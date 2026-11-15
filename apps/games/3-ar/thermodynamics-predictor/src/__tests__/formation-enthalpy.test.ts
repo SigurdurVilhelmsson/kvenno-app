@@ -52,7 +52,7 @@ const NOT_IN_THE_BOOK: Record<number, string> = {
   2: 'ice: the table has no H₂O(s) row',
   14: 'glucose: the table has no C₆H₁₂O₆ row',
   26: 'a protein is not a species with a formation enthalpy',
-  27: 'ATP, ADP and phosphate are not in the table',
+  27: 'ATP, ADP and phosphate are not in the table (sourced elsewhere: atp-values.test.ts)',
   29: 'ice: the table has no H₂O(s) row',
 };
 

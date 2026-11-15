@@ -948,6 +948,10 @@ in the game's README.
       temperature slider, in Könnun and after each answer. Wording drafted by Claude
       (`3-ar/thermodynamics-predictor/src/components/TugOfWar.tsx`), including the name
       `Reipdráttur`.
+- [ ] **Varmafræði's ΔG° og K** (2026-11-15): ΔG° = −RT ln K taught, explored on a slider and
+      graded on six sourced problems (`3-ar/thermodynamics-predictor/src/components/GibbsKScreen.tsx`,
+      `src/data/gibbs-k.ts`). Wording drafted by Claude, including the slip messages. Siggi ruled
+      the same day that the Erfitt prompts on K (ids 23, 24, 27) stay ungraded and point there.
 - [ ] **Leysnijafnvægi's Agnasýn** (2026-11-15): AgCl saturated, with a common ion, mixed with a
       Q meter, and the Mohr titration. Every picture is exaggerated (the ions are about one per
       four million water molecules), marked with a dashed ring and said in each scene. Wording

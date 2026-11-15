@@ -23,6 +23,7 @@ One screen per mode, all in `src/App.tsx`; there are no level components.
 | Menu                       | A static derivation of ΔG = ΔH − TΔS, then a difficulty choice (Auðvelt / Miðlungs / Erfitt, 10 / 12 / 8 problems)                                                                                                                                            |
 | Könnun (`discover`)        | Ungraded. A fixed demo reaction (ΔH = −100 kJ/mol, ΔS = −200 J/(mol·K), crossover 500 K) and a 200–1200 K slider; ΔG and its sign update live                                                                                                                 |
 | Æfingarhamur (`learning`)  | A round: every problem of the chosen difficulty once, in a random order. Enter ΔG° (kJ/mol) and pick one of three verdicts; the solution then shows the steps and, for scenarios 3–4, the crossover temperature. No points; the round ends with `N af M rétt` |
+| ΔG° og K (`gibbsK`)        | ΔG° = −RT ln K in its own screen (`src/components/GibbsKScreen.tsx`): the relation and the book's table, an ungraded ΔG° slider at 298 K with K on a log axis, then seven graded problems one at a time, ending `N af M rétt` (see below)                     |
 | Keppnishamur (`challenge`) | Problems drawn at random from the chosen difficulty, with a 90-second timer, a score and a streak, both starting from 0 every run                                                                                                                             |
 
 Grading (`checkAnswer`, `src/App.tsx:184`): ΔG° goes through `isDeltaGCorrect`
@@ -81,6 +82,9 @@ src/utils/thermo-calculations.ts     calculateDeltaG, getSpontaneity, crossoverT
 src/utils/sign.ts                    toggleSign, behind the ± button (see Phones)
 src/utils/format.ts                  formatRounded: formatDecimal that never prints -0
 src/utils/deck.ts                    practiceDeck: the order of an Æfingarhamur round
+src/components/GibbsKScreen.tsx      ΔG° og K: Skilja and Kanna, then Æfa as a screen of its own
+src/data/gibbs-k.ts                  its six problems and where each number comes from
+src/utils/gibbs-k.ts                 kFromDeltaG, deltaGFromK, kJPerDecade, the graders and slips
 src/__tests__/                       data-integrity, thermo-calculations, co-enthalpy, phone-play,
                                      grading, answer-checking, decimal-comma, graph-range,
                                      crossover, icelandic-text, points-in-keppnishamur-only
@@ -120,6 +124,9 @@ stats take a row of their own; and Könnun's two buttons stack.
   point, under the heading `Áskorun`, while the grader checks only ΔG° and the verdict. The box is
   now `Til umhugsunar (ekki metið):` and every prompt is a question to think about (drafted
   wording). Grading them, option (a), waits on ΔG° = −RT ln K returning to the formula card.
+  Since 2026-11-15 the relation is taught and graded in ΔG° og K (below). Siggi's call that
+  day: the prompts stay ungraded, and ids 23, 24 and 27 (`inGibbsK`) say they are worked and
+  graded there; ATP's is the seventh problem.
   `icelandic-text.test.tsx` (`the Erfitt prompts`) holds it.
 - **Two names settled — fixed 2026-10-23 (mobile-pass decision 110, in part).** Könnun called the
   crossover temperature `þveragahitastig` and the game `Umbreytingarhitastig`; both now say
@@ -197,6 +204,32 @@ it shows ΔG° itself. Its sum is `calculateDeltaG` (`tug-of-war.test.tsx`). The
 ΔS° are taken as independent of temperature, the plan's P1 note. The worked line's hyphen-minus
 became a minus sign (`ΔG° = ΔH° − TΔS°`).
 
+## ΔG° og K (2026-11-15)
+
+The game stopped at the sign of ΔG°, and its Erfitt prompts mentioned K without anything teaching
+it (plan, P1). ΔG° og K is reached from the menu and teaches ΔG° = −RT ln K (m68819, "Frjáls
+orka og jafnvægi"): R = 8,314 J/(mól·K) as the book prints it, ΔG° in J/mól, Kp for gases, and
+the book's own table of ΔG° against K. The slider shows that K moves tenfold for every
+RT ln 10 = 5,7 kJ/mól at 298 K.
+
+Æfa poses seven problems, every answer computed:
+
+| Problem                 | Given                                             | Answer             |
+| ----------------------- | ------------------------------------------------- | ------------------ |
+| N₂O₄ ⇌ 2NO₂, 298 K      | ΔG° = 2,8 kJ/mól, from the ΔfG° of `m68865`       | Kp = 0,32 (book's) |
+| AgCl ⇌ Ag⁺ + Cl⁻, 298 K | ΔG° = 55,7 kJ/mól, from the ΔfG° of `m68865`      | Ksp = 1,7 × 10⁻¹⁰  |
+| Haber, 298 K            | ΔH°, ΔS° of problem 11, through `calculateDeltaG` | Kp = 5,0 × 10⁵     |
+| Haber, 700 K            | the same                                          | Kp = 2,9 × 10⁻⁴    |
+| Acetic acid, 298 K      | Ka = 1,8 × 10⁻⁵ (Appendix D)                      | ΔG° = 27,1 kJ/mól  |
+| H₂ + I₂ ⇌ 2HI, 673 K    | Kc = 50 (m68798, as `jafnvaegisfasti` quotes it)  | ΔG° = −21,9 kJ/mól |
+
+K is typed as a number and a power of ten in the shared `ScientificInput`, graded within 5 %;
+ΔG° within 1 %, at least 0,1 kJ/mól. Both reject `0`, half, double and `NaN`
+(`gibbs-k.test.ts`). A wrong answer is named where it is one of three slips: the sign (1/K, or
+−ΔG°), kilojoules left unconverted, or log₁₀ for ln. One attempt each, since a wrong answer
+shows the working. **`ScientificInput` moved to `packages/shared/components` with this**, as the
+third game to need it; `jafnvaegisfasti` and `leysnijafnvaegi` re-export it from their old paths.
+
 ## Fixed 2026-11-14: PCl₅'s entropy and the equilibrium band
 
 From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
@@ -215,6 +248,8 @@ From the Year-3 development plan (`/mnt/project-files/3-ar-throun/`).
 
 - **ΔS° is checked against the book since 2026-11-14** (`STANDARD_ENTROPY` in `thermo.ts`, the
   S° column of `m68865`; `standard-entropy.test.ts`). Six are out of its reach: ice (twice),
-  glucose, the protein, ATP, and CaCO₃, whose row in the book disagrees with itself, so its 161
-  is unsourced. Photosynthesis's −210 is about −255 by standard tables (glucose is not in the
+  glucose, the protein, ATP, and CaCO₃. ATP was sourced elsewhere on 2026-11-15: ΔH° −20,5 kJ/mol
+  by calorimetry (Gajewski, Steckler & Goldberg, J. Biol. Chem. 261, 12733, 1986) and ΔS° 32 from the book's
+  ΔG° = −30 kJ (m68819), replacing an unsourced −20 and 35 (`atp-values.test.ts`). CaCO₃'s row in the book disagrees with itself, so its 161 is
+  unsourced. Photosynthesis's −210 is about −255 by standard tables (glucose is not in the
   book).

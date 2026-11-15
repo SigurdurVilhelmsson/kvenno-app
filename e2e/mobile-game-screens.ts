@@ -7553,6 +7553,50 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'ΔG° og K — skýring og sleði',
+      steps: [
+        { clickRole: ['button', 'ΔG° og K'] },
+        { wait: 400 },
+        { fill: ['#thermo-gibbsk-dg', '-40'] },
+        { wait: 300 },
+      ],
+    },
+    {
+      name: 'ΔG° og K — dæmi',
+      steps: [
+        { clickRole: ['button', 'ΔG° og K'] },
+        { wait: 400 },
+        { clickRole: ['button', 'Æfa: sjö dæmi'] },
+        { wait: 300 },
+      ],
+      loop: {
+        prompt: { css: '#thermo-gibbsk-problem' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { fill: ['input[aria-label="Tala"]', '3,2'] },
+          { fill: ['input[aria-label="Veldisvísir"]', '-1'] },
+        ],
+        verdict: { css: '#thermo-gibbsk-feedback' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        typedTogether: [[{ css: '[data-gibbsk-given]' }, { css: 'input[aria-label="Tala"]' }]],
+      },
+    },
+    {
+      name: 'ΔG° og K — lausn',
+      steps: [
+        { clickRole: ['button', 'ΔG° og K'] },
+        { wait: 400 },
+        { clickRole: ['button', 'Æfa: sjö dæmi'] },
+        { wait: 300 },
+        { fill: ['input[aria-label="Tala"]', '3,1'] },
+        { fill: ['input[aria-label="Veldisvísir"]', '0'] },
+        { clickRole: ['button', 'Athuga'] },
+        { wait: 600 },
+      ],
+    },
+    {
       name: 'Æfingarhamur — spurning',
       steps: [
         {

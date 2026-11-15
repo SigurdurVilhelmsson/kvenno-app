@@ -238,6 +238,7 @@ export const PROBLEMS: ProblemsData = {
       scenario: 3,
       difficulty: 'Erfitt',
       advancedTask: 'Hvað segir ΔG° um stærð K við 298 K?',
+      inGibbsK: true,
     },
     {
       id: 24,
@@ -249,6 +250,7 @@ export const PROBLEMS: ProblemsData = {
       scenario: 3,
       difficulty: 'Erfitt',
       advancedTask: 'Hvernig breytist K frá 298 K til 700 K?',
+      inGibbsK: true,
     },
     {
       id: 25,
@@ -278,12 +280,18 @@ export const PROBLEMS: ProblemsData = {
       id: 27,
       reaction: 'ATP + H₂O → ADP + Pᵢ',
       name: 'Vatnsrof ATP',
-      deltaH: -20,
-      deltaS: 35,
+      // ΔH° is the calorimetric −20,5 kJ/mol of Gajewski, Steckler & Goldberg (J. Biol. Chem.
+      // 261, 12733–12737, 1986), the value Alberty's and Goldberg's compilations carry. The book
+      // gives ΔG° = −30 kJ for ATP → ADP (m68819, an end-of-chapter exercise) and has no ATP row
+      // in its tables, so ΔS° = (ΔH° − ΔG°)/T at 298 K = (−20,5 + 30)/0,298 = 32 J/(mol·K).
+      // It was −20 and 35, unsourced (2026-11-15, Siggi's ask). See atp-values.test.ts.
+      deltaH: -20.5,
+      deltaS: 32,
       defaultTemp: 310,
       scenario: 1,
       difficulty: 'Erfitt',
       advancedTask: 'Hvað segir ΔG° um K, og hvaða þýðingu hefur það?',
+      inGibbsK: true,
     },
     {
       id: 28,
