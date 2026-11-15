@@ -194,7 +194,7 @@ electromagnetic radiation;rafsegulgeislun
 electromagnetic wave;rafsegulbylgja
 electromotive force;íspenna
 electron;rafeind
-electron affinity;rafsækni
+electron affinity;rafeindasækni
 electron configuration;rafeindaskipan
 electron density;rafeindaþéttleiki
 electron domain;svæði rafeindaþéttleika

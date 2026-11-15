@@ -12,7 +12,7 @@ Three levels, none gated, each picked from the menu.
 | Stig | Menu name              | What it asks                                                                               |
 | ---- | ---------------------- | ------------------------------------------------------------------------------------------ |
 | 1    | `Stig 1: Skilningur`   | Teach screen, then 6 multiple-choice challenges on ΔH signs, reversing and multiplying     |
-| 2    | `Stig 2: Þrautir`      | 6 puzzles: choose, reverse (`Snúa við jöfnu`) and scale (×1–3) given equations to a target |
+| 2    | `Stig 2: Þrautir`      | 8 puzzles: choose, reverse (`Snúa við jöfnu`) and scale (×1–3) given equations to a target |
 | 3    | `Stig 3: Útreikningar` | Teach screen (`Myndunarvermi — Kennsla`), then 6 ΔH°f calculations, one of them reversed   |
 
 - **Stig 1** (`components/Level1.tsx`, data in `data/challenges.ts`) draws one equation per
@@ -26,6 +26,12 @@ Three levels, none gated, each picked from the menu.
   (`reachesTarget` in `utils/equation-math.ts`), not on the summed ΔH. A solve after a wrong check
   counts, since the level never shows the answer; a skipped puzzle counts as not solved. On a
   portrait phone the target strip and the action row are `TaskStrip` / `PinnedActions`.
+  **Puzzles 7 and 8 are the book's Born-Haber cycle for CsF** (kafli 7, m68741; 2026-11-15):
+  sublimation, half the F₂ bond energy, ionisation energy, electron affinity and the formation
+  enthalpy, each card naming its step (`Equation.step`). Puzzle 7 finds the lattice energy, the
+  book's 756,9 kJ/mól; puzzle 8 runs the cycle the other way to find the electron affinity.
+  Their numbers come from kafli 7, not the formation table, so each carries `source` and
+  `formation.test.ts` leaves them to `born-haber.test.tsx`.
 - **Stig 3** (`components/Level3.tsx`) asks for ΔH°rxn on five challenges and for ΔH°f(SO₂) on the
   fourth. The input is `type="text"` + `inputMode="decimal"` read through `parseStudentNumber`,
   graded at 2 % relative (`ANSWER_TOLERANCE`, `utils/hess-calculations.ts`); the wrong-answer line

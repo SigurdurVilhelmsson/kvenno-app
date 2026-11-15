@@ -35,7 +35,19 @@ function derive(reactants: string, products: string): number | null {
 }
 
 describe('Level 2: equations and targets', () => {
-  describe.each(PUZZLES.map((p) => [p.id, p] as const))('puzzle %i', (_id, puzzle) => {
+  // A puzzle that names its own `source` is not a formation-enthalpy cycle: the Born-Haber
+  // puzzles take ionisation energy and electron affinity from kafli 7, which the formation
+  // table cannot express. `born-haber.test.ts` holds those to the book instead.
+  const formationPuzzles = PUZZLES.filter((p) => !p.source);
+
+  it('only a puzzle that cites its own source is left out', () => {
+    for (const p of PUZZLES.filter((x) => x.source)) {
+      expect(p.source, `puzzle ${p.id}`).toMatch(/^Kafli \d+/);
+    }
+    expect(formationPuzzles.length).toBeGreaterThanOrEqual(6);
+  });
+
+  describe.each(formationPuzzles.map((p) => [p.id, p] as const))('puzzle %i', (_id, puzzle) => {
     it.each(puzzle.availableEquations.map((e) => [e.id, e] as const))(
       'equation %s prints the book’s ΔH to one decimal',
       (_eq, eq) => {

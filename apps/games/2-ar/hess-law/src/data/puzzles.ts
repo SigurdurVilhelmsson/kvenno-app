@@ -24,7 +24,86 @@ export interface Puzzle {
   solution: { equationId: string; reverse: boolean; multiply: number }[];
   hint: string;
   explanation: string;
+  /**
+   * Where the numbers come from when they are not formation enthalpies from m68865: the
+   * Born-Haber puzzles take ionisation energy, electron affinity and the rest from the book's
+   * worked cycle for CsF (kafli 7.5, m68741), which `born-haber.test.ts` holds them to.
+   */
+  source?: string;
 }
+
+/**
+ * The book's Born-Haber cycle for caesium fluoride (kafli 7.5, „Styrkur jóna- og samgildra
+ * tengja“, m68741): each step's ΔH as the book prints it, in kJ/mól.
+ */
+export const CSF_CYCLE = {
+  sublimation: 76.5,
+  halfBond: 79.4,
+  ionisation: 375.7,
+  electronAffinity: -328.2,
+  formation: -553.5,
+} as const;
+const SRC_BORN_HABER =
+  'Kafli 7, „Styrkur jóna- og samgildra tengja“, Born-Haber-hringferlið fyrir CsF';
+
+const csfSteps = {
+  sublimation: {
+    id: 'eq1',
+    step: 'Þurrgufun sesíns',
+    reactants: 'Cs(s)',
+    products: 'Cs(g)',
+    deltaH: CSF_CYCLE.sublimation,
+    isReversed: false,
+    multiplier: 1,
+  },
+  halfBond: {
+    id: 'eq2',
+    step: 'Hálf tengjaorka F₂',
+    reactants: '½F₂(g)',
+    products: 'F(g)',
+    deltaH: CSF_CYCLE.halfBond,
+    isReversed: false,
+    multiplier: 1,
+  },
+  ionisation: {
+    id: 'eq3',
+    step: 'Jónunarorka sesíns',
+    reactants: 'Cs(g)',
+    products: 'Cs⁺(g) + e⁻',
+    deltaH: CSF_CYCLE.ionisation,
+    isReversed: false,
+    multiplier: 1,
+  },
+  electronAffinity: {
+    id: 'eq4',
+    step: 'Rafeindasækni flúors',
+    reactants: 'F(g) + e⁻',
+    products: 'F⁻(g)',
+    deltaH: CSF_CYCLE.electronAffinity,
+    isReversed: false,
+    multiplier: 1,
+  },
+  formation: {
+    id: 'eq5',
+    step: 'Myndunarvermi CsF',
+    reactants: 'Cs(s) + ½F₂(g)',
+    products: 'CsF(s)',
+    deltaH: CSF_CYCLE.formation,
+    isReversed: false,
+    multiplier: 1,
+  },
+} satisfies Record<string, Equation>;
+
+/** The lattice energy the cycle gives, kJ/mól: the sum of the printed steps, formation reversed. */
+export const CSF_LATTICE = Number(
+  (
+    CSF_CYCLE.sublimation +
+    CSF_CYCLE.halfBond +
+    CSF_CYCLE.ionisation +
+    CSF_CYCLE.electronAffinity -
+    CSF_CYCLE.formation
+  ).toFixed(1)
+);
 
 export const PUZZLES: Puzzle[] = [
   {
@@ -246,5 +325,71 @@ export const PUZZLES: Puzzle[] = [
     ],
     hint: 'Fe₂O₃ er hvarfefni í markmiðinu (neysla), en myndefni í jöfnu 2 (myndun).',
     explanation: 'Jafna 1 + öfug jafna 2: -1676 + 824,2 = -851,8 kJ. Þetta er termít-efnahvarfið!',
+  },
+  {
+    id: 7,
+    title: 'Grindarorka sesínflúoríðs - Born-Haber',
+    description:
+      '🧂 Grindarorka er orkan sem þarf til að aðskilja eitt mól af föstu jónaefni í jónir á gasformi. Hana er ekki hægt að mæla beint, en Born-Haber-hringferlið reiknar hana með lögmáli Hess úr skrefum sem má mæla.',
+    targetEquation: {
+      reactants: 'CsF(s)',
+      products: 'Cs⁺(g) + F⁻(g)',
+    },
+    targetDeltaH: CSF_LATTICE,
+    availableEquations: [
+      csfSteps.sublimation,
+      csfSteps.halfBond,
+      csfSteps.ionisation,
+      csfSteps.electronAffinity,
+      csfSteps.formation,
+    ],
+    solution: [
+      { equationId: 'eq1', reverse: false, multiply: 1 },
+      { equationId: 'eq2', reverse: false, multiply: 1 },
+      { equationId: 'eq3', reverse: false, multiply: 1 },
+      { equationId: 'eq4', reverse: false, multiply: 1 },
+      { equationId: 'eq5', reverse: true, multiply: 1 },
+    ],
+    hint: 'Byrjaðu á föstu CsF: snúðu myndunarjöfnunni við svo hún gefi frumefnin. Hin skrefin breyta frumefnunum í jónir á gasformi.',
+    explanation:
+      'Snúa myndunarjöfnunni við (+553,5) og leggja hin fjögur skrefin við: 76,5 + 79,4 + 375,7 − 328,2 + 553,5 = +756,9 kJ. Grindarorka er jákvæð: það kostar orku að aðskilja jónirnar.',
+    source: SRC_BORN_HABER,
+  },
+  {
+    id: 8,
+    title: 'Rafeindasækni flúors - hringferlið hina leiðina',
+    description:
+      '🔁 Born-Haber-hringferlið má leysa fyrir hvaða skref sem er, ef hin eru þekkt. Notaðu grindarorku CsF úr síðustu þraut til að finna rafeindasækni flúors.',
+    targetEquation: {
+      reactants: 'F(g) + e⁻',
+      products: 'F⁻(g)',
+    },
+    targetDeltaH: CSF_CYCLE.electronAffinity,
+    availableEquations: [
+      csfSteps.sublimation,
+      csfSteps.halfBond,
+      csfSteps.ionisation,
+      {
+        id: 'eq4',
+        step: 'Grindarorka CsF',
+        reactants: 'CsF(s)',
+        products: 'Cs⁺(g) + F⁻(g)',
+        deltaH: CSF_LATTICE,
+        isReversed: false,
+        multiplier: 1,
+      },
+      csfSteps.formation,
+    ],
+    solution: [
+      { equationId: 'eq1', reverse: true, multiply: 1 },
+      { equationId: 'eq2', reverse: true, multiply: 1 },
+      { equationId: 'eq3', reverse: true, multiply: 1 },
+      { equationId: 'eq4', reverse: false, multiply: 1 },
+      { equationId: 'eq5', reverse: false, multiply: 1 },
+    ],
+    hint: 'Markmiðið byrjar á F(g) og rafeind. Snúðu við skrefunum sem mynda F(g), Cs(g) og Cs⁺(g), svo allt nema F⁻(g) styttist út.',
+    explanation:
+      'Snúa við þurrgufun, hálfri tengjaorku og jónunarorku, og leggja við myndunarvermi og grindarorku: −76,5 − 79,4 − 375,7 − 553,5 + 756,9 = −328,2 kJ. Neikvætt: orka losnar þegar flúoratóm tekur við rafeind.',
+    source: SRC_BORN_HABER,
   },
 ];

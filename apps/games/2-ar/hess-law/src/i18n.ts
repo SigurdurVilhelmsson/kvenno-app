@@ -26,7 +26,8 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Stig 2: Þrautir',
         description: 'Sameina jöfnur til að ná markmiðsjöfnu',
-        details: 'Notaðu 2-3 jöfnur til að búa til nýja jöfnu.',
+        details:
+          'Notaðu 2–5 jöfnur til að búa til nýja jöfnu. Tvær síðustu þrautirnar eru Born-Haber-hringferli.',
       },
       level3: {
         name: 'Stig 3: Útreikningar',

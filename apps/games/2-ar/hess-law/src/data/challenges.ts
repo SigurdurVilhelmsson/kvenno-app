@@ -7,6 +7,8 @@ export interface Equation {
   deltaH: number;
   isReversed: boolean;
   multiplier: number;
+  /** What the step is, printed on its card: a Born-Haber step names itself (kafli 7.5). */
+  step?: string;
 }
 
 export interface Challenge {
