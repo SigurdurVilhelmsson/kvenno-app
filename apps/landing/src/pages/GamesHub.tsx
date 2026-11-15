@@ -44,7 +44,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Mólhugtakið',
-        description: 'Mólmassi, mól-umbreytingar og Avogadro-tala',
+        description: 'Mólmassi, mól-umbreytingar og tala Avogadros',
         slug: 'molmassi',
       },
       {

@@ -153,6 +153,12 @@ deliberately. CLAUDE.md's rule is Icelandic-only UI, and the dead-i18n question 
 20 games is an open decision — this game does not add a 21st case to it. If that decision lands on
 "finish wiring", this game gets wired then, along with everything else.
 
+## Fixed 2026-11-15
+
+Avogadro's number is `tala Avogadros`, as the textbook writes it, on the ratio cards (`source` and
+the legend's kind label) and in two hints, where the game said `Avogadro-tala` (year-1 audit,
+Phase 0 item 4). A `governed-terms.test.ts` row holds it.
+
 ## Open
 
 Siggi's call; not built.

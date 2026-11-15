@@ -8,7 +8,7 @@ export const gameTranslations = createGameTranslations({
   is: {
     game: {
       title: 'Mólhugtakið',
-      subtitle: 'Lærðu um mólmassa, mól-umbreytingar og Avogadro-tölu',
+      subtitle: 'Lærðu um mólmassa, mól-umbreytingar og tölu Avogadros',
     },
     menu: {
       level1: {

@@ -45,6 +45,7 @@ atomic spectrum;litróf frumeindar
 atomic symbol;frumeindatákn
 autoionization;sjálfjónun
 autoionization constant of water;klofningsfasti vatns
+Avogadro's number;tala Avogadros
 average rate;meðalhraði
 balance (a chemical equation);stilla
 balanced equation;stillt efnajafna

@@ -390,7 +390,7 @@ export function Level2({
               <h2 className="text-xl font-bold text-warm-800 mb-2">Hvað er mól?</h2>
               <p className="text-warm-700">
                 Eitt mól er 6,022 × 10²³ eindir — jafn margar og atóm í 12 g af kolefni-12. Þetta er{' '}
-                <strong>Avogadro-talan</strong>.
+                <strong>tala Avogadros</strong>.
               </p>
             </div>
 
