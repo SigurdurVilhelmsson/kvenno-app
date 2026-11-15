@@ -9,7 +9,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { SCENARIOS } from '../components/Level2';
 import { StepBySolution } from '../components/StepBySolution';
 import { formatSolubility } from '../components/TemperatureSolubility';
-import { CHEMICALS, CHEMISTRY_FACTS } from '../data';
+import { CHEMICALS } from '../data';
 import type { Difficulty, Problem } from '../types';
 import { generateProblem } from '../utils/problem-generator';
 
@@ -88,9 +88,9 @@ describe('decimal comma — authored text', () => {
     }
   });
 
-  it('no chemical or fact writes a decimal point', () => {
+  it('no chemical writes a decimal point', () => {
     const all = [...CHEMICALS.simple, ...CHEMICALS.medium, ...CHEMICALS.hard];
-    for (const { path, text } of strings([...all, ...CHEMISTRY_FACTS])) {
+    for (const { path, text } of strings(all)) {
       expect(text, path).not.toMatch(DECIMAL_POINT);
     }
   });

@@ -8,7 +8,7 @@ export const gameTranslations = createGameTranslations({
   is: {
     game: {
       title: 'Lausnir',
-      subtitle: 'Lærðu um mólstyrk, útþynningu og lausnir',
+      subtitle: 'Lærðu um mólstyrk, þynningu og lausnir',
     },
     menu: {
       howItWorks: 'Hvernig virkar þetta?',
@@ -37,7 +37,7 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 3: Útreikningar',
         description: 'Reikna styrk með einingagreiningu',
         details:
-          'Notaðu umreikningsstuðla og einingagreiningu til að leysa útþynningar- og styrkreikningsdæmi.',
+          'Notaðu umreikningsstuðla og einingagreiningu til að leysa þynningar- og styrkreikningsdæmi.',
       },
       completed: 'Lokið',
       of: 'af',
@@ -46,9 +46,9 @@ export const gameTranslations = createGameTranslations({
     completion: {
       title: 'Til hamingju!',
       completedAll: 'Þú hefur lokið öllum stigum!',
-      level1Summary: 'Styrkur = sameindir / rúmmál (sjónrænt)',
+      level1Summary: 'Mólstyrkur = mól / L (sjónrænt)',
       level2Summary: 'Spá fyrir um hvernig breytingar hafa áhrif á styrk',
-      level3Summary: 'Reikna styrk og útþynningar með einingagreiningu',
+      level3Summary: 'Reikna styrk og þynningar með einingagreiningu',
       whatYouLearned: 'Hvað lærðir þú?',
       back: 'Til baka',
       startOver: 'Byrja upp á nýtt',
@@ -58,7 +58,7 @@ export const gameTranslations = createGameTranslations({
     },
     formulas: {
       molarity: 'Mólstyrkur: mól efnis / rúmmál í lítrum',
-      dilution: 'Útþynning: mól breytast ekki (M₁×V₁ = M₂×V₂)',
+      dilution: 'Þynning: mól breytast ekki (M₁×V₁ = M₂×V₂)',
       moles: 'g → mól: g × (1 mól / mólmassi g)',
       mixing: 'Blöndun: heildarmól / heildarrúmmál',
     },

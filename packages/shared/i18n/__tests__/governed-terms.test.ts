@@ -625,6 +625,13 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       'ordabok.md gives covalent bond;samgilt tengi; the textbook writes samgilt/samgild tengi 125 times and samgild binding never. 1-ar/nafnakerfid said samgild binding until 2026-11-15. Tengi is neuter, so the adjective moves with it: samgilt tengi, plural samgild tengi, dative samgildum tengjum.',
   },
+  {
+    english: 'dilution',
+    correct: 'þynning',
+    banned: [/útþynn/i],
+    guidance:
+      'ordabok.md gives dilution;þynning, and the textbook (ch. 3, m68703) writes þynning 18 times and the út- compound never. 1-ar/lausnir said both, útþynning 18 times beside þynning 8, until 2026-11-15 (year-1 audit). Feminine either way, so it is a string swap: þynning / þynningu / þynningu / þynningar.',
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

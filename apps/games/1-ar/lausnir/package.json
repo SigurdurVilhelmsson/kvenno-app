@@ -2,7 +2,7 @@
   "name": "@kvenno/lausnir",
   "version": "1.0.0",
   "private": true,
-  "description": "Mólstyrkur og útþynning lausna",
+  "description": "Mólstyrkur og þynning lausna",
   "type": "module",
   "scripts": {
     "dev": "vite",

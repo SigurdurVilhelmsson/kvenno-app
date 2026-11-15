@@ -2545,7 +2545,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Stig 1 — verkefni 2 (sameindir)',
+      name: 'Stig 1 — verkefni 2 (eindir)',
       steps: [
         {
           clickRole: ['button', 'Stig 1: Hugtök'],
@@ -2573,7 +2573,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       loop: {
         prompt: { text: 'Verkefni 2:' },
         action: { role: 'button', name: 'Athuga lausn' },
-        // +10 makes 30 sameindir in 200 mL, the 1,5 M asked for: "Athuga
+        // +10 makes 30 eindir in 200 mL, the 1,5 M asked for: "Athuga
         // lausn" answers only a solution that is right.
         answer: [{ clickRole: ['button', '+10'] }],
         verdict: { css: '.feedback-panel' },
