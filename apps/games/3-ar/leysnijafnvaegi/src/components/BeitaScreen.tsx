@@ -135,11 +135,11 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               </p>
               <ul className="space-y-1 font-mono text-sm text-warm-700">
                 <li>
-                  {(mixing.cation.volume * 1000).toFixed(0)} mL af{' '}
+                  {formatDecimal(mixing.cation.volume * 1000, 0)} mL af{' '}
                   <Sci value={mixing.cation.concentration} unit="M" /> {mixing.cation.source}
                 </li>
                 <li>
-                  {(mixing.anion.volume * 1000).toFixed(0)} mL af{' '}
+                  {formatDecimal(mixing.anion.volume * 1000, 0)} mL af{' '}
                   <Sci value={mixing.anion.concentration} unit="M" /> {mixing.anion.source}
                 </li>
               </ul>
@@ -149,7 +149,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               {stage === 'predict' && (
                 <p className="mt-3 rounded bg-white/70 p-2 text-xs text-warm-600 phone:mt-2">
                   Mundu að þynna fyrst. Heildarrúmmálið er{' '}
-                  {((mixing.cation.volume + mixing.anion.volume) * 1000).toFixed(0)} mL.
+                  {formatDecimal((mixing.cation.volume + mixing.anion.volume) * 1000, 0)} mL.
                 </p>
               )}
             </div>
