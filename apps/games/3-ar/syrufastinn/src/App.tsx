@@ -4,13 +4,14 @@ import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
+import { AgnasynScreen } from './components/AgnasynScreen';
 import { ApplyScreen } from './components/ApplyScreen';
 import { ExploreScreen } from './components/ExploreScreen';
 import { PracticeScreen } from './components/PracticeScreen';
 import { UnderstandScreen } from './components/UnderstandScreen';
 import './styles.css';
 
-type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
+type Screen = 'menu' | 'agnasyn' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
 interface Progress {
   completed: Screen[];
@@ -112,6 +113,19 @@ function App() {
                 allir nota heldur næstum alltaf en ekki alveg.
               </p>
 
+              {/* Agnasýn: the particles behind percent dissociation. Not one of the four
+                  phases and never marked done; nothing in it is graded. */}
+              <button
+                type="button"
+                onClick={() => setScreen('agnasyn')}
+                className="game-card mb-4 w-full rounded-lg border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 sm:p-5 phone:mb-3 phone:p-3"
+              >
+                <h3 className="text-xl font-semibold text-amber-900 phone:text-lg">Agnasýn</h3>
+                <p className="text-amber-800 phone:text-sm">
+                  Sjáðu sameindirnar: veik sýra þynnt, og veik sýra borin saman við sterka.
+                </p>
+              </button>
+
               <div className="grid gap-4 phone:gap-3 phone-land:grid-cols-2">
                 {PHASES.map((phase) => (
                   <button
@@ -212,6 +226,8 @@ function App() {
             </div>
           </div>
         )}
+
+        {screen === 'agnasyn' && <AgnasynScreen onBack={backToMenu} />}
 
         {screen === 'kanna' && (
           <ExploreScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />

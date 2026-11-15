@@ -4,6 +4,7 @@ import {
   RADIUS,
   applyCounts,
   createSystem,
+  exchange,
   flicker,
   setBounds,
   step,
@@ -23,18 +24,27 @@ import {
  */
 
 const W = 320;
-const H = 300;
-const GLASS = { left: 14, right: W - 14, top: 52, bottom: H - 10 };
-/** Liquid height at the largest volume on the scale. */
-const FULL = GLASS.bottom - GLASS.top - 6;
 
-function liquidBounds(fill: number): Bounds {
-  const h = FULL * Math.max(0.05, Math.min(1, fill));
+interface Geometry {
+  height: number;
+  glass: Bounds;
+  /** Liquid height at the largest volume on the scale. */
+  full: number;
+}
+
+/** The flask's shape: room for the búretta above it only when there is one. */
+function geometry(height: number, burette: boolean): Geometry {
+  const glass = { left: 14, right: W - 14, top: burette ? 52 : 8, bottom: height - 10 };
+  return { height, glass, full: glass.bottom - glass.top - 6 };
+}
+
+function liquidBounds(fill: number, geo: Geometry): Bounds {
+  const h = geo.full * Math.max(0.05, Math.min(1, fill));
   return {
-    left: GLASS.left + 4,
-    right: GLASS.right - 4,
-    top: GLASS.bottom - h,
-    bottom: GLASS.bottom - 3,
+    left: geo.glass.left + 4,
+    right: geo.glass.right - 4,
+    top: geo.glass.bottom - h,
+    bottom: geo.glass.bottom - 3,
   };
 }
 
@@ -51,7 +61,18 @@ const STYLE: Record<
   H2O: { fill: '#e0f2fe', stroke: '#7dd3fc', text: '', label: 'H₂O', textColor: '#0369a1' },
 };
 
-export function ParticleGlyph({ kind, flag = false }: { kind: Kind; flag?: boolean }) {
+/** What a glyph prints inside it, by kind, where a game names the acid (`HF`, `F⁻`). */
+export type GlyphText = Partial<Record<Kind, string>>;
+
+export function ParticleGlyph({
+  kind,
+  flag = false,
+  text,
+}: {
+  kind: Kind;
+  flag?: boolean;
+  text?: GlyphText;
+}) {
   const size = 2 * (RADIUS[kind] + 6);
   return (
     <svg
@@ -61,12 +82,12 @@ export function ParticleGlyph({ kind, flag = false }: { kind: Kind; flag?: boole
       aria-hidden="true"
       className="shrink-0"
     >
-      <Glyph kind={kind} flag={flag} />
+      <Glyph kind={kind} flag={flag} text={text} />
     </svg>
   );
 }
 
-function Glyph({ kind, flag }: { kind: Kind; flag: boolean }) {
+function Glyph({ kind, flag, text }: { kind: Kind; flag: boolean; text?: GlyphText }) {
   const r = RADIUS[kind];
   const s = STYLE[kind];
   return (
@@ -88,7 +109,7 @@ function Glyph({ kind, flag }: { kind: Kind; flag: boolean }) {
           fontWeight={700}
           fill={s.textColor}
         >
-          {s.text}
+          {text?.[kind] ?? s.text}
         </text>
       )}
     </>
@@ -118,8 +139,18 @@ interface ParticleBeakerProps {
   dimSpectator: boolean;
   /** A label naming what is drawn, for a screen reader. */
   label: string;
-  /** The formula printed beside the búretta. */
-  reagent?: string;
+  /** The formula printed beside the búretta; `null` draws no búretta. */
+  reagent?: string | null;
+  /** The viewBox height, 300 by default; the width is always 320. */
+  height?: number;
+  /**
+   * Show the weak acid's dynamic equilibrium with real particles: every few
+   * seconds a CH₃COOH ionises while an H⁺ rejoins another CH₃COO⁻, so the
+   * counts stay as they are (`exchange` in `system.ts`).
+   */
+  exchange?: boolean;
+  /** What the glyphs print, where the acid is not drawn as HA and A⁻. */
+  text?: GlyphText;
 }
 
 /** A drip runs only for a small step forward in the strong reagent; anything else is a jump. */
@@ -137,7 +168,13 @@ export function ParticleBeaker({
   dimSpectator,
   label,
   reagent = 'NaOH',
+  height = 300,
+  exchange: exchanging = false,
+  text,
 }: ParticleBeakerProps) {
+  const geo = geometry(height, reagent !== null);
+  const geoRef = useRef(geo);
+  geoRef.current = geo;
   const sysRef = useRef<System | null>(null);
   const rngRef = useRef<() => number>(Math.random);
   const fillRef = useRef(fill);
@@ -145,7 +182,7 @@ export function ParticleBeaker({
   const [, setFrame] = useState(0);
 
   if (sysRef.current === null) {
-    const sys = createSystem(liquidBounds(fill));
+    const sys = createSystem(liquidBounds(fill, geo));
     applyCounts(sys, counts, rngRef.current, { animate: false, drip: false });
     sysRef.current = sys;
   }
@@ -159,7 +196,7 @@ export function ParticleBeaker({
     lastKey.current = key;
     const forward = isDripStep(lastCounts.current, counts);
     lastCounts.current = counts;
-    setBounds(sys, liquidBounds(fillRef.current));
+    setBounds(sys, liquidBounds(fillRef.current, geoRef.current));
     applyCounts(sys, counts, rngRef.current, {
       animate: !still,
       drip: drip && forward && !still,
@@ -179,7 +216,7 @@ export function ParticleBeaker({
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       if (sys) {
-        setBounds(sys, liquidBounds(fillRef.current));
+        setBounds(sys, liquidBounds(fillRef.current, geoRef.current));
         step(sys, dt, rngRef.current);
       }
       setFrame((f) => (f + 1) % 1_000_000);
@@ -192,7 +229,7 @@ export function ParticleBeaker({
   // A still view settles every change at once.
   useEffect(() => {
     if (!still || !sysRef.current) return;
-    setBounds(sysRef.current, liquidBounds(fill));
+    setBounds(sysRef.current, liquidBounds(fill, geo));
     step(sysRef.current, 0, rngRef.current, true);
   });
 
@@ -206,7 +243,16 @@ export function ParticleBeaker({
     return () => window.clearInterval(id);
   }, [flagged, still]);
 
-  const liquid = liquidBounds(fill);
+  useEffect(() => {
+    if (!exchanging || still) return;
+    const id = window.setInterval(() => {
+      if (sysRef.current) exchange(sysRef.current, rngRef.current);
+    }, 2600);
+    return () => window.clearInterval(id);
+  }, [exchanging, still]);
+
+  const liquid = liquidBounds(fill, geo);
+  const GLASS = geo.glass;
   const particles = sysRef.current?.particles ?? [];
   // Spectators behind, so the reacting particles stay readable.
   const spectator = (k: Kind) => k === 'Na' || k === 'Cl';
@@ -217,22 +263,26 @@ export function ParticleBeaker({
 
   return (
     <svg
-      viewBox={`0 0 ${W} ${H}`}
+      viewBox={`0 0 ${W} ${height}`}
       className="w-full h-auto max-h-[60vh]"
       role="img"
       aria-label={label}
       data-live
     >
       {/* The búretta's tip above the flask. */}
-      <rect x={W / 2 - 7} y={0} width={14} height={30} fill="#f5f5f4" stroke="#a8a29e" />
-      <rect x={W / 2 - 12} y={22} width={24} height={7} rx={2} fill="#78716c" />
-      <path
-        d={`M ${W / 2 - 4} 30 L ${W / 2 - 1.5} 44 L ${W / 2 + 1.5} 44 L ${W / 2 + 4} 30 Z`}
-        fill="#d6d3d1"
-      />
-      <text x={W / 2 + 18} y={20} fontSize={11} fill="#57534e">
-        {reagent}
-      </text>
+      {reagent !== null && (
+        <>
+          <rect x={W / 2 - 7} y={0} width={14} height={30} fill="#f5f5f4" stroke="#a8a29e" />
+          <rect x={W / 2 - 12} y={22} width={24} height={7} rx={2} fill="#78716c" />
+          <path
+            d={`M ${W / 2 - 4} 30 L ${W / 2 - 1.5} 44 L ${W / 2 + 1.5} 44 L ${W / 2 + 4} 30 Z`}
+            fill="#d6d3d1"
+          />
+          <text x={W / 2 + 18} y={20} fontSize={11} fill="#57534e">
+            {reagent}
+          </text>
+        </>
+      )}
 
       {/* The glass and the liquid. */}
       <rect
@@ -264,7 +314,7 @@ export function ParticleBeaker({
           {p.glow > 0 && (
             <circle r={RADIUS[p.kind] + 6} fill="#fde047" opacity={Math.min(0.6, p.glow / 2)} />
           )}
-          <Glyph kind={p.kind} flag={p.flag} />
+          <Glyph kind={p.kind} flag={p.flag} text={text} />
         </g>
       ))}
     </svg>

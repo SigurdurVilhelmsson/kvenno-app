@@ -929,6 +929,11 @@ in the game's README.
       wording is drafted by Claude (`3-ar/buffer-recipe-creator/src/data/agnasyn-steps.tsx`), and
       its two flasks sit side by side even on a phone, where each is about 160 px wide: check
       they read on a real phone.
+- [ ] **Sýrufastinn's Agnasýn** (2026-11-15): flússýra diluted 1,0 → 0,10 → 0,010 M, then HCl
+      beside flússýra. Wording drafted by Claude (`3-ar/syrufastinn/src/data/agnasyn-steps.tsx`).
+      Each glass holds the same 40 molecules in more water, so the three flasks are drawn the same
+      size although their volumes differ a hundredfold; the text says so. Keep, or draw the
+      volumes?
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 

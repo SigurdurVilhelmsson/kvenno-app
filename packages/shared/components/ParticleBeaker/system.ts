@@ -347,6 +347,46 @@ export function flicker(sys: System, rng: () => number): void {
   revertPairs(sys, rng, true, new Set(flagged.map((p) => p.pairId!)), type);
 }
 
+/**
+ * The dynamic equilibrium of a weak acid drawn at its real counts, with no
+ * exaggerated pair: one CH₃COOH ionises, its H⁺ moving off, while a free H⁺
+ * swims to a different CH₃COO⁻ and rejoins it. The counts the system is
+ * heading for never change. Does nothing unless there is a molecule to ionise
+ * and a free pair to recombine.
+ */
+export function exchange(sys: System, rng: () => number): void {
+  const free = (p: Particle) => alive(p) && !p.flag && !p.reserved && !p.action;
+  const h = pick(
+    sys.particles.filter((p) => free(p) && p.kind === 'H3O'),
+    rng
+  );
+  const base = pick(
+    sys.particles.filter((p) => free(p) && p.kind === 'A'),
+    rng
+  );
+  const acid = pick(
+    sys.particles.filter((p) => free(p) && p.kind === 'HA'),
+    rng
+  );
+  if (!h || !base || !acid) return;
+  h.target = base.id;
+  h.action = 'protonate';
+  base.reserved = true;
+  acid.kind = 'A';
+  acid.glow = GLOW_S;
+  const angle = rng() * Math.PI * 2;
+  const ion = spawn(
+    sys,
+    'H3O',
+    rng,
+    { x: acid.x + Math.cos(angle) * 16, y: acid.y + Math.sin(angle) * 16 },
+    false
+  );
+  ion.vx = Math.cos(angle) * 30;
+  ion.vy = Math.sin(angle) * 30;
+  clamp(sys, ion);
+}
+
 function fadeOut(sys: System, kind: Kind, n: number, rng: () => number, animate: boolean): void {
   for (let i = 0; i < n; i++) {
     const p = pick(

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   applyCounts,
   createSystem,
+  exchange,
   realCounts,
   seeded,
   settle,
@@ -79,5 +80,30 @@ describe('particle system, strong acid', () => {
       settle(sys, rng);
       expect(shownCounts(sys)).toEqual(expected(target));
     }
+  });
+});
+
+describe('particle system, a weak acid at its real counts', () => {
+  it('exchanges an ionisation for a recombination and keeps the counts', () => {
+    const rng = seeded(13);
+    const sys = createSystem(BOUNDS);
+    const weak: ParticleCounts = { HA: 37, A: 3, H3O: 3, OH: 0, Na: 0, Cl: 0, flag: null };
+    applyCounts(sys, weak, rng, { animate: false, drip: false });
+    for (let k = 0; k < 20; k++) {
+      exchange(sys, rng);
+      expect(realCounts(sys)).toEqual(expected(weak));
+      for (let t = 0; t < 90; t++) step(sys, 1 / 30, rng);
+      settle(sys, rng);
+      expect(shownCounts(sys)).toEqual(expected(weak));
+    }
+  });
+
+  it('does nothing with no free pair to recombine', () => {
+    const rng = seeded(2);
+    const sys = createSystem(BOUNDS);
+    const molecules: ParticleCounts = { HA: 10, A: 0, H3O: 0, OH: 0, Na: 0, Cl: 0, flag: null };
+    applyCounts(sys, molecules, rng, { animate: false, drip: false });
+    exchange(sys, rng);
+    expect(shownCounts(sys)).toEqual(expected(molecules));
   });
 });

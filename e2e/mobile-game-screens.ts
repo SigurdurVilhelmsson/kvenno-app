@@ -7156,6 +7156,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Agnasýn (2026-11-15): the three dilutions, strong against weak, and the explore scene.
+    {
+      name: 'Agnasýn — þynning',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — sterk og veik',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '3. Sterk sýra og veik'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '4. Kannaðu sjálf/ur'] },
+        { wait: 600 },
+      ],
+    },
     {
       name: 'Kanna — útskýring',
       steps: [

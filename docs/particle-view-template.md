@@ -119,6 +119,9 @@ in `3-ar/ph-titration`, since a curve's axis is the scene's own.
 
 The second consumer is `3-ar/buffer-recipe-creator`'s Agnasýn, a buffer beside pure water
 (`engine/agnasyn.ts`, `data/agnasyn-steps.tsx`, `components/Agnasyn.tsx`, `BufferCurve.tsx`): two
-flasks on one screen, which is why the system is one per flask and holds no global state.
+flasks on one screen, which is why the system is one per flask and holds no global state. The third
+is `3-ar/syrufastinn`'s, three flasks with no búretta (`reagent={null}`, a shorter `height`), glyphs
+naming the acid (`text`: `HF`, `F⁻`), and the weak acid's equilibrium shown at its real counts by
+`exchange` rather than by an exaggerated pair.
 Open review items for Agnasýn itself are C23 in
 `docs/REVIEW-QUEUE.md`.
