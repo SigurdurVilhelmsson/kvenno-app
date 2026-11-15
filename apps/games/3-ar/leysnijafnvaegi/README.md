@@ -131,11 +131,14 @@ names the concept and the international symbol names the constant — exactly th
 src/engine/ksp.ts              the maths; no React, no Icelandic
 src/data/salts.ts              14 salts, every constant read from Appendix D.3
 src/data/problems.ts           10 solubility · 6 common-ion · 6 mixing · 2 fractional
-src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
+src/engine/agnasyn.ts          Agnasýn's numbers: AgCl saturated, common ion, mixing, Mohr
+src/data/agnasyn-steps.tsx     Agnasýn's four scenes, as data
+src/components/                AgnasynScreen, KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                                ScientificInput (the answer row, with the `±` key),
                                Sci (a number held on one line) and BackButton
-src/__tests__/                 78 tests — ksp.test.ts, phone-play.test.tsx, phone-scroll.test.tsx,
-                               decimal-comma.test.tsx, stated-claims.test.ts and screens.test.tsx
+src/__tests__/                 100 tests — ksp.test.ts, phone-play.test.tsx, phone-scroll.test.tsx,
+                               decimal-comma.test.tsx, stated-claims.test.ts, screens.test.tsx,
+                               agnasyn.test.ts and agnasyn-screen.test.tsx
 ```
 
 ## On a phone
@@ -168,6 +171,26 @@ through the shared helpers in `@shared/utils` (`useScreenTop`, `revealSpan`,
 - A desktop window scrolls exactly as before (`revealBelowFoldOnDesktop`, `useItemStart` and `useRevealTopOnDesktop` in
   `@shared/utils`); the one change there is focus
   moving to headings, the feedback, the salt card and the new question.
+
+## Agnasýn: the ions behind Ksp (2026-11-15)
+
+A menu card above the four phases, graded by nothing and never marked done, following the
+particle-view template (`docs/particle-view-template.md`). Four scenes, all on silver salts:
+
+1. **Mettuð lausn:** AgCl on the bottom of a glass, a few ions in solution, drifting. The text gives
+   s = √Ksp and says how far the picture exaggerates: one Ag⁺ per 4,1 million water molecules.
+2. **Samjón bætt við:** the same glass in 0,010 M NaCl. Solubility falls about 750-fold (the exact
+   root from `solubilityWithCommonIon`), and the picture keeps one Ag⁺, saying it is 750 times too
+   many.
+3. **Tvær lausnir blandaðar:** 50 mL each of AgNO₃ and NaCl at a chosen concentration, the dilution
+   done first, and a Q meter on a log axis that tips past Ksp. The four offered concentrations are
+   each at least a factor of 3 from the line (`agnasyn.test.ts`), so neither book's Ksp flips them.
+4. **Mohr-títrun:** a slider over log[Ag⁺]. White AgCl comes down at 1,8 × 10⁻⁸ M and red Ag₂CrO₄
+   only at 1,1 × 10⁻⁵ M, from `precipitationOrder`, when 99,8 % of the chloride has precipitated.
+
+**Every picture is exaggerated, which this topic cannot avoid.** The ions carry a dashed ring and
+every scene says so; the counts show which way things go, and the numbers beside them are exact.
+The spectators Na⁺ and NO₃⁻ are drawn pale and named `meðjón`.
 
 ## Fixed 2026-11-14: verdicts that flipped in the Icelandic book
 

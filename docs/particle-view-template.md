@@ -14,15 +14,15 @@ report `N af M rétt` and it does not gate anything.
 
 ## The files, and what each one owns
 
-| File                            | Owns                                                    | Rule                                |
-| ------------------------------- | ------------------------------------------------------- | ----------------------------------- |
-| `utils/agnasyn.ts`              | The chemistry: constants, pH, species, particle counts  | Pure. No React, no randomness       |
-| `utils/particles.ts`            | The particle system: positions, drift, reactions, fades | Pure apart from an `rng` passed in  |
-| `data/agnasyn-steps.tsx`        | The scenes: title, volume, equations, text, note        | Every number printed is computed    |
-| `components/ParticleBeaker.tsx` | Drawing the system in SVG; the frame loop               | Holds no chemistry                  |
-| `components/ProgressCurve.tsx`  | The curve drawn to the current volume, with markers     | Reads the same `pHAt` as the beaker |
-| `components/NaOHDissolve.tsx`   | A side panel for one process (the solid dissolving)     | Optional, per scene                 |
-| `components/Agnasyn.tsx`        | Scene navigation, playback, slider, readouts, legend    | The only stateful screen            |
+| File                              | Owns                                                    | Rule                                |
+| --------------------------------- | ------------------------------------------------------- | ----------------------------------- |
+| `utils/agnasyn.ts`                | The chemistry: constants, pH, species, particle counts  | Pure. No React, no randomness       |
+| shared `ParticleBeaker/system.ts` | The particle system: positions, drift, reactions, fades | Pure apart from an `rng` passed in  |
+| `data/agnasyn-steps.tsx`          | The scenes: title, volume, equations, text, note        | Every number printed is computed    |
+| shared `ParticleBeaker.tsx`       | Drawing the system in SVG; the frame loop               | Holds no chemistry                  |
+| `components/ProgressCurve.tsx`    | The curve drawn to the current volume, with markers     | Reads the same `pHAt` as the beaker |
+| `components/NaOHDissolve.tsx`     | A side panel for one process (the solid dissolving)     | Optional, per scene                 |
+| `components/Agnasyn.tsx`          | Scene navigation, playback, slider, readouts, legend    | The only stateful screen            |
 
 Keep the split. The chemistry and the particle system are tested without a DOM; the components only
 draw what those two say.
@@ -108,8 +108,28 @@ Every one of these is enforced by a test or CI job, and every one bit during the
 ## Adapting it
 
 For a new system, replace `utils/agnasyn.ts` (constants, `pHAt` or its equivalent, `speciesAt`,
-`particleCountsAt`, which volumes are flagged) and `data/*-steps.tsx`. `particles.ts`,
-`ParticleBeaker.tsx` and `ProgressCurve.tsx` are written around titration species (`Kind`) and a
-volume axis; for a second consumer, move them to `packages/shared` with the species as a parameter,
-rather than copying them into another game. Open review items for Agnasýn itself are C23 in
+`particleCountsAt`, which volumes are flagged) and `data/*-steps.tsx`. **The particle system and
+the flask are shared since 2026-11-15**, when the second consumer arrived:
+`@shared/components/ParticleBeaker` (`system.ts`, `ParticleBeaker.tsx`). The flask takes the counts
+and how full it is (`counts`, `fill`) and a `reagent` label for the búretta; the system knows a weak
+acid and its conjugate base (`HA`, `A`), H⁺, OH⁻ and the spectators Na⁺ and Cl⁻, with NaOH dripping
+in to neutralise HA and HCl dripping in to protonate A⁻. A new species goes into `system.ts` with a
+test in `packages/shared/components/__tests__/particle-system.test.ts`. `ProgressCurve.tsx` stays
+in `3-ar/ph-titration`, since a curve's axis is the scene's own.
+
+The second consumer is `3-ar/buffer-recipe-creator`'s Agnasýn, a buffer beside pure water
+(`engine/agnasyn.ts`, `data/agnasyn-steps.tsx`, `components/Agnasyn.tsx`, `BufferCurve.tsx`): two
+flasks on one screen, which is why the system is one per flask and holds no global state. The third
+is `3-ar/syrufastinn`'s, three flasks with no búretta (`reagent={null}`, a shorter `height`), glyphs
+naming the acid (`text`: `HF`, `F⁻`), and the weak acid's equilibrium shown at its real counts by
+`exchange` rather than by an exaggerated pair.
+
+`3-ar/equilibrium-shifter` follows the same rules without the flask: its species are gases and
+ions the system does not know, so `engine/mixture.ts` turns `applyStress`'s amounts into counts on
+one scale per system and `components/MixtureView.tsx` draws them as plain SVG circles that keep
+their place between frames. A system it cannot draw without exaggerating shows no particles.
+`3-ar/jafnvaegisfasti`'s Agnasýn does the same for the approach to equilibrium: two flasks of the
+water-gas shift whose end is `solveExtent`'s root, with a path drawn from mass-action rates whose
+ratio is K, on a time axis the screen says has no units.
+Open review items for Agnasýn itself are C23 in
 `docs/REVIEW-QUEUE.md`.

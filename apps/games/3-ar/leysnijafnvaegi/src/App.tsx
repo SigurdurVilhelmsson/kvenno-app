@@ -5,12 +5,13 @@ import { useGameProgress } from '@shared/hooks';
 import { useRevealTopOnDesktop, useScreenTop } from '@shared/utils';
 
 import { AefaScreen } from './components/AefaScreen';
+import { AgnasynScreen } from './components/AgnasynScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
 import './styles.css';
 
-type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
+type Screen = 'menu' | 'agnasyn' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
 interface Progress {
   completed: Screen[];
@@ -123,6 +124,19 @@ function App() {
                 lausnirnar voru sem þú blandaðir.
               </p>
 
+              {/* Agnasýn: the ions behind Ksp. Not one of the four phases and never
+                  marked done; nothing in it is graded. */}
+              <button
+                type="button"
+                onClick={() => setScreen('agnasyn')}
+                className="game-card mb-4 w-full rounded-lg border-4 border-amber-400 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100 sm:p-5 phone:mb-3 phone:p-3"
+              >
+                <h3 className="text-xl font-semibold text-amber-900 phone:text-lg">Agnasýn</h3>
+                <p className="text-amber-800 phone:text-sm">
+                  Sjáðu jónirnar: mettuð lausn, samjón, tvær lausnir blandaðar og Mohr-títrun.
+                </p>
+              </button>
+
               <div className="grid gap-4 phone:gap-3 phone-land:grid-cols-2">
                 {PHASES.map((phase) => (
                   <button
@@ -223,6 +237,8 @@ function App() {
             </div>
           </div>
         )}
+
+        {screen === 'agnasyn' && <AgnasynScreen onBack={backToMenu} />}
 
         {screen === 'kanna' && (
           <KannaScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />

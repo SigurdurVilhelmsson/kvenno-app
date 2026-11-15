@@ -6413,6 +6413,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Agnasýn — upphaf',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — jafnvægi',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { fill: ['input[type="range"]', '10'] },
+        { wait: 600 },
+      ],
+    },
+    {
       name: 'Kanna — allar fjórar blöndur',
       steps: [
         {
@@ -7154,6 +7167,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           wait: 300,
         },
+      ],
+    },
+    // Agnasýn (2026-11-15): the three dilutions, strong against weak, and the explore scene.
+    {
+      name: 'Agnasýn — þynning',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — sterk og veik',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '3. Sterk sýra og veik'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '4. Kannaðu sjálf/ur'] },
+        { wait: 600 },
       ],
     },
     {
@@ -7939,6 +7975,32 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    // Agnasýn, a buffer beside water (2026-11-15): the two glasses, the buffer run out,
+    // and the slider with NaOH chosen.
+    {
+      name: 'Agnasýn — tvö glös',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — stuðpúðinn þrýtur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '4. Stuðpúðinn þrýtur'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — kannaðu sjálf/ur',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '6. Kannaðu sjálf/ur'] },
+        { wait: 600 },
+        { clickRole: ['button', 'Natríumhýdroxíð, NaOH'] },
+        { wait: 300 },
+      ],
+    },
     {
       name: 'Stig 1 — rangt svar (endurgjöf)',
       steps: [
@@ -8383,6 +8445,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           wait: 300,
         },
+      ],
+    },
+    {
+      name: 'Agnasýn — mettuð lausn',
+      steps: [{ clickRole: ['button', 'Agnasýn'] }, { wait: 600 }],
+    },
+    {
+      name: 'Agnasýn — blöndun',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '3. Tvær lausnir blandaðar'] },
+        { wait: 600 },
+      ],
+    },
+    {
+      name: 'Agnasýn — Mohr-títrun, rautt',
+      steps: [
+        { clickRole: ['button', 'Agnasýn'] },
+        { wait: 600 },
+        { clickRole: ['button', '4. Mohr-títrun'] },
+        { fill: ['#mohr-ag', '-4.5'] },
+        { wait: 600 },
       ],
     },
     {

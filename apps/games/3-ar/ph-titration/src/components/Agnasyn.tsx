@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { PhoneDisclosure } from '@shared/components';
+import { PARTICLE_LABEL, ParticleBeaker, ParticleGlyph } from '@shared/components/ParticleBeaker';
 import {
   focusTarget,
   formatDecimal,
@@ -10,7 +11,6 @@ import {
 } from '@shared/utils';
 
 import { NaOHDissolve } from './NaOHDissolve';
-import { PARTICLE_LABEL, ParticleBeaker, ParticleGlyph } from './ParticleBeaker';
 import { ProgressCurve } from './ProgressCurve';
 import { STEPS, hhPH } from '../data/agnasyn-steps';
 import {
@@ -18,6 +18,7 @@ import {
   PARTICLES_PER_MMOL,
   PKA,
   V_EQ,
+  V_ACID,
   V_HALF,
   V_MAX,
   drawnCounts,
@@ -228,7 +229,8 @@ export function Agnasyn({ onBack }: AgnasynProps) {
                 Lausnin í keiluflöskunni, stækkuð
               </div>
               <ParticleBeaker
-                volume={volume}
+                counts={counts}
+                fill={(V_ACID + volume) / (V_ACID + V_MAX)}
                 drip={drip}
                 still={still}
                 dimSpectator={dimSpectator}

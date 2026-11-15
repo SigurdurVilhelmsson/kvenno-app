@@ -193,6 +193,27 @@ is not answerable or not inside the rule. α depends only on Ka/C, so saltpétur
 0,25 M and ediksýra at 0,010 M tie maurasýra's 4,15 %; the decision named maurasýra.
 `problems.test.ts` holds one problem per eligible acid, the ascending order and the last pair.
 
+## Agnasýn: how much dissociates (2026-11-15)
+
+A card above the four phases opens a particle view, built on the shared one
+(`@shared/components/ParticleBeaker`, `docs/particle-view-template.md`). It is not a phase, is never
+marked done and grades nothing.
+
+- **Scenes 1 and 2:** flússýra at 1,0, 0,10 and 0,010 M, each glass holding the same 40 molecules in
+  more water. The ions are the exact fraction dissociated times 40, rounded: 1, 3 and 9. Flússýra
+  was chosen because its fraction is big enough to draw honestly at every step, so **nothing is
+  exaggerated** (ediksýra would show none at 1,0 M). Scene 2 reads Ka back from each glass, the same
+  three times, and explains the rise by Q falling below Ka on dilution.
+- **Scene 3:** HCl beside flússýra, both 0,10 M: 40 H⁺ and 40 Cl⁻ against 3 H⁺ and 3 F⁻.
+- **Kannaðu sjálf/ur:** any acid in `EXPLORABLE_ACIDS` at any concentration `isAnswerable` allows,
+  beside HCl of the same strength. Where the ions round to none, the text says so.
+- **The equilibrium is shown as dynamic without exaggerating anything:** every few seconds one
+  molecule ionises while a free H⁺ rejoins another F⁻ (`exchange` in the shared system), so the
+  counts never change.
+
+Tests: `agnasyn.test.ts` and `agnasyn-screen.test.tsx`. Wording is drafted by Claude
+(`docs/REVIEW-QUEUE.md` C23).
+
 ## Layout
 
 ```
@@ -200,8 +221,10 @@ src/engine/ka.ts              equilibrium maths; no React, no Icelandic
 src/engine/grade.ts           the grading ruling, and the tolerances it implies
 src/data/acids.ts             acids, with protons / nameEstablished / answerability guards
 src/data/problems.ts          the Æfa and Beita sets, generated from the engine
+src/engine/agnasyn.ts         Agnasýn's particle counts, pH and Ka read back
+src/data/agnasyn-steps.tsx    Agnasýn's three scenes
 src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar,
-                              ScientificKeys, BackButton
+                              ScientificKeys, BackButton, AgnasynScreen
 src/__tests__/                ka, grade, problems, chain-string, phone-input, phone-scroll, wording
 ```
 
@@ -248,17 +271,17 @@ From `docs/plans/2026-09-23-mobile-pass-decisions.md`:
   sentences now print x_approx / C (1,14 %, 1,34 %), the student's own check done the book's way;
   the bar, the 5 % verdict and the graded answer keep the exact α. Held by `wording.test.tsx`
   (`divides the x it prints in the check sentence …`) and `problems.test.ts` (`divides the x it
-  prints when it states the klofnunarhlutfall`).
+prints when it states the klofnunarhlutfall`).
 - **106 (a) and (b)** — Æfa, above. Held by `problems.test.ts`.
 - **107 (a) — the menu no longer says pKa was met earlier.** pH Títrun and Stuðpúðar come after
   this game, so the overview now reads `Í pH Títrun og Stuðpúðum færðu pKa gefinn upp í dæmum. Hér
-  kemur talan sjálf: …`. Held by `wording.test.tsx` (`does not say pKa was met earlier …`).
+kemur talan sjálf: …`. Held by `wording.test.tsx` (`does not say pKa was met earlier …`).
 - **108 — constants at the source's figures.** Æfa printed `Ka = 1,80e-5`, Skilja
   `x = 1,333e-3 M` and Kanna's table `4,90 × 10⁻¹⁰`. Ka is now `formatScientific` to Appendix D's
   two figures everywhere, as Beita prints it; computed x to three, the figures Æfa's x step grades
   to. The e-form stays only where it models what to type: the placeholder, the x Æfa's feedback
   says to enter, and the x the 5 % check echoes back. Held by `wording.test.tsx` (`constants as
-  the source gives them`).
+the source gives them`).
 
 ## Tests
 

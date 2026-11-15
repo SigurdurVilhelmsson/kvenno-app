@@ -19,6 +19,8 @@
  * other count is the amount, rounded.
  */
 
+import type { ParticleCounts } from '@shared/components/ParticleBeaker';
+
 import { titrations } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
 import { calculateWeakStrongPH } from './ph-calculations';
@@ -83,22 +85,10 @@ export function speciesAt(v: number): Species {
   return { pH, mmol, conc, totalVolume };
 }
 
-/**
- * The exaggerated pair at the two volumes where the minor species matter:
- * `ion` is CH₃COOH → CH₃COO⁻ + H⁺ at the start, `hyd` is
- * CH₃COO⁻ + H₂O → CH₃COOH + OH⁻ at the equivalence point.
- */
-export type FlagPair = 'ion' | 'hyd' | null;
-
-/** What the view draws at a volume: the real counts, and the exaggerated pair if any. */
-export interface ParticleCounts {
-  HA: number;
-  A: number;
-  H3O: number;
-  OH: number;
-  Na: number;
-  flag: FlagPair;
-}
+// The exaggerated pair and the counts a view draws live with the shared particle system;
+// `ion` is CH₃COOH → CH₃COO⁻ + H⁺ at the start, `hyd` is CH₃COO⁻ + H₂O → CH₃COOH + OH⁻
+// at the equivalence point.
+export type { FlagPair, ParticleCounts } from '@shared/components/ParticleBeaker';
 
 export function isStart(v: number): boolean {
   return Math.abs(v) < TOL;

@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
+import {
+  applyCounts,
+  createSystem,
+  flicker,
+  realCounts,
+  seeded,
+  settle,
+  shownCounts,
+  step,
+} from '@shared/components/ParticleBeaker';
 import { APPENDIX_D1_ACIDS } from '@shared/data/appendix-d';
 
 import { FIRST_BUFFER_ML, STEPS, hhPH } from '../data/agnasyn-steps';
@@ -19,16 +29,6 @@ import {
   speciesAt,
   trueMinorParticles,
 } from '../utils/agnasyn';
-import {
-  applyCounts,
-  createSystem,
-  flicker,
-  realCounts,
-  seeded,
-  settle,
-  shownCounts,
-  step,
-} from '../utils/particles';
 import { calculatePH } from '../utils/ph-calculations';
 
 const BOUNDS = { left: 0, right: 300, top: 0, bottom: 200 };
@@ -109,6 +109,7 @@ describe('Agnasýn particles', () => {
         H3O: want.H3O,
         OH: want.OH,
         Na: want.Na,
+        Cl: 0,
       });
     }
   });
@@ -128,6 +129,7 @@ describe('Agnasýn particles', () => {
         H3O: want.H3O,
         OH: want.OH,
         Na: want.Na,
+        Cl: 0,
       });
     }
   });
@@ -148,6 +150,7 @@ describe('Agnasýn particles', () => {
           H3O: want.H3O,
           OH: want.OH,
           Na: want.Na,
+          Cl: 0,
         });
       }
       const real = realCounts(sys);

@@ -924,6 +924,34 @@ in the game's README.
       game's buffer ICE root sits 0,0005 above pKₐ, which tips the second decimal. The scene says so
       in one line. Keep, or print the meter at Henderson-Hasselbalch in the buffer region?
 - [ ] On a projector and a phone (B-style hand check): the animation's pace, 0,7 s per drop.
+- [ ] **Stuðpúðasmíði's Agnasýn** (2026-11-15), a buffer beside pure water with the same saltsýra
+      or natríumhýdroxíð dripped into both, built on the same particle view, now shared. Its
+      wording is drafted by Claude (`3-ar/buffer-recipe-creator/src/data/agnasyn-steps.tsx`), and
+      its two flasks sit side by side even on a phone, where each is about 160 px wide: check
+      they read on a real phone.
+- [ ] **Sýrufastinn's Agnasýn** (2026-11-15): flússýra diluted 1,0 → 0,10 → 0,010 M, then HCl
+      beside flússýra. Wording drafted by Claude (`3-ar/syrufastinn/src/data/agnasyn-steps.tsx`).
+      Each glass holds the same 40 molecules in more water, so the three flasks are drawn the same
+      size although their volumes differ a hundredfold; the text says so. Keep, or draw the
+      volumes?
+- [ ] **Hliðrun jafnvægis' particles** (2026-11-15): the generic R/P picture became the real
+      species on one scale, in three frames from `applyStress`, for the 13 systems that can be
+      drawn without exaggeration; the rest show none. Captions drafted by Claude
+      (`3-ar/equilibrium-shifter/src/components/MixtureView.tsx`). Keep showing no particles for
+      the weak acids, or draw them with a marked exaggeration as Agnasýn does?
+- [ ] **Jafnvægisfastinn's Agnasýn** (2026-11-15): the water-gas shift from reactants and from
+      products, Q traced to K, ICE tables read off the particles. Wording drafted by Claude
+      (`3-ar/jafnvaegisfasti/src/components/AgnasynScreen.tsx`). The rate is chosen for display
+      (mass action with kf/kr = K, no time units) and the screen says so. Keep, or show the path
+      against extent instead of time?
+- [ ] **Varmafræði's tug of war** (2026-11-15): ΔH° and −TΔS° as bars that follow the
+      temperature slider, in Könnun and after each answer. Wording drafted by Claude
+      (`3-ar/thermodynamics-predictor/src/components/TugOfWar.tsx`), including the name
+      `Reipdráttur`.
+- [ ] **Leysnijafnvægi's Agnasýn** (2026-11-15): AgCl saturated, with a common ion, mixed with a
+      Q meter, and the Mohr titration. Every picture is exaggerated (the ions are about one per
+      four million water molecules), marked with a dashed ring and said in each scene. Wording
+      drafted by Claude (`3-ar/leysnijafnvaegi/src/data/agnasyn-steps.tsx`).
 
 ### C24. Left over from the Year-3 audit's urgent fixes (2026-11-14)
 

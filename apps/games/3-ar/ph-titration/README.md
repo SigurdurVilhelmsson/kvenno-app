@@ -90,11 +90,12 @@ pH readout and the curve move together. Nothing is graded or stored.
   every other count is the amount rounded. `agnasyn.test.ts` holds that the rounded amounts equal
   the counts drawn.
 - **The equilibria are drawn as dynamic**: at those two volumes the pair recombines and another
-  molecule ionises every few seconds (`flicker` in `utils/particles.ts`).
+  molecule ionises every few seconds (`flicker` in the shared `@shared/components/ParticleBeaker`).
 - **Henderson-Hasselbalch is printed with the particle counts** (`log(5/15)`, `log(10/10)`), and
   agrees with the curve to two decimals except at half-equivalence, where the ICE root is 0,0005
   above pKₐ and the meter shows 4,75. The scene says so (C23 in `docs/REVIEW-QUEUE.md`).
-- `utils/particles.ts` is pure apart from a random source passed in; `agnasyn.test.ts` drips a
+- The particle system (`packages/shared/components/ParticleBeaker/system.ts`, shared since
+  2026-11-15) is pure apart from a random source passed in; `agnasyn.test.ts` drips a
   whole titration through it and drags a slider at random, checking the counts after each move.
   `agnasyn-screen.test.tsx` walks every scene with reduced motion. With reduced motion the view
   does not drift and every change is made at once.
@@ -222,12 +223,10 @@ such material would become Apply content inside the existing levels.
 ```
 src/App.tsx                       menu, level routing, end screen, progress (ph-titration-progress)
 src/components/Agnasyn.tsx        Agnasýn: scenes, playback, slider, readouts
-src/components/ParticleBeaker.tsx Agnasýn's flask: particles, frame loop
 src/components/ProgressCurve.tsx  Agnasýn's curve, drawn as far as the NaOH added
 src/components/NaOHDissolve.tsx   Agnasýn's NaOH(s) → Na⁺ + OH⁻ loop
 src/data/agnasyn-steps.tsx        Agnasýn's seven scenes
 src/utils/agnasyn.ts              Agnasýn's chemistry and particle counts
-src/utils/particles.ts            Agnasýn's particle system
 src/types.ts                      Titration, Indicator and the difficulty/indicator unions
 src/components/Level1.tsx         Stig 1: intro card, 6 questions, TitrationCurvePreview (shown
                                     with the result on a "which curve" question, never on 3, 4, 6)
