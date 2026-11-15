@@ -179,6 +179,29 @@ at 360 × 640 and 390 × 664, with every visible change behind `phone:`, `phone-
   through `revealOnDesktop` in `@shared/utils`, which only decides and leaves the scrolling to the shared
   helpers. `phone-reveal.test.tsx` holds both.
 
+## Nærmynd
+
+A menu card above the four phases opens **Nærmynd** (2026-11-15, year-1 plan item 10): the game's
+`pbno3-ki` scenario particle by particle. 25,0 mL of 0,100 M Pb(NO₃)₂ in a beaker, 0,200 M KI
+added in portions of 1,00 mmól, five scenes and a slider that goes one portion past the point where
+the lead runs out. Nothing is graded or stored.
+
+- **The equations are `react()`'s.** `src/engine/naermynd.ts` reads the scenario from
+  `data/problems.ts`, so the molecular, complete ionic and net ionic equations, the solubility rule
+  quoted and the meðjónir are the ones Skilja and Beita show for the same pair. The I⁻ per PbI₂
+  (2) comes from the net ionic equation, not from a constant.
+- **Particles are amounts on a fixed scale**, two per mmól, each in a fixed place
+  (`2-ar/redox-reactions`' form of the template), and `naermynd.test.tsx` holds every count to the
+  rounded amount and the amounts to conservation of lead, iodide and charge.
+- **The meðjónir are drawn faded** from the scene that names them, and struck through in the
+  complete ionic equation.
+- **The mass of precipitate** (1,15 g at the end) uses `molarMassOf` from `@shared/utils`.
+- **The precipitate is drawn as PbI₂ units on the floor**; the screen says the solid really forms as
+  a yellow cloud that settles. The solution's volume grows as KI is added, which the table states
+  in mL but the beaker does not draw.
+
+Wording drafted by Claude; review item C23 in `docs/REVIEW-QUEUE.md`.
+
 ## Its Year-3 sibling
 
 Ksp was the sibling gap, and `3-ar/leysnijafnvaegi` closed it on 2026-09-20. This game asks the
@@ -195,7 +218,7 @@ item 6; `aefa-pressed.test.tsx`).
 
 ## Open
 
-- **Precipitate colours are named in prose, not rendered.** The beaker has three states. The colours
+- **Precipitate colours are named in prose, not rendered** in Kanna, whose beaker has three states (Nærmynd draws PbI₂ yellow). The colours
   a student actually sees are in the context sentences instead;
   `solubility-equilibrium/src/data/compounds.ts` in the frozen `namsbokasafn-leikir` repo has colour
   data for twenty compounds if that is ever wanted.

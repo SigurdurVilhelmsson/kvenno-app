@@ -131,5 +131,8 @@ their place between frames. A system it cannot draw without exaggerating shows n
 `3-ar/jafnvaegisfasti`'s Nærmynd does the same for the approach to equilibrium: two flasks of the
 water-gas shift whose end is `solveExtent`'s root, with a path drawn from mass-action rates whose
 ratio is K, on a time axis the screen says has no units.
+`2-ar/redox-reactions` and `1-ar/utfellingarhvorf` draw without the shared system too: each
+particle has a fixed place, so a scene always draws the same picture, and the counts come from the
+game's own engine (`react()` for the precipitation). Use that form where nothing needs to drift.
 Open review items for Nærmynd itself are C23 in
 `docs/REVIEW-QUEUE.md`.
