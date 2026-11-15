@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { standardPotential, type Couple } from '@shared/data/electrode-potentials';
 import { formatDecimal } from '@shared/utils';
 
 /**
@@ -32,6 +33,13 @@ interface CellPair {
   description: string;
 }
 
+/**
+ * E° from the book's table (`@shared/data/electrode-potentials`, appendix m68870), to the two
+ * decimals the cell shows, so the printed values add up to the printed E°cell. Iron was a typed
+ * −0,44 until 2026-11-15; the book's −0,447 is −0,45, and the Fe–Cu cell 0,79 V.
+ */
+const bookE = (couple: Couple) => Math.round(standardPotential(couple) * 100) / 100;
+
 // Standard electrode potentials (E° vs SHE)
 const CELL_PAIRS: CellPair[] = [
   {
@@ -42,7 +50,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Zn',
       ion: 'Zn²⁺',
       ionCharge: '2+',
-      standardPotential: -0.76,
+      standardPotential: bookE('Zn2+/Zn'),
       solutionColor: '#e0f7fa',
       metalColor: '#9e9e9e',
     },
@@ -51,7 +59,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Cu',
       ion: 'Cu²⁺',
       ionCharge: '2+',
-      standardPotential: 0.34,
+      standardPotential: bookE('Cu2+/Cu'),
       solutionColor: '#bbdefb',
       metalColor: '#f57c00',
     },
@@ -65,7 +73,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Mg',
       ion: 'Mg²⁺',
       ionCharge: '2+',
-      standardPotential: -2.37,
+      standardPotential: bookE('Mg2+/Mg'),
       solutionColor: '#f3e5f5',
       metalColor: '#bdbdbd',
     },
@@ -74,7 +82,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Cu',
       ion: 'Cu²⁺',
       ionCharge: '2+',
-      standardPotential: 0.34,
+      standardPotential: bookE('Cu2+/Cu'),
       solutionColor: '#bbdefb',
       metalColor: '#f57c00',
     },
@@ -88,7 +96,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Fe',
       ion: 'Fe²⁺',
       ionCharge: '2+',
-      standardPotential: -0.44,
+      standardPotential: bookE('Fe2+/Fe'),
       solutionColor: '#fff8e1',
       metalColor: '#5d4037',
     },
@@ -97,7 +105,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Cu',
       ion: 'Cu²⁺',
       ionCharge: '2+',
-      standardPotential: 0.34,
+      standardPotential: bookE('Cu2+/Cu'),
       solutionColor: '#bbdefb',
       metalColor: '#f57c00',
     },
@@ -111,7 +119,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Zn',
       ion: 'Zn²⁺',
       ionCharge: '2+',
-      standardPotential: -0.76,
+      standardPotential: bookE('Zn2+/Zn'),
       solutionColor: '#e0f7fa',
       metalColor: '#9e9e9e',
     },
@@ -120,7 +128,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Ag',
       ion: 'Ag⁺',
       ionCharge: '+',
-      standardPotential: 0.8,
+      standardPotential: bookE('Ag+/Ag'),
       solutionColor: '#eceff1',
       metalColor: '#cfd8dc',
     },

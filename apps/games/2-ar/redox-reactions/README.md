@@ -144,6 +144,11 @@ the steps its hint states (`hintReveals` in `data/half-reactions.ts`): every ste
 problems, all but identifying the species on the two whose hint names no species. Other hints
 change nothing. `right-count.test.tsx` plays each level with and without the hints.
 
+**Fixed 2026-11-15** (year-2 audit, Phase 1). The galvanic cell's E° values come from the book's
+table in `packages/shared/data/electrode-potentials.ts` (appendix m68870), to two decimals. Iron
+had been typed as −0,44 V where the book says −0,447, so the Fe–Cu cell showed 0,78 V; it is now
+−0,45 V and 0,79 V. `cell-readout.test.tsx` holds it.
+
 ## Leftovers
 
 Not recorded anywhere else; found while writing this file.
