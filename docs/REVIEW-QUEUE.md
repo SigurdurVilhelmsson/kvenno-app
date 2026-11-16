@@ -1046,6 +1046,10 @@ Claude and want a teacher's read. Tick each with the date once read.
 - [ ] **Stilla efnajöfnur, Frá lýsingu til jöfnu** (`FromDescription.tsx`, `data/descriptions.ts`):
       the twelve reactions told in words and the feedback. The reactions are the book's ch04/m68709,
       with methane in place of butane so the steppers can reach the coefficients.
+- [ ] **Einingagreining, area and volume units, Hitastig and Hittni og nákvæmni** (`Level2.tsx`,
+      `Temperature.tsx`, `data/temperature.ts`, `Accuracy.tsx`, `data/accuracy.ts`): the two new
+      Stig 2 problems, the temperature prompts and wrong-route messages, and the archer, dispenser
+      and pipette items. `hittni` and `nákvæmni` are Siggi's ruling (2026-11-15), now in `ordabok.md`.
 - [x] **Classification of matter and physical/chemical change** (book ch. 1, _einsleit_,
       _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
       a game. Do not log it as a game gap again.

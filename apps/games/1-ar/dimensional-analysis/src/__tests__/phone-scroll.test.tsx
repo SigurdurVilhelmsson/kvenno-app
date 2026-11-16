@@ -156,12 +156,12 @@ describe('Stig 2', () => {
 
     clock += 150;
     fireEvent.click(screen.getByRole('button', { name: /Næsta verkefni/ }));
-    expect(screen.getByText(/Verkefni 1 \/ 15/)).toBeTruthy();
+    expect(screen.getByText(/Verkefni 1 \/ 17/)).toBeTruthy();
 
     clock += 400;
     scrollBy.mockClear();
     fireEvent.click(screen.getByRole('button', { name: /Næsta verkefni/ }));
-    expect(screen.getByText(/Verkefni 2 \/ 15/)).toBeTruthy();
+    expect(screen.getByText(/Verkefni 2 \/ 17/)).toBeTruthy();
     expect(scrollBy).toHaveBeenCalledTimes(1);
     expect(focused()?.textContent).toMatch(/Samhengi/);
   });

@@ -477,6 +477,68 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         teachingFeedback: true,
       },
     },
+    {
+      name: 'Hitastig — rangt svar',
+      steps: [
+        { click: 'Hitastig' },
+        { fill: ['#temperature-answer', '0'] },
+        { clickRole: ['button', 'Athuga'] },
+      ],
+    },
+    {
+      name: 'Hitastig — leikur',
+      steps: [{ click: 'Hitastig' }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['#temperature-answer', '0'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta →' },
+        together: [[{ css: '[data-item-start]' }, { css: '#temperature-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Hitastig — reyna aftur',
+      steps: [{ click: 'Hitastig' }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['#temperature-answer', '0'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        together: [[{ css: '[data-item-start]' }, { css: '#temperature-answer' }]],
+        viewports: ['android', 'iphone'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Hittni og nákvæmni — leikur',
+      steps: [{ click: 'Hittni og nákvæmni' }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ clickRole: ['button', 'Hvorki hittni né nákvæmni'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta →' },
+        // The SE (a stretch target) needs one scroll: the target or the dispenser's
+        // values, the four choices and Athuga do not fit in 548 px.
+        viewports: ['android', 'iphone', 'landscape'],
+      },
+    },
+    {
+      name: 'Hittni og nákvæmni — reyna aftur',
+      steps: [{ click: 'Hittni og nákvæmni' }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ clickRole: ['button', 'Hvorki hittni né nákvæmni'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        viewports: ['android', 'iphone'],
+      },
+    },
   ],
   '1-ar/lotukerfid': [
     {

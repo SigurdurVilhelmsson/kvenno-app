@@ -31,7 +31,7 @@ two-field row (`WrittenNumberRow`, read strictly by `readWritten`), not one text
 
 **Ends and the menu.** Stig 0 and Stig 1 cannot end wrong and report completion (`Stigi 0 lokið`;
 `Þú kláraðir allar {n} áskoranirnar`). Stig 2 and Stig 3 end with
-`Stigi lokið: N af M rétt.` and a sentence on mastery. Stig 2 is mastered at 80 % right (12 of 15);
+`Stigi lokið: N af M rétt.` and a sentence on mastery. Stig 2 is mastered at 80 % right (14 of 17);
 Stig 3 at an average composite of 0,75, where the composite is answer 40 %, method 30 %,
 explanation 20 % (by length, `scoreExplanation`) and efficiency 10 % (`utils/scoring.ts`). The
 significant-figure panel on Stig 3's synthesis items is feedback only; it is not in the composite.
@@ -117,6 +117,30 @@ C5's finished state; C1 and C2 looped on their success effect; timers marked the
 solved (`level1-run.test.tsx`). The auto-hint counts wrong tries only (decision 24 (a),
 `level1-auto-hint.test.tsx`); a block over itself reads `= 1` in red (decision 25 (a),
 `level1-fraction-verdict.test.tsx`); chain factors are shuffled (`level1-option-order.test.tsx`).
+
+**Stig 2 has squared and cubed units (2026-11-15, year-1 plan item 14).** L2-16 (m² → cm²) and
+L2-17 (m³ → cm³) follow book ch01/m68683: the factor is the length factor squared or cubed
+(`10000 cm² / 1 m²`, `1000000 cm³ / 1 m³`). Each carries its own `distractors`, the unsquared
+factor among them, which `generateDistractors` offers first, so the slip the problem is about is
+always on the tray. Both are medium, so Stig 2 has 17 problems.
+
+**Hitastig, a practice beside the levels (2026-11-15, year-1 plan item 14).** Converting between
+°C, K and °F, from book ch01/m68683: twelve numbers the book itself converts, eight per run
+(`src/data/temperature.ts`, `src/components/Temperature.tsx`). Temperature is the chapter's one
+conversion that is not a factor (°C and °F do not share a zero, y = mx + b), so it is not a chain
+and not a level: the menu shows it as a dashed `Æfing` card, with the latest run as `N af M rétt`
+under `temperatureCorrect`/`temperatureTotal`, and it marks nothing completed. Answers are derived,
+graded within ±0,5 degree (so 273 for 273,15 passes), and each slip the equations invite (forgetting
+the +32, dividing instead of multiplying, adding in the wrong order, subtracting 273,15 the wrong
+way) is named by the number it gives (`wrongRoutes`). The worked steps show after a right answer or
+a second wrong one, and a right answer after that does not count (decision 1 (b)). **Hittni og nákvæmni, a second practice (2026-11-15, the rest of item 14).** Siggi's ruling: `hittni`
+is accuracy (how close to the true value) and `nákvæmni` is precision (how close repeated
+measurements are to one another), now in `ordabok.md`. Book ch01/m68690 uses other words in places
+(`réttvísi`, `réttleiki`, and a glossary that gives `nákvæmni` the accuracy sense), which is why the
+ruling was needed. Eight items, all the book's: archers W, X and Y, the three cough-syrup dispensers
+and two end-of-section sets (`src/data/accuracy.ts`, `src/components/Accuracy.tsx`). A set's verdict
+is derived from its mean against the true value and its spread against a stated limit, and the
+feedback prints both; a wrong answer says which half was misjudged (`hint`) without the verdict.
 
 **Stig 2's chain is one chain.** Drag mode and the button list keep one record, a factor sent back
 to the pool leaves the graded path, and the next problem starts clean in one render

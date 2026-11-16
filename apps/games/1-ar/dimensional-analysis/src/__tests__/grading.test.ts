@@ -95,7 +95,7 @@ describe('the real Level 2 problem set', () => {
   });
 
   it('has an answer for every problem, none of them zero or unreadable', () => {
-    expect(withAnswers.length).toBe(15);
+    expect(withAnswers.length).toBe(17);
     for (const [id, , answer] of withAnswers) {
       expect(Number.isFinite(answer), id).toBe(true);
       expect(answer, id).not.toBe(0);
