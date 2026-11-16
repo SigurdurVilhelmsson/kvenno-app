@@ -1050,6 +1050,9 @@ Claude and want a teacher's read. Tick each with the date once read.
       `Temperature.tsx`, `data/temperature.ts`, `Accuracy.tsx`, `data/accuracy.ts`): the two new
       Stig 2 problems, the temperature prompts and wrong-route messages, and the archer, dispenser
       and pipette items. `hittni` and `nákvæmni` are Siggi's ruling (2026-11-15), now in `ordabok.md`.
+- [ ] **Einingakeðjan, titration and gravimetric analysis** (`data/problems.ts` B6–B8,
+      `data/ratios.ts`): the three new Beita prompts and their ratio cards. The quantities follow the
+      book's ch04/m68716 (Siggi 2026-11-15: titration and gravimetric analysis go here).
 - [x] **Classification of matter and physical/chemical change** (book ch. 1, _einsleit_,
       _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
       a game. Do not log it as a game gap again.
