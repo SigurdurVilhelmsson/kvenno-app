@@ -16,7 +16,7 @@
     "@react-pdf/renderer": "^4.9.0",
     "cors": "^2.8.6",
     "express": "^5.3.0",
-    "express-rate-limit": "^8.7.1",
+    "express-rate-limit": "^8.7.4",
     "formidable": "^3.5.4",
     "helmet": "^8.3.0",
     "react": "^19.3.1"
@@ -28,7 +28,7 @@
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/supertest": "^7.2.1",
-    "supertest": "^7.3.1",
+    "supertest": "^7.3.2",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
