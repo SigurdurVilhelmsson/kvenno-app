@@ -76,6 +76,24 @@ export const molarMassRatios: Equivalence[] = [
     kind: 'molmassi',
   },
   {
+    id: 'mm-BaSO4',
+    left: { value: 233.38, unit: 'g', species: 'BaSO₄' },
+    right: { value: 1, unit: 'mól', species: 'BaSO₄' },
+    kind: 'molmassi',
+  },
+  {
+    id: 'mm-CaOH2',
+    left: { value: 74.09, unit: 'g', species: 'Ca(OH)₂' },
+    right: { value: 1, unit: 'mól', species: 'Ca(OH)₂' },
+    kind: 'molmassi',
+  },
+  {
+    id: 'mm-MgSO4',
+    left: { value: 120.36, unit: 'g', species: 'MgSO₄' },
+    right: { value: 1, unit: 'mól', species: 'MgSO₄' },
+    kind: 'molmassi',
+  },
+  {
     id: 'mm-NaHCO3',
     left: { value: 84.01, unit: 'g', species: 'NaHCO₃' },
     right: { value: 1, unit: 'mól', species: 'NaHCO₃' },
@@ -165,6 +183,27 @@ export const molarityRatios: Equivalence[] = [
     kind: 'molstyrkur',
     source: '0,100 M HCl',
   },
+  {
+    id: 'molstyrkur-NaOH-0250',
+    left: { value: 0.25, unit: 'mól', species: 'NaOH', label: '0,250' },
+    right: { value: 1, unit: 'L', species: 'NaOH(aq)' },
+    kind: 'molstyrkur',
+    source: '0,250 M NaOH',
+  },
+  {
+    id: 'molstyrkur-CaOH2-00100',
+    left: { value: 0.01, unit: 'mól', species: 'Ca(OH)₂', label: '0,0100' },
+    right: { value: 1, unit: 'L', species: 'Ca(OH)₂(aq)' },
+    kind: 'molstyrkur',
+    source: '0,0100 M Ca(OH)₂',
+  },
+  {
+    id: 'molstyrkur-HBr-00105',
+    left: { value: 0.0105, unit: 'mól', species: 'HBr', label: '0,0105' },
+    right: { value: 1, unit: 'L', species: 'HBr(aq)' },
+    kind: 'molstyrkur',
+    source: '0,0105 M HBr',
+  },
 ];
 
 /** Densities at room temperature. */
@@ -193,6 +232,34 @@ export const densityRatios: Equivalence[] = [
  * skill being practised.
  */
 export const equationRatios: Equivalence[] = [
+  {
+    id: 'jafna-NaOH-HCl',
+    left: { value: 1, unit: 'mól', species: 'NaOH' },
+    right: { value: 1, unit: 'mól', species: 'HCl' },
+    kind: 'jafna',
+    source: 'HCl + NaOH → NaCl + H₂O',
+  },
+  {
+    id: 'jafna-CaOH2-HBr',
+    left: { value: 1, unit: 'mól', species: 'Ca(OH)₂' },
+    right: { value: 2, unit: 'mól', species: 'HBr' },
+    kind: 'jafna',
+    source: 'Ca(OH)₂ + 2 HBr → CaBr₂ + 2 H₂O',
+  },
+  {
+    id: 'jafna-BaSO4-MgSO4',
+    left: { value: 1, unit: 'mól', species: 'BaSO₄' },
+    right: { value: 1, unit: 'mól', species: 'MgSO₄' },
+    kind: 'jafna',
+    source: 'MgSO₄ + Ba(NO₃)₂ → BaSO₄ + Mg(NO₃)₂',
+  },
+  {
+    id: 'jafna-BaSO4-BaNO32',
+    left: { value: 1, unit: 'mól', species: 'BaSO₄' },
+    right: { value: 1, unit: 'mól', species: 'Ba(NO₃)₂' },
+    kind: 'jafna',
+    source: 'MgSO₄ + Ba(NO₃)₂ → BaSO₄ + Mg(NO₃)₂',
+  },
   {
     id: 'jafna-Mg-MgO',
     left: { value: 2, unit: 'mól', species: 'Mg' },

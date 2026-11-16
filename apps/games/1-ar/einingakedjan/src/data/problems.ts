@@ -225,6 +225,71 @@ export const problems: Problem[] = [
     expectedValue: 3.57398,
     expectedSteps: 3,
   },
+  /* Magnbundin efnagreining, book ch04/m68716: Siggi's Phase 4 ruling of
+     2026-11-15 puts titration and gravimetric analysis here, as chains. */
+  {
+    id: 'B6',
+    phase: 'beita',
+    icon: '🧪',
+    context:
+      'Títrun: 50,00 mL af saltsýru af óþekktum styrk þurfa 35,23 mL af 0,250 M NaOH úr búrettunni til að ná endapunkti.',
+    goal: 'mólfjölda HCl í sýninu',
+    start: quantity(35.23, 'mL', 'NaOH(aq)'),
+    startLabel: '35,23',
+    target: signature('mól', 'HCl'),
+    equation: 'HCl + NaOH → NaCl + H₂O',
+    poolIds: [
+      'metric-mL-L',
+      'molstyrkur-NaOH-0250',
+      'jafna-NaOH-HCl',
+      'molstyrkur-HCl-0100',
+      'mm-NaOH',
+    ],
+    hint: 'Byrjaðu á lausninni sem þú þekkir, NaOH úr búrettunni: rúmmál → mól NaOH → mól HCl.',
+    why: 'Deildu svo mólunum með rúmmáli sýnisins, 0,05000 L, og þú hefur mólstyrk saltsýrunnar: 0,176 M. Þannig finnst styrkur óþekktrar lausnar á rannsóknarstofu.',
+    expectedValue: 0.0088075,
+    expectedSteps: 3,
+  },
+  {
+    id: 'B7',
+    phase: 'beita',
+    icon: '⚗️',
+    context:
+      'Títrun: í flösku eru 125 mL af 0,0100 M Ca(OH)₂-lausn, og í búrettunni er 0,0105 M HBr-lausn.',
+    goal: 'rúmmál HBr-lausnar sem þarf til að ná jafngildispunkti, í lítrum',
+    start: quantity(125, 'mL', 'Ca(OH)₂(aq)'),
+    startLabel: '125',
+    target: signature('L', 'HBr(aq)'),
+    equation: 'Ca(OH)₂ + 2 HBr → CaBr₂ + 2 H₂O',
+    poolIds: [
+      'metric-mL-L',
+      'molstyrkur-CaOH2-00100',
+      'jafna-CaOH2-HBr',
+      'molstyrkur-HBr-00105',
+      'mm-CaOH2',
+    ],
+    hint: 'Fjögur skref. Hver Ca(OH)₂ ber tvær OH⁻-jónir, svo hún tekur tvær HBr.',
+    why: 'Svona er títrun skipulögð fyrir fram: hversu mikið fer úr búrettunni áður en liturinn breytist.',
+    expectedValue: 0.238095,
+    expectedSteps: 4,
+  },
+  {
+    id: 'B8',
+    phase: 'beita',
+    icon: '⚖️',
+    context:
+      'Þyngdarmælingagreining: 0,4550 g blanda með MgSO₄ er leyst upp og meðhöndluð með umframmagni af Ba(NO₃)₂. Botnfallið, BaSO₄, er síað frá og vegur 0,6168 g.',
+    goal: 'massa MgSO₄ í blöndunni, í grömmum',
+    start: quantity(0.6168, 'g', 'BaSO₄'),
+    startLabel: '0,6168',
+    target: signature('g', 'MgSO₄'),
+    equation: 'MgSO₄ + Ba(NO₃)₂ → BaSO₄ + Mg(NO₃)₂',
+    poolIds: ['mm-BaSO4', 'jafna-BaSO4-MgSO4', 'mm-MgSO4', 'jafna-BaSO4-BaNO32'],
+    hint: 'Botnfallið er það sem þú vigtaðir. Farðu úr grömmum af BaSO₄ í mól, yfir jöfnuna, og út í grömm af MgSO₄.',
+    why: 'Deildu svo með massa sýnisins, 0,4550 g: blandan er 69,9 % MgSO₄. Vog og sía duga til að mæla hve mikið af efni er í sýni.',
+    expectedValue: 0.318104,
+    expectedSteps: 3,
+  },
 ];
 
 export const problemsForPhase = (phase: Phase): Problem[] =>

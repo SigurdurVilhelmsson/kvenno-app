@@ -159,6 +159,17 @@ Avogadro's number is `tala Avogadros`, as the textbook writes it, on the ratio c
 the legend's kind label) and in two hints, where the game said `Avogadro-tala` (year-1 audit,
 Phase 0 item 4). A `governed-terms.test.ts` row holds it.
 
+## Titration and gravimetric analysis in Beita (2026-11-15)
+
+Siggi's Phase 4 ruling on the year-1 plan: quantitative analysis (book ch04/m68716) goes into this
+game as chains, not a game of its own. Beita gains three of the book's problems: its titration
+worked example (35,23 mL of 0,250 M NaOH to mól HCl), its end-of-section titration (the volume of
+0,0105 M HBr for 125 mL of 0,0100 M Ca(OH)₂, four steps) and its gravimetric worked example
+(0,6168 g BaSO₄ to grams of MgSO₄). The last division, by the sample's volume or mass, is not a
+ratio card, so each `why` gives it with the book's result (0,176 M; 69,9 %). Each problem carries a
+distractor a wrong turn can take (`mm-CaOH2`, `jafna-BaSO4-BaNO32`), which
+`shortest-repair.test.ts` requires. Combustion analysis went to Reynsluformúlur.
+
 ## Open
 
 Siggi's call; not built.
