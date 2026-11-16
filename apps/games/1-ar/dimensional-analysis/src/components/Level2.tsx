@@ -130,6 +130,11 @@ function generateDistractors(problem: (typeof level2Problems)[0]): string[] {
     '1 m / 1000 mm',
   ];
 
+  // A problem's own wrong factors first: the un-squared 100 cm² per m².
+  for (const factor of problem.distractors ?? []) {
+    if (!correctFactors.has(factor)) distractors.push(factor);
+  }
+
   // Add inverted versions of correct factors as distractors
   for (const factor of problem.correctPath) {
     const [num, den] = factor.split(' / ');

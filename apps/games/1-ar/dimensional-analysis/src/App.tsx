@@ -5,14 +5,21 @@ import { useGameI18n, useGameProgress } from '@shared/hooks';
 import { useScreenTop } from '@shared/utils';
 
 // Import Level components
+import { Accuracy } from './components/Accuracy';
 import { Level0SigFigs } from './components/Level0SigFigs';
 import { Level1Conceptual } from './components/Level1Conceptual';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+import { Temperature } from './components/Temperature';
 import { gameTranslations } from './i18n';
 
 interface Progress {
   completed: number[];
+  /** The latest run of the Hitastig practice, kept apart from the levels. */
+  temperatureCorrect?: number;
+  temperatureTotal?: number;
+  accuracyCorrect?: number;
+  accuracyTotal?: number;
 }
 
 /**
@@ -20,7 +27,9 @@ interface Progress {
  */
 function App() {
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
-  const [screen, setScreen] = useState<'menu' | 'level0' | 'level1' | 'level2' | 'level3'>('menu');
+  const [screen, setScreen] = useState<
+    'menu' | 'level0' | 'level1' | 'level2' | 'level3' | 'temperature' | 'accuracy'
+  >('menu');
   const { progress, updateProgress } = useGameProgress<Progress>('dimensional-analysis-progress', {
     completed: [],
   });
@@ -157,6 +166,43 @@ function App() {
                       <p className="text-sm text-orange-200 mt-2">Lokið</p>
                     )}
                   </button>
+
+                  {/* Practice beside the levels, not a level (year-1 plan item 14):
+                      temperature is the one conversion that is not a factor. */}
+                  <button
+                    data-level-card="temperature"
+                    onClick={() => setScreen('temperature')}
+                    className="game-card bg-white border-2 border-dashed border-sky-400 hover:bg-sky-50 text-warm-800 rounded-lg p-5 sm:p-6 phone:p-4 text-left transition-colors"
+                  >
+                    <div className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                      Æfing
+                    </div>
+                    <h3 className="text-xl font-semibold mb-1">Hitastig</h3>
+                    <p className="text-warm-600">Umreikningur milli °C, K og °F</p>
+                    {progress.temperatureTotal !== undefined && (
+                      <p className="text-sm text-sky-700 mt-2">
+                        Síðast: {progress.temperatureCorrect ?? 0} af {progress.temperatureTotal}{' '}
+                        rétt
+                      </p>
+                    )}
+                  </button>
+
+                  <button
+                    data-level-card="accuracy"
+                    onClick={() => setScreen('accuracy')}
+                    className="game-card bg-white border-2 border-dashed border-sky-400 hover:bg-sky-50 text-warm-800 rounded-lg p-5 sm:p-6 phone:p-4 text-left transition-colors"
+                  >
+                    <div className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                      Æfing
+                    </div>
+                    <h3 className="text-xl font-semibold mb-1">Hittni og nákvæmni</h3>
+                    <p className="text-warm-600">Rétt gildi eða endurteknar mælingar?</p>
+                    {progress.accuracyTotal !== undefined && (
+                      <p className="text-sm text-sky-700 mt-2">
+                        Síðast: {progress.accuracyCorrect ?? 0} af {progress.accuracyTotal} rétt
+                      </p>
+                    )}
+                  </button>
                 </div>
 
                 {/* Why this matters + curriculum position */}
@@ -220,6 +266,22 @@ function App() {
               }}
               onBack={() => setScreen('menu')}
               initialProgress={undefined}
+            />
+          )}
+          {screen === 'temperature' && (
+            <Temperature
+              onComplete={(correct, total) =>
+                updateProgress({ temperatureCorrect: correct, temperatureTotal: total })
+              }
+              onBack={() => setScreen('menu')}
+            />
+          )}
+          {screen === 'accuracy' && (
+            <Accuracy
+              onComplete={(correct, total) =>
+                updateProgress({ accuracyCorrect: correct, accuracyTotal: total })
+              }
+              onBack={() => setScreen('menu')}
             />
           )}
         </main>

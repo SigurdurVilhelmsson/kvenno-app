@@ -1,6 +1,7 @@
 en-US;is-IS
 absolute zero;alkul
 absorbtion;gleypni
+accuracy;hittni
 achiral;óhendinn
 acid;sýra
 acid anhydride;sýruanhýdríð
@@ -489,6 +490,7 @@ pre-exponential factor;tíðnifasti
 precipitate;botnfall
 precipitation;útfelling
 precipitation reaction;útfellingarhvarf
+precision;nákvæmni
 pressure;þrýstingur
 principal quantum number;aðalskammtatala
 product;myndefni

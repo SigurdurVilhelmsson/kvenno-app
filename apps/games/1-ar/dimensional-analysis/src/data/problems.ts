@@ -25,6 +25,12 @@ export interface Level2Problem {
   scaffoldingLevel: number;
   /** Hint text in Icelandic that guides strategy without revealing the answer */
   hint: string;
+  /**
+   * Wrong factors offered before the generic ones: for a squared or cubed
+   * unit, the factor with the length's number un-squared (100 cm² per m²),
+   * which is the mistake the problem exists to catch.
+   */
+  distractors?: string[];
 }
 
 /**
@@ -141,6 +147,33 @@ export const level2Problems: Level2Problem[] = [
     correctPath: ['1 m / 1000 mm', '1 km / 1000 m'],
     scaffoldingLevel: 2,
     hint: 'Þetta þarf 2 skref. Byrjaðu á að breyta mm í metra og síðan metra í km.',
+  },
+  // Squared and cubed units (year-1 plan item 14, the book's ch01/m68683):
+  // a length factor is squared or cubed with its unit, so 1 m = 100 cm gives
+  // 1 m² = 10 000 cm² and 1 m³ = 1 000 000 cm³.
+  {
+    id: 'L2-16',
+    difficulty: 'medium',
+    context: 'Borðplata í rannsóknarstofu er 1,8 m². Hver er flötur hennar í cm²?',
+    startValue: 1.8,
+    startUnit: 'm²',
+    targetUnit: 'cm²',
+    correctPath: ['10000 cm² / 1 m²'],
+    scaffoldingLevel: 2,
+    hint: '1 m = 100 cm, og fermetri er metri sinnum metri. Hve margir cm² eru þá í 1 m²?',
+    distractors: ['100 cm² / 1 m²', '1 m² / 10000 cm²'],
+  },
+  {
+    id: 'L2-17',
+    difficulty: 'medium',
+    context: 'Fiskabúr rúmar 0,060 m³ af vatni. Hvert er rúmmálið í cm³?',
+    startValue: 0.06,
+    startUnit: 'm³',
+    targetUnit: 'cm³',
+    correctPath: ['1000000 cm³ / 1 m³'],
+    scaffoldingLevel: 2,
+    hint: '1 m = 100 cm, og rúmmetri er metri í þriðja veldi. Hve margir cm³ eru þá í 1 m³?',
+    distractors: ['100 cm³ / 1 m³', '1000 cm³ / 1 m³'],
   },
   {
     id: 'L2-11',
