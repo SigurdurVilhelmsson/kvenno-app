@@ -1053,6 +1053,10 @@ Claude and want a teacher's read. Tick each with the date once read.
 - [ ] **Einingakeðjan, titration and gravimetric analysis** (`data/problems.ts` B6–B8,
       `data/ratios.ts`): the three new Beita prompts and their ratio cards. The quantities follow the
       book's ch04/m68716 (Siggi 2026-11-15: titration and gravimetric analysis go here).
+- [ ] **Útfellingarhvörf, Hvers konar hvarf?** (`ReactionTypesScreen.tsx`, `data/reaction-types.ts`):
+      the nine reactions, the four type labels, their signs and notes. Recognition only (Siggi
+      2026-11-15). The combustion label is `Brunaefnahvarf`, as `ordabok.md` rules, where the book's
+      ch04/m68710 says `brunahvarf`.
 - [x] **Classification of matter and physical/chemical change** (book ch. 1, _einsleit_,
       _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
       a game. Do not log it as a game gap again.
