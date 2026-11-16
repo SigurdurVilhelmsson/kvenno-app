@@ -216,6 +216,20 @@ no Ksp for it — see its README.
 the only cue to what was chosen before Athuga. Both now carry `aria-pressed` (year-1 audit, Phase 0
 item 6; `aefa-pressed.test.tsx`).
 
+## Hvers konar hvarf? (2026-11-15)
+
+Siggi's Phase 4 ruling on the year-1 plan: classifying reactions (book ch04/m68710, the module this
+game follows) is taught here, recognition only. A practice card beside the phases, not a fifth
+phase: nine equations, each an útfellingarhvarf, sýru-basa hvarf, redox-hvarf or brunaefnahvarf
+(`src/data/reaction-types.ts`, `ReactionTypesScreen.tsx`). No oxidation numbers are worked and no pH
+is computed. The items are picked to catch the look-alikes: a solid forming from a metal and a
+solution (Cu + AgNO₃) or from two elements is redox, a solid dissolving in acid (Mg(OH)₂) is
+acid–base, a metal in acid (Zn + HCl) is redox, and a combustion is also redox, which its note says.
+A test holds that every non-precipitation item forming a solid carries a note. The run ends
+`N af M rétt`, kept as `flokkarCorrect`/`flokkarTotal`; a right answer after the answer was shown
+does not count (decision 1 (b)). `brunaefnahvarf` is `ordabok.md`'s (Siggi, 2026-08-27) where the
+book writes `brunahvarf`; `sýru-basa hvarf` is the book's.
+
 ## Open
 
 - **Precipitate colours are named in prose, not rendered** in Kanna, whose beaker has three states (Nærmynd draws PbI₂ yellow). The colours

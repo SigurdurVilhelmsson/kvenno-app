@@ -8,10 +8,11 @@ import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { NaermyndScreen } from './components/NaermyndScreen';
+import { ReactionTypesScreen } from './components/ReactionTypesScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
 import './styles.css';
 
-type Screen = 'menu' | 'naermynd' | 'kanna' | 'skilja' | 'aefa' | 'beita';
+type Screen = 'menu' | 'naermynd' | 'kanna' | 'skilja' | 'aefa' | 'beita' | 'flokkar';
 
 interface Progress {
   completed: Screen[];
@@ -21,6 +22,9 @@ interface Progress {
    */
   beitaCorrect?: number;
   beitaTotal?: number;
+  /** The latest run of the "Hvers konar hvarf?" practice, kept apart from the phases. */
+  flokkarCorrect?: number;
+  flokkarTotal?: number;
 }
 
 const PHASES: { id: Screen; number: string; name: string; description: string; tone: string }[] = [
@@ -166,6 +170,28 @@ function App() {
                 ))}
               </div>
 
+              {/* Practice beside the phases (Siggi's Phase 4 ruling, 2026-11-15):
+                  the four kinds of reaction in book ch04/m68710, recognition only. */}
+              <button
+                type="button"
+                data-phase-card="flokkar"
+                onClick={() => setScreen('flokkar')}
+                className="game-card mt-4 w-full rounded-lg border-2 border-dashed border-sky-400 bg-white p-4 text-left text-warm-800 transition-colors hover:bg-sky-50 sm:p-5 phone:mt-3 phone:p-3"
+              >
+                <div className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                  Æfing
+                </div>
+                <h3 className="text-xl font-semibold phone:text-lg">Hvers konar hvarf?</h3>
+                <p className="text-sm text-warm-600">
+                  Útfellingarhvarf, sýru-basa hvarf, redox-hvarf eða brunaefnahvarf
+                </p>
+                {progress.flokkarTotal !== undefined && (
+                  <p className="mt-1 text-sm text-sky-700">
+                    Síðast: {progress.flokkarCorrect ?? 0} af {progress.flokkarTotal} rétt
+                  </p>
+                )}
+              </button>
+
               <div className="mt-6 rounded-lg border border-warm-200 bg-warm-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-warm-800">Þú lærir</h3>
                 <ul className="space-y-1.5 text-sm text-warm-700">
@@ -237,6 +263,15 @@ function App() {
         )}
 
         {screen === 'naermynd' && <NaermyndScreen onBack={backToMenu} />}
+
+        {screen === 'flokkar' && (
+          <ReactionTypesScreen
+            onComplete={(correct, total) =>
+              updateProgress({ flokkarCorrect: correct, flokkarTotal: total })
+            }
+            onBack={backToMenu}
+          />
+        )}
 
         {screen === 'kanna' && (
           <KannaScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />

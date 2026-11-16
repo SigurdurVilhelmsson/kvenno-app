@@ -1850,6 +1850,30 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
   ],
   '1-ar/utfellingarhvorf': [
     {
+      name: 'Hvers konar hvarf? — leikur',
+      steps: [{ click: 'Hvers konar hvarf?' }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ clickRole: ['button', 'Brunaefnahvarf'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta →' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Hvers konar hvarf? — reyna aftur',
+      steps: [{ click: 'Hvers konar hvarf?' }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ clickRole: ['button', 'Brunaefnahvarf'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        viewports: ['android', 'iphone'],
+      },
+    },
+    {
       name: 'Valmynd',
       steps: [
         {
