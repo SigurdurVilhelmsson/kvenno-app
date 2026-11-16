@@ -1043,6 +1043,9 @@ Claude and want a teacher's read. Tick each with the date once read.
 - [ ] **Lausnir Stig 3, massaprósenta, ppm/ppb and mólhlutfall** (`Level3.tsx`,
       `utils/concentration-units.ts`, `StepBySolution.tsx`): the eleven new prompts, the formula card
       lines and the worked steps. Units and definitions follow the book (ch. 11).
+- [ ] **Stilla efnajöfnur, Frá lýsingu til jöfnu** (`FromDescription.tsx`, `data/descriptions.ts`):
+      the twelve reactions told in words and the feedback. The reactions are the book's ch04/m68709,
+      with methane in place of butane so the steppers can reach the coefficients.
 - [x] **Classification of matter and physical/chemical change** (book ch. 1, _einsleit_,
       _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
       a game. Do not log it as a game gap again.
