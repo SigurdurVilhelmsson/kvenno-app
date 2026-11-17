@@ -43,7 +43,7 @@ describe('the decimal comma on screen', () => {
     for (let step = 0; step < 5; step += 1) {
       expectCommaOnly(`Skilja step ${step + 1}`);
       if (step === 2) expect(document.body.textContent).toContain('R = 0,0821');
-      fireEvent.click(screen.getByText(step === 4 ? 'Ljúka' : 'Næsta'));
+      fireEvent.click(screen.getByText(step === 4 ? 'Áfram í Æfa' : 'Næsta'));
     }
   });
 

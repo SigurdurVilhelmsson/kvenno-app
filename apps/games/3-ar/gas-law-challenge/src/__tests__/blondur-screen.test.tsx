@@ -31,7 +31,7 @@ afterEach(() => {
 describe('Gasblöndur screen', () => {
   it('opens from the menu with its title focused', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: 'Opna gasblöndur' }));
+    fireEvent.click(screen.getByRole('button', { name: /Gasblöndur og efnahvörf/ }));
     const focused = document.activeElement;
     expect(focused?.tagName).toBe('H2');
     expect(focused?.textContent).toBe('Gasblöndur og efnahvörf');

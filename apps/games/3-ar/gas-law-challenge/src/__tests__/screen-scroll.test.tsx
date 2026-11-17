@@ -40,7 +40,7 @@ describe('each screen opens at its top', () => {
     render(<App />);
 
     scrollY = 900;
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     expect(scrollBy).toHaveBeenLastCalledWith({ top: -900, behavior: 'auto' });
 
     scrollBy.mockClear();
@@ -58,7 +58,7 @@ describe('each screen opens at its top', () => {
 
   it('does not scroll a page that is already at the top', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     act(() => {});
     expect(scrollBy).not.toHaveBeenCalled();
   });
@@ -67,7 +67,7 @@ describe('each screen opens at its top', () => {
     render(<App />);
     expect(document.activeElement).toBe(document.body);
 
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     const question = document.querySelector('[data-item-start]');
     expect(question).not.toBeNull();
     expect(document.activeElement).toBe(question);
@@ -81,14 +81,13 @@ describe('each screen opens at its top', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Valmynd/ }));
     expect(document.activeElement).toBe(
-      screen.getByRole('button', { name: /Stig 1 — Kjörgaslögmálið/, pressed: true })
+      screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ })
     );
   });
 
   it('in the law step, moves focus to the law verdict, then to the answer card', async () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Stig 2 — Sérstök tilvik/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 2: Sérstök tilvik/ }));
     const question = document.querySelector('[data-item-start]');
     expect(question?.tagName).toBe('H4');
     expect(document.activeElement).toBe(question);
@@ -109,7 +108,7 @@ describe('each screen opens at its top', () => {
 
   it('drops a press on Næsta within 400 ms of the feedback appearing', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     fireEvent.change(screen.getByLabelText(/Svar fyrir/), { target: { value: '999999' } });
     fireEvent.click(screen.getByRole('button', { name: /Athuga Svar/ }));
 

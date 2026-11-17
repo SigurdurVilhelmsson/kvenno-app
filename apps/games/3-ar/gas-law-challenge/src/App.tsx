@@ -100,18 +100,22 @@ function App() {
     setScreen('game');
   };
 
-  /** Start a mode from the menu (or a practice round again), on the selected level. */
-  const startRun = (mode: GameMode) => {
+  /**
+   * Start a mode on a level: from a level card or a Keppnishamur button on the menu, or a
+   * practice round again on the level being played.
+   */
+  const startRun = (mode: GameMode, level: Level = selectedLevel) => {
+    setSelectedLevel(level);
     if (mode === 'practice') {
-      const newDeck = getPracticeDeck(selectedLevel);
+      const newDeck = getPracticeDeck(level);
       setDeck(newDeck);
       setDeckPos(0);
       setRound({ correct: 0, total: 0 });
       setRoundResult(null);
-      showQuestion(mode, selectedLevel, newDeck[0]);
+      showQuestion(mode, level, newDeck[0]);
     } else {
       setRun(NEW_RUN);
-      showQuestion(mode, selectedLevel, getRandomQuestionForLevel(selectedLevel));
+      showQuestion(mode, level, getRandomQuestionForLevel(level));
     }
   };
 
@@ -302,8 +306,8 @@ function App() {
   // Focus follows each screen swap, since the button that caused it has gone with the old
   // screen and focus would otherwise fall to <body>: a new question focuses its question (the
   // law step's while the law is still being chosen), the feedback screen its verdict (design
-  // P3), and back on the menu the level being played, with the level choice and that mode's
-  // start button brought on screen on a phone. Nothing on the initial load.
+  // P3), and back on the menu the card (or Keppnishamur button) of the level just played,
+  // brought on screen on a phone. Nothing on the initial load.
   //
   // The screens fade (FadePresence), which mounts the new one a render after `screen`
   // changes, so this usually runs as the new screen's root attaches. A screen shown again
@@ -318,9 +322,14 @@ function App() {
     if (lastShown.current === which) return;
     lastShown.current = which;
     if (which === 'menu') {
-      const chooser = root.querySelector('[data-level-chooser]');
-      revealSpan(root.querySelector(`[data-mode-start="${gameMode}"]`), [chooser]);
-      focusTarget(chooser?.querySelector<HTMLElement>('[aria-pressed="true"]'));
+      // The card or Keppnishamur button that started the level last played.
+      const start = root.querySelector<HTMLElement>(
+        gameMode === 'practice'
+          ? `[data-level-card="${selectedLevel}"]`
+          : `[data-challenge-start="${selectedLevel}"]`
+      );
+      revealSpan(start, []);
+      focusTarget(start);
     } else if (which === 'game') {
       focusTarget(root.querySelector<HTMLElement>('[data-item-start]'));
     } else if (which === 'naermynd' || which === 'blondur') {
@@ -409,8 +418,6 @@ function App() {
       <FadePresence show={screen === 'menu'} exitDuration={200}>
         <MenuScreen
           progress={progress}
-          selectedLevel={selectedLevel}
-          setSelectedLevel={setSelectedLevel}
           resetProgress={resetProgress}
           onStart={startRun}
           onNaermynd={() => setScreen('naermynd')}

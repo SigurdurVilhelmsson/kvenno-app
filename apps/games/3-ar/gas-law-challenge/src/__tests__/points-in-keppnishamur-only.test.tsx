@@ -69,8 +69,7 @@ describe('Æfingahamur', () => {
     const level3 = getQuestionsForLevel(3);
     expect(level3).toHaveLength(4);
 
-    fireEvent.click(screen.getByRole('button', { name: /Stig 3 — Samanburður/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 3: Samanburður/ }));
     settle();
     expect(screen.getByText(/Spurning 1 af 4/)).toBeTruthy();
 
@@ -115,11 +114,11 @@ describe('Æfingahamur', () => {
     // The menu shows the round, not points.
     fireEvent.click(screen.getByRole('button', { name: /📊 Valmynd/ }));
     settle(1000);
-    expect(screen.getByRole('button', { name: /Stig 3 — Samanburður/ }).textContent).toContain(
+    expect(screen.getByRole('button', { name: /Stig 3: Samanburður/ }).textContent).toContain(
       '✓ 2 af 4 rétt'
     );
     expect(screen.getByText(/1 af 3 stigum/)).toBeTruthy();
-    expect(container.textContent).not.toMatch(/🏆 Stig|Met á/);
+    expect(container.textContent).not.toMatch(/🏆 Stig|Met:/);
     expect(JSON.parse(localStorage.getItem(KEY)!).practice).toEqual({
       3: { correct: 2, total: 4 },
     });
@@ -127,8 +126,7 @@ describe('Æfingahamur', () => {
 
   it('plays the level again from the end of a round, from a fresh count', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Stig 3 — Samanburður/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 3: Samanburður/ }));
     settle();
     for (let i = 0; i < 4; i++) {
       answer('999999');
@@ -151,13 +149,13 @@ describe('Keppnishamur', () => {
     const first = getQuestionsForLevel(1)[0];
 
     // A practice answer first: it must not reach the Keppnishamur score.
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     settle();
     answer(answerText(first));
     fireEvent.click(screen.getByRole('button', { name: /📊 Valmynd/ }));
     settle(1000);
 
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     settle();
     expect(container.textContent).toContain('🏆 0');
     expect(container.textContent).toContain('🔥 0');
@@ -170,7 +168,7 @@ describe('Keppnishamur', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /📊 Valmynd/ }));
     settle(1000);
-    expect(screen.getByText(/Met á Stigi 1: 200 stig/)).toBeTruthy();
+    expect(screen.getByText(/Met: 200 stig/)).toBeTruthy();
   });
 });
 
@@ -189,6 +187,6 @@ describe('progress saved before the change', () => {
     );
     const { container } = render(<App />);
 
-    expect(container.textContent).not.toMatch(/4350|Met á|Besta röð|af 3 stigum|rétt\b/);
+    expect(container.textContent).not.toMatch(/4350|Met:|Besta röð|af 3 stigum|rétt\b/);
   });
 });

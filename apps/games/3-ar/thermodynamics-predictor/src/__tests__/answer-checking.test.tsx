@@ -93,7 +93,7 @@ describe('"Spurning N" counts the questions of this run', () => {
     expect(questionNumber()).toBe('2');
 
     fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
-    fireEvent.click(screen.getByRole('button', { name: /Keppnishamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     expect(questionNumber()).toBe('1');
   });
 });
@@ -112,13 +112,13 @@ describe('the Keppnishamur clock', () => {
   it('a timed-out run does not time out Æfingarhamur', () => {
     vi.useFakeTimers();
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Keppnishamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     tick(91);
     expect(box().textContent).toMatch(/^Tíminn rann út!/);
 
     fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
     tick(1);
-    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }));
     tick(3);
     expect(screen.queryByText('Tíminn rann út!')).toBeNull();
     expect(screen.getByRole('button', { name: 'Athuga svar' })).toBeTruthy();
@@ -127,13 +127,13 @@ describe('the Keppnishamur clock', () => {
   it('a new run starts with the full 90 seconds', () => {
     vi.useFakeTimers();
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Keppnishamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     tick(30);
     expect(clock()).toBe('60s');
 
     fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
     tick(1);
-    fireEvent.click(screen.getByRole('button', { name: /Keppnishamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     expect(clock()).toBe('90s');
   });
 });

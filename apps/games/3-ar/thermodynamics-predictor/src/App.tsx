@@ -6,10 +6,13 @@ import {
   ErrorBoundary,
   Presence,
   FadePresence,
+  MenuCard,
+  MenuProgress,
   PhoneDisclosure,
 } from '@shared/components';
 import type {
   DataPoint,
+  MenuCardTone,
   DataSeries,
   MarkerConfig,
   RegionConfig,
@@ -89,10 +92,11 @@ const DEFAULT_PROGRESS: ThermoProgress = {};
 
 const DIFFICULTIES = ['beginner', 'intermediate', 'advanced'] as const;
 
-const DIFFICULTY_LABEL: Record<Difficulty, string> = {
-  beginner: '🟢 Auðvelt',
-  intermediate: '🟡 Miðlungs',
-  advanced: '🔴 Erfitt',
+/** The three levels as menu cards: one per difficulty, each starting an Æfingarhamur round. */
+const DIFFICULTY_CARD: Record<Difficulty, { icon: string; name: string; subtitle: string }> = {
+  beginner: { icon: '🟢', name: 'Auðvelt', subtitle: 'Einföld hvarfefni' },
+  intermediate: { icon: '🟡', name: 'Miðlungs', subtitle: 'Iðnaðarhvarfefni' },
+  advanced: { icon: '🔴', name: 'Erfitt', subtitle: 'Háþróaðir útreikningar' },
 };
 
 function App() {
@@ -161,10 +165,11 @@ function App() {
     if (lastShown.current === which) return;
     lastShown.current = which;
     if (which === 'menu') {
-      const start = leftMode.current
-        ? root.querySelector<HTMLElement>(`[data-mode-start="${leftMode.current}"]`)
-        : null;
-      revealSpan(start, [root.querySelector('[data-difficulty-chooser]'), start]);
+      // The card (or Keppnishamur button) that opened the screen just left.
+      const left = leftMode.current;
+      const key = left === 'learning' || left === 'challenge' ? `${left}-${difficulty}` : left;
+      const start = key ? root.querySelector<HTMLElement>(`[data-mode-start="${key}"]`) : null;
+      revealSpan(start, [start]);
       focusTarget(start);
     } else {
       focusTarget(root.querySelector<HTMLElement>('[data-item-start]'));
@@ -259,21 +264,22 @@ function App() {
   };
 
   /** A Keppnishamur problem, drawn at random from the chosen difficulty. */
-  const randomProblem = () => {
-    const problems = PROBLEMS[difficulty];
+  const randomProblem = (level: Difficulty = difficulty) => {
+    const problems = PROBLEMS[level];
     return problems[Math.floor(Math.random() * problems.length)];
   };
 
-  /** Open Æfingarhamur or Keppnishamur at its first question. */
-  const startRun = (next: 'learning' | 'challenge') => {
+  /** Open Æfingarhamur or Keppnishamur on a level, at its first question. */
+  const startRun = (next: 'learning' | 'challenge', level: Difficulty = difficulty) => {
+    setDifficulty(level);
     setMode(next);
     setQuestionNumber(0);
     if (next === 'challenge') {
       setStreak(0);
       setRunScore(0);
-      showProblem(randomProblem());
+      showProblem(randomProblem(level));
     } else {
-      const newDeck = practiceDeck(PROBLEMS[difficulty]);
+      const newDeck = practiceDeck(PROBLEMS[level]);
       setDeck(newDeck);
       setRound({ correct: 0, total: 0 });
       setRoundResult(null);
@@ -499,9 +505,8 @@ function App() {
     setStreak(0);
   }, [mode, timeLeft, showSolution]);
 
-  const hasProgress =
-    Object.keys(progress.practice ?? {}).length > 0 ||
-    Object.keys(progress.challengeBest ?? {}).length > 0;
+  const levelsDone = DIFFICULTIES.filter((level) => progress.practice?.[level]).length;
+  const hasProgress = levelsDone > 0 || Object.keys(progress.challengeBest ?? {}).length > 0;
 
   const renderMenu = () => (
     <div ref={menuRoot}>
@@ -514,62 +519,18 @@ function App() {
           >
             Fara í efni
           </a>
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8 phone:p-3" id="game-content">
+          <div className="max-w-3xl mx-auto px-4 phone:px-3">
+            <div
+              className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
+              id="game-content"
+            >
               <p className="text-warm-600 mb-4 phone:mb-3">
                 Lærðu um Gibbs frjálsa orku og sjálfgengi efnahvarfa
               </p>
 
-              {/* Progress: each difficulty's best Æfingarhamur round as `N af M rétt`, and
-                  points only for Keppnishamur (mobile-pass decision 1 (b)). */}
-              {hasProgress && (
-                <div className="mb-8 bg-warm-50 p-4 rounded-lg phone:mb-4 phone:p-3">
-                  <div className="flex justify-between items-center mb-3 phone:mb-2">
-                    <h3 className="font-semibold text-warm-700">Framvinda</h3>
-                    <button
-                      onClick={resetProgress}
-                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
-                    >
-                      Endurstilla
-                    </button>
-                  </div>
-                  {/* Below sm each difficulty is a row (label left, results right). */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-center phone:gap-1.5">
-                    {DIFFICULTIES.map((level) => {
-                      const round = progress.practice?.[level];
-                      const best = progress.challengeBest?.[level];
-                      return (
-                        <div
-                          key={level}
-                          className="bg-white rounded-lg p-3 flex items-center justify-between gap-3 sm:block phone:px-3 phone:py-1.5"
-                        >
-                          <div className="text-sm text-warm-600">{DIFFICULTY_LABEL[level]}</div>
-                          <div className="text-right sm:text-center sm:mt-1">
-                            <div className="font-bold text-green-700 whitespace-nowrap">
-                              {round ? `${round.correct} af ${round.total} rétt` : '—'}
-                            </div>
-                            {best !== undefined && (
-                              <div className="text-xs text-orange-700 whitespace-nowrap">
-                                Keppnismet: {best} stig
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {(progress.challengeBestStreak ?? 0) > 0 && (
-                    <p className="mt-2 text-sm text-warm-600 text-center">
-                      🔥 Besta röð (Keppnishamur): {progress.challengeBestStreak}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* Conceptual derivation of ΔG = ΔH - TΔS */}
               <div className="mb-8 p-4 sm:p-6 bg-blue-50 rounded-lg space-y-4 phone:mb-4 phone:p-3 phone:space-y-3">
                 <h2 className="text-xl font-bold text-blue-800">
-                  Af hverju <span className="whitespace-nowrap">ΔG = ΔH − TΔS?</span>
+                  Hvað segir <span className="whitespace-nowrap">ΔG = ΔH − TΔS?</span>
                 </h2>
 
                 <p className="text-sm text-blue-700">
@@ -622,107 +583,124 @@ function App() {
                 </div>
               </div>
 
-              <div className="mb-8 phone:mb-4" data-difficulty-chooser>
-                <h3 className="text-lg font-bold mb-4 phone:mb-2">Veldu erfiðleikastig:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 phone:gap-2 phone-land:grid-cols-3">
-                  <button
-                    onClick={() => setDifficulty('beginner')}
-                    className={`p-4 rounded-lg border-2 transition phone:px-3 phone:py-2 phone:flex phone:flex-wrap phone:items-baseline phone:gap-x-2 ${
-                      difficulty === 'beginner'
-                        ? 'border-orange-500 bg-orange-50'
-                        : 'border-warm-300 hover:border-orange-300'
-                    }`}
-                  >
-                    <div className="text-lg font-bold">🟢 Auðvelt</div>
-                    <div className="text-sm text-warm-600">Einföld hvarfefni</div>
-                  </button>
-                  <button
-                    onClick={() => setDifficulty('intermediate')}
-                    className={`p-4 rounded-lg border-2 transition phone:px-3 phone:py-2 phone:flex phone:flex-wrap phone:items-baseline phone:gap-x-2 ${
-                      difficulty === 'intermediate'
-                        ? 'border-orange-500 bg-orange-50'
-                        : 'border-warm-300 hover:border-orange-300'
-                    }`}
-                  >
-                    <div className="text-lg font-bold">🟡 Miðlungs</div>
-                    <div className="text-sm text-warm-600">Iðnaðarhvarfefni</div>
-                  </button>
-                  <button
-                    onClick={() => setDifficulty('advanced')}
-                    className={`p-4 rounded-lg border-2 transition phone:px-3 phone:py-2 phone:flex phone:flex-wrap phone:items-baseline phone:gap-x-2 ${
-                      difficulty === 'advanced'
-                        ? 'border-orange-500 bg-orange-50'
-                        : 'border-warm-300 hover:border-orange-300'
-                    }`}
-                  >
-                    <div className="text-lg font-bold">🔴 Erfitt</div>
-                    <div className="text-sm text-warm-600">Háþróaðir útreikningar</div>
-                  </button>
-                </div>
+              <div className="space-y-4 phone:space-y-3">
+                {/* Könnun: the explore step, before any level. Nothing in it is graded. */}
+                <MenuCard
+                  tone="naermynd"
+                  icon="🔬"
+                  title="Könnun"
+                  subtitle="Sjáðu hvernig ΔG breytist með hitastigi"
+                  description="Byrjaðu hér: stillanlegur hita-sleði og rauntíma-útreikningur. Ekkert er metið."
+                  data-mode-start="discover"
+                  onClick={() => setMode('discover')}
+                />
+                {DIFFICULTIES.map((level, index) => {
+                  const round = progress.practice?.[level];
+                  return (
+                    <MenuCard
+                      key={level}
+                      tone={(index + 1) as MenuCardTone}
+                      icon={DIFFICULTY_CARD[level].icon}
+                      title={`Stig ${index + 1}: ${DIFFICULTY_CARD[level].name}`}
+                      subtitle={DIFFICULTY_CARD[level].subtitle}
+                      description="Hvert dæmi stigsins einu sinni. Ótakmarkaður tími og lausn skref fyrir skref."
+                      result={round ? `${round.correct} af ${round.total} rétt` : null}
+                      data-mode-start={`learning-${level}`}
+                      onClick={() => startRun('learning', level)}
+                    />
+                  );
+                })}
+                <MenuCard
+                  tone={4}
+                  icon="⚖️"
+                  title="ΔG° og K"
+                  subtitle="Hversu langt gengur hvarfið?"
+                  description="ΔG° = −RT ln K: skýring, sleði og sjö dæmi."
+                  data-mode-start="gibbsK"
+                  onClick={() => setMode('gibbsK')}
+                />
               </div>
 
-              {/* Discover button (recommended first step) */}
-              <button
-                onClick={() => setMode('discover')}
-                data-mode-start="discover"
-                className="game-card w-full p-5 rounded-lg text-white font-bold text-lg transition mb-4 phone:px-4 phone:py-3 phone:mb-2"
-                style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}
+              {/* Keppnishamur: timed and scored, the one place points live (decision 1 (b)). */}
+              <section
+                aria-labelledby="thermo-keppni-heading"
+                className="mt-6 rounded-xl border-2 border-orange-200 bg-white p-4 phone:p-3"
               >
-                🔬 Könnun — sjáðu hvernig ΔG breytist með hitastigi
-                <div className="text-sm font-normal mt-1 phone:mt-0.5">
-                  Byrjaðu hér — stillanlegur hita-sleði og rauntíma-útreikningur
-                </div>
-              </button>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 phone:gap-2 phone-land:grid-cols-2">
-                <button
-                  onClick={() => startRun('learning')}
-                  data-mode-start="learning"
-                  className="game-card p-6 rounded-lg text-white font-bold text-lg transition phone:px-4 phone:py-3"
-                  style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' }}
-                >
-                  📖 Æfingarhamur
-                  <div className="text-sm font-normal mt-1 phone:mt-0.5">Ótakmarkaður tími</div>
-                </button>
-                <button
-                  onClick={() => startRun('challenge')}
-                  data-mode-start="challenge"
-                  className="game-card p-6 rounded-lg text-white font-bold text-lg transition phone:px-4 phone:py-3"
-                  style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
-                >
+                <h2 id="thermo-keppni-heading" className="font-bold text-orange-900">
                   ⚡ Keppnishamur
-                  <div className="text-sm font-normal mt-1 phone:mt-0.5">
-                    90 sek tími, stigagjöf
-                  </div>
-                </button>
-              </div>
-              <button
-                onClick={() => setMode('gibbsK')}
-                data-mode-start="gibbsK"
-                className="game-card w-full p-5 rounded-lg text-white font-bold text-lg transition mt-4 phone:px-4 phone:py-3 phone:mt-2"
-                style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' }}
-              >
-                ⚖️ ΔG° og K — hversu langt gengur hvarfið?
-                <div className="text-sm font-normal mt-1 phone:mt-0.5">
-                  ΔG° = −RT ln K: skýring, sleði og sjö dæmi
+                </h2>
+                <p className="text-sm text-warm-600 mt-1">90 sekúndur á dæmi, með stigagjöf.</p>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  {DIFFICULTIES.map((level, index) => {
+                    const best = progress.challengeBest?.[level];
+                    return (
+                      <button
+                        key={level}
+                        type="button"
+                        data-mode-start={`challenge-${level}`}
+                        aria-label={`Byrja keppni: Stig ${index + 1}`}
+                        onClick={() => startRun('challenge', level)}
+                        className="rounded-lg bg-kvenno-orange px-3 py-2.5 font-semibold text-white hover:bg-kvenno-orange-600"
+                      >
+                        Stig {index + 1}
+                        {best !== undefined && (
+                          <span className="block text-xs font-normal">Met: {best} stig</span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
-              </button>
-            </div>
+                {(progress.challengeBestStreak ?? 0) > 0 && (
+                  <p className="mt-2 text-sm text-warm-600">
+                    🔥 Besta röð: {progress.challengeBestStreak}
+                  </p>
+                )}
+              </section>
 
-            {/* Why this matters + curriculum */}
-            <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200 phone:mt-3 phone:p-3">
-              <h3 className="font-semibold text-amber-800 mb-2">Af hverju varmafræði?</h3>
-              <p className="text-sm text-amber-700">
-                ΔG segir okkur hvort efnahvörf GETA gerst sjálfkrafa — ekki bara hvort þau losa
-                orku. Þetta útskýrir af hverju ís bráðnar, af hverju salt leysist í vatni, og
-                hvernig lífverur nýta orku.
-              </p>
+              {/* Progress: which levels are done, and the way to start over. */}
+              {hasProgress && (
+                <MenuProgress onReset={resetProgress} className="mt-6">
+                  {levelsDone} af 3 stigum lokið
+                </MenuProgress>
+              )}
+
+              {/* Formula reference */}
+              <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+                <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
+                <div className="font-mono text-base md:text-sm space-y-2 text-warm-600">
+                  <p>
+                    <strong>Gibbs:</strong>{' '}
+                    <span className="whitespace-nowrap">ΔG° = ΔH° − T·ΔS°</span>
+                  </p>
+                  <p>
+                    <strong>Umbreytingarhitastig:</strong>{' '}
+                    <span className="whitespace-nowrap">
+                      T<sub>cross</sub> = ΔH° / ΔS°
+                    </span>
+                  </p>
+                  <p>
+                    <strong>ΔG° og K:</strong>{' '}
+                    <span className="whitespace-nowrap">ΔG° = −RT ln K</span>,{' '}
+                    <span className="whitespace-nowrap">R = 8,314 J/(mól·K)</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Why this matters + curriculum */}
+              <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200 phone:p-3">
+                <h3 className="font-semibold text-amber-800 mb-2">Af hverju varmafræði?</h3>
+                <p className="text-sm text-amber-700">
+                  ΔG segir okkur hvort efnahvörf GETA gerst sjálfkrafa — ekki bara hvort þau losa
+                  orku. Þetta útskýrir af hverju ís bráðnar, af hverju salt leysist í vatni, og
+                  hvernig lífverur nýta orku.
+                </p>
+              </div>
+              <div className="mt-3 text-center text-xs text-warm-500">
+                <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis →
+                Sýrufastinn → <u>Varmafræði</u> → pH Títrun → Stuðpúðar → Leysnijafnvægi
+              </div>
+              <div className="mt-2 text-center text-xs text-warm-400">Kafli 16 — Efnafræði 2e</div>
             </div>
-            <div className="mt-3 text-center text-xs text-warm-500">
-              <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis →
-              Sýrufastinn → <u>Varmafræði</u> → pH Títrun → Stuðpúðar → Leysnijafnvægi
-            </div>
-            <div className="mt-2 text-center text-xs text-warm-400">Kafli 16 — Efnafræði 2e</div>
           </div>
         </div>
       </div>

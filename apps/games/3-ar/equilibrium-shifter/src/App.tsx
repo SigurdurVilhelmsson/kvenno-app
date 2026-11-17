@@ -7,6 +7,8 @@ import {
   ErrorBoundary,
   Presence,
   FadePresence,
+  MenuCard,
+  MenuProgress,
   PhoneDisclosure,
 } from '@shared/components';
 import { useProgress, useAccessibility, useGameI18n, useGameProgress } from '@shared/hooks';
@@ -88,7 +90,7 @@ const questionKey = (eq: Equilibrium, stress: Stress) =>
   `${eq.id}:${stress.type}:${stress.target ?? ''}`;
 
 function App() {
-  const { progress, updateProgress, incrementProblems } = useProgress({
+  const { progress, updateProgress, incrementProblems, resetProgress } = useProgress({
     gameId: 'equilibrium-shifter',
     initialProgress: {
       currentLevel: 0,
@@ -150,10 +152,11 @@ function App() {
   // A right answer the fourth tier had given, so the feedback says why it is not counted.
   const [hintGaveAnswer, setHintGaveAnswer] = useState(false);
   const shownAnswersRef = useRef<Set<string>>(new Set());
-  const { progress: lastLearning, updateProgress: saveLearning } = useGameProgress<LearningResult>(
-    LEARNING_KEY,
-    {}
-  );
+  const {
+    progress: lastLearning,
+    updateProgress: saveLearning,
+    resetProgress: resetLearning,
+  } = useGameProgress<LearningResult>(LEARNING_KEY, {});
 
   // Ref to track if timeout has been handled for current question
   const timeoutHandledRef = useRef(false);
@@ -593,40 +596,21 @@ function App() {
 
   // Render functions
   const renderMenu = () => (
-    <div ref={menuRoot} className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 phone:p-3">
-        <p className="text-lg text-warm-600 mb-6 text-center phone:text-base phone:mb-3">
+    <div ref={menuRoot} className="max-w-3xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+        <p className="text-warm-600 mb-4 phone:mb-3">
           Lærðu lögmál Le Chateliers í gegnum gagnvirkar æfingar
         </p>
 
         {/* Conceptual intro — WHY does Le Chatelier work? */}
         {/* A teaching blurb, read before the modes on purpose (design §5). */}
         <div className="bg-indigo-50 p-4 sm:p-6 rounded-xl mb-8 border border-indigo-200 phone:p-3 phone:mb-4">
-          <h2 className="font-bold text-indigo-800 mb-3">Af hverju hliðrast jafnvægi?</h2>
+          <h2 className="font-bold text-indigo-800 mb-3">Hvað er hliðrun jafnvægis?</h2>
           <p className="text-sm text-indigo-700 mb-3">
             Þegar efnahvörf ná <strong>jafnvægi</strong> er hraði framhvarfsins jafn hraða
             bakhvarfsins. Ef við truflum kerfið (bætum við efni, breytum hitastigi eða þrýstingi) er
             jafnvægið rofið.
           </p>
-
-          <div className="bg-white p-4 rounded-lg mb-3 phone:p-3">
-            <h3 className="font-bold text-indigo-800 mb-2 text-sm">Q vs K — lykillinn</h3>
-            <div className="text-sm text-indigo-700 space-y-1">
-              <p>
-                <strong>K</strong> = jafnvægisfastinn (breytist EKKI nema T breytist)
-              </p>
-              <p>
-                <strong>Q</strong> = hvarfstuðullinn (reiknað úr núverandi styrk)
-              </p>
-              <p className="mt-2">
-                • Ef Q &lt; K → framhvarf er hraðara → hliðrun <strong>til hægri →</strong>
-              </p>
-              <p>
-                • Ef Q &gt; K → bakhvarf er hraðara → hliðrun <strong>← til vinstri</strong>
-              </p>
-              <p>• Ef Q = K → jafnvægi ⇌</p>
-            </div>
-          </div>
 
           <p className="text-xs text-indigo-600">
             <strong>Lögmál Le Chateliers:</strong> Kerfið bregst við álagi þannig að það dragi úr
@@ -634,78 +618,86 @@ function App() {
           </p>
         </div>
 
-        {/* Mode Selection */}
-        {/* On a phone each card puts its icon beside its title, and on its
-            side the two cards sit side by side. */}
-        <div className="grid md:grid-cols-2 gap-6 mb-6 phone:gap-3 phone:mb-4 phone-land:grid-cols-2">
-          <button
+        <div className="space-y-4 phone:space-y-3">
+          <MenuCard
             ref={learningCardRef}
+            tone={1}
+            icon="📚"
+            title="Lærdómshamur"
+            subtitle="Taktu þér tíma, notaðu vísbendingar og lærðu á þínum hraða"
+            description="Engin tímatakmörkun, ítarlegar útskýringar, vísbendingakerfi og útskýrð svör."
+            result={
+              lastLearning.total !== undefined && lastLearning.correct !== undefined
+                ? `Síðasta lota: ${lastLearning.correct} af ${lastLearning.total} rétt`
+                : null
+            }
             onClick={() => startGame('learning')}
-            className="game-card mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-4 sm:p-6 text-left transition-all phone:p-3"
-          >
-            <div className="text-3xl mb-3 phone:inline phone:text-2xl phone:mr-2 phone:align-middle">
-              📚
-            </div>
-            <h3 className="text-xl font-bold text-warm-800 mb-2 phone:inline phone:align-middle phone:text-lg">
-              Lærdómshamur
-            </h3>
-            <p className="text-warm-600 text-sm mb-3 phone:mt-1 phone:mb-2">
-              Taktu þér tíma, notaðu vísbendingar og lærðu á þínum hraða
-            </p>
-            <ul className="text-sm text-warm-500 space-y-1 phone:space-y-0">
-              <li>✓ Engin tímatakmörkun</li>
-              <li>✓ Ítarlegar útskýringar</li>
-              <li>✓ Vísbendingakerfi</li>
-              <li>✓ Útskýrð svör</li>
-            </ul>
-          </button>
+          />
+        </div>
 
-          {(() => {
-            const CHALLENGE_UNLOCK_THRESHOLD = 5;
-            const challengeUnlocked = progress.problemsCompleted >= CHALLENGE_UNLOCK_THRESHOLD;
-            const remaining = CHALLENGE_UNLOCK_THRESHOLD - progress.problemsCompleted;
-            return (
+        {/* Keppnishamur: timed and scored, the one place points live (decision 1 (b)). It
+            opens after five counted right answers in Lærdómshamur (decision 101 (a)). */}
+        {(() => {
+          const CHALLENGE_UNLOCK_THRESHOLD = 5;
+          const challengeUnlocked = progress.problemsCompleted >= CHALLENGE_UNLOCK_THRESHOLD;
+          const remaining = CHALLENGE_UNLOCK_THRESHOLD - progress.problemsCompleted;
+          return (
+            <section
+              aria-labelledby="eq-keppni-heading"
+              className="mt-6 rounded-xl border-2 border-orange-200 bg-white p-4 phone:p-3"
+            >
+              <h2 id="eq-keppni-heading" className="font-bold text-orange-900">
+                {challengeUnlocked ? '🏆' : '🔒'} Keppnishamur
+              </h2>
+              <p className="text-sm text-warm-600 mt-1">
+                {challengeUnlocked
+                  ? 'Tíu tímasettar spurningar, 20 sekúndur á hverja, með stigagjöf og hraðbónus.'
+                  : `Opnast þegar þú hefur klárað ${CHALLENGE_UNLOCK_THRESHOLD} verkefni í lærdómshamri (${remaining} eftir).`}
+              </p>
               <button
+                type="button"
                 onClick={() => challengeUnlocked && startGame('challenge')}
                 disabled={!challengeUnlocked}
                 aria-disabled={!challengeUnlocked}
-                className={`game-card mode-card bg-white border-2 rounded-lg p-4 sm:p-6 text-left transition-all phone:p-3 ${
-                  challengeUnlocked
-                    ? 'border-orange-200 hover:border-orange-400 cursor-pointer'
-                    : 'border-warm-200 opacity-60 cursor-not-allowed'
-                }`}
+                className="mt-3 w-full rounded-lg bg-kvenno-orange px-3 py-2.5 font-semibold text-white hover:bg-kvenno-orange-600 disabled:cursor-not-allowed disabled:bg-warm-300"
               >
-                <div className="text-3xl mb-3 phone:inline phone:text-2xl phone:mr-2 phone:align-middle">
-                  {challengeUnlocked ? '🏆' : '🔒'}
-                </div>
-                <h3 className="text-xl font-bold text-warm-800 mb-2 phone:inline phone:align-middle phone:text-lg">
-                  Keppnishamur
-                </h3>
-                <p className="text-warm-600 text-sm mb-3 phone:mt-1 phone:mb-2">
-                  {challengeUnlocked
-                    ? 'Prófaðu kunnáttu þína með tímasettum spurningum'
-                    : `Opnast þegar þú hefur klárað ${CHALLENGE_UNLOCK_THRESHOLD} verkefni í lærdómshamri (${remaining} eftir).`}
-                </p>
-                <ul className="text-sm text-warm-500 space-y-1 phone:space-y-0">
-                  <li>✓ 20 sekúndur á spurningu</li>
-                  <li>✓ 10 spurningar</li>
-                  <li>✓ Stigagjöf og raðir</li>
-                  <li>✓ Hraðbónus</li>
-                </ul>
+                Byrja Keppnishamur
               </button>
-            );
-          })()}
-        </div>
+            </section>
+          );
+        })()}
 
-        {/* Progress Summary */}
-        <div className="bg-warm-50 rounded-lg p-4 phone:p-3">
-          <h3 className="font-semibold text-warm-700 mb-2 phone:mb-1">Framvinda þín</h3>
-          <p className="text-sm text-warm-600">Verkefni kláruð: {progress.problemsCompleted}</p>
-          {lastLearning.total !== undefined && lastLearning.correct !== undefined && (
-            <p className="text-sm text-warm-600">
-              Lærdómshamur, síðasta lota: {lastLearning.correct} af {lastLearning.total} rétt
+        {/* Progress: problems done, and the way to start over. */}
+        {(progress.problemsCompleted > 0 || lastLearning.total !== undefined) && (
+          <MenuProgress
+            onReset={() => {
+              resetProgress();
+              resetLearning();
+            }}
+            className="mt-6"
+          >
+            Verkefni kláruð: {progress.problemsCompleted}
+          </MenuProgress>
+        )}
+
+        {/* Formula reference: Q against K, the key the whole game turns on. */}
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
+          <div className="text-sm text-warm-600 space-y-1">
+            <p>
+              <strong>K</strong> = jafnvægisfastinn (breytist EKKI nema T breytist)
             </p>
-          )}
+            <p>
+              <strong>Q</strong> = hvarfstuðullinn (reiknað úr núverandi styrk)
+            </p>
+            <p className="mt-2">
+              • Ef Q &lt; K → framhvarf er hraðara → hliðrun <strong>til hægri →</strong>
+            </p>
+            <p>
+              • Ef Q &gt; K → bakhvarf er hraðara → hliðrun <strong>← til vinstri</strong>
+            </p>
+            <p>• Ef Q = K → jafnvægi ⇌</p>
+          </div>
         </div>
 
         {/* Why this matters + curriculum */}
@@ -1259,11 +1251,22 @@ function App() {
 
         {/* Main Content */}
         <main id="main-content" className="container mx-auto px-4 py-8 phone:py-3">
-          {/* Accessibility Menu: settings, not part of the game, so on a
+          {/* Screen Routing */}
+          <FadePresence show={screen === 'menu'} exitDuration={SCREEN_FADE_MS}>
+            {renderMenu()}
+          </FadePresence>
+          <FadePresence show={screen === 'game'} exitDuration={SCREEN_FADE_MS}>
+            {renderGame()}
+          </FadePresence>
+          <FadePresence show={screen === 'results'} exitDuration={SCREEN_FADE_MS}>
+            {renderResults()}
+          </FadePresence>
+
+          {/* Accessibility Menu: settings, not part of the game, so it sits below it and on a
               phone it starts closed under its own heading (design P9). */}
           <PhoneDisclosure
             summary={t('accessibility.menuTitle', 'Aðgengisval')}
-            className="bg-white rounded-lg shadow-xs p-4 mb-6 max-w-4xl mx-auto phone:p-1 phone:mb-3"
+            className="bg-white rounded-lg shadow-xs p-4 mt-6 max-w-3xl mx-auto phone:p-1 phone:mt-3"
             buttonClassName="text-sm text-warm-700 border-transparent"
           >
             <h2 className="text-sm font-semibold text-warm-700 mb-3 phone:sr-only">
@@ -1283,7 +1286,9 @@ function App() {
               </label>
 
               <div className="flex items-center gap-2">
-                <span className="text-sm">{t('accessibility.textSize', 'Leturstærð')}:</span>
+                <span className="text-sm" data-a11y-note>
+                  {t('accessibility.textSize', 'Leturstærð')}:
+                </span>
                 <select
                   value={settings.textSize}
                   onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
@@ -1309,23 +1314,7 @@ function App() {
               </div>
             </div>
           </PhoneDisclosure>
-
-          {/* Screen Routing */}
-          <FadePresence show={screen === 'menu'} exitDuration={SCREEN_FADE_MS}>
-            {renderMenu()}
-          </FadePresence>
-          <FadePresence show={screen === 'game'} exitDuration={SCREEN_FADE_MS}>
-            {renderGame()}
-          </FadePresence>
-          <FadePresence show={screen === 'results'} exitDuration={SCREEN_FADE_MS}>
-            {renderResults()}
-          </FadePresence>
         </main>
-
-        {/* Footer */}
-        <footer className="text-center text-sm text-warm-500 py-4">
-          <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
-        </footer>
       </div>
     </div>
   );

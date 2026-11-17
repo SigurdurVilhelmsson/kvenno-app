@@ -27,6 +27,15 @@ const KEY = 'thermodynamics-predictor-progress';
 /** Anything that reads as a running score or streak. (🔥 alone is not: it marks útvermið.) */
 const SCORE_TEXT = /\d+ stig\b|\bStig\b|Runa|\d🔥|röð|Hæsta/;
 
+/**
+ * What the problem screen says, without the menu. The menu names its levels "Stig 1" to
+ * "Stig 3", and it is still fading out (FadePresence) while these tests play.
+ */
+function gameText(container: HTMLElement) {
+  const menu = document.getElementById('game-content')?.textContent ?? '';
+  return (container.textContent ?? '').replace(menu, '');
+}
+
 beforeEach(() => {
   localStorage.clear();
   vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
@@ -70,16 +79,16 @@ const scoreInHeader = () => screen.getByText('Stig').nextElementSibling!.textCon
 describe('Æfingarhamur', () => {
   it('scores nothing, plays each problem once and ends with N af M rétt', () => {
     const { container } = render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }));
 
     const total = PROBLEMS.beginner.length;
     const seen = new Set<number>();
     for (let i = 0; i < total; i++) {
-      expect(container.textContent, `problem ${i + 1}`).not.toMatch(SCORE_TEXT);
+      expect(gameText(container), `problem ${i + 1}`).not.toMatch(SCORE_TEXT);
       seen.add(problemOnScreen().id);
       // Wrong on the second, fifth and eighth.
       answer(i % 3 !== 1);
-      expect(container.textContent, `problem ${i + 1}, answered`).not.toMatch(SCORE_TEXT);
+      expect(gameText(container), `problem ${i + 1}, answered`).not.toMatch(SCORE_TEXT);
       if (i < total - 1) {
         expect(screen.queryByText(/Æfingu lokið/)).toBeNull();
         fireEvent.click(screen.getByRole('button', { name: /Næsta spurning/ }));
@@ -90,8 +99,8 @@ describe('Æfingarhamur', () => {
 
     // The menu shows the round, not points.
     fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
-    expect(screen.getByText(`${total - 3} af ${total} rétt`)).toBeTruthy();
-    expect(screen.queryByText(/Keppnismet/)).toBeNull();
+    expect(screen.getByText(`✓ ${total - 3} af ${total} rétt`)).toBeTruthy();
+    expect(screen.queryByText(/Met:/)).toBeNull();
     expect(JSON.parse(localStorage.getItem(KEY)!).practice).toEqual({
       beginner: { correct: total - 3, total },
     });
@@ -99,7 +108,7 @@ describe('Æfingarhamur', () => {
 
   it('starts the round again from its end, from a fresh count', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }));
     for (let i = 0; i < PROBLEMS.beginner.length; i++) {
       answer(false);
       if (i < PROBLEMS.beginner.length - 1) {
@@ -125,11 +134,11 @@ describe('Keppnishamur', () => {
     expect(container.textContent).not.toMatch(/700|Hæsta stig|Besta röð/);
 
     // A right practice answer must not reach the Keppnishamur score.
-    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }));
     answer(true);
     fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
 
-    fireEvent.click(screen.getByRole('button', { name: /Keppnishamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     expect(scoreInHeader()).toBe('0');
     answer(true);
     expect(screen.getByRole('alert').textContent).toMatch(/^Rétt! \+100 stig/);
@@ -140,11 +149,11 @@ describe('Keppnishamur', () => {
     expect(scoreInHeader()).toBe('210');
 
     fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
-    expect(screen.getByText('Keppnismet: 210 stig')).toBeTruthy();
-    expect(screen.getByText(/Besta röð \(Keppnishamur\): 2/)).toBeTruthy();
+    expect(screen.getByText('Met: 210 stig')).toBeTruthy();
+    expect(screen.getByText(/Besta röð: 2/)).toBeTruthy();
 
     // A new run starts from 0 again.
-    fireEvent.click(screen.getByRole('button', { name: /Keppnishamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     expect(scoreInHeader()).toBe('0');
   });
 });

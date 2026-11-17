@@ -6613,7 +6613,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Nærmynd — lögmál Boyles',
       steps: [
-        { clickRole: ['button', 'Opna Nærmynd'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { fill: ['#gas-naermynd-control', '12'] },
         { wait: 400 },
       ],
@@ -6621,7 +6621,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Nærmynd — lögmál Charles og alkul',
       steps: [
-        { clickRole: ['button', 'Opna Nærmynd'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { clickRole: ['button', '2. Lögmál Charles'] },
         { fill: ['#gas-naermynd-control', '600'] },
         { wait: 400 },
@@ -6630,7 +6630,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Nærmynd — lögmál Avogadros',
       steps: [
-        { clickRole: ['button', 'Opna Nærmynd'] },
+        { clickRole: ['button', 'Nærmynd'] },
         { clickRole: ['button', '4. Lögmál Avogadros'] },
         { fill: ['#gas-naermynd-control', '2'] },
         { wait: 400 },
@@ -6641,7 +6641,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Gasblöndur — skýring og blanda',
       steps: [
-        { clickRole: ['button', 'Opna gasblöndur'] },
+        { clickRole: ['button', 'Gasblöndur og efnahvörf'] },
         { fill: ['#gas-blondur-2', '0.25'] },
         { wait: 400 },
       ],
@@ -6649,7 +6649,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Gasblöndur — dæmi',
       steps: [
-        { clickRole: ['button', 'Opna gasblöndur'] },
+        { clickRole: ['button', 'Gasblöndur og efnahvörf'] },
         { wait: 400 },
         { clickRole: ['button', 'Æfa: átta dæmi'] },
         { wait: 300 },
@@ -6668,7 +6668,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Gasblöndur — lausn',
       steps: [
-        { clickRole: ['button', 'Opna gasblöndur'] },
+        { clickRole: ['button', 'Gasblöndur og efnahvörf'] },
         { wait: 400 },
         { clickRole: ['button', 'Æfa: átta dæmi'] },
         { wait: 300 },
@@ -6680,9 +6680,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 1 — spurning',
       steps: [
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 1: Kjörgaslögmálið'] },
         {
           wait: 400,
         },
@@ -6710,9 +6708,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 1 — vísbendingar og lausn',
       steps: [
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 1: Kjörgaslögmálið'] },
         {
           wait: 400,
         },
@@ -6733,9 +6729,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 1 — villuboð um ógilt svar',
       steps: [
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 1: Kjörgaslögmálið'] },
         {
           wait: 400,
         },
@@ -6753,9 +6747,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Endurgjöf — rangt svar',
       steps: [
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 1: Kjörgaslögmálið'] },
         {
           wait: 400,
         },
@@ -6775,12 +6767,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 3 — æfingu lokið',
       steps: [
-        {
-          clickRole: ['button', 'Stig 3 — Samanburður'],
-        },
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 3: Samanburður'] },
         {
           wait: 400,
         },
@@ -6867,12 +6854,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Valmynd með árangri',
       steps: [
-        {
-          clickRole: ['button', 'Stig 3 — Samanburður'],
-        },
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 3: Samanburður'] },
         {
           wait: 400,
         },
@@ -6965,12 +6947,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 2 — skref 1: hvaða lögmál á við',
       steps: [
-        {
-          clickRole: ['button', 'Stig 2 — Sérstök tilvik'],
-        },
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 2: Sérstök tilvik'] },
         {
           wait: 400,
         },
@@ -6979,12 +6956,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 2 — rangt lögmál valið',
       steps: [
-        {
-          clickRole: ['button', 'Stig 2 — Sérstök tilvik'],
-        },
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 2: Sérstök tilvik'] },
         {
           wait: 400,
         },
@@ -7002,12 +6974,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 3 — lausnarskref með vísbendingum og lausn',
       steps: [
-        {
-          clickRole: ['button', 'Stig 3 — Samanburður'],
-        },
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 3: Samanburður'] },
         {
           wait: 400,
         },
@@ -7034,12 +7001,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 2 — lausnarskref',
       steps: [
-        {
-          clickRole: ['button', 'Stig 2 — Sérstök tilvik'],
-        },
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 2: Sérstök tilvik'] },
         {
           wait: 400,
         },
@@ -7073,12 +7035,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Stig 3 — lausnarskref',
       steps: [
-        {
-          clickRole: ['button', 'Stig 3 — Samanburður'],
-        },
-        {
-          clickRole: ['button', 'Byrja að Æfa'],
-        },
+        { clickRole: ['button', 'Stig 3: Samanburður'] },
         {
           wait: 400,
         },
@@ -7112,9 +7069,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Keppnishamur — spurning',
       steps: [
-        {
-          clickRole: ['button', 'Byrja Keppni'],
-        },
+        { clickRole: ['button', 'Byrja keppni: Stig 1'] },
         {
           wait: 400,
         },
@@ -7141,9 +7096,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Keppnishamur — endurgjöf',
       steps: [
-        {
-          clickRole: ['button', 'Byrja Keppni'],
-        },
+        { clickRole: ['button', 'Byrja keppni: Stig 1'] },
         {
           wait: 400,
         },
@@ -7208,7 +7161,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
-      name: 'Valmynd — Kanna lokið',
+      name: 'Skilja — beint eftir Kanna',
       steps: [
         {
           clickRole: ['button', 'Kanna'],
@@ -7228,12 +7181,12 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Bara hvarfefni'],
         },
-        // "Áfram" ignores a press within 400 ms of the fourth mixture.
+        // "Áfram í Skilja" ignores a press within 400 ms of the fourth mixture.
         {
           wait: 300,
         },
         {
-          clickRole: ['button', 'Áfram'],
+          clickRole: ['button', 'Áfram í Skilja'],
         },
         {
           wait: 400,
@@ -7866,14 +7819,15 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       // On a phone Aðgengisval starts closed (a PhoneDisclosure): the first
       // step opens it and the second ticks the box. Off a phone there is no
       // disclosure button, so the first step ticks the box and the second
-      // lands on the footer, which does nothing — desktop-compare replays
-      // these paths at 1280x800.
+      // lands on the panel's "Leturstærð" label, which does nothing —
+      // desktop-compare replays these paths at 1280x800. The panel sits below
+      // the game since 2026-11-17.
       steps: [
         {
           css: 'main button[aria-controls][aria-expanded="false"], main input[type=checkbox]:not(:checked)',
         },
         {
-          css: 'main input[type=checkbox]:not(:checked), footer',
+          css: 'main input[type=checkbox]:not(:checked), [data-a11y-note]',
         },
         {
           wait: 200,
@@ -8329,9 +8283,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Æfingarhamur — spurning',
       steps: [
-        {
-          clickRole: ['button', 'Æfingarhamur'],
-        },
+        { clickRole: ['button', 'Stig 1: Auðvelt'] },
         {
           wait: 400,
         },
@@ -8357,9 +8309,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Æfingarhamur — svar slegið inn',
       steps: [
-        {
-          clickRole: ['button', 'Æfingarhamur'],
-        },
+        { clickRole: ['button', 'Stig 1: Auðvelt'] },
         {
           wait: 400,
         },
@@ -8377,9 +8327,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Æfingarhamur — lausn og endurgjöf',
       steps: [
-        {
-          clickRole: ['button', 'Æfingarhamur'],
-        },
+        { clickRole: ['button', 'Stig 1: Auðvelt'] },
         {
           wait: 400,
         },
@@ -8400,9 +8348,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Æfingarhamur — næsta spurning',
       steps: [
-        {
-          clickRole: ['button', 'Æfingarhamur'],
-        },
+        { clickRole: ['button', 'Stig 1: Auðvelt'] },
         {
           wait: 400,
         },
@@ -8429,12 +8375,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Æfingarhamur — Erfitt með áskorun',
       steps: [
-        {
-          clickRole: ['button', 'Erfitt'],
-        },
-        {
-          clickRole: ['button', 'Æfingarhamur'],
-        },
+        { clickRole: ['button', 'Stig 3: Erfitt'] },
         {
           wait: 400,
         },
@@ -8461,9 +8402,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Keppnishamur — spurning',
       steps: [
-        {
-          clickRole: ['button', 'Keppnishamur'],
-        },
+        { clickRole: ['button', 'Byrja keppni: Stig 1'] },
         {
           wait: 400,
         },
@@ -8491,12 +8430,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Æfingarhamur — æfingu lokið',
       steps: [
-        {
-          clickRole: ['button', 'Erfitt'],
-        },
-        {
-          clickRole: ['button', 'Æfingarhamur'],
-        },
+        { clickRole: ['button', 'Stig 3: Erfitt'] },
         {
           wait: 400,
         },
@@ -8622,12 +8556,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Valmynd með árangri',
       steps: [
-        {
-          clickRole: ['button', 'Erfitt'],
-        },
-        {
-          clickRole: ['button', 'Æfingarhamur'],
-        },
+        { clickRole: ['button', 'Stig 3: Erfitt'] },
         {
           wait: 400,
         },
@@ -8759,9 +8688,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     {
       name: 'Keppnishamur — lausn og endurgjöf',
       steps: [
-        {
-          clickRole: ['button', 'Keppnishamur'],
-        },
+        { clickRole: ['button', 'Byrja keppni: Stig 1'] },
         {
           wait: 400,
         },

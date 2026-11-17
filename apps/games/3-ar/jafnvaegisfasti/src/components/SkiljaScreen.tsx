@@ -365,7 +365,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             onClick={armed(onComplete)}
             className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600 phone:mt-4"
           >
-            Ljúka
+            Áfram í Æfa
           </button>
         ) : (
           <button

@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Header, ErrorBoundary, FadePresence, Presence } from '@shared/components';
+import {
+  Header,
+  ErrorBoundary,
+  FadePresence,
+  MenuCard,
+  MenuProgress,
+  Presence,
+} from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { focusTarget, revealSpan, revealTop } from '@shared/utils';
 
@@ -45,10 +52,6 @@ const DEFAULT_PROGRESS: Progress = {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
-  const [confirmReset, setConfirmReset] = useState(false);
-  // The confirm step replaces the button that had focus, so focus moves to
-  // its safe choice rather than falling to <body>.
-  const focusOnMount = useCallback((el: HTMLButtonElement | null) => el?.focus(), []);
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
     'ph-titration-progress',
     DEFAULT_PROGRESS
@@ -287,154 +290,51 @@ function App() {
               {/* Level selection */}
               <div className="space-y-4 phone:space-y-3">
                 {/* Nærmynd: the Explore phase, before any level. Nothing is graded or stored. */}
-                <button
+                <MenuCard
+                  tone="naermynd"
+                  icon="🔬"
+                  title="Nærmynd"
+                  subtitle="Ediksýra títruð með NaOH, skref fyrir skref"
+                  description="Sjáðu agnirnar í lausninni, jöfnurnar og títrunarferilinn breytast saman: jafnvægi veikrar sýru, hálfjafngildispunkt og jafngildispunkt."
                   onClick={() => setActiveLevel('naermynd')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left"
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">🔬</div>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-xl font-bold text-amber-900 phone:text-lg">
-                        Nærmynd
-                      </span>
-                      <div className="text-sm text-amber-800 mt-1">
-                        Ediksýra títruð með NaOH, skref fyrir skref
-                      </div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Sjáðu agnirnar í lausninni, jöfnurnar og títrunarferilinn breytast saman:
-                        jafnvægi veikrar sýru, hálfjafngildispunkt og jafngildispunkt.
-                      </div>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Level 1 */}
-                <button
+                />
+                <MenuCard
+                  tone={1}
+                  icon="📈"
+                  title="Stig 1: Skilningur"
+                  subtitle="Títrunarferlar og litvísar"
+                  description="Skildu hvernig títrunarferlar líta út fyrir mismunandi sýru-basa samsetningar. Lærðu um litvísa og litabreytingar."
+                  result={progress.level1Completed ? resultLabel(1) : null}
                   data-level-card="level1"
                   onClick={() => setActiveLevel('level1')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">📈</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-xl font-bold text-blue-800 phone:text-lg">
-                          Stig 1: Skilningur
-                        </span>
-                        {progress.level1Completed && (
-                          <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                            ✓ {resultLabel(1)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm text-blue-600 mt-1">Títrunarferlar og litvísar</div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Skildu hvernig títrunarferlar líta út fyrir mismunandi sýru-basa
-                        samsetningar. Lærðu um litvísa og litabreytingar.
-                      </div>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Level 2 */}
-                <button
+                />
+                <MenuCard
+                  tone={2}
+                  icon="🧪"
+                  title="Stig 2: Framkvæmd"
+                  subtitle="Gagnvirk títrun í rannsóknarstofu"
+                  description="Framkvæmdu títrun, veldu réttan litvísi og finndu jafngildispunkt. Byggðu upp færni í rannsóknarstofuvinnu."
+                  result={progress.level2Completed ? resultLabel(2) : null}
                   data-level-card="level2"
                   onClick={() => setActiveLevel('level2')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">🧪</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-xl font-bold text-green-800 phone:text-lg">
-                          Stig 2: Framkvæmd
-                        </span>
-                        {progress.level2Completed && (
-                          <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                            ✓ {resultLabel(2)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm text-green-600 mt-1">
-                        Gagnvirk títrun í rannsóknarstofu
-                      </div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Framkvæmdu títrun, veldu réttan litvísi og finndu jafngildispunkt. Byggðu
-                        upp færni í rannsóknarstofuvinnu.
-                      </div>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Level 3 */}
-                <button
+                />
+                <MenuCard
+                  tone={3}
+                  icon="📐"
+                  title="Stig 3: Útreikningar"
+                  subtitle="Styrkreikningar og fjölvirkar sýrur"
+                  description="Reiknaðu styrk, pH og rúmmál. Leystu verkefni um fjölvirkar sýrur og notaðu Henderson-Hasselbalch jöfnuna."
+                  result={progress.level3Completed ? resultLabel(3) : null}
                   data-level-card="level3"
                   onClick={() => setActiveLevel('level3')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">📐</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-xl font-bold text-purple-800 phone:text-lg">
-                          Stig 3: Útreikningar
-                        </span>
-                        {progress.level3Completed && (
-                          <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                            ✓ {resultLabel(3)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm text-purple-600 mt-1">
-                        Styrkreikningar og fjölvirkar sýrur
-                      </div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Reiknaðu styrk, pH og rúmmál. Leystu verkefni um fjölvirkar sýrur og notaðu
-                        Henderson-Hasselbalch jöfnuna.
-                      </div>
-                    </div>
-                  </div>
-                </button>
+                />
               </div>
 
               {/* Progress: which levels are done, and the way to start over. */}
               {levelsCompleted > 0 && (
-                <div className="mt-8 bg-warm-50 p-4 rounded-xl flex justify-between items-center gap-3">
-                  <div className="text-warm-700">
-                    <span className="font-semibold">Framvinda:</span> {levelsCompleted} af 3 stigum
-                    lokið
-                  </div>
-                  {/* Two steps, so one stray tap does not wipe every level's
-                      result. It reset at once. */}
-                  {confirmReset ? (
-                    <div className="flex items-center gap-3 text-sm">
-                      <span className="text-warm-700">Eyða framvindu?</span>
-                      <button
-                        onClick={() => {
-                          resetProgress();
-                          setConfirmReset(false);
-                        }}
-                        className="font-semibold text-red-600 hover:text-red-700 pointer-coarse:py-3 pointer-coarse:-my-3"
-                      >
-                        Já, endurstilla
-                      </button>
-                      <button
-                        ref={focusOnMount}
-                        onClick={() => setConfirmReset(false)}
-                        className="text-warm-600 hover:text-warm-800 pointer-coarse:py-3 pointer-coarse:-my-3"
-                      >
-                        Hætta við
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setConfirmReset(true)}
-                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
-                    >
-                      Endurstilla
-                    </button>
-                  )}
-                </div>
+                <MenuProgress onReset={resetProgress}>
+                  {levelsCompleted} af 3 stigum lokið
+                </MenuProgress>
               )}
 
               {/* Formula reference */}

@@ -106,13 +106,13 @@ describe('Lærdómshamur', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Til baka/ }));
     advance(300);
-    expect(screen.getByText('Lærdómshamur, síðasta lota: 2 af 3 rétt')).toBeTruthy();
+    expect(screen.getByText('✓ Síðasta lota: 2 af 3 rétt')).toBeTruthy();
     expect(container.textContent).not.toMatch(SCORE_TEXT);
 
     // The two counted right answers are finished problems; the repeat and the wrong one are
     // not. Two of the five the Keppnishamur gate asks for.
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).problemsCompleted).toBe(2);
-    expect(screen.getByText('Verkefni kláruð: 2')).toBeTruthy();
+    expect(screen.getByText(/Verkefni kláruð: 2/)).toBeTruthy();
     expect(screen.getByRole('button', { name: /Keppnishamur/ }).hasAttribute('disabled')).toBe(
       true
     );
@@ -159,8 +159,8 @@ describe('Lærdómshamur', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Til baka/ }));
     advance(300);
-    expect(screen.getByText('Lærdómshamur, síðasta lota: 2 af 2 rétt')).toBeTruthy();
-    expect(screen.getByText('Verkefni kláruð: 2')).toBeTruthy();
+    expect(screen.getByText('✓ Síðasta lota: 2 af 2 rétt')).toBeTruthy();
+    expect(screen.getByText(/Verkefni kláruð: 2/)).toBeTruthy();
   });
 
   it('five right answers open Keppnishamur, as its card promises', () => {
@@ -177,7 +177,7 @@ describe('Lærdómshamur', () => {
     fireEvent.click(screen.getByRole('button', { name: /Til baka/ }));
     advance(300);
 
-    expect(screen.getByText('Verkefni kláruð: 5')).toBeTruthy();
+    expect(screen.getByText(/Verkefni kláruð: 5/)).toBeTruthy();
     const challenge = screen.getByRole('button', { name: /Keppnishamur/ });
     expect(challenge.hasAttribute('disabled')).toBe(false);
     fireEvent.click(challenge);
