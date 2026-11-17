@@ -1544,3 +1544,20 @@ stillt á þjóninum` (503). Read them once.
         — done 2026-10-24 by Siggi. Read any open alerts there. The config file covers version updates only; alerts are
         not visible from a cloud session. If the first npm pull request fails to update the
         lockfile, Dependabot may not yet support pnpm 12 (`packageManager` in `package.json`).
+
+### D5. Sign-in review (2026-11-02)
+
+A read-only review of Microsoft sign-in and permissions here and in `namsbokasafn-efni`, after the
+Inna breach. The token check is sound and the app keeps no user records. The details stay off this
+public repo until fixed; Siggi holds them, with the task list, on a private dashboard.
+Handoff: `docs/plans/2026-11-02-sign-in-review-handoff.md`.
+
+- [ ] **Siggi: confirm the Azure app registration is single-tenant** (Azure portal → App
+      registrations → Supported account types) and that the production build set the tenant ID.
+- [ ] **Siggi: decide who may use lab reports after the rewrite**: Kvennó accounts only, or every
+      account in Menntaský.
+- [ ] **Siggi: decide on the browser-only teacher role**: delete it, or rebuild it on the server.
+- [ ] **Update the backend's HTTP framework and body parser** (a published advisory). Waits for
+      Siggi's approval on the dashboard.
+- [ ] **The rest of Claude's tasks** (logging, build check, teacher role, tool updates) wait for
+      the approval and mostly for the rewrite.
