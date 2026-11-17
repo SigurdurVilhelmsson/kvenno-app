@@ -50,10 +50,9 @@ test.describe('Game interaction tests', () => {
     await page.goto('/efnafraedi/3-ar/games/equilibrium-shifter.html');
     await page.waitForLoadState('networkidle');
 
-    // Look for a mode selection or start button
-    const modeButton = page.locator('button', {
-      hasText: /byrja|spila|æfing|kennsla|learning|start/i,
-    });
+    // The Lærdómshamur card. Keppnishamur's start button sits below it, disabled until five
+    // right answers, so a loose match on "byrja" would pick that one.
+    const modeButton = page.getByRole('button', { name: /Lærdómshamur/ });
     if (
       await modeButton
         .first()
