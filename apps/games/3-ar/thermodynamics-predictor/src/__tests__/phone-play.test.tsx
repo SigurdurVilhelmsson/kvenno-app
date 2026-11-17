@@ -53,7 +53,7 @@ const deltaGOf = (p: (typeof PROBLEMS.beginner)[number]) =>
 
 function startPractice() {
   render(<App />);
-  fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }));
 }
 
 function answer(value: string, verdict: RegExp) {
@@ -148,7 +148,7 @@ describe('each screen opens at its top', () => {
     expect(scrollBy).not.toHaveBeenCalled();
 
     scrolledTo(900);
-    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }));
     expect(scrollBy).toHaveBeenLastCalledWith({ top: -900, behavior: 'auto' });
 
     answer('99999', /Jafnvægi/);
@@ -168,7 +168,7 @@ describe('each screen opens at its top', () => {
     render(<App />);
     expect(document.activeElement).toBe(document.body);
 
-    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }));
     await waitFor(() =>
       expect(document.activeElement).toBe(document.querySelector('[data-item-start]'))
     );
@@ -183,7 +183,7 @@ describe('each screen opens at its top', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
     await waitFor(() =>
-      expect(document.activeElement).toBe(screen.getByRole('button', { name: /Æfingarhamur/ }))
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: /Stig 1: Auðvelt/ }))
     );
   });
 

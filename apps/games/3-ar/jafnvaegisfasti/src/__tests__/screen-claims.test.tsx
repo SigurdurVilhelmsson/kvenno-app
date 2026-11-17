@@ -43,7 +43,7 @@ describe("Kanna's counter", () => {
     for (const preset of ['Bara myndefni', 'Mikið af myndefnum', 'Tífalt þynnra']) {
       fireEvent.click(screen.getByText(preset));
     }
-    const done = screen.getByRole('button', { name: 'Áfram' }) as HTMLButtonElement;
+    const done = screen.getByRole('button', { name: 'Áfram í Skilja' }) as HTMLButtonElement;
     expect(done.disabled).toBe(false);
     expect(screen.getByText('Tókstu eftir þessu?')).toBeTruthy();
   });

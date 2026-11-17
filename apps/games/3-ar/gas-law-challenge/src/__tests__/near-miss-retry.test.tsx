@@ -61,7 +61,7 @@ describe('Æfingahamur', () => {
   it('offers Reyna aftur on a near miss, and a right retry does not count', () => {
     render(<App />);
     const level1 = getQuestionsForLevel(1);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     settle();
 
     answer(nearMiss(level1[0]));
@@ -91,7 +91,7 @@ describe('Æfingahamur', () => {
 
   it('offers no retry on an answer that is far off', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     settle();
     answer('999999');
     expect(screen.getByText('Ekki rétt. Athugaðu útreikninga þína.')).toBeTruthy();
@@ -102,7 +102,7 @@ describe('Æfingahamur', () => {
 describe('Keppnishamur', () => {
   it('says the near miss is outside the tolerance, and offers no retry', () => {
     const { container } = render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     settle();
     answer(nearMiss(getQuestionsForLevel(1)[0]));
 

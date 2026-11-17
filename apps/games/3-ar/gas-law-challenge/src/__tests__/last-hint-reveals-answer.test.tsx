@@ -96,8 +96,7 @@ describe('Æfingahamur', () => {
     const level3 = getQuestionsForLevel(3);
     expect(level3).toHaveLength(4);
 
-    fireEvent.click(screen.getByRole('button', { name: /Stig 3 — Samanburður/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 3: Samanburður/ }));
     settle();
 
     // 1: right with every hint open, the last among them. Does not count.
@@ -136,7 +135,7 @@ describe('Keppnishamur', () => {
   it('offers every hint but the last, and a right answer still scores in full', () => {
     const { container } = render(<App />);
     const first = getQuestionsForLevel(1)[0];
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     settle();
 
     openHints(first.hints.length - 1);
@@ -156,7 +155,7 @@ describe('Keppnishamur', () => {
   it('does not open the last hint from the keyboard either', () => {
     const { container } = render(<App />);
     const first = getQuestionsForLevel(1)[0];
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     settle();
 
     for (let i = 0; i < first.hints.length + 1; i++) fireEvent.keyDown(window, { key: 'h' });

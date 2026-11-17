@@ -64,7 +64,7 @@ afterEach(() => {
 describe('challenge timer', () => {
   it('ends the question when time runs out on an empty field', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
 
     tick(90);
 
@@ -77,7 +77,7 @@ describe('challenge timer', () => {
 
   it('ends the question when time runs out on an answer it cannot read', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     fireEvent.change(screen.getByLabelText(/Svar fyrir/), { target: { value: 'abc' } });
 
     tick(90);
@@ -88,7 +88,7 @@ describe('challenge timer', () => {
 
   it('grades a typed answer exactly once when time runs out', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     fireEvent.change(screen.getByLabelText(/Svar fyrir/), { target: { value: '3,82' } });
 
     tick(90);
@@ -102,7 +102,7 @@ describe('challenge timer', () => {
 
   it('lets the student leave a timed-out feedback screen for the menu', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     fireEvent.change(screen.getByLabelText(/Svar fyrir/), { target: { value: '3,82' } });
     tick(90);
     act(() => {
@@ -115,16 +115,16 @@ describe('challenge timer', () => {
     });
 
     expect(screen.queryByText('Skref fyrir skref lausn:')).toBeNull();
-    expect(screen.getByRole('button', { name: /Byrja Keppni/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' })).toBeTruthy();
     // Graded once: a second grading would have made the run's best 300.
-    expect(screen.getByText(/Met á Stigi 1: 150 stig/)).toBeTruthy();
+    expect(screen.getByText(/Met: 150 stig/)).toBeTruthy();
   });
 });
 
 describe('Enter key', () => {
   it('reads the clock as it stands when the answer is submitted, not when it was typed', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja Keppni/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Byrja keppni: Stig 1' }));
     tick(10); // 80 s left
     const field = screen.getByLabelText(/Svar fyrir/);
     fireEvent.change(field, { target: { value: '3,82' } });
@@ -138,8 +138,7 @@ describe('Enter key', () => {
 
   it('leaves Enter on a focused button to the button', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Stig 2/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 2: Sérstök tilvik/ }));
 
     const skip = screen.getByRole('button', { name: /Sleppa/ });
     // fireEvent returns false when a handler called preventDefault, which is what
@@ -150,8 +149,7 @@ describe('Enter key', () => {
 
   it('does not check an empty answer while the law is still being chosen', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Stig 2/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 2: Sérstök tilvik/ }));
 
     fireEvent.keyDown(document.body, { key: 'Enter' });
 
@@ -161,7 +159,7 @@ describe('Enter key', () => {
 
   it('leaves H and S typed into the answer field to the field', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     const field = screen.getByLabelText(/Svar fyrir/);
 
     // Not prevented, so the letter reaches the field; and neither shortcut fires.
@@ -173,7 +171,7 @@ describe('Enter key', () => {
 
   it('still opens the solution with S from outside the field', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
 
     fireEvent.keyDown(document.body, { key: 's' });
 
@@ -182,7 +180,7 @@ describe('Enter key', () => {
 
   it('still checks the answer on Enter from outside the field once the law is chosen', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     fireEvent.change(screen.getByLabelText(/Svar fyrir/), { target: { value: '3,82' } });
 
     fireEvent.keyDown(document.body, { key: 'Enter' });
@@ -195,7 +193,7 @@ describe('Enter key', () => {
 describe('validation message', () => {
   it('does not follow the student into the next question', () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
     fireEvent.change(screen.getByLabelText(/Svar fyrir/), { target: { value: 'abc' } });
     fireEvent.click(screen.getByRole('button', { name: /Athuga Svar/ }));
     expect(screen.getByRole('alert').textContent).toBe('Vinsamlegast sláðu inn gilt númer');
@@ -204,7 +202,7 @@ describe('validation message', () => {
     act(() => {
       vi.advanceTimersByTime(1000);
     });
-    fireEvent.click(screen.getByRole('button', { name: /Byrja að Æfa/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Stig 1: Kjörgaslögmálið/ }));
 
     expect(screen.queryByRole('alert')).toBeNull();
   });

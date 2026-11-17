@@ -13,9 +13,9 @@ export const ALL_PROBLEMS: { problem: Problem; difficulty: Difficulty; index: nu
 );
 
 const DIFFICULTY_BUTTON: Record<Difficulty, RegExp> = {
-  beginner: /Auðvelt/,
-  intermediate: /Miðlungs/,
-  advanced: /Erfitt/,
+  beginner: /Stig 1: Auðvelt/,
+  intermediate: /Stig 2: Miðlungs/,
+  advanced: /Stig 3: Erfitt/,
 };
 
 /** The problem with this id, and where it sits. */
@@ -33,8 +33,16 @@ export function openProblem(id: number, mode: RegExp = /Æfingarhamur/) {
   const { difficulty, index } = problemById(id);
   vi.spyOn(Math, 'random').mockReturnValue((index + 0.5) / PROBLEMS[difficulty].length);
   const view = render(<App />);
-  fireEvent.click(screen.getByRole('button', { name: DIFFICULTY_BUTTON[difficulty] }));
-  fireEvent.click(screen.getByRole('button', { name: mode }));
+  // A level card starts Æfingarhamur; Keppnishamur has a button per level.
+  const level = ['beginner', 'intermediate', 'advanced'].indexOf(difficulty) + 1;
+  fireEvent.click(
+    screen.getByRole(
+      'button',
+      mode.source.includes('Keppni')
+        ? { name: `Byrja keppni: Stig ${level}` }
+        : { name: DIFFICULTY_BUTTON[difficulty] }
+    )
+  );
   return view;
 }
 

@@ -1,16 +1,15 @@
 import type { Ref } from 'react';
 
-import { Header } from '@shared/components';
+import { Header, MenuCard, MenuProgress } from '@shared/components';
 
 import { questions, type Level } from '../data';
 import { GameMode, GasLawProgress } from '../types';
 
 interface MenuScreenProps {
   progress: GasLawProgress;
-  selectedLevel: Level;
-  setSelectedLevel: (level: Level) => void;
   resetProgress: () => void;
-  onStart: (mode: GameMode) => void;
+  /** Starts a mode on a level: a level card starts practice, Keppnishamur its own buttons. */
+  onStart: (mode: GameMode, level: Level) => void;
   /** Opens Nærmynd, the cylinder of molecules. */
   onNaermynd: () => void;
   /** Opens Gasblöndur og efnahvörf: Dalton's law and gas stoichiometry. */
@@ -25,33 +24,51 @@ function roundLabel(progress: GasLawProgress, level: Level): string | null {
   return result ? `${result.correct} af ${result.total} rétt` : null;
 }
 
-/** The level's practice result, as a chip inside its button. */
-function LevelResult({ progress, level }: { progress: GasLawProgress; level: Level }) {
-  const label = roundLabel(progress, level);
-  if (!label) return null;
-  return (
-    <div className="mt-2 phone:mt-1">
-      <span className="inline-block bg-green-700 text-white text-xs px-2 py-0.5 rounded-full whitespace-nowrap">
-        ✓ {label}
-      </span>
-    </div>
-  );
-}
+const LEVELS: {
+  level: Level;
+  icon: string;
+  title: string;
+  subtitle: string;
+  description: string;
+}[] = [
+  {
+    level: 1,
+    icon: '🎈',
+    title: 'Stig 1: Kjörgaslögmálið',
+    subtitle: 'PV = nRT',
+    description: 'Lærðu miðlögmálið og allar fjórar breyturnar.',
+  },
+  {
+    level: 2,
+    icon: '🔧',
+    title: 'Stig 2: Sérstök tilvik',
+    subtitle: 'Boyle / Charles / Gay-Lussac',
+    description: 'Sjáðu hvað gerist þegar ein breyta er föst.',
+  },
+  {
+    level: 3,
+    icon: '⚖️',
+    title: 'Stig 3: Samanburður',
+    subtitle: 'Sameinað + Avogadro',
+    description: 'Beittu mörgum lögmálum saman.',
+  },
+];
 
+/**
+ * Gaslögmál's menu, in pH Títrun's order (2026-11-17): the teaching box, Nærmynd, the
+ * three levels as cards that start a practice round, Gasblöndur, then Keppnishamur and
+ * the progress line. A level used to be chosen first and started from a mode button
+ * further down.
+ */
 export function MenuScreen({
   progress,
-  selectedLevel,
-  setSelectedLevel,
   resetProgress,
   onStart,
   onNaermynd,
   onBlondur,
   rootRef,
 }: MenuScreenProps) {
-  // The menu shows each level's practice round as `N af M rétt`, and points only for
-  // Keppnishamur (mobile-pass decision 1 (b)).
   const levelsDone = ([1, 2, 3] as const).filter((level) => progress.practice?.[level]).length;
-  const challengeBest = progress.challengeBest?.[selectedLevel];
   const hasProgress =
     levelsDone > 0 ||
     Object.keys(progress.challengeBest ?? {}).length > 0 ||
@@ -60,248 +77,153 @@ export function MenuScreen({
     <div ref={rootRef}>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
         <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Gaslögmál" />
-        <div className="min-h-screen">
-          <main className="max-w-5xl mx-auto px-4 py-6 sm:py-8 phone:py-3">
-            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 phone:p-3">
-              <div className="text-center mb-8 phone:mb-3">
-                <p className="text-lg text-warm-600 mb-2 phone:text-base phone:mb-1">
-                  Lærðu að leysa verkefni um kjörgaslögmálið: PV = nRT
-                </p>
-                <p className="text-sm text-warm-500">
-                  {questions.length} spurningar í boði • Auðvelt, Miðlungs, Erfitt
-                </p>
+        <div className="min-h-screen p-4 md:p-8 phone:p-3">
+          <main className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+            <p className="text-warm-600 mb-1">
+              Lærðu að leysa verkefni um kjörgaslögmálið: PV = nRT
+            </p>
+            <p className="text-sm text-warm-500 mb-4 phone:mb-3">
+              {questions.length} spurningar í boði
+            </p>
 
-                {hasProgress && (
-                  <div className="mt-4 phone:mt-2 flex flex-wrap justify-center items-center gap-x-4 gap-y-1 text-sm">
-                    <span className="text-warm-700">
-                      <span className="font-semibold">Framvinda:</span> {levelsDone} af 3 stigum
-                      lokið
-                    </span>
-                    <button
-                      onClick={resetProgress}
-                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3"
-                    >
-                      Endurstilla framvindu
-                    </button>
-                  </div>
-                )}
+            <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 border border-purple-200 phone:p-3 phone:mb-4">
+              <h2 className="font-bold text-purple-800 mb-3">Hvað segir PV = nRT?</h2>
+              <p className="text-sm text-purple-700 mb-3">
+                Gasagnir (sameindir) eru á stöðugri hreyfingu. Þegar þær rekast á veggi ílátsins
+                skapa þær <strong>þrýsting</strong>. Þetta tengir saman fjórar stærðir:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3">
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri og harðari
+                  árekstrar = meiri þrýstingur
+                </div>
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-green-700">V (rúmmál)</strong> — minna ílát = fleiri
+                  árekstrar
+                </div>
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-red-700">T (hitastig)</strong> — hærra T = hraðari agnir =
+                  fleiri og harðari árekstrar
+                </div>
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-amber-700">n (mólfjöldi)</strong> — fleiri agnir = fleiri
+                  árekstrar
+                </div>
               </div>
-
-              {/* Conceptual intro — WHY does PV=nRT? It is teaching, so it stays first on a
-                  phone too and costs a scroll (design §5); only its padding compacts. */}
-              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 border border-purple-200 phone:p-3 phone:mb-4">
-                <h2 className="font-bold text-purple-800 mb-3">Af hverju PV = nRT?</h2>
-                <p className="text-sm text-purple-700 mb-3">
-                  Gasagnir (sameindir) eru á stöðugri hreyfingu. Þegar þær rekast á veggi ílátsins
-                  skapa þær <strong>þrýsting</strong>. Þetta tengir saman fjórar stærðir:
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3">
-                  <div className="bg-white p-2 rounded">
-                    <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri og harðari
-                    árekstrar = meiri þrýstingur
-                  </div>
-                  <div className="bg-white p-2 rounded">
-                    <strong className="text-green-700">V (rúmmál)</strong> — minna ílát = fleiri
-                    árekstrar
-                  </div>
-                  <div className="bg-white p-2 rounded">
-                    <strong className="text-red-700">T (hitastig)</strong> — hærra T = hraðari agnir
-                    = fleiri og harðari árekstrar
-                  </div>
-                  <div className="bg-white p-2 rounded">
-                    <strong className="text-amber-700">n (mólfjöldi)</strong> — fleiri agnir =
-                    fleiri árekstrar
-                  </div>
-                </div>
-                <div className="bg-white p-3 rounded-lg text-center">
-                  <p className="font-mono text-purple-800 text-lg">PV = nRT</p>
-                  <p className="text-xs text-purple-600 mt-1">
-                    R = 0,08206 L·atm/(mól·K) — tengir einingarnar saman
-                  </p>
-                </div>
-                <p className="text-xs text-purple-600 mt-3">
-                  <strong>Mikilvægt:</strong> T verður alltaf að vera í Kelvin (K = °C + 273). Þetta
-                  lögmál gildir best fyrir gas við lágan þrýsting og hátt hitastig (kjörgas).
+              <div className="bg-white p-3 rounded-lg text-center">
+                <p className="font-mono text-purple-800 text-lg">PV = nRT</p>
+                <p className="text-xs text-purple-600 mt-1">
+                  R = 0,08206 L·atm/(mól·K) — tengir einingarnar saman
                 </p>
               </div>
-
-              {/* Nærmynd: nothing graded, so it sits with the teaching, before the levels. */}
-              <div className="mb-8 flex flex-col gap-3 rounded-xl border-2 border-purple-300 bg-white p-4 sm:flex-row sm:items-center sm:justify-between phone:mb-4 phone:p-3">
-                <div>
-                  <h2 className="font-bold text-purple-800">Nærmynd</h2>
-                  <p className="text-sm text-warm-600">
-                    Strokkur með stimpli: ýttu, hitaðu og bættu gasi við, og sjáðu hvernig P, V, T
-                    og n hanga saman. Ekkert er metið.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={onNaermynd}
-                  className="shrink-0 rounded-lg bg-purple-600 px-5 py-2.5 font-semibold text-white hover:bg-purple-700"
-                >
-                  Opna Nærmynd
-                </button>
-              </div>
-
-              {/* Level selector — iter 5 P3 restructure (was: random across 6 laws). */}
-              <div data-level-chooser className="mb-6 phone:mb-3">
-                <h2 className="font-bold text-warm-800 mb-3 phone:mb-2">Veldu stig:</h2>
-                <div className="grid md:grid-cols-3 gap-3 phone:gap-2 phone-land:grid-cols-3">
-                  <button
-                    onClick={() => setSelectedLevel(1)}
-                    aria-pressed={selectedLevel === 1}
-                    className={`p-4 phone:px-3 phone:py-2.5 rounded-lg border-2 text-left transition ${
-                      selectedLevel === 1
-                        ? 'border-blue-500 bg-blue-50 shadow-md'
-                        : 'border-warm-300 bg-white hover:border-blue-300'
-                    }`}
-                  >
-                    <div className="font-bold text-blue-800">Stig 1 — Kjörgaslögmálið</div>
-                    <div className="text-xs text-warm-600 mt-1 font-mono phone:mt-0.5">
-                      PV = nRT
-                    </div>
-                    <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
-                      Lærðu miðlögmálið og allar fjórar breyturnar.
-                    </div>
-                    <LevelResult progress={progress} level={1} />
-                  </button>
-                  <button
-                    onClick={() => setSelectedLevel(2)}
-                    aria-pressed={selectedLevel === 2}
-                    className={`p-4 phone:px-3 phone:py-2.5 rounded-lg border-2 text-left transition ${
-                      selectedLevel === 2
-                        ? 'border-green-500 bg-green-50 shadow-md'
-                        : 'border-warm-300 bg-white hover:border-green-300'
-                    }`}
-                  >
-                    <div className="font-bold text-green-800">Stig 2 — Sérstök tilvik</div>
-                    <div className="text-xs text-warm-600 mt-1 font-mono phone:mt-0.5">
-                      Boyle / Charles / Gay-Lussac
-                    </div>
-                    <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
-                      Sjáðu hvað gerist þegar ein breyta er föst.
-                    </div>
-                    <LevelResult progress={progress} level={2} />
-                  </button>
-                  <button
-                    onClick={() => setSelectedLevel(3)}
-                    aria-pressed={selectedLevel === 3}
-                    className={`p-4 phone:px-3 phone:py-2.5 rounded-lg border-2 text-left transition ${
-                      selectedLevel === 3
-                        ? 'border-purple-500 bg-purple-50 shadow-md'
-                        : 'border-warm-300 bg-white hover:border-purple-300'
-                    }`}
-                  >
-                    <div className="font-bold text-purple-800">Stig 3 — Samanburður</div>
-                    <div className="text-xs text-warm-600 mt-1 font-mono phone:mt-0.5">
-                      Sameinað + Avogadro
-                    </div>
-                    <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
-                      Beittu mörgum lögmálum saman.
-                    </div>
-                    <LevelResult progress={progress} level={3} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6 phone:gap-3 phone-land:grid-cols-2">
-                {/* Practice Mode */}
-                <div className="game-card bg-blue-50 p-4 sm:p-6 rounded-lg border-2 border-blue-200 phone:p-3">
-                  <h2 className="text-2xl font-bold mb-3 text-blue-900 phone:text-lg phone:mb-1.5">
-                    Æfingahamur
-                  </h2>
-                  <ul className="text-warm-700 mb-4 space-y-2 text-sm phone:space-y-0.5 phone:mb-3">
-                    <li>✓ Engin tímatakmörk</li>
-                    <li>✓ Ótakmarkaðar vísbendingar</li>
-                    <li>✓ Sjá lausnir skref fyrir skref</li>
-                    <li>✓ Leggja áherslu á nám</li>
-                  </ul>
-                  <button
-                    data-mode-start="practice"
-                    onClick={() => onStart('practice')}
-                    className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
-                    style={{ backgroundColor: '#3b82f6' }}
-                  >
-                    Byrja að Æfa (Stig {selectedLevel})
-                  </button>
-                </div>
-
-                {/* Challenge Mode */}
-                <div className="game-card bg-orange-50 p-4 sm:p-6 rounded-lg border-2 border-orange-200 phone:p-3">
-                  <h2 className="text-2xl font-bold mb-3 text-orange-900 phone:text-lg phone:mb-1.5">
-                    Keppnishamur
-                  </h2>
-                  <ul className="text-warm-700 mb-4 space-y-2 text-sm phone:space-y-0.5 phone:mb-3">
-                    <li>⏱️ 90 sekúndur á spurningu</li>
-                    <li>🎯 Tímabónus fyrir hraða</li>
-                    <li>💡 Vísbendingar í boði</li>
-                    <li>📊 Stigatafla og röð</li>
-                  </ul>
-                  {challengeBest !== undefined && (
-                    <p className="text-sm font-semibold text-orange-900 mb-3 phone:mb-2">
-                      🏆 Met á Stigi {selectedLevel}: {challengeBest} stig
-                      {(progress.challengeBestStreak ?? 0) > 0 && (
-                        <> • 🔥 Besta röð: {progress.challengeBestStreak}</>
-                      )}
-                    </p>
-                  )}
-                  <button
-                    data-mode-start="challenge"
-                    onClick={() => onStart('challenge')}
-                    className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
-                    style={{ backgroundColor: '#f36b22' }}
-                  >
-                    Byrja Keppni (Stig {selectedLevel})
-                  </button>
-                </div>
-              </div>
-
-              {/* Beyond one gas: mixtures and reactions, the book's m68752, graded on its own. */}
-              <div className="mt-6 flex flex-col gap-3 rounded-xl border-2 border-indigo-300 bg-indigo-50 p-4 sm:flex-row sm:items-center sm:justify-between phone:mt-4 phone:p-3">
-                <div>
-                  <h2 className="font-bold text-indigo-900">Gasblöndur og efnahvörf</h2>
-                  <p className="text-sm text-warm-700">
-                    Lögmál Daltons, mólbrot, gas safnað yfir vatni og rúmmál lofttegunda í
-                    efnahvörfum. Skýring, blanda til að kanna og átta dæmi úr kennslubókinni.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={onBlondur}
-                  className="shrink-0 rounded-lg bg-indigo-600 px-5 py-2.5 font-semibold text-white hover:bg-indigo-700"
-                >
-                  Opna gasblöndur
-                </button>
-              </div>
-
-              <div className="mt-6 bg-warm-50 p-4 rounded-lg border border-warm-200 phone:mt-4 phone:p-3">
-                <h3 className="font-bold text-warm-800 mb-2">Leiðbeiningar:</h3>
-                <div className="grid md:grid-cols-2 gap-4 text-sm text-warm-700">
-                  <div>
-                    <p className="font-semibold">Kjörgaslögmálið:</p>
-                    <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
-                    <p className="text-xs mt-1">þar sem R = 0,08206 L·atm/(mól·K)</p>
-                  </div>
-                  {/* The keyboard legend means nothing on a touch screen (design §4). */}
-                  <div className="pointer-coarse:hidden">
-                    <p className="font-semibold">Lyklaborð:</p>
-                    <p className="text-xs">
-                      • <kbd className="px-1 bg-warm-200 rounded">Enter</kbd> Athuga svar
-                    </p>
-                    <p className="text-xs">
-                      • <kbd className="px-1 bg-warm-200 rounded">H</kbd> Vísbending
-                    </p>
-                    <p className="text-xs">
-                      • <kbd className="px-1 bg-warm-200 rounded">S</kbd> Sýna lausn
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <p className="text-xs text-purple-600 mt-3">
+                <strong>Mikilvægt:</strong> T verður alltaf að vera í Kelvin (K = °C + 273). Þetta
+                lögmál gildir best fyrir gas við lágan þrýsting og hátt hitastig (kjörgas).
+              </p>
             </div>
-          </main>
 
-          <div className="max-w-5xl mx-auto px-4 mb-6">
-            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+            {/* Nærmynd: nothing graded, so it sits with the teaching, before the levels. */}
+
+            <div className="space-y-4 phone:space-y-3">
+              {/* Nærmynd: the Explore phase, before any level. Nothing is graded or stored. */}
+              <MenuCard
+                tone="naermynd"
+                icon="🔬"
+                title="Nærmynd"
+                subtitle="Strokkur með stimpli"
+                description="Ýttu, hitaðu og bættu gasi við, og sjáðu hvernig P, V, T og n hanga saman. Ekkert er metið."
+                onClick={onNaermynd}
+              />
+              {LEVELS.map(({ level, ...card }) => (
+                <MenuCard
+                  key={level}
+                  tone={level}
+                  {...card}
+                  result={roundLabel(progress, level)}
+                  data-level-card={level}
+                  onClick={() => onStart('practice', level)}
+                />
+              ))}
+              <MenuCard
+                tone={4}
+                icon="🫧"
+                title="Gasblöndur og efnahvörf"
+                subtitle="Lögmál Daltons og rúmmál lofttegunda í efnahvörfum"
+                description="Mólbrot, gas safnað yfir vatni og rúmmál lofttegunda í efnahvörfum. Skýring, blanda til að kanna og átta dæmi úr kennslubókinni."
+                onClick={onBlondur}
+              />
+            </div>
+
+            {/* Keppnishamur: timed and scored, the one place points live (decision 1 (b)). */}
+            <section
+              aria-labelledby="gas-keppni-heading"
+              className="mt-6 rounded-xl border-2 border-orange-200 bg-white p-4 phone:p-3"
+            >
+              <h2 id="gas-keppni-heading" className="font-bold text-orange-900">
+                ⏱️ Keppnishamur
+              </h2>
+              <p className="text-sm text-warm-600 mt-1">
+                90 sekúndur á spurningu, tímabónus fyrir hraða og vísbendingar í boði.
+              </p>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {([1, 2, 3] as const).map((level) => {
+                  const best = progress.challengeBest?.[level];
+                  return (
+                    <button
+                      key={level}
+                      type="button"
+                      data-challenge-start={level}
+                      aria-label={`Byrja keppni: Stig ${level}`}
+                      onClick={() => onStart('challenge', level)}
+                      className="rounded-lg bg-kvenno-orange px-3 py-2.5 font-semibold text-white hover:bg-kvenno-orange-600"
+                    >
+                      Stig {level}
+                      {best !== undefined && (
+                        <span className="block text-xs font-normal">Met: {best} stig</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              {(progress.challengeBestStreak ?? 0) > 0 && (
+                <p className="mt-2 text-sm text-warm-600">
+                  🔥 Besta röð: {progress.challengeBestStreak}
+                </p>
+              )}
+            </section>
+
+            {/* Progress: which levels are done, and the way to start over. */}
+            {hasProgress && (
+              <MenuProgress onReset={resetProgress} className="mt-6">
+                {levelsDone} af 3 stigum lokið
+              </MenuProgress>
+            )}
+
+            {/* Formula reference */}
+            <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+              <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
+              <div className="font-mono text-base md:text-sm space-y-2 text-warm-600">
+                <p>
+                  <strong>Kjörgaslögmálið:</strong>{' '}
+                  <span className="whitespace-nowrap">PV = nRT</span>,{' '}
+                  <span className="whitespace-nowrap">R = 0,08206 L·atm/(mól·K)</span>
+                </p>
+                <p>
+                  <strong>Sameinaða gaslögmálið:</strong>{' '}
+                  <span className="whitespace-nowrap">P₁V₁/T₁ = P₂V₂/T₂</span>
+                </p>
+                <p>
+                  <strong>Kelvin:</strong> <span className="whitespace-nowrap">K = °C + 273</span>
+                </p>
+              </div>
+              <p className="mt-3 text-xs text-warm-600 pointer-coarse:hidden">
+                Lyklaborð: <kbd className="px-1 bg-warm-200 rounded">Enter</kbd> athuga svar ·{' '}
+                <kbd className="px-1 bg-warm-200 rounded">H</kbd> vísbending ·{' '}
+                <kbd className="px-1 bg-warm-200 rounded">S</kbd> sýna lausn
+              </p>
+            </div>
+
+            <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
               <h3 className="font-semibold text-amber-800 mb-2">Af hverju gaslögmálin?</h3>
               <p className="text-sm text-amber-700">
                 Gaslögmálin útskýra veður, köfunarhættur, hvernig bílvélar virka, og af hverju
@@ -313,11 +235,7 @@ export function MenuScreen({
               Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
             </div>
             <div className="mt-2 text-center text-xs text-warm-400">Kafli 9 — Efnafræði 2e</div>
-          </div>
-
-          <footer className="text-center text-sm text-warm-500 py-4">
-            <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
-          </footer>
+          </main>
         </div>
       </div>
     </div>

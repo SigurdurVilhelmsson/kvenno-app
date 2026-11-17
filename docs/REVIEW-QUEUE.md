@@ -1061,6 +1061,22 @@ Claude and want a teacher's read. Tick each with the date once read.
       _eðlisbreyting_, _efnabreyting_): Siggi ruled 2026-11-15 that it stays class and lab work, not
       a game. Do not log it as a game gap again.
 
+### C27. Year-3 game menus, what the card pass left open (2026-11-17)
+
+Siggi ruled on 2026-11-17 that every Year-3 menu takes pH Títrun's card look and position colours
+(`MenuCard` and `MenuProgress` in `packages/shared/components/GameMenu/`) while each game keeps its
+own section names. Review: Claude Doc "Year-3 game menus: consistency review". Still open:
+
+- [ ] **One word for practice mode.** Gaslögmál and Varmafræði spámaður say `Æfingahamur`,
+      Jafnvægisstjóri says `Lærdómshamur`; `Æfingarhamur` is the third candidate.
+- [ ] **Námsleiðin chain names against hub titles.** `Hliðrun jafnvægis` / Jafnvægisstjóri,
+      `Varmafræði` / Varmafræði spámaður, `Stuðpúðar` / Stuðpúðasmíði.
+- [ ] **Year-3 hub order against the chain order.** The games hub does not list the games in the
+      order the Námsleiðin line gives.
+- [ ] **pH Títrun's Samantekt end screen for the other games.** Only pH shows one after its last level.
+- [ ] **Æfa and Beita show `Lokið`, not a count.** The four-phase games mark a graded phase done
+      rather than `N af M rétt`, as the 2026-10-03 rule asks of a graded level.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)

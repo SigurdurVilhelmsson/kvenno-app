@@ -133,3 +133,7 @@ export type { TaskStripProps, PinnedActionsProps } from './PinnedTask';
 
 // Transition - lightweight AnimatePresence replacement
 export { Presence, FadePresence } from './Transition';
+
+// Game menus: the card and progress line every Year-3 menu shares (2026-11-17)
+export { MenuCard, MenuProgress } from './GameMenu';
+export type { MenuCardProps, MenuCardTone, MenuProgressProps } from './GameMenu';

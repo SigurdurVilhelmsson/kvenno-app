@@ -56,7 +56,7 @@ describe('the "Áfram í …" buttons go where they say', () => {
     expect(ui.getByRole('heading', { name: 'Æfa-skjár' })).toBeTruthy();
 
     fireEvent.click(ui.getByRole('button', { name: 'Til baka' }));
-    expect(ui.getAllByText('Lokið')).toHaveLength(2);
+    expect(ui.getAllByText('✓ Lokið')).toHaveLength(2);
     unmount();
   });
 
@@ -68,7 +68,7 @@ describe('the "Áfram í …" buttons go where they say', () => {
     fireEvent.click(ui.getByRole('button', { name: 'Ljúka Æfa' }));
     fireEvent.click(ui.getByRole('button', { name: /Beita/ }));
     fireEvent.click(ui.getByRole('button', { name: 'Ljúka Beita' }));
-    expect(ui.getAllByText('Lokið')).toHaveLength(2);
+    expect(ui.getAllByText('✓ Lokið')).toHaveLength(2);
     unmount();
   });
 });

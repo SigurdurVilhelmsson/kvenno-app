@@ -97,7 +97,7 @@ const groupName = (el: HTMLElement | null) =>
   document.getElementById(el?.getAttribute('aria-labelledby') ?? '')?.textContent;
 
 describe('the menu', () => {
-  it('opens a phase at its heading, and comes back to the next phase not yet done', () => {
+  it('opens a phase at its heading, goes on from Kanna to Skilja, and comes back to the next phase not yet done', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /Kanna/ }));
     expect(focused()?.tagName).toBe('H2');
@@ -107,7 +107,11 @@ describe('the menu', () => {
       fireEvent.click(button(name));
     }
     later();
-    fireEvent.click(button('Áfram'));
+    fireEvent.click(button('Áfram í Skilja'));
+    expect(focused()?.tagName).toBe('H2');
+    expect(focused()?.textContent).toMatch(/Skilja/);
+
+    fireEvent.click(screen.getAllByRole('button', { name: /Til baka/ })[0]);
     expect(focused()?.getAttribute('data-phase-card')).toBe('skilja');
   });
 });
@@ -127,16 +131,16 @@ describe('Kanna', () => {
     expect(scrollBy).toHaveBeenCalled();
   });
 
-  it('ignores "Áfram" pressed at once after the fourth mixture', () => {
+  it('ignores "Áfram í Skilja" pressed at once after the fourth mixture', () => {
     const onComplete = vi.fn();
     render(<KannaScreen onComplete={onComplete} onBack={vi.fn()} />);
     for (const name of ['Bara myndefni', 'Mikið af myndefnum', 'Tífalt þynnra']) {
       fireEvent.click(button(name));
     }
-    fireEvent.click(button('Áfram'));
+    fireEvent.click(button('Áfram í Skilja'));
     expect(onComplete).not.toHaveBeenCalled();
     later();
-    fireEvent.click(button('Áfram'));
+    fireEvent.click(button('Áfram í Skilja'));
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 });
@@ -151,7 +155,7 @@ describe('Skilja', () => {
     expect(focused()?.textContent).toContain('Fast efni og hreinn vökvi');
   });
 
-  it('makes "Ljúka" a new element, not "Næsta" relabelled', () => {
+  it('makes "Áfram í Æfa" a new element, not "Næsta" relabelled', () => {
     const onComplete = vi.fn();
     render(<SkiljaScreen onComplete={onComplete} onBack={vi.fn()} />);
     for (let i = 0; i < 3; i++) {
@@ -162,7 +166,7 @@ describe('Skilja', () => {
     const lastNext = button('Næsta');
     fireEvent.click(lastNext);
     expect(lastNext.isConnected).toBe(false);
-    fireEvent.click(button('Ljúka'));
+    fireEvent.click(button('Áfram í Æfa'));
     expect(onComplete).not.toHaveBeenCalled();
   });
 });

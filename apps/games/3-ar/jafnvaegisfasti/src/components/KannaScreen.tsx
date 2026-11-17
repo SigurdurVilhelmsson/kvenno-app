@@ -266,7 +266,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
               disabled={!allSeen}
               className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-600 disabled:cursor-not-allowed disabled:bg-warm-300"
             >
-              {allSeen ? 'Áfram' : `Prófaðu allar fjórar blöndurnar (${seen.length}/4)`}
+              {allSeen ? 'Áfram í Skilja' : `Prófaðu allar fjórar blöndurnar (${seen.length}/4)`}
             </button>
           </div>
         </div>

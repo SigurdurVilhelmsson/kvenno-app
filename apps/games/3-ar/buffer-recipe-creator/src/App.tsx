@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { Header, ErrorBoundary, FadePresence } from '@shared/components';
+import { Header, ErrorBoundary, FadePresence, MenuCard, MenuProgress } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 import { focusTarget, revealSpan, revealTop } from '@shared/utils';
 
@@ -42,7 +42,7 @@ const DEFAULT_PROGRESS: Progress = {
  *
  * Level 1: Visual molecule manipulation (NO calculations)
  * Level 2: Henderson-Hasselbalch calculations (3-step process)
- * Level 3: Design constraints (coming soon)
+ * Level 3: Stock solutions and volumes
  */
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
@@ -96,11 +96,6 @@ function App() {
   const handleLevel2Complete = () => applyLevelResult(2);
   const handleLevel3Complete = () => applyLevelResult(3);
 
-  const handleResetProgress = () => {
-    if (!window.confirm('Ertu viss um að þú viljir endurstilla alla framvindu?')) return;
-    resetProgress();
-  };
-
   // Main Menu computed values
   const levelsCompleted = [
     progress.level1Completed,
@@ -149,15 +144,15 @@ function App() {
               </p>
 
               {/* Pedagogical explanation */}
-              <div className="p-4 sm:p-6 rounded-xl mb-8 bg-kvenno-orange/10 phone:p-3 phone:mb-3">
-                <h2 className="font-bold mb-3 text-kvenno-orange phone:mb-1">Hvað er stuðpúði?</h2>
-                <p className="text-warm-800 text-sm mb-4 phone:mb-2">
+              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 phone:p-3 phone:mb-3">
+                <h2 className="font-bold mb-3 text-purple-800 phone:mb-1">Hvað er stuðpúði?</h2>
+                <p className="text-purple-900 text-sm mb-4 phone:mb-2">
                   <strong>Stuðpúði</strong> er lausn sem getur viðhaldið stöðugu pH þegar litlu
                   magni af sýru eða basa er bætt við. Hann samanstendur af veikri sýru og samoka
                   basa hennar (eða veikum basa og samoka sýru hans).
                 </p>
-                <div className="bg-white p-3 rounded-lg border border-kvenno-orange phone:p-2">
-                  <p className="text-sm font-mono text-center text-kvenno-orange">
+                <div className="bg-white p-3 rounded-lg border border-purple-200 phone:p-2">
+                  <p className="text-sm font-mono text-center text-purple-800">
                     pH = pK<sub>a</sub> + log([A⁻]/[HA])
                   </p>
                   <p className="text-xs text-warm-600 text-center mt-1">
@@ -169,140 +164,51 @@ function App() {
               {/* Level selection */}
               <div className="space-y-4 phone:space-y-2">
                 {/* Nærmynd: the Explore phase, before any level. Nothing is graded or stored. */}
-                <button
+                <MenuCard
+                  tone="naermynd"
+                  icon="🔬"
+                  title="Nærmynd"
+                  subtitle="Stuðpúði og vatn, skref fyrir skref"
+                  description="Sama sýra fer í stuðpúða og í hreint vatn. Sjáðu hvers vegna pH stuðpúðans haggast varla, og hvenær hann þrýtur."
                   onClick={() => setActiveLevel('naermynd')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-amber-400 bg-amber-50 hover:bg-amber-100 transition-all text-left"
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">🧪</div>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-xl font-bold text-amber-900 phone:text-lg">
-                        Nærmynd
-                      </span>
-                      <div className="text-sm text-amber-800 mt-1">
-                        Stuðpúði og vatn, skref fyrir skref
-                      </div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Sama sýra fer í stuðpúða og í hreint vatn. Sjáðu hvers vegna pH stuðpúðans
-                        haggast varla, og hvenær hann þrýtur.
-                      </div>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Level 1 */}
-                <button
+                />
+                <MenuCard
+                  tone={1}
+                  icon="⚖️"
+                  title="Stig 1: Hugmyndafræði"
+                  subtitle="Sjónræn sameindameðferð - engar tölur!"
+                  description="Skildu hvernig hlutfall sýru/basa hefur áhrif á pH. Lærðu að pH = pKa þegar jafnt er af hvoru tveggja."
+                  result={progress.level1Completed ? 'Lokið' : null}
                   data-level-card="level1"
                   onClick={() => setActiveLevel('level1')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 transition-all text-left hover:shadow-lg border-kvenno-orange bg-kvenno-orange/5"
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">🔬</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-lg sm:text-xl font-bold text-kvenno-orange">
-                          Stig 1: Hugmyndafræði
-                        </span>
-                        {progress.level1Completed && (
-                          <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full">
-                            ✓ Lokið
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm mt-1 phone:mt-0 text-kvenno-orange-600">
-                        Sjónræn sameindameðferð - engar tölur!
-                      </div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Skildu hvernig hlutfall sýru/basa hefur áhrif á pH. Lærðu að pH = pKa þegar
-                        jafnt er af hvoru tveggja.
-                      </div>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Level 2 */}
-                <button
+                />
+                <MenuCard
+                  tone={2}
+                  icon="📐"
+                  title="Stig 2: Útreikningar"
+                  subtitle="Henderson-Hasselbalch útreikningar"
+                  description="Reiknaðu hlutfall [Basi]/[Sýra] og massa hvers efnis. 3-skrefa ferli: stefna → hlutfall → massi."
+                  result={progress.level2Completed ? 'Lokið' : null}
                   data-level-card="level2"
                   onClick={() => setActiveLevel('level2')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
-                  style={{
-                    borderColor: '#22c55e',
-                    backgroundColor: 'rgba(34, 197, 94, 0.05)',
-                  }}
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">📐</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-lg sm:text-xl font-bold text-green-700">
-                          Stig 2: Útreikningar
-                        </span>
-                        {progress.level2Completed && (
-                          <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full">
-                            ✓ Lokið
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm mt-1 phone:mt-0 text-green-600">
-                        Henderson-Hasselbalch útreikningar
-                      </div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Reiknaðu hlutfall [Basi]/[Sýra] og massa hvers efnis. 3-skrefa ferli: stefna
-                        → hlutfall → massi.
-                      </div>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Level 3 */}
-                <button
+                />
+                <MenuCard
+                  tone={3}
+                  icon="🏭"
+                  title="Stig 3: Hönnun"
+                  subtitle="Birgðalausnir og rúmmálsútreikningar"
+                  description="Notaðu tilbúnar birgðalausnir til að búa til stuðpúða. Reiknaðu rúmmál til að taka úr hverri birgðalausn."
+                  result={progress.level3Completed ? 'Lokið' : null}
                   data-level-card="level3"
                   onClick={() => setActiveLevel('level3')}
-                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
-                  style={{
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                  }}
-                >
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl phone:text-2xl">🏭</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-lg sm:text-xl font-bold text-emerald-700">
-                          Stig 3: Hönnun
-                        </span>
-                        {progress.level3Completed && (
-                          <span className="bg-emerald-700 text-white text-xs px-2 py-1 rounded-full">
-                            ✓ Lokið
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm mt-1 phone:mt-0 text-emerald-600">
-                        Birgðalausnir og rúmmálsútreikningar
-                      </div>
-                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
-                        Notaðu tilbúnar birgðalausnir til að búa til stuðpúða. Reiknaðu rúmmál til
-                        að taka úr hverri birgðalausn.
-                      </div>
-                    </div>
-                  </div>
-                </button>
+                />
               </div>
 
               {/* Progress: which levels are done, and the way to start over. */}
               {levelsCompleted > 0 && (
-                <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl flex justify-between items-center gap-3">
-                  <div className="text-warm-700">
-                    <span className="font-semibold">Framvinda:</span> {levelsCompleted} af 3 stigum
-                    lokið
-                  </div>
-                  <button
-                    onClick={handleResetProgress}
-                    className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
-                  >
-                    Endurstilla
-                  </button>
-                </div>
+                <MenuProgress onReset={resetProgress}>
+                  {levelsCompleted} af 3 stigum lokið
+                </MenuProgress>
               )}
 
               {/* Formula reference */}
