@@ -14,6 +14,9 @@ import { Level3 } from '../components/Level3';
 // InteractiveGraph draws to a canvas and both graphs watch their size; jsdom
 // implements neither.
 beforeAll(() => {
+  // Wider than a phone the level scrolls too (the bench, the result), and jsdom has no
+  // scrollBy.
+  window.scrollBy = (() => {}) as never;
   HTMLCanvasElement.prototype.getContext = (() => null) as never;
   globalThis.ResizeObserver ??= class {
     observe() {}

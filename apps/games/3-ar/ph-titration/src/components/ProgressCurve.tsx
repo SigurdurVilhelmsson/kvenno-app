@@ -36,9 +36,11 @@ function pathTo(volume: number): string {
 
 interface ProgressCurveProps {
   volume: number;
+  /** Sizing classes for the SVG; by default it takes the width and its own height. */
+  className?: string;
 }
 
-export function ProgressCurve({ volume }: ProgressCurveProps) {
+export function ProgressCurve({ volume, className = 'w-full h-auto' }: ProgressCurveProps) {
   const pH = pHAt(volume);
   const reachedHalf = volume >= V_HALF - 1e-9;
   const reachedEq = volume >= V_EQ - 1e-9;
@@ -47,7 +49,7 @@ export function ProgressCurve({ volume }: ProgressCurveProps) {
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
-      className="w-full h-auto"
+      className={className}
       role="img"
       aria-label={`Títrunarferill: pH ${formatDecimal(pH, 2)} eftir ${formatDecimal(volume, 2)} mL af NaOH`}
     >

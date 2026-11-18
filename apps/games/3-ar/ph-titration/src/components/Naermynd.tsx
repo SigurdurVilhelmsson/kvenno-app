@@ -6,7 +6,9 @@ import {
   focusTarget,
   formatDecimal,
   formatScientific,
+  isPhone,
   prefersReducedMotion,
+  revealSpan,
   revealTop,
 } from '@shared/utils';
 
@@ -64,6 +66,7 @@ export function Naermynd({ onBack }: NaermyndProps) {
 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const stepTopRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
   const firstStep = useRef(true);
 
   useLayoutEffect(() => {
@@ -131,9 +134,12 @@ export function Naermynd({ onBack }: NaermyndProps) {
       firstStep.current = false;
       return;
     }
-    // At every width: a scene that adds a panel above (the NaOH dissolving) must not leave
-    // its title above the screen. A title already on screen stays put.
-    revealTop(stepTopRef.current, { anyWidth: true });
+    // On a phone: a scene that adds a panel above (the NaOH dissolving) must not leave its
+    // title above the screen. A title already on screen stays put. Wider, the scene from
+    // its title down to the step buttons is brought on screen whole where it fits, so a
+    // laptop shows the flask, the curve and "Næsta skref" without scrolling by hand.
+    if (isPhone()) revealTop(stepTopRef.current);
+    else revealSpan(navRef.current, [stepTopRef.current], { anyWidth: true });
     focusTarget(stepTopRef.current?.querySelector('h3') ?? null);
   }, [stepIndex]);
 
@@ -215,16 +221,24 @@ export function Naermynd({ onBack }: NaermyndProps) {
           )}
         </div>
 
-        {/* The flask and the curve, side by side from a tablet up. */}
+        {/* The flask and the curve, side by side from a tablet up. The NaOH dissolving sits
+            above the curve there, beside the flask its drops fall into, so the scene stays
+            one screen high on a laptop; on a phone it stays above the flask. On a wide
+            screen the flask is held to the screen's height, less the title, the equations,
+            the key and the step buttons. */}
         <div className="space-y-3 mb-3">
-          {step?.dissolve && (
-            <div className="rounded-xl border border-warm-200 p-2">
-              <div className="text-sm font-semibold text-warm-700 mb-1">Í búrettunni</div>
-              <NaOHDissolve still={still} />
-            </div>
-          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="rounded-xl border border-warm-200 p-2">
+            {step?.dissolve && (
+              <div className="rounded-xl border border-warm-200 p-2 sm:col-start-2 sm:row-start-1 sm:[&>svg]:max-w-xs">
+                <div className="text-sm font-semibold text-warm-700 mb-1">Í búrettunni</div>
+                <NaOHDissolve still={still} />
+              </div>
+            )}
+            <div
+              className={`rounded-xl border border-warm-200 p-2 lg:[&>svg]:max-h-[max(15rem,calc(100dvh-23rem))] ${
+                step?.dissolve ? 'sm:col-start-1 sm:row-start-1 sm:row-span-2' : ''
+              }`}
+            >
               <div className="text-sm font-semibold text-warm-700 mb-1">
                 Lausnin í keiluflöskunni, stækkuð
               </div>
@@ -237,14 +251,25 @@ export function Naermynd({ onBack }: NaermyndProps) {
                 label={beakerLabel}
               />
             </div>
-            <div className="rounded-xl border border-warm-200 p-2 flex flex-col">
+            <div
+              className={`rounded-xl border border-warm-200 p-2 flex flex-col ${
+                step?.dissolve ? 'sm:col-start-2' : ''
+              }`}
+            >
               <div className="flex items-baseline justify-between gap-2 mb-1">
                 <span className="text-sm font-semibold text-warm-700">Títrunarferill</span>
                 <span className="text-sm text-warm-600 whitespace-nowrap">
                   {formatDecimal(volume, 2)} mL NaOH
                 </span>
               </div>
-              <ProgressCurve volume={volume} />
+              {/* From a tablet up the curve takes the height the flask gives the row (less
+                  the dissolving, where it shows): drawn out of the flow, it adds none. */}
+              <div className="sm:relative sm:flex-1 sm:min-h-28">
+                <ProgressCurve
+                  volume={volume}
+                  className="w-full h-auto sm:absolute sm:inset-0 sm:h-full"
+                />
+              </div>
               <div
                 className="mt-auto pt-1 text-center text-3xl font-bold text-purple-700 phone:text-2xl"
                 aria-live="polite"
@@ -282,7 +307,7 @@ export function Naermynd({ onBack }: NaermyndProps) {
         </div>
 
         {/* Back, replay, onward. */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div ref={navRef} className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => goTo(stepIndex - 1)}
             disabled={stepIndex === 0}
