@@ -33,6 +33,9 @@ import {
  */
 
 beforeAll(() => {
+  // Wider than a phone the level scrolls too (the bench, the result), and jsdom has no
+  // scrollBy.
+  window.scrollBy = (() => {}) as never;
   HTMLCanvasElement.prototype.getContext = (() => null) as never;
   globalThis.ResizeObserver ??= class {
     observe() {}

@@ -14,6 +14,9 @@ import { drawnCounts, particleCountsAt, pHAt } from '../utils/naermynd';
  */
 
 beforeAll(() => {
+  // Wider than a phone the level scrolls too (the bench, the result), and jsdom has no
+  // scrollBy.
+  window.scrollBy = (() => {}) as never;
   window.matchMedia = ((query: string) => ({
     matches: query.includes('reduced-motion'),
     media: query,

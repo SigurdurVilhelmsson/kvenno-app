@@ -15,6 +15,9 @@ import { Level3 } from '../components/Level3';
 // within 400 ms of appearing, so a double tap cannot skip the feedback.
 
 beforeAll(() => {
+  // Wider than a phone the level scrolls too (the bench, the result), and jsdom has no
+  // scrollBy.
+  window.scrollBy = (() => {}) as never;
   HTMLCanvasElement.prototype.getContext = (() => null) as never;
   globalThis.ResizeObserver ??= class {
     observe() {}

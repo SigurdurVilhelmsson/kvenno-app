@@ -1,9 +1,18 @@
-import { useState, useRef, useEffect, useCallback, useLayoutEffect, useMemo } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useSyncExternalStore,
+} from 'react';
 
 import { Presence } from '@shared/components';
 import {
   focusTarget,
   formatDecimal,
+  isPhone,
   parseStudentNumber,
   revealSpan,
   revealTop,
@@ -49,6 +58,24 @@ const PANEL_EXIT_MS = 250;
 
 type Phase = 'choose' | 'titrating' | 'calculate' | 'result';
 
+/** Tailwind's `lg`: the width at which the level runs in two columns. */
+const WIDE_QUERY = '(min-width: 1024px)';
+
+function subscribeWide(onChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {};
+  const list = window.matchMedia(WIDE_QUERY);
+  list.addEventListener?.('change', onChange);
+  return () => list.removeEventListener?.('change', onChange);
+}
+
+function isWide(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(WIDE_QUERY).matches
+  );
+}
+
 /**
  * Stig 2 runs as a titration in the lab does (2026-11-14, Siggi's go-ahead):
  * choose the litvísir, titrate until it changes colour and read the burette
@@ -76,6 +103,10 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
   const levelCompleteReported = useRef(false);
   const [attempt, setAttempt] = useState(0);
   const phone = useIsPhone();
+  // From a laptop up the curve sits in the right-hand column, beside the bench, so the
+  // burette, the flask, the pour controls and the curve are on one screen together.
+  // Below that it stays under the bench, where the column is the whole width.
+  const wide = useSyncExternalStore(subscribeWide, isWide, () => false);
 
   const [volumeAdded, setVolumeAdded] = useState(0);
   const [selectedIndicator, setSelectedIndicator] = useState<IndicatorType | null>(null);
@@ -143,7 +174,10 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
   useEffect(() => {
     if (phase !== 'titrating') return;
     const timer = window.setTimeout(() => {
-      revealTop(benchRef.current);
+      // On a phone the bench comes to the top. Wider, the whole bench is brought on
+      // screen if it is not, by the least scroll, so the flask is never cut off.
+      if (isPhone()) revealTop(benchRef.current);
+      else revealSpan(benchRef.current, [benchRef.current], { anyWidth: true });
       focusTarget(controlsRef.current?.querySelector('button'));
     }, PANEL_EXIT_MS);
     return () => window.clearTimeout(timer);
@@ -171,7 +205,9 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
   const calcHeadingRef = useCallback((el: HTMLHeadingElement | null) => {
     if (!el) return;
     focusTarget(el);
-    revealTop(el.parentElement, { afterExit: PANEL_EXIT_MS, always: true });
+    if (isPhone()) revealTop(el.parentElement, { afterExit: PANEL_EXIT_MS, always: true });
+    // Wider, the panel comes on screen by the least scroll, keeping the bench in view.
+    else revealSpan(el.parentElement, [], { anyWidth: true, afterExit: PANEL_EXIT_MS });
   }, []);
 
   // The result: focus goes to it, not to "Næsta" (P3).
@@ -180,7 +216,9 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
   useRevealAfterCommit(
     phase === 'result',
     () => ({ bottom: nextRef.current, tops: [resultRef.current], focus: resultRef.current }),
-    { afterExit: PANEL_EXIT_MS + 50 }
+    // At every width: on a laptop the result sits in the right-hand column, under the
+    // curve, and the student is lower down, at the calculation.
+    { afterExit: PANEL_EXIT_MS + 50, anyWidth: true }
   );
   const hintRef = useRef<HTMLDivElement>(null);
   useRevealAfterCommit(showHint, () => ({
@@ -324,6 +362,21 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
         ))}
       </div>
     </div>
+  );
+
+  // The curve a pH meter in the flask would draw, as far as poured.
+  const curve = (
+    <TitrationCurve
+      curveData={curveData.filter((p) => p.volume <= volumeAdded)}
+      currentVolume={volumeAdded}
+      currentPH={currentPH}
+      titration={titration}
+      showEquivalencePoints={phase === 'result'}
+      markedVolume={phase === 'calculate' || phase === 'result' ? endpoint : null}
+      markedLabel="Endapunktur"
+      width={600}
+      height={300}
+    />
   );
 
   const endpointOk = verdict.endpoint;
@@ -524,20 +577,7 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
               </div>
             </div>
 
-            {/* The curve a pH meter in the flask would draw, as far as poured. */}
-            <div className="mt-6 phone:mt-3">
-              <TitrationCurve
-                curveData={curveData.filter((p) => p.volume <= volumeAdded)}
-                currentVolume={volumeAdded}
-                currentPH={currentPH}
-                titration={titration}
-                showEquivalencePoints={phase === 'result'}
-                markedVolume={phase === 'calculate' || phase === 'result' ? endpoint : null}
-                markedLabel="Endapunktur"
-                width={600}
-                height={300}
-              />
-            </div>
+            {!wide && <div className="mt-6 phone:mt-3">{curve}</div>}
 
             {/* Stage 3: the concentration from the endpoint. */}
             <Presence
@@ -612,6 +652,7 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
 
           {/* Right: hint, stage bar and result */}
           <div className="space-y-4">
+            {wide && <div className="bg-white rounded-xl shadow-lg p-3">{curve}</div>}
             {!phone && hint}
 
             <Presence show={phase === 'result'} exitDuration={PANEL_EXIT_MS}>

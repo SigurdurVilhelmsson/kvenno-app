@@ -34,6 +34,9 @@ import {
  */
 
 beforeAll(() => {
+  // Wider than a phone the level scrolls too (the bench, the result), and jsdom has no
+  // scrollBy.
+  window.scrollBy = (() => {}) as never;
   // InteractiveGraph draws to a canvas and the curve watches its size; jsdom
   // implements neither.
   HTMLCanvasElement.prototype.getContext = (() => null) as never;
