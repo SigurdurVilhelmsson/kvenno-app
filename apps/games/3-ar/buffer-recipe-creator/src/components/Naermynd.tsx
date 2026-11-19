@@ -7,7 +7,15 @@ import {
   ParticleGlyph,
   type Species,
 } from '@shared/components/ParticleBeaker';
-import { focusTarget, formatDecimal, prefersReducedMotion, revealTop } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  isWide,
+  prefersReducedMotion,
+  revealSpan,
+  revealTop,
+  useIsWide,
+} from '@shared/utils';
 
 import { BufferCurve, CURVE_COLOR } from './BufferCurve';
 import { STEPS } from '../data/naermynd-steps';
@@ -54,12 +62,14 @@ export function Naermynd({ onBack }: NaermyndProps) {
   const [replay, setReplay] = useState(0);
   const [drip, setDrip] = useState(false);
   const [still] = useState(prefersReducedMotion);
+  const wide = useIsWide();
   const fromRef = useRef(0);
   const volumeRef = useRef(0);
   volumeRef.current = volume;
 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const stepTopRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
   const firstStep = useRef(true);
 
   useLayoutEffect(() => {
@@ -143,7 +153,10 @@ export function Naermynd({ onBack }: NaermyndProps) {
       firstStep.current = false;
       return;
     }
-    revealTop(stepTopRef.current, { anyWidth: true });
+    // On a laptop the scene from its title down to the glasses, the curve and (on the last
+    // step) the slider under the curve comes on screen whole, by the least scroll.
+    if (isWide()) revealSpan(sceneRef.current, [stepTopRef.current], { anyWidth: true });
+    else revealTop(stepTopRef.current, { anyWidth: true });
     focusTarget(stepTopRef.current?.querySelector('h3') ?? null);
   }, [stepIndex]);
 
@@ -159,6 +172,15 @@ export function Naermynd({ onBack }: NaermyndProps) {
       ` pH ${formatDecimal(pH, 2)}.`;
     return { glass, counts, pH, label };
   });
+
+  const exploreControls = (
+    <ExploreControls
+      reagent={reagent}
+      volume={volume}
+      onReagent={chooseReagent}
+      onVolume={setVolume}
+    />
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8 phone:px-3 phone:py-3 [overflow-anchor:none]">
@@ -230,7 +252,7 @@ export function Naermynd({ onBack }: NaermyndProps) {
         <div className="space-y-3 mb-3">
           {/* The two glasses, side by side at every width: the comparison is the point. The
               curve sits beside them on a wide screen and below them on a narrow one. */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+          <div ref={sceneRef} className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {glasses.map(({ glass, counts, pH, label }) => (
               <div key={glass} className="rounded-xl border border-warm-200 p-1.5 sm:p-2">
                 <div className="flex items-baseline justify-between gap-1 mb-1">
@@ -273,6 +295,9 @@ export function Naermynd({ onBack }: NaermyndProps) {
                 Strikalínan sýnir hvar stuðpúðinn þrýtur. pH er reiknað nákvæmlega, út frá K
                 <sub>a</sub> og öllum jónum lausnarinnar.
               </p>
+              {/* From a laptop up the controls sit under the curve, beside the glasses they
+                  pour into, so the slider, both glasses and the curve are on one screen. */}
+              {stepIndex === EXPLORE && wide && <div className="mt-3">{exploreControls}</div>}
             </div>
           </div>
 
@@ -292,14 +317,7 @@ export function Naermynd({ onBack }: NaermyndProps) {
             og stuðpúðinn eiga sjálf: þær eru langt undir einni ögn.
           </p>
 
-          {stepIndex === EXPLORE && (
-            <ExploreControls
-              reagent={reagent}
-              volume={volume}
-              onReagent={chooseReagent}
-              onVolume={setVolume}
-            />
-          )}
+          {stepIndex === EXPLORE && !wide && exploreControls}
         </div>
 
         {/* Back, replay, onward. */}

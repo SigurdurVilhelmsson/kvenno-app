@@ -1,12 +1,4 @@
-import {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  useSyncExternalStore,
-} from 'react';
+import { useState, useRef, useEffect, useCallback, useLayoutEffect, useMemo } from 'react';
 
 import { Presence } from '@shared/components';
 import {
@@ -18,6 +10,7 @@ import {
   revealTop,
   useArmedAfter,
   useIsPhone,
+  useIsWide,
   useItemTop,
   useRevealAfterCommit,
 } from '@shared/utils';
@@ -58,24 +51,6 @@ const PANEL_EXIT_MS = 250;
 
 type Phase = 'choose' | 'titrating' | 'calculate' | 'result';
 
-/** Tailwind's `lg`: the width at which the level runs in two columns. */
-const WIDE_QUERY = '(min-width: 1024px)';
-
-function subscribeWide(onChange: () => void): () => void {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {};
-  const list = window.matchMedia(WIDE_QUERY);
-  list.addEventListener?.('change', onChange);
-  return () => list.removeEventListener?.('change', onChange);
-}
-
-function isWide(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia(WIDE_QUERY).matches
-  );
-}
-
 /**
  * Stig 2 runs as a titration in the lab does (2026-11-14, Siggi's go-ahead):
  * choose the litvísir, titrate until it changes colour and read the burette
@@ -106,7 +81,7 @@ export function Level2({ onComplete, onBack, drawMolarity = randomMolarity }: Le
   // From a laptop up the curve sits in the right-hand column, beside the bench, so the
   // burette, the flask, the pour controls and the curve are on one screen together.
   // Below that it stays under the bench, where the column is the whole width.
-  const wide = useSyncExternalStore(subscribeWide, isWide, () => false);
+  const wide = useIsWide();
 
   const [volumeAdded, setVolumeAdded] = useState(0);
   const [selectedIndicator, setSelectedIndicator] = useState<IndicatorType | null>(null);

@@ -8,7 +8,13 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { equationOf } from '@shared/engine/equilibrium';
-import { focusTarget, formatDecimal, formatScientific, prefersReducedMotion } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  formatScientific,
+  prefersReducedMotion,
+  useIsWide,
+} from '@shared/utils';
 
 import {
   C0,
@@ -276,6 +282,7 @@ interface Props {
 
 export function NaermyndScreen({ onBack }: Props) {
   const [still] = useState(prefersReducedMotion);
+  const wide = useIsWide();
   const [t, setT] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [offset, setOffset] = useState(0);
@@ -334,8 +341,15 @@ export function NaermyndScreen({ onBack }: Props) {
       </p>
     );
 
+  const qGraph = (
+    <div className="rounded-xl border border-warm-200 p-2">
+      <div className="mb-1 text-sm font-semibold text-warm-700">Q með tíma</div>
+      <QGraph t={t} />
+    </div>
+  );
+
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-4xl lg:max-w-6xl">
       <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
         <div className="mb-3 flex items-baseline justify-between gap-3 phone:mb-2">
           <h2
@@ -358,11 +372,18 @@ export function NaermyndScreen({ onBack }: Props) {
           <p className="text-sm text-green-900">Vatnsgashvarfið við 800 °C, K = {showQ(K)}</p>
         </div>
 
-        <div className="mx-auto mb-3 grid max-w-2xl grid-cols-2 gap-2 sm:gap-3">
+        {/* From a laptop up the Q graph sits beside the two flasks, so the slider below
+            them drives all three on one screen. Narrower it stays under the slider. */}
+        <div
+          className={`mx-auto mb-3 grid gap-2 sm:gap-3 ${wide ? 'grid-cols-3' : 'max-w-2xl grid-cols-2'}`}
+        >
           {FLASKS.map((f) => {
             const q = qAt(f.id, t);
             return (
-              <div key={f.id} className="rounded-xl border border-warm-200 p-1.5 sm:p-2">
+              <div
+                key={f.id}
+                className="rounded-xl border border-warm-200 p-1.5 sm:p-2 lg:[&>svg]:max-h-[max(12rem,calc(100dvh-27rem))]"
+              >
                 <div className="mb-1 text-sm font-semibold" style={{ color: TRACE[f.id] }}>
                   {f.title}
                 </div>
@@ -380,6 +401,7 @@ export function NaermyndScreen({ onBack }: Props) {
               </div>
             );
           })}
+          {wide && qGraph}
         </div>
 
         <ul className="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-warm-700">
@@ -418,17 +440,24 @@ export function NaermyndScreen({ onBack }: Props) {
           </label>
         </div>
 
-        <div className="mb-3 grid gap-3 md:grid-cols-2">
-          <div className="rounded-xl border border-warm-200 p-2">
-            <div className="mb-1 text-sm font-semibold text-warm-700">Q með tíma</div>
-            <QGraph t={t} />
-          </div>
-          <div className="space-y-3 rounded-xl border border-warm-200 p-2">
+        {wide ? (
+          <div className="mb-3 grid grid-cols-2 gap-3">
             {FLASKS.map((f) => (
-              <IceTable key={f.id} id={f.id} t={t} />
+              <div key={f.id} className="rounded-xl border border-warm-200 p-2">
+                <IceTable id={f.id} t={t} />
+              </div>
             ))}
           </div>
-        </div>
+        ) : (
+          <div className="mb-3 grid gap-3 md:grid-cols-2">
+            {qGraph}
+            <div className="space-y-3 rounded-xl border border-warm-200 p-2">
+              {FLASKS.map((f) => (
+                <IceTable key={f.id} id={f.id} t={t} />
+              ))}
+            </div>
+          </div>
+        )}
 
         <div aria-live="polite" className="mb-2 space-y-3 leading-relaxed text-warm-800">
           {stage}

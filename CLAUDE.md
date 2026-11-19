@@ -152,6 +152,10 @@ read it before using any of these. Design: `docs/plans/2026-09-23-vertical-scrol
   a desktop user keeps the scroll they had. `utils/desktopReveal.ts` holds the five games' old
   desktop triggers (`revealOnDesktop`, `useItemStart`, `useCommitReveal`, …), kept exactly; a new
   game does not use them.
+- **`useIsWide()` / `isWide()` / `WIDE_QUERY`** (`utils/reveal.ts`, 2026-11-19) — Tailwind's `lg`
+  and not a phone on its side. For a control rendered beside the view it drives on a laptop rather
+  than below it, so a 1366×768 or 1440×900 screen shows both without scrolling (PR #205 and the
+  laptop pass after it). False in jsdom, so tests see the narrow layout.
 - **`useArmedAfter(ms = 400, key)`** (`utils/armed.ts`) wraps every post-commit Næsta so the
   second tap of a double tap cannot skip the feedback. It grades nothing and shows nothing, so it
   is not a timer in the no-timers sense.

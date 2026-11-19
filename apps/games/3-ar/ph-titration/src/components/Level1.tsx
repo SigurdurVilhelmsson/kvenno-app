@@ -117,10 +117,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     anyWidth: true,
   });
 
-  // After "Staðfesta": on a phone, the question through "Næsta" if it fits,
-  // else from the options, else the verdict at the top; measured once the hint
-  // panel above the feedback has left. Focus goes to the feedback, not to
-  // "Næsta", so a second Enter lands on nothing (design P3).
+  // After "Staðfesta": the question through "Næsta" if it fits, else from the
+  // options, else the verdict at the top; measured once the hint panel above the
+  // feedback has left. Focus goes to the feedback, not to "Næsta", so a second
+  // Enter lands on nothing (design P3). At every width: a "which curve" answer
+  // draws the curve above the options, which on a laptop pushed the verdict a
+  // screen below where the student clicked.
   const questionRef = useRef<HTMLParagraphElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
@@ -132,7 +134,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       tops: [questionRef.current, optionsRef.current, feedbackRef.current],
       focus: feedbackRef.current,
     }),
-    { afterExit: HINT_EXIT_MS + 50 }
+    { afterExit: HINT_EXIT_MS + 50, anyWidth: true }
   );
   // A double tap on "Staðfesta" must not press "Næsta".
   const armed = useArmedAfter(400, `${currentIndex}:${showResult}`);
