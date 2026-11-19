@@ -320,7 +320,8 @@ export function ElectronRepulsionAnimation({
         ))}
       </div>
 
-      {/* Animation canvas. It moves on every frame, so scripts/desktop-compare.mjs masks it;
+      {/* Animation canvas. On a laptop it is held to the screen's height so the buttons
+          under it stay on screen beside the shape-change widget. It moves on every frame, so scripts/desktop-compare.mjs masks it;
           the mark is on this panel, not the svg, because the svg draws with overflow visible
           and its atoms can sit outside its own box. */}
       <div className="bg-white rounded-xl p-2 sm:p-4 mb-4 shadow-inner" data-live>
@@ -328,7 +329,7 @@ export function ElectronRepulsionAnimation({
           width={width}
           height={height}
           viewBox="0 0 1 1"
-          className="mx-auto max-w-full h-auto"
+          className={`mx-auto max-w-full h-auto ${compact ? '' : 'lg:max-h-[max(12rem,calc(100dvh-26rem))]'}`}
           style={{ overflow: 'visible' }}
           role="img"
           aria-label="Hreyfimynd sem sýnir fráhrindingu rafeindapara og VSEPR lögun sameindar"

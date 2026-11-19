@@ -10,6 +10,7 @@ import {
   useArmedAfter,
   useIsPhone,
   useItemTop,
+  useIsWide,
   useRevealAfterCommit,
   useScreenTop,
 } from '@shared/utils';
@@ -320,6 +321,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   // on has unmounted, and focus would otherwise fall to <body>.
   const screen = showIntro ? 'intro' : done ? 'done' : 'play';
   useScreenTop(screen);
+  const wide = useIsWide();
   const itemRef = useItemTop<HTMLDivElement>(index);
 
   // After an answer: the question through "Næsta" if it fits, else the
@@ -330,15 +332,21 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   const feedbackBoxRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  useRevealAfterCommit(answered, () => ({
-    bottom: nextRef.current,
-    tops: [
-      itemRef.current,
-      optionsRef.current?.children[question.options.indexOf(selectedOption ?? '')] ?? null,
-      feedbackRef.current,
-    ],
-    focus: feedbackRef.current,
-  }));
+  useRevealAfterCommit(
+    answered,
+    () => ({
+      bottom: nextRef.current,
+      tops: [
+        itemRef.current,
+        optionsRef.current?.children[question.options.indexOf(selectedOption ?? '')] ?? null,
+        feedbackRef.current,
+      ],
+      focus: feedbackRef.current,
+    }),
+    // From a laptop up too: the feedback lands under the table there as well, below the
+    // screen. Tablets keep the old helper's scroll below.
+    { anyWidth: wide }
+  );
   // "Næsta" ignores a press within 400 ms of appearing, so the second tap of a
   // double tap on an option cannot skip the feedback; the results' buttons
   // likewise, after the last "Næsta".

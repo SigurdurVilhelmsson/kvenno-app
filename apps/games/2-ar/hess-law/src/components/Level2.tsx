@@ -292,7 +292,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto lg:max-w-6xl">
         {/* Header */}
         {/* On a phone the header folds to one row (P4). Til baka keeps its DOM
             place after the title, so focus order matches what is seen. */}
@@ -361,159 +361,165 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </div>
           </TaskStrip>
 
-          {/* Available equations */}
-          <div className="mb-6 phone:mb-3">
-            <h3 className="text-sm font-semibold text-warm-700 mb-3 phone:mb-2">
-              📦 Tiltækar jöfnur (smelltu til að velja):
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4 phone:gap-2 phone-land:grid-cols-2">
-              {equations.map((eq) => (
-                <EquationBlock
-                  key={eq.id}
-                  equation={eq}
-                  isSelected={selectedEquations.includes(eq.id)}
-                  onSelect={() => toggleSelect(eq.id)}
-                  onReverse={() => handleReverse(eq.id)}
-                  onMultiply={(n) => handleMultiply(eq.id, n)}
-                />
-              ))}
+          {/* From a laptop up: the equations | the energy path, the running ΔH and the
+              actions, so pressing Snúa or ×2 moves the staircase beside it rather than a
+              screen below; the right-hand column stays in view while a long list of equations
+              scrolls. display:contents below that, so tablets and phones are as they were. */}
+          <div className="contents lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
+            {/* Available equations */}
+            <div className="mb-6 phone:mb-3">
+              <h3 className="text-sm font-semibold text-warm-700 mb-3 phone:mb-2">
+                📦 Tiltækar jöfnur (smelltu til að velja):
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-4 phone:gap-2 phone-land:grid-cols-2">
+                {equations.map((eq) => (
+                  <EquationBlock
+                    key={eq.id}
+                    equation={eq}
+                    isSelected={selectedEquations.includes(eq.id)}
+                    onSelect={() => toggleSelect(eq.id)}
+                    onReverse={() => handleReverse(eq.id)}
+                    onMultiply={(n) => handleMultiply(eq.id, n)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* A phone on its side: the energy path | the running ΔH and the
+            {/* A phone on its side: the energy path | the running ΔH and the
               actions. The wrappers are display:contents everywhere else, so
               desktop is unchanged and on a portrait phone the pinned action bar
               is still bounded by the whole card, not by a column. */}
-          <div
-            className={
-              selectedEquations.length > 0
-                ? 'contents phone-land:grid phone-land:grid-cols-2 phone-land:gap-4 phone-land:items-start'
-                : 'contents'
-            }
-          >
-            <div className="contents phone-land:block">
-              {/* Energy Pathway Diagram */}
-              {selectedEquations.length > 0 && (
-                <div className="mb-6 phone:mb-3">
-                  <EnergyPathwayDiagram
-                    steps={energySteps}
-                    targetDeltaH={showResult ? puzzle.targetDeltaH : null}
-                    isCorrect={isCorrect && showResult}
-                  />
-                </div>
-              )}
-            </div>
-            <div className="contents phone-land:block">
-              {/* Current sum */}
-              {/* After Athuga lausn this box holds the verdict, and focus moves to it (P3). */}
-              {selectedEquations.length > 0 && (
-                <div
-                  ref={resultRef}
-                  tabIndex={showResult ? -1 : undefined}
-                  role={showResult ? 'group' : undefined}
-                  aria-labelledby={showResult ? 'hess-l2-result' : undefined}
-                  className={`mb-6 p-4 phone:mb-3 phone:p-3 rounded-xl border-2 focus:outline-none ${
-                    showResult
-                      ? isCorrect
-                        ? 'bg-green-100 border-green-400'
-                        : 'bg-red-100 border-red-400'
-                      : 'bg-warm-100 border-warm-300'
-                  }`}
-                >
-                  <h3 className="text-sm font-semibold text-warm-700 mb-2 phone:mb-1">
-                    📊 Heildar-ΔH:
-                  </h3>
-                  <div className="text-center">
-                    <span
-                      className={`text-2xl font-bold ${currentSum < 0 ? 'text-red-600' : 'text-blue-600'}`}
-                    >
-                      ΔH = {currentSum > 0 ? '+' : ''}
-                      {formatDecimal(currentSum, 1)} kJ
-                    </span>
+            <div
+              className={
+                selectedEquations.length > 0
+                  ? 'contents lg:sticky lg:top-4 lg:block phone-land:grid phone-land:grid-cols-2 phone-land:gap-4 phone-land:items-start'
+                  : 'contents lg:sticky lg:top-4 lg:block'
+              }
+            >
+              <div className="contents phone-land:block">
+                {/* Energy Pathway Diagram */}
+                {selectedEquations.length > 0 && (
+                  <div className="mb-6 phone:mb-3">
+                    <EnergyPathwayDiagram
+                      steps={energySteps}
+                      targetDeltaH={showResult ? puzzle.targetDeltaH : null}
+                      isCorrect={isCorrect && showResult}
+                    />
                   </div>
-                  {showResult && (
-                    <div
-                      id="hess-l2-result"
-                      className={`mt-3 phone:mt-2 text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
-                    >
-                      {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt.'} {explanation}
+                )}
+              </div>
+              <div className="contents phone-land:block">
+                {/* Current sum */}
+                {/* After Athuga lausn this box holds the verdict, and focus moves to it (P3). */}
+                {selectedEquations.length > 0 && (
+                  <div
+                    ref={resultRef}
+                    tabIndex={showResult ? -1 : undefined}
+                    role={showResult ? 'group' : undefined}
+                    aria-labelledby={showResult ? 'hess-l2-result' : undefined}
+                    className={`mb-6 p-4 phone:mb-3 phone:p-3 rounded-xl border-2 focus:outline-none ${
+                      showResult
+                        ? isCorrect
+                          ? 'bg-green-100 border-green-400'
+                          : 'bg-red-100 border-red-400'
+                        : 'bg-warm-100 border-warm-300'
+                    }`}
+                  >
+                    <h3 className="text-sm font-semibold text-warm-700 mb-2 phone:mb-1">
+                      📊 Heildar-ΔH:
+                    </h3>
+                    <div className="text-center">
+                      <span
+                        className={`text-2xl font-bold ${currentSum < 0 ? 'text-red-600' : 'text-blue-600'}`}
+                      >
+                        ΔH = {currentSum > 0 ? '+' : ''}
+                        {formatDecimal(currentSum, 1)} kJ
+                      </span>
                     </div>
-                  )}
-                </div>
-              )}
+                    {showResult && (
+                      <div
+                        id="hess-l2-result"
+                        className={`mt-3 phone:mt-2 text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                      >
+                        {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt.'} {explanation}
+                      </div>
+                    )}
+                  </div>
+                )}
 
-              {/* Hint */}
-              {!showResult && (
-                <div className="mb-6 phone:mb-3">
-                  {showHint ? (
-                    <div
-                      ref={hintRef}
-                      className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl"
-                    >
-                      <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
-                      <p className="text-yellow-900">{puzzle.hint}</p>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={handleShowHint}
-                      className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
-                    >
-                      💡 Sýna vísbendingu
-                    </button>
-                  )}
-                </div>
-              )}
+                {/* Hint */}
+                {!showResult && (
+                  <div className="mb-6 phone:mb-3">
+                    {showHint ? (
+                      <div
+                        ref={hintRef}
+                        className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl"
+                      >
+                        <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
+                        <p className="text-yellow-900">{puzzle.hint}</p>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={handleShowHint}
+                        className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+                      >
+                        💡 Sýna vísbendingu
+                      </button>
+                    )}
+                  </div>
+                )}
 
-              {/* Action buttons: one row on a phone, pinned to the bottom of a
+                {/* Action buttons: one row on a phone, pinned to the bottom of a
               portrait phone with the running ΔH beside the target (P8). Athuga
               lausn and Næsta are separate (keyed) elements, and Næsta ignores a
               press within 400 ms of appearing. */}
-              <PinnedActions
-                status={
-                  selectedEquations.length > 0 ? (
-                    <>
-                      Heildar-ΔH: {currentSum > 0 ? '+' : ''}
-                      {formatDecimal(currentSum, 1)} kJ
-                    </>
-                  ) : undefined
-                }
-              >
-                <div
-                  ref={actionsRef}
-                  className="flex flex-col sm:flex-row gap-3 sm:gap-4 phone:flex-row phone:gap-2"
+                <PinnedActions
+                  status={
+                    selectedEquations.length > 0 ? (
+                      <>
+                        Heildar-ΔH: {currentSum > 0 ? '+' : ''}
+                        {formatDecimal(currentSum, 1)} kJ
+                      </>
+                    ) : undefined
+                  }
                 >
-                  <button
-                    onClick={() => resetPuzzle(currentPuzzle)}
-                    className="px-6 phone:px-3 py-3 phone:py-2 pointer-coarse:min-h-11 phone:whitespace-nowrap bg-warm-200 hover:bg-warm-300 rounded-xl font-semibold transition-colors"
+                  <div
+                    ref={actionsRef}
+                    className="flex flex-col sm:flex-row gap-3 sm:gap-4 phone:flex-row phone:gap-2"
                   >
-                    🔄 Byrja aftur
-                  </button>
+                    <button
+                      onClick={() => resetPuzzle(currentPuzzle)}
+                      className="px-6 phone:px-3 py-3 phone:py-2 pointer-coarse:min-h-11 phone:whitespace-nowrap bg-warm-200 hover:bg-warm-300 rounded-xl font-semibold transition-colors"
+                    >
+                      🔄 Byrja aftur
+                    </button>
 
-                  {!showResult ? (
-                    <button
-                      key="check"
-                      onClick={checkSolution}
-                      disabled={selectedEquations.length === 0}
-                      className={`flex-1 py-3 px-6 phone:py-2 phone:px-3 pointer-coarse:min-h-11 phone:min-w-0 rounded-xl font-bold transition-colors ${
-                        selectedEquations.length > 0
-                          ? 'bg-green-500 hover:bg-green-600 text-white'
-                          : 'bg-warm-300 text-warm-500 cursor-not-allowed'
-                      }`}
-                    >
-                      Athuga lausn
-                    </button>
-                  ) : (
-                    <button
-                      key="next"
-                      ref={nextRef}
-                      onClick={armed(nextPuzzle)}
-                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 phone:py-2 phone:px-3 pointer-coarse:min-h-11 phone:min-w-0 rounded-xl transition-colors"
-                    >
-                      {currentPuzzle < PUZZLES.length - 1 ? 'Næsta þraut →' : 'Ljúka stigi →'}
-                    </button>
-                  )}
-                </div>
-              </PinnedActions>
+                    {!showResult ? (
+                      <button
+                        key="check"
+                        onClick={checkSolution}
+                        disabled={selectedEquations.length === 0}
+                        className={`flex-1 py-3 px-6 phone:py-2 phone:px-3 pointer-coarse:min-h-11 phone:min-w-0 rounded-xl font-bold transition-colors ${
+                          selectedEquations.length > 0
+                            ? 'bg-green-500 hover:bg-green-600 text-white'
+                            : 'bg-warm-300 text-warm-500 cursor-not-allowed'
+                        }`}
+                      >
+                        Athuga lausn
+                      </button>
+                    ) : (
+                      <button
+                        key="next"
+                        ref={nextRef}
+                        onClick={armed(nextPuzzle)}
+                        className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 phone:py-2 phone:px-3 pointer-coarse:min-h-11 phone:min-w-0 rounded-xl transition-colors"
+                      >
+                        {currentPuzzle < PUZZLES.length - 1 ? 'Næsta þraut →' : 'Ljúka stigi →'}
+                      </button>
+                    )}
+                  </div>
+                </PinnedActions>
+              </div>
             </div>
           </div>
         </div>

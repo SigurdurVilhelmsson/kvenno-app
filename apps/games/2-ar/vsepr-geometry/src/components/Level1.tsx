@@ -809,7 +809,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto lg:max-w-6xl">
           <div className="flex items-center justify-between mb-6 phone:mb-2">
             <button
               onClick={onBack}
@@ -887,11 +887,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </>
             ) : (
               <>
-                {/* Electron Repulsion Animation */}
-                <div className="mb-8">{repulsion}</div>
+                {/* The repulsion and the shape change, side by side from a laptop up, so
+                    each one's buttons and drawing and the other widget are on one screen. */}
+                <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start lg:mb-8">
+                  {/* Electron Repulsion Animation */}
+                  <div className="mb-8 lg:mb-0">{repulsion}</div>
 
-                {/* Shape Transition Animation */}
-                <div className="mb-8">{transition}</div>
+                  {/* Shape Transition Animation */}
+                  <div className="mb-8 lg:mb-0">{transition}</div>
+                </div>
 
                 {picker}
 

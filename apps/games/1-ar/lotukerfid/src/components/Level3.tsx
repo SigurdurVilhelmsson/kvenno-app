@@ -18,6 +18,7 @@ import {
   shuffleArray,
   useArmedAfter,
   useItemTop,
+  useIsWide,
   useRevealAfterCommit,
   useScreenTop,
 } from '@shared/utils';
@@ -299,6 +300,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   const screen = showIntro ? 'intro' : done ? 'done' : 'play';
   const inputRef = useRef<HTMLInputElement>(null);
   useScreenTop(screen, { focus: inputRef });
+  const wide = useIsWide();
   const itemRef = useItemTop<HTMLDivElement>(index);
 
   // After an answer the feedback lands below the periodic table, out of sight
@@ -309,15 +311,21 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   const feedbackBoxRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  useRevealAfterCommit(answered, () => ({
-    bottom: nextRef.current,
-    tops: [
-      itemRef.current,
-      question.requiresTableClick ? tableRef.current : null,
-      feedbackRef.current,
-    ],
-    focus: feedbackRef.current,
-  }));
+  useRevealAfterCommit(
+    answered,
+    () => ({
+      bottom: nextRef.current,
+      tops: [
+        itemRef.current,
+        question.requiresTableClick ? tableRef.current : null,
+        feedbackRef.current,
+      ],
+      focus: feedbackRef.current,
+    }),
+    // From a laptop up too: the feedback lands under the table there as well, below the
+    // screen. Tablets keep the old helper's scroll below.
+    { anyWidth: wide }
+  );
   // "Næsta" ignores a press within 400 ms of appearing, so the second tap of a
   // double tap on "Athuga" or a cell cannot skip the feedback; the results'
   // buttons likewise, after the last "Næsta".
