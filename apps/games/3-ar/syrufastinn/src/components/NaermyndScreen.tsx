@@ -15,7 +15,15 @@ import {
   type GlyphText,
   type Species,
 } from '@shared/components/ParticleBeaker';
-import { focusTarget, formatDecimal, prefersReducedMotion, revealTop } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  isWide,
+  prefersReducedMotion,
+  revealSpan,
+  revealTop,
+  useIsWide,
+} from '@shared/utils';
 
 import { useBackButton } from './BackButton';
 import { CONCENTRATIONS, isAnswerable } from '../data/acids';
@@ -48,10 +56,15 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
   const [acid, setAcid] = useState<WeakAcid>(SCENE_ACID);
   const [c, setC] = useState(0.1);
   const [still] = useState(prefersReducedMotion);
+  // From a laptop up the explore controls and what they show sit in a third column beside
+  // the two glasses, so a student changes the acid or its strength and watches both glasses
+  // without scrolling. Narrower they stay below the glasses.
+  const wide = useIsWide();
   const back = useBackButton(onBack);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const stepTopRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
   const firstStep = useRef(true);
 
   useLayoutEffect(() => {
@@ -63,7 +76,9 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
       firstStep.current = false;
       return;
     }
-    revealTop(stepTopRef.current, { anyWidth: true });
+    // On a laptop the scene from its title down to the glasses comes on screen whole.
+    if (isWide()) revealSpan(sceneRef.current, [stepTopRef.current], { anyWidth: true });
+    else revealTop(stepTopRef.current, { anyWidth: true });
     focusTarget(stepTopRef.current?.querySelector('h3') ?? null);
   }, [stepIndex]);
 
@@ -155,7 +170,8 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
         </div>
 
         <div
-          className={`mb-3 grid gap-2 sm:gap-3 ${glasses.length === 3 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'}`}
+          ref={sceneRef}
+          className={`mb-3 grid gap-2 sm:gap-3 ${glasses.length === 3 || (!step && wide) ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2'} ${!step && wide ? 'items-start' : ''}`}
         >
           {glasses.map((g, i) => {
             const counts = g.strong ? strongCounts() : weakCounts(shownAcid, g.c);
@@ -196,6 +212,12 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
               </div>
             );
           })}
+          {!step && wide && (
+            <div className="space-y-3 leading-relaxed text-warm-800">
+              <ExploreControls acid={acid} c={c} onAcid={chooseAcid} onConcentration={setC} />
+              <ExploreText acid={acid} c={c} />
+            </div>
+          )}
         </div>
 
         <ul className="mb-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-warm-700">
@@ -212,7 +234,9 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
           námundaður að heilli ögn; prósentan er nákvæm.
         </p>
 
-        {!step && <ExploreControls acid={acid} c={c} onAcid={chooseAcid} onConcentration={setC} />}
+        {!step && !wide && (
+          <ExploreControls acid={acid} c={c} onAcid={chooseAcid} onConcentration={setC} />
+        )}
 
         <div className="mb-4 flex flex-wrap gap-2">
           <button
@@ -243,7 +267,7 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
         </div>
 
         <div className="space-y-3 leading-relaxed text-warm-800">
-          {step ? step.body : <ExploreText acid={acid} c={c} />}
+          {step ? step.body : !wide && <ExploreText acid={acid} c={c} />}
         </div>
       </div>
     </div>

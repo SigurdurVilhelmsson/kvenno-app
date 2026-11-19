@@ -18,6 +18,8 @@ import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
  */
 
 beforeAll(() => {
+  // Stig 1 brings its feedback on screen at every width, and jsdom has no scrollBy.
+  window.scrollBy = (() => {}) as never;
   HTMLCanvasElement.prototype.getContext = (() => null) as never;
   globalThis.ResizeObserver ??= class {
     observe() {}

@@ -47,7 +47,11 @@ async function finishLevel(container: HTMLElement, menuLabel: string) {
   await waitFor(() => clickButton(container, 'Ljúka prófunarstigi'));
 }
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  // Stig 1 brings its feedback on screen at every width, and jsdom has no scrollBy.
+  window.scrollBy = (() => {}) as never;
+});
 afterEach(cleanup);
 
 describe('the closing screen', () => {

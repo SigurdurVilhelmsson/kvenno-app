@@ -12,7 +12,14 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { Header } from '@shared/components';
-import { focusTarget, formatDecimal, prefersReducedMotion, revealTop } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  isWide,
+  prefersReducedMotion,
+  revealSpan,
+  revealTop,
+} from '@shared/utils';
 
 import { STEPS } from '../data/naermynd-steps';
 import {
@@ -130,7 +137,7 @@ function Cylinder({
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
-      className="mx-auto block h-auto w-full max-w-xs phone:max-w-[11rem]"
+      className="mx-auto block h-auto w-full max-w-xs lg:max-h-[max(15rem,calc(100dvh-22rem))] phone:max-w-[11rem]"
       role="img"
       aria-label={label}
       data-live
@@ -381,6 +388,7 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
   const [still] = useState(prefersReducedMotion);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const stepTopRef = useRef<HTMLDivElement>(null);
+  const cylinderRef = useRef<HTMLDivElement>(null);
   const firstStep = useRef(true);
 
   useLayoutEffect(() => {
@@ -392,7 +400,10 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
       firstStep.current = false;
       return;
     }
-    revealTop(stepTopRef.current, { anyWidth: true });
+    // On a laptop the scene from its title down to the foot of the cylinder comes on
+    // screen whole, by the least scroll; the slider and the graph sit beside the cylinder.
+    if (isWide()) revealSpan(cylinderRef.current, [stepTopRef.current], { anyWidth: true });
+    else revealTop(stepTopRef.current, { anyWidth: true });
     focusTarget(stepTopRef.current?.querySelector('h3') ?? null);
   }, [stepIndex]);
 
@@ -415,7 +426,7 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
       <Header variant="game" gameTitle="Gaslögmál" backLabel="Til baka í valmynd" onBack={onBack} />
-      <main className="mx-auto max-w-5xl px-4 py-6 phone:py-3">
+      <main className="mx-auto max-w-5xl px-4 py-6 lg:max-w-6xl phone:py-3">
         <div className="rounded-xl bg-white p-4 shadow-lg sm:p-6 md:p-8 phone:p-3">
           <h2
             ref={headingRef}
@@ -463,8 +474,15 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
             </div>
           </div>
 
-          <div className="mb-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-            <div className="rounded-xl border border-warm-200 p-2 md:sticky md:top-20 md:self-start">
+          {/* The cylinder, then the control with the readings it moves, then the graph and
+              the text. From a tablet up the cylinder stays beside the rest; from a laptop up
+              the three sit side by side, so the slider, the cylinder, the gauge and Charles's
+              line are on one screen together. */}
+          <div className="mb-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-3">
+            <div
+              ref={cylinderRef}
+              className="rounded-xl border border-warm-200 p-2 md:sticky md:top-20 md:self-start"
+            >
               <Cylinder kind={step.kind} state={state} still={still} label={label} />
               <p className="mt-1 text-xs text-warm-500">
                 Hver hringur er {formatDecimal(MOL_PER_PARTICLE, 3)} mól, um 3,0 × 10²² sameindir,
@@ -472,56 +490,60 @@ export function NaermyndScreen({ onBack }: NaermyndScreenProps) {
               </p>
             </div>
 
-            <div className="space-y-3">
-              <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-3">
-                <label
-                  htmlFor="gas-naermynd-control"
-                  className="mb-1 block text-sm font-semibold text-purple-900"
-                >
-                  {step.action}: {controlText}
-                </label>
-                <input
-                  id="gas-naermynd-control"
-                  type="range"
-                  min={control.min}
-                  max={control.max}
-                  step={control.step}
-                  value={x}
-                  onChange={(e) =>
-                    setValues((v) => ({ ...v, [step.kind]: Number(e.target.value) }))
-                  }
-                  aria-valuetext={controlText}
-                  className="w-full"
-                />
-              </div>
+            <div className="space-y-3 lg:col-span-2 lg:grid lg:grid-cols-2 lg:items-start lg:gap-3 lg:space-y-0">
+              <div className="space-y-3">
+                <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-3">
+                  <label
+                    htmlFor="gas-naermynd-control"
+                    className="mb-1 block text-sm font-semibold text-purple-900"
+                  >
+                    {step.action}: {controlText}
+                  </label>
+                  <input
+                    id="gas-naermynd-control"
+                    type="range"
+                    min={control.min}
+                    max={control.max}
+                    step={control.step}
+                    value={x}
+                    onChange={(e) =>
+                      setValues((v) => ({ ...v, [step.kind]: Number(e.target.value) }))
+                    }
+                    aria-valuetext={controlText}
+                    className="w-full"
+                  />
+                </div>
 
-              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-warm-200 p-3">
-                <Gauge p={state.P} />
-                <dl className="grid min-w-[13rem] flex-1 grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-sm">
-                  {(['P', 'V', 'T', 'n'] as GasVariable[]).map((v) => (
-                    <div key={v} className="contents">
-                      <dt className="text-warm-600">{NAMES[v]}</dt>
-                      <dd
-                        className="whitespace-nowrap font-semibold tabular-nums text-warm-900"
-                        data-readout={v}
-                      >
-                        {readout(v, state)}
-                        {fixed.includes(v) && (
-                          <span className="ml-1 text-xs font-normal text-warm-500">fast</span>
-                        )}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
+                <div className="flex flex-wrap items-center gap-3 rounded-xl border border-warm-200 p-3">
+                  <Gauge p={state.P} />
+                  <dl className="grid min-w-[13rem] flex-1 grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 text-sm">
+                    {(['P', 'V', 'T', 'n'] as GasVariable[]).map((v) => (
+                      <div key={v} className="contents">
+                        <dt className="text-warm-600">{NAMES[v]}</dt>
+                        <dd
+                          className="whitespace-nowrap font-semibold tabular-nums text-warm-900"
+                          data-readout={v}
+                        >
+                          {readout(v, state)}
+                          {fixed.includes(v) && (
+                            <span className="ml-1 text-xs font-normal text-warm-500">fast</span>
+                          )}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
 
-              <div aria-live="polite" className="sr-only">
-                {readout('P', state)}, {readout('V', state)}
-              </div>
+                <div aria-live="polite" className="sr-only">
+                  {readout('P', state)}, {readout('V', state)}
+                </div>
 
-              <KineticBars state={state} />
-              {step.kind === 'charles' && <AbsoluteZero state={state} />}
-              <div className="space-y-3 leading-relaxed text-warm-800">{step.body}</div>
+                <KineticBars state={state} />
+              </div>
+              <div className="space-y-3">
+                {step.kind === 'charles' && <AbsoluteZero state={state} />}
+                <div className="space-y-3 leading-relaxed text-warm-800">{step.body}</div>
+              </div>
             </div>
           </div>
 

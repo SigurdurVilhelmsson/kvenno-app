@@ -98,6 +98,38 @@ export function useIsPhone(): boolean {
   return useSyncExternalStore(subscribePhone, isPhone, () => false);
 }
 
+/**
+ * Tailwind's `lg` (and not a phone on its side), the width from which a game may lay a control and the view it
+ * drives side by side so a laptop shows both without scrolling (PR #205, pH
+ * Títrun Stig 2, and the laptop pass that followed). Never a phone, so a layout
+ * keyed on it leaves phones exactly as they were.
+ */
+export const WIDE_QUERY = '(min-width: 1024px) and (min-height: 501px)';
+
+/** True from Tailwind's `lg` up. False wherever `matchMedia` is missing (jsdom, SSR). */
+export function isWide(): boolean {
+  return matches(WIDE_QUERY);
+}
+
+function subscribeWide(onChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return () => {};
+  }
+  const list = window.matchMedia(WIDE_QUERY);
+  list.addEventListener?.('change', onChange);
+  return () => list.removeEventListener?.('change', onChange);
+}
+
+/**
+ * `isWide()` as React state, for markup that must move rather than restyle on a
+ * laptop: a control rendered beside the view it drives instead of below it,
+ * where rendering it in both places would duplicate an id. Like `useIsPhone`
+ * it is false in jsdom, so tests see the narrow layout.
+ */
+export function useIsWide(): boolean {
+  return useSyncExternalStore(subscribeWide, isWide, () => false);
+}
+
 export function prefersReducedMotion(): boolean {
   return matches('(prefers-reduced-motion: reduce)');
 }
