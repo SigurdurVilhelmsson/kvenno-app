@@ -20,7 +20,6 @@ items:
       Útlit: [stórt, með hjólum, langt]
       Hljóð: [hátt]
       Efniviður: [úr málmi]
-      Lögun: [ílangt]
       notagildi: [til að ferðast]
       hver: [allir, bílstjórar]
       hvar: [á götunni]
@@ -29,7 +28,7 @@ items:
     from: A1
     answers:
       Útlit: [lítið, með hjólum]
-      Hljóð: [þögult]
+      Hljóð: [ekkert]
       Efniviður: [úr málmi]
       notagildi: [til að ferðast, til að leika sér]
       hver: [allir, börn]
@@ -41,7 +40,6 @@ items:
       Útlit: [stórt, langt]
       Hljóð: [hátt]
       Efniviður: [úr málmi]
-      Lögun: [ílangt]
       notagildi: [til að ferðast, til að flytja]
       hver: [allir, flugmenn]
       hvar: [í loftinu, á flugvellinum]
@@ -51,7 +49,6 @@ items:
       Útlit: [stórt, án hjóla]
       Hljóð: [lágt]
       Efniviður: [úr málmi]
-      Lögun: [ílangt]
       notagildi: [til að flytja, til að vinna]
       hver: [sjómenn]
       hvar: [á sjónum, í höfninni]
@@ -71,7 +68,6 @@ items:
       Útlit: [stórt, langt, með hjólum]
       Hljóð: [hátt]
       Efniviður: [úr málmi]
-      Lögun: [ílangt]
       notagildi: [til að ferðast, til að flytja]
       hver: [allir]
       hvar: [á lestarbraut]
@@ -80,9 +76,8 @@ items:
     from: A2
     answers:
       Útlit: [lítið, án hjóla, lágt]
-      Hljóð: [þögult]
+      Hljóð: [ekkert]
       Efniviður: [úr tré, úr plasti]
-      Lögun: [flatt]
       notagildi: [til að leika sér]
       hver: [börn]
       hvenaer: [á veturna]

@@ -13,13 +13,11 @@ export const myndir: Record<string, Record<string, number>> = {
   dyr: {
     'á sumrin': 2826,
     'á veturna': 35583,
-    'um helgar': 11653,
   },
   matur: {
     appelsínugult: 2624,
     'á sumrin': 2826,
     'á veturna': 35583,
-    'á virkum dögum': 6624,
     brúnt: 5076,
     gult: 38269,
     'um helgar': 11653,
@@ -68,13 +66,11 @@ export const myndirDrog: Record<string, Record<string, number>> = {
   dyr: {
     'á sumrin': 2826,
     'á veturna': 35583,
-    'um helgar': 11653,
   },
   matur: {
     appelsínugult: 2624,
     'á sumrin': 2826,
     'á veturna': 35583,
-    'á virkum dögum': 6624,
     brúnt: 5076,
     gult: 38269,
     'um helgar': 11653,

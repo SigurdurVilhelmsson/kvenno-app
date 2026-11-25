@@ -80,7 +80,7 @@ export type BuilderSubject =
 /** How a word in a builder frame follows the subject. */
 export interface BuilderAgreement {
   word: string;
-  role: 'NF' | 'ÞF' | 'sögn';
+  role: 'NF' | 'ÞF' | 'ÞGF' | 'sögn';
 }
 
 export interface BuilderFrame {
@@ -214,7 +214,7 @@ import type { Level } from './types';
  * agrees with it, or a noun in the accusative after the frame's \`verb\`.
  */
 export type SmidurWhy =
-  | { kind: 'fornafn'; case: 'NF' | 'ÞF'; from: string; to: string }
+  | { kind: 'fornafn'; case: 'NF' | 'ÞF' | 'ÞGF'; from: string; to: string }
   | { kind: 'sögn'; from: string; to: string }
   | { kind: 'samræmi'; from: string; to: string }
   | { kind: 'þolfall'; from: string; to: string; verb: string };

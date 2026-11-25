@@ -16,9 +16,9 @@ A2:
     - name: Hvað er það?
       text: Þetta er þorskur. Þorskur er fiskur sem býr í sjónum.
     - name: Útlit
-      text: Hann hefur hreistur og hala. Hann finnst sléttur og blautur við snertingu.
+      text: Hann hefur hreistur og hala. Hann er sléttur og blautur viðkomu.
     - name: Hver og hvenær?
-      text: Veiðimenn veiða þorsk á veturna og á sumrin. Maður notar hann til að borða.
+      text: Veiðimenn veiða þorsk á veturna og á sumrin. Fólk borðar hann oft.
 B1:
   genre: Skýrsla
   stages:

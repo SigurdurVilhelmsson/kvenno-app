@@ -2,13 +2,14 @@
 # Drafted by Claude; a teacher sets `confirmed: true` once the descriptions are right.
 # The people are jobs, not family members, so the game asks nothing about a student's own
 # family or journey. Each card describes one made-up person who does that job.
+# No appearance (Útlit) on purpose: tying a look to a job (an old doctor, a tall athlete)
+# teaches a stereotype, so the jobs are told apart by what they do, where and when.
 confirmed: false
 items:
   - name: nemandi
     from: A1
     answers:
       Flokkar: [barn, unglingur]
-      Útlit: [ung/ungur, með stutt hár]
       notagildi: [lærir, leikur sér]
       hvar: [í skólanum]
       hvenaer: [á morgnana, á virkum dögum]
@@ -16,7 +17,6 @@ items:
     from: A1
     answers:
       Flokkar: [fullorðin/fullorðinn]
-      Útlit: [há/hár, með gleraugu]
       notagildi: [vinnur, kennir]
       hvar: [í skólanum, í vinnunni]
       hvenaer: [á morgnana, á virkum dögum]
@@ -24,31 +24,27 @@ items:
     from: A1
     answers:
       Flokkar: [fullorðin/fullorðinn]
-      Útlit: [gömul/gamall, með gleraugu, sköllótt/sköllóttur]
       notagildi: [vinnur, læknar]
       hvar: [í vinnunni, á sjúkrahúsi]
-      hvenaer: [alltaf]
+      hvenaer: [á daginn, á kvöldin, um helgar]
   - name: kokkur
     from: A1
     answers:
       Flokkar: [fullorðin/fullorðinn]
-      Útlit: [lág/lágur, með skegg]
-      notagildi: [vinnur, skapar]
+      notagildi: [vinnur, eldar]
       hvar: [í vinnunni]
       hvenaer: [á kvöldin, um helgar]
   - name: íþróttamaður
     from: A1
     answers:
       Flokkar: [fullorðin/fullorðinn, fræg/frægur]
-      Útlit: [há/hár, ung/ungur]
-      notagildi: [vinnur, leikur sér]
+      notagildi: [vinnur]
       hvar: [í sjónvarpi]
       hvenaer: [á daginn, um helgar]
   - name: söngvari
     from: A2
     answers:
       Flokkar: [fullorðin/fullorðinn, fræg/frægur]
-      Útlit: [með sítt hár]
       notagildi: [syngur, skapar]
       hvar: [á sviði, í sjónvarpi]
       hvenaer: [á kvöldin, um helgar]
@@ -56,7 +52,6 @@ items:
     from: A2
     answers:
       Flokkar: [fullorðin/fullorðinn, fræg/frægur]
-      Útlit: [með stutt hár, án skeggs]
       notagildi: [vinnur, skapar]
       hvar: [á sviði, í sjónvarpi]
       hvenaer: [á kvöldin]
@@ -64,7 +59,6 @@ items:
     from: A1
     answers:
       Flokkar: [fullorðin/fullorðinn]
-      Útlit: [há/hár, með stutt hár]
       notagildi: [vinnur]
       hvar: [í vinnunni]
       hvenaer: [alltaf]

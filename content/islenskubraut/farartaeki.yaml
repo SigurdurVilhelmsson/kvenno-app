@@ -71,14 +71,13 @@ sentenceFrames:
       - Þetta er ___.
       - Það fer ___.
       - Það er ___.
-      - Það hljómar ___.
+      - Það heyrist ___ í því.
       - Maður notar það ___.
   - id: f2
     level: A2
     frames:
       - Þetta er ___ sem fer ___.
       - Það hefur ___ og er ___.
-      - Það finnst ___ við snertingu.
       - Það er gert ___.
       - Maður finnur það ___.
       - Maður notar það ___.
@@ -87,7 +86,6 @@ sentenceFrames:
     frames:
       - Þetta farartæki er ___ sem er notað ___.
       - Það getur flutt ___ og fer ___.
-      - Það er ___ að snerta vegna þess að ___.
       - Það er gert ___ sem er ___.
       - ___ nota það oftast ___.
 examples:
@@ -170,20 +168,18 @@ guidingQuestions:
       A1:
         - hátt
         - lágt
-        - þögult
+        - ekkert
       A2:
         - hátt
         - lágt
-        - þögult
+        - ekkert
         - suðar
-        - hringir
         - öskrar
       B1:
         - hátt
         - lágt
-        - þögult
+        - ekkert
         - suðar
-        - hringir
         - öskrar
         - hvæsir
   - id: q4
@@ -199,50 +195,16 @@ guidingQuestions:
         - úr málmi
         - úr plasti
         - úr tré
-        - úr steini
         - úr gleri
       B1:
         - úr málmi
         - úr plasti
         - úr tré
-        - úr steini
         - úr gleri
         - úr endurunnu efni
         - úr náttúrulegum efnum
         - úr gerviefnum
   - id: q5
-    question: Hvaða lögun hefur það?
-    icon: 🔷
-    label: Lögun
-    answers:
-      A1:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-      A2:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-        - kúlulaga
-        - oddhvasst
-        - bogið
-        - beint
-      B1:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-        - kúlulaga
-        - oddhvasst
-        - bogið
-        - beint
-        - sporöskjulaga
-        - þríhyrningslaga
-        - sívalningslaga
-        - óreglulegt
-  - id: q6
     question: Til hvers er það notað?
     icon: 🎯
     context: notagildi
@@ -263,7 +225,7 @@ guidingQuestions:
         - til að vinna
         - til að keppa
         - til að bjarga
-  - id: q7
+  - id: q6
     question: Hver notar þetta?
     icon: 👤
     context: hver
@@ -286,10 +248,9 @@ guidingQuestions:
         - bílstjórar
         - flugmenn
         - sjómenn
-        - sérfræðingar
         - ferðamenn
         - iðnaðarmenn
-  - id: q8
+  - id: q7
     question: Hvar er hægt að nota/finna þetta?
     icon: 📍
     context: hvar
@@ -312,7 +273,7 @@ guidingQuestions:
         - á flugvellinum
         - í höfninni
         - á lestarbraut
-  - id: q9
+  - id: q8
     question: Hvenær er þetta notað?
     icon: 🕐
     context: hvenaer
@@ -368,12 +329,10 @@ builder:
           er: sögn
         words: Hvernig lítur það út?
         form: agree
-      - frame: Það hljómar ___.
+      - frame: Það heyrist ___ í því.
         agree:
-          Það: NF
+          því: ÞGF
         words: Hvaða hljóð gefur það frá sér?
-        forms:
-          þögult: agree
       - frame: Maður notar það ___.
         agree:
           það: ÞF

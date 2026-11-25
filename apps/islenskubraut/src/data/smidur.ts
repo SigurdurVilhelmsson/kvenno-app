@@ -16,7 +16,7 @@ import type { Level } from './types';
  * agrees with it, or a noun in the accusative after the frame's `verb`.
  */
 export type SmidurWhy =
-  | { kind: 'fornafn'; case: 'NF' | 'ÞF'; from: string; to: string }
+  | { kind: 'fornafn'; case: 'NF' | 'ÞF' | 'ÞGF'; from: string; to: string }
   | { kind: 'sögn'; from: string; to: string }
   | { kind: 'samræmi'; from: string; to: string }
   | { kind: 'þolfall'; from: string; to: string; verb: string };
@@ -261,9 +261,9 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
         {
-          frame: 'Það hljómar ___.',
+          frame: 'Það heyrist ___ í því.',
           question: 'Hvaða hljóð gefur það frá sér?',
-          options: ['hátt', 'lágt', 'þögult'],
+          options: ['hátt', 'lágt', 'ekkert'],
           sentences: [
             [
               [
@@ -272,25 +272,19 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'heyrist',
                   changed: false,
                 },
                 {
-                  word: 'hátt.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Það',
+                  word: 'hátt',
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'lágt.',
+                  word: 'því.',
                   changed: false,
                 },
               ],
@@ -300,11 +294,41 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'heyrist',
                   changed: false,
                 },
                 {
-                  word: 'þögult.',
+                  word: 'lágt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'því.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'ekkert',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'því.',
                   changed: false,
                 },
               ],
@@ -312,86 +336,38 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
         {
-          frame: 'Maður notar það ___.',
-          question: 'Til hvers er það notað?',
-          options: ['til að gæta', 'til að klappa', 'til að borða'],
+          frame: 'Það ___.',
+          question: 'Hvað gerir það?',
+          options: ['flýgur', 'syndir', 'hleypur'],
           sentences: [
             [
               [
                 {
-                  word: 'Maður',
+                  word: 'Það',
                   changed: false,
                 },
                 {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'gæta.',
+                  word: 'flýgur.',
                   changed: false,
                 },
               ],
               [
                 {
-                  word: 'Maður',
+                  word: 'Það',
                   changed: false,
                 },
                 {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'klappa.',
+                  word: 'syndir.',
                   changed: false,
                 },
               ],
               [
                 {
-                  word: 'Maður',
+                  word: 'Það',
                   changed: false,
                 },
                 {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'borða.',
+                  word: 'hleypur.',
                   changed: false,
                 },
               ],
@@ -895,16 +871,15 @@ export const smidur: Record<string, SmidurLevel[]> = {
         },
         {
           frame: 'Maður borðar það ___.',
-          question: 'Hvenær er þetta notað?',
+          question: 'Hvenær er það borðað eða drukkið?',
           options: [
-            'á morgnana',
-            'á daginn',
-            'á kvöldin',
-            'alltaf',
+            'í morgunmat',
+            'í hádegismat',
+            'í kvöldmat',
+            'sem millimál',
             'á veturna',
             'á sumrin',
             'um helgar',
-            'á virkum dögum',
           ],
           sentences: [
             [
@@ -928,39 +903,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   },
                 },
                 {
-                  word: 'á',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'morgnana.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'daginn.',
+                  word: 'morgunmat.',
                   changed: false,
                 },
               ],
@@ -984,11 +931,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   },
                 },
                 {
-                  word: 'á',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'kvöldin.',
+                  word: 'hádegismat.',
                   changed: false,
                 },
               ],
@@ -1012,7 +959,39 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   },
                 },
                 {
-                  word: 'alltaf.',
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'kvöldmat.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'hann',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞF',
+                    from: 'það',
+                    to: 'hann',
+                  },
+                },
+                {
+                  word: 'sem',
+                  changed: false,
+                },
+                {
+                  word: 'millimál.',
                   changed: false,
                 },
               ],
@@ -1097,38 +1076,6 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 },
                 {
                   word: 'helgar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'virkum',
-                  changed: false,
-                },
-                {
-                  word: 'dögum.',
                   changed: false,
                 },
               ],
@@ -1148,33 +1095,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'á',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'morgnana.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'daginn.',
+                  word: 'morgunmat.',
                   changed: false,
                 },
               ],
@@ -1192,11 +1117,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'á',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'kvöldin.',
+                  word: 'hádegismat.',
                   changed: false,
                 },
               ],
@@ -1214,7 +1139,33 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'alltaf.',
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'kvöldmat.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'sem',
+                  changed: false,
+                },
+                {
+                  word: 'millimál.',
                   changed: false,
                 },
               ],
@@ -1281,32 +1232,6 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 },
                 {
                   word: 'helgar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'virkum',
-                  changed: false,
-                },
-                {
-                  word: 'dögum.',
                   changed: false,
                 },
               ],
@@ -1326,33 +1251,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'á',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'morgnana.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'daginn.',
+                  word: 'morgunmat.',
                   changed: false,
                 },
               ],
@@ -1370,11 +1273,11 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'á',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'kvöldin.',
+                  word: 'hádegismat.',
                   changed: false,
                 },
               ],
@@ -1392,7 +1295,33 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'alltaf.',
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'kvöldmat.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'borðar',
+                  changed: false,
+                },
+                {
+                  word: 'það',
+                  changed: false,
+                },
+                {
+                  word: 'sem',
+                  changed: false,
+                },
+                {
+                  word: 'millimál.',
                   changed: false,
                 },
               ],
@@ -1459,32 +1388,6 @@ export const smidur: Record<string, SmidurLevel[]> = {
                 },
                 {
                   word: 'helgar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'borðar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'á',
-                  changed: false,
-                },
-                {
-                  word: 'virkum',
-                  changed: false,
-                },
-                {
-                  word: 'dögum.',
                   changed: false,
                 },
               ],
@@ -1492,253 +1395,6 @@ export const smidur: Record<string, SmidurLevel[]> = {
             [],
           ],
           except: ['drykkur'],
-        },
-        {
-          frame: 'Maður notar það ___.',
-          question: 'Til hvers er það notað?',
-          options: ['til að borða', 'til að drekka'],
-          sentences: [
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'borða.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'drekka.',
-                  changed: false,
-                },
-              ],
-            ],
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'borða.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'drekka.',
-                  changed: false,
-                },
-              ],
-            ],
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'borða.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'drekka.',
-                  changed: false,
-                },
-              ],
-            ],
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'borða.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'drekka.',
-                  changed: false,
-                },
-              ],
-            ],
-          ],
         },
       ],
       tables: {
@@ -2751,145 +2407,93 @@ export const smidur: Record<string, SmidurLevel[]> = {
           ],
         },
         {
-          frame: 'Það hljómar ___.',
+          frame: 'Það heyrist ___ í því.',
           question: 'Hvaða hljóð gefur það frá sér?',
-          options: ['hátt', 'lágt', 'þögult'],
+          options: ['hátt', 'lágt', 'ekkert'],
           sentences: [
             [
               [
                 {
-                  word: 'Hann',
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'hátt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'honum.',
                   changed: true,
                   why: {
                     kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hann',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'honum',
                   },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'hátt.',
-                  changed: false,
                 },
               ],
               [
                 {
-                  word: 'Hann',
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'lágt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'honum.',
                   changed: true,
                   why: {
                     kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hann',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'honum',
                   },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'lágt.',
-                  changed: false,
                 },
               ],
               [
                 {
-                  word: 'Hann',
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'ekkert',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'honum.',
                   changed: true,
                   why: {
                     kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hann',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'honum',
                   },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'þögull.',
-                  changed: true,
-                  why: {
-                    kind: 'samræmi',
-                    from: 'þögult',
-                    to: 'þögull',
-                  },
-                  lemma: 'e2cc91a3f2d6627b8760297a68af8a2a',
-                  choices: ['þögull', 'þögul', 'þögult'],
-                },
-              ],
-            ],
-            [
-              [
-                {
-                  word: 'Hún',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hún',
-                  },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'hátt.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Hún',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hún',
-                  },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'lágt.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Hún',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hún',
-                  },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'þögul.',
-                  changed: true,
-                  why: {
-                    kind: 'samræmi',
-                    from: 'þögult',
-                    to: 'þögul',
-                  },
-                  lemma: 'e2cc91a3f2d6627b8760297a68af8a2a',
-                  choices: ['þögull', 'þögul', 'þögult'],
                 },
               ],
             ],
@@ -2900,12 +2504,26 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'heyrist',
                   changed: false,
                 },
                 {
-                  word: 'hátt.',
+                  word: 'hátt',
                   changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'henni.',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'henni',
+                  },
                 },
               ],
               [
@@ -2914,12 +2532,26 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'heyrist',
                   changed: false,
                 },
                 {
-                  word: 'lágt.',
+                  word: 'lágt',
                   changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'henni.',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'henni',
+                  },
                 },
               ],
               [
@@ -2928,81 +2560,26 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'heyrist',
                   changed: false,
                 },
                 {
-                  word: 'þögult.',
+                  word: 'ekkert',
                   changed: false,
                 },
-              ],
-            ],
-            [
-              [
                 {
-                  word: 'Hún',
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'henni.',
                   changed: true,
                   why: {
                     kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hún',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'henni',
                   },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'hátt.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Hún',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hún',
-                  },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'lágt.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Hún',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'NF',
-                    from: 'það',
-                    to: 'hún',
-                  },
-                },
-                {
-                  word: 'hljómar',
-                  changed: false,
-                },
-                {
-                  word: 'þögul.',
-                  changed: true,
-                  why: {
-                    kind: 'samræmi',
-                    from: 'þögult',
-                    to: 'þögul',
-                  },
-                  lemma: 'e2cc91a3f2d6627b8760297a68af8a2a',
-                  choices: ['þögull', 'þögul', 'þögult'],
                 },
               ],
             ],
@@ -3013,25 +2590,19 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'heyrist',
                   changed: false,
                 },
                 {
-                  word: 'hátt.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Það',
+                  word: 'hátt',
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'í',
                   changed: false,
                 },
                 {
-                  word: 'lágt.',
+                  word: 'því.',
                   changed: false,
                 },
               ],
@@ -3041,11 +2612,195 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'hljómar',
+                  word: 'heyrist',
                   changed: false,
                 },
                 {
-                  word: 'þögult.',
+                  word: 'lágt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'því.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'ekkert',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'því.',
+                  changed: false,
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'hátt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'henni.',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'henni',
+                  },
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'lágt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'henni.',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'henni',
+                  },
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'ekkert',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'henni.',
+                  changed: true,
+                  why: {
+                    kind: 'fornafn',
+                    case: 'ÞGF',
+                    from: 'því',
+                    to: 'henni',
+                  },
+                },
+              ],
+            ],
+            [
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'hátt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'því.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'lágt',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'því.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Það',
+                  changed: false,
+                },
+                {
+                  word: 'heyrist',
+                  changed: false,
+                },
+                {
+                  word: 'ekkert',
+                  changed: false,
+                },
+                {
+                  word: 'í',
+                  changed: false,
+                },
+                {
+                  word: 'því.',
                   changed: false,
                 },
               ],
@@ -3576,28 +3331,6 @@ export const smidur: Record<string, SmidurLevel[]> = {
             {
               case: 'EF',
               forms: ['lítils', 'lítillar', 'lítils'],
-            },
-          ],
-        },
-        e2cc91a3f2d6627b8760297a68af8a2a: {
-          ord: 'þögull',
-          columns: ['karlkyn', 'kvenkyn', 'hvorugkyn'],
-          rows: [
-            {
-              case: 'NF',
-              forms: ['þögull', 'þögul', 'þögult'],
-            },
-            {
-              case: 'ÞF',
-              forms: ['þöglan', 'þögla', 'þögult'],
-            },
-            {
-              case: 'ÞGF',
-              forms: ['þöglum', 'þögulli', 'þöglu'],
-            },
-            {
-              case: 'EF',
-              forms: ['þöguls', 'þögullar', 'þöguls'],
             },
           ],
         },
@@ -4237,8 +3970,8 @@ export const smidur: Record<string, SmidurLevel[]> = {
         },
         {
           frame: 'Maður ___ þar.',
-          question: 'Hvað gerir maður þar',
-          options: ['borðar', 'verslar', 'syndir', 'lærir', 'vinnur', 'sefur', 'leikur sér'],
+          question: 'Hvað gerir maður þar?',
+          options: ['býr', 'sefur', 'lærir', 'verslar', 'syndir', 'borðar', 'leikur sér'],
           sentences: [
             [
               [
@@ -4247,7 +3980,35 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'borðar',
+                  word: 'býr',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'sefur',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'lærir',
                   changed: false,
                 },
                 {
@@ -4289,35 +4050,7 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'lærir',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'vinnur',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'sefur',
+                  word: 'borðar',
                   changed: false,
                 },
                 {
@@ -4351,7 +4084,35 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'borðar',
+                  word: 'býr',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'sefur',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'lærir',
                   changed: false,
                 },
                 {
@@ -4393,35 +4154,7 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'lærir',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'vinnur',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'sefur',
+                  word: 'borðar',
                   changed: false,
                 },
                 {
@@ -4455,7 +4188,35 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'borðar',
+                  word: 'býr',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'sefur',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'lærir',
                   changed: false,
                 },
                 {
@@ -4497,35 +4258,7 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'lærir',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'vinnur',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'sefur',
+                  word: 'borðar',
                   changed: false,
                 },
                 {
@@ -4559,7 +4292,35 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'borðar',
+                  word: 'býr',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'sefur',
+                  changed: false,
+                },
+                {
+                  word: 'þar.',
+                  changed: false,
+                },
+              ],
+              [
+                {
+                  word: 'Maður',
+                  changed: false,
+                },
+                {
+                  word: 'lærir',
                   changed: false,
                 },
                 {
@@ -4601,35 +4362,7 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   changed: false,
                 },
                 {
-                  word: 'lærir',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'vinnur',
-                  changed: false,
-                },
-                {
-                  word: 'þar.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'sefur',
+                  word: 'borðar',
                   changed: false,
                 },
                 {
@@ -5048,387 +4781,6 @@ export const smidur: Record<string, SmidurLevel[]> = {
                   },
                   lemma: '239a1d272af5f0f4789b8dfab26851da',
                   choices: ['lágur', 'lág', 'lágt'],
-                },
-              ],
-            ],
-          ],
-        },
-        {
-          frame: 'Maður notar það ___.',
-          question: 'Til hvers er þetta notað?',
-          options: ['til að búa', 'til að læra', 'til að versla'],
-          sentences: [
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'búa.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'læra.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'það',
-                  changed: false,
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'versla.',
-                  changed: false,
-                },
-              ],
-            ],
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'búa.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'læra.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hann',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hann',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'versla.',
-                  changed: false,
-                },
-              ],
-            ],
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hana',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hana',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'búa.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hana',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hana',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'læra.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hana',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hana',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'versla.',
-                  changed: false,
-                },
-              ],
-            ],
-            [
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hana',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hana',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'búa.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hana',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hana',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'læra.',
-                  changed: false,
-                },
-              ],
-              [
-                {
-                  word: 'Maður',
-                  changed: false,
-                },
-                {
-                  word: 'notar',
-                  changed: false,
-                },
-                {
-                  word: 'hana',
-                  changed: true,
-                  why: {
-                    kind: 'fornafn',
-                    case: 'ÞF',
-                    from: 'það',
-                    to: 'hana',
-                  },
-                },
-                {
-                  word: 'til',
-                  changed: false,
-                },
-                {
-                  word: 'að',
-                  changed: false,
-                },
-                {
-                  word: 'versla.',
-                  changed: false,
                 },
               ],
             ],

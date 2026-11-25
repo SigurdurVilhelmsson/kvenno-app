@@ -21,14 +21,14 @@ words:
   fjaðrir: { search: feather }
   hreistur: { search: fish scales }
   hali: { search: tail }
-  til að gæta: { search: guard }
-  til að klappa: { search: stroke }
+  flýgur: { search: fly }
+  hleypur: { search: run }
   á bæ: { search: farm }
 
   # Hljóð (Dýr, Farartæki)
   hátt: { search: loud }
   lágt: { search: quiet }
-  þögult: { search: silent }
+  ekkert: { search: silence }
 
   # Áferð og form
   mjúkt: { search: soft }
@@ -69,10 +69,15 @@ words:
   í búð: { search: shop }
   á veitingastað: { search: restaurant }
 
-  # Lykt (Matur, Staðir)
-  gott: { search: good smell }
-  vont: { search: bad smell }
-  ekkert: { search: no smell }
+  í morgunmat: { search: breakfast }
+  í hádegismat: { search: lunch }
+  í kvöldmat: { search: dinner }
+  sem millimál: { search: snack }
+
+  # Lykt (Matur, Staðir): góð lykt, vond lykt, engin lykt
+  góð: { search: good smell }
+  vond: { search: bad smell }
+  engin: { search: no smell }
 
   # Farartæki
   bíll: { search: car }
@@ -100,7 +105,6 @@ words:
   # Manneskja
   barn: { search: child }
   fullorðin/fullorðinn: { search: adult }
-  gamall/gömul: { search: old }
   gömul/gamall: { search: old }
   há/hár: { search: tall }
   lág/lágur: { search: short }
@@ -127,10 +131,8 @@ words:
   skóli: { search: school }
   búð: { search: shop }
   sundlaug: { search: swimming pool }
-  til að búa: { search: live }
-  til að læra: { search: learn }
-  til að versla: { search: go shopping }
-  # Hvað gerir maður þar (the sentence builder's Staðir list)
+  # Hvað gerir maður þar
+  býr: { search: live }
   borðar: { search: eat }
   verslar: { search: go shopping }
   syndir: { search: swim }

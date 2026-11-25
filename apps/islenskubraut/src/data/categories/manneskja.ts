@@ -105,7 +105,7 @@ export const manneskja: Category = {
       level: 'B1',
       frames: [
         'Ég held að þetta sé ___ vegna þess að ___.',
-        'Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.',
+        'Þessi manneskja er ___ og er þekkt fyrir ___.',
         'Hún/Hann er oft ___ vegna þess að ___.',
       ],
     },
@@ -117,7 +117,7 @@ export const manneskja: Category = {
     },
     {
       level: 'A2',
-      text: 'Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.',
+      text: 'Þetta er kona sem er há. Hún er ung og með gleraugu. Hún vinnur sem læknir.',
     },
     {
       level: 'B1',
@@ -127,7 +127,7 @@ export const manneskja: Category = {
   teacherNotes: [
     {
       level: 'A1',
-      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+      text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Um fólk er notað hún eða hann eftir manneskjunni sjálfri, ekki eftir kyni starfsheitisins: kennari getur verið hún eða hann.',
     },
     {
       level: 'A2',
@@ -146,7 +146,7 @@ export const manneskja: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['barn', 'fullorðin/fullorðinn', 'gamall/gömul'],
+          options: ['barn', 'fullorðin/fullorðinn', 'gömul/gamall'],
         },
         {
           level: 'A2',
@@ -227,7 +227,7 @@ export const manneskja: Category = {
         },
         {
           level: 'A2',
-          options: ['vinnur', 'lærir', 'leikur sér', 'syngur', 'læknar', 'kennir'],
+          options: ['vinnur', 'lærir', 'leikur sér', 'eldar', 'syngur', 'læknar', 'kennir'],
         },
         {
           level: 'B1',
@@ -235,6 +235,7 @@ export const manneskja: Category = {
             'vinnur',
             'lærir',
             'leikur sér',
+            'eldar',
             'syngur',
             'læknar',
             'kennir',
@@ -245,7 +246,7 @@ export const manneskja: Category = {
       ],
     },
     {
-      question: 'Hvar er hægt að finna þessa manneskju?',
+      question: 'Hvar er hún/hann?',
       icon: '📍',
       context: {
         kind: 'hvar',
@@ -276,7 +277,7 @@ export const manneskja: Category = {
       ],
     },
     {
-      question: 'Hvenær er hún/hann virk/virkur?',
+      question: 'Hvenær er hún/hann þar?',
       icon: '🕐',
       context: {
         kind: 'hvenaer',

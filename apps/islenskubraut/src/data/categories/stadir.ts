@@ -54,7 +54,7 @@ export const stadir: Category = {
   sentenceFrames: [
     {
       level: 'A1',
-      frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.', 'Maður notar það ___.'],
+      frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.'],
     },
     {
       level: 'A2',
@@ -63,7 +63,6 @@ export const stadir: Category = {
         'Maður fer þangað ___.',
         'Það er gert ___.',
         'Maður finnur það ___.',
-        'Maður notar það ___.',
       ],
     },
     {
@@ -73,7 +72,7 @@ export const stadir: Category = {
         'Fólk fer þangað ___ og ___.',
         'Mér finnst þetta ___ vegna þess að ___.',
         'Það er gert ___ sem er ___.',
-        '___ nota það oftast ___.',
+        '___ fara þangað oftast ___.',
       ],
     },
   ],
@@ -180,31 +179,31 @@ export const stadir: Category = {
       ],
     },
     {
-      question: 'Hvernig lyktar þar?',
+      question: 'Hvernig lykt er þar?',
       icon: '👃',
       label: 'Lykt',
       answers: [
         {
           level: 'A1',
-          options: ['gott', 'vont', 'ekkert'],
+          options: ['góð', 'vond', 'engin'],
         },
         {
           level: 'A2',
-          options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'],
+          options: ['góð', 'vond', 'engin', 'fersk', 'sterk', 'mild'],
         },
         {
           level: 'B1',
           options: [
-            'gott',
-            'vont',
-            'ekkert',
-            'ferskt',
-            'sterkt',
-            'milt',
+            'góð',
+            'vond',
+            'engin',
+            'fersk',
+            'sterk',
+            'mild',
             'ilmandi',
             'stingandi',
-            'sætt',
-            'beiskt',
+            'sæt',
+            'beisk',
           ],
         },
       ],
@@ -238,48 +237,7 @@ export const stadir: Category = {
       ],
     },
     {
-      question: 'Hvaða lögun hefur það?',
-      icon: '🔷',
-      label: 'Lögun',
-      answers: [
-        {
-          level: 'A1',
-          options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
-        },
-        {
-          level: 'A2',
-          options: [
-            'kringlótt',
-            'ferkantað',
-            'ílangt',
-            'flatt',
-            'kúlulaga',
-            'oddhvasst',
-            'bogið',
-            'beint',
-          ],
-        },
-        {
-          level: 'B1',
-          options: [
-            'kringlótt',
-            'ferkantað',
-            'ílangt',
-            'flatt',
-            'kúlulaga',
-            'oddhvasst',
-            'bogið',
-            'beint',
-            'sporöskjulaga',
-            'þríhyrningslaga',
-            'sívalningslaga',
-            'óreglulegt',
-          ],
-        },
-      ],
-    },
-    {
-      question: 'Til hvers er þetta notað?',
+      question: 'Hvað gerir maður þar?',
       icon: '🎯',
       context: {
         kind: 'notagildi',
@@ -288,22 +246,36 @@ export const stadir: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['til að búa', 'til að læra', 'til að versla'],
+          options: ['býr', 'sefur', 'lærir', 'verslar', 'syndir', 'borðar', 'leikur sér'],
         },
         {
           level: 'A2',
-          options: ['til að búa', 'til að læra', 'til að versla', 'til að vinna', 'til að hvílast'],
+          options: [
+            'býr',
+            'sefur',
+            'lærir',
+            'verslar',
+            'syndir',
+            'borðar',
+            'leikur sér',
+            'vinnur',
+            'hvílir sig',
+          ],
         },
         {
           level: 'B1',
           options: [
-            'til að búa',
-            'til að læra',
-            'til að versla',
-            'til að vinna',
-            'til að hvílast',
-            'til að stunda íþróttir',
-            'til að skemmta sér',
+            'býr',
+            'sefur',
+            'lærir',
+            'verslar',
+            'syndir',
+            'borðar',
+            'leikur sér',
+            'vinnur',
+            'hvílir sig',
+            'stundar íþróttir',
+            'skemmtir sér',
           ],
         },
       ],
@@ -333,7 +305,6 @@ export const stadir: Category = {
             'nemendur',
             'kennarar',
             'læknar',
-            'sérfræðingar',
             'listamenn',
             'ferðamenn',
             'iðnaðarmenn',
@@ -372,7 +343,7 @@ export const stadir: Category = {
       ],
     },
     {
-      question: 'Hvenær er þetta notað?',
+      question: 'Hvenær fer fólk þangað?',
       icon: '🕐',
       context: {
         kind: 'hvenaer',
@@ -452,8 +423,8 @@ export const stadir: Category = {
           frame: 'Maður ___ þar.',
           agree: [],
           blank: {
-            words: 'Hvað gerir maður þar',
-            options: ['borðar', 'verslar', 'syndir', 'lærir', 'vinnur', 'sefur', 'leikur sér'],
+            words: 'Hvað gerir maður þar?',
+            options: ['býr', 'sefur', 'lærir', 'verslar', 'syndir', 'borðar', 'leikur sér'],
             form: 'as-is',
           },
         },
@@ -473,20 +444,6 @@ export const stadir: Category = {
             words: 'Hvernig lítur þetta út?',
             options: ['stórt', 'lítið', 'hátt', 'lágt'],
             form: 'agree',
-          },
-        },
-        {
-          frame: 'Maður notar það ___.',
-          agree: [
-            {
-              word: 'það',
-              role: 'ÞF',
-            },
-          ],
-          blank: {
-            words: 'Til hvers er þetta notað?',
-            options: ['til að búa', 'til að læra', 'til að versla'],
-            form: 'as-is',
           },
         },
       ],

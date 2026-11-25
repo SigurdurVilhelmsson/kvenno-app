@@ -502,8 +502,18 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'dyr',
+        level: 'A1',
+        where: 'Hvað gerir það?',
+      },
+      {
+        category: 'dyr',
+        level: 'A2',
+        where: 'Hvað gerir það?',
+      },
+      {
+        category: 'dyr',
         level: 'B1',
-        where: 'Hvernig lítur það út?',
+        where: 'Hvað gerir það?',
       },
     ],
     heard: 'og flýgur',
@@ -522,13 +532,38 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'dyr',
+        level: 'A1',
+        where: 'Hvað gerir það?',
+      },
+      {
+        category: 'dyr',
+        level: 'A2',
+        where: 'Hvað gerir það?',
+      },
+      {
+        category: 'dyr',
         level: 'B1',
-        where: 'Hvernig lítur það út?',
+        where: 'Hvað gerir það?',
       },
       {
         category: 'stadir',
         level: null,
         where: 'Hvað gerir maður þar',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvað gerir maður þar?',
       },
     ],
     heard: 'sindir',
@@ -547,8 +582,18 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'dyr',
+        level: 'A1',
+        where: 'Hvað gerir það?',
+      },
+      {
+        category: 'dyr',
+        level: 'A2',
+        where: 'Hvað gerir það?',
+      },
+      {
+        category: 'dyr',
         level: 'B1',
-        where: 'Hvernig lítur það út?',
+        where: 'Hvað gerir það?',
       },
     ],
     heard: 'hleypur',
@@ -921,17 +966,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
@@ -941,32 +986,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'mjúkt',
@@ -981,17 +1026,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
@@ -1001,32 +1046,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'en hart',
@@ -1041,32 +1086,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'og slétt',
@@ -1081,115 +1126,35 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'og gróft',
-    score: 0,
-  },
-  {
-    text: 'þungt',
-    file: 'a2e78239d6fc2c53.mp3',
-    v: 'ecdf1ca3918d',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-    ],
-    heard: 'þungt',
-    score: 0,
-  },
-  {
-    text: 'létt',
-    file: '27ba600b93a0657a.mp3',
-    v: '862de5f064ba',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-    ],
-    heard: 'létt',
     score: 0,
   },
   {
@@ -1201,32 +1166,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'en blautt',
@@ -1241,12 +1206,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
@@ -1256,22 +1221,22 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'þurrt',
@@ -1286,17 +1251,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'loðið',
@@ -1311,70 +1276,20 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'hált',
-    score: 0,
-  },
-  {
-    text: 'stinnt',
-    file: '81d9196c8dc47d4e.mp3',
-    v: '1855279f81b4',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-    ],
-    heard: 'ég stint',
-    score: 0.167,
-  },
-  {
-    text: 'sveigjanlegt',
-    file: 'c73bcdda843c5254.mp3',
-    v: '46a89202e2e7',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
-      },
-    ],
-    heard: 'sveigjanlegt',
     score: 0,
   },
   {
@@ -1508,9 +1423,9 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'þögult',
-    file: '5428a6bc6787c362.mp3',
-    v: '2ca71f7fec78',
+    text: 'ekkert',
+    file: '3a4c3a2a78baa67e.mp3',
+    v: 'a03425ba4fe3',
     approved: false,
     places: [
       {
@@ -1544,7 +1459,7 @@ export const hlustun: HlustunClip[] = [
         where: 'Hvaða hljóð gefur það frá sér?',
       },
     ],
-    heard: 'þögult',
+    heard: 'ekkert',
     score: 0,
   },
   {
@@ -1648,36 +1563,6 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'hringir',
-    file: '1317c39e5caf8e15.mp3',
-    v: '83dc5da0c2d6',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða hljóð gefur það frá sér?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða hljóð gefur það frá sér?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða hljóð gefur það frá sér?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða hljóð gefur það frá sér?',
-      },
-    ],
-    heard: 'hringir',
-    score: 0,
-  },
-  {
     text: 'hvæsir',
     file: '9aaf2e4449455129.mp3',
     v: 'eba141147add',
@@ -1698,1046 +1583,6 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'kringlótt',
-    file: 'c504d7cf13aadac8.mp3',
-    v: '45af4b5f0176',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lítur það út?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'kring lótt',
-    score: 0.111,
-  },
-  {
-    text: 'ferkantað',
-    file: 'd832d9cec74ea58a.mp3',
-    v: 'ddf3a4e09c0c',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvernig lítur það út?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'og fer kantað',
-    score: 0.111,
-  },
-  {
-    text: 'ílangt',
-    file: '57a4bcdf05c69899.mp3',
-    v: 'b8b3126eea72',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'í langt',
-    score: 0.167,
-  },
-  {
-    text: 'flatt',
-    file: 'd30837ff9bb91667.mp3',
-    v: 'c200b4151e3d',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lítur það út?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'og flatt',
-    score: 0,
-  },
-  {
-    text: 'kúlulaga',
-    file: '589b0f93ec8aa621.mp3',
-    v: 'fdf2fded8e09',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'kúlu laga',
-    score: 0.125,
-  },
-  {
-    text: 'oddhvasst',
-    file: '056ffe5ba79dfb00.mp3',
-    v: '43f6af2ae919',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'ot hvasst',
-    score: 0.222,
-  },
-  {
-    text: 'bogið',
-    file: '8994eeccafbfb9ee.mp3',
-    v: '8d57e67097a0',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'bogið',
-    score: 0,
-  },
-  {
-    text: 'beint',
-    file: 'c918ec0885af5bd4.mp3',
-    v: '65798ae34605',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'en beint',
-    score: 0,
-  },
-  {
-    text: 'sporöskjulaga',
-    file: '705f452b40cf886b.mp3',
-    v: 'bed7eea030c4',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'spora skjulaga',
-    score: 0.154,
-  },
-  {
-    text: 'þríhyrningslaga',
-    file: '95185ede4fe9ef6f.mp3',
-    v: 'b8a5d51ad829',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'þríhyrningslaga',
-    score: 0,
-  },
-  {
-    text: 'sívalningslaga',
-    file: 'e228f0da5d509c13.mp3',
-    v: '03342631cd8a',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'sívalningslaga',
-    score: 0,
-  },
-  {
-    text: 'óreglulegt',
-    file: '81d41ac98cb87686.mp3',
-    v: '172e615c3881',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvaða lögun hefur það?',
-      },
-    ],
-    heard: 'sóreglulegt',
-    score: 0,
-  },
-  {
-    text: 'til að gæta',
-    file: 'af8968bd6a5b7914.mp3',
-    v: '16bef6c4e5ee',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að gæta',
-    score: 0,
-  },
-  {
-    text: 'til að klappa',
-    file: '0f4abd5a8a4c5aa0.mp3',
-    v: 'ced8624f1852',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að klappa',
-    score: 0,
-  },
-  {
-    text: 'til að borða',
-    file: '10176746c8500991.mp3',
-    v: '1af095153694',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að borða',
-    score: 0,
-  },
-  {
-    text: 'til að hjálpa',
-    file: 'ae22ef11ea8bae8a.mp3',
-    v: 'ca788192e9b8',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að hjálpa',
-    score: 0,
-  },
-  {
-    text: 'til að vinna',
-    file: 'db1558d21d4aac35.mp3',
-    v: 'b5372087ac3e',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að vinna',
-    score: 0,
-  },
-  {
-    text: 'til að leika sér',
-    file: 'd111a968b6b5e5eb.mp3',
-    v: 'e4b8c1ad2900',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að leika sér',
-    score: 0,
-  },
-  {
-    text: 'til að verja',
-    file: 'b1b02e2e843c6efa.mp3',
-    v: '54079b0bbcc5',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að verja',
-    score: 0,
-  },
-  {
-    text: 'til að rannsaka',
-    file: 'bbfde75eae03c640.mp3',
-    v: 'a3cda2241326',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að rannsaka',
-    score: 0,
-  },
-  {
-    text: 'allir',
-    file: 'd8bab4614355b777.mp3',
-    v: 'aa0cbb78d68b',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-    ],
-    heard: 'allir',
-    score: 0,
-  },
-  {
     text: 'börn',
     file: 'caad1f07dea7eb88.mp3',
     v: '48dcf6e014d6',
@@ -2746,17 +1591,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'matur',
@@ -2831,17 +1676,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'matur',
@@ -2916,12 +1761,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
     ],
     heard: 'en bændur',
@@ -2936,106 +1781,16 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hver notar þetta?',
+        where: 'Hver hugsar um það?',
       },
     ],
     heard: 'díralæknar',
     score: 0.1,
-  },
-  {
-    text: 'veiðimenn',
-    file: '8dc831ccb21cd609.mp3',
-    v: '6651a2b1422d',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-    ],
-    heard: 'veiði menn',
-    score: 0.111,
-  },
-  {
-    text: 'sérfræðingar',
-    file: 'e27c7fc2cddd460d.mp3',
-    v: 'a1f3863d4807',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-    ],
-    heard: 'sérfræðingar',
-    score: 0,
-  },
-  {
-    text: 'ferðamenn',
-    file: 'bc115178062f6d3d.mp3',
-    v: '4af9887f6879',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-    ],
-    heard: 'ferðamenn',
-    score: 0,
   },
   {
     text: 'heima',
@@ -3046,17 +1801,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'matur',
@@ -3076,17 +1831,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
     ],
     heard: 'heima',
@@ -3101,17 +1856,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'matur',
@@ -3151,17 +1906,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
     ],
     heard: 'á bæ',
@@ -3176,12 +1931,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
     ],
     heard: 'í dýragarðinum',
@@ -3196,12 +1951,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
     ],
     heard: 'í náttúrunni',
@@ -3216,12 +1971,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
     ],
     heard: 'í sjónum',
@@ -3236,7 +1991,7 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
       {
         category: 'stadir',
@@ -3256,7 +2011,7 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvar er hægt að finna þetta?',
+        where: 'Hvar er hægt að finna það?',
       },
     ],
     heard: 'í skóginum',
@@ -3271,32 +2026,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'farartaeki',
@@ -3316,32 +2056,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -3386,32 +2126,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'farartaeki',
@@ -3431,32 +2156,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -3486,32 +2211,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'farartaeki',
@@ -3531,32 +2241,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -3586,32 +2296,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'farartaeki',
@@ -3631,32 +2326,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -3686,32 +2381,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'matur',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'farartaeki',
@@ -3736,32 +2431,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -3796,32 +2491,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'A1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'A2',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'matur',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'farartaeki',
@@ -3846,32 +2541,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -3898,146 +2593,6 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'um helgar',
-    file: 'f506a4a4e54c34b1.mp3',
-    v: '93173efb7bdc',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'manneskja',
-        level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
-      },
-      {
-        category: 'manneskja',
-        level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
-      },
-      {
-        category: 'manneskja',
-        level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-    ],
-    heard: 'um helgar',
-    score: 0,
-  },
-  {
-    text: 'í sérstökum tilvikum',
-    file: '2d2af8602386adc7.mp3',
-    v: 'abc243d6d36b',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'Hvenær sést þetta?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'manneskja',
-        level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvenær er þetta notað?',
-      },
-    ],
-    heard: 'í sérstökum tilvikum',
-    score: 0,
-  },
-  {
     text: 'daglega',
     file: '156c78856e5382ca.mp3',
     v: '934de03c3800',
@@ -4046,12 +2601,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'farartaeki',
@@ -4061,12 +2616,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -4086,12 +2641,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'farartaeki',
@@ -4101,12 +2656,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -4126,12 +2681,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'dyr',
         level: 'B1',
-        where: 'Hvenær sést þetta?',
+        where: 'Hvenær sést það?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'farartaeki',
@@ -4141,12 +2696,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -4230,88 +2785,6 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'Það hljómar ___.',
-    file: '2b76ac6262fa3336.mp3',
-    v: '0980665c4d02',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'rammi',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'rammi',
-      },
-    ],
-    say: 'Það hljómar ….',
-    heard: 'það hljómar',
-    score: 0,
-  },
-  {
-    text: 'Maður notar það ___.',
-    file: '522960000bcfa217.mp3',
-    v: '936da6065eba',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A1',
-        where: 'rammi',
-      },
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'rammi',
-      },
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'rammi',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'rammi',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A1',
-        where: 'rammi',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'rammi',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'rammi',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'rammi',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A1',
-        where: 'rammi',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'rammi',
-      },
-    ],
-    say: 'Maður notar það ….',
-    heard: 'maður notar það',
-    score: 0,
-  },
-  {
     text: 'Þetta er ___ sem býr ___.',
     file: 'd04464aff25f9302.mp3',
     v: 'd768bfd15620',
@@ -4358,37 +2831,6 @@ export const hlustun: HlustunClip[] = [
     say: 'Það étur ….',
     heard: 'það etur',
     score: 0.125,
-  },
-  {
-    text: 'Það finnst ___ við snertingu.',
-    file: '5975a303dcf88d2f.mp3',
-    v: 'd639395f43c3',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'A2',
-        where: 'rammi',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'rammi',
-      },
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'rammi',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'rammi',
-      },
-    ],
-    say: 'Það finnst … við snertingu.',
-    heard: 'það finnst við snertingu',
-    score: 0,
   },
   {
     text: 'Maður finnur það ___.',
@@ -4496,11 +2938,6 @@ export const hlustun: HlustunClip[] = [
         where: 'rammi',
       },
       {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'rammi',
-      },
-      {
         category: 'klaednadur',
         level: 'B1',
         where: 'rammi',
@@ -4508,42 +2945,6 @@ export const hlustun: HlustunClip[] = [
     ],
     say: 'Það er … að snerta vegna þess að ….',
     heard: 'það er að snerta vegna þess að',
-    score: 0,
-  },
-  {
-    text: '___ nota það oftast ___.',
-    file: '8307284765d81aa0.mp3',
-    v: '0255daee988f',
-    approved: false,
-    places: [
-      {
-        category: 'dyr',
-        level: 'B1',
-        where: 'rammi',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'rammi',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'rammi',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'rammi',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'rammi',
-      },
-    ],
-    say: '… nota það oftast ….',
-    heard: 'ég nota það oftast',
     score: 0,
   },
   {
@@ -4814,16 +3215,6 @@ export const hlustun: HlustunClip[] = [
         level: 'B1',
         where: 'Hvernig bragðast það?',
       },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvernig lyktar þar?',
-      },
     ],
     heard: 'sætt',
     score: 0,
@@ -4913,16 +3304,6 @@ export const hlustun: HlustunClip[] = [
         category: 'matur',
         level: 'B1',
         where: 'Hvernig bragðast það?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvernig lyktar þar?',
       },
     ],
     heard: 'hann beist',
@@ -5033,12 +3414,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'heitt',
@@ -5058,22 +3439,22 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'A2',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
         category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig finnst það við snertingu?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
     heard: 'kalt',
@@ -5180,6 +3561,21 @@ export const hlustun: HlustunClip[] = [
         level: null,
         where: 'Hvenær',
       },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
     ],
     heard: 'í morgunmat',
     score: 0,
@@ -5194,6 +3590,21 @@ export const hlustun: HlustunClip[] = [
         category: 'matur',
         level: null,
         where: 'Hvenær',
+      },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
     ],
     heard: 'ný hádegismat',
@@ -5210,6 +3621,21 @@ export const hlustun: HlustunClip[] = [
         level: null,
         where: 'Hvenær',
       },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
     ],
     heard: 'í kvöldmat',
     score: 0,
@@ -5224,6 +3650,21 @@ export const hlustun: HlustunClip[] = [
         category: 'matur',
         level: null,
         where: 'Hvenær',
+      },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvenær er það borðað eða drukkið?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
     ],
     heard: 'sem villi mál',
@@ -5501,6 +3942,36 @@ export const hlustun: HlustunClip[] = [
     score: 0.077,
   },
   {
+    text: 'kringlótt',
+    file: 'c504d7cf13aadac8.mp3',
+    v: '45af4b5f0176',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvernig lítur það út?',
+      },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'kring lótt',
+    score: 0.111,
+  },
+  {
     text: 'langt',
     file: '5415de79dab78beb.mp3',
     v: 'f5e7dec0c28c',
@@ -5523,6 +3994,36 @@ export const hlustun: HlustunClip[] = [
       },
     ],
     heard: 'langt',
+    score: 0,
+  },
+  {
+    text: 'flatt',
+    file: 'd30837ff9bb91667.mp3',
+    v: 'c200b4151e3d',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvernig lítur það út?',
+      },
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'og flatt',
     score: 0,
   },
   {
@@ -5561,26 +4062,6 @@ export const hlustun: HlustunClip[] = [
         level: 'B1',
         where: 'Hvernig bragðast það?',
       },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvernig lyktar þar?',
-      },
     ],
     heard: 'en sterkt',
     score: 0,
@@ -5601,26 +4082,6 @@ export const hlustun: HlustunClip[] = [
         level: 'B1',
         where: 'Hvernig bragðast það?',
       },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvernig lyktar þar?',
-      },
     ],
     heard: 'milt',
     score: 0,
@@ -5640,26 +4101,6 @@ export const hlustun: HlustunClip[] = [
         category: 'matur',
         level: 'B1',
         where: 'Hvernig bragðast það?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvernig lyktar þar?',
       },
     ],
     heard: 'ég ferst',
@@ -5726,123 +4167,43 @@ export const hlustun: HlustunClip[] = [
     score: 0.062,
   },
   {
-    text: 'gott',
-    file: '894d3ccd43ee7e7f.mp3',
-    v: '7946a4ebf85c',
+    text: 'stinnt',
+    file: '81d9196c8dc47d4e.mp3',
+    v: '1855279f81b4',
     approved: false,
     places: [
       {
         category: 'matur',
-        level: 'A1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
         level: 'B1',
-        where: 'Hvernig lyktar af því?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
+        category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig lyktar þar?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
-    heard: 'gott',
-    score: 0,
+    heard: 'ég stint',
+    score: 0.167,
   },
   {
-    text: 'vont',
-    file: 'd1c2ab05bd0f9564.mp3',
-    v: 'c469793ec0fe',
+    text: 'sveigjanlegt',
+    file: 'c73bcdda843c5254.mp3',
+    v: '46a89202e2e7',
     approved: false,
     places: [
       {
         category: 'matur',
-        level: 'A1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
         level: 'B1',
-        where: 'Hvernig lyktar af því?',
+        where: 'Hvernig er það viðkomu?',
       },
       {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
+        category: 'klaednadur',
         level: 'B1',
-        where: 'Hvernig lyktar þar?',
+        where: 'Hvernig er það viðkomu?',
       },
     ],
-    heard: 'vont',
-    score: 0,
-  },
-  {
-    text: 'ekkert',
-    file: '3a4c3a2a78baa67e.mp3',
-    v: 'a03425ba4fe3',
-    approved: false,
-    places: [
-      {
-        category: 'matur',
-        level: 'A1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
-        level: 'A2',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'matur',
-        level: 'B1',
-        where: 'Hvernig lyktar af því?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Hvernig lyktar þar?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Hvernig lyktar þar?',
-      },
-    ],
-    heard: 'ekkert',
+    heard: 'sveigjanlegt',
     score: 0,
   },
   {
@@ -5854,12 +4215,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig lyktar af því?',
+        where: 'Hvernig lykt er af því?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvernig lyktar þar?',
+        where: 'Hvernig lykt er þar?',
       },
     ],
     heard: 'ilmandi',
@@ -5874,15 +4235,235 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvernig lyktar af því?',
+        where: 'Hvernig lykt er af því?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvernig lyktar þar?',
+        where: 'Hvernig lykt er þar?',
       },
     ],
     heard: 'ég stingandi',
+    score: 0,
+  },
+  {
+    text: 'ferkantað',
+    file: 'd832d9cec74ea58a.mp3',
+    v: 'ddf3a4e09c0c',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'Hvernig lítur það út?',
+      },
+    ],
+    heard: 'og fer kantað',
+    score: 0.111,
+  },
+  {
+    text: 'ílangt',
+    file: '57a4bcdf05c69899.mp3',
+    v: 'b8b3126eea72',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'í langt',
+    score: 0.167,
+  },
+  {
+    text: 'kúlulaga',
+    file: '589b0f93ec8aa621.mp3',
+    v: 'fdf2fded8e09',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'kúlu laga',
+    score: 0.125,
+  },
+  {
+    text: 'oddhvasst',
+    file: '056ffe5ba79dfb00.mp3',
+    v: '43f6af2ae919',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'ot hvasst',
+    score: 0.222,
+  },
+  {
+    text: 'bogið',
+    file: '8994eeccafbfb9ee.mp3',
+    v: '8d57e67097a0',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'bogið',
+    score: 0,
+  },
+  {
+    text: 'beint',
+    file: 'c918ec0885af5bd4.mp3',
+    v: '65798ae34605',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hvaða lögun hefur það?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'en beint',
+    score: 0,
+  },
+  {
+    text: 'sporöskjulaga',
+    file: '705f452b40cf886b.mp3',
+    v: 'bed7eea030c4',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'spora skjulaga',
+    score: 0.154,
+  },
+  {
+    text: 'þríhyrningslaga',
+    file: '95185ede4fe9ef6f.mp3',
+    v: 'b8a5d51ad829',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'þríhyrningslaga',
+    score: 0,
+  },
+  {
+    text: 'sívalningslaga',
+    file: 'e228f0da5d509c13.mp3',
+    v: '03342631cd8a',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'sívalningslaga',
+    score: 0,
+  },
+  {
+    text: 'óreglulegt',
+    file: '81d41ac98cb87686.mp3',
+    v: '172e615c3881',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hvaða lögun hefur það?',
+      },
+    ],
+    heard: 'sóreglulegt',
+    score: 0,
+  },
+  {
+    text: 'til að borða',
+    file: '10176746c8500991.mp3',
+    v: '1af095153694',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Til hvers er það notað?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Til hvers er það notað?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Til hvers er það notað?',
+      },
+    ],
+    heard: 'til að borða',
     score: 0,
   },
   {
@@ -5981,6 +4562,76 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
+    text: 'allir',
+    file: 'd8bab4614355b777.mp3',
+    v: 'aa0cbb78d68b',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'A1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'A2',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A2',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'B1',
+        where: 'Hver notar þetta?',
+      },
+    ],
+    heard: 'allir',
+    score: 0,
+  },
+  {
     text: 'kokkar',
     file: '34a0c96e557c09ba.mp3',
     v: '11eac0ad01cf',
@@ -6064,17 +4715,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'klaednadur',
@@ -6126,25 +4777,25 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'á virkum dögum',
-    file: '1dc9e191078b12ab.mp3',
-    v: '19c59cacac91',
+    text: 'um helgar',
+    file: 'f506a4a4e54c34b1.mp3',
+    v: '93173efb7bdc',
     approved: false,
     places: [
       {
         category: 'matur',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'matur',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'farartaeki',
@@ -6164,32 +4815,32 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -6207,7 +4858,7 @@ export const hlustun: HlustunClip[] = [
         where: 'Hvenær er þetta notað?',
       },
     ],
-    heard: 'á virkum dögum',
+    heard: 'um helgar',
     score: 0,
   },
   {
@@ -6219,7 +4870,7 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'matur',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær er það borðað eða drukkið?',
       },
       {
         category: 'farartaeki',
@@ -6229,12 +4880,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvenær er hún/hann virk/virkur?',
+        where: 'Hvenær er hún/hann þar?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Hvenær er þetta notað?',
+        where: 'Hvenær fer fólk þangað?',
       },
       {
         category: 'klaednadur',
@@ -6366,6 +5017,42 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
+    text: 'Maður notar það ___.',
+    file: '522960000bcfa217.mp3',
+    v: '936da6065eba',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'A2',
+        where: 'rammi',
+      },
+      {
+        category: 'farartaeki',
+        level: 'A1',
+        where: 'rammi',
+      },
+      {
+        category: 'farartaeki',
+        level: 'A2',
+        where: 'rammi',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'rammi',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A2',
+        where: 'rammi',
+      },
+    ],
+    say: 'Maður notar það ….',
+    heard: 'maður notar það',
+    score: 0,
+  },
+  {
     text: 'Þetta er ___ sem bragðast ___.',
     file: 'd9bee2f2ee40c18d.mp3',
     v: '50323ab30b86',
@@ -6427,6 +5114,32 @@ export const hlustun: HlustunClip[] = [
     ],
     say: 'Það er gert úr … sem er ….',
     heard: 'það er gert úr sem er',
+    score: 0,
+  },
+  {
+    text: '___ nota það oftast ___.',
+    file: '8307284765d81aa0.mp3',
+    v: '0255daee988f',
+    approved: false,
+    places: [
+      {
+        category: 'matur',
+        level: 'B1',
+        where: 'rammi',
+      },
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'rammi',
+      },
+      {
+        category: 'klaednadur',
+        level: 'B1',
+        where: 'rammi',
+      },
+    ],
+    say: '… nota það oftast ….',
+    heard: 'ég nota það oftast',
     score: 0,
   },
   {
@@ -7114,16 +5827,6 @@ export const hlustun: HlustunClip[] = [
         level: 'B1',
         where: 'Úr hverju er það gert?',
       },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Úr hverju er það gert?',
-      },
     ],
     heard: 'úr málmi',
     score: 0,
@@ -7219,63 +5922,8 @@ export const hlustun: HlustunClip[] = [
         level: 'B1',
         where: 'Úr hverju er það gert?',
       },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Úr hverju er það gert?',
-      },
     ],
     heard: 'þúr tré',
-    score: 0,
-  },
-  {
-    text: 'úr steini',
-    file: '07c3061ce75eb480.mp3',
-    v: 'd8599d37cdaa',
-    approved: false,
-    places: [
-      {
-        category: 'farartaeki',
-        level: 'A2',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'farartaeki',
-        level: 'B1',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Úr hverju er það gert?',
-      },
-    ],
-    heard: 'úr steini',
     score: 0,
   },
   {
@@ -7301,16 +5949,6 @@ export const hlustun: HlustunClip[] = [
       },
       {
         category: 'stadir',
-        level: 'B1',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Úr hverju er það gert?',
-      },
-      {
-        category: 'klaednadur',
         level: 'B1',
         where: 'Úr hverju er það gert?',
       },
@@ -7444,6 +6082,56 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
+    text: 'til að leika sér',
+    file: 'd111a968b6b5e5eb.mp3',
+    v: 'e4b8c1ad2900',
+    approved: false,
+    places: [
+      {
+        category: 'farartaeki',
+        level: 'A1',
+        where: 'Til hvers er það notað?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'A2',
+        where: 'Til hvers er það notað?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'Til hvers er það notað?',
+      },
+    ],
+    heard: 'til að leika sér',
+    score: 0,
+  },
+  {
+    text: 'til að vinna',
+    file: 'db1558d21d4aac35.mp3',
+    v: 'b5372087ac3e',
+    approved: false,
+    places: [
+      {
+        category: 'farartaeki',
+        level: 'A2',
+        where: 'Til hvers er það notað?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'Til hvers er það notað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'B1',
+        where: 'Til hvers er það notað?',
+      },
+    ],
+    heard: 'til að vinna',
+    score: 0,
+  },
+  {
     text: 'til að keppa',
     file: '465d072e1267c77d.mp3',
     v: '4aa65bb0b8e8',
@@ -7531,6 +6219,31 @@ export const hlustun: HlustunClip[] = [
       },
     ],
     heard: 'sjómenn',
+    score: 0,
+  },
+  {
+    text: 'ferðamenn',
+    file: 'bc115178062f6d3d.mp3',
+    v: '4af9887f6879',
+    approved: false,
+    places: [
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hver notar þetta?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'B1',
+        where: 'Hver notar þetta?',
+      },
+    ],
+    heard: 'ferðamenn',
     score: 0,
   },
   {
@@ -7701,6 +6414,106 @@ export const hlustun: HlustunClip[] = [
       },
     ],
     heard: 'sá lestarbraut',
+    score: 0,
+  },
+  {
+    text: 'á virkum dögum',
+    file: '1dc9e191078b12ab.mp3',
+    v: '19c59cacac91',
+    approved: false,
+    places: [
+      {
+        category: 'farartaeki',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'A2',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'manneskja',
+        level: 'A1',
+        where: 'Hvenær er hún/hann þar?',
+      },
+      {
+        category: 'manneskja',
+        level: 'A2',
+        where: 'Hvenær er hún/hann þar?',
+      },
+      {
+        category: 'manneskja',
+        level: 'B1',
+        where: 'Hvenær er hún/hann þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvenær fer fólk þangað?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvenær fer fólk þangað?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvenær fer fólk þangað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'A2',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'B1',
+        where: 'Hvenær er þetta notað?',
+      },
+    ],
+    heard: 'á virkum dögum',
+    score: 0,
+  },
+  {
+    text: 'í sérstökum tilvikum',
+    file: '2d2af8602386adc7.mp3',
+    v: 'abc243d6d36b',
+    approved: false,
+    places: [
+      {
+        category: 'farartaeki',
+        level: 'B1',
+        where: 'Hvenær er þetta notað?',
+      },
+      {
+        category: 'manneskja',
+        level: 'B1',
+        where: 'Hvenær er hún/hann þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvenær fer fólk þangað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'B1',
+        where: 'Hvenær er þetta notað?',
+      },
+    ],
+    heard: 'í sérstökum tilvikum',
     score: 0,
   },
   {
@@ -8403,6 +7216,11 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
+        where: 'Hvers konar manneskja er þetta?',
+      },
+      {
+        category: 'manneskja',
+        level: 'A1',
         where: 'Hvernig lítur hún/hann út?',
       },
       {
@@ -8602,6 +7420,16 @@ export const hlustun: HlustunClip[] = [
         level: null,
         where: 'Hvað gerir maður þar',
       },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvað gerir maður þar?',
+      },
     ],
     heard: 'vinnur',
     score: 0,
@@ -8636,6 +7464,21 @@ export const hlustun: HlustunClip[] = [
         category: 'stadir',
         level: null,
         where: 'Hvað gerir maður þar',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvað gerir maður þar?',
       },
     ],
     heard: 'lærir',
@@ -8707,6 +7550,16 @@ export const hlustun: HlustunClip[] = [
         level: null,
         where: 'Athafnir',
       },
+      {
+        category: 'manneskja',
+        level: 'A2',
+        where: 'Hvað gerir hún/hann?',
+      },
+      {
+        category: 'manneskja',
+        level: 'B1',
+        where: 'Hvað gerir hún/hann?',
+      },
     ],
     heard: 'eldar',
     score: 0,
@@ -8742,22 +7595,6 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'gamall/gömul',
-    file: '95b9014a2b0e97f3.mp3',
-    v: '9a48115e70bb',
-    approved: false,
-    places: [
-      {
-        category: 'manneskja',
-        level: 'A1',
-        where: 'Hvers konar manneskja er þetta?',
-      },
-    ],
-    say: 'gamall eða gömul',
-    heard: 'gamall eða gömul',
-    score: 0,
-  },
-  {
     text: 'leikur sér',
     file: '0076b7842cc11a9d.mp3',
     v: '5a2b802071a1',
@@ -8782,6 +7619,21 @@ export const hlustun: HlustunClip[] = [
         category: 'stadir',
         level: null,
         where: 'Hvað gerir maður þar',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvað gerir maður þar?',
       },
     ],
     heard: 'en leikur sér',
@@ -8876,17 +7728,17 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'klaednadur',
@@ -8911,12 +7763,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
     ],
     heard: 'sá sjúkrahúsi',
@@ -8931,12 +7783,12 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'A2',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
     ],
     heard: 'á leikvelli',
@@ -8951,7 +7803,7 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
     ],
     heard: 'á sviði',
@@ -8966,7 +7818,7 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
     ],
     heard: 'í sjónvarpi',
@@ -8981,7 +7833,7 @@ export const hlustun: HlustunClip[] = [
       {
         category: 'manneskja',
         level: 'B1',
-        where: 'Hvar er hægt að finna þessa manneskju?',
+        where: 'Hvar er hún/hann?',
       },
       {
         category: 'klaednadur',
@@ -9073,22 +7925,6 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.',
-    file: '47ef1edac316ad88.mp3',
-    v: 'f7f14eeaa65e',
-    approved: false,
-    places: [
-      {
-        category: 'manneskja',
-        level: 'B1',
-        where: 'rammi',
-      },
-    ],
-    say: 'Þessi manneskja er … og er þekkt eða óþekkt fyrir ….',
-    heard: 'þessi manneskja er og er þekkt eða óþekkt fyrir',
-    score: 0,
-  },
-  {
     text: 'Hún/Hann er oft ___ vegna þess að ___.',
     file: '7347c7afc993eff3.mp3',
     v: '83ba8001ba58',
@@ -9118,21 +7954,6 @@ export const hlustun: HlustunClip[] = [
     ],
     heard: 'þetta er kennari hún er ung hunlu',
     score: 0.114,
-  },
-  {
-    text: 'Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.',
-    file: 'f5456614b800bc18.mp3',
-    v: '82d2496f960f',
-    approved: false,
-    places: [
-      {
-        category: 'manneskja',
-        level: 'A2',
-        where: 'dæmi',
-      },
-    ],
-    heard: 'þetta er kona sem er há hún er ung og myndarleg hún vinnur sem læknir',
-    score: 0,
   },
   {
     text: 'Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.',
@@ -9587,6 +8408,21 @@ export const hlustun: HlustunClip[] = [
         level: null,
         where: 'Hvað gerir maður þar',
       },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvað gerir maður þar?',
+      },
     ],
     heard: 'han borðar',
     score: 0,
@@ -9602,6 +8438,21 @@ export const hlustun: HlustunClip[] = [
         level: null,
         where: 'Hvað gerir maður þar',
       },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvað gerir maður þar?',
+      },
     ],
     heard: 'verslar',
     score: 0,
@@ -9616,6 +8467,21 @@ export const hlustun: HlustunClip[] = [
         category: 'stadir',
         level: null,
         where: 'Hvað gerir maður þar',
+      },
+      {
+        category: 'stadir',
+        level: 'A1',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'A2',
+        where: 'Hvað gerir maður þar?',
+      },
+      {
+        category: 'stadir',
+        level: 'B1',
+        where: 'Hvað gerir maður þar?',
       },
     ],
     heard: 'sefur',
@@ -9782,138 +8648,28 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'til að búa',
-    file: '21a796e30083f0b9.mp3',
-    v: '71718c5ab1ff',
+    text: 'úr steini',
+    file: '07c3061ce75eb480.mp3',
+    v: 'd8599d37cdaa',
     approved: false,
     places: [
       {
         category: 'stadir',
         level: 'A1',
-        where: 'Til hvers er þetta notað?',
+        where: 'Úr hverju er það gert?',
       },
       {
         category: 'stadir',
         level: 'A2',
-        where: 'Til hvers er þetta notað?',
+        where: 'Úr hverju er það gert?',
       },
       {
         category: 'stadir',
         level: 'B1',
-        where: 'Til hvers er þetta notað?',
+        where: 'Úr hverju er það gert?',
       },
     ],
-    heard: 'til að búa',
-    score: 0,
-  },
-  {
-    text: 'til að læra',
-    file: '334633aeae327723.mp3',
-    v: '10b009cd04f7',
-    approved: false,
-    places: [
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Til hvers er þetta notað?',
-      },
-    ],
-    heard: 'til að læra',
-    score: 0,
-  },
-  {
-    text: 'til að versla',
-    file: '25f63acc38c27941.mp3',
-    v: '0abfea2bf0f8',
-    approved: false,
-    places: [
-      {
-        category: 'stadir',
-        level: 'A1',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Til hvers er þetta notað?',
-      },
-    ],
-    heard: 'til að versla',
-    score: 0,
-  },
-  {
-    text: 'til að hvílast',
-    file: '8c2298f9087eabef.mp3',
-    v: '9ea0a7c765a8',
-    approved: false,
-    places: [
-      {
-        category: 'stadir',
-        level: 'A2',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Til hvers er þetta notað?',
-      },
-    ],
-    heard: 'til að hvílast',
-    score: 0,
-  },
-  {
-    text: 'til að stunda íþróttir',
-    file: 'ab210ee2be546b6f.mp3',
-    v: '0979b5c23fac',
-    approved: false,
-    places: [
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Til hvers er þetta notað?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'A2',
-        where: 'Til hvers er það notað?',
-      },
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Til hvers er það notað?',
-      },
-    ],
-    heard: 'til að stunda íþróttir',
-    score: 0,
-  },
-  {
-    text: 'til að skemmta sér',
-    file: '30add42ca5e1ed8c.mp3',
-    v: 'bb093414b534',
-    approved: false,
-    places: [
-      {
-        category: 'stadir',
-        level: 'B1',
-        where: 'Til hvers er þetta notað?',
-      },
-    ],
-    heard: 'til að skemmta sér',
+    heard: 'úr steini',
     score: 0,
   },
   {
@@ -9974,11 +8730,6 @@ export const hlustun: HlustunClip[] = [
     places: [
       {
         category: 'stadir',
-        level: 'B1',
-        where: 'Hver notar þetta?',
-      },
-      {
-        category: 'klaednadur',
         level: 'B1',
         where: 'Hver notar þetta?',
       },
@@ -11054,21 +9805,6 @@ export const hlustun: HlustunClip[] = [
     score: 0,
   },
   {
-    text: 'mynstur',
-    file: '157fd913305f134b.mp3',
-    v: '52d8e256e1fb',
-    approved: false,
-    places: [
-      {
-        category: 'klaednadur',
-        level: 'B1',
-        where: 'Hvernig lítur það út?',
-      },
-    ],
-    heard: 'aer mynstur',
-    score: 0,
-  },
-  {
     text: 'einlitt',
     file: '49dba3b069dc616b.mp3',
     v: '4710fd918753',
@@ -11156,6 +9892,26 @@ export const hlustun: HlustunClip[] = [
       },
     ],
     heard: 'til að líta vel út',
+    score: 0,
+  },
+  {
+    text: 'til að stunda íþróttir',
+    file: 'ab210ee2be546b6f.mp3',
+    v: '0979b5c23fac',
+    approved: false,
+    places: [
+      {
+        category: 'klaednadur',
+        level: 'A2',
+        where: 'Til hvers er það notað?',
+      },
+      {
+        category: 'klaednadur',
+        level: 'B1',
+        where: 'Til hvers er það notað?',
+      },
+    ],
+    heard: 'til að stunda íþróttir',
     score: 0,
   },
   {

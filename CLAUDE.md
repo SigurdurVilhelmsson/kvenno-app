@@ -665,7 +665,7 @@ Stofnun Árna Magnússonar í íslenskum fræðum. The file carries that in `_he
 **Sentence builder, data and engine (2026-10-11; the student page is a second PR).** Each YAML
 carries a `builder: { A1: … }` section: the subject (a word list the student picks from, a fixed
 `word`, or `person: true` for hún/hann), and per card frame which words follow the subject
-(`agree`: `NF`/`ÞF` pronoun, `sögn` for `er`/`eru`) and how the blank is filled (`as-is`,
+(`agree`: `NF`/`ÞF`/`ÞGF` pronoun, `sögn` for `er`/`eru`) and how the blank is filled (`as-is`,
 `agree` for an adjective, `ÞF` for a noun). `loadBuilder` in `load.mjs` refuses a frame the card
 does not print, so editing a frame breaks the build rather than the builder. The tags were
 **drafted by Claude and await confirmation** (`docs/REVIEW-QUEUE.md` C9). The forms come from BÍN,

@@ -147,7 +147,7 @@ export const texti: Record<string, Texti> = {
                 gap: 'hala',
               },
               {
-                text: '. Hann finnst ',
+                text: '. Hann er ',
               },
               {
                 gap: 'sléttur',
@@ -159,7 +159,7 @@ export const texti: Record<string, Texti> = {
                 gap: 'blautur',
               },
               {
-                text: ' við snertingu.',
+                text: ' viðkomu.',
               },
             ],
           },
@@ -167,10 +167,7 @@ export const texti: Record<string, Texti> = {
             name: 'Hver og hvenær?',
             parts: [
               {
-                gap: 'Veiðimenn',
-              },
-              {
-                text: ' veiða þorsk ',
+                text: 'Veiðimenn veiða þorsk ',
               },
               {
                 gap: 'á veturna',
@@ -182,13 +179,7 @@ export const texti: Record<string, Texti> = {
                 gap: 'á sumrin',
               },
               {
-                text: '. Maður notar hann ',
-              },
-              {
-                gap: 'til að borða',
-              },
-              {
-                text: '.',
+                text: '. Fólk borðar hann oft.',
               },
             ],
           },
@@ -202,8 +193,6 @@ export const texti: Record<string, Texti> = {
           'hreistur',
           'í sjónum',
           'sléttur',
-          'til að borða',
-          'veiðimenn',
         ],
       },
       B1: {
@@ -297,16 +286,7 @@ export const texti: Record<string, Texti> = {
             name: 'Niðurlag',
             parts: [
               {
-                gap: 'Ferðamenn',
-              },
-              {
-                text: ' koma til Íslands til að sjá lundann. ',
-              },
-              {
-                gap: 'Sérfræðingar',
-              },
-              {
-                text: ' rannsaka hvers vegna lundum fækkar.',
+                text: 'Ferðamenn koma til Íslands til að sjá lundann. Sérfræðingar rannsaka hvers vegna lundum fækkar.',
               },
             ],
           },
@@ -314,14 +294,12 @@ export const texti: Record<string, Texti> = {
         bank: [
           'á daginn',
           'á sumrin',
-          'ferðamenn',
           'fiska',
           'fjaðrir',
           'flogið',
           'fugl',
           'gogg',
           'í sjónum',
-          'sérfræðingar',
           'synt',
           'villt dýr',
         ],
@@ -387,13 +365,13 @@ export const texti: Record<string, Texti> = {
                 text: 'Maður borðar það ',
               },
               {
-                gap: 'á morgnana',
+                gap: 'í morgunmat',
               },
               {
                 text: ' eða ',
               },
               {
-                gap: 'á daginn',
+                gap: 'sem millimál',
               },
               {
                 text: '. Maður kaupir það ',
@@ -407,7 +385,7 @@ export const texti: Record<string, Texti> = {
             ],
           },
         ],
-        bank: ['á daginn', 'á morgnana', 'ávöxtur', 'grænt', 'hart', 'í búð', 'rautt', 'sætt'],
+        bank: ['ávöxtur', 'grænt', 'hart', 'í búð', 'í morgunmat', 'rautt', 'sem millimál', 'sætt'],
       },
       A2: {
         genre: 'Lýsing',
@@ -542,13 +520,13 @@ export const texti: Record<string, Texti> = {
                 gap: 'köld',
               },
               {
-                text: '. Þau eru oft borðuð ',
+                text: '. Þau eru oft borðuð á morgnana eða ',
               },
               {
-                gap: 'á morgnana',
+                gap: 'sem millimál',
               },
               {
-                text: ' eða sem millimál.',
+                text: '.',
               },
             ],
           },
@@ -594,27 +572,20 @@ export const texti: Record<string, Texti> = {
                 gap: 'bragðmikið',
               },
               {
-                text: '. ',
-              },
-              {
-                gap: 'Ferðamenn',
-              },
-              {
-                text: ' smakka það oft á Íslandi.',
+                text: '. Ferðamenn smakka það oft á Íslandi.',
               },
             ],
           },
         ],
         bank: [
-          'á morgnana',
           'betra',
           'bragðmikið',
-          'ferðamenn',
           'hvít',
           'köld',
           'milt',
           'mjólkurvörur',
           'mjúk',
+          'sem millimál',
           'súrari',
           'sætari',
         ],
@@ -663,13 +634,13 @@ export const texti: Record<string, Texti> = {
                 gap: 'úr málmi',
               },
               {
-                text: ' og hljómar ',
+                text: ' og það heyrist ',
               },
               {
                 gap: 'hátt',
               },
               {
-                text: '.',
+                text: ' í henni.',
               },
             ],
           },
@@ -1306,10 +1277,10 @@ export const texti: Record<string, Texti> = {
             name: 'Notkun',
             parts: [
               {
-                text: 'Fólk fer þangað ',
+                text: 'Fólk fer þangað til að ',
               },
               {
-                gap: 'til að læra',
+                gap: 'læra',
               },
               {
                 text: ' um söguna. ',
@@ -1341,9 +1312,9 @@ export const texti: Record<string, Texti> = {
           'gamalt',
           'í bænum',
           'kennarar',
+          'læra',
           'nemendur',
           'safn',
-          'til að læra',
           'úr steini',
         ],
       },
@@ -1412,13 +1383,7 @@ export const texti: Record<string, Texti> = {
                 gap: 'Nemendur',
               },
               {
-                text: ' fara þangað ',
-              },
-              {
-                gap: 'til að stunda íþróttir',
-              },
-              {
-                text: ' ',
+                text: ' fara þangað til að stunda íþróttir ',
               },
               {
                 gap: 'á virkum dögum',
@@ -1451,7 +1416,6 @@ export const texti: Record<string, Texti> = {
           'nútímalegt',
           'skólanum',
           'stór',
-          'til að stunda íþróttir',
           'um helgar',
           'úr steini',
           'úr tré',
@@ -1555,19 +1519,13 @@ export const texti: Record<string, Texti> = {
             name: 'Áferð',
             parts: [
               {
-                text: 'Hún er ',
-              },
-              {
-                gap: 'létt',
-              },
-              {
-                text: ' og ',
+                text: 'Hún er létt og ',
               },
               {
                 gap: 'mjúk',
               },
               {
-                text: ' við snertingu.',
+                text: ' viðkomu.',
               },
             ],
           },
@@ -1605,7 +1563,6 @@ export const texti: Record<string, Texti> = {
           'á veturna',
           'blá',
           'íþróttamenn',
-          'létt',
           'mjúk',
           'nemendur',
           'stór',
@@ -1670,13 +1627,7 @@ export const texti: Record<string, Texti> = {
                 gap: 'úlpu',
               },
               {
-                text: ' sem er ',
-              },
-              {
-                gap: 'létt',
-              },
-              {
-                text: ' og vatnsheld.',
+                text: ' sem er létt og vatnsheld.',
               },
             ],
           },
@@ -1722,7 +1673,6 @@ export const texti: Record<string, Texti> = {
           'húfu',
           'hönskum',
           'kalt',
-          'létt',
           'peysu',
           'trefli',
           'úlpu',

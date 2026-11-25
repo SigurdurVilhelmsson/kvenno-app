@@ -6,13 +6,13 @@ items:
     from: A1
     answers:
       Flokkar: [gæludýr, spendýr]
-      Útlit: [feldur, hali, fjórir fætur, hleypur]
+      Útlit: [feldur, hali, fjórir fætur]
       Áferð: [mjúkt, loðið]
       Hljóð: [hátt, gelur]
-      notagildi: [til að gæta, til að klappa, til að leika sér]
-      hver: [allir]
+      notagildi: [hleypur]
       hvar: [heima]
-      hvenaer: [alltaf, daglega]
+      hvenaer: [á morgnana, á kvöldin, daglega]
+      hver: [börn, fullorðnir]
   - name: köttur
     from: A1
     answers:
@@ -20,18 +20,17 @@ items:
       Útlit: [feldur, hali, fjórir fætur]
       Áferð: [mjúkt, loðið]
       Hljóð: [lágt, mjálmar, hvæsir]
-      notagildi: [til að klappa]
-      hver: [allir]
       hvar: [heima]
       hvenaer: [á kvöldin]
+      hver: [börn, fullorðnir]
   - name: hestur
     from: A1
     answers:
       Flokkar: [húsdýr, spendýr]
-      Útlit: [feldur, hali, fjórir fætur, hleypur]
-      Áferð: [slétt, þungt]
+      Útlit: [feldur, hali, fjórir fætur]
+      Áferð: [slétt]
       Hljóð: [hátt]
-      notagildi: [til að klappa, til að vinna]
+      notagildi: [hleypur]
       hver: [fullorðnir, bændur]
       hvar: [á bæ, úti]
       hvenaer: [á daginn]
@@ -42,7 +41,6 @@ items:
       Útlit: [feldur, fjórir fætur]
       Áferð: [mjúkt, loðið]
       Hljóð: [lágt]
-      notagildi: [til að borða]
       hver: [bændur]
       hvar: [á bæ, úti]
       hvenaer: [á sumrin]
@@ -51,9 +49,8 @@ items:
     answers:
       Flokkar: [húsdýr, fugl]
       Útlit: [fjaðrir, goggur, tveir fætur]
-      Áferð: [mjúkt, létt]
+      Áferð: [mjúkt]
       Hljóð: [hátt]
-      notagildi: [til að borða]
       hver: [bændur]
       hvar: [á bæ]
       hvenaer: [á morgnana]
@@ -61,31 +58,29 @@ items:
     from: A1
     answers:
       Flokkar: [villt dýr, fiskur]
-      Útlit: [hreistur, hali, syndir]
+      Útlit: [hreistur, hali]
       Áferð: [slétt, blautt, hált]
-      Hljóð: [þögult]
-      Lögun: [ílangt]
-      notagildi: [til að borða]
-      hver: [veiðimenn]
+      Hljóð: [ekkert]
+      notagildi: [syndir]
       hvar: [í sjónum]
-      hvenaer: [alltaf]
+      hvenaer: [á veturna, á sumrin]
   - name: lundi
     from: A1
     answers:
       Flokkar: [villt dýr, fugl]
-      Útlit: [fjaðrir, goggur, tveir fætur, flýgur, syndir]
+      Útlit: [fjaðrir, goggur, tveir fætur]
       Áferð: [mjúkt]
       Hljóð: [lágt]
-      hver: [ferðamenn]
       hvar: [úti, í náttúrunni]
       hvenaer: [á sumrin]
+      notagildi: [flýgur, syndir]
   - name: refur
     from: A1
     answers:
       Flokkar: [villt dýr, spendýr]
-      Útlit: [feldur, hali, fjórir fætur, hleypur]
+      Útlit: [feldur, hali, fjórir fætur]
       Áferð: [mjúkt, loðið]
       Hljóð: [lágt]
-      hver: [veiðimenn]
       hvar: [úti, í náttúrunni, á hálendinu]
       hvenaer: [á kvöldin, sjaldan]
+      notagildi: [hleypur]

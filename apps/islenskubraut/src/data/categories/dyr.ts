@@ -68,8 +68,8 @@ export const dyr: Category = {
         'Þetta er dýr.',
         'Það er ___.',
         'Það hefur ___.',
-        'Það hljómar ___.',
-        'Maður notar það ___.',
+        'Það heyrist ___ í því.',
+        'Það ___.',
       ],
     },
     {
@@ -78,9 +78,8 @@ export const dyr: Category = {
         'Þetta er ___ sem býr ___.',
         'Það hefur ___ og ___.',
         'Það étur ___.',
-        'Það finnst ___ við snertingu.',
+        'Það er ___ viðkomu.',
         'Maður finnur það ___.',
-        'Maður notar það ___.',
       ],
     },
     {
@@ -90,7 +89,7 @@ export const dyr: Category = {
         'Þetta dýr er ___ og ___.',
         'Það er líkt ___ en ólíkt ___.',
         'Það er ___ að snerta vegna þess að ___.',
-        '___ nota það oftast ___.',
+        'Það sést oftast ___ vegna þess að ___.',
       ],
     },
   ],
@@ -185,15 +184,12 @@ export const dyr: Category = {
             'horn',
             'fjórir fætur',
             'tveir fætur',
-            'flýgur',
-            'syndir',
-            'hleypur',
           ],
         },
       ],
     },
     {
-      question: 'Hvernig finnst það við snertingu?',
+      question: 'Hvernig er það viðkomu?',
       icon: '✋',
       label: 'Áferð',
       answers: [
@@ -203,24 +199,11 @@ export const dyr: Category = {
         },
         {
           level: 'A2',
-          options: ['mjúkt', 'hart', 'slétt', 'gróft', 'þungt', 'létt', 'blautt', 'þurrt'],
+          options: ['mjúkt', 'hart', 'slétt', 'gróft', 'blautt', 'þurrt'],
         },
         {
           level: 'B1',
-          options: [
-            'mjúkt',
-            'hart',
-            'slétt',
-            'gróft',
-            'þungt',
-            'létt',
-            'blautt',
-            'þurrt',
-            'loðið',
-            'hált',
-            'stinnt',
-            'sveigjanlegt',
-          ],
+          options: ['mjúkt', 'hart', 'slétt', 'gróft', 'blautt', 'þurrt', 'loðið', 'hált'],
         },
       ],
     },
@@ -231,71 +214,20 @@ export const dyr: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['hátt', 'lágt', 'þögult'],
+          options: ['hátt', 'lágt', 'ekkert'],
         },
         {
           level: 'A2',
-          options: ['hátt', 'lágt', 'þögult', 'gelur', 'mjálmar', 'öskrar', 'suðar', 'hringir'],
+          options: ['hátt', 'lágt', 'ekkert', 'gelur', 'mjálmar', 'öskrar', 'suðar'],
         },
         {
           level: 'B1',
-          options: [
-            'hátt',
-            'lágt',
-            'þögult',
-            'gelur',
-            'mjálmar',
-            'öskrar',
-            'suðar',
-            'hringir',
-            'hvæsir',
-          ],
+          options: ['hátt', 'lágt', 'ekkert', 'gelur', 'mjálmar', 'öskrar', 'suðar', 'hvæsir'],
         },
       ],
     },
     {
-      question: 'Hvaða lögun hefur það?',
-      icon: '🔷',
-      label: 'Lögun',
-      answers: [
-        {
-          level: 'A1',
-          options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
-        },
-        {
-          level: 'A2',
-          options: [
-            'kringlótt',
-            'ferkantað',
-            'ílangt',
-            'flatt',
-            'kúlulaga',
-            'oddhvasst',
-            'bogið',
-            'beint',
-          ],
-        },
-        {
-          level: 'B1',
-          options: [
-            'kringlótt',
-            'ferkantað',
-            'ílangt',
-            'flatt',
-            'kúlulaga',
-            'oddhvasst',
-            'bogið',
-            'beint',
-            'sporöskjulaga',
-            'þríhyrningslaga',
-            'sívalningslaga',
-            'óreglulegt',
-          ],
-        },
-      ],
-    },
-    {
-      question: 'Til hvers er það notað?',
+      question: 'Hvað gerir það?',
       icon: '🎯',
       context: {
         kind: 'notagildi',
@@ -304,36 +236,20 @@ export const dyr: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['til að gæta', 'til að klappa', 'til að borða'],
+          options: ['flýgur', 'syndir', 'hleypur'],
         },
         {
           level: 'A2',
-          options: [
-            'til að gæta',
-            'til að klappa',
-            'til að borða',
-            'til að hjálpa',
-            'til að vinna',
-            'til að leika sér',
-          ],
+          options: ['flýgur', 'syndir', 'hleypur'],
         },
         {
           level: 'B1',
-          options: [
-            'til að gæta',
-            'til að klappa',
-            'til að borða',
-            'til að hjálpa',
-            'til að vinna',
-            'til að leika sér',
-            'til að verja',
-            'til að rannsaka',
-          ],
+          options: ['flýgur', 'syndir', 'hleypur'],
         },
       ],
     },
     {
-      question: 'Hver notar þetta?',
+      question: 'Hver hugsar um það?',
       icon: '👤',
       context: {
         kind: 'hver',
@@ -342,29 +258,20 @@ export const dyr: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['allir', 'börn', 'fullorðnir'],
+          options: ['börn', 'fullorðnir'],
         },
         {
           level: 'A2',
-          options: ['allir', 'börn', 'fullorðnir', 'bændur', 'dýralæknar', 'veiðimenn'],
+          options: ['börn', 'fullorðnir', 'bændur', 'dýralæknar'],
         },
         {
           level: 'B1',
-          options: [
-            'allir',
-            'börn',
-            'fullorðnir',
-            'bændur',
-            'dýralæknar',
-            'veiðimenn',
-            'sérfræðingar',
-            'ferðamenn',
-          ],
+          options: ['börn', 'fullorðnir', 'bændur', 'dýralæknar'],
         },
       ],
     },
     {
-      question: 'Hvar er hægt að finna þetta?',
+      question: 'Hvar er hægt að finna það?',
       icon: '📍',
       context: {
         kind: 'hvar',
@@ -395,7 +302,7 @@ export const dyr: Category = {
       ],
     },
     {
-      question: 'Hvenær sést þetta?',
+      question: 'Hvenær sést það?',
       icon: '🕐',
       context: {
         kind: 'hvenaer',
@@ -404,27 +311,11 @@ export const dyr: Category = {
       answers: [
         {
           level: 'A1',
-          options: [
-            'á morgnana',
-            'á daginn',
-            'á kvöldin',
-            'alltaf',
-            'á veturna',
-            'á sumrin',
-            'um helgar',
-          ],
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin'],
         },
         {
           level: 'A2',
-          options: [
-            'á morgnana',
-            'á daginn',
-            'á kvöldin',
-            'alltaf',
-            'á veturna',
-            'á sumrin',
-            'um helgar',
-          ],
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin'],
         },
         {
           level: 'B1',
@@ -435,8 +326,6 @@ export const dyr: Category = {
             'alltaf',
             'á veturna',
             'á sumrin',
-            'um helgar',
-            'í sérstökum tilvikum',
             'daglega',
             'sjaldan',
             'oft',
@@ -488,7 +377,16 @@ export const dyr: Category = {
           },
         },
         {
-          frame: 'Það hljómar ___.',
+          frame: 'Það heyrist ___ í því.',
+          agree: [],
+          blank: {
+            words: 'Hvaða hljóð gefur það frá sér?',
+            options: ['hátt', 'lágt', 'ekkert'],
+            form: 'as-is',
+          },
+        },
+        {
+          frame: 'Það ___.',
           agree: [
             {
               word: 'Það',
@@ -496,22 +394,8 @@ export const dyr: Category = {
             },
           ],
           blank: {
-            words: 'Hvaða hljóð gefur það frá sér?',
-            options: ['hátt', 'lágt', 'þögult'],
-            form: 'as-is',
-          },
-        },
-        {
-          frame: 'Maður notar það ___.',
-          agree: [
-            {
-              word: 'það',
-              role: 'ÞF',
-            },
-          ],
-          blank: {
-            words: 'Til hvers er það notað?',
-            options: ['til að gæta', 'til að klappa', 'til að borða'],
+            words: 'Hvað gerir það?',
+            options: ['flýgur', 'syndir', 'hleypur'],
             form: 'as-is',
           },
         },

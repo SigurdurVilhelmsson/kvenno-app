@@ -55,7 +55,6 @@ sentenceFrames:
       - Þetta er ___.
       - Maður ___ þar.
       - Það er ___.
-      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
@@ -63,7 +62,6 @@ sentenceFrames:
       - Maður fer þangað ___.
       - Það er gert ___.
       - Maður finnur það ___.
-      - Maður notar það ___.
   - id: f3
     level: B1
     frames:
@@ -71,7 +69,7 @@ sentenceFrames:
       - Fólk fer þangað ___ og ___.
       - Mér finnst þetta ___ vegna þess að ___.
       - Það er gert ___ sem er ___.
-      - ___ nota það oftast ___.
+      - ___ fara þangað oftast ___.
 examples:
   A1: Þetta er skóli. Maður lærir þar.
   A2: Þetta er sundlaug sem er í bænum. Maður fer þangað til að synda.
@@ -146,32 +144,32 @@ guidingQuestions:
         - nútímalegt
         - sögulegt
   - id: q3
-    question: Hvernig lyktar þar?
+    question: Hvernig lykt er þar?
     icon: 👃
     label: Lykt
     answers:
       A1:
-        - gott
-        - vont
-        - ekkert
+        - góð
+        - vond
+        - engin
       A2:
-        - gott
-        - vont
-        - ekkert
-        - ferskt
-        - sterkt
-        - milt
+        - góð
+        - vond
+        - engin
+        - fersk
+        - sterk
+        - mild
       B1:
-        - gott
-        - vont
-        - ekkert
-        - ferskt
-        - sterkt
-        - milt
+        - góð
+        - vond
+        - engin
+        - fersk
+        - sterk
+        - mild
         - ilmandi
         - stingandi
-        - sætt
-        - beiskt
+        - sæt
+        - beisk
   - id: q4
     question: Úr hverju er það gert?
     icon: 🧱
@@ -197,61 +195,41 @@ guidingQuestions:
         - úr náttúrulegum efnum
         - úr gerviefnum
   - id: q5
-    question: Hvaða lögun hefur það?
-    icon: 🔷
-    label: Lögun
-    answers:
-      A1:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-      A2:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-        - kúlulaga
-        - oddhvasst
-        - bogið
-        - beint
-      B1:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-        - kúlulaga
-        - oddhvasst
-        - bogið
-        - beint
-        - sporöskjulaga
-        - þríhyrningslaga
-        - sívalningslaga
-        - óreglulegt
-  - id: q6
-    question: Til hvers er þetta notað?
+    question: Hvað gerir maður þar?
     icon: 🎯
     context: notagildi
     answers:
       A1:
-        - til að búa
-        - til að læra
-        - til að versla
+        - býr
+        - sefur
+        - lærir
+        - verslar
+        - syndir
+        - borðar
+        - leikur sér
       A2:
-        - til að búa
-        - til að læra
-        - til að versla
-        - til að vinna
-        - til að hvílast
+        - býr
+        - sefur
+        - lærir
+        - verslar
+        - syndir
+        - borðar
+        - leikur sér
+        - vinnur
+        - hvílir sig
       B1:
-        - til að búa
-        - til að læra
-        - til að versla
-        - til að vinna
-        - til að hvílast
-        - til að stunda íþróttir
-        - til að skemmta sér
-  - id: q7
+        - býr
+        - sefur
+        - lærir
+        - verslar
+        - syndir
+        - borðar
+        - leikur sér
+        - vinnur
+        - hvílir sig
+        - stundar íþróttir
+        - skemmtir sér
+  - id: q6
     question: Hver notar þetta?
     icon: 👤
     context: hver
@@ -274,11 +252,10 @@ guidingQuestions:
         - nemendur
         - kennarar
         - læknar
-        - sérfræðingar
         - listamenn
         - ferðamenn
         - iðnaðarmenn
-  - id: q8
+  - id: q7
     question: Hvar er þetta?
     icon: 📍
     context: hvar
@@ -301,8 +278,8 @@ guidingQuestions:
         - í fjöllunum
         - í miðborginni
         - á hálendinu
-  - id: q9
-    question: Hvenær er þetta notað?
+  - id: q8
+    question: Hvenær fer fólk þangað?
     icon: 🕐
     context: hvenaer
     answers:
@@ -348,14 +325,10 @@ builder:
           er: sögn
         blank: subject
       - frame: Maður ___ þar.
-        words: Hvað gerir maður þar
+        words: Hvað gerir maður þar?
       - frame: Það er ___.
         agree:
           Það: NF
           er: sögn
         words: Hvernig lítur þetta út?
         form: agree
-      - frame: Maður notar það ___.
-        agree:
-          það: ÞF
-        words: Til hvers er þetta notað?

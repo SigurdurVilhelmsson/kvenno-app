@@ -526,10 +526,10 @@ guidingQuestions:
       load(`${subject}    frames:
       - frame: Það er ___.
         agree:
-          Það: ÞGF
+          Það: EF
         words: Tegund
 `)
-    ).toThrow(/"ÞGF" is not one of NF, ÞF, sögn/);
+    ).toThrow(/"EF" is not one of NF, ÞF, ÞGF, sögn/);
     expect(() =>
       load(
         `${subject}    frames:\n      - frame: Það er ___.\n        words: Tegund\n        form: ÞGF\n`

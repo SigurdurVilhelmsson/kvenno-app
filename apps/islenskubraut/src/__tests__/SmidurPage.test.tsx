@@ -88,14 +88,15 @@ describe('the sentence builder page', () => {
     expect(sentence().textContent).toBe('Þetta er drykkur.');
   });
 
-  it('agrees þögult with the vehicle while hátt stays as written', () => {
+  it('puts the pronoun after í in the dative while the leading Það stays', () => {
     renderAt('/smidur/farartaeki');
     choose('Hvers konar farartæki er þetta?', 'rúta');
-    choose('Veldu setningaramma', 'Það hljómar ___.');
-    choose('Hvaða hljóð gefur það frá sér?', 'þögult');
-    expect(sentence().textContent).toBe('Hún hljómar þögul.');
+    choose('Veldu setningaramma', 'Það heyrist ___ í því.');
+    choose('Hvaða hljóð gefur það frá sér?', 'ekkert');
+    expect(sentence().textContent).toBe('Það heyrist ekkert í henni.');
+    choose('Hvers konar farartæki er þetta?', 'bíll');
     choose('Hvaða hljóð gefur það frá sér?', 'hátt');
-    expect(sentence().textContent).toBe('Hún hljómar hátt.');
+    expect(sentence().textContent).toBe('Það heyrist hátt í honum.');
   });
 
   it('lets the student choose hún or hann for a person', () => {
