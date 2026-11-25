@@ -20,8 +20,8 @@ vi.mock('../data/glossur', () => ({
       approved: true,
       approvedBy: 'Anna',
       dictionary: 'https://polska.arnastofnun.is/pl/leit/{word}',
-      words: { dyr: { feldur: 'futro' }, matur: { sterkt: 'mocne' } },
-      questions: { matur: { Lykt: { sterkt: 'mocno' } } },
+      words: { dyr: { feldur: 'futro' }, farartaeki: { hátt: 'głośno' } },
+      questions: { farartaeki: { Útlit: { hátt: 'wysokie' } } },
     },
     {
       code: 'ar',
@@ -90,17 +90,20 @@ describe('Á þínu máli', () => {
   });
 
   it('shows a question’s own gloss under that question, and the card’s under the others', () => {
-    // On Matur at A2, sterkt answers both "Hvernig bragðast það?" and "Hvernig lyktar af því?".
+    // On Farartæki at B1, hátt answers both "Hvernig lítur það út?" (tall) and
+    // "Hvaða hljóð gefur það frá sér?" (loud).
     window.localStorage.setItem('islenskubraut-mal', 'pl');
-    page('/spjald/matur');
+    page('/spjald/farartaeki');
     questions();
-    fireEvent.click(screen.getByRole('button', { name: /^A2/ }));
-    const taste = screen.getByText('Hvernig bragðast það?').closest('.rounded-xl') as HTMLElement;
-    const smell = screen.getByText('Hvernig lyktar af því?').closest('.rounded-xl') as HTMLElement;
-    expect(within(taste).getByText('mocne')).toBeDefined();
-    expect(within(taste).queryByText('mocno')).toBeNull();
-    expect(within(smell).getByText('mocno')).toBeDefined();
-    expect(within(smell).queryByText('mocne')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /^B1/ }));
+    const looks = screen.getByText('Hvernig lítur það út?').closest('.rounded-xl') as HTMLElement;
+    const sound = screen
+      .getByText('Hvaða hljóð gefur það frá sér?')
+      .closest('.rounded-xl') as HTMLElement;
+    expect(within(looks).getByText('wysokie')).toBeDefined();
+    expect(within(looks).queryByText('głośno')).toBeNull();
+    expect(within(sound).getByText('głośno')).toBeDefined();
+    expect(within(sound).queryByText('wysokie')).toBeNull();
   });
 
   it('looks a chip up by its last word', () => {

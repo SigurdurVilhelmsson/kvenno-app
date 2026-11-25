@@ -157,10 +157,10 @@ export function loadCategory(id, contentDir = CONTENT_DIR) {
 
 /**
  * How a word in a builder frame follows the sentence's subject: a pronoun in the nominative
- * (`Það er` → `Hann er`) or the accusative (`notar það` → `notar hann`), or the verb `vera`
- * (`er` → `eru` for a plural subject).
+ * (`Það er` → `Hann er`), the accusative (`notar það` → `notar hann`) or the dative
+ * (`heyrist hátt í því` → `í honum`), or the verb `vera` (`er` → `eru` for a plural subject).
  */
-export const AGREE_ROLES = ['NF', 'ÞF', 'sögn'];
+export const AGREE_ROLES = ['NF', 'ÞF', 'ÞGF', 'sögn'];
 
 /**
  * How a blank's word is put into the sentence: as written, made to agree with the subject (an

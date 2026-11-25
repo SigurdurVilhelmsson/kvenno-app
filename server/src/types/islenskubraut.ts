@@ -63,7 +63,7 @@ export type BuilderSubject =
 /** How a word in a builder frame follows the subject. */
 export interface BuilderAgreement {
   word: string;
-  role: 'NF' | 'ÞF' | 'sögn';
+  role: 'NF' | 'ÞF' | 'ÞGF' | 'sögn';
 }
 
 export interface BuilderFrame {

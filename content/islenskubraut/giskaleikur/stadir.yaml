@@ -8,7 +8,7 @@ items:
     answers:
       Útlit: [lítið, lágt]
       Efniviður: [úr tré, úr steini]
-      notagildi: [til að búa, til að hvílast]
+      notagildi: [býr, sefur, hvílir sig]
       hver: [allir]
       hvar: [í bænum, úti á landi]
       hvenaer: [alltaf]
@@ -16,9 +16,9 @@ items:
     from: A1
     answers:
       Útlit: [stórt]
-      Lykt: [ekkert]
+      Lykt: [engin]
       Efniviður: [úr steini]
-      notagildi: [til að læra]
+      notagildi: [lærir]
       hver: [börn, nemendur, kennarar]
       hvar: [í bænum]
       hvenaer: [á morgnana, á virkum dögum]
@@ -26,8 +26,8 @@ items:
     from: A1
     answers:
       Útlit: [lítið]
-      Lykt: [gott]
-      notagildi: [til að versla]
+      Lykt: [góð]
+      notagildi: [verslar]
       hver: [allir]
       hvar: [í bænum]
       hvenaer: [á daginn, daglega]
@@ -35,9 +35,8 @@ items:
     from: A1
     answers:
       Útlit: [stórt, lágt]
-      Lykt: [vont, sterkt, stingandi]
-      Lögun: [ferkantað]
-      notagildi: [til að hvílast, til að stunda íþróttir]
+      Lykt: [vond, sterk, stingandi]
+      notagildi: [syndir, hvílir sig, stundar íþróttir]
       hver: [allir]
       hvar: [í bænum]
       hvenaer: [á morgnana, um helgar]
@@ -45,9 +44,9 @@ items:
     from: A2
     answers:
       Útlit: [stórt, hátt, nýtt]
-      Lykt: [sterkt]
+      Lykt: [sterk]
       Efniviður: [úr steini, úr gleri]
-      notagildi: [til að vinna]
+      notagildi: [vinnur]
       hver: [læknar]
       hvar: [í bænum]
       hvenaer: [alltaf]
@@ -56,7 +55,6 @@ items:
     answers:
       Útlit: [hátt, gamalt, fallegt, sögulegt]
       Efniviður: [úr steini, úr tré]
-      Lögun: [oddhvasst]
       hver: [allir]
       hvar: [í bænum, úti á landi]
       hvenaer: [um helgar, á hátíðum]
@@ -65,15 +63,15 @@ items:
     answers:
       Útlit: [lítið, lágt]
       Efniviður: [úr tré, úr plasti]
-      notagildi: [til að skemmta sér]
+      notagildi: [leikur sér, skemmtir sér]
       hver: [börn]
       hvar: [í bænum, í úthverfi]
       hvenaer: [á daginn, um helgar]
   - name: veitingastaður
     from: A2
     answers:
-      Lykt: [gott, ilmandi]
-      notagildi: [til að vinna, til að skemmta sér]
+      Lykt: [góð, ilmandi]
+      notagildi: [borðar, vinnur, skemmtir sér]
       hver: [allir]
       hvar: [í bænum, í miðborginni]
       hvenaer: [á kvöldin, um helgar]
@@ -81,9 +79,9 @@ items:
     from: B1
     answers:
       Útlit: [stórt, nútímalegt]
-      Lykt: [ekkert]
+      Lykt: [engin]
       Efniviður: [úr steini, úr gleri]
-      notagildi: [til að læra]
+      notagildi: [lærir]
       hver: [nemendur]
       hvar: [í miðborginni]
       hvenaer: [á virkum dögum]

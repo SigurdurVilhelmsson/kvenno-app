@@ -97,14 +97,14 @@ sentenceFrames:
     level: B1
     frames:
       - Ég held að þetta sé ___ vegna þess að ___.
-      - Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.
+      - Þessi manneskja er ___ og er þekkt fyrir ___.
       - Hún/Hann er oft ___ vegna þess að ___.
 examples:
   A1: Þetta er kennari. Hún er ung. Hún les.
-  A2: Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.
+  A2: Þetta er kona sem er há. Hún er ung og með gleraugu. Hún vinnur sem læknir.
   B1: Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.
 teacherNotes:
-  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það."
+  A1: "Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Um fólk er notað hún eða hann eftir manneskjunni sjálfri, ekki eftir kyni starfsheitisins: kennari getur verið hún eða hann."
   A2: Nemandi tengir saman tvær eða þrjár setningar. Hvetjið nemandann til að nota mismunandi orð úr undirflokkunum.
   B1: Nemandi notar setningaramma sem grunn en bætir við eigin hugmyndum. Hvetjið til samanburðar og rökstuðnings.
 guidingQuestions:
@@ -116,7 +116,7 @@ guidingQuestions:
       A1:
         - barn
         - fullorðin/fullorðinn
-        - gamall/gömul
+        - gömul/gamall
       A2:
         - barn
         - unglingur
@@ -176,6 +176,7 @@ guidingQuestions:
         - vinnur
         - lærir
         - leikur sér
+        - eldar
         - syngur
         - læknar
         - kennir
@@ -183,13 +184,14 @@ guidingQuestions:
         - vinnur
         - lærir
         - leikur sér
+        - eldar
         - syngur
         - læknar
         - kennir
         - stjórnar
         - skapar
   - id: q4
-    question: Hvar er hægt að finna þessa manneskju?
+    question: Hvar er hún/hann?
     icon: 📍
     context: hvar
     answers:
@@ -213,7 +215,7 @@ guidingQuestions:
         - í sjónvarpi
         - á ferðalagi
   - id: q5
-    question: Hvenær er hún/hann virk/virkur?
+    question: Hvenær er hún/hann þar?
     icon: 🕐
     context: hvenaer
     answers:

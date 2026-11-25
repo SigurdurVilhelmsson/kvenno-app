@@ -1077,6 +1077,36 @@ own section names. Review: Claude Doc "Year-3 game menus: consistency review". S
 - [ ] **Æfa and Beita show `Lokið`, not a count.** The four-phase games mark a graded phase done
       rather than `N af M rétt`, as the 2026-10-03 rule asks of a graded level.
 
+### C28. Íslenskubraut card wording and word pairings (2026-11-25)
+
+Siggi asked for a review of the sentences and word combinations on the cards ("hvernig notar
+maður" on animals, a doctor always old). Six of the seven cards had been built from one template
+for objects, so animals, people, food and places were asked about shape, material and use. The
+PR removed or reworded what did not fit; these need a ruling or the teacher's eye:
+
+- [ ] **`viðkomu` for touch.** The Áferð question and frame now read `Hvernig er það viðkomu?` and
+      `Það er ___ viðkomu.` (were `Hvernig finnst það við snertingu?` / `Það finnst ___ við
+  snertingu.`).
+- [ ] **Sound as `Það heyrist ___ í því.`** (was `Það hljómar ___.`), with `ekkert` for the old
+      `þögult`, on Dýr and Farartæki. The builder gained a dative pronoun for it (`í honum`,
+      `í henni`).
+- [ ] **Smell as `Hvernig lykt er af því?` / `þar?`** with the chips agreeing with `lykt` (`góð`,
+      `vond`, `engin`, `fersk`, …), on Matur and Staðir.
+- [ ] **Chips placed at a level for the first time (teacher's approval needed).** Dýr: `flýgur`,
+      `syndir`, `hleypur` at A1 under the new `Hvað gerir það?` (they were B1 chips under Útlit,
+      A1 on the Orðaforði page). Matur: `í morgunmat`, `í hádegismat`, `í kvöldmat`,
+      `sem millimál` at A1 (A1 on the Orðaforði page). Staðir: `býr`, `sefur`, `syndir`,
+      `borðar`, `leikur sér` at A1, and the old `til að …` chips as verbs. Manneskja: `eldar` at A2.
+- [ ] **Removed for fit.** The geometric Lögun question from Dýr, Farartæki, Klæðnaður and Staðir
+      (kept on Matur); `þungt`/`létt` from Áferð; `hringir` from sounds; `úr steini` from vehicles;
+      wood, metal, stone and glass from clothes; `sérfræðingar` from every `Hver …?` box;
+      `allir`, `veiðimenn`, `ferðamenn` from Dýr's new `Hver hugsar um það?`; `um helgar` from
+      when animals are seen; the generic times from Matur, replaced by the meals.
+- [ ] **Manneskja's guessing game describes no appearance.** The jobs are told apart by what the
+      person does, where and when; a teacher may want more job verbs (`keppir`, `æfir`).
+- [ ] **Dýr's `Hvað gerir það?` has only three verbs at every level.** More (`klifrar`, `hoppar`,
+      `skríður`) would need a teacher's level and a BÍN fetch.
+
 ## D. Work that needs no ruling
 
 ### D1. Defects found in passing (their own PRs)

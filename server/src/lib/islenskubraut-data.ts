@@ -78,8 +78,8 @@ export const categories: Category[] = [
           'Þetta er dýr.',
           'Það er ___.',
           'Það hefur ___.',
-          'Það hljómar ___.',
-          'Maður notar það ___.',
+          'Það heyrist ___ í því.',
+          'Það ___.',
         ],
       },
       {
@@ -88,9 +88,8 @@ export const categories: Category[] = [
           'Þetta er ___ sem býr ___.',
           'Það hefur ___ og ___.',
           'Það étur ___.',
-          'Það finnst ___ við snertingu.',
+          'Það er ___ viðkomu.',
           'Maður finnur það ___.',
-          'Maður notar það ___.',
         ],
       },
       {
@@ -100,7 +99,7 @@ export const categories: Category[] = [
           'Þetta dýr er ___ og ___.',
           'Það er líkt ___ en ólíkt ___.',
           'Það er ___ að snerta vegna þess að ___.',
-          '___ nota það oftast ___.',
+          'Það sést oftast ___ vegna þess að ___.',
         ],
       },
     ],
@@ -195,15 +194,12 @@ export const categories: Category[] = [
               'horn',
               'fjórir fætur',
               'tveir fætur',
-              'flýgur',
-              'syndir',
-              'hleypur',
             ],
           },
         ],
       },
       {
-        question: 'Hvernig finnst það við snertingu?',
+        question: 'Hvernig er það viðkomu?',
         icon: '✋',
         label: 'Áferð',
         answers: [
@@ -213,24 +209,11 @@ export const categories: Category[] = [
           },
           {
             level: 'A2',
-            options: ['mjúkt', 'hart', 'slétt', 'gróft', 'þungt', 'létt', 'blautt', 'þurrt'],
+            options: ['mjúkt', 'hart', 'slétt', 'gróft', 'blautt', 'þurrt'],
           },
           {
             level: 'B1',
-            options: [
-              'mjúkt',
-              'hart',
-              'slétt',
-              'gróft',
-              'þungt',
-              'létt',
-              'blautt',
-              'þurrt',
-              'loðið',
-              'hált',
-              'stinnt',
-              'sveigjanlegt',
-            ],
+            options: ['mjúkt', 'hart', 'slétt', 'gróft', 'blautt', 'þurrt', 'loðið', 'hált'],
           },
         ],
       },
@@ -241,71 +224,20 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['hátt', 'lágt', 'þögult'],
+            options: ['hátt', 'lágt', 'ekkert'],
           },
           {
             level: 'A2',
-            options: ['hátt', 'lágt', 'þögult', 'gelur', 'mjálmar', 'öskrar', 'suðar', 'hringir'],
+            options: ['hátt', 'lágt', 'ekkert', 'gelur', 'mjálmar', 'öskrar', 'suðar'],
           },
           {
             level: 'B1',
-            options: [
-              'hátt',
-              'lágt',
-              'þögult',
-              'gelur',
-              'mjálmar',
-              'öskrar',
-              'suðar',
-              'hringir',
-              'hvæsir',
-            ],
+            options: ['hátt', 'lágt', 'ekkert', 'gelur', 'mjálmar', 'öskrar', 'suðar', 'hvæsir'],
           },
         ],
       },
       {
-        question: 'Hvaða lögun hefur það?',
-        icon: '🔷',
-        label: 'Lögun',
-        answers: [
-          {
-            level: 'A1',
-            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
-          },
-          {
-            level: 'A2',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-            ],
-          },
-          {
-            level: 'B1',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-              'sporöskjulaga',
-              'þríhyrningslaga',
-              'sívalningslaga',
-              'óreglulegt',
-            ],
-          },
-        ],
-      },
-      {
-        question: 'Til hvers er það notað?',
+        question: 'Hvað gerir það?',
         icon: '🎯',
         context: {
           kind: 'notagildi',
@@ -314,36 +246,20 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['til að gæta', 'til að klappa', 'til að borða'],
+            options: ['flýgur', 'syndir', 'hleypur'],
           },
           {
             level: 'A2',
-            options: [
-              'til að gæta',
-              'til að klappa',
-              'til að borða',
-              'til að hjálpa',
-              'til að vinna',
-              'til að leika sér',
-            ],
+            options: ['flýgur', 'syndir', 'hleypur'],
           },
           {
             level: 'B1',
-            options: [
-              'til að gæta',
-              'til að klappa',
-              'til að borða',
-              'til að hjálpa',
-              'til að vinna',
-              'til að leika sér',
-              'til að verja',
-              'til að rannsaka',
-            ],
+            options: ['flýgur', 'syndir', 'hleypur'],
           },
         ],
       },
       {
-        question: 'Hver notar þetta?',
+        question: 'Hver hugsar um það?',
         icon: '👤',
         context: {
           kind: 'hver',
@@ -352,29 +268,20 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['allir', 'börn', 'fullorðnir'],
+            options: ['börn', 'fullorðnir'],
           },
           {
             level: 'A2',
-            options: ['allir', 'börn', 'fullorðnir', 'bændur', 'dýralæknar', 'veiðimenn'],
+            options: ['börn', 'fullorðnir', 'bændur', 'dýralæknar'],
           },
           {
             level: 'B1',
-            options: [
-              'allir',
-              'börn',
-              'fullorðnir',
-              'bændur',
-              'dýralæknar',
-              'veiðimenn',
-              'sérfræðingar',
-              'ferðamenn',
-            ],
+            options: ['börn', 'fullorðnir', 'bændur', 'dýralæknar'],
           },
         ],
       },
       {
-        question: 'Hvar er hægt að finna þetta?',
+        question: 'Hvar er hægt að finna það?',
         icon: '📍',
         context: {
           kind: 'hvar',
@@ -405,7 +312,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvenær sést þetta?',
+        question: 'Hvenær sést það?',
         icon: '🕐',
         context: {
           kind: 'hvenaer',
@@ -414,27 +321,11 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: [
-              'á morgnana',
-              'á daginn',
-              'á kvöldin',
-              'alltaf',
-              'á veturna',
-              'á sumrin',
-              'um helgar',
-            ],
+            options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin'],
           },
           {
             level: 'A2',
-            options: [
-              'á morgnana',
-              'á daginn',
-              'á kvöldin',
-              'alltaf',
-              'á veturna',
-              'á sumrin',
-              'um helgar',
-            ],
+            options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin'],
           },
           {
             level: 'B1',
@@ -445,8 +336,6 @@ export const categories: Category[] = [
               'alltaf',
               'á veturna',
               'á sumrin',
-              'um helgar',
-              'í sérstökum tilvikum',
               'daglega',
               'sjaldan',
               'oft',
@@ -498,7 +387,16 @@ export const categories: Category[] = [
             },
           },
           {
-            frame: 'Það hljómar ___.',
+            frame: 'Það heyrist ___ í því.',
+            agree: [],
+            blank: {
+              words: 'Hvaða hljóð gefur það frá sér?',
+              options: ['hátt', 'lágt', 'ekkert'],
+              form: 'as-is',
+            },
+          },
+          {
+            frame: 'Það ___.',
             agree: [
               {
                 word: 'Það',
@@ -506,22 +404,8 @@ export const categories: Category[] = [
               },
             ],
             blank: {
-              words: 'Hvaða hljóð gefur það frá sér?',
-              options: ['hátt', 'lágt', 'þögult'],
-              form: 'as-is',
-            },
-          },
-          {
-            frame: 'Maður notar það ___.',
-            agree: [
-              {
-                word: 'það',
-                role: 'ÞF',
-              },
-            ],
-            blank: {
-              words: 'Til hvers er það notað?',
-              options: ['til að gæta', 'til að klappa', 'til að borða'],
+              words: 'Hvað gerir það?',
+              options: ['flýgur', 'syndir', 'hleypur'],
               form: 'as-is',
             },
           },
@@ -602,7 +486,7 @@ export const categories: Category[] = [
     sentenceFrames: [
       {
         level: 'A1',
-        frames: ['Þetta er ___.', 'Það er ___.', 'Maður borðar það ___.', 'Maður notar það ___.'],
+        frames: ['Þetta er ___.', 'Það er ___.', 'Maður borðar það ___.'],
       },
       {
         level: 'A2',
@@ -610,7 +494,7 @@ export const categories: Category[] = [
           'Þetta er ___ sem er ___.',
           'Maður borðar/drekkur það ___.',
           'Það er ___.',
-          'Það finnst ___ við snertingu.',
+          'Það er ___ viðkomu.',
           'Það er gert úr ___.',
           'Maður finnur það ___.',
           'Maður notar það ___.',
@@ -769,7 +653,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvernig finnst það við snertingu?',
+        question: 'Hvernig er það viðkomu?',
         icon: '✋',
         label: 'Áferð',
         answers: [
@@ -779,18 +663,7 @@ export const categories: Category[] = [
           },
           {
             level: 'A2',
-            options: [
-              'mjúkt',
-              'hart',
-              'slétt',
-              'gróft',
-              'þungt',
-              'létt',
-              'heitt',
-              'kalt',
-              'blautt',
-              'þurrt',
-            ],
+            options: ['mjúkt', 'hart', 'slétt', 'gróft', 'heitt', 'kalt', 'blautt', 'þurrt'],
           },
           {
             level: 'B1',
@@ -799,8 +672,6 @@ export const categories: Category[] = [
               'hart',
               'slétt',
               'gróft',
-              'þungt',
-              'létt',
               'heitt',
               'kalt',
               'blautt',
@@ -814,31 +685,31 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvernig lyktar af því?',
+        question: 'Hvernig lykt er af því?',
         icon: '👃',
         label: 'Lykt',
         answers: [
           {
             level: 'A1',
-            options: ['gott', 'vont', 'ekkert'],
+            options: ['góð', 'vond', 'engin'],
           },
           {
             level: 'A2',
-            options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'],
+            options: ['góð', 'vond', 'engin', 'fersk', 'sterk', 'mild'],
           },
           {
             level: 'B1',
             options: [
-              'gott',
-              'vont',
-              'ekkert',
-              'ferskt',
-              'sterkt',
-              'milt',
+              'góð',
+              'vond',
+              'engin',
+              'fersk',
+              'sterk',
+              'mild',
               'ilmandi',
               'stingandi',
-              'sætt',
-              'beiskt',
+              'sæt',
+              'beisk',
             ],
           },
         ],
@@ -931,15 +802,7 @@ export const categories: Category[] = [
           },
           {
             level: 'B1',
-            options: [
-              'allir',
-              'börn',
-              'fullorðnir',
-              'kokkar',
-              'bakarar',
-              'sérfræðingar',
-              'ferðamenn',
-            ],
+            options: ['allir', 'börn', 'fullorðnir', 'kokkar', 'bakarar'],
           },
         ],
       },
@@ -974,7 +837,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvenær er þetta notað?',
+        question: 'Hvenær er það borðað eða drukkið?',
         icon: '🕐',
         context: {
           kind: 'hvenaer',
@@ -984,41 +847,37 @@ export const categories: Category[] = [
           {
             level: 'A1',
             options: [
-              'á morgnana',
-              'á daginn',
-              'á kvöldin',
-              'alltaf',
+              'í morgunmat',
+              'í hádegismat',
+              'í kvöldmat',
+              'sem millimál',
               'á veturna',
               'á sumrin',
               'um helgar',
-              'á virkum dögum',
             ],
           },
           {
             level: 'A2',
             options: [
-              'á morgnana',
-              'á daginn',
-              'á kvöldin',
-              'alltaf',
+              'í morgunmat',
+              'í hádegismat',
+              'í kvöldmat',
+              'sem millimál',
               'á veturna',
               'á sumrin',
               'um helgar',
-              'á virkum dögum',
             ],
           },
           {
             level: 'B1',
             options: [
-              'á morgnana',
-              'á daginn',
-              'á kvöldin',
-              'alltaf',
+              'í morgunmat',
+              'í hádegismat',
+              'í kvöldmat',
+              'sem millimál',
               'á veturna',
               'á sumrin',
               'um helgar',
-              'á virkum dögum',
-              'í sérstökum tilvikum',
               'á hátíðum',
               'daglega',
               'sjaldan',
@@ -1077,34 +936,19 @@ export const categories: Category[] = [
               },
             ],
             blank: {
-              words: 'Hvenær er þetta notað?',
+              words: 'Hvenær er það borðað eða drukkið?',
               options: [
-                'á morgnana',
-                'á daginn',
-                'á kvöldin',
-                'alltaf',
+                'í morgunmat',
+                'í hádegismat',
+                'í kvöldmat',
+                'sem millimál',
                 'á veturna',
                 'á sumrin',
                 'um helgar',
-                'á virkum dögum',
               ],
               form: 'as-is',
             },
             except: ['drykkur'],
-          },
-          {
-            frame: 'Maður notar það ___.',
-            agree: [
-              {
-                word: 'það',
-                role: 'ÞF',
-              },
-            ],
-            blank: {
-              words: 'Til hvers er það notað?',
-              options: ['til að borða', 'til að drekka'],
-              form: 'as-is',
-            },
           },
         ],
         lemmas: {
@@ -1178,7 +1022,7 @@ export const categories: Category[] = [
           'Þetta er ___.',
           'Það fer ___.',
           'Það er ___.',
-          'Það hljómar ___.',
+          'Það heyrist ___ í því.',
           'Maður notar það ___.',
         ],
       },
@@ -1187,7 +1031,6 @@ export const categories: Category[] = [
         frames: [
           'Þetta er ___ sem fer ___.',
           'Það hefur ___ og er ___.',
-          'Það finnst ___ við snertingu.',
           'Það er gert ___.',
           'Maður finnur það ___.',
           'Maður notar það ___.',
@@ -1198,7 +1041,6 @@ export const categories: Category[] = [
         frames: [
           'Þetta farartæki er ___ sem er notað ___.',
           'Það getur flutt ___ og fer ___.',
-          'Það er ___ að snerta vegna þess að ___.',
           'Það er gert ___ sem er ___.',
           '___ nota það oftast ___.',
         ],
@@ -1311,15 +1153,15 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['hátt', 'lágt', 'þögult'],
+            options: ['hátt', 'lágt', 'ekkert'],
           },
           {
             level: 'A2',
-            options: ['hátt', 'lágt', 'þögult', 'suðar', 'hringir', 'öskrar'],
+            options: ['hátt', 'lágt', 'ekkert', 'suðar', 'öskrar'],
           },
           {
             level: 'B1',
-            options: ['hátt', 'lágt', 'þögult', 'suðar', 'hringir', 'öskrar', 'hvæsir'],
+            options: ['hátt', 'lágt', 'ekkert', 'suðar', 'öskrar', 'hvæsir'],
           },
         ],
       },
@@ -1334,7 +1176,7 @@ export const categories: Category[] = [
           },
           {
             level: 'A2',
-            options: ['úr málmi', 'úr plasti', 'úr tré', 'úr steini', 'úr gleri'],
+            options: ['úr málmi', 'úr plasti', 'úr tré', 'úr gleri'],
           },
           {
             level: 'B1',
@@ -1342,52 +1184,10 @@ export const categories: Category[] = [
               'úr málmi',
               'úr plasti',
               'úr tré',
-              'úr steini',
               'úr gleri',
               'úr endurunnu efni',
               'úr náttúrulegum efnum',
               'úr gerviefnum',
-            ],
-          },
-        ],
-      },
-      {
-        question: 'Hvaða lögun hefur það?',
-        icon: '🔷',
-        label: 'Lögun',
-        answers: [
-          {
-            level: 'A1',
-            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
-          },
-          {
-            level: 'A2',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-            ],
-          },
-          {
-            level: 'B1',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-              'sporöskjulaga',
-              'þríhyrningslaga',
-              'sívalningslaga',
-              'óreglulegt',
             ],
           },
         ],
@@ -1446,7 +1246,6 @@ export const categories: Category[] = [
               'bílstjórar',
               'flugmenn',
               'sjómenn',
-              'sérfræðingar',
               'ferðamenn',
               'iðnaðarmenn',
             ],
@@ -1593,20 +1392,17 @@ export const categories: Category[] = [
             },
           },
           {
-            frame: 'Það hljómar ___.',
+            frame: 'Það heyrist ___ í því.',
             agree: [
               {
-                word: 'Það',
-                role: 'NF',
+                word: 'því',
+                role: 'ÞGF',
               },
             ],
             blank: {
               words: 'Hvaða hljóð gefur það frá sér?',
-              options: ['hátt', 'lágt', 'þögult'],
+              options: ['hátt', 'lágt', 'ekkert'],
               form: 'as-is',
-              forms: {
-                þögult: 'agree',
-              },
             },
           },
           {
@@ -1725,7 +1521,7 @@ export const categories: Category[] = [
         level: 'B1',
         frames: [
           'Ég held að þetta sé ___ vegna þess að ___.',
-          'Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.',
+          'Þessi manneskja er ___ og er þekkt fyrir ___.',
           'Hún/Hann er oft ___ vegna þess að ___.',
         ],
       },
@@ -1737,7 +1533,7 @@ export const categories: Category[] = [
       },
       {
         level: 'A2',
-        text: 'Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.',
+        text: 'Þetta er kona sem er há. Hún er ung og með gleraugu. Hún vinnur sem læknir.',
       },
       {
         level: 'B1',
@@ -1747,7 +1543,7 @@ export const categories: Category[] = [
     teacherNotes: [
       {
         level: 'A1',
-        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Fornafnið fer eftir kyni orðsins: bíll → hann, úlpa → hún, skip → það.',
+        text: 'Nemandi bendir á orð af spjaldinu og myndar einfaldar setningar. Hjálpið nemandanum að velja rétt orð og segja heila setningu. Um fólk er notað hún eða hann eftir manneskjunni sjálfri, ekki eftir kyni starfsheitisins: kennari getur verið hún eða hann.',
       },
       {
         level: 'A2',
@@ -1766,7 +1562,7 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['barn', 'fullorðin/fullorðinn', 'gamall/gömul'],
+            options: ['barn', 'fullorðin/fullorðinn', 'gömul/gamall'],
           },
           {
             level: 'A2',
@@ -1847,7 +1643,7 @@ export const categories: Category[] = [
           },
           {
             level: 'A2',
-            options: ['vinnur', 'lærir', 'leikur sér', 'syngur', 'læknar', 'kennir'],
+            options: ['vinnur', 'lærir', 'leikur sér', 'eldar', 'syngur', 'læknar', 'kennir'],
           },
           {
             level: 'B1',
@@ -1855,6 +1651,7 @@ export const categories: Category[] = [
               'vinnur',
               'lærir',
               'leikur sér',
+              'eldar',
               'syngur',
               'læknar',
               'kennir',
@@ -1865,7 +1662,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvar er hægt að finna þessa manneskju?',
+        question: 'Hvar er hún/hann?',
         icon: '📍',
         context: {
           kind: 'hvar',
@@ -1896,7 +1693,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvenær er hún/hann virk/virkur?',
+        question: 'Hvenær er hún/hann þar?',
         icon: '🕐',
         context: {
           kind: 'hvenaer',
@@ -2063,7 +1860,7 @@ export const categories: Category[] = [
     sentenceFrames: [
       {
         level: 'A1',
-        frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.', 'Maður notar það ___.'],
+        frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.'],
       },
       {
         level: 'A2',
@@ -2072,7 +1869,6 @@ export const categories: Category[] = [
           'Maður fer þangað ___.',
           'Það er gert ___.',
           'Maður finnur það ___.',
-          'Maður notar það ___.',
         ],
       },
       {
@@ -2082,7 +1878,7 @@ export const categories: Category[] = [
           'Fólk fer þangað ___ og ___.',
           'Mér finnst þetta ___ vegna þess að ___.',
           'Það er gert ___ sem er ___.',
-          '___ nota það oftast ___.',
+          '___ fara þangað oftast ___.',
         ],
       },
     ],
@@ -2189,31 +1985,31 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvernig lyktar þar?',
+        question: 'Hvernig lykt er þar?',
         icon: '👃',
         label: 'Lykt',
         answers: [
           {
             level: 'A1',
-            options: ['gott', 'vont', 'ekkert'],
+            options: ['góð', 'vond', 'engin'],
           },
           {
             level: 'A2',
-            options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'],
+            options: ['góð', 'vond', 'engin', 'fersk', 'sterk', 'mild'],
           },
           {
             level: 'B1',
             options: [
-              'gott',
-              'vont',
-              'ekkert',
-              'ferskt',
-              'sterkt',
-              'milt',
+              'góð',
+              'vond',
+              'engin',
+              'fersk',
+              'sterk',
+              'mild',
               'ilmandi',
               'stingandi',
-              'sætt',
-              'beiskt',
+              'sæt',
+              'beisk',
             ],
           },
         ],
@@ -2247,48 +2043,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvaða lögun hefur það?',
-        icon: '🔷',
-        label: 'Lögun',
-        answers: [
-          {
-            level: 'A1',
-            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
-          },
-          {
-            level: 'A2',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-            ],
-          },
-          {
-            level: 'B1',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-              'sporöskjulaga',
-              'þríhyrningslaga',
-              'sívalningslaga',
-              'óreglulegt',
-            ],
-          },
-        ],
-      },
-      {
-        question: 'Til hvers er þetta notað?',
+        question: 'Hvað gerir maður þar?',
         icon: '🎯',
         context: {
           kind: 'notagildi',
@@ -2297,28 +2052,36 @@ export const categories: Category[] = [
         answers: [
           {
             level: 'A1',
-            options: ['til að búa', 'til að læra', 'til að versla'],
+            options: ['býr', 'sefur', 'lærir', 'verslar', 'syndir', 'borðar', 'leikur sér'],
           },
           {
             level: 'A2',
             options: [
-              'til að búa',
-              'til að læra',
-              'til að versla',
-              'til að vinna',
-              'til að hvílast',
+              'býr',
+              'sefur',
+              'lærir',
+              'verslar',
+              'syndir',
+              'borðar',
+              'leikur sér',
+              'vinnur',
+              'hvílir sig',
             ],
           },
           {
             level: 'B1',
             options: [
-              'til að búa',
-              'til að læra',
-              'til að versla',
-              'til að vinna',
-              'til að hvílast',
-              'til að stunda íþróttir',
-              'til að skemmta sér',
+              'býr',
+              'sefur',
+              'lærir',
+              'verslar',
+              'syndir',
+              'borðar',
+              'leikur sér',
+              'vinnur',
+              'hvílir sig',
+              'stundar íþróttir',
+              'skemmtir sér',
             ],
           },
         ],
@@ -2348,7 +2111,6 @@ export const categories: Category[] = [
               'nemendur',
               'kennarar',
               'læknar',
-              'sérfræðingar',
               'listamenn',
               'ferðamenn',
               'iðnaðarmenn',
@@ -2387,7 +2149,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Hvenær er þetta notað?',
+        question: 'Hvenær fer fólk þangað?',
         icon: '🕐',
         context: {
           kind: 'hvenaer',
@@ -2467,8 +2229,8 @@ export const categories: Category[] = [
             frame: 'Maður ___ þar.',
             agree: [],
             blank: {
-              words: 'Hvað gerir maður þar',
-              options: ['borðar', 'verslar', 'syndir', 'lærir', 'vinnur', 'sefur', 'leikur sér'],
+              words: 'Hvað gerir maður þar?',
+              options: ['býr', 'sefur', 'lærir', 'verslar', 'syndir', 'borðar', 'leikur sér'],
               form: 'as-is',
             },
           },
@@ -2488,20 +2250,6 @@ export const categories: Category[] = [
               words: 'Hvernig lítur þetta út?',
               options: ['stórt', 'lítið', 'hátt', 'lágt'],
               form: 'agree',
-            },
-          },
-          {
-            frame: 'Maður notar það ___.',
-            agree: [
-              {
-                word: 'það',
-                role: 'ÞF',
-              },
-            ],
-            blank: {
-              words: 'Til hvers er þetta notað?',
-              options: ['til að búa', 'til að læra', 'til að versla'],
-              form: 'as-is',
             },
           },
         ],
@@ -2598,7 +2346,7 @@ export const categories: Category[] = [
         frames: [
           'Þetta er ___ sem er ___.',
           'Maður klæðist því ___.',
-          'Það finnst ___ við snertingu.',
+          'Það er ___ viðkomu.',
           'Það er gert ___.',
           'Maður finnur það ___.',
           'Maður notar það ___.',
@@ -2735,14 +2483,14 @@ export const categories: Category[] = [
               'brúnt',
               'stórt',
               'lítið',
-              'mynstur',
+              'með mynstri',
               'einlitt',
             ],
           },
         ],
       },
       {
-        question: 'Hvernig finnst það við snertingu?',
+        question: 'Hvernig er það viðkomu?',
         icon: '✋',
         label: 'Áferð',
         answers: [
@@ -2752,18 +2500,7 @@ export const categories: Category[] = [
           },
           {
             level: 'A2',
-            options: [
-              'mjúkt',
-              'hart',
-              'slétt',
-              'gróft',
-              'þungt',
-              'létt',
-              'hlýtt',
-              'kalt',
-              'blautt',
-              'þurrt',
-            ],
+            options: ['mjúkt', 'hart', 'slétt', 'gróft', 'hlýtt', 'kalt', 'blautt', 'þurrt'],
           },
           {
             level: 'B1',
@@ -2772,8 +2509,6 @@ export const categories: Category[] = [
               'hart',
               'slétt',
               'gróft',
-              'þungt',
-              'létt',
               'hlýtt',
               'kalt',
               'blautt',
@@ -2797,16 +2532,7 @@ export const categories: Category[] = [
           },
           {
             level: 'A2',
-            options: [
-              'úr ull',
-              'úr bómull',
-              'úr leðri',
-              'úr plasti',
-              'úr tré',
-              'úr málmi',
-              'úr steini',
-              'úr gleri',
-            ],
+            options: ['úr ull', 'úr bómull', 'úr leðri', 'úr plasti'],
           },
           {
             level: 'B1',
@@ -2815,54 +2541,9 @@ export const categories: Category[] = [
               'úr bómull',
               'úr leðri',
               'úr plasti',
-              'úr tré',
-              'úr málmi',
-              'úr steini',
-              'úr gleri',
               'úr endurunnu efni',
               'úr náttúrulegum efnum',
               'úr gerviefnum',
-            ],
-          },
-        ],
-      },
-      {
-        question: 'Hvaða lögun hefur það?',
-        icon: '🔷',
-        label: 'Lögun',
-        answers: [
-          {
-            level: 'A1',
-            options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
-          },
-          {
-            level: 'A2',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-            ],
-          },
-          {
-            level: 'B1',
-            options: [
-              'kringlótt',
-              'ferkantað',
-              'ílangt',
-              'flatt',
-              'kúlulaga',
-              'oddhvasst',
-              'bogið',
-              'beint',
-              'sporöskjulaga',
-              'þríhyrningslaga',
-              'sívalningslaga',
-              'óreglulegt',
             ],
           },
         ],
@@ -2925,8 +2606,6 @@ export const categories: Category[] = [
               'fullorðnir',
               'nemendur',
               'íþróttamenn',
-              'sérfræðingar',
-              'listamenn',
               'ferðamenn',
               'iðnaðarmenn',
             ],

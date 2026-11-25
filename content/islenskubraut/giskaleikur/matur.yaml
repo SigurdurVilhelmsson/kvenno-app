@@ -9,7 +9,7 @@ items:
       Útlit: [rautt, grænt]
       Bragð: [sætt, súrt, ferskt]
       Áferð: [hart, slétt]
-      Lykt: [gott, ferskt]
+      Lykt: [góð, fersk]
       Lögun: [kringlótt, kúlulaga]
       notagildi: [til að borða, til að baka með]
       hver: [allir]
@@ -21,12 +21,12 @@ items:
       Útlit: [gult]
       Bragð: [sætt, milt]
       Áferð: [mjúkt]
-      Lykt: [gott, sætt]
+      Lykt: [góð, sæt]
       Lögun: [ílangt, bogið]
       notagildi: [til að borða]
       hver: [allir, börn]
       hvar: [í búð, heima]
-      hvenaer: [á morgnana]
+      hvenaer: [í morgunmat]
   - name: sítróna
     from: A1
     answers:
@@ -34,7 +34,7 @@ items:
       Útlit: [gult]
       Bragð: [súrt]
       Áferð: [hart, gróft]
-      Lykt: [ferskt]
+      Lykt: [fersk]
       Lögun: [sporöskjulaga]
       notagildi: [til að elda með, til að baka með]
       hver: [kokkar]
@@ -46,7 +46,7 @@ items:
       Útlit: [appelsínugult]
       Bragð: [sætt, ferskt]
       Áferð: [hart]
-      Lykt: [ekkert]
+      Lykt: [engin]
       Lögun: [ílangt, oddhvasst]
       notagildi: [til að borða, til að elda með]
       hver: [allir]
@@ -69,11 +69,11 @@ items:
       Útlit: [hvítt]
       Bragð: [milt]
       Áferð: [kalt, blautt]
-      Lykt: [ekkert]
+      Lykt: [engin]
       notagildi: [til að drekka, til að baka með]
       hver: [allir, börn]
       hvar: [heima, í búð, í skólanum]
-      hvenaer: [á morgnana, daglega]
+      hvenaer: [í morgunmat, daglega]
   - name: kaffi
     from: A1
     answers:
@@ -81,11 +81,11 @@ items:
       Útlit: [brúnt]
       Bragð: [beiskt, sterkt]
       Áferð: [heitt]
-      Lykt: [gott, sterkt, ilmandi]
+      Lykt: [góð, sterk, ilmandi]
       notagildi: [til að drekka, til að njóta]
       hver: [fullorðnir]
       hvar: [heima, á veitingastað]
-      hvenaer: [á morgnana, daglega]
+      hvenaer: [í morgunmat, daglega]
   - name: ostur
     from: A2
     answers:
@@ -93,9 +93,9 @@ items:
       Útlit: [gult]
       Bragð: [salt, milt]
       Áferð: [mjúkt]
-      Lykt: [sterkt]
+      Lykt: [sterk]
       Lögun: [ferkantað]
       notagildi: [til að borða]
       hver: [allir]
       hvar: [í búð]
-      hvenaer: [á morgnana]
+      hvenaer: [í morgunmat]

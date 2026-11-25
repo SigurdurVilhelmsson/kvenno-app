@@ -77,14 +77,13 @@ sentenceFrames:
       - Þetta er ___.
       - Það er ___.
       - Maður borðar það ___.
-      - Maður notar það ___.
   - id: f2
     level: A2
     frames:
       - Þetta er ___ sem er ___.
       - Maður borðar/drekkur það ___.
       - Það er ___.
-      - Það finnst ___ við snertingu.
+      - Það er ___ viðkomu.
       - Það er gert úr ___.
       - Maður finnur það ___.
       - Maður notar það ___.
@@ -202,7 +201,7 @@ guidingQuestions:
         - mjög sætt
         - náttúrulega sætt
   - id: q4
-    question: Hvernig finnst það við snertingu?
+    question: Hvernig er það viðkomu?
     icon: ✋
     label: Áferð
     answers:
@@ -214,8 +213,6 @@ guidingQuestions:
         - hart
         - slétt
         - gróft
-        - þungt
-        - létt
         - heitt
         - kalt
         - blautt
@@ -225,8 +222,6 @@ guidingQuestions:
         - hart
         - slétt
         - gróft
-        - þungt
-        - létt
         - heitt
         - kalt
         - blautt
@@ -236,32 +231,32 @@ guidingQuestions:
         - stinnt
         - sveigjanlegt
   - id: q5
-    question: Hvernig lyktar af því?
+    question: Hvernig lykt er af því?
     icon: 👃
     label: Lykt
     answers:
       A1:
-        - gott
-        - vont
-        - ekkert
+        - góð
+        - vond
+        - engin
       A2:
-        - gott
-        - vont
-        - ekkert
-        - ferskt
-        - sterkt
-        - milt
+        - góð
+        - vond
+        - engin
+        - fersk
+        - sterk
+        - mild
       B1:
-        - gott
-        - vont
-        - ekkert
-        - ferskt
-        - sterkt
-        - milt
+        - góð
+        - vond
+        - engin
+        - fersk
+        - sterk
+        - mild
         - ilmandi
         - stingandi
-        - sætt
-        - beiskt
+        - sæt
+        - beisk
   - id: q6
     question: Hvaða lögun hefur það?
     icon: 🔷
@@ -335,8 +330,6 @@ guidingQuestions:
         - fullorðnir
         - kokkar
         - bakarar
-        - sérfræðingar
-        - ferðamenn
   - id: q9
     question: Hvar er hægt að finna þetta?
     icon: 📍
@@ -361,38 +354,34 @@ guidingQuestions:
         - á markaði
         - í garðinum
   - id: q10
-    question: Hvenær er þetta notað?
+    question: Hvenær er það borðað eða drukkið?
     icon: 🕐
     context: hvenaer
     answers:
       A1:
-        - á morgnana
-        - á daginn
-        - á kvöldin
-        - alltaf
+        - í morgunmat
+        - í hádegismat
+        - í kvöldmat
+        - sem millimál
         - á veturna
         - á sumrin
         - um helgar
-        - á virkum dögum
       A2:
-        - á morgnana
-        - á daginn
-        - á kvöldin
-        - alltaf
+        - í morgunmat
+        - í hádegismat
+        - í kvöldmat
+        - sem millimál
         - á veturna
         - á sumrin
         - um helgar
-        - á virkum dögum
       B1:
-        - á morgnana
-        - á daginn
-        - á kvöldin
-        - alltaf
+        - í morgunmat
+        - í hádegismat
+        - í kvöldmat
+        - sem millimál
         - á veturna
         - á sumrin
         - um helgar
-        - á virkum dögum
-        - í sérstökum tilvikum
         - á hátíðum
         - daglega
         - sjaldan
@@ -415,12 +404,8 @@ builder:
       - frame: Maður borðar það ___.
         agree:
           það: ÞF
-        words: Hvenær er þetta notað?
+        words: Hvenær er það borðað eða drukkið?
         except:
           - drykkur
-      - frame: Maður notar það ___.
-        agree:
-          það: ÞF
-        words: Til hvers er það notað?
     lemmas:
       sætt: sætur

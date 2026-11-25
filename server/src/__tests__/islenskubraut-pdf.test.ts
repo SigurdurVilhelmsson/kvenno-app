@@ -177,7 +177,7 @@ describe('word lists', () => {
     expect(new Set(words('A1'))).toEqual(new Set(answersAt('A1')));
     expect(words('A2').filter((w) => answersAt('A1').includes(w))).toEqual([]);
     expect(words('B1').filter((w) => answersAt('A2').includes(w))).toEqual([]);
-    expect(words('B1')).toContain('syndir');
+    expect(words('B1')).toContain('skriðdýr');
     for (const level of LEVELS) expect(new Set(words(level)).size).toBe(words(level).length);
   });
 

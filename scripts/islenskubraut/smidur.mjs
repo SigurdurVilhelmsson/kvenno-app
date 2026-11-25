@@ -20,6 +20,10 @@ import { candidateForms } from './bin.mjs';
 const PRONOUNS = {
   NF: { ET: { kk: 'hann', kvk: 'hún', hk: 'það' }, FT: { kk: 'þeir', kvk: 'þær', hk: 'þau' } },
   ÞF: { ET: { kk: 'hann', kvk: 'hana', hk: 'það' }, FT: { kk: 'þá', kvk: 'þær', hk: 'þau' } },
+  ÞGF: {
+    ET: { kk: 'honum', kvk: 'henni', hk: 'því' },
+    FT: { kk: 'þeim', kvk: 'þeim', hk: 'þeim' },
+  },
 };
 const VERA = { ET: 'er', FT: 'eru' };
 const GENDER_TAG = { kk: 'KK', kvk: 'KVK', hk: 'HK' };

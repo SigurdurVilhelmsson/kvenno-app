@@ -33,7 +33,7 @@ export const egget: Record<string, Egget> = {
       B1: [
         'Ég get giskað á dýr og sagt hvers vegna.',
         'Ég get borið saman tvö dýr og sagt hvað er líkt og hvað ólíkt.',
-        'Ég get útskýrt til hvers fólk notar dýrið.',
+        'Ég get útskýrt hvernig dýrið lifir og hvað það étur.',
         'Ég get skrifað stutta lýsingu á dýri.',
       ],
     },

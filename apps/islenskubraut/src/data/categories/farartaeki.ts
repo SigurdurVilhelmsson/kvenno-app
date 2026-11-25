@@ -72,7 +72,7 @@ export const farartaeki: Category = {
         'Þetta er ___.',
         'Það fer ___.',
         'Það er ___.',
-        'Það hljómar ___.',
+        'Það heyrist ___ í því.',
         'Maður notar það ___.',
       ],
     },
@@ -81,7 +81,6 @@ export const farartaeki: Category = {
       frames: [
         'Þetta er ___ sem fer ___.',
         'Það hefur ___ og er ___.',
-        'Það finnst ___ við snertingu.',
         'Það er gert ___.',
         'Maður finnur það ___.',
         'Maður notar það ___.',
@@ -92,7 +91,6 @@ export const farartaeki: Category = {
       frames: [
         'Þetta farartæki er ___ sem er notað ___.',
         'Það getur flutt ___ og fer ___.',
-        'Það er ___ að snerta vegna þess að ___.',
         'Það er gert ___ sem er ___.',
         '___ nota það oftast ___.',
       ],
@@ -196,15 +194,15 @@ export const farartaeki: Category = {
       answers: [
         {
           level: 'A1',
-          options: ['hátt', 'lágt', 'þögult'],
+          options: ['hátt', 'lágt', 'ekkert'],
         },
         {
           level: 'A2',
-          options: ['hátt', 'lágt', 'þögult', 'suðar', 'hringir', 'öskrar'],
+          options: ['hátt', 'lágt', 'ekkert', 'suðar', 'öskrar'],
         },
         {
           level: 'B1',
-          options: ['hátt', 'lágt', 'þögult', 'suðar', 'hringir', 'öskrar', 'hvæsir'],
+          options: ['hátt', 'lágt', 'ekkert', 'suðar', 'öskrar', 'hvæsir'],
         },
       ],
     },
@@ -219,7 +217,7 @@ export const farartaeki: Category = {
         },
         {
           level: 'A2',
-          options: ['úr málmi', 'úr plasti', 'úr tré', 'úr steini', 'úr gleri'],
+          options: ['úr málmi', 'úr plasti', 'úr tré', 'úr gleri'],
         },
         {
           level: 'B1',
@@ -227,52 +225,10 @@ export const farartaeki: Category = {
             'úr málmi',
             'úr plasti',
             'úr tré',
-            'úr steini',
             'úr gleri',
             'úr endurunnu efni',
             'úr náttúrulegum efnum',
             'úr gerviefnum',
-          ],
-        },
-      ],
-    },
-    {
-      question: 'Hvaða lögun hefur það?',
-      icon: '🔷',
-      label: 'Lögun',
-      answers: [
-        {
-          level: 'A1',
-          options: ['kringlótt', 'ferkantað', 'ílangt', 'flatt'],
-        },
-        {
-          level: 'A2',
-          options: [
-            'kringlótt',
-            'ferkantað',
-            'ílangt',
-            'flatt',
-            'kúlulaga',
-            'oddhvasst',
-            'bogið',
-            'beint',
-          ],
-        },
-        {
-          level: 'B1',
-          options: [
-            'kringlótt',
-            'ferkantað',
-            'ílangt',
-            'flatt',
-            'kúlulaga',
-            'oddhvasst',
-            'bogið',
-            'beint',
-            'sporöskjulaga',
-            'þríhyrningslaga',
-            'sívalningslaga',
-            'óreglulegt',
           ],
         },
       ],
@@ -331,7 +287,6 @@ export const farartaeki: Category = {
             'bílstjórar',
             'flugmenn',
             'sjómenn',
-            'sérfræðingar',
             'ferðamenn',
             'iðnaðarmenn',
           ],
@@ -478,20 +433,17 @@ export const farartaeki: Category = {
           },
         },
         {
-          frame: 'Það hljómar ___.',
+          frame: 'Það heyrist ___ í því.',
           agree: [
             {
-              word: 'Það',
-              role: 'NF',
+              word: 'því',
+              role: 'ÞGF',
             },
           ],
           blank: {
             words: 'Hvaða hljóð gefur það frá sér?',
-            options: ['hátt', 'lágt', 'þögult'],
+            options: ['hátt', 'lágt', 'ekkert'],
             form: 'as-is',
-            forms: {
-              þögult: 'agree',
-            },
           },
         },
         {

@@ -229,16 +229,6 @@ export const hljod: Record<string, Hljod> = {
     approved: false,
     v: '85aeb409bc12',
   },
-  þungt: {
-    file: 'a2e78239d6fc2c53.mp3',
-    approved: false,
-    v: 'ecdf1ca3918d',
-  },
-  létt: {
-    file: '27ba600b93a0657a.mp3',
-    approved: false,
-    v: '862de5f064ba',
-  },
   blautt: {
     file: 'ebb1093486528c1a.mp3',
     approved: false,
@@ -279,11 +269,6 @@ export const hljod: Record<string, Hljod> = {
     approved: false,
     v: 'b75fb0a849c5',
   },
-  þögult: {
-    file: '5428a6bc6787c362.mp3',
-    approved: false,
-    v: '2ca71f7fec78',
-  },
   gelur: {
     file: '5ee06a1d72c4aaaf.mp3',
     approved: false,
@@ -303,11 +288,6 @@ export const hljod: Record<string, Hljod> = {
     file: 'ebe6e307e884b71f.mp3',
     approved: false,
     v: '43406c21e28f',
-  },
-  hringir: {
-    file: '1317c39e5caf8e15.mp3',
-    approved: false,
-    v: '83dc5da0c2d6',
   },
   hvæsir: {
     file: '9aaf2e4449455129.mp3',
@@ -374,25 +354,10 @@ export const hljod: Record<string, Hljod> = {
     approved: false,
     v: '172e615c3881',
   },
-  'til að gæta': {
-    file: 'af8968bd6a5b7914.mp3',
-    approved: false,
-    v: '16bef6c4e5ee',
-  },
-  'til að klappa': {
-    file: '0f4abd5a8a4c5aa0.mp3',
-    approved: false,
-    v: 'ced8624f1852',
-  },
   'til að borða': {
     file: '10176746c8500991.mp3',
     approved: false,
     v: '1af095153694',
-  },
-  'til að hjálpa': {
-    file: 'ae22ef11ea8bae8a.mp3',
-    approved: false,
-    v: 'ca788192e9b8',
   },
   'til að vinna': {
     file: 'db1558d21d4aac35.mp3',
@@ -403,16 +368,6 @@ export const hljod: Record<string, Hljod> = {
     file: 'd111a968b6b5e5eb.mp3',
     approved: false,
     v: 'e4b8c1ad2900',
-  },
-  'til að verja': {
-    file: 'b1b02e2e843c6efa.mp3',
-    approved: false,
-    v: '54079b0bbcc5',
-  },
-  'til að rannsaka': {
-    file: 'bbfde75eae03c640.mp3',
-    approved: false,
-    v: 'a3cda2241326',
   },
   allir: {
     file: 'd8bab4614355b777.mp3',
@@ -438,16 +393,6 @@ export const hljod: Record<string, Hljod> = {
     file: '397e39efd1a194f2.mp3',
     approved: false,
     v: '3dbdaea43bbf',
-  },
-  veiðimenn: {
-    file: '8dc831ccb21cd609.mp3',
-    approved: false,
-    v: '6651a2b1422d',
-  },
-  sérfræðingar: {
-    file: 'e27c7fc2cddd460d.mp3',
-    approved: false,
-    v: 'a1f3863d4807',
   },
   ferðamenn: {
     file: 'bc115178062f6d3d.mp3',
@@ -564,11 +509,6 @@ export const hljod: Record<string, Hljod> = {
     approved: false,
     v: '712957b4fe43',
   },
-  'Það hljómar ___.': {
-    file: '2b76ac6262fa3336.mp3',
-    approved: false,
-    v: '0980665c4d02',
-  },
   'Maður notar það ___.': {
     file: '522960000bcfa217.mp3',
     approved: false,
@@ -588,11 +528,6 @@ export const hljod: Record<string, Hljod> = {
     file: 'c526d2897235e192.mp3',
     approved: false,
     v: '72e363cb3a58',
-  },
-  'Það finnst ___ við snertingu.': {
-    file: '5975a303dcf88d2f.mp3',
-    approved: false,
-    v: 'd639395f43c3',
   },
   'Maður finnur það ___.': {
     file: '71443ab5e20a125f.mp3',
@@ -869,16 +804,6 @@ export const hljod: Record<string, Hljod> = {
     file: '0ee25623437a2f57.mp3',
     approved: false,
     v: 'd567aca35d05',
-  },
-  gott: {
-    file: '894d3ccd43ee7e7f.mp3',
-    approved: false,
-    v: '7946a4ebf85c',
-  },
-  vont: {
-    file: 'd1c2ab05bd0f9564.mp3',
-    approved: false,
-    v: 'c469793ec0fe',
   },
   ekkert: {
     file: '3a4c3a2a78baa67e.mp3',
@@ -1532,11 +1457,6 @@ export const hljod: Record<string, Hljod> = {
     approved: false,
     v: '129a8533e879',
   },
-  'gamall/gömul': {
-    file: '95b9014a2b0e97f3.mp3',
-    approved: false,
-    v: '9a48115e70bb',
-  },
   'leikur sér': {
     file: '0076b7842cc11a9d.mp3',
     approved: false,
@@ -1617,11 +1537,6 @@ export const hljod: Record<string, Hljod> = {
     approved: false,
     v: '45b3bd1f43ad',
   },
-  'Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.': {
-    file: '47ef1edac316ad88.mp3',
-    approved: false,
-    v: 'f7f14eeaa65e',
-  },
   'Hún/Hann er oft ___ vegna þess að ___.': {
     file: '7347c7afc993eff3.mp3',
     approved: false,
@@ -1631,11 +1546,6 @@ export const hljod: Record<string, Hljod> = {
     file: '42c054980a5a5cff.mp3',
     approved: false,
     v: '54c92dfc82b2',
-  },
-  'Þetta er kona sem er há. Hún er ung og myndarleg. Hún vinnur sem læknir.': {
-    file: 'f5456614b800bc18.mp3',
-    approved: false,
-    v: '82d2496f960f',
   },
   'Ég held að þetta sé söngvari vegna þess að hún er fræg og syngur. Þessi manneskja er ung og er þekkt fyrir tónlist.':
     {
@@ -1793,35 +1703,10 @@ export const hljod: Record<string, Hljod> = {
     approved: false,
     v: 'c9857c3d516b',
   },
-  'til að búa': {
-    file: '21a796e30083f0b9.mp3',
-    approved: false,
-    v: '71718c5ab1ff',
-  },
-  'til að læra': {
-    file: '334633aeae327723.mp3',
-    approved: false,
-    v: '10b009cd04f7',
-  },
-  'til að versla': {
-    file: '25f63acc38c27941.mp3',
-    approved: false,
-    v: '0abfea2bf0f8',
-  },
-  'til að hvílast': {
-    file: '8c2298f9087eabef.mp3',
-    approved: false,
-    v: '9ea0a7c765a8',
-  },
   'til að stunda íþróttir': {
     file: 'ab210ee2be546b6f.mp3',
     approved: false,
     v: '0979b5c23fac',
-  },
-  'til að skemmta sér': {
-    file: '30add42ca5e1ed8c.mp3',
-    approved: false,
-    v: 'bb093414b534',
   },
   nemendur: {
     file: 'a9f7d868241d09fb.mp3',
@@ -2102,11 +1987,6 @@ export const hljod: Record<string, Hljod> = {
     file: '8b59ecdf709220c4.mp3',
     approved: false,
     v: 'e10e077b02b7',
-  },
-  mynstur: {
-    file: '157fd913305f134b.mp3',
-    approved: false,
-    v: '52d8e256e1fb',
   },
   einlitt: {
     file: '49dba3b069dc616b.mp3',

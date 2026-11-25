@@ -22,13 +22,10 @@ words:
   gróft: szorstkie
   hátt: głośno
   lágt: cicho
-  þögult: bezgłośne
   kringlótt: okrągłe
   ferkantað: kwadratowe
   ílangt: podłużne
   flatt: płaskie
-  til að gæta: do pilnowania
-  til að klappa: do głaskania
   til að borða: do jedzenia
   allir: wszyscy
   börn: dzieci
@@ -52,8 +49,6 @@ words:
   salt: słone
   súrt: kwaśne
   beiskt: gorzkie
-  gott: dobrze
-  vont: brzydko
   ekkert: nic
   til að drekka: do picia
   í búð: w sklepie
@@ -78,7 +73,6 @@ words:
   í loftinu: w powietrzu
   barn: dziecko
   fullorðin/fullorðinn: dorosła/dorosły
-  gamall/gömul: stary/stara
   há/hár: wysoka/wysoki
   lág/lágur: niska/niski
   ung/ungur: młoda/młody
@@ -93,9 +87,6 @@ words:
   búð: sklep
   sundlaug: basen
   úr steini: z kamienia
-  til að búa: do mieszkania
-  til að læra: do nauki
-  til að versla: na zakupy
   í bænum: w mieście
   úti á landi: na wsi
   við sjóinn: nad morzem
@@ -190,11 +181,9 @@ words:
   skólastjóri: dyrektor szkoły
   túlkur: tłumacz
   umsjónarkennari: wychowawca
-  til að hvílast: do odpoczynku
-  til að skemmta sér: do rozrywki
   til að stunda íþróttir: do uprawiania sportu
-  ilmandi: aromatycznie
-  stingandi: ostro
+  ilmandi: aromatyczny
+  stingandi: ostry
   appelsínugult: pomarańczowe
   bleikt: różowe
   brúnt: brązowe
@@ -213,7 +202,6 @@ words:
   með skegg: z brodą
   með stutt hár: z krótkimi włosami
   með sítt hár: z długimi włosami
-  mynstur: wzór
   nútímalegt: nowoczesne
   nýtt: nowe
   sköllótt/sköllóttur: łysa/łysy
@@ -262,8 +250,6 @@ words:
   listamenn: artyści
   nemendur: uczniowie
   sjómenn: marynarze
-  sérfræðingar: specjaliści
-  veiðimenn: myśliwi
   íþróttamenn: sportowcy
   blautt: mokre
   heitt: gorące
@@ -271,10 +257,8 @@ words:
   hált: śliskie
   kalt: zimne
   loðið: włochate
-  létt: lekkie
   stinnt: sztywne
   sveigjanlegt: elastyczne
-  þungt: ciężkie
   þurrt: suche
   beint: proste
   bogið: zakrzywione
@@ -321,13 +305,10 @@ words:
   til að baka með: do pieczenia
   til að bjarga: do ratowania
   til að elda með: do gotowania
-  til að hjálpa: do pomocy
   til að keppa: do wyścigów
   til að líða vel: żeby dobrze się czuć
   til að njóta: dla przyjemności
   til að næra sig: żeby się odżywiać
-  til að rannsaka: do badań
-  til að verja: do ochrony
   til að vinna: do pracy
   bragðlaust: bez smaku
   bragðmikið: wyraziste
@@ -345,7 +326,6 @@ words:
   í sjónum: w morzu
   í skóginum: w lesie
   gelur: pieje
-  hringir: dzwoni
   hvæsir: syczy
   mjálmar: miauczy
   suðar: brzęczy
@@ -361,7 +341,33 @@ words:
   í höfninni: w porcie
   á hátíð: na uroczystości
   í íþróttum: na treningu
-# A chip that means something else on one card.
+  # A chip that means something else on one card.
+  # Lykt (Matur, Staðir): the chips agree with „lykt“, so Polish takes „zapach“'s adjective
+  góð: dobry
+  vond: brzydki
+  engin: żaden
+  fersk: świeży
+  sterk: intensywny
+  mild: łagodny
+  sæt: słodki
+  beisk: gorzki
+  # Matur: when it is eaten
+  í morgunmat: na śniadanie
+  í hádegismat: na obiad
+  í kvöldmat: na kolację
+  sem millimál: jako przekąska
+  # Manneskja
+  eldar: gotuje
+  # Staðir: what one does there
+  býr: mieszka
+  sefur: śpi
+  verslar: robi zakupy
+  borðar: je
+  hvílir sig: odpoczywa
+  stundar íþróttir: uprawia sport
+  skemmtir sér: bawi się
+  # Klæðnaður
+  með mynstri: we wzory
 categories:
   stadir:
     hátt: wysokie
@@ -372,24 +378,10 @@ categories:
     stinnt: jędrne
   farartaeki:
     suðar: szumi
-# A chip that means something else under one question of a card: smell takes an adverb
-# (jak pachnie? mocno), taste and looks an adjective, and on Farartæki hátt is loud and tall.
+# A chip that means something else under one question of a card: on Farartæki hátt is loud
+# and tall.
 questions:
   farartaeki:
     Útlit:
       hátt: wysokie
       lágt: niskie
-  matur:
-    Lykt:
-      ferskt: świeżo
-      sterkt: mocno
-      milt: łagodnie
-      sætt: słodko
-      beiskt: gorzko
-  stadir:
-    Lykt:
-      ferskt: świeżo
-      sterkt: mocno
-      milt: łagodnie
-      sætt: słodko
-      beiskt: gorzko

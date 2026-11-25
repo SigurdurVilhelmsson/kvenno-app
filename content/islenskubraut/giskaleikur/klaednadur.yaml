@@ -8,7 +8,7 @@ items:
     from: A1
     answers:
       Útlit: [hvítt]
-      Áferð: [mjúkt, létt]
+      Áferð: [mjúkt]
       Efniviður: [úr bómull]
       notagildi: [til að líta vel út]
       hver: [allir]
@@ -20,7 +20,6 @@ items:
       Útlit: [blátt]
       Áferð: [gróft]
       Efniviður: [úr bómull]
-      Lögun: [ílangt]
       hver: [allir]
       hvar: [í skólanum]
       hvenaer: [alltaf]
@@ -57,7 +56,7 @@ items:
     from: A2
     answers:
       Útlit: [grænt, stórt]
-      Áferð: [hlýtt, þungt]
+      Áferð: [hlýtt]
       Efniviður: [úr gerviefnum]
       notagildi: [til að hlýja sér, til að verja sig]
       hvar: [úti]
@@ -68,7 +67,6 @@ items:
       Útlit: [gult, lítið]
       Áferð: [mjúkt, hlýtt]
       Efniviður: [úr ull]
-      Lögun: [kringlótt]
       notagildi: [til að hlýja sér]
       hver: [börn]
       hvar: [úti]

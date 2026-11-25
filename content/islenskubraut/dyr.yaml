@@ -77,17 +77,16 @@ sentenceFrames:
       - Þetta er dýr.
       - Það er ___.
       - Það hefur ___.
-      - Það hljómar ___.
-      - Maður notar það ___.
+      - Það heyrist ___ í því.
+      - Það ___.
   - id: f2
     level: A2
     frames:
       - Þetta er ___ sem býr ___.
       - Það hefur ___ og ___.
       - Það étur ___.
-      - Það finnst ___ við snertingu.
+      - Það er ___ viðkomu.
       - Maður finnur það ___.
-      - Maður notar það ___.
   - id: f3
     level: B1
     frames:
@@ -95,7 +94,7 @@ sentenceFrames:
       - Þetta dýr er ___ og ___.
       - Það er líkt ___ en ólíkt ___.
       - Það er ___ að snerta vegna þess að ___.
-      - ___ nota það oftast ___.
+      - Það sést oftast ___ vegna þess að ___.
 examples:
   A1: Þetta er dýr. Það er stórt. Það hefur feld.
   A2: Þetta er dýr sem býr í vatni. Það hefur hreistur og syndir. Það étur plöntur.
@@ -159,11 +158,8 @@ guidingQuestions:
         - horn
         - fjórir fætur
         - tveir fætur
-        - flýgur
-        - syndir
-        - hleypur
   - id: q3
-    question: Hvernig finnst það við snertingu?
+    question: Hvernig er það viðkomu?
     icon: ✋
     label: Áferð
     answers:
@@ -175,8 +171,6 @@ guidingQuestions:
         - hart
         - slétt
         - gróft
-        - þungt
-        - létt
         - blautt
         - þurrt
       B1:
@@ -184,14 +178,10 @@ guidingQuestions:
         - hart
         - slétt
         - gróft
-        - þungt
-        - létt
         - blautt
         - þurrt
         - loðið
         - hált
-        - stinnt
-        - sveigjanlegt
   - id: q4
     question: Hvaða hljóð gefur það frá sér?
     icon: 🔊
@@ -200,110 +190,61 @@ guidingQuestions:
       A1:
         - hátt
         - lágt
-        - þögult
+        - ekkert
       A2:
         - hátt
         - lágt
-        - þögult
+        - ekkert
         - gelur
         - mjálmar
         - öskrar
         - suðar
-        - hringir
       B1:
         - hátt
         - lágt
-        - þögult
+        - ekkert
         - gelur
         - mjálmar
         - öskrar
         - suðar
-        - hringir
         - hvæsir
   - id: q5
-    question: Hvaða lögun hefur það?
-    icon: 🔷
-    label: Lögun
-    answers:
-      A1:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-      A2:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-        - kúlulaga
-        - oddhvasst
-        - bogið
-        - beint
-      B1:
-        - kringlótt
-        - ferkantað
-        - ílangt
-        - flatt
-        - kúlulaga
-        - oddhvasst
-        - bogið
-        - beint
-        - sporöskjulaga
-        - þríhyrningslaga
-        - sívalningslaga
-        - óreglulegt
-  - id: q6
-    question: Til hvers er það notað?
+    question: Hvað gerir það?
     icon: 🎯
     context: notagildi
     answers:
       A1:
-        - til að gæta
-        - til að klappa
-        - til að borða
+        - flýgur
+        - syndir
+        - hleypur
       A2:
-        - til að gæta
-        - til að klappa
-        - til að borða
-        - til að hjálpa
-        - til að vinna
-        - til að leika sér
+        - flýgur
+        - syndir
+        - hleypur
       B1:
-        - til að gæta
-        - til að klappa
-        - til að borða
-        - til að hjálpa
-        - til að vinna
-        - til að leika sér
-        - til að verja
-        - til að rannsaka
-  - id: q7
-    question: Hver notar þetta?
+        - flýgur
+        - syndir
+        - hleypur
+  - id: q6
+    question: Hver hugsar um það?
     icon: 👤
     context: hver
     answers:
       A1:
-        - allir
         - börn
         - fullorðnir
       A2:
-        - allir
         - börn
         - fullorðnir
         - bændur
         - dýralæknar
-        - veiðimenn
       B1:
-        - allir
         - börn
         - fullorðnir
         - bændur
         - dýralæknar
-        - veiðimenn
-        - sérfræðingar
-        - ferðamenn
-  - id: q8
-    question: Hvar er hægt að finna þetta?
+  - id: q7
+    question: Hvar er hægt að finna það?
     icon: 📍
     context: hvar
     answers:
@@ -327,8 +268,8 @@ guidingQuestions:
         - í sjónum
         - á hálendinu
         - í skóginum
-  - id: q9
-    question: Hvenær sést þetta?
+  - id: q8
+    question: Hvenær sést það?
     icon: 🕐
     context: hvenaer
     answers:
@@ -339,7 +280,6 @@ guidingQuestions:
         - alltaf
         - á veturna
         - á sumrin
-        - um helgar
       A2:
         - á morgnana
         - á daginn
@@ -347,7 +287,6 @@ guidingQuestions:
         - alltaf
         - á veturna
         - á sumrin
-        - um helgar
       B1:
         - á morgnana
         - á daginn
@@ -355,8 +294,6 @@ guidingQuestions:
         - alltaf
         - á veturna
         - á sumrin
-        - um helgar
-        - í sérstökum tilvikum
         - daglega
         - sjaldan
         - oft
@@ -376,13 +313,11 @@ builder:
           Það: NF
         words: Hvernig lítur það út?
         form: ÞF
-      - frame: Það hljómar ___.
+      - frame: Það heyrist ___ í því.
+        words: Hvaða hljóð gefur það frá sér?
+      - frame: Það ___.
         agree:
           Það: NF
-        words: Hvaða hljóð gefur það frá sér?
-      - frame: Maður notar það ___.
-        agree:
-          það: ÞF
-        words: Til hvers er það notað?
+        words: Hvað gerir það?
     lemmas:
       hali: hali
